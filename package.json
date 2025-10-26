@@ -8,6 +8,7 @@
     "test": "turbo run test"
   },
   "devDependencies": {
+    "fs-extra": "^11.3.2",
     "turbo": "^2.5.8"
   }
 }
