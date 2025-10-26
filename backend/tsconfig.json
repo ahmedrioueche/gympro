@@ -22,8 +22,8 @@
     "noFallthroughCasesInSwitch": false,
     "baseUrl": ".",
     "paths": {
-      "@client": ["../packages/client/types/index.ts"],
-      "@client/*": ["../packages/client/*"]
+      "@client": ["./src/client/index.ts"],
+      "@client/*": ["./src/client/*"]
     }
   },
   "include": ["src/**/*"]

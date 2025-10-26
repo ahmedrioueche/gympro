@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prebuild": "mkdir -p src/client && cp -r ../packages/client/types/* src/client/ 2>/dev/null || xcopy /Y /S ..\\packages\\client\\types\\* src\\client\\ 2>nul || true",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
