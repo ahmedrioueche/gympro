@@ -84,7 +84,6 @@ function SignupPage() {
 
         showStatusToast(statusMessage, toast);
       } else {
-        // Handle unexpected errors
         toast.error(t('status.error.unexpected'));
       }
       console.error('Signup error:', error);
