@@ -164,7 +164,7 @@ function LoginPage() {
                 disabled={!isEmailValid}
                 onClick={() => {
                   if (isEmailValid) {
-                    navigate({ to: '/auth/forgot-password', search: { email } });
+                    navigate({ to: '/auth/forgot-password' });
                   }
                 }}
               >
