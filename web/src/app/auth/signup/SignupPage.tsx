@@ -56,8 +56,6 @@ function SignupPage() {
         password: formData.password,
       });
 
-      console.log('Signup response:', response);
-
       // Handle status code with toast
       const statusMessage = getMessageByStatuscode(response.statusCode, {
         t: t,
