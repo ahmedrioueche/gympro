@@ -6,7 +6,6 @@ import { Auth } from '../../../api/auth/auth';
 import Logo from '../../../components/ui/Logo';
 import { APP_PAGES } from '../../../constants/navigation';
 import { getMessageByStatuscode, showStatusToast } from '../../../utils/statusMessage';
-//noothing
 
 const EmailSentPage: React.FC = () => {
   const router = useRouter();
