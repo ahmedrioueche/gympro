@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
 import { User } from '@client';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AppController {
@@ -8,7 +8,7 @@ export class AppController {
     return {
       id: '1',
       name: 'Ahmed',
-      email: 'ahmed@example.com',
+      email: 'adsrahmed@example.com',
     };
   }
 }
