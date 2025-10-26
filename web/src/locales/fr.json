@@ -1,0 +1,13 @@
+{
+  "welcome": "Bonjour le monde",
+  "login": "Se connecter",
+  "logout": "Se déconnecter",
+  "auth": {
+    "reset_password": "Réinitialiser le mot de passe",
+    "reset_password_success": "Votre mot de passe a été réinitialisé avec succès.",
+    "reset_password_error": "Jeton de réinitialisation invalide ou expiré.",
+    "redirecting_to_login": "Redirection vers la page de connexion...",
+    "forgot_password_success": "Si l'email existe, un lien de réinitialisation a été envoyé.",
+    "send_reset_link": "Envoyer le lien de réinitialisation"
+  }
+}

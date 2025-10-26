@@ -1,0 +1,272 @@
+@import 'tailwindcss';
+
+@theme {
+  /* === FONTS === */
+  --font-primary: 'Poppins', sans-serif;
+
+  /* === BRAND COLORS === */
+  --color-primary: #4a90e2;
+  --color-secondary: #8b5fbf;
+  --color-accent: #00d4ff;
+
+  /* === SEMANTIC COLORS === */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  /* === SURFACE COLORS === */
+  --color-background: #ffffff;
+  --color-surface: #f8fafc;
+  --color-border: #e2e8f0;
+
+  /* === TEXT COLORS === */
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+}
+
+/* === DARK THEME OVERRIDES === */
+.dark {
+  --font-primary: 'Poppins', sans-serif;
+
+  /* Brand colors */
+  --color-primary: #60a5fa;
+  --color-secondary: #a78bfa;
+  --color-accent: #22d3ee;
+
+  /* Semantic colors */
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-danger: #f87171;
+
+  /* Surface colors */
+  --color-background: #0d0d0d;
+  --color-surface: #0f0f0f;
+  --color-border: #374151;
+
+  /* Text colors */
+  --color-text-primary: #e5e5e5;
+  --color-text-secondary: #9ca3af;
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Scrollbar Styling ===== */
+
+/* Scrollbar colors use your theme variables */
+:root {
+  --scrollbar-track: var(--color-surface);
+  --scrollbar-thumb: var(--color-primary);
+}
+
+.dark {
+  --scrollbar-track: var(--color-surface);
+  --scrollbar-thumb: var(--color-primary);
+}
+
+/* Scrollbar width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Scrollbar thumb style */
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 5px;
+}
+
+/* Scrollbar track style */
+::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track);
+}
+
+/* ===== Scrollbar Hide ===== */
+
+/* Hide scrollbar for WebKit browsers */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+html,
+body {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for IE/Edge */
+html,
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Utility class to hide scrollbar on any element */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+/* ===== Input Number Spinner Hide ===== */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* ===== Disable Scroll Entirely ===== */
+.no-scroll {
+  overflow: hidden !important;
+}
+
+/* ===== Disable Browser Password Reveal Button ===== */
+/* Hide Edge/IE password reveal button */
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
+
+/* Hide Chrome/Safari password reveal button */
+input[type='password']::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  height: 0;
+  width: 0;
+  right: 0;
+}
+
+/* Additional fallback for other browsers */
+input[type='password']::-webkit-textfield-decoration-container {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ===== Custom Animations ===== */
+
+/* Sparkle Animation */
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+/* Success Pulse Animation */
+@keyframes success-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.animate-success-pulse {
+  animation: success-pulse 2s infinite;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Confetti Animation */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(45deg, #10b981, #34d399, #6ee7b7, #a7f3d0);
+  animation: confetti-fall 3s linear infinite;
+}
+
+/* Success Icon Bounce */
+@keyframes success-bounce {
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%,
+  43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+.animate-success-bounce {
+  animation: success-bounce 1s ease-in-out;
+}
+
+/* Gradient Text Animation */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-text {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
