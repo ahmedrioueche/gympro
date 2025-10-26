@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [{ "path": "backend" }, { "path": "packages/client" }],
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "baseUrl": ".",
+    "paths": {
+      "@client": ["packages/client/types/index.ts"],
+      "@client/*": ["packages/client/*"]
+    }
+  }
+}
