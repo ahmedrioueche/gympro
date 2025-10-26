@@ -1,14 +1,18 @@
-import { User } from '@client';
+import { UserProfile } from '@client';
 import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AppController {
   @Get('test')
-  getTestUser(): User {
+  getTestUser(): UserProfile {
     return {
-      id: '1',
-      name: 'Ahmed',
-      email: 'adsrahmed@example.com',
+      _id: '423423',
+      role: 'member',
+      username: 'ahmed',
+      fullName: 'ahmed drioueche',
+      email: 'adsrahmed@gmail.com',
+      gym: { _id: 'Fsdfsdfsd', name: 'gym' },
+      createdAt: 'date',
     };
   }
 }

@@ -8,9 +8,19 @@ import Hero from '../../../components/Hero';
 import Button from '../../../components/ui/Button';
 import InputField from '../../../components/ui/InputField';
 import { APP_PAGES } from '../../../constants/navigation';
+import type { UserProfile } from '../../../types/user';
 import { getMessageByStatuscode, showStatusToast } from '../../../utils/statusMessage';
 import AuthHeader from '../components/AuthHeader';
 
+const user: UserProfile = {
+  _id: '423423',
+  role: 'member',
+  username: 'ahmed',
+  fullName: 'ahmed drioueche',
+  email: 'adsrahmed@gmail.com',
+  gym: { _id: 'Fsdfsdfsd', name: 'gym' },
+  createdAt: 'date',
+};
 function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -95,6 +105,14 @@ function LoginPage() {
 
   return (
     <div className='min-h-screen bg-background flex'>
+      {user && (
+        <div>
+          <div>full name: {user.fullName}</div>
+          <div>email:{user.email}</div>
+          <div>gym name: {user.gym.name}</div>
+        </div>
+      )}
+
       {/* Left Side - Login Form */}
       <div className='flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8'>
         <div className='max-w-md w-full space-y-8'>
