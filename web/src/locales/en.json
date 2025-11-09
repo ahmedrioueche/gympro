@@ -13,7 +13,10 @@
     "please_wait": "Please wait while we load the page..."
   },
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "selectSection": "Select a section from the sidebar to get started",
+    "currentLanguage": "Current Language",
+    "currentRoute": "Current Route"
   },
   "actions": {
     "go_back": "Go back"
@@ -187,5 +190,30 @@
     "step_role": "Role",
     "step_details": "Details",
     "step_confirmation": "Confirmation"
+  },
+  "navbar": {
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "logout": "Logout",
+    "menu": "Menu",
+    "manager": "Manager",
+    "welcome": "Welcome to GymPro"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "members": "Members",
+    "subscriptions": "Subscriptions",
+    "coaching": "Coaching",
+    "payments": "Payments",
+    "analytics": "Analytics",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "manageMembers": "Manage your gym members",
+    "manageSubscriptions": "Subscription plans & renewals",
+    "manageCoaching": "Coaches & programs",
+    "managePayments": "Payment methods & history",
+    "viewAnalytics": "Performance insights",
+    "viewNotifications": "Updates & alerts",
+    "customizeSettings": "App preferences"
   }
 }

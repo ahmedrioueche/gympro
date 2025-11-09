@@ -1,10 +1,10 @@
 import { createRoute } from '@tanstack/react-router';
-import EmailSentPage from '../../app/auth/email-sent/EmailSentPage';
-import ForgotPasswordPage from '../../app/auth/forgot-password/ForgotPasswordPage';
-import LoginPage from '../../app/auth/login/LoginPage';
-import ResetPasswordPage from '../../app/auth/reset-password/ResetPasswordPage';
-import SignupPage from '../../app/auth/signup/SignupPage';
-import VerifyEmailPage from '../../app/auth/verify-email/verifyEmailPage';
+import EmailSentPage from '../../app/pages/auth/email-sent/EmailSentPage';
+import ForgotPasswordPage from '../../app/pages/auth/forgot-password/ForgotPasswordPage';
+import LoginPage from '../../app/pages/auth/login/LoginPage';
+import ResetPasswordPage from '../../app/pages/auth/reset-password/ResetPasswordPage';
+import SignupPage from '../../app/pages/auth/signup/SignupPage';
+import VerifyEmailPage from '../../app/pages/auth/verify-email/verifyEmailPage';
 import { AuthRootRoute } from './AuthRootRoute';
 
 export const LoginRoute = createRoute({

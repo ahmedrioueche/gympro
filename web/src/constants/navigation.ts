@@ -23,8 +23,36 @@ export const APP_PAGES = {
     name: 'pages.dashboard',
     link: '/dashboard',
   },
-  main: {
-    name: 'pages.main',
-    link: '/',
+  manager: {
+    name: 'pages.manager',
+    link: '/manager',
+    members: {
+      name: 'pages.manager.members',
+      link: '/manager/members',
+    },
+    subscriptions: {
+      name: 'pages.manager.subscriptions',
+      link: '/manager/subscriptions',
+    },
+    coaching: {
+      name: 'pages.manager.coaching',
+      link: '/manager/coaching',
+    },
+    payments: {
+      name: 'pages.manager.payments',
+      link: '/manager/payments',
+    },
+    analytics: {
+      name: 'pages.manager.analytics',
+      link: '/manager/analytics',
+    },
+    notifications: {
+      name: 'pages.manager.notifications',
+      link: '/manager/notifications',
+    },
+    settings: {
+      name: 'pages.manager.settings',
+      link: '/manager/settings',
+    },
   },
 };

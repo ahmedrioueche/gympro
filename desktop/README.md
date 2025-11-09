@@ -1,65 +1,16 @@
-# GymPro Desktop Application
+# React + Vite
 
-An Electron + React + Tailwind CSS desktop application.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Getting Started
+Currently, two official plugins are available:
 
-1. **Install dependencies:**
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-   ```bash
-   cd desktop
-   npm install
-   ```
+## React Compiler
 
-2. **Run in development mode:**
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-   ```bash
-   npm run dev
-   ```
+## Expanding the ESLint configuration
 
-   This will start the Vite dev server and launch the Electron app.
-
-3. **Build for production:**
-
-   ```bash
-   # Build for all platforms
-   npm run build
-
-   # Build for specific platform
-   npm run build:win   # Windows
-   npm run build:mac   # macOS
-   npm run build:linux # Linux
-   ```
-
-## Features
-
-- ⚡ Fast development with Vite
-- 🎨 Styled with Tailwind CSS
-- 🖥️ Cross-platform desktop app with Electron
-- 🔧 TypeScript support
-- 📦 Easy build with electron-builder
-
-## Project Structure
-
-```
-desktop/
-├── main.js              # Electron main process
-├── preload.js           # Preload script for security
-├── vite.config.ts       # Vite configuration
-├── tailwind.config.js   # Tailwind CSS configuration
-├── electron-builder.yml # Electron builder configuration
-└── src/
-    ├── App.tsx          # Main React component
-    ├── main.tsx          # React entry point
-    └── index.css         # Global styles
-```
-
-## Development
-
-- The app runs on `http://localhost:5173` in development mode
-- Hot module replacement is enabled
-- DevTools are automatically opened
-
-## Building
-
-The built application will be in the `release` folder with the appropriate installer for your platform.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

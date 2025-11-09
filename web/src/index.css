@@ -59,14 +59,13 @@ body {
 
 /* ===== Scrollbar Styling ===== */
 
-/* Scrollbar colors use your theme variables */
 :root {
   --scrollbar-track: var(--color-surface);
   --scrollbar-thumb: var(--color-primary);
 }
 
 .dark {
-  --scrollbar-track: var(--color-surface);
+  --scrollbar-track: var(--color-background);
   --scrollbar-thumb: var(--color-primary);
 }
 
@@ -269,4 +268,16 @@ input[type='password']::-webkit-textfield-decoration-container {
 .animate-gradient-text {
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
+}
+
+@layer base {
+  /* Apply pointer cursor to all buttons */
+  button {
+    @apply cursor-pointer;
+  }
+
+  /* Reset cursor for disabled buttons */
+  button:disabled {
+    @apply cursor-auto opacity-50;
+  }
 }

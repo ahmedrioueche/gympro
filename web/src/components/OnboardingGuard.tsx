@@ -1,6 +1,5 @@
-import { useNavigate } from '@tanstack/react-router';
 import React from 'react';
-import { OnBoardingPage } from '../app/main/onBoarding/OnBoardingPage';
+import { OnBoardingPage } from '../app/pages/main/onBoarding/OnBoardingPage';
 import { useOnboarding } from '../context/OnboardingContext';
 
 interface OnboardingGuardProps {
@@ -9,7 +8,6 @@ interface OnboardingGuardProps {
 
 export const OnboardingGuard: React.FC<OnboardingGuardProps> = ({ children }) => {
   const { isOnboardingCompleted } = useOnboarding();
-  const navigate = useNavigate();
 
   // If onboarding is not completed, show onboarding page
   if (!isOnboardingCompleted) {
