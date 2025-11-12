@@ -25,10 +25,27 @@ export class User extends Document {
   @Prop()
   phoneNumber?: string;
 
+  @Prop()
+  address?: string;
+
+  @Prop()
+  city?: string;
+
+  @Prop()
+  state?: string;
+
+  @Prop()
+  country?: string;
+
+  @Prop({ default: false })
+  isValidated?: boolean;
+
+  @Prop({ default: false })
+  isOnBoarded?: boolean;
+
   @Prop({ enum: UserRole, required: true })
   role: UserRole;
 
-  // Example: store program info as embedded or refs
   @Prop({ type: [String], default: [] })
   memberships: string[];
 
