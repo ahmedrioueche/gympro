@@ -1,5 +1,12 @@
-import { BaseUserProfile } from '@client';
 import { Controller, Get } from '@nestjs/common';
+
+// Example type from your @client package
+export interface BaseUserProfile {
+  _id: string;
+  username: string;
+  fullName: string;
+  email: string;
+}
 
 @Controller()
 export class AppController {
@@ -8,8 +15,13 @@ export class AppController {
     return {
       _id: '423423',
       username: 'ahmed',
-      fullName: 'ahmed drioueche',
+      fullName: 'Ahmed Drioueche',
       email: 'adsrahmed@gmail.com',
     };
+  }
+
+  @Get()
+  getHello(): string {
+    return 'Hello World!';
   }
 }
