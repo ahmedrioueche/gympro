@@ -19,12 +19,8 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "baseUrl": "./",
-    "paths": {
-      "@client": ["../packages/client/src/types/index.ts"],
-      "@client/*": ["../packages/client/*"]
-    }
+    "baseUrl": "./"
   },
-  "include": ["src/**/*", "../packages/client/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test"]
 }

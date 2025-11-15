@@ -12,11 +12,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
-import { User } from '../../../common/schemas/user.schema';
-import { MailerService } from '../../../common/services/mailer.service';
-import { getI18nText } from '../../../common/utils/i18n';
-import { SigninDto } from '../dto/signin.dto';
-import { SignupDto } from '../dto/signup.dto';
+import { User } from '../../common/schemas/user.schema';
+import { MailerService } from '../../common/services/mailer.service';
+import { getI18nText } from '../../common/utils/i18n';
+import { SigninDto } from './dto/signin.dto';
+import { SignupDto } from './dto/signup.dto';
 
 interface JwtPayload {
   sub: string;

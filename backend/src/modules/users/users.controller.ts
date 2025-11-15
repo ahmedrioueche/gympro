@@ -12,19 +12,13 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   PermissionsGuard,
   RequirePermission,
 } from './guards/permissions.guard';
 import { Roles, RolesGuard } from './guards/roles.guard';
 import { UsersService } from './users.service';
-
-interface JwtPayload {
-  sub: string;
-  email: string;
-  role: UserRole;
-}
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)

@@ -1,4 +1,3 @@
-import { UserErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
   Injectable,
@@ -7,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UserErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
 import { User } from '../../common/schemas/user.schema';
 
 @Injectable()
