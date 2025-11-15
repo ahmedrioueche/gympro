@@ -1,13 +1,13 @@
+import type {
+  BaseSubscriptionType,
+  Gym,
+  SubscriptionHistory,
+  SubscriptionInfo,
+  SubscriptionPeriodUnit,
+  SubscriptionType,
+} from '@gympro/client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import type {
-  SubscriptionType,
-  SubscriptionInfo,
-  SubscriptionHistory,
-  BaseSubscriptionType,
-  SubscriptionPeriodUnit,
-} from '@client/types/subscription';
-import type { Gym } from '@client/types/gym';
 
 const baseTypes = [
   'regular',

@@ -6,11 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "mkdir -p node_modules/@client && cp -r ../packages/client/* node_modules/@client/ 2>/dev/null || xcopy /E /I /Y ..\\packages\\client\\* node_modules\\@client\\ 2>nul || true",
     "build": "nest build && echo 'Build completed. Checking dist folder:' && ls -la dist || dir dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "nest start --watch --entryFile backend/src/main",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/backend/src/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -24,9 +23,11 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.1",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
@@ -36,7 +37,8 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "@gympro/client": "workspace:*"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

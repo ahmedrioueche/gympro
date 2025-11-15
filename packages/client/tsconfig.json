@@ -1,17 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "commonjs",
+    "target": "es2018",
     "declaration": true,
-    "outDir": "./dist",
-    "rootDir": "./",
-    "composite": true,
-    "baseUrl": ".",
-    "paths": {
-      "@client/*": ["./*"]
-    }
+    "strict": true
   },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"]
 }

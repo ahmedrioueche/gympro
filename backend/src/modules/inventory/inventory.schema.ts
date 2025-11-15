@@ -1,5 +1,5 @@
-import type { DaysPerWeek } from '@client/types/common';
 import type {
+  DaysPerWeek,
   Exercise,
   ExerciseProgress,
   ExperienceLevel,
@@ -10,7 +10,7 @@ import type {
   ProgramProgress,
   ProgramPurpose,
   TrainingProgram,
-} from '@client/types/training';
+} from '@gympro/client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

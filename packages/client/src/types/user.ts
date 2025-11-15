@@ -12,7 +12,7 @@ export enum UserRole {
   Member = "member",
 }
 
-export interface BaseUserProfile {
+export interface BaseUserProfile extends AuditInfo {
   _id: string;
   username: string;
   email: string;
@@ -21,6 +21,12 @@ export interface BaseUserProfile {
   gender?: string;
   profileImageUrl?: string;
   phoneNumber?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  isValidated?: boolean;
+  isOnBoarded?: boolean;
 }
 
 export interface BaseUser extends AuditInfo {

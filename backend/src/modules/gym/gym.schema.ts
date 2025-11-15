@@ -1,7 +1,11 @@
-import type { AppSubscription } from '@client/types/appBilling';
-import type { TimeRange, WeeklyTimeRange } from '@client/types/common';
-import type { Gym, GymSettings } from '@client/types/gym';
-import type { BaseSubscriptionType } from '@client/types/subscription';
+import type {
+  AppSubscription,
+  BaseSubscriptionType,
+  Gym,
+  GymSettings,
+  TimeRange,
+  WeeklyTimeRange,
+} from '@gympro/client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

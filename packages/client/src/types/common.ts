@@ -1,11 +1,11 @@
 export type WeekDay =
-  | "Monday"
-  | "Tuesday"
-  | "Wednesday"
-  | "Thursday"
-  | "Friday"
-  | "Saturday"
-  | "Sunday";
+  | 'Monday'
+  | 'Tuesday'
+  | 'Wednesday'
+  | 'Thursday'
+  | 'Friday'
+  | 'Saturday'
+  | 'Sunday';
 
 export type DaysPerWeek = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -20,8 +20,8 @@ export interface WeeklyTimeRange {
 }
 
 export interface AuditInfo {
-  createdAt: string;
+  createdAt: string | Date;
   createdBy?: string;
-  updatedAt?: string;
+  updatedAt?: string | Date;
   updatedBy?: string;
 }

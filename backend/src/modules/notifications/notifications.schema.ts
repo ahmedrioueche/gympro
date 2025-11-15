@@ -7,7 +7,7 @@ import type {
   NotificationPriority,
   NotificationStatus,
   NotificationType,
-} from '@client/types/notification';
+} from '@gympro/client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

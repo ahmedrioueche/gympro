@@ -1,5 +1,5 @@
-import { UserRole } from "@client/types";
-import { RolePermissions } from "@client/types/role";
+import { RolePermissions } from '../types/role';
+import { UserRole } from '../types/user';
 
 export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
   owner: {

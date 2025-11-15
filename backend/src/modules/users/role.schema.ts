@@ -1,6 +1,6 @@
+import type { RolePermissions } from '@gympro/client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import type { RolePermissions } from '@client/types/role';
 
 @Schema({})
 export class RolePermissionsModel extends Document implements RolePermissions {

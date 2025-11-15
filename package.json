@@ -1,14 +1,10 @@
 {
-  "name": "myapp",
   "private": true,
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test"
+    "build": "npm run build -w @gympro/client && npm run build -w backend"
   },
-  "devDependencies": {
-    "fs-extra": "^11.3.2",
-    "turbo": "^2.5.8"
-  }
+  "workspaces": [
+    "backend",
+    "packages/client"
+  ]
 }

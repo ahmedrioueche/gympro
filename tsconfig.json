@@ -7,7 +7,7 @@
     "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
-      "@client": ["packages/client/types/index.ts"],
+      "@client": ["packages/client/src/types/index.ts"],
       "@client/*": ["packages/client/*"]
     }
   }

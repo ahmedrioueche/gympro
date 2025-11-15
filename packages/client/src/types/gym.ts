@@ -1,6 +1,6 @@
-import { AppSubscription } from "./appBilling";
-import { AuditInfo, TimeRange, WeeklyTimeRange } from "./common";
-import { BaseSubscriptionType } from "./subscription";
+import { AppSubscription } from './appBilling';
+import { AuditInfo, TimeRange, WeeklyTimeRange } from './common';
+import { BaseSubscriptionType } from './subscription';
 
 export interface Gym extends AuditInfo {
   _id: string;
@@ -15,8 +15,6 @@ export interface Gym extends AuditInfo {
   timezone?: string; // Useful for scheduling and notifications
   logoUrl?: string; // Gym logo for display in dashboards
   slogan?: string;
-  createdAt: string; // Timestamp of gym creation
-  updatedAt?: string; // Timestamp of last update
   isActive: boolean; // Gym is active or deactivated
   ownerId: string; // ID of the gym owner
   defaultCurrency?: string; // For subscription/payment display (e.g., "DZD")
@@ -37,7 +35,7 @@ export interface GymSettings {
 export interface ClassBooking extends AuditInfo {
   classId: string; // the scheduled class
   userId: string; // member booking
-  status: "booked" | "cancelled" | "waitlisted";
+  status: 'booked' | 'cancelled' | 'waitlisted';
   bookedAt: string;
 }
 
