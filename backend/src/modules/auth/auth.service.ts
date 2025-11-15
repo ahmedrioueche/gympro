@@ -15,8 +15,7 @@ import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 import { MailerService } from '../../common/services/mailer.service';
 import { getI18nText } from '../../common/utils/i18n';
-import { SigninDto } from './dto/signin.dto';
-import { SignupDto } from './dto/signup.dto';
+import { SigninDto, SignupDto } from './auth.dto';
 
 interface JwtPayload {
   sub: string;

@@ -10,10 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
+import { ResendVerificationDto, SigninDto, SignupDto } from './auth.dto';
 import { AuthService } from './auth.service';
-import { ResendVerificationDto } from './dto/resend-verification.dto';
-import { SigninDto } from './dto/signin.dto';
-import { SignupDto } from './dto/signup.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
