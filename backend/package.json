@@ -38,7 +38,7 @@
     "passport-google-oauth20": "^2.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "@gympro/client": "workspace:*"
+    "@ahmedrioueche/gympro-client": "^0.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
