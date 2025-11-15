@@ -5,7 +5,7 @@ import type {
   PaymentStatus,
   PaymentTargetType,
   PaymentTransaction,
-} from '@gympro/client';
+} from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

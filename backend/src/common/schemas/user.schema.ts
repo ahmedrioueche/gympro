@@ -1,4 +1,4 @@
-import { UserRole } from '@gympro/client';
+import { UserRole } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 

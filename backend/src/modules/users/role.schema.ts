@@ -1,4 +1,4 @@
-import type { RolePermissions } from '@gympro/client';
+import type { RolePermissions } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

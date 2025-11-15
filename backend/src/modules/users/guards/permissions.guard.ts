@@ -2,7 +2,7 @@
  * Permissions Guard - Permission-Based Access Control (PBAC)
  *
  * This guard restricts access to endpoints based on specific permissions.
- * Permissions are defined per role in @gympro/client.
+ * Permissions are defined per role in @ahmedrioueche/gympro-client.
  *
  * Use this when multiple roles should have access (e.g., both Owner and Manager).
  *
@@ -24,7 +24,7 @@ import {
   RolePermissions,
   UserErrorCode,
   UserRole,
-} from '@gympro/client';
+} from '@ahmedrioueche/gympro-client';
 import {
   CanActivate,
   ExecutionContext,

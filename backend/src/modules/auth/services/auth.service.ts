@@ -1,4 +1,4 @@
-import { AuthErrorCode, UserRole } from '@gympro/client';
+import { AuthErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
   ConflictException,

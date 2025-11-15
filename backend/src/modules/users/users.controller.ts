@@ -1,4 +1,4 @@
-import { UserErrorCode, UserRole } from '@gympro/client';
+import { UserErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,

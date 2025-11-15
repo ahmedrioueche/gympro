@@ -10,7 +10,7 @@ import type {
   ProgramProgress,
   ProgramPurpose,
   TrainingProgram,
-} from '@gympro/client';
+} from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

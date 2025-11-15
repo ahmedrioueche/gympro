@@ -1,4 +1,4 @@
-import { AuthErrorCode } from '@gympro/client';
+import { AuthErrorCode } from '@ahmedrioueche/gympro-client';
 import {
   CanActivate,
   ExecutionContext,

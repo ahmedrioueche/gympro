@@ -11,7 +11,7 @@ The system uses two complementary approaches:
 
 ## User Roles
 
-The system defines the following user roles (from `@gympro/client/types/user.ts`):
+The system defines the following user roles (from `@ahmedrioueche/gympro-client/types/user.ts`):
 
 - **Owner** - Full system access, can manage everything
 - **Manager** - Can manage members, subscriptions, and staff
@@ -21,7 +21,7 @@ The system defines the following user roles (from `@gympro/client/types/user.ts`
 
 ## Permissions Structure
 
-Permissions are defined in `@gympro/client/roles/permissions.ts` and follow this structure:
+Permissions are defined in `@ahmedrioueche/gympro-client/roles/permissions.ts` and follow this structure:
 
 ```typescript
 export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
@@ -70,7 +70,7 @@ The `RolesGuard` restricts access based on user roles. It checks if the authenti
 
 ```typescript
 import { Roles, RolesGuard } from './guards/roles.guard';
-import { UserRole } from '@gympro/client';
+import { UserRole } from '@ahmedrioueche/gympro-client';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -230,7 +230,7 @@ async updateProfile(@Param('id') id: string, @Body() profileData: any, @Req() re
 3. **Use RolesGuard for single-role restrictions** - When only one role should have access
 4. **Combine guards when needed** - You can use both guards on the same endpoint
 5. **Handle self-access explicitly** - For endpoints where users can access their own data, add custom logic
-6. **Use error codes from @gympro/client** - All errors should use `UserErrorCode` for frontend translation
+6. **Use error codes from @ahmedrioueche/gympro-client** - All errors should use `UserErrorCode` for frontend translation
 
 ## Permission Matrix
 
@@ -248,7 +248,7 @@ async updateProfile(@Param('id') id: string, @Body() profileData: any, @Req() re
 
 ## Adding New Permissions
 
-1. Add the permission to `@gympro/client/types/role.ts`:
+1. Add the permission to `@ahmedrioueche/gympro-client/types/role.ts`:
 
    ```typescript
    export interface RolePermissions {
@@ -257,7 +257,7 @@ async updateProfile(@Param('id') id: string, @Body() profileData: any, @Req() re
    }
    ```
 
-2. Update `@gympro/client/roles/permissions.ts`:
+2. Update `@ahmedrioueche/gympro-client/roles/permissions.ts`:
 
    ```typescript
    export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
