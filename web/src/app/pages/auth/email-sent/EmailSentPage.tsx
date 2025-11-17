@@ -1,11 +1,11 @@
+import { authApi } from '@ahmedrioueche/gympro-client';
 import { useRouter } from '@tanstack/react-router';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Auth } from '../../../../api/auth/auth';
 import Logo from '../../../../components/ui/Logo';
 import { APP_PAGES } from '../../../../constants/navigation';
-import { getMessageByStatuscode, showStatusToast } from '../../../../utils/statusMessage';
+import { getMessage, showStatusToast } from '../../../../utils/statusMessage';
 
 const EmailSentPage: React.FC = () => {
   const router = useRouter();
@@ -51,21 +51,17 @@ const EmailSentPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const response = await Auth.resendVerification(email);
+      const response = await authApi.resendVerification({ email });
 
-      const statusMessage = getMessageByStatuscode(response.statusCode, {
+      const statusMessage = getMessage(response, {
         t: t,
         showToast: true,
       });
 
       showStatusToast(statusMessage, toast);
-
-      if (statusMessage.status === 'success') {
-        toast.success(t('auth.email_sent.resend_success'));
-      }
-    } catch (error: any) {
+    } catch (error) {
       if (error?.statusCode) {
-        const statusMessage = getMessageByStatuscode(error.statusCode, {
+        const statusMessage = getMessage(error, {
           t: t,
           showToast: true,
         });

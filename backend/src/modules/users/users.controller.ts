@@ -1,4 +1,4 @@
-import { UserErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
+import { ErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -55,7 +55,7 @@ export class UsersController {
       ) {
         throw new ForbiddenException({
           message: 'Insufficient permissions to view this user',
-          errorCode: UserErrorCode.INSUFFICIENT_PERMISSIONS,
+          errorCode: ErrorCode.INSUFFICIENT_PERMISSIONS,
         });
       }
     }
@@ -98,7 +98,7 @@ export class UsersController {
       ) {
         throw new ForbiddenException({
           message: 'Insufficient permissions to update this profile',
-          errorCode: UserErrorCode.INSUFFICIENT_PERMISSIONS,
+          errorCode: ErrorCode.INSUFFICIENT_PERMISSIONS,
         });
       }
     }

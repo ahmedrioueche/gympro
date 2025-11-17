@@ -1,45 +1,70 @@
 import type {
-  AppSubscription,
-  BaseSubscriptionType,
-  Gym,
-  GymSettings,
-  TimeRange,
-  WeeklyTimeRange,
+  AppSettings,
+  BillingSettings,
+  FeaturesSettings,
+  LocaleSettings,
+  NotificationSettings,
+  ThemeOption,
 } from '@ahmedrioueche/gympro-client';
+import { THEME_OPTIONS } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ _id: false })
-export class GymSettingsModel implements GymSettings {
-  @Prop() allowCustomSubscriptions?: boolean;
-  @Prop() notificationsEnabled?: boolean;
-  @Prop() subscriptionRenewalReminderDays?: number;
-  @Prop({ type: Object }) workingHours?: TimeRange;
-  @Prop() isMixed?: boolean;
-  @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
-  @Prop({ type: [String] }) servicesOffered?: BaseSubscriptionType[];
+export class NotificationSettingsModel implements NotificationSettings {
+  @Prop({ required: true, default: true }) enablePush: boolean;
+  @Prop({ required: true, default: true }) enableEmail: boolean;
+  @Prop({ min: 0 }) defaultReminderMinutes?: number;
 }
-export const GymSettingsSchema = SchemaFactory.createForClass(GymSettingsModel);
+
+@Schema({ _id: false })
+export class BillingSettingsModel implements BillingSettings {
+  @Prop({ required: true, default: 'USD' }) defaultCurrency: string;
+  @Prop({ required: true, default: false }) autoRenewEnabled: boolean;
+  @Prop({ min: 0 }) trialDays?: number;
+}
+
+@Schema({ _id: false })
+export class FeaturesSettingsModel implements FeaturesSettings {
+  @Prop({ required: true, default: true }) enableTrainingPrograms: boolean;
+  @Prop({ required: true, default: true }) enableEquipmentInventory: boolean;
+  @Prop({ required: true, default: true }) enableCoachAssignments: boolean;
+  @Prop({ required: true, default: true }) enableAttendanceTracking: boolean;
+  @Prop({ required: true, default: true }) enableGymBookings: boolean;
+}
+
+@Schema({ _id: false })
+export class LocaleSettingsModel implements LocaleSettings {
+  @Prop({ required: true, default: 'en' }) language: string;
+  @Prop() timezone?: string;
+}
 
 @Schema({ timestamps: true })
-export class GymModel extends Document implements Gym {
-  declare _id: string;
-  @Prop({ required: true }) name: string;
-  @Prop() address?: string;
-  @Prop() city?: string;
-  @Prop() state?: string;
-  @Prop() country?: string;
-  @Prop() phone?: string;
-  @Prop() email?: string;
-  @Prop() website?: string;
-  @Prop() timezone?: string;
-  @Prop() logoUrl?: string;
-  @Prop() slogan?: string;
-  @Prop({ default: true }) isActive: boolean;
-  @Prop({ required: true }) ownerId: string;
-  @Prop() defaultCurrency?: string;
-  @Prop({ type: GymSettingsSchema }) settings?: GymSettings;
-  @Prop({ type: Object }) appSubscription?: AppSubscription;
-  @Prop() createdAt: Date;
+export class AppSettingsModel extends Document implements AppSettings {
+  @Prop({
+    type: String,
+    required: true,
+    enum: THEME_OPTIONS,
+    default: 'auto',
+  })
+  theme: ThemeOption;
+
+  @Prop({ type: NotificationSettingsModel, required: true })
+  notifications: NotificationSettings;
+
+  @Prop({ type: BillingSettingsModel, required: true })
+  billing: BillingSettings;
+
+  @Prop({ type: FeaturesSettingsModel, required: true })
+  features: FeaturesSettings;
+
+  @Prop({ type: LocaleSettingsModel })
+  locale?: LocaleSettings;
+
+  @Prop({ required: true }) createdAt: Date;
+  @Prop() createdBy?: string;
+  @Prop() updatedAt?: Date;
+  @Prop() updatedBy?: string;
 }
-export const GymSchema = SchemaFactory.createForClass(GymModel);
+
+export const AppSettingsSchema = SchemaFactory.createForClass(AppSettingsModel);

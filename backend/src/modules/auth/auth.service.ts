@@ -1,4 +1,9 @@
-import { AuthErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
+import {
+  ErrorCode,
+  IGoogleAuthDto,
+  JwtPayload,
+  UserRole,
+} from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
   ConflictException,
@@ -15,18 +20,8 @@ import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 import { MailerService } from '../../common/services/mailer.service';
 import { getI18nText } from '../../common/utils/i18n';
+import { Platform, buildRedirectUrl } from '../../common/utils/platform.util';
 import { SigninDto, SignupDto } from './auth.dto';
-
-interface JwtPayload {
-  sub: string;
-  email: string;
-  role: UserRole;
-}
-
-interface GoogleAuthDto {
-  code: string;
-  state?: string;
-}
 
 @Injectable()
 export class AuthService {
@@ -39,8 +34,8 @@ export class AuthService {
     private mailerService: MailerService,
   ) {}
 
-  async signup(dto: SignupDto) {
-    // Check if user already exists
+  // --- SIGNUP ---
+  async signup(dto: SignupDto, platform: Platform = Platform.WEB) {
     const existingUser = await this.userModel.findOne({
       'profile.email': dto.email,
     });
@@ -48,18 +43,14 @@ export class AuthService {
     if (existingUser) {
       throw new ConflictException({
         message: 'User with this email already exists',
-        errorCode: AuthErrorCode.USER_ALREADY_EXISTS,
+        errorCode: ErrorCode.USER_ALREADY_EXISTS,
       });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(dto.password, 10);
-
-    // Generate verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    // Create new user with default member role
     const newUser = new this.userModel({
       profile: {
         username: dto.username || dto.email.split('@')[0],
@@ -79,30 +70,24 @@ export class AuthService {
 
     await newUser.save();
 
-    // Send verification email
     try {
       await this.sendVerificationEmail(
         newUser.profile.email,
         verificationToken,
         newUser.profile.fullName || newUser.profile.username,
+        platform,
       );
     } catch (error) {
       this.logger.error(
         `Failed to send verification email to ${newUser.profile.email}: ${error}`,
       );
-      // Don't fail signup if email fails, but log it
     }
 
-    return {
-      message:
-        'User registered successfully. Please check your email to verify your account.',
-      userId: newUser._id,
-      email: newUser.profile.email,
-    };
+    return this.sanitizeUser(newUser);
   }
 
+  // --- SIGNIN ---
   async signin(dto: SigninDto) {
-    // Find user by email
     const user = await this.userModel.findOne({
       'profile.email': dto.email,
     });
@@ -110,19 +95,17 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException({
         message: 'Invalid credentials',
-        errorCode: AuthErrorCode.INVALID_CREDENTIALS,
+        errorCode: ErrorCode.INVALID_CREDENTIALS,
       });
     }
 
-    // Check if user is active
     if (!user.profile.isActive) {
       throw new UnauthorizedException({
         message: 'Account is deactivated',
-        errorCode: AuthErrorCode.ACCOUNT_DEACTIVATED,
+        errorCode: ErrorCode.ACCOUNT_DEACTIVATED,
       });
     }
 
-    // Verify password
     const isPasswordValid = await bcrypt.compare(
       dto.password,
       user.profile.password || '',
@@ -131,19 +114,17 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException({
         message: 'Invalid credentials',
-        errorCode: AuthErrorCode.INVALID_CREDENTIALS,
+        errorCode: ErrorCode.INVALID_CREDENTIALS,
       });
     }
 
-    // Check if email is verified
     if (!user.profile.isValidated) {
       throw new UnauthorizedException({
         message: 'Please verify your email before signing in',
-        errorCode: AuthErrorCode.EMAIL_NOT_VERIFIED,
+        errorCode: ErrorCode.EMAIL_NOT_VERIFIED,
       });
     }
 
-    // Generate tokens
     const payload: JwtPayload = {
       sub: user._id?.toString()!,
       email: user.profile.email,
@@ -159,34 +140,29 @@ export class AuthService {
       expiresIn: dto.rememberMe ? '30d' : '7d',
     });
 
-    // Remove sensitive data before returning
-    const userResponse = this.sanitizeUser(user);
-
     return {
-      user: userResponse,
+      user: this.sanitizeUser(user),
       accessToken,
       refreshToken,
     };
   }
 
+  // --- REFRESH ---
   async refresh(refreshToken: string) {
     try {
-      // Verify refresh token
       const payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get('JWT_REFRESH_SECRET'),
       });
 
-      // Find user
       const user = await this.userModel.findById(payload.sub);
 
       if (!user || !user.profile.isActive) {
         throw new UnauthorizedException({
           message: 'Invalid refresh token',
-          errorCode: AuthErrorCode.INVALID_REFRESH_TOKEN,
+          errorCode: ErrorCode.INVALID_REFRESH_TOKEN,
         });
       }
 
-      // Generate new access token
       const newPayload: JwtPayload = {
         sub: user._id?.toString()!,
         email: user.profile.email,
@@ -201,17 +177,17 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException({
         message: 'Invalid refresh token',
-        errorCode: AuthErrorCode.INVALID_REFRESH_TOKEN,
+        errorCode: ErrorCode.INVALID_REFRESH_TOKEN,
       });
     }
   }
 
+  // --- LOGOUT ---
   async logout(userId: string) {
-    // Future: Implement token blacklisting or session invalidation
-    // For now, just return success (cookies are cleared on client)
     return { message: 'Logged out successfully' };
   }
 
+  // --- GET ME ---
   async getMeFromPayload(payload: JwtPayload) {
     const user = await this.userModel
       .findById(payload.sub)
@@ -222,13 +198,14 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException({
         message: 'User not found',
-        errorCode: AuthErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
     return this.sanitizeUser(user);
   }
 
+  // --- VERIFY EMAIL ---
   async verifyEmail(token: string) {
     const user = await this.userModel.findOne({
       verificationToken: token,
@@ -238,17 +215,15 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException({
         message: 'Invalid or expired verification token',
-        errorCode: AuthErrorCode.INVALID_VERIFICATION_TOKEN,
+        errorCode: ErrorCode.INVALID_VERIFICATION_TOKEN,
       });
     }
 
-    // Update user
     user.profile.isValidated = true;
     user.verificationToken = undefined;
     user.verificationTokenExpiry = undefined;
     await user.save();
 
-    // Generate tokens for automatic login
     const payload: JwtPayload = {
       sub: user._id?.toString()!,
       email: user.profile.email,
@@ -269,24 +244,28 @@ export class AuthService {
     };
   }
 
-  async resendVerification(email: string, ip: string) {
+  // --- RESEND VERIFICATION ---
+  async resendVerification(
+    email: string,
+    ip: string,
+    platform: Platform = Platform.WEB,
+  ) {
     const user = await this.userModel.findOne({ 'profile.email': email });
 
     if (!user) {
       throw new BadRequestException({
         message: 'User not found',
-        errorCode: AuthErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
     if (user.profile.isValidated) {
       throw new BadRequestException({
         message: 'Email is already verified',
-        errorCode: AuthErrorCode.EMAIL_ALREADY_VERIFIED,
+        errorCode: ErrorCode.EMAIL_ALREADY_VERIFIED,
       });
     }
 
-    // Generate new verification token
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
@@ -294,18 +273,17 @@ export class AuthService {
     user.verificationTokenExpiry = verificationTokenExpiry;
     await user.save();
 
-    // Send verification email
     try {
       await this.sendVerificationEmail(
         email,
         verificationToken,
         user.profile.fullName || user.profile.username,
+        platform,
       );
     } catch (error) {
       this.logger.error(
         `Failed to send verification email to ${email}: ${error}`,
       );
-      // Still return success to avoid revealing if email exists
     }
 
     return {
@@ -313,45 +291,39 @@ export class AuthService {
     };
   }
 
-  async forgotPassword(email: string) {
+  // --- FORGOT PASSWORD ---
+  async forgotPassword(email: string, platform: Platform = Platform.WEB) {
     const user = await this.userModel.findOne({ 'profile.email': email });
 
-    if (!user) {
-      // Return success even if user doesn't exist (security best practice)
-      return {
-        message:
-          'If an account exists with this email, a password reset link has been sent',
-      };
-    }
+    const message =
+      'If an account exists with this email, a password reset link has been sent';
 
-    // Generate reset token
+    if (!user) return { message };
+
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
 
     user.resetPasswordToken = resetToken;
     user.resetPasswordTokenExpiry = resetTokenExpiry;
     await user.save();
 
-    // Send password reset email
     try {
       await this.sendPasswordResetEmail(
         email,
         resetToken,
         user.profile.fullName || user.profile.username,
+        platform,
       );
     } catch (error) {
       this.logger.error(
         `Failed to send password reset email to ${email}: ${error}`,
       );
-      // Still return success to avoid revealing if email exists
     }
 
-    return {
-      message:
-        'If an account exists with this email, a password reset link has been sent',
-    };
+    return { message };
   }
 
+  // --- RESET PASSWORD ---
   async resetPassword(token: string, newPassword: string) {
     const user = await this.userModel.findOne({
       resetPasswordToken: token,
@@ -361,26 +333,20 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException({
         message: 'Invalid or expired reset token',
-        errorCode: AuthErrorCode.INVALID_RESET_TOKEN,
+        errorCode: ErrorCode.INVALID_RESET_TOKEN,
       });
     }
 
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update user
-    user.profile.password = hashedPassword;
+    user.profile.password = await bcrypt.hash(newPassword, 10);
     user.resetPasswordToken = undefined;
     user.resetPasswordTokenExpiry = undefined;
     await user.save();
 
-    return {
-      message: 'Password reset successfully',
-    };
+    return { message: 'Password reset successfully' };
   }
 
-  async googleAuth(dto: GoogleAuthDto) {
-    // Exchange code for tokens
+  // --- GOOGLE AUTH ---
+  async googleAuth(dto: IGoogleAuthDto) {
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -396,48 +362,41 @@ export class AuthService {
     if (!tokenResponse.ok) {
       throw new UnauthorizedException({
         message: 'Failed to authenticate with Google',
-        errorCode: AuthErrorCode.GOOGLE_AUTH_FAILED,
+        errorCode: ErrorCode.GOOGLE_AUTH_FAILED,
       });
     }
 
     const tokens = await tokenResponse.json();
 
-    // Get user info from Google
     const userInfoResponse = await fetch(
       'https://www.googleapis.com/oauth2/v2/userinfo',
-      {
-        headers: { Authorization: `Bearer ${tokens.access_token}` },
-      },
+      { headers: { Authorization: `Bearer ${tokens.access_token}` } },
     );
 
     if (!userInfoResponse.ok) {
       throw new UnauthorizedException({
         message: 'Failed to get user info from Google',
-        errorCode: AuthErrorCode.GOOGLE_USER_INFO_FAILED,
+        errorCode: ErrorCode.GOOGLE_USER_INFO_FAILED,
       });
     }
 
     const googleUser = await userInfoResponse.json();
 
-    // Find or create user
     let user = await this.userModel.findOne({
       'profile.googleId': googleUser.id,
     });
 
     if (!user) {
-      // Check if user exists with this email
       user = await this.userModel.findOne({
         'profile.email': googleUser.email,
       });
 
       if (user) {
-        // Link Google account to existing user
         user.profile.googleId = googleUser.id;
         user.profile.picture = googleUser.picture;
-        user.profile.isValidated = true; // Google emails are verified
+        user.profile.isValidated = true;
         await user.save();
       } else {
-        // Create new user
         user = new this.userModel({
           profile: {
             username: googleUser.email.split('@')[0],
@@ -446,7 +405,7 @@ export class AuthService {
             googleId: googleUser.id,
             picture: googleUser.picture,
             profileImageUrl: googleUser.picture,
-            isValidated: true, // Google emails are verified
+            isValidated: true,
             isOnBoarded: false,
             isActive: true,
           },
@@ -459,7 +418,6 @@ export class AuthService {
       }
     }
 
-    // Generate tokens
     const payload: JwtPayload = {
       sub: user._id?.toString()!,
       email: user.profile.email,
@@ -479,14 +437,11 @@ export class AuthService {
     };
   }
 
-  // Helper method to remove sensitive data
+  // --- SANITIZE USER ---
   private sanitizeUser(user: any) {
     const userObj = user.toObject ? user.toObject() : user;
 
-    if (userObj.profile?.password) {
-      delete userObj.profile.password;
-    }
-
+    if (userObj.profile?.password) delete userObj.profile.password;
     delete userObj.verificationToken;
     delete userObj.verificationTokenExpiry;
     delete userObj.resetPasswordToken;
@@ -495,16 +450,17 @@ export class AuthService {
     return userObj;
   }
 
+  // --- EMAILS ---
   private async sendVerificationEmail(
     email: string,
     token: string,
     name?: string,
-  ): Promise<void> {
-    const frontendUrl =
-      this.configService.get<string>('FRONTEND_URL') ||
-      process.env.FRONTEND_URL ||
-      'http://localhost:5173';
-    const verificationUrl = `${frontendUrl}/auth/verify-email?token=${token}`;
+    platform: Platform = Platform.WEB,
+  ) {
+    // Build platform-specific verification URL
+    const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
+      token,
+    });
 
     const subject = getI18nText('email.verify_subject');
     const html = getI18nText(
@@ -512,7 +468,6 @@ export class AuthService {
       { fullName: name, email },
       { verifyUrl: verificationUrl },
     );
-
     await this.mailerService.sendMail(email, subject, html);
   }
 
@@ -520,12 +475,12 @@ export class AuthService {
     email: string,
     token: string,
     name?: string,
-  ): Promise<void> {
-    const frontendUrl =
-      this.configService.get<string>('FRONTEND_URL') ||
-      process.env.FRONTEND_URL ||
-      'http://localhost:5173';
-    const resetUrl = `${frontendUrl}/auth/reset-password?token=${token}`;
+    platform: Platform = Platform.WEB,
+  ) {
+    // Build platform-specific reset URL
+    const resetUrl = buildRedirectUrl(platform, '/auth/reset-password', {
+      token,
+    });
 
     const subject = getI18nText('email.reset_password_subject');
     const html = getI18nText(
@@ -533,7 +488,6 @@ export class AuthService {
       { fullName: name, email },
       { resetUrl },
     );
-
     await this.mailerService.sendMail(email, subject, html);
   }
 }

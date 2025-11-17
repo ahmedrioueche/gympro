@@ -1,45 +1,83 @@
 import type {
+  AppPlan,
+  AppPlanType,
   AppSubscription,
-  BaseSubscriptionType,
-  Gym,
-  GymSettings,
-  TimeRange,
-  WeeklyTimeRange,
+  AppSubscriptionStatus,
+  PaymentMethod,
+} from '@ahmedrioueche/gympro-client';
+import {
+  APP_PLAN_TYPES,
+  APP_SUBSCRIPTION_STATUSES,
+  PAYMENT_METHODS,
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema({ _id: false })
-export class GymSettingsModel implements GymSettings {
-  @Prop() allowCustomSubscriptions?: boolean;
-  @Prop() notificationsEnabled?: boolean;
-  @Prop() subscriptionRenewalReminderDays?: number;
-  @Prop({ type: Object }) workingHours?: TimeRange;
-  @Prop() isMixed?: boolean;
-  @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
-  @Prop({ type: [String] }) servicesOffered?: BaseSubscriptionType[];
+@Schema({ timestamps: true })
+export class AppPlanModel extends Document implements AppPlan {
+  @Prop() declare _id: string;
+
+  @Prop({ required: true }) name: string;
+
+  @Prop({
+    type: String,
+    required: true,
+    enum: APP_PLAN_TYPES,
+  })
+  type: AppPlanType;
+
+  @Prop() description?: string;
+
+  @Prop({ required: true, min: 0 }) priceMonthly: number;
+
+  @Prop({ min: 0 }) priceYearly?: number;
+
+  @Prop({ type: [String], required: true }) features: string[];
+
+  @Prop({ min: 1 }) maxGyms?: number;
+
+  @Prop({ min: 1 }) maxMembers?: number;
+
+  @Prop({ required: true }) createdAt: Date;
+  @Prop() createdBy?: string;
+  @Prop() updatedAt?: Date;
+  @Prop() updatedBy?: string;
 }
-export const GymSettingsSchema = SchemaFactory.createForClass(GymSettingsModel);
+
+export const AppPlanSchema = SchemaFactory.createForClass(AppPlanModel);
 
 @Schema({ timestamps: true })
-export class GymModel extends Document implements Gym {
-  declare _id: string;
-  @Prop({ required: true }) name: string;
-  @Prop() address?: string;
-  @Prop() city?: string;
-  @Prop() state?: string;
-  @Prop() country?: string;
-  @Prop() phone?: string;
-  @Prop() email?: string;
-  @Prop() website?: string;
-  @Prop() timezone?: string;
-  @Prop() logoUrl?: string;
-  @Prop() slogan?: string;
-  @Prop({ default: true }) isActive: boolean;
-  @Prop({ required: true }) ownerId: string;
-  @Prop() defaultCurrency?: string;
-  @Prop({ type: GymSettingsSchema }) settings?: GymSettings;
-  @Prop({ type: Object }) appSubscription?: AppSubscription;
-  @Prop() createdAt: Date;
+export class AppSubscriptionModel extends Document implements AppSubscription {
+  @Prop({ required: true }) gymId: string;
+
+  @Prop({ required: true }) planId: string;
+
+  @Prop({ required: true }) startDate: string;
+
+  @Prop() endDate?: string;
+
+  @Prop({
+    type: String,
+    required: true,
+    enum: APP_SUBSCRIPTION_STATUSES,
+  })
+  status: AppSubscriptionStatus;
+
+  @Prop({ default: false }) trial?: boolean;
+
+  @Prop({
+    type: String,
+    enum: PAYMENT_METHODS,
+  })
+  paymentMethod?: PaymentMethod;
+
+  @Prop({ default: false }) autoRenew?: boolean;
+
+  @Prop({ required: true }) createdAt: Date;
+  @Prop() createdBy?: string;
+  @Prop() updatedAt?: Date;
+  @Prop() updatedBy?: string;
 }
-export const GymSchema = SchemaFactory.createForClass(GymModel);
+
+export const AppSubscriptionSchema =
+  SchemaFactory.createForClass(AppSubscriptionModel);

@@ -1,4 +1,5 @@
 import { createRoute } from '@tanstack/react-router';
+import { AuthCallbackPage } from '../../app/pages/auth/callback/AuthCallbackPage';
 import EmailSentPage from '../../app/pages/auth/email-sent/EmailSentPage';
 import ForgotPasswordPage from '../../app/pages/auth/forgot-password/ForgotPasswordPage';
 import LoginPage from '../../app/pages/auth/login/LoginPage';
@@ -49,5 +50,15 @@ export const ResetPasswordRoute = createRoute({
   component: () => <ResetPasswordPage />,
   validateSearch: (search: Record<string, unknown>) => ({
     token: search.token as string,
+  }),
+});
+
+export const AuthCallbackRoute = createRoute({
+  getParentRoute: () => AuthRootRoute,
+  path: '/callback',
+  component: () => <AuthCallbackPage />,
+  validateSearch: (search: Record<string, unknown>) => ({
+    success: search.success as string | undefined,
+    error: search.error as string | undefined,
   }),
 });

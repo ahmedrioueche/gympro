@@ -1,3 +1,17 @@
+import type {
+  ApiResponse,
+  ForgotPasswordData,
+  GetMeData,
+  GoogleAuthUrlData,
+  LogoutData,
+  RefreshData,
+  ResendVerificationData,
+  ResetPasswordData,
+  SigninData,
+  SignupData,
+  VerifyEmailData,
+} from '@ahmedrioueche/gympro-client';
+import { apiResponse } from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -9,7 +23,10 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import type { Response } from 'express';
+import { ClientPlatform } from 'src/common/decorators/platform.decorator';
+import { buildRedirectUrl, Platform } from 'src/common/utils/platform.util';
 import { ResendVerificationDto, SigninDto, SignupDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -19,18 +36,23 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  async signup(@Body() dto: SignupDto) {
-    return this.authService.signup(dto);
+  @Throttle({ short: { limit: 5, ttl: 60000 } })
+  async signup(
+    @Body() dto: SignupDto,
+    @ClientPlatform() platform: Platform,
+  ): Promise<ApiResponse<SignupData>> {
+    const user = await this.authService.signup(dto, platform);
+    return apiResponse(true, undefined, { user }, 'Signup successful');
   }
 
   @Post('signin')
+  @Throttle({ short: { limit: 5, ttl: 60000 } })
   async signin(
     @Body() dto: SigninDto,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<ApiResponse<SigninData>> {
     const result = await this.authService.signin(dto);
 
-    // Set HttpOnly cookies with expiration based on rememberMe
     this.setAuthCookies(
       res,
       result.accessToken,
@@ -38,88 +60,113 @@ export class AuthController {
       dto.rememberMe || false,
     );
 
-    // Return response without tokens
-    return {
-      user: result.user,
-      message: 'Login successful',
-    };
+    return apiResponse(
+      true,
+      undefined,
+      {
+        user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      },
+      'Login successful',
+    );
   }
 
   @Post('refresh')
-  async refresh(@Req() req: any, @Res({ passthrough: true }) res: Response) {
+  async refresh(
+    @Req() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ApiResponse<RefreshData>> {
     const refreshToken = req.cookies?.refreshToken;
     if (!refreshToken) {
       throw new UnauthorizedException('No refresh token provided');
     }
-    const result = await this.authService.refresh(refreshToken);
-    this.setAccessTokenCookie(res, result.accessToken);
-    return { message: 'Token refreshed successfully' };
+
+    const { accessToken } = await this.authService.refresh(refreshToken);
+    this.setAccessTokenCookie(res, accessToken);
+
+    return apiResponse(
+      true,
+      undefined,
+      { accessToken },
+      'Token refreshed successfully',
+    );
   }
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  async logout(@Req() req: any, @Res({ passthrough: true }) res: Response) {
-    // Get user ID from the authenticated request
+  async logout(
+    @Req() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ApiResponse<LogoutData>> {
     const userId = req.user?.sub;
-
-    // Call logout service (for future enhancements like token blacklisting)
     await this.authService.logout(userId);
-
-    // Clear all auth cookies
     this.clearAuthCookies(res);
-
-    return { message: 'Logged out successfully' };
+    return apiResponse(true, undefined, null, 'Logged out successfully');
   }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getMe(@Req() req: any) {
-    return this.authService.getMeFromPayload(req.user);
+  async getMe(@Req() req: any): Promise<ApiResponse<GetMeData>> {
+    const user = await this.authService.getMeFromPayload(req.user);
+    return apiResponse(true, undefined, { user });
   }
 
   @Post('verify-email')
   async verifyEmail(
     @Body('token') token: string,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<ApiResponse<VerifyEmailData>> {
     const result = await this.authService.verifyEmail(token);
-
-    // Set HttpOnly cookies for automatic authentication (default to false for rememberMe)
     this.setAuthCookies(res, result.accessToken, result.refreshToken, false);
-
-    // Return response without tokens (they're in cookies)
-    return {
-      message: result.message,
-      user: result.user,
-    };
+    return apiResponse(true, undefined, { user: result.user }, result.message);
   }
 
   @Post('resend-verification')
   async resendVerification(
     @Body() dto: ResendVerificationDto,
     @Req() req: any,
-  ) {
-    return this.authService.resendVerification(dto.email, req.ip);
+  ): Promise<ApiResponse<ResendVerificationData>> {
+    await this.authService.resendVerification(dto.email, req.ip);
+    return apiResponse(true, undefined, null, 'Verification email sent');
   }
 
   @Post('forgot-password')
-  async forgotPassword(@Body('email') email: string) {
-    return this.authService.forgotPassword(email);
+  async forgotPassword(
+    @Body('email') email: string,
+  ): Promise<ApiResponse<ForgotPasswordData>> {
+    await this.authService.forgotPassword(email);
+    return apiResponse(
+      true,
+      undefined,
+      null,
+      'Password reset email sent if account exists',
+    );
   }
 
   @Post('reset-password')
+  @Throttle({ short: { limit: 3, ttl: 300000 } })
   async resetPassword(
     @Body('token') token: string,
     @Body('password') password: string,
-  ) {
-    return this.authService.resetPassword(token, password);
+  ): Promise<ApiResponse<ResetPasswordData>> {
+    await this.authService.resetPassword(token, password);
+    return apiResponse(true, undefined, null, 'Password reset successful');
   }
 
   @Get('google')
-  async googleAuthRedirect() {
+  async googleAuthRedirect(
+    @ClientPlatform() platform: Platform, // Detect platform when user initiates OAuth
+  ): Promise<ApiResponse<GoogleAuthUrlData>> {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const redirectUri = process.env.GOOGLE_REDIRECT_URI;
     const scope = 'email profile';
+
+    // Store platform in state so we can retrieve it in callback
+    const state = JSON.stringify({
+      platform: platform,
+      timestamp: Date.now(),
+    });
 
     const authUrl =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -128,9 +175,10 @@ export class AuthController {
       `response_type=code&` +
       `scope=${encodeURIComponent(scope)}&` +
       `access_type=offline&` +
-      `prompt=consent`;
+      `prompt=consent&` +
+      `state=${encodeURIComponent(state)}`; // Pass platform via state
 
-    return { authUrl };
+    return apiResponse(true, undefined, { authUrl });
   }
 
   @Get('google/callback')
@@ -140,64 +188,105 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      const result = await this.authService.googleAuth({ code, state });
+      // Extract platform from state (defaults to web if parsing fails)
+      let platform = Platform.WEB;
+      try {
+        const stateObj = JSON.parse(decodeURIComponent(state || '{}'));
+        platform = stateObj.platform || Platform.WEB;
+      } catch {
+        platform = Platform.WEB;
+      }
 
-      // Set HttpOnly cookies for automatic authentication
+      const result = await this.authService.googleAuth({ code, state });
       this.setAuthCookies(res, result.accessToken, result.refreshToken, true);
 
-      // Redirect to frontend with success
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-      const redirectUrl = result.user.isOnBoarded
-        ? `${frontendUrl}/dashboard`
-        : `${frontendUrl}/onboarding`;
+      // Redirect to generic callback page
+      const callbackUrl = buildRedirectUrl(
+        platform as Platform,
+        '/auth/callback',
+        {
+          success: 'true',
+        },
+      );
 
-      res.redirect(redirectUrl);
+      res.redirect(callbackUrl);
     } catch (error) {
-      // Redirect to login page with error
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-      res.redirect(`${frontendUrl}/auth/login?error=google_auth_failed`);
+      // Try to extract platform for error redirect too
+      let platform = Platform.WEB;
+      try {
+        const stateObj = JSON.parse(decodeURIComponent(state || '{}'));
+        platform = stateObj.platform || Platform.WEB;
+      } catch {
+        platform = Platform.WEB;
+      }
+
+      const errorUrl = buildRedirectUrl(
+        platform as Platform,
+        '/auth/callback',
+        {
+          success: 'false',
+          error: 'google_auth_failed',
+        },
+      );
+
+      res.redirect(errorUrl);
     }
   }
-
+  // -----------------------------
   // Helper methods for cookie management
+  // -----------------------------
   private setAuthCookies(
     res: Response,
     accessToken: string,
     refreshToken: string,
     rememberMe: boolean = false,
   ) {
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = process.env.NODE_ENV === 'prod';
 
-    // Access token cookie (short-lived or long-lived based on rememberMe)
-    res.cookie('accessToken', accessToken, {
+    const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
-      maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 15 * 60 * 1000, // 7 days or 15 minutes
+      sameSite: isProduction ? ('strict' as const) : ('lax' as const),
+      path: '/', // ← Add this
+      domain: isProduction ? process.env.COOKIE_DOMAIN : undefined, // ← Add this
+    };
+
+    res.cookie('accessToken', accessToken, {
+      ...cookieOptions,
+      maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 15 * 60 * 1000,
     });
 
-    // Refresh token cookie (long-lived or very long-lived based on rememberMe)
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
-      maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000, // 30 days or 7 days
+      ...cookieOptions,
+      maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000,
     });
   }
 
   private setAccessTokenCookie(res: Response, accessToken: string) {
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = process.env.NODE_ENV === 'prod';
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? 'strict' : 'lax',
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      sameSite: isProduction ? ('strict' as const) : ('lax' as const),
+      path: '/',
+      domain: isProduction ? process.env.COOKIE_DOMAIN : undefined,
+      maxAge: 15 * 60 * 1000,
     });
   }
 
   private clearAuthCookies(res: Response) {
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
+    const isProduction = process.env.NODE_ENV === 'prod';
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? ('strict' as const) : ('lax' as const),
+      path: '/',
+      domain: isProduction ? process.env.COOKIE_DOMAIN : undefined,
+    };
+
+    res.clearCookie('accessToken', cookieOptions);
+    res.clearCookie('refreshToken', cookieOptions);
   }
 }

@@ -1,41 +1,42 @@
 import type {
   BaseSubscriptionType,
   Gym,
+  PaymentMethod,
   SubscriptionHistory,
   SubscriptionInfo,
   SubscriptionPeriodUnit,
+  SubscriptionStatus,
   SubscriptionType,
+} from '@ahmedrioueche/gympro-client';
+import {
+  BASE_SUBSCRIPTION_TYPES,
+  PAYMENT_METHODS,
+  SUBSCRIPTION_PERIOD_UNITS,
+  SUBSCRIPTION_STATUSES,
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-
-const baseTypes = [
-  'regular',
-  'coached',
-  'yoga',
-  'crossfit',
-  'pilates',
-  'boxing',
-  'sauna',
-  'massage',
-  'custom',
-] as const;
-const periodUnits = ['day', 'week', 'month', 'year'] as const;
-const membershipStatuses = ['active', 'expired', 'cancelled'] as const;
-const paymentMethods = ['cash', 'ccp', 'dahabia', 'card'] as const;
 
 @Schema({ _id: false })
 export class SubscriptionInfoModel implements SubscriptionInfo {
   @Prop({ required: true }) typeId: string;
   @Prop({ required: true }) startDate: string;
   @Prop({ required: true }) endDate: string;
-  @Prop({ required: true, enum: membershipStatuses })
-  status: SubscriptionInfo['status'];
-  @Prop({ enum: paymentMethods })
-  paymentMethod?: SubscriptionInfo['paymentMethod'];
+  @Prop({
+    type: String,
+    required: true,
+    enum: SUBSCRIPTION_STATUSES,
+  })
+  status: SubscriptionStatus;
+  @Prop({
+    type: String,
+    enum: PAYMENT_METHODS,
+  })
+  paymentMethod?: PaymentMethod;
   @Prop() createdAt: Date;
   @Prop() updatedAt?: Date;
 }
+
 export const SubscriptionInfoSchema = SchemaFactory.createForClass(
   SubscriptionInfoModel,
 );
@@ -47,17 +48,27 @@ export class SubscriptionTypeModel
 {
   @Prop() declare _id: string;
   @Prop({ required: true }) gymId: string;
-  @Prop({ required: true, enum: baseTypes }) baseType: BaseSubscriptionType;
+  @Prop({
+    type: String,
+    required: true,
+    enum: BASE_SUBSCRIPTION_TYPES,
+  })
+  baseType: BaseSubscriptionType;
   @Prop() customName?: string;
   @Prop() description?: string;
   @Prop({ required: true }) price: number;
   @Prop({ required: true }) duration: number;
-  @Prop({ required: true, enum: periodUnits })
+  @Prop({
+    type: String,
+    required: true,
+    enum: SUBSCRIPTION_PERIOD_UNITS,
+  })
   durationUnit: SubscriptionPeriodUnit;
   @Prop({ required: true }) isAvailable: boolean;
   @Prop({ required: true }) createdAt: Date;
   @Prop() updatedAt?: Date;
 }
+
 export const SubscriptionTypeSchema = SchemaFactory.createForClass(
   SubscriptionTypeModel,
 );
@@ -68,13 +79,14 @@ export class SubscriptionHistoryModel
   implements SubscriptionHistory
 {
   @Prop({ type: SubscriptionInfoSchema, required: true })
-  subscription: SubscriptionInfoModel;
+  subscription: SubscriptionInfo;
   @Prop({ type: Object, required: true }) gym: Gym;
   @Prop() handledBy?: string;
   @Prop() notes?: string;
   @Prop() createdAt: Date;
   @Prop() updatedAt?: Date;
 }
+
 export const SubscriptionHistorySchema = SchemaFactory.createForClass(
   SubscriptionHistoryModel,
 );

@@ -1,3 +1,4 @@
+import { ErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
   Injectable,
@@ -6,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
 import { User } from '../../common/schemas/user.schema';
 
 @Injectable()
@@ -71,7 +71,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',
-        errorCode: UserErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
@@ -89,7 +89,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',
-        errorCode: UserErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
@@ -102,7 +102,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',
-        errorCode: UserErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
@@ -119,7 +119,7 @@ export class UsersService {
       if (existingUser) {
         throw new BadRequestException({
           message: 'Email is already in use',
-          errorCode: UserErrorCode.EMAIL_ALREADY_IN_USE,
+          errorCode: ErrorCode.EMAIL_ALREADY_IN_USE,
         });
       }
     }
@@ -137,7 +137,7 @@ export class UsersService {
       if (existingUser) {
         throw new BadRequestException({
           message: 'Username is already in use',
-          errorCode: UserErrorCode.USERNAME_ALREADY_IN_USE,
+          errorCode: ErrorCode.USERNAME_ALREADY_IN_USE,
         });
       }
     }
@@ -155,7 +155,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',
-        errorCode: UserErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
@@ -169,7 +169,7 @@ export class UsersService {
       if (existingUser) {
         throw new BadRequestException({
           message: 'Email is already in use',
-          errorCode: UserErrorCode.EMAIL_ALREADY_IN_USE,
+          errorCode: ErrorCode.EMAIL_ALREADY_IN_USE,
         });
       }
     }
@@ -187,7 +187,7 @@ export class UsersService {
       if (existingUser) {
         throw new BadRequestException({
           message: 'Username is already in use',
-          errorCode: UserErrorCode.USERNAME_ALREADY_IN_USE,
+          errorCode: ErrorCode.USERNAME_ALREADY_IN_USE,
         });
       }
     }
@@ -205,7 +205,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',
-        errorCode: UserErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
@@ -213,7 +213,7 @@ export class UsersService {
     if (id === currentUserId) {
       throw new BadRequestException({
         message: 'Cannot change your own role',
-        errorCode: UserErrorCode.CANNOT_CHANGE_OWN_ROLE,
+        errorCode: ErrorCode.CANNOT_CHANGE_OWN_ROLE,
       });
     }
 
@@ -221,7 +221,7 @@ export class UsersService {
     if (!Object.values(UserRole).includes(newRole)) {
       throw new BadRequestException({
         message: 'Invalid role',
-        errorCode: UserErrorCode.INVALID_ROLE,
+        errorCode: ErrorCode.INVALID_ROLE,
       });
     }
 
@@ -237,14 +237,14 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',
-        errorCode: UserErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
     if (user.profile.isActive) {
       throw new BadRequestException({
         message: 'User is already active',
-        errorCode: UserErrorCode.USER_ALREADY_ACTIVE,
+        errorCode: ErrorCode.USER_ALREADY_ACTIVE,
       });
     }
 
@@ -260,7 +260,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',
-        errorCode: UserErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
@@ -268,14 +268,14 @@ export class UsersService {
     if (id === currentUserId) {
       throw new BadRequestException({
         message: 'Cannot deactivate yourself',
-        errorCode: UserErrorCode.CANNOT_DEACTIVATE_SELF,
+        errorCode: ErrorCode.CANNOT_DEACTIVATE_SELF,
       });
     }
 
     if (!user.profile.isActive) {
       throw new BadRequestException({
         message: 'User is already deactivated',
-        errorCode: UserErrorCode.USER_ALREADY_DEACTIVATED,
+        errorCode: ErrorCode.USER_ALREADY_DEACTIVATED,
       });
     }
 
@@ -291,7 +291,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException({
         message: 'User not found',
-        errorCode: UserErrorCode.USER_NOT_FOUND,
+        errorCode: ErrorCode.USER_NOT_FOUND,
       });
     }
 
@@ -299,7 +299,7 @@ export class UsersService {
     if (id === currentUserId) {
       throw new BadRequestException({
         message: 'Cannot delete yourself',
-        errorCode: UserErrorCode.CANNOT_DEACTIVATE_SELF,
+        errorCode: ErrorCode.CANNOT_DEACTIVATE_SELF,
       });
     }
 

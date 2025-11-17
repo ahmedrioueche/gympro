@@ -1,7 +1,7 @@
+import { authApi } from '@ahmedrioueche/gympro-client';
 import { useRouter, useSearch } from '@tanstack/react-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Auth } from '../../../../api/auth/auth';
 import ErrorSection from '../../../../components/ui/ErrorSection';
 import LoadingPage from '../../../../components/ui/LoadingPage';
 import { APP_PAGES } from '../../../../constants/navigation';
@@ -25,26 +25,27 @@ const VerifyEmailPage: React.FC = () => {
       return;
     }
 
-    Auth.verifyEmail(token)
+    authApi
+      .verifyEmail(token)
       .then((res) => {
         console.log('Verify email response:', res); // Debug log
 
-        if (res && res.success && res.data) {
+        if (res) {
           isSuccessRef.current = true;
           setStatus('success');
-          setSuccessMessage(res.data.message || t('auth.verifyEmail.successMessage'));
+          setSuccessMessage(res.message || t('auth.verifyEmail.successMessage'));
 
           // Store user data for automatic authentication
-          if (res.data.user) {
-            localStorage.setItem('user', JSON.stringify(res.data.user));
-            sessionStorage.setItem('user', JSON.stringify(res.data.user));
+          if (res.user) {
+            localStorage.setItem('user', JSON.stringify(res.user));
+            sessionStorage.setItem('user', JSON.stringify(res.user));
           }
 
           // Redirect based on user onboarding status
           setTimeout(() => {
             // Only redirect if still in success state
             if (isSuccessRef.current) {
-              if (res.data.user?.isOnBoarded) {
+              if (false /**res.user?.isOnBoarded */) {
                 // User is already onboarded, redirect to dashboard
                 router.navigate({ to: APP_PAGES.dashboard.link });
               } else {

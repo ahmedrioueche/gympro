@@ -1,13 +1,14 @@
+import { authApi } from '@ahmedrioueche/gympro-client';
 import { Key, Lock, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { Auth } from '../../../../api/auth/auth';
 import Hero from '../../../../components/Hero';
 import Button from '../../../../components/ui/Button';
 import InputField from '../../../../components/ui/InputField';
 import { APP_PAGES } from '../../../../constants/navigation';
-import { getMessageByStatuscode, showStatusToast } from '../../../../utils/statusMessage';
+import { useUserStore } from '../../../../store/user';
+import { getMessage, showStatusToast } from '../../../../utils/statusMessage';
 import AuthHeader from '../components/AuthHeader';
 
 function SignupPage() {
@@ -19,6 +20,7 @@ function SignupPage() {
     confirmPassword: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const { setUser } = useUserStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,24 +52,21 @@ function SignupPage() {
     setIsLoading(true);
 
     try {
-      const response = await Auth.signUp({
-        name: formData.name,
+      const response = await authApi.signup({
+        username: formData.name,
         email: formData.email,
         password: formData.password,
       });
 
-      // Handle status code with toast
-      const statusMessage = getMessageByStatuscode(response.statusCode, {
+      //Handle status code with toast
+      const statusMessage = getMessage(response, {
         t: t,
         showToast: true,
       });
 
       showStatusToast(statusMessage, toast);
-
-      if (statusMessage.status === 'success') {
-        // Store email and timestamp in session storage and redirect with email parameter
-        sessionStorage.setItem('signupEmail', formData.email);
-        sessionStorage.setItem('signupTimestamp', Date.now().toString());
+      if (response.success) {
+        setUser(response.data.user);
         window.location.href = `${APP_PAGES.email_sent.link}?email=${encodeURIComponent(
           formData.email
         )}`;
@@ -75,7 +74,7 @@ function SignupPage() {
     } catch (error: any) {
       // Handle API errors with status codes
       if (error?.statusCode) {
-        const statusMessage = getMessageByStatuscode(error.statusCode, {
+        const statusMessage = getMessage(error, {
           t: t,
           showToast: true,
         });
@@ -93,12 +92,8 @@ function SignupPage() {
   const handleGoogleSignup = async () => {
     setIsLoading(true);
     try {
-      const response = await Auth.getGoogleAuthUrl();
-      if (response.success && response.data) {
-        window.location.href = response.data.authUrl;
-      } else {
-        throw new Error('Failed to get Google auth URL');
-      }
+      const response = await authApi.getGoogleAuthUrl();
+      window.location.href = response.data?.authUrl;
     } catch (error) {
       setIsLoading(false);
       toast.error(t('auth.google_auth_error'));

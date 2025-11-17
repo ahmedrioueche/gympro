@@ -2,11 +2,11 @@ import { useRouter, useSearch } from '@tanstack/react-router';
 import { ArrowRight, CheckCircle, Lock, Shield, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Auth } from '../../../../api/auth/auth';
 import Button from '../../../../components/ui/Button';
 import Confetti from '../../../../components/ui/Confetti';
 import InputField from '../../../../components/ui/InputField';
 import Logo from '../../../../components/ui/Logo';
+import { authApi } from '@ahmedrioueche/gympro-client';
 
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
@@ -27,7 +27,7 @@ export default function ResetPasswordPage() {
     setIsLoading(true);
     setError('');
     try {
-      await Auth.resetPassword({ token, password });
+      await authApi.resetPassword(token, password);
       setSubmitted(true);
       // Redirect to login page after 3 seconds
       setTimeout(() => {

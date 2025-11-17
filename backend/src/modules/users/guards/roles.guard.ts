@@ -17,7 +17,7 @@
  * @see README.md for detailed documentation
  */
 
-import { UserErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
+import { ErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
 import {
   CanActivate,
   ExecutionContext,
@@ -84,7 +84,7 @@ export class RolesGuard implements CanActivate {
     if (!user) {
       throw new ForbiddenException({
         message: 'User not authenticated',
-        errorCode: UserErrorCode.INSUFFICIENT_PERMISSIONS,
+        errorCode: ErrorCode.INSUFFICIENT_PERMISSIONS,
       });
     }
 
@@ -94,7 +94,7 @@ export class RolesGuard implements CanActivate {
     if (!hasRole) {
       throw new ForbiddenException({
         message: 'Insufficient permissions',
-        errorCode: UserErrorCode.INSUFFICIENT_PERMISSIONS,
+        errorCode: ErrorCode.INSUFFICIENT_PERMISSIONS,
       });
     }
 

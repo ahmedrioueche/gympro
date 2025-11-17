@@ -98,16 +98,45 @@
       "default": "Operation successful"
     },
     "error": {
-      "bad_request": "Invalid request. Please check your input",
-      "unauthorized": "Unauthorized. Please check your credentials",
-      "forbidden": "Forbidden. You do not have permission for this action",
-      "not_found": "Resource not found",
-      "conflict": "Username or email already in use",
-      "server_error": "Internal server error. Please try again later",
+      "internal_server_error": "Internal server error. Please try again later",
+      "not_implemented": "This feature is not yet implemented",
+      "too_many_requests": "Too many requests. Please try again later",
+      "bad_gateway": "Bad gateway. Please try again",
       "service_unavailable": "Service temporarily unavailable",
-      "client_default": "Client error occurred",
-      "server_default": "Server error occurred",
-      "unexpected": "An unexpected error occurred"
+      "gateway_timeout": "Gateway timeout. Please try again",
+      "method_not_allowed": "Method not allowed",
+      "auth": {
+        "invalid_credentials": "Invalid email or password",
+        "account_deactivated": "Your account has been deactivated",
+        "email_not_verified": "Please verify your email before signing in",
+        "invalid_refresh_token": "Invalid refresh token. Please sign in again",
+        "no_token_provided": "No authentication token provided",
+        "invalid_token": "Invalid authentication token",
+        "user_already_exists": "An account with this email already exists",
+        "email_already_verified": "This email is already verified",
+        "user_not_found": "User not found",
+        "invalid_verification_token": "Invalid or expired verification link",
+        "expired_verification_token": "Verification link has expired. Please request a new one",
+        "invalid_reset_token": "Invalid or expired password reset link",
+        "expired_reset_token": "Password reset link has expired. Please request a new one",
+        "google_auth_failed": "Google authentication failed. Please try again",
+        "google_user_info_failed": "Failed to get user information from Google"
+      },
+      "user": {
+        "not_found": "User not found",
+        "email_already_in_use": "This email is already in use",
+        "username_already_in_use": "This username is already taken",
+        "invalid_data": "Invalid user data provided",
+        "cannot_update_email": "Email cannot be updated",
+        "invalid_role": "Invalid user role",
+        "cannot_change_own_role": "You cannot change your own role",
+        "insufficient_permissions": "You don't have permission to perform this action",
+        "already_active": "User is already active",
+        "already_deactivated": "User is already deactivated",
+        "cannot_deactivate_self": "You cannot deactivate your own account",
+        "invalid_profile_data": "Invalid profile data",
+        "profile_update_failed": "Failed to update profile"
+      }
     }
   },
   "errors": {

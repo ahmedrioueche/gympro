@@ -1,5 +1,6 @@
 import { AuthRootRoute } from './AuthRootRoute';
 import {
+  AuthCallbackRoute,
   EmailSentRoute,
   ForgotPasswordRoute,
   LoginRoute,
@@ -15,4 +16,5 @@ export const AuthRouteTree = AuthRootRoute.addChildren([
   EmailSentRoute,
   ForgotPasswordRoute,
   ResetPasswordRoute,
+  AuthCallbackRoute,
 ]);

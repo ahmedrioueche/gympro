@@ -1,8 +1,8 @@
+import { authApi } from '@ahmedrioueche/gympro-client';
 import { useSearch } from '@tanstack/react-router';
 import { CheckCircle, Mail, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Auth } from '../../../../api/auth/auth';
 import Button from '../../../../components/ui/Button';
 import Confetti from '../../../../components/ui/Confetti';
 import InputField from '../../../../components/ui/InputField';
@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
     setError('');
     try {
-      await Auth.forgotPassword({ email });
+      await authApi.forgotPassword(email);
       setSubmitted(true);
     } catch (err: any) {
       setError(t('status.error.unexpected'));

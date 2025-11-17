@@ -1,4 +1,5 @@
-import { UserRole } from '@ahmedrioueche/gympro-client';
+import type { StaffType } from '@ahmedrioueche/gympro-client';
+import { STAFF_TYPES, UserRole } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
@@ -70,8 +71,6 @@ export class ProgramProgress {
 
   @Prop()
   lastWorkoutDate?: Date;
-
-  // Add other fields as needed
 }
 
 @Schema({ _id: false })
@@ -146,9 +145,11 @@ export class User extends Document {
   certifications?: string[];
 
   // Staff-specific fields
-  @Prop({ type: String, enum: ['reception', 'cleaning', 'admin'] })
-  staffType?: 'reception' | 'cleaning' | 'admin';
-
+  @Prop({
+    type: String,
+    enum: STAFF_TYPES,
+  })
+  staffType?: StaffType;
   @Prop({ type: [String] })
   assignedTasks?: string[];
 
@@ -173,9 +174,3 @@ export class User extends Document {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
-// Create indexes
-UserSchema.index({ 'profile.email': 1 }, { unique: true });
-UserSchema.index({ role: 1 });
-UserSchema.index({ 'profile.username': 1 });
-UserSchema.index({ 'coachingInfo.coachId': 1 });

@@ -3,6 +3,7 @@ import type {
   BaseSubscriptionType,
   Gym,
   GymSettings,
+  PaymentMethod,
   TimeRange,
   WeeklyTimeRange,
 } from '@ahmedrioueche/gympro-client';
@@ -11,6 +12,7 @@ import { Document } from 'mongoose';
 
 @Schema({ _id: false })
 export class GymSettingsModel implements GymSettings {
+  @Prop() paymentMethods: PaymentMethod[];
   @Prop() allowCustomSubscriptions?: boolean;
   @Prop() notificationsEnabled?: boolean;
   @Prop() subscriptionRenewalReminderDays?: number;

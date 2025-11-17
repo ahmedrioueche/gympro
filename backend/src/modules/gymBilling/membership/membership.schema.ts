@@ -1,45 +1,57 @@
 import type {
-  AppSubscription,
-  BaseSubscriptionType,
   Gym,
-  GymSettings,
-  TimeRange,
-  WeeklyTimeRange,
+  GymMembership,
+  MembershipStatus,
+  RolePermissions,
+  SubscriptionInfo,
+  UserRole,
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { SubscriptionInfoSchema } from '../gymSubscription/gymSubscription.schema';
 
 @Schema({ _id: false })
-export class GymSettingsModel implements GymSettings {
-  @Prop() allowCustomSubscriptions?: boolean;
-  @Prop() notificationsEnabled?: boolean;
-  @Prop() subscriptionRenewalReminderDays?: number;
-  @Prop({ type: Object }) workingHours?: TimeRange;
-  @Prop() isMixed?: boolean;
-  @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
-  @Prop({ type: [String] }) servicesOffered?: BaseSubscriptionType[];
+export class CustomPermissionsModel implements Partial<RolePermissions> {
+  @Prop() canManageMembers?: boolean;
+  @Prop() canManageSubscriptions?: boolean;
+  @Prop() canManageStaff?: boolean;
+  @Prop() canViewFinancials?: boolean;
+  @Prop() canAssignPrograms?: boolean;
+  @Prop() canManageAppSubscriptions?: boolean;
+  @Prop() canCustomizePermissions?: boolean;
 }
-export const GymSettingsSchema = SchemaFactory.createForClass(GymSettingsModel);
 
 @Schema({ timestamps: true })
-export class GymModel extends Document implements Gym {
+export class GymMembershipModel extends Document implements GymMembership {
   declare _id: string;
-  @Prop({ required: true }) name: string;
-  @Prop() address?: string;
-  @Prop() city?: string;
-  @Prop() state?: string;
-  @Prop() country?: string;
-  @Prop() phone?: string;
-  @Prop() email?: string;
-  @Prop() website?: string;
-  @Prop() timezone?: string;
-  @Prop() logoUrl?: string;
-  @Prop() slogan?: string;
-  @Prop({ default: true }) isActive: boolean;
-  @Prop({ required: true }) ownerId: string;
-  @Prop() defaultCurrency?: string;
-  @Prop({ type: GymSettingsSchema }) settings?: GymSettings;
-  @Prop({ type: Object }) appSubscription?: AppSubscription;
+
+  @Prop({ type: Types.ObjectId, ref: 'GymModel', required: true })
+  gym: Gym;
+
+  @Prop({ type: [String], required: true })
+  roles: UserRole[];
+
+  @Prop({ required: true })
+  joinedAt: string;
+
+  @Prop({
+    type: String,
+    enum: ['active', 'pending', 'banned', 'canceled', 'expired'],
+    required: true,
+  })
+  membershipStatus: MembershipStatus;
+
+  @Prop({ type: SubscriptionInfoSchema })
+  subscription?: SubscriptionInfo;
+
+  @Prop({ type: CustomPermissionsModel })
+  customPermissions?: Partial<RolePermissions>;
+
   @Prop() createdAt: Date;
+  @Prop() updatedAt?: Date;
+  @Prop() createdBy?: string;
+  @Prop() updatedBy?: string;
 }
-export const GymSchema = SchemaFactory.createForClass(GymModel);
+
+export const GymMembershipSchema =
+  SchemaFactory.createForClass(GymMembershipModel);

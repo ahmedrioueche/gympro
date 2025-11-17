@@ -1,5 +1,5 @@
 import { AppSubscription } from './appBilling';
-import { AuditInfo, TimeRange, WeeklyTimeRange } from './common';
+import { AuditInfo, PaymentMethod, TimeRange, WeeklyTimeRange } from './common';
 import { BaseSubscriptionType } from './subscription';
 
 export interface Gym extends AuditInfo {
@@ -23,6 +23,7 @@ export interface Gym extends AuditInfo {
 }
 
 export interface GymSettings {
+  paymentMethods: PaymentMethod[];
   allowCustomSubscriptions?: boolean; // Can owner create custom subscription types?
   notificationsEnabled?: boolean; // Enable gym-wide notifications
   subscriptionRenewalReminderDays?: number; // Days before expiry to notify members
@@ -32,11 +33,14 @@ export interface GymSettings {
   servicesOffered?: BaseSubscriptionType[]; // List of services offered at the gym
 }
 
+export const CLASS_BOOKING_STATUS = ['booked', 'cancelled', 'waitlisted'];
+export type classBookingStatus = (typeof CLASS_BOOKING_STATUS)[number];
+
 export interface ClassBooking extends AuditInfo {
   classId: string; // the scheduled class
   userId: string; // member booking
-  status: 'booked' | 'cancelled' | 'waitlisted';
-  bookedAt: string;
+  status: classBookingStatus;
+  bookedAt: string | Date;
 }
 
 export interface GymClass extends AuditInfo {
@@ -44,6 +48,6 @@ export interface GymClass extends AuditInfo {
   name: string;
   coachId?: string;
   maxCapacity: number;
-  scheduledAt: string; // datetime of class
+  scheduledAt: string | Date; // datetime of class
   bookings: ClassBooking[];
 }
