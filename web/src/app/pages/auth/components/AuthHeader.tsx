@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import Logo from '../../../../components/ui/Logo';
+import AnimatedLogo from '../../../../components/ui/AnimatedLogo';
 import './style.css';
 
 const AuthHeader = ({ type = 'login' }: { type?: 'login' | 'signup' }) => {
@@ -11,7 +11,7 @@ const AuthHeader = ({ type = 'login' }: { type?: 'login' | 'signup' }) => {
 
   return (
     <div className='text-center overflow-hidden'>
-      <Logo />
+      <AnimatedLogo />
       {title && <h2 className='text-3xl font-bold text-text-primary animate-fade-in'>{title}</h2>}
       {subtitle && <p className='mt-2 text-text-secondary'>{subtitle}</p>}
     </div>

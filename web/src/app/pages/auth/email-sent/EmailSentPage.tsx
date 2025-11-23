@@ -3,7 +3,7 @@ import { useRouter } from '@tanstack/react-router';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import Logo from '../../../../components/ui/Logo';
+import AnimatedLogo from '../../../../components/ui/AnimatedLogo';
 import { APP_PAGES } from '../../../../constants/navigation';
 import { getMessage, showStatusToast } from '../../../../utils/statusMessage';
 
@@ -103,7 +103,7 @@ const EmailSentPage: React.FC = () => {
     <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col'>
       {/* Header with Logo */}
       <div className='flex justify-center pt-8'>
-        <Logo />
+        <AnimatedLogo />
       </div>
 
       {/* Main Content */}

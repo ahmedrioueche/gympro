@@ -3,7 +3,7 @@ import type {
   classBookingStatus,
   GymClass,
 } from '@ahmedrioueche/gympro-client';
-import { CLASS_BOOKING_STATUS } from '@ahmedrioueche/gympro-client';
+import { CLASS_BOOKING_STATUSES } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
@@ -18,7 +18,7 @@ export class ClassBookingModel implements ClassBooking {
   @Prop({
     type: String,
     required: true,
-    enum: CLASS_BOOKING_STATUS,
+    enum: CLASS_BOOKING_STATUSES,
   })
   status: classBookingStatus;
 

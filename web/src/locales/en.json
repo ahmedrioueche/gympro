@@ -150,76 +150,119 @@
     "network_error": "Network error. Please check your connection."
   },
   "footer": {
-    "copyright": "© 2024 GymPro. All rights reserved."
+    "copyright": "© {year} GymPro. All rights reserved."
   },
+
   "onboarding": {
-    "welcome": {
-      "title": "Welcome to GymPro",
-      "subtitle": "Your complete gym management solution",
-      "description": "Streamline your gym operations with our powerful management tools designed for gym owners, coaches, and members."
-    },
-    "features": {
-      "title": "Powerful Features",
-      "subtitle": "Everything you need to manage your gym",
-      "memberManagement": {
-        "title": "Member Management",
-        "description": "Easily manage member profiles, subscriptions, and track their progress"
-      },
-      "coaching": {
-        "title": "Coaching System",
-        "description": "Assign coaches to members and create personalized training programs"
-      },
-      "payments": {
-        "title": "Payment Processing",
-        "description": "Handle subscriptions and payments with integrated Algerian payment methods"
-      },
-      "analytics": {
-        "title": "Analytics & Reports",
-        "description": "Get insights into your gym's performance with detailed analytics"
-      }
-    },
     "roles": {
-      "title": "Choose Your Role",
+      "title": "Let's Get Started",
       "subtitle": "Select how you'll use GymPro",
+      "description": "Get started with the right tools for you",
       "owner": {
         "title": "Gym Owner",
-        "description": "Full access to all features and member management"
+        "description": "Complete control and management of your gym"
       },
       "coach": {
-        "title": "Coach",
-        "description": "Manage your members and create training programs"
+        "title": "Gym Coach",
+        "description": "Train members and manage personalized programs"
       },
       "member": {
-        "title": "Member",
-        "description": "Track your subscription and training progress"
+        "title": "Gym Bro",
+        "description": "Access your workouts and track your fitness journey"
       }
     },
-    "getStarted": {
-      "title": "Ready to Get Started?",
-      "subtitle": "Join thousands of gym owners who trust GymPro",
-      "description": "Start managing your gym more efficiently today"
+    "details": {
+      "title": "Complete Your Profile",
+      "subtitle": "Tell us more about yourself",
+      "description": "This information will help personalize your experience"
     },
+    "features": {
+      "memberCoachManagement": "Member & coach management",
+      "advancedAnalytics": "Advanced analytics & reports",
+      "paymentProcessing": "Payment processing (CIB, Edahabia)",
+      "subscriptionTracking": "Subscription tracking",
+      "automatedNotifications": "Automated notifications",
+      "viewAssignedMembers": "View assigned members",
+      "createTrainingPrograms": "Create training programs",
+      "trackMemberProgress": "Track member progress",
+      "scheduleSessions": "Schedule sessions",
+      "viewTrainingProgram": "View your training program",
+      "trackYourProgress": "Track your progress",
+      "seeSubscriptionStatus": "See subscription status",
+      "getSessionReminders": "Get session reminders"
+    },
+    "form": {
+      "member": {
+        "title": "Hello Gym Bro!"
+      },
+      "coach": {
+        "title": "Hello Coach!"
+      },
+      "fields": {
+        "username": "Username",
+        "email": "Email Address",
+        "fullName": "Full Name",
+        "phoneNumber": "Phone Number",
+        "age": "Age",
+        "gender": "Gender",
+        "address": "Address",
+        "city": "City",
+        "state": "State/Province",
+        "country": "Country",
+        "gymName": "Gym Name",
+        "website": "Website",
+        "timezone": "Timezone",
+        "logoUrl": "Logo URL",
+        "slogan": "Slogan",
+        "defaultCurrency": "Default Currency"
+      },
+      "placeholders": {
+        "username": "Enter your username",
+        "email": "Enter your email address",
+        "fullName": "Enter your full name",
+        "phoneNumber": "+213 XXX XXX XXX",
+        "age": "Enter your age",
+        "gender": "Select your gender",
+        "address": "Enter your street address",
+        "city": "Enter your city",
+        "state": "Enter your state or province",
+        "country": "Enter your country",
+        "gymName": "Enter your gym name",
+        "website": "https://yourgym.com",
+        "timezone": "Africa/Algiers",
+        "logoUrl": "https://example.com/logo.png",
+        "slogan": "Your gym's motto",
+        "defaultCurrency": "DZD"
+      },
+      "errors": {
+        "required": "This field is required"
+      },
+      "steps": {
+        "required": {
+          "description": "Please fill in the required information to get started"
+        },
+        "optional": {
+          "description": "Help us personalize your experience (optional)"
+        },
+        "basicInfo": "Basic Information",
+        "contactInfo": "Contact Information",
+        "additionalInfo": "Additional Details",
+        "branding": "Branding (Optional)"
+      },
+      "step": "Step",
+      "of": "of"
+    },
+    "memberDetails": "Complete Your Profile",
+    "coachDetails": "Complete Your Coach Profile",
+    "ownerDetails": "Set Up Your Gym",
+    "keyFeatures": "Key Features",
+    "selected": "Selected",
     "skip": "Skip",
     "next": "Next",
-    "getStarted": "Get Started",
     "previous": "Previous",
-    "select_role": "Select your role",
-    "role_member": "Member",
-    "role_manager": "Manager/Owner",
-    "role_coach": "Coach",
-    "role_member_desc": "Access your subscription, programs, and notifications.",
-    "role_manager_desc": "Manage your gym, members, coaches, and payments.",
-    "role_coach_desc": "Manage your coached members and their programs.",
-    "member_details": "Member Details",
-    "manager_details": "Manager/Owner Details",
-    "coach_details": "Coach Details",
-    "confirmation": "Confirmation",
-    "selected_role": "Selected Role",
-    "finish": "Finish",
-    "step_role": "Role",
-    "step_details": "Details",
-    "step_confirmation": "Confirmation"
+    "finish": "Finish"
   },
+
   "navbar": {
     "notifications": "Notifications",
     "profile": "Profile",

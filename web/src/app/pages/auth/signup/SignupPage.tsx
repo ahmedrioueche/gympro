@@ -1,5 +1,5 @@
 import { authApi } from '@ahmedrioueche/gympro-client';
-import { Key, Lock, Mail, User } from 'lucide-react';
+import { Key, Lock, Mail } from 'lucide-react';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,6 @@ import AuthHeader from '../components/AuthHeader';
 function SignupPage() {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -32,10 +31,9 @@ function SignupPage() {
 
   // Validation function (returns boolean - no error messages)
   const isFormValid = () => {
-    const { name, email, password, confirmPassword } = formData;
+    const { email, password, confirmPassword } = formData;
 
     // Basic validation checks
-    if (!name.trim()) return false;
     if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) return false;
     if (!password || password.length < 8) return false;
     if (password !== confirmPassword) return false;
@@ -53,7 +51,6 @@ function SignupPage() {
 
     try {
       const response = await authApi.signup({
-        username: formData.name,
         email: formData.email,
         password: formData.password,
       });
@@ -112,21 +109,6 @@ function SignupPage() {
           {/* Form */}
           <form className='mt-8 space-y-6' onSubmit={handleSubmit}>
             <div className='space-y-4'>
-              {/* Name Field */}
-              <div>
-                <InputField
-                  id='name'
-                  name='name'
-                  type='text'
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder={t('auth.name_placeholder')}
-                  className='pl-12'
-                  leftIcon={<User className='h-5 w-5' />}
-                />
-              </div>
-
               {/* Email Field */}
               <div>
                 <InputField

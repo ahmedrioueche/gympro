@@ -27,7 +27,6 @@ class PackageWatcher:
         self.watch_path = Path(watch_package_json)
         self.dependency_name = dependency_name
         self.target_paths = [Path(p) for p in target_package_jsons]
-        self.npm_token = npm_token
         self.poll_interval = poll_interval
         self.last_version = None
 
@@ -38,6 +37,30 @@ class PackageWatcher:
         for target in self.target_paths:
             if not target.exists():
                 raise FileNotFoundError(f"Target package.json not found: {target}")
+
+        # Try to get token from .npmrc in the watch directory first
+        if not npm_token:
+            npmrc_in_watch_dir = self.watch_path.parent / '.npmrc'
+            if npmrc_in_watch_dir.exists():
+                npm_token = self._read_token_from_npmrc(npmrc_in_watch_dir)
+                if npm_token:
+                    print(f"🔑 Found NPM token in {npmrc_in_watch_dir}\n")
+
+        self.npm_token = npm_token
+        self.npmrc_path = self.watch_path.parent / '.npmrc' if (self.watch_path.parent / '.npmrc').exists() else None
+
+    def _read_token_from_npmrc(self, npmrc_path: Path) -> Optional[str]:
+        """Read auth token from an .npmrc file"""
+        try:
+            with open(npmrc_path, 'r') as f:
+                for line in f:
+                    if '/:_authToken=' in line:
+                        token = line.split('=', 1)[1].strip()
+                        return token
+            return None
+        except Exception as e:
+            print(f"⚠️ Error reading {npmrc_path}: {e}")
+            return None
 
     def get_dependency_version(self, package_json_path: Path) -> Optional[str]:
         """Get the version of the watched dependency from package.json"""
@@ -116,16 +139,24 @@ class PackageWatcher:
             return False
 
     def run_npm_install(self, package_json_path: Path) -> bool:
-        """Run npm install with NPM_TOKEN in the directory of package.json"""
+        """Run npm install with .npmrc configuration"""
         try:
             work_dir = package_json_path.parent
             print(f"📥 Running npm install in {work_dir}")
 
-            env = None
-            if self.npm_token:
-                import os
-                env = os.environ.copy()
-                env['NPM_TOKEN'] = self.npm_token
+            import os
+            import shutil
+            env = os.environ.copy()
+
+            # Copy .npmrc from watch directory to target directory if it exists
+            if self.npmrc_path and self.npmrc_path.exists():
+                target_npmrc = work_dir / '.npmrc'
+                shutil.copy(self.npmrc_path, target_npmrc)
+
+                # Verify the file was copied correctly
+                if target_npmrc.exists():
+                    with open(target_npmrc, 'r') as f:
+                        content = f.read()
 
             result = subprocess.run(
                 ['npm', 'install'],
@@ -154,21 +185,30 @@ class PackageWatcher:
         print(f"\n📦 Step 1: Building {self.watch_path}")
         if not self.run_npm_build(self.watch_path):
             print("⚠️ Build failed, stopping sync process")
+            print(f"\n❌ Sync failed!\n")
             return
 
         # Step 2: Update all target package.json files
         print(f"\n📝 Step 2: Updating target package.json files")
+
+        all_success = True
         for target_path in self.target_paths:
             print(f"\n  → Updating {target_path}")
             if self.update_dependency_version(target_path, new_version):
                 print(f"    ✅ Updated {self.dependency_name} to {new_version}")
 
                 # Step 3: Run npm install
-                self.run_npm_install(target_path)
+                if not self.run_npm_install(target_path):
+                    all_success = False
+                    print(f"    ❌ Failed to install dependencies for {target_path}")
             else:
                 print(f"    ⚠️ Could not update (dependency not found in this file)")
+                all_success = False
 
-        print(f"\n✨ Sync complete!\n")
+        if all_success:
+            print(f"\n✨ Sync complete!\n")
+        else:
+            print(f"\n⚠️ Sync completed with errors!\n")
 
     def watch(self):
         """Start watching for version changes"""
@@ -199,26 +239,6 @@ class PackageWatcher:
             print(f"\n\n👋 Stopping watcher...")
             sys.exit(0)
 
-
-def get_npm_token() -> Optional[str]:
-    """Try to get NPM token from .npmrc file"""
-    try:
-        npmrc_paths = [
-            Path.home() / '.npmrc',
-            Path('.npmrc')
-        ]
-
-        for npmrc_path in npmrc_paths:
-            if npmrc_path.exists():
-                with open(npmrc_path, 'r') as f:
-                    for line in f:
-                        # Check for both NPM and GitHub registry tokens
-                        if '/:_authToken=' in line:
-                            token = line.split('=', 1)[1].strip()
-                            return token
-        return None
-    except Exception:
-        return None
 
 def main():
     parser = argparse.ArgumentParser(
@@ -263,7 +283,7 @@ Examples:
 
     parser.add_argument(
         '--token',
-        help='NPM token (will try to read from .npmrc if not provided)'
+        help='NPM token (will try to read from .npmrc in watch directory if not provided)'
     )
 
     parser.add_argument(
@@ -275,19 +295,13 @@ Examples:
 
     args = parser.parse_args()
 
-    # Get NPM token
-    npm_token = args.token or get_npm_token()
-    if npm_token:
-        print(f"🔑 NPM token found\n")
-    else:
-        print(f"⚠️ No NPM token found (will use default npm config)\n")
-
+    # Token will be read from watch directory's .npmrc in __init__
     # Create and start watcher
     watcher = PackageWatcher(
         watch_package_json=args.watch,
         dependency_name=args.dependency,
         target_package_jsons=args.targets,
-        npm_token=npm_token,
+        npm_token=args.token,
         poll_interval=args.interval
     )
 

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { APP_DATA } from '../../constants/common';
 import { APP_PAGES } from '../../constants/navigation';
-import { useTheme } from '../../hooks/useTheme';
+import { useTheme } from '../../context/ThemeContext';
 
 const sidebarLinks = [
   {

@@ -1,12 +1,12 @@
+import { authApi } from '@ahmedrioueche/gympro-client';
 import { useRouter, useSearch } from '@tanstack/react-router';
 import { ArrowRight, CheckCircle, Lock, Shield, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import AnimatedLogo from '../../../../components/ui/AnimatedLogo';
 import Button from '../../../../components/ui/Button';
 import Confetti from '../../../../components/ui/Confetti';
 import InputField from '../../../../components/ui/InputField';
-import Logo from '../../../../components/ui/Logo';
-import { authApi } from '@ahmedrioueche/gympro-client';
 
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
       <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-white to-pink-50 dark:from-red-900/20 dark:via-gray-800 dark:to-pink-900/20 p-4'>
         <div className='max-w-md w-full'>
           <div className='mb-8'>
-            <Logo />
+            <AnimatedLogo />
           </div>
 
           <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-red-100 dark:border-red-800 p-8 text-center'>
@@ -75,7 +75,7 @@ export default function ResetPasswordPage() {
       <div className='max-w-md w-full'>
         {/* Logo */}
         <div className='mb-8'>
-          <Logo />
+          <AnimatedLogo />
         </div>
 
         <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden'>

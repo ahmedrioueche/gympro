@@ -1,17 +1,18 @@
 import React from 'react';
-import { OnBoardingPage } from '../app/pages/main/onBoarding/OnBoardingPage';
-import { useOnboarding } from '../context/OnboardingContext';
+import { OnboardingPage } from '../app/pages/main/onboarding/OnboardingPage';
+import { useUserStore } from '../store/user';
 
 interface OnboardingGuardProps {
   children: React.ReactNode;
 }
 
 export const OnboardingGuard: React.FC<OnboardingGuardProps> = ({ children }) => {
-  const { isOnboardingCompleted } = useOnboarding();
+  const { user } = useUserStore();
+  const isOnboardingCompleted = user.profile.isOnBoarded;
 
   // If onboarding is not completed, show onboarding page
   if (!isOnboardingCompleted) {
-    return <OnBoardingPage />;
+    return <OnboardingPage />;
   }
 
   // If onboarding is completed, show the protected content

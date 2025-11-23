@@ -33,8 +33,8 @@ export interface GymSettings {
   servicesOffered?: BaseSubscriptionType[]; // List of services offered at the gym
 }
 
-export const CLASS_BOOKING_STATUS = ['booked', 'cancelled', 'waitlisted'];
-export type classBookingStatus = (typeof CLASS_BOOKING_STATUS)[number];
+export const CLASS_BOOKING_STATUSES = ['booked', 'cancelled', 'waitlisted'];
+export type classBookingStatus = (typeof CLASS_BOOKING_STATUSES)[number];
 
 export interface ClassBooking extends AuditInfo {
   classId: string; // the scheduled class

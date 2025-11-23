@@ -3,10 +3,10 @@ import { useSearch } from '@tanstack/react-router';
 import { CheckCircle, Mail, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import AnimatedLogo from '../../../../components/ui/AnimatedLogo';
 import Button from '../../../../components/ui/Button';
 import Confetti from '../../../../components/ui/Confetti';
 import InputField from '../../../../components/ui/InputField';
-import Logo from '../../../../components/ui/Logo';
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
       <div className='max-w-md w-full'>
         {/* Logo */}
         <div className='mb-8'>
-          <Logo />
+          <AnimatedLogo />
         </div>
 
         <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden'>

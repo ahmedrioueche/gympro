@@ -1,7 +1,7 @@
 import { Loader } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Logo from './Logo';
+import AnimatedLogo from './AnimatedLogo';
 
 const LoadingPage: React.FC<{ type?: 'inner' | 'outer'; message?: string }> = ({
   type = 'outer',
@@ -19,7 +19,7 @@ const LoadingPage: React.FC<{ type?: 'inner' | 'outer'; message?: string }> = ({
     >
       {/* Logo at the top */}
       <div className='mb-8'>
-        <Logo />
+        <AnimatedLogo />
       </div>
 
       <div className='max-w-xl w-full text-center'>
