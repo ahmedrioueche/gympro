@@ -15,8 +15,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const router = useRouter();
   const retryCountRef = useRef(0);
   const isCheckingRef = useRef(false);
+  const hasCheckedRef = useRef(false); // Track if we've done initial check
 
-  const { user, isLoading, setUser, setLoading, clearUser, isAuthenticated } = useUserStore();
+  const { isLoading, setUser, setLoading, clearUser } = useUserStore();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -29,10 +30,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
       setLoading(true);
 
       try {
-        // Try to get current user from the API
-        const user = await getCurrentUser();
+        // ALWAYS verify with the server - don't trust localStorage
+        const currentUser = await getCurrentUser();
 
-        if (!user) {
+        if (!currentUser) {
           // Check retry limit to prevent infinite loops
           if (retryCountRef.current >= MAX_RETRY_ATTEMPTS) {
             clearUser();
@@ -67,23 +68,24 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         }
 
         // Set user in store - this is where we populate the store!
-        setUser(user);
+        setUser(currentUser);
 
         // Check if email is verified
-        if (user.profile.isValidated === false) {
+        if (currentUser.profile.isValidated === false) {
           router.navigate({ to: '/auth/verify-email' });
           setLoading(false);
           return;
         }
 
         // Check if onboarding is completed
-        if (user.profile.isOnBoarded === false) {
+        if (currentUser.profile.isOnBoarded === false) {
           router.navigate({ to: '/onboarding' });
           setLoading(false);
           return;
         }
 
         setLoading(false);
+        hasCheckedRef.current = true;
       } catch (error) {
         console.error('ProtectedRoute: Auth check failed:', error);
 
@@ -122,14 +124,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
       }
     };
 
-    // Only check auth if user is not already authenticated or if we don't have user data
-    if (!isAuthenticated || !user) {
+    // ALWAYS check auth on mount - never trust persisted state alone
+    if (!hasCheckedRef.current) {
       checkAuth();
-    } else {
-      // User is already authenticated, just verify the stored data is still valid
-      setLoading(false);
     }
-  }, [router, setUser, setLoading, clearUser, isAuthenticated, user]);
+  }, [router, setUser, setLoading, clearUser]);
 
   if (isLoading) {
     return <LoadingPage />;

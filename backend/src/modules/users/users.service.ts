@@ -9,11 +9,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 
+import { GymService } from '../gym/gym.service';
+
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
 
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly gymService: GymService,
+  ) { }
 
   async findAll(
     page: number = 1,
@@ -322,5 +327,48 @@ export class UsersService {
     delete userObj.resetPasswordTokenExpiry;
 
     return userObj;
+  }
+
+  async completeOnboarding(userId: string, data: any) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException({
+        message: 'User not found',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+      });
+    }
+
+    // Update role
+    if (data.role && Object.values(UserRole).includes(data.role)) {
+      user.role = data.role;
+    }
+
+    // Update profile fields
+    if (data.username) user.profile.username = data.username;
+    if (data.age) user.profile.age = data.age;
+    if (data.gender) user.profile.gender = data.gender;
+    if (data.ownerName) user.profile.fullName = data.ownerName;
+
+    // Create Gym if owner and gymName provided
+    if (user.role === UserRole.Owner && data.gymName) {
+      try {
+        await this.gymService.create({
+          name: data.gymName,
+          ownerId: user?._id?.toString(),
+          isActive: true,
+        });
+      } catch (error) {
+        this.logger.error(`Failed to create gym for user ${userId}: ${error.message}`);
+        throw new BadRequestException('Failed to create gym: ' + error.message);
+      }
+    }
+
+    // Mark as onboarded
+    user.profile.isOnBoarded = true;
+
+    await user.save();
+
+    return this.sanitizeUser(user);
   }
 }

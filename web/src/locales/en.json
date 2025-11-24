@@ -146,129 +146,6 @@
     "password_required": "Password is required",
     "password_length": "Password must be at least 8 characters",
     "password_mismatch": "Passwords don't match",
-    "signup_failed": "Registration failed. Please try again.",
-    "network_error": "Network error. Please check your connection."
-  },
-  "footer": {
-    "copyright": "© {year} GymPro. All rights reserved."
-  },
-
-  "onboarding": {
-    "roles": {
-      "title": "Let's Get Started",
-      "subtitle": "Select how you'll use GymPro",
-      "description": "Get started with the right tools for you",
-      "owner": {
-        "title": "Gym Owner",
-        "description": "Complete control and management of your gym"
-      },
-      "coach": {
-        "title": "Gym Coach",
-        "description": "Train members and manage personalized programs"
-      },
-      "member": {
-        "title": "Gym Bro",
-        "description": "Access your workouts and track your fitness journey"
-      }
-    },
-    "details": {
-      "title": "Complete Your Profile",
-      "subtitle": "Tell us more about yourself",
-      "description": "This information will help personalize your experience"
-    },
-    "features": {
-      "memberCoachManagement": "Member & coach management",
-      "advancedAnalytics": "Advanced analytics & reports",
-      "paymentProcessing": "Payment processing (CIB, Edahabia)",
-      "subscriptionTracking": "Subscription tracking",
-      "automatedNotifications": "Automated notifications",
-      "viewAssignedMembers": "View assigned members",
-      "createTrainingPrograms": "Create training programs",
-      "trackMemberProgress": "Track member progress",
-      "scheduleSessions": "Schedule sessions",
-      "viewTrainingProgram": "View your training program",
-      "trackYourProgress": "Track your progress",
-      "seeSubscriptionStatus": "See subscription status",
-      "getSessionReminders": "Get session reminders"
-    },
-    "form": {
-      "member": {
-        "title": "Hello Gym Bro!"
-      },
-      "coach": {
-        "title": "Hello Coach!"
-      },
-      "fields": {
-        "username": "Username",
-        "email": "Email Address",
-        "fullName": "Full Name",
-        "phoneNumber": "Phone Number",
-        "age": "Age",
-        "gender": "Gender",
-        "address": "Address",
-        "city": "City",
-        "state": "State/Province",
-        "country": "Country",
-        "gymName": "Gym Name",
-        "website": "Website",
-        "timezone": "Timezone",
-        "logoUrl": "Logo URL",
-        "slogan": "Slogan",
-        "defaultCurrency": "Default Currency"
-      },
-      "placeholders": {
-        "username": "Enter your username",
-        "email": "Enter your email address",
-        "fullName": "Enter your full name",
-        "phoneNumber": "+213 XXX XXX XXX",
-        "age": "Enter your age",
-        "gender": "Select your gender",
-        "address": "Enter your street address",
-        "city": "Enter your city",
-        "state": "Enter your state or province",
-        "country": "Enter your country",
-        "gymName": "Enter your gym name",
-        "website": "https://yourgym.com",
-        "timezone": "Africa/Algiers",
-        "logoUrl": "https://example.com/logo.png",
-        "slogan": "Your gym's motto",
-        "defaultCurrency": "DZD"
-      },
-      "errors": {
-        "required": "This field is required"
-      },
-      "steps": {
-        "required": {
-          "description": "Please fill in the required information to get started"
-        },
-        "optional": {
-          "description": "Help us personalize your experience (optional)"
-        },
-        "basicInfo": "Basic Information",
-        "contactInfo": "Contact Information",
-        "additionalInfo": "Additional Details",
-        "branding": "Branding (Optional)"
-      },
-      "step": "Step",
-      "of": "of"
-    },
-    "memberDetails": "Complete Your Profile",
-    "coachDetails": "Complete Your Coach Profile",
-    "ownerDetails": "Set Up Your Gym",
-    "keyFeatures": "Key Features",
-    "selected": "Selected",
-    "skip": "Skip",
-    "next": "Next",
-    "previous": "Previous",
-    "finish": "Finish"
-  },
-
-  "navbar": {
-    "notifications": "Notifications",
-    "profile": "Profile",
-    "logout": "Logout",
-    "menu": "Menu",
-    "manager": "Manager",
     "welcome": "Welcome to GymPro"
   },
   "sidebar": {
@@ -287,5 +164,38 @@
     "viewAnalytics": "Performance insights",
     "viewNotifications": "Updates & alerts",
     "customizeSettings": "App preferences"
+  },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome to GymPro",
+      "subtitle": "Let's get you set up in just a few steps.",
+      "start": "Let's Start"
+    },
+    "questions": {
+      "isOwner": "Are you a gym owner?",
+      "gymName": "What is the name of your gym?",
+      "isCoach": "Are you a professional coach?",
+      "experience": "How many years of experience do you have?",
+      "username": "How should we call you?",
+      "age": "How old are you?",
+      "gender": "What is your gender?"
+    },
+    "placeholders": {
+      "gymName": "Enter gym name",
+      "experience": "Enter years of experience",
+      "username": "Enter your name",
+      "age": "Enter your age"
+    },
+    "options": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "actions": {
+      "yes": "Yes",
+      "no": "No",
+      "next": "Next",
+      "previous": "Back",
+      "finish": "Finish"
+    }
   }
 }

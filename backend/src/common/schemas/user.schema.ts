@@ -101,6 +101,8 @@ export class GymAccess {
 // Main User Schema
 @Schema({ timestamps: true })
 export class User extends Document {
+  declare _id: Types.ObjectId;
+
   // Embedded profile (not referenced!)
   @Prop({ type: UserProfileSchema, required: true })
   profile: UserProfile;

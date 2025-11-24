@@ -8,6 +8,8 @@ import { AppService } from './app.service';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
 import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { GymModule } from './modules/gym/gym.module';
 
 @Module({
   imports: [
@@ -46,9 +48,9 @@ import { AuthModule } from './modules/auth/auth.module';
       inject: [ConfigService],
     }),
 
-    // Your feature modules
     AuthModule,
-    // ... other modules
+    UsersModule,
+    GymModule,
   ],
   controllers: [AppController],
   providers: [

@@ -14,6 +14,7 @@ import { PermissionsGuard } from './guards/permissions.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { GymModule } from '../gym/gym.module';
 
 @Module({
   imports: [
@@ -30,9 +31,10 @@ import { UsersService } from './users.service';
       { name: 'ProgramHistory', schema: ProgramHistorySchema },
       { name: 'AttendanceRecord', schema: AttendanceRecordSchema },
     ]),
+    GymModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, RolesGuard, PermissionsGuard],
   exports: [UsersService],
 })
-export class UsersModule {}
+export class UsersModule { }

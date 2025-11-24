@@ -1,143 +1,324 @@
-import type { UserRole } from '@ahmedrioueche/gympro-client';
+import { usersApi, type UserRole } from '@ahmedrioueche/gympro-client';
 import { useNavigate } from '@tanstack/react-router';
-import { ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Logo from '../../../../components/ui/Logo';
 import { getRoleHomePage } from '../../../../utils/roles';
-import { MemberDetailsForm } from './components/MemberDetailsForm';
-import { OwnerDetailsForm } from './components/OwnerDetailsForm';
-import { RolesFeaturesStep } from './components/RolesFeaturesStep';
-import { ONBOARDING_ROLES, ONBOARDING_STEPS } from './constants';
+import {
+  BaseView,
+  InputView,
+  QuestionView,
+  SelectionView,
+} from './components/OnboardingViews';
+import AnimatedLogo from '../../../../components/ui/AnimatedLogo';
+import { useTheme } from '../../../../context/ThemeContext';
+import useScreen from '../../../../hooks/useScreen';
+import { useUserStore } from '../../../../store/user';
+
+type OnboardingData = {
+  role: UserRole | null;
+  gymName: string;
+  ownerName: string;
+  experience: string;
+  username: string;
+  age: string;
+  gender: string;
+};
 
 export function OnboardingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selectedRole, setSelectedRole] = useState<UserRole>(null);
+  const [step, setStep] = useState(0);
+  const [data, setData] = useState<OnboardingData>({
+    role: null,
+    gymName: '',
+    ownerName: '',
+    experience: '',
+    username: '',
+    age: '',
+    gender: '',
+  });
+  const { setMode } = useTheme()
+  const { isMobile } = useScreen()
+  const { updateProfile } = useUserStore()
 
-  const handleNext = () => {
-    if (currentStep < ONBOARDING_STEPS.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      const redirectUrl = getRoleHomePage(selectedRole);
-      navigate({ to: redirectUrl });
+  setMode("dark");
+
+  const updateData = (key: keyof OnboardingData, value: any) => {
+    setData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleFinish = () => {
+    setStep(9);
+  };
+
+  useEffect(() => {
+    if (step === 9) {
+      const complete = async () => {
+        try {
+          console.log('Onboarding finished:', data);
+          await usersApi.completeOnboarding({
+            role: data.role as string,
+            gymName: data.gymName,
+            ownerName: data.ownerName,
+            experience: data.experience,
+            username: data.username,
+            age: data.age,
+            gender: data.gender,
+          });
+          updateProfile({ isOnBoarded: true });
+
+          const redirectUrl = getRoleHomePage(data.role);
+          setTimeout(() => {
+            navigate({ to: redirectUrl });
+          }, 3000);
+        } catch (error) {
+          console.error('Failed to complete onboarding:', error);
+          // Handle error (show toast, etc.)
+        }
+      };
+      complete();
+    }
+  }, [step, data, navigate]);
+
+  const nextStep = () => setStep((s) => s + 1);
+
+  const prevStep = () => {
+    switch (step) {
+      case 0: // Welcome - No back
+        return;
+      case 1: // Owner Check -> Welcome
+        setStep(0);
+        break;
+      case 2: // Gym Name -> Owner Check
+        setStep(1);
+        break;
+      case 3: // Coach Check -> Owner Check
+        setStep(1);
+        break;
+      case 4: // Experience -> Coach Check
+        setStep(3);
+        break;
+      case 5: // Username -> Experience (if coach) or Coach Check (if member)
+        if (data.role === 'coach') {
+          setStep(4);
+        } else {
+          setStep(3);
+        }
+        break;
+      case 6: // Age -> Username
+        setStep(5);
+        break;
+      case 7: // Gender -> Age
+        setStep(6);
+        break;
+      case 8: // Owner Name -> Gym Name
+        setStep(2);
+        break;
+      default:
+        setStep((s) => Math.max(0, s - 1));
     }
   };
 
-  const handlePrevious = () => {
-    setCurrentStep(Math.max(0, currentStep - 1));
-  };
-
   const renderStep = () => {
-    switch (currentStep) {
-      case 0:
+    switch (step) {
+      case 0: // Welcome
         return (
-          <RolesFeaturesStep
-            step={ONBOARDING_STEPS[0]}
-            roles={ONBOARDING_ROLES}
-            selectedRole={selectedRole}
-            setSelectedRole={(role) => {
-              setSelectedRole(role);
-              handleNext();
+          <BaseView
+            title={t('onboarding.welcome.title')}
+            subtitle={t('onboarding.welcome.subtitle')}
+          >
+            <button
+              onClick={nextStep}
+              className="w-full p-4 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25"
+            >
+              {t('onboarding.welcome.start')}
+            </button>
+          </BaseView>
+        );
+
+      case 1: // Owner Check
+        return (
+          <QuestionView
+            question={t('onboarding.questions.isOwner')}
+            onYes={() => {
+              updateData('role', 'owner' as UserRole);
+              setStep(2); // Go to Gym Name
             }}
+            onNo={() => {
+              setStep(3); // Go to Coach Check
+            }}
+            yesLabel={t('onboarding.actions.yes')}
+            noLabel={t('onboarding.actions.no')}
           />
         );
-      case 1:
-        if (selectedRole === 'owner') {
-          return <OwnerDetailsForm onSubmit={() => {}} />;
-        } else if (selectedRole === 'coach') {
-          return <MemberDetailsForm onSubmit={() => {}} isCoach />;
-        } else if (selectedRole === 'member') {
-          return <MemberDetailsForm onSubmit={() => {}} />;
-        }
-        return null;
+
+      case 2: // Gym Name (Owner)
+        return (
+          <InputView
+            title={t('onboarding.questions.gymName')}
+            value={data.gymName}
+            onChange={(val) => updateData('gymName', val)}
+            onNext={() => setStep(8)} // Go to Owner Name
+            placeholder={t('onboarding.placeholders.gymName')}
+            buttonLabel={t('onboarding.actions.next')}
+          />
+        );
+
+      case 8: // Owner Name (Owner) - New Step
+        return (
+          <InputView
+            title={t('onboarding.questions.username')}
+            value={data.ownerName}
+            onChange={(val) => updateData('ownerName', val)}
+            onNext={handleFinish}
+            placeholder={t('onboarding.placeholders.username')}
+            buttonLabel={t('onboarding.actions.finish')}
+          />
+        );
+
+      case 3: // Coach Check
+        return (
+          <QuestionView
+            question={t('onboarding.questions.isCoach')}
+            onYes={() => {
+              updateData('role', 'coach' as UserRole);
+              setStep(4); // Go to Experience
+            }}
+            onNo={() => {
+              updateData('role', 'member' as UserRole);
+              setStep(5); // Go to Username
+            }}
+            yesLabel={t('onboarding.actions.yes')}
+            noLabel={t('onboarding.actions.no')}
+          />
+        );
+
+      case 4: // Experience (Coach)
+        return (
+          <InputView
+            title={t('onboarding.questions.experience')}
+            value={data.experience}
+            onChange={(val) => updateData('experience', val)}
+            onNext={() => setStep(5)} // Go to Username
+            placeholder={t('onboarding.placeholders.experience')}
+            type="number"
+            buttonLabel={t('onboarding.actions.next')}
+          />
+        );
+
+      case 5: // Username
+        return (
+          <InputView
+            title={t('onboarding.questions.username')}
+            value={data.username}
+            onChange={(val) => updateData('username', val)}
+            onNext={() => setStep(6)} // Go to Age
+            placeholder={t('onboarding.placeholders.username')}
+            buttonLabel={t('onboarding.actions.next')}
+          />
+        );
+
+      case 6: // Age
+        return (
+          <InputView
+            title={t('onboarding.questions.age')}
+            value={data.age}
+            onChange={(val) => updateData('age', val)}
+            onNext={() => setStep(7)} // Go to Gender
+            placeholder={t('onboarding.placeholders.age')}
+            type="number"
+            buttonLabel={t('onboarding.actions.next')}
+          />
+        );
+
+      case 7: // Gender
+        return (
+          <SelectionView
+            title={t('onboarding.questions.gender')}
+            options={[
+              { label: t('onboarding.options.male'), value: 'male' },
+              { label: t('onboarding.options.female'), value: 'female' },
+            ]}
+            onSelect={(val) => {
+              updateData('gender', val);
+              handleFinish();
+            }}
+            selectedValue={data.gender}
+          />
+        );
+
+      case 9: // Success
+        return (
+          <BaseView
+            title={t('onboarding.success.title', 'All Set!')}
+            subtitle={t('onboarding.success.subtitle', 'You are ready to start your journey.')}
+          >
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
+            </div>
+          </BaseView>
+        );
+
       default:
         return null;
     }
   };
 
-  const isNextDisabled = currentStep === 0 && !selectedRole;
-  const isPreviousDisabled = currentStep === 0;
+  // Calculate progress (approximate based on max steps)
+  const totalSteps = 10; // Max possible steps
+  const progress = ((step + 1) / totalSteps) * 100;
+
 
   return (
-    <div className='min-h-screen bg-background flex flex-col relative'>
-      {' '}
-      <div
-        className='absolute inset-0 bg-cover bg-center bg-no-repeat opacity-5 pointer-events-none'
-        style={{
-          backgroundImage: 'url(/stories/gym-story-1.svg)',
-          zIndex: 0,
-        }}
-      />
-      {/* Content Wrapper with higher z-index */}
-      <div className='relative z-10 flex flex-col min-h-screen'>
-        {/* Progress Bar */}
-        <div className='w-full h-1 bg-surface'>
-          <div
-            className='h-full bg-gradient-to-r from-primary via-secondary to-accent transition-all duration-500'
-            style={{ width: `${((currentStep + 1) / ONBOARDING_STEPS.length) * 100}%` }}
-          />
+    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+
+      {/* Header */}
+      <header className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-8 py-4 sm:py-6 gap-3 relative z-10">
+        <AnimatedLogo height='h-10' leftPosition={isMobile ? '50%' : '20%'} logoSize='h-14 w-14' textSize="md:text-2xl text-xl" />
+        {/* Step Indicators */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {Array.from({ length: totalSteps }).map((_, index) => (
+            <div
+              key={index}
+              className={`h-2 rounded-full transition-all duration-300 ${index === step
+                ? 'w-8 bg-primary'
+                : index < step
+                  ? 'w-2 bg-primary/50'
+                  : 'w-2 bg-border'
+                }`}
+            />
+          ))}
+        </div>
+      </header>
+
+      {/* Main Content Area - Split Screen */}
+      <main className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-center w-full mx-auto  gap-8 lg:gap-16">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 pointer-events-none"
+          style={{
+            backgroundImage: 'url(/images/gym_bg.png)',
+            zIndex: 0,
+          }}
+        />
+        <div className="w-full flex justify-center">
+          <div className="w-full max-w-md">
+            {renderStep()}
+          </div>
         </div>
 
-        {/* Header */}
-        <header className='flex flex-col sm:flex-row justify-between items-center px-4 sm:px-8 py-4 sm:py-6 gap-3'>
-          <Logo />
-          {/* Step Indicators */}
-          <div className='flex items-center gap-2 sm:gap-3'>
-            {ONBOARDING_STEPS.map((_, index) => (
-              <div
-                key={index}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  index === currentStep
-                    ? 'w-8 bg-primary'
-                    : index < currentStep
-                      ? 'w-2 bg-primary/50'
-                      : 'w-2 bg-border'
-                }`}
-              />
-            ))}
-          </div>
-        </header>
+      </main>
 
-        {/* Content */}
-        <main className='flex-1 overflow-y-auto flex flex-col items-center w-full'>
-          {renderStep()}
-        </main>
+      {/* Footer / Back Button */}
+      <footer className="px-4 sm:px-8 py-4 sm:py-6 relative z-10 flex justify-start max-w-4xl mx-auto w-full lg:max-w-7xl">
+        <button
+          disabled={step === 0 || step === 9}
+          onClick={prevStep}
+          className="px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:bg-surface text-text-primary flex items-center gap-2"
+        >
+          {t('onboarding.actions.previous')}
+        </button>
 
-        {/* Footer */}
-        <footer className='px-4 sm:px-8 py-4 sm:py-6 bg-surface/50 backdrop-blur-sm border-t border-border'>
-          <div
-            className={`flex flex-col sm:flex-row items-center max-w-5xl mx-auto gap-3 ${
-              isPreviousDisabled ? 'sm:justify-end' : 'sm:justify-between'
-            }`}
-          >
-            {!isPreviousDisabled && (
-              <button
-                onClick={handlePrevious}
-                className='w-full sm:w-auto px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:bg-surface text-text-primary'
-              >
-                {t('onboarding.previous')}
-              </button>
-            )}
-
-            <button
-              onClick={handleNext}
-              disabled={isNextDisabled}
-              className={`w-full sm:w-auto group px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 ${
-                isNextDisabled
-                  ? 'opacity-50 cursor-not-allowed bg-surface text-text-secondary'
-                  : 'bg-gradient-to-r from-primary via-secondary to-accent text-white hover:shadow-lg hover:shadow-primary/30 hover:scale-105'
-              }`}
-            >
-              {currentStep === ONBOARDING_STEPS.length - 1
-                ? t('onboarding.finish')
-                : t('onboarding.next')}
-              <ChevronRight className='w-5 h-5 group-hover:translate-x-1 transition-transform' />
-            </button>
-          </div>
-        </footer>
-      </div>
+      </footer>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import AnimatedLogo from '../../../../components/ui/AnimatedLogo';
-import './style.css';
 
 const AuthHeader = ({ type = 'login' }: { type?: 'login' | 'signup' }) => {
   const { t } = useTranslation();

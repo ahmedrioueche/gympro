@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Put,
+  Post,
   Query,
   Req,
   UseGuards,
@@ -23,7 +24,7 @@ import { UsersService } from './users.service';
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get()
   @UseGuards(PermissionsGuard)
@@ -139,5 +140,11 @@ export class UsersController {
   async delete(@Param('id') id: string, @Req() req: any) {
     const currentUserId = req.user?.sub;
     return this.usersService.delete(id, currentUserId);
+  }
+
+  @Post('onboarding/complete')
+  async completeOnboarding(@Body() data: any, @Req() req: any) {
+    const currentUserId = req.user?.sub;
+    return this.usersService.completeOnboarding(currentUserId, data);
   }
 }
