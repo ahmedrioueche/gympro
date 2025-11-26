@@ -45,11 +45,12 @@
     "confirm_password": "Confirm Password",
     "confirm_password_placeholder": "Re-enter your password",
     "already_have_account": "Already have an account?",
-    "hero_title": "Manage Your Gym Business Efficiently",
-    "hero_subtitle": "Empower gym owners and managers with all-in-one tools for members, subscriptions, coaches, payments, and notifications.",
-    "feature_1": "Complete member & subscription management",
-    "feature_2": "Coach and program administration",
-    "feature_3": "Automated payments and notifications",
+    "hero_title": "All-in-One Fitness Management Platform",
+    "hero_subtitle": "A complete ecosystem for gym owners, coaches, and members with tools for programs, progress, payments, and communication.",
+    "feature_1": "Unified management for gyms, coaches, and members",
+    "feature_2": "Training programs, coaching tools & progress tracking",
+    "feature_3": "Integrated billing, renewals & smart notifications",
+
     "email_sent": {
       "welcome_title": "🎉 Welcome to GymPro! ",
       "welcome_message": "We're excited to have you on board. You can start enjoying the benefits of GymPro very soon!",
@@ -193,6 +194,7 @@
     "actions": {
       "yes": "Yes",
       "no": "No",
+
       "next": "Next",
       "previous": "Back",
       "finish": "Finish"

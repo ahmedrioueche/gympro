@@ -1,21 +1,22 @@
-import React from 'react';
-import { OnboardingPage } from '../app/pages/main/onBoarding/OnBoardingPage';
-import { useUserStore } from '../store/user';
-import { Navigate } from '@tanstack/react-router';
-import LoadingPage from './ui/LoadingPage';
+import { Navigate } from "@tanstack/react-router";
+import React from "react";
+import { OnboardingPage } from "../app/pages/main/onBoarding/OnBoardingPage";
+import { useUserStore } from "../store/user";
+import LoadingPage from "./ui/LoadingPage";
 
 interface OnboardingGuardProps {
   children: React.ReactNode;
 }
 
-export const OnboardingGuard: React.FC<OnboardingGuardProps> = ({ children }) => {
+export const OnboardingGuard: React.FC<OnboardingGuardProps> = ({
+  children,
+}) => {
   const { user, isLoading } = useUserStore();
 
   if (isLoading) {
-    return <LoadingPage />
+    return <LoadingPage />;
   }
   if (!user) {
-    console.log("no user")
     return <Navigate to="/auth/login" />;
   }
 

@@ -1,6 +1,7 @@
-import { type User, UserRole } from '@ahmedrioueche/gympro-client';
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import { authApi, type User, UserRole } from "@ahmedrioueche/gympro-client";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { getCurrentUser } from "../utils";
 
 interface UserState {
   // State
@@ -8,11 +9,13 @@ interface UserState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  lastFetchedAt: number | null; // timestamp in ms
+  cacheTTL: number; // e.g., 5 minutes in ms
 
   // Actions
   setUser: (user: User | null) => void;
   updateUser: (updates: Partial<User>) => void;
-  updateProfile: (updates: Partial<User['profile']>) => void;
+  updateProfile: (updates: Partial<User["profile"]>) => void;
   clearUser: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -27,6 +30,7 @@ interface UserState {
   isMember: () => boolean;
   isCoach: () => boolean;
   isStaff: () => boolean;
+  fetchUser: () => Promise<User | null>;
 }
 
 export const useUserStore = create<UserState>()(
@@ -37,6 +41,8 @@ export const useUserStore = create<UserState>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      lastFetchedAt: null,
+      cacheTTL: 5 * 60 * 1000, // 5 minutes
 
       // Actions
       setUser: (user) =>
@@ -44,6 +50,7 @@ export const useUserStore = create<UserState>()(
           user,
           isAuthenticated: !!user,
           error: null,
+          lastFetchedAt: Date.now(),
         }),
 
       updateUser: (updates) =>
@@ -72,7 +79,54 @@ export const useUserStore = create<UserState>()(
 
       setError: (error) => set({ error }),
 
-      // Helper methods
+      fetchUser: async () => {
+        const {
+          user,
+          lastFetchedAt,
+          cacheTTL,
+          setUser,
+          clearUser,
+          setLoading,
+        } = get();
+        const now = Date.now();
+        const cacheValid = lastFetchedAt && now - lastFetchedAt < cacheTTL;
+
+        if (user && cacheValid) {
+          return user; // use cached user
+        }
+
+        setLoading(true);
+
+        let retryCount = 0;
+
+        while (retryCount < 2) {
+          try {
+            const currentUser = await getCurrentUser();
+            if (currentUser) {
+              setUser(currentUser);
+              setLoading(false);
+              return currentUser;
+            }
+
+            // Try refresh if no user
+            const refreshRes = await authApi.refresh();
+            if (refreshRes?.success) {
+              retryCount++;
+              continue; // retry getCurrentUser
+            }
+
+            break; // no user and refresh failed
+          } catch (err) {
+            console.error("fetchUserWithCacheAndRefresh error:", err);
+            retryCount++;
+          }
+        }
+
+        clearUser();
+        setLoading(false);
+        return null;
+      },
+
       getUserRole: () => {
         const { user } = get();
         return (user?.role as UserRole) || null;
@@ -90,12 +144,12 @@ export const useUserStore = create<UserState>()(
 
       isOwnerOrManager: () => {
         const { user } = get();
-        return user?.role === 'owner' || user?.role === 'manager';
+        return user?.role === "owner" || user?.role === "manager";
       },
 
       canManageSubscriptions: () => {
         const { user } = get();
-        if (user?.role === 'owner' || user?.role === 'manager') {
+        if (user?.role === "owner" || user?.role === "manager") {
           return (user as any).gymAccess?.canManageSubscriptions ?? false;
         }
         return false;
@@ -103,7 +157,7 @@ export const useUserStore = create<UserState>()(
 
       canManageMembers: () => {
         const { user } = get();
-        if (user?.role === 'owner' || user?.role === 'manager') {
+        if (user?.role === "owner" || user?.role === "manager") {
           return (user as any).gymAccess?.canManageMembers ?? false;
         }
         return false;
@@ -111,7 +165,7 @@ export const useUserStore = create<UserState>()(
 
       canManageStaff: () => {
         const { user } = get();
-        if (user?.role === 'owner' || user?.role === 'manager') {
+        if (user?.role === "owner" || user?.role === "manager") {
           return (user as any).gymAccess?.canManageStaff ?? false;
         }
         return false;
@@ -119,21 +173,21 @@ export const useUserStore = create<UserState>()(
 
       isMember: () => {
         const { user } = get();
-        return user?.role === 'member';
+        return user?.role === "member";
       },
 
       isCoach: () => {
         const { user } = get();
-        return user?.role === 'coach';
+        return user?.role === "coach";
       },
 
       isStaff: () => {
         const { user } = get();
-        return user?.role === 'staff';
+        return user?.role === "staff";
       },
     }),
     {
-      name: 'user-storage',
+      name: "user-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
@@ -145,6 +199,7 @@ export const useUserStore = create<UserState>()(
 
 // Selectors for optimized component rendering
 export const selectUser = (state: UserState) => state.user;
-export const selectIsAuthenticated = (state: UserState) => state.isAuthenticated;
+export const selectIsAuthenticated = (state: UserState) =>
+  state.isAuthenticated;
 export const selectUserRole = (state: UserState) => state.getUserRole();
 export const selectUserProfile = (state: UserState) => state.user?.profile;
