@@ -103,11 +103,10 @@ function LoginPage() {
     <div
       className={`min-h-screen ${
         mode === "dark" ? bgGradient : "bg-background"
-      } flex`}
+      } flex flex-col lg:flex-row overflow-x-hidden`}
     >
-      {" "}
       {/* Left Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 lg:py-0">
         <div className="max-w-md w-full space-y-8">
           <AuthHeader />
 
@@ -167,7 +166,7 @@ function LoginPage() {
               </div>
               <button
                 type="button"
-                className={` text-sm font-medium transition-colors ${
+                className={`text-sm font-medium transition-colors ${
                   isEmailValid
                     ? "text-primary hover:text-secondary cursor-pointer"
                     : "text-gray-400"
@@ -212,7 +211,7 @@ function LoginPage() {
               onClick={handleGoogleLogin}
               className="w-full flex items-center justify-center px-4 py-3 border border-border rounded-xl bg-surface hover:bg-border text-text-primary font-medium transition-all duration-200 transform cursor-pointer"
             >
-              <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 mr-3 flex-shrink-0" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -230,12 +229,12 @@ function LoginPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              {t("auth.continue_with_google")}
+              <span className="truncate">{t("auth.continue_with_google")}</span>
             </button>
 
             {/* Sign Up Link */}
             <div className="text-center">
-              <p className="text-text-secondary">
+              <p className="text-text-secondary text-sm">
                 {t("auth.dont_have_account")}{" "}
                 <button
                   onClick={() => (window.location.href = APP_PAGES.signUp.link)}
@@ -249,7 +248,11 @@ function LoginPage() {
           </form>
         </div>
       </div>
-      <Hero />
+
+      {/* Right Side - Hero (Hidden on mobile) */}
+      <div className="hidden lg:block">
+        <Hero />
+      </div>
     </div>
   );
 }

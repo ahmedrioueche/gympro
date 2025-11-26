@@ -19,7 +19,8 @@
     "currentRoute": "Current Route"
   },
   "actions": {
-    "go_back": "Go back"
+    "go_back": "Go back",
+    "logout": "Logout"
   },
   "auth": {
     "welcome_back": "Welcome back",
@@ -150,6 +151,7 @@
     "welcome": "Welcome to GymPro"
   },
   "sidebar": {
+    "home": "Home",
     "dashboard": "Dashboard",
     "members": "Members",
     "subscriptions": "Subscriptions",
@@ -158,6 +160,7 @@
     "analytics": "Analytics",
     "notifications": "Notifications",
     "settings": "Settings",
+    "manageAccount": "Manage your account",
     "manageMembers": "Manage your gym members",
     "manageSubscriptions": "Subscription plans & renewals",
     "manageCoaching": "Coaches & programs",
@@ -199,5 +202,12 @@
       "previous": "Back",
       "finish": "Finish"
     }
+  },
+  "role": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "member": "Member",
+    "coach": "Coach",
+    "staff": "Staff"
   }
 }
