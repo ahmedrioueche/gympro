@@ -18,7 +18,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private readonly gymService: GymService,
-  ) { }
+  ) {}
 
   async findAll(
     page: number = 1,
@@ -355,15 +355,15 @@ export class UsersService {
       try {
         await this.gymService.create({
           name: data.gymName,
-          ownerId: user?._id?.toString(),
-          isActive: true,
+          owner: user._id.toString(),
         });
       } catch (error) {
-        this.logger.error(`Failed to create gym for user ${userId}: ${error.message}`);
+        this.logger.error(
+          `Failed to create gym for user ${userId}: ${error.message}`,
+        );
         throw new BadRequestException('Failed to create gym: ' + error.message);
       }
     }
-
     // Mark as onboarded
     user.profile.isOnBoarded = true;
 

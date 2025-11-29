@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import { AttendanceRecordSchema } from '../attendace/attendance.schema';
+import { GymModule } from '../gym/gym.module';
 import { GymModel, GymSchema } from '../gym/gym.schema';
-import { SubscriptionHistorySchema } from '../gymBilling/gymSubscription/gymSubscription.schema';
-import { GymMembershipSchema } from '../gymBilling/membership/membership.schema';
+import { GymMembershipSchema } from '../gymMembership/membership.schema';
+import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
 import { BaseNotificationSchema } from '../notifications/notifications.schema';
 import {
   ProgramHistorySchema,
@@ -14,7 +15,6 @@ import { PermissionsGuard } from './guards/permissions.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { GymModule } from '../gym/gym.module';
 
 @Module({
   imports: [
@@ -37,4 +37,4 @@ import { GymModule } from '../gym/gym.module';
   providers: [UsersService, RolesGuard, PermissionsGuard],
   exports: [UsersService],
 })
-export class UsersModule { }
+export class UsersModule {}

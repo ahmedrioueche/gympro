@@ -1,40 +1,145 @@
+import { apiResponse, ErrorCode } from '@ahmedrioueche/gympro-client';
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Post,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GymService } from './gym.service';
 
 @Controller('gyms')
 export class GymController {
-    constructor(private readonly gymService: GymService) { }
+  constructor(private readonly gymService: GymService) {}
 
-    @Post()
-    create(@Body() createGymDto: any) {
-        return this.gymService.create(createGymDto);
+  @Post()
+  async create(@Body() createGymDto: any) {
+    try {
+      const gym = await this.gymService.create(createGymDto);
+      return apiResponse(true, undefined, gym, 'Gym created successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.CREATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
     }
+  }
 
-    @Get()
-    findAll() {
-        return this.gymService.findAll();
+  @Get()
+  async findAll() {
+    try {
+      const gyms = await this.gymService.findAll();
+      return apiResponse(true, undefined, gyms);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.FETCH_GYMS_FAILED,
+        undefined,
+        error.message,
+      );
     }
+  }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.gymService.findOne(id);
+  @Get('my-gyms')
+  @UseGuards(JwtAuthGuard)
+  async findMyGyms(@Req() req: any) {
+    try {
+      const userId = req.user?.sub;
+      const gyms = await this.gymService.findByOwner(userId);
+      return apiResponse(true, undefined, gyms);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.FETCH_MY_GYMS_FAILED,
+        undefined,
+        error.message,
+      );
     }
+  }
 
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updateGymDto: any) {
-        return this.gymService.update(id, updateGymDto);
+  @Get('member')
+  @UseGuards(JwtAuthGuard)
+  async findMemberGyms(@Req() req: any) {
+    try {
+      const userId = req.user?.sub;
+      const gyms = await this.gymService.findByMember(userId);
+      return apiResponse(true, undefined, gyms);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.FETCH_MEMBER_GYMS_FAILED,
+        undefined,
+        error.message,
+      );
     }
+  }
 
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.gymService.remove(id);
+  @Get('all-my-gyms')
+  @UseGuards(JwtAuthGuard)
+  async findAllMyGyms(@Req() req: any) {
+    try {
+      const userId = req.user?.sub;
+      const gyms = await this.gymService.findAllForUser(userId);
+      return apiResponse(true, undefined, gyms);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.FETCH_ALL_MY_GYMS_FAILED,
+        undefined,
+        error.message,
+      );
     }
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    try {
+      const gym = await this.gymService.findOne(id);
+      return apiResponse(true, undefined, gym);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.GYM_NOT_FOUND,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateGymDto: any) {
+    try {
+      const gym = await this.gymService.update(id, updateGymDto);
+      return apiResponse(true, undefined, gym, 'Gym updated successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPDATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    try {
+      const gym = await this.gymService.remove(id);
+      return apiResponse(true, undefined, gym, 'Gym deleted successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.DELETE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
 }

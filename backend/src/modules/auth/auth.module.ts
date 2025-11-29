@@ -6,8 +6,8 @@ import { User, UserSchema } from 'src/common/schemas/user.schema';
 import { MailerService } from 'src/common/services/mailer.service';
 import { AttendanceRecordSchema } from '../attendace/attendance.schema';
 import { GymModel, GymSchema } from '../gym/gym.schema';
-import { SubscriptionHistorySchema } from '../gymBilling/gymSubscription/gymSubscription.schema';
-import { GymMembershipSchema } from '../gymBilling/membership/membership.schema';
+import { GymMembershipSchema } from '../gymMembership/membership.schema';
+import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
 import { BaseNotificationSchema } from '../notifications/notifications.schema';
 import {
   ProgramHistorySchema,

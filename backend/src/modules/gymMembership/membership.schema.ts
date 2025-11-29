@@ -1,6 +1,4 @@
 import type {
-  Gym,
-  GymMembership,
   MembershipStatus,
   RolePermissions,
   SubscriptionInfo,
@@ -22,11 +20,11 @@ export class CustomPermissionsModel implements Partial<RolePermissions> {
 }
 
 @Schema({ timestamps: true })
-export class GymMembershipModel extends Document implements GymMembership {
-  declare _id: string;
+export class GymMembershipModel extends Document {
+  declare _id: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'GymModel', required: true })
-  gym: Gym;
+  gym: Types.ObjectId;
 
   @Prop({ type: [String], required: true })
   roles: UserRole[];

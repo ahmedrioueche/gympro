@@ -9,7 +9,6 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
  */
 const getAllowedOrigins = (): (string | RegExp)[] => {
   const isDev = process.env.NODE_ENV !== 'prod';
-
   const origins: (string | RegExp)[] = [];
 
   if (isDev) {
@@ -21,6 +20,10 @@ const getAllowedOrigins = (): (string | RegExp)[] => {
       // Allow localhost with any port for development
       /^http:\/\/localhost:\d+$/,
       /^http:\/\/127\.0\.0\.1:\d+$/,
+      // Allow local network IPs for mobile testing (192.168.x.x, 10.0.x.x, etc.)
+      /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:\d+$/,
+      /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$/,
+      /^http:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}:\d+$/,
     );
   } else {
     // Production origins
@@ -31,7 +34,6 @@ const getAllowedOrigins = (): (string | RegExp)[] => {
   }
 
   // Custom scheme for mobile deep links (if needed for some endpoints)
-  // Note: Mobile apps typically don't need CORS, but web views might
   const mobileScheme = process.env.PROD_MOBILE_URL || 'gympro://';
   if (mobileScheme.startsWith('http')) {
     origins.push(mobileScheme);
@@ -42,7 +44,6 @@ const getAllowedOrigins = (): (string | RegExp)[] => {
 
 async function bootstrap() {
   const isDev = process.env.NODE_ENV === 'dev';
-
   const app = await NestFactory.create(AppModule, {
     logger: isDev
       ? ['error', 'warn', 'log', 'debug', 'verbose']
@@ -97,7 +98,7 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0'); // Listen on all network interfaces
 
   logger.log(`🚀 Server running on http://localhost:${port}/api`);
   logger.log(
@@ -105,4 +106,8 @@ async function bootstrap() {
   );
   logger.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
 }
-bootstrap();
+
+bootstrap().catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
+});
