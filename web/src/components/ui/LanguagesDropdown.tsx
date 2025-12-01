@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { LANGUAGES } from "../../constants/common";
-import type { AvailableLanguages } from "../../types/api";
+import type { AvailableLanguages } from "../../types/lang";
 
 export default function LanguagesDropdown() {
   const { i18n } = useTranslation();

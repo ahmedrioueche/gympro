@@ -1,6 +1,7 @@
-import { AppSubscription } from './appBilling';
-import { AuditInfo, PaymentMethod, TimeRange, WeeklyTimeRange } from './common';
-import { BaseSubscriptionType } from './subscription';
+import { AppSubscription } from "./appBilling";
+import { AuditInfo, PaymentMethod, TimeRange, WeeklyTimeRange } from "./common";
+import { BaseSubscriptionType } from "./subscription";
+import { User } from "./user";
 
 export interface Gym extends AuditInfo {
   _id: string;
@@ -16,9 +17,10 @@ export interface Gym extends AuditInfo {
   logoUrl?: string; // Gym logo for display in dashboards
   slogan?: string;
   isActive: boolean; // Gym is active or deactivated
-  ownerId: string; // ID of the gym owner
+  owner: User;
   defaultCurrency?: string; // For subscription/payment display (e.g., "DZD")
   settings?: GymSettings; // Optional nested settings object
+  memberStats?: GymStats;
   appSubscription?: AppSubscription;
 }
 
@@ -33,7 +35,15 @@ export interface GymSettings {
   servicesOffered?: BaseSubscriptionType[]; // List of services offered at the gym
 }
 
-export const CLASS_BOOKING_STATUSES = ['booked', 'cancelled', 'waitlisted'];
+export interface GymStats {
+  total: number; // Total registered members
+  checkedIn: number; // Members currently in the gym (real-time)
+  withActiveSubscriptions: number; // Members with valid subscriptions
+  withExpiredSubscriptions: number; // Members with expired subscriptions
+  pendingApproval: number; // Members waiting for approval/verification
+}
+
+export const CLASS_BOOKING_STATUSES = ["booked", "cancelled", "waitlisted"];
 export type classBookingStatus = (typeof CLASS_BOOKING_STATUSES)[number];
 
 export interface ClassBooking extends AuditInfo {

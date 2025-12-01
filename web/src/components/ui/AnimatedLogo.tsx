@@ -9,6 +9,7 @@ const AnimatedLogo = ({
   textSize = "md:text-3xl text-2xl",
   leftPosition = "50%",
   paddingTop = "pt-0",
+  onClick,
 }: {
   height?: string;
   width?: string;
@@ -16,12 +17,18 @@ const AnimatedLogo = ({
   textSize?: string;
   leftPosition?: string;
   paddingTop?: string;
+  onClick?: () => void;
 }) => {
   const { t } = useTranslation();
 
   return (
     <div
-      className={`flex items-center justify-center mb-3 ${height} relative ${width} ${paddingTop}`}
+      onClick={() => {
+        onClick();
+      }}
+      className={`flex items-center justify-center mb-3 ${height} relative ${width} ${paddingTop} ${
+        onClick ? "cursor-pointer" : " "
+      }`}
     >
       {/* Zap Icon with smooth horizontal shift */}
       <div

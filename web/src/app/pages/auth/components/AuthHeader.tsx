@@ -14,7 +14,7 @@ const AuthHeader = ({ type = "login" }: { type?: "login" | "signup" }) => {
     <div className="text-center overflow-hidden">
       <AnimatedLogo />
       {title && (
-        <h2 className="text-3xl font-bold text-text-primary animate-fade-in">
+        <h2 className="text-xl md:text-3xl font-bold text-text-primary animate-fade-in">
           {title}
         </h2>
       )}

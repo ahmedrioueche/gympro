@@ -20,7 +20,10 @@
   },
   "actions": {
     "go_back": "Go back",
-    "logout": "Logout"
+    "logout": "Logout",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next"
   },
   "auth": {
     "welcome_back": "Welcome back",
@@ -152,6 +155,7 @@
   },
   "sidebar": {
     "home": "Home",
+    "gyms": "Gyms",
     "dashboard": "Dashboard",
     "members": "Members",
     "subscriptions": "Subscriptions",
@@ -160,14 +164,16 @@
     "analytics": "Analytics",
     "notifications": "Notifications",
     "settings": "Settings",
-    "manageAccount": "Manage your account",
-    "manageMembers": "Manage your gym members",
-    "manageSubscriptions": "Subscription plans & renewals",
-    "manageCoaching": "Coaches & programs",
-    "managePayments": "Payment methods & history",
-    "viewAnalytics": "Performance insights",
-    "viewNotifications": "Updates & alerts",
-    "customizeSettings": "App preferences"
+    "manageAccount": "Account management",
+    "manageGym": "Gym management",
+    "manageGyms": "Gym management",
+    "manageMembers": "Member management",
+    "manageSubscriptions": "Subscription plans",
+    "manageCoaching": "Coaching & programs",
+    "managePayments": "Payments & billing",
+    "viewAnalytics": "Analytics & reports",
+    "viewNotifications": "Notifications & alerts",
+    "customizeSettings": "App settings"
   },
   "onboarding": {
     "welcome": {
@@ -209,5 +215,404 @@
     "member": "Member",
     "coach": "Coach",
     "staff": "Staff"
+  },
+  "gym": {
+    "select": "Select gym",
+    "no_gym_selected": "No gym selected",
+    "selectLocation": "Select Location",
+    "noGyms": "No gyms yet",
+    "createFirst": "Create your first gym to get started",
+    "members": "members",
+    "createNew": "Create New Gym"
+  },
+  "gyms": {
+    "title": "Gym Management",
+    "subtitle": "Manage your gym locations and settings",
+    "create_title": "Grow Your Business",
+    "create_desc": "Add a new gym location to expand your reach and manage more members.",
+    "create_button": "Create New Gym",
+    "your_gyms": "Your Gyms",
+    "no_gyms": "No Gyms Found",
+    "no_gyms_desc": "You haven't created or joined any gyms yet.",
+    "status_active": "Active",
+    "status_inactive": "Inactive",
+    "no_address": "No address provided",
+    "members_count": "Members",
+    "no_city": "No city",
+    "manage": "Manage Gym"
+  },
+  "gymCard": {
+    "activeStatus": "● Active",
+    "inactiveStatus": "○ Inactive",
+    "location": "Location",
+    "noAddress": "No address provided",
+    "contact": "Contact",
+    "noPhone": "No phone",
+    "members": "Members",
+    "activeMembers": "active members",
+    "website": "Website",
+    "manageGym": "Manage Gym",
+    "viewSettings": "View Settings",
+    "back": "← Back to Overview",
+    "settingsTitle": "Gym Details & Settings",
+    "basicInfo": "Basic Information",
+    "gymId": "Gym ID",
+    "ownerName": "Owner name",
+    "ownerId": "Owner ID",
+    "timezone": "Timezone",
+    "currency": "Currency",
+    "settings": "Settings",
+    "paymentMethods": "Payment Methods",
+    "customSubscriptions": "Custom Subscriptions",
+    "notifications": "Notifications",
+    "renewalReminder": "Renewal Reminder Days",
+    "workingHours": "Working Hours",
+    "mixedTraining": "Mixed Training",
+    "femaleOnlyHours": "Female-Only Hours",
+    "servicesOffered": "Services Offered",
+    "memberStats": "Member Statistics",
+    "totalMembers": "Total",
+    "checkedIn": "Checked In",
+    "activeSubscriptions": "Active",
+    "expiredSubscriptions": "Expired",
+    "pendingApproval": "Pending",
+    "appSubscription": "App Subscription",
+    "subscriptionType": "Type",
+    "subscriptionStatus": "Status",
+    "viewMoreDetails": "View Details"
+  },
+
+  "create_gym": {
+    "title": "Create Your Gym",
+    "subtitle": "Set up your gym in just a few steps and start managing everything in one place",
+    "step": "Step",
+    "success": "your gym was created successfully!",
+    "error": "Could not create the gym right now, please try again later",
+    "steps": {
+      "step": "Step",
+      "basic": {
+        "title": "Basic Info",
+        "description": "Tell us about your gym"
+      },
+      "location": {
+        "title": "Location",
+        "description": "Where is your gym located?"
+      },
+      "contact": {
+        "title": "Contact",
+        "description": "How can people reach you?"
+      }
+    },
+    "form": {
+      "name_label": "Gym Name*",
+      "name_placeholder": "Enter your gym's name",
+      "slogan_label": "Slogan",
+      "slogan_placeholder": "A catchy phrase that describes your gym",
+      "address_label": "Street Address",
+      "address_placeholder": "123 Main Street",
+      "city_label": "City",
+      "city_placeholder": "Enter city",
+      "state_label": "State/Province",
+      "state_placeholder": "Enter state or province",
+      "country_label": "Country",
+      "country_placeholder": "Enter country",
+      "phone_label": "Phone Number",
+      "phone_placeholder": "+1 (555) 123-4567",
+      "email_label": "Email",
+      "email_placeholder": "contact@yourgym.com",
+      "website_label": "Website",
+      "website_placeholder": "https://yourgym.com",
+      "creating": "Creating...",
+      "submit": "Create Gym",
+      "using_map": "Using Map",
+      "manual_entry": "Manual Entry",
+      "click_map_hint": "Click on the map to set location",
+      "manual_entry_hint": "Enter address details manually",
+      "loading_address": "Loading address...",
+      "use_current_location": "Use My Current Location",
+      "auto_populated": "Auto-populated from map:",
+      "duplicate_name_error": "You already created a gym with this name. Please choose a different name."
+    },
+    "tips": {
+      "title": "Pro Tip",
+      "description": "You can always update these details later from your gym settings. Don't worry about getting everything perfect right now!"
+    }
+  },
+
+  "profile": {
+    "defaultName": "John Doe",
+    "defaultEmail": "john@example.com",
+    "menu": {
+      "profile": {
+        "label": "Profile",
+        "description": "View and edit your profile"
+      },
+      "settings": {
+        "label": "Settings",
+        "description": "Manage your preferences"
+      },
+      "memberships": {
+        "label": "My Memberships",
+        "description": "View your gym memberships"
+      },
+      "logout": "Logout"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "new": "new",
+    "viewAll": "View all notifications",
+    "empty": "No notifications",
+    "demo": {
+      "memberJoined": {
+        "label": "New member joined",
+        "description": "John Doe joined your gym"
+      },
+      "paymentReceived": {
+        "label": "Payment received",
+        "description": "Subscription payment of $50"
+      },
+      "membershipExpiring": {
+        "label": "Membership expiring",
+        "description": "Jane's membership expires in 3 days"
+      }
+    }
+  },
+  "home": {
+    "manager": {
+      "profile": {
+        "title": "Manager Profile",
+        "businessName": "Business Name",
+        "accountStatus": "Account Status",
+        "lastLogin": "Last Login",
+        "editProfile": "Edit Profile",
+        "status": {
+          "active": "Active",
+          "trial": "Trial",
+          "premium": "Premium",
+          "basic": "Basic"
+        }
+      },
+      "businessOverview": {
+        "title": "Business Overview",
+        "subtitle": "Your business at a glance",
+        "totalGyms": "Total Gyms",
+        "activeMembers": "Active Members",
+        "totalStaff": "Total Staff",
+        "monthlyRevenue": "Monthly Revenue",
+        "outstandingPayments": "Outstanding Payments",
+        "issues": "Issues"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "createGym": "Create New Gym",
+        "addStaff": "Add Staff Member",
+        "openAnalytics": "Open Analytics",
+        "manageSubscription": "Manage Subscription",
+        "businessSettings": "Business Settings"
+      },
+      "alerts": {
+        "title": "Alerts & Notifications",
+        "viewAll": "View all notifications",
+        "noAlerts": "No alerts at the moment",
+        "types": {
+          "paymentIssue": "Payment Issue",
+          "contractExpiring": "Contract Expiring",
+          "printerError": "Printer Error",
+          "maintenance": "Maintenance Required",
+          "checkInDrop": "Check-in Drop"
+        }
+      },
+      "gymOverview": {
+        "title": "Last Visited Gym",
+        "activeMembers": "Active Members",
+        "todayCheckIns": "Today's Check-ins",
+        "revenueTrend": "Revenue Trend",
+        "viewDetails": "View Details",
+        "noGym": "No gyms yet",
+        "createFirst": "Create your first gym to get started"
+      }
+    }
+  },
+  "members": {
+    "title": "Members Management",
+    "subtitle": "Manage your gym members and their subscriptions",
+    "addMember": "Add New Member",
+    "searchPlaceholder": "Search members by name or email...",
+    "viewMode": {
+      "cards": "Cards View",
+      "table": "Table View"
+    },
+    "filters": {
+      "all": "All Members",
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "pending": "Pending"
+    },
+    "sort": {
+      "label": "Sort by",
+      "name": "Name",
+      "joinDate": "Join Date",
+      "status": "Status",
+      "membership": "Membership"
+    },
+    "table": {
+      "avatar": "Avatar",
+      "name": "Name",
+      "email": "Email",
+      "membership": "Membership",
+      "status": "Status",
+      "joinDate": "Join Date",
+      "actions": "Actions"
+    },
+    "card": {
+      "memberSince": "Member since",
+      "viewProfile": "View Profile",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "pending": "Pending Approval"
+    },
+    "membership": {
+      "basic": "Basic",
+      "premium": "Premium",
+      "vip": "VIP",
+      "trial": "Trial"
+    },
+    "empty": {
+      "title": "No Members Yet",
+      "description": "Start building your community by adding your first member",
+      "action": "Add First Member"
+    },
+    "stats": {
+      "total": "Total Members",
+      "active": "Active",
+      "inactive": "Inactive",
+      "thisMonth": "New This Month"
+    }
+  },
+
+  "createMember": {
+    "title": "Add New Member",
+    "subtitle": "Create a new gym membership in just a few steps",
+
+    "steps": {
+      "step": "Step",
+      "general": {
+        "title": "General Information",
+        "description": "Basic member details and contact method"
+      },
+      "subscription": {
+        "title": "Subscription Details",
+        "description": "Choose membership plan and payment method"
+      },
+      "contact": {
+        "title": "Preferences & Review",
+        "description": "Contact preferences and final review"
+      }
+    },
+
+    "form": {
+      "contactMethod": {
+        "label": "Primary Contact Method",
+        "email": "Email",
+        "phone": "Phone"
+      },
+      "email": {
+        "label": "Email Address",
+        "placeholder": "member@example.com"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "+1 (555) 123-4567"
+      },
+      "fullName": {
+        "label": "Full Name",
+        "placeholder": "John Doe"
+      },
+      "gender": {
+        "label": "Gender",
+        "placeholder": "Select gender",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other",
+        "preferNotToSay": "Prefer not to say"
+      },
+      "age": {
+        "label": "Age",
+        "placeholder": "25"
+      },
+      "subscription": {
+        "label": "Subscription Type",
+        "placeholder": "Select a plan",
+        "regular": "Regular Membership",
+        "coached": "Personal Training",
+        "yoga": "Yoga Classes",
+        "crossfit": "CrossFit Training"
+      },
+      "startDate": {
+        "label": "Start Date",
+        "placeholder": "Select start date"
+      },
+      "payment": {
+        "label": "Payment Method",
+        "placeholder": "Select payment method",
+        "cash": "Cash",
+        "card": "Credit/Debit Card",
+        "bankTransfer": "Bank Transfer"
+      },
+      "welcomeMessage": {
+        "label": "Send Welcome Message",
+        "description": "Send account access details via email or SMS"
+      },
+      "notes": {
+        "label": "Additional Notes",
+        "placeholder": "Add any special notes or requirements..."
+      }
+    },
+
+    "review": {
+      "title": "Member Summary",
+      "name": "Name",
+      "contact": "Contact",
+      "subscription": "Plan"
+    },
+
+    "validation": {
+      "contactRequired": "Contact information is required",
+      "emailInvalid": "Please enter a valid email address",
+      "phoneInvalid": "Please enter a valid phone number (min 10 digits)",
+      "nameRequired": "Full name is required",
+      "ageInvalid": "Please enter a valid age"
+    },
+
+    "actions": {
+      "back": "Back",
+      "next": "Next Step",
+      "submit": "Create Member",
+      "submitting": "Creating...",
+      "cancel": "Cancel"
+    },
+
+    "success": {
+      "title": "Member Created Successfully!",
+      "message": "The new member has been added to your gym. They will receive access details shortly.",
+      "addAnother": "Add Another Member",
+      "viewMembers": "View All Members"
+    },
+
+    "error": {
+      "message": "Failed to create member. Please try again."
+    },
+
+    "tips": {
+      "title": "Access Notification",
+      "description": "When you create a member, they will automatically receive a message with their account access details via their chosen contact method (email or SMS)."
+    }
   }
 }

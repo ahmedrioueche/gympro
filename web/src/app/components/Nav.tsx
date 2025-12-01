@@ -1,21 +1,31 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import type { UserRole } from "@ahmedrioueche/gympro-client";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AnimatedLogo from "../../components/ui/AnimatedLogo";
 import { bgGradient } from "../../constants/styles";
 import { useTheme } from "../../context/ThemeContext";
+import { useAllMyGyms } from "../../hooks/queries/useGyms";
 import useScreen from "../../hooks/useScreen";
 import { useUserStore } from "../../store/user";
+import { getRoleHomePage } from "../../utils/roles";
+import GymSelector from "./GymSelector";
+import NotificationsDropdown from "./NotificationsDropdown";
+import ProfileDropdown from "./ProfileDropdown";
 
 export default function Nav({ children, sidebarLinks }) {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { mode, toggleMode } = useTheme();
   const sidebarRef = useRef(null);
   const { isMobile } = useScreen();
   const { user } = useUserStore();
   const activeRoute = location.pathname;
+
+  // Fetch all gyms for current user (owned + member)
+  const { data: gyms = [] } = useAllMyGyms();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -31,8 +41,37 @@ export default function Nav({ children, sidebarLinks }) {
     }
   }, [sidebarOpen]);
 
+  // Dropdown handlers
+  const handleProfileClick = () => {
+    console.log("Navigate to profile");
+  };
+
+  const handleSettingsClick = () => {
+    console.log("Navigate to settings");
+  };
+
+  const handleMembershipsClick = () => {
+    console.log("Navigate to memberships");
+  };
+
+  const handleLogout = () => {
+    console.log("Logout user");
+  };
+
+  const handleNotificationClick = (notificationId: string) => {
+    console.log("Notification clicked:", notificationId);
+  };
+
+  const handleViewAllNotifications = () => {
+    console.log("Navigate to all notifications");
+  };
+
+  const handleBack = () => {
+    navigate({ to: ".." });
+  };
+
   return (
-    <div className={`flex h-screen  `}>
+    <div className={`flex h-screen`}>
       {/* SIDEBAR */}
       <div
         ref={sidebarRef}
@@ -51,6 +90,10 @@ export default function Nav({ children, sidebarLinks }) {
               textSize="md:text-xl text-lg"
               leftPosition="20%"
               paddingTop="pt-2"
+              onClick={() => {
+                const url = getRoleHomePage(user.role as UserRole);
+                navigate({ to: url });
+              }}
             />
             <button
               onClick={() => setSidebarOpen(false)}
@@ -64,7 +107,8 @@ export default function Nav({ children, sidebarLinks }) {
         {/* Sidebar Content */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto hide-scrollbar border-r border-border">
           {sidebarLinks.map((link) => {
-            const isActive = activeRoute === link.path;
+            const isActive = link.matchPaths.some((p) => activeRoute === p);
+
             return (
               <Link
                 key={link.path}
@@ -128,7 +172,7 @@ export default function Nav({ children, sidebarLinks }) {
       <div className="flex-1 flex flex-col">
         {/* NAVBAR */}
         <nav className="sticky top-0 z-20 border-b border-border backdrop-blur-lg ">
-          <div className="px-4 md:px-8 h-16 flex items-center justify-between">
+          <div className="pr-4 h-16 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -136,6 +180,21 @@ export default function Nav({ children, sidebarLinks }) {
               >
                 <span className="text-text-secondary">☰</span>
               </button>
+
+              <div className="flex items-center gap-3">
+                {/* Back Button - Desktop Only */}
+                <button
+                  onClick={handleBack}
+                  className="hidden md:flex items-center gap-2 p-2 rounded-lg transition-colors hover:bg-border text-text-secondary hover:text-text-primary"
+                  title={t("actions.back")}
+                >
+                  <span className="text-lg">←</span>
+                </button>
+
+                <div className="min-w-[200px]">
+                  <GymSelector gyms={gyms} />
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center gap-2 md:gap-4">
@@ -146,14 +205,19 @@ export default function Nav({ children, sidebarLinks }) {
                 {mode === "dark" ? "☀️" : "🌙"}
               </button>
 
-              <button className="relative p-2 rounded-lg transition-colors  text-text-secondary">
-                <span>🔔</span>
-                <span className="absolute top-1 right-1 w-2 h-2 bg-danger rounded-full animate-pulse" />
-              </button>
+              {/* Notifications Dropdown */}
+              <NotificationsDropdown
+                onNotificationClick={handleNotificationClick}
+                onViewAllClick={handleViewAllNotifications}
+              />
 
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center cursor-pointer hover:shadow-lg transition-shadow">
-                <span className="text-white font-bold text-sm">JD</span>
-              </div>
+              {/* Profile Dropdown */}
+              <ProfileDropdown
+                onProfileClick={handleProfileClick}
+                onSettingsClick={handleSettingsClick}
+                onMembershipsClick={handleMembershipsClick}
+                onLogoutClick={handleLogout}
+              />
             </div>
           </div>
         </nav>

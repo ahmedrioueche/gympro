@@ -31,24 +31,6 @@ export const APP_PAGES = {
     link: "/onboarding",
   },
 
-  // Shared dashboard (all roles)
-  dashboard: {
-    name: "pages.dashboard",
-    link: "/dashboard",
-    home: {
-      name: "pages.dashboard.home",
-      link: "/dashboard",
-    },
-    notifications: {
-      name: "pages.dashboard.notifications",
-      link: "/dashboard/notifications",
-    },
-    settings: {
-      name: "pages.dashboard.settings",
-      link: "/dashboard/settings",
-    },
-  },
-
   // Owner/Manager pages
   manager: {
     name: "pages.manager",
@@ -57,9 +39,13 @@ export const APP_PAGES = {
       name: "pages.manager.home",
       link: "/manager",
     },
-    members: {
-      name: "pages.manager.members",
-      link: "/manager/members",
+    gyms: {
+      name: "pages.manager.gyms",
+      link: "/manager/gyms",
+    },
+    createGym: {
+      name: "pages.manager.create_gym",
+      link: "/manager/gyms/create",
     },
     subscriptions: {
       name: "pages.manager.subscriptions",
@@ -84,6 +70,57 @@ export const APP_PAGES = {
     settings: {
       name: "pages.manager.settings",
       link: "/manager/settings",
+    },
+  },
+
+  gym: {
+    name: "pages.gym",
+    link: "/gym",
+    home: {
+      name: "pages.gym.home",
+      link: "/gym",
+    },
+    members: {
+      name: "pages.gym.members",
+      link: "/gym/members",
+    },
+    createMember: {
+      name: "pages.gym.create_member",
+      link: "/gym/members/create",
+    },
+    subscriptions: {
+      name: "pages.gym.subscriptions",
+      link: "/gym/subscriptions",
+    },
+    analytics: {
+      name: "pages.gym.analytics",
+      link: "/gym/analytics",
+    },
+    notifications: {
+      name: "pages.gym.notifications",
+      link: "/gym/notifications",
+    },
+    settings: {
+      name: "pages.gym.settings",
+      link: "/gym/settings",
+    },
+  },
+
+  // Shared dashboard (all roles)
+  dashboard: {
+    name: "pages.dashboard",
+    link: "/dashboard",
+    home: {
+      name: "pages.dashboard.home",
+      link: "/",
+    },
+    notifications: {
+      name: "pages.dashboard.notifications",
+      link: "/dashboard/notifications",
+    },
+    settings: {
+      name: "pages.dashboard.settings",
+      link: "/dashboard/settings",
     },
   },
 

@@ -84,9 +84,8 @@ const CustomSelect = <T extends string>({
 
   return (
     <div className="relative" ref={selectRef}>
-      <label className="font-normal text-sm text-light-text-primary dark:text-dark-text-primary">
-        {title}
-      </label>
+      <label className="font-normal text-sm text-text-primary">{title}</label>
+
       <div
         role="button"
         tabIndex={disabled ? -1 : 0}
@@ -94,9 +93,16 @@ const CustomSelect = <T extends string>({
         aria-expanded={isOpen}
         aria-label={title}
         aria-disabled={disabled}
-        className={`mt-2 p-3 px-4 rounded-lg border border-white/10 hover:bg-light-secondary/10 dark:hover:bg-dark-primary/10 focus:ring-2 focus:ring-light-secondary dark:focus:ring-dark-secondary cursor-pointer text-dark-foreground dark:hover:text-dark-foreground dark:text-dark-foreground ${bgColor} ${
-          disabled ? "opacity-50 cursor-not-allowed" : ""
-        }`}
+        className={`
+      mt-2 p-3 px-4 rounded-lg 
+      border border-border 
+      bg-surface
+      hover:bg-surface/60
+      text-text-primary
+      cursor-pointer
+      ${bgColor ?? ""}
+      ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+    `}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onKeyDown={(e) => {
           if (!disabled && (e.key === "Enter" || e.key === " ")) {
@@ -104,15 +110,22 @@ const CustomSelect = <T extends string>({
           }
         }}
       >
-        {options.find((option) => option.value === selectedOption)?.label ||
+        {options.find((o) => o.value === selectedOption)?.label ||
           label ||
           selectedOption}
       </div>
+
       {isOpen && !disabled && (
         <ul
           ref={listRef}
           role="listbox"
-          className={`absolute z-10 mt-1 w-full bg-dark-background dark:bg-dark-background backdrop-blur-xl rounded-md shadow-lg max-h-60 overflow-auto ${className}`}
+          className={`
+        absolute z-10 mt-1 w-full rounded-md shadow-lg 
+        bg-background
+        max-h-60 overflow-auto backdrop-blur-xl 
+        border border-border
+        ${className ?? ""}
+      `}
           onScroll={handleListScroll}
         >
           {options.map((option) => (
@@ -121,7 +134,14 @@ const CustomSelect = <T extends string>({
               role="option"
               aria-selected={option.value === selectedOption}
               tabIndex={0}
-              className="px-4 py-2 hover:bg-light-secondary/20 text-dark-foreground hover:text-dark-foreground dark:hover:bg-dark-secondary/20 hover:cursor-pointer dark:text-dark-foreground dark:hover:text-dark-foreground focus:bg-light-secondary/20 dark:focus:bg-dark-secondary/20 focus:outline-none"
+              className={`
+            px-4 py-2 
+            text-text-primary
+            hover:bg-border-secondary
+            hover:cursor-pointer
+            focus:bg-border-secondary
+            focus:outline-none
+          `}
               onClick={() => {
                 onChange(option.value);
                 setIsOpen(false);

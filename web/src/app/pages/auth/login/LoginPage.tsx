@@ -199,7 +199,7 @@ function LoginPage() {
                 <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-background text-text-secondary">
+                <span className="px-2  text-text-secondary">
                   {t("auth.or_continue_with")}
                 </span>
               </div>
@@ -249,10 +249,7 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* Right Side - Hero (Hidden on mobile) */}
-      <div className="hidden lg:block">
-        <Hero />
-      </div>
+      <Hero />
     </div>
   );
 }
