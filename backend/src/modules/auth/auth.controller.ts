@@ -7,9 +7,12 @@ import type {
   RefreshData,
   ResendVerificationData,
   ResetPasswordData,
+  SendOtpData,
+  SetupAccountData,
   SigninData,
   SignupData,
   VerifyEmailData,
+  VerifyOtpData,
 } from '@ahmedrioueche/gympro-client';
 import { apiResponse } from '@ahmedrioueche/gympro-client';
 import {
@@ -24,16 +27,28 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import * as crypto from 'crypto';
 import type { Response } from 'express';
 import { ClientPlatform } from 'src/common/decorators/platform.decorator';
 import { buildRedirectUrl, Platform } from 'src/common/utils/platform.util';
-import { ResendVerificationDto, SigninDto, SignupDto } from './auth.dto';
+import {
+  ResendVerificationDto,
+  SendOtpDto,
+  SetupAccountDto,
+  SigninDto,
+  SignupDto,
+  VerifyOtpDto,
+} from './auth.dto';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { OtpService } from './otp.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly otpService: OtpService,
+  ) {}
 
   @Post('signup')
   @Throttle({ short: { limit: 5, ttl: 60000 } })
@@ -133,9 +148,9 @@ export class AuthController {
 
   @Post('forgot-password')
   async forgotPassword(
-    @Body('email') email: string,
+    @Body('identifier') identifier: string,
   ): Promise<ApiResponse<ForgotPasswordData>> {
-    await this.authService.forgotPassword(email);
+    await this.authService.forgotPassword(identifier);
     return apiResponse(
       true,
       undefined,
@@ -232,6 +247,105 @@ export class AuthController {
       res.redirect(errorUrl);
     }
   }
+
+  // --- OTP ENDPOINTS ---
+  @Post('send-otp')
+  @Throttle({ short: { limit: 3, ttl: 900000 } }) // 3 requests per 15 minutes
+  async sendOtp(@Body() dto: SendOtpDto): Promise<ApiResponse<SendOtpData>> {
+    const result = await this.otpService.sendOTP(dto.phoneNumber);
+
+    if (!result.success) {
+      return apiResponse(false, undefined, {
+        message: result.message,
+        remainingTime: result.remainingTime,
+      });
+    }
+
+    return apiResponse(true, undefined, {
+      message: result.message,
+    });
+  }
+
+  @Post('verify-otp')
+  @Throttle({ short: { limit: 5, ttl: 300000 } }) // 5 requests per 5 minutes
+  async verifyOtp(
+    @Body() dto: VerifyOtpDto,
+  ): Promise<ApiResponse<VerifyOtpData>> {
+    const result = await this.otpService.verifyOTP(dto.phoneNumber, dto.code);
+
+    if (!result.success) {
+      return apiResponse(false, undefined, {
+        userId: '',
+        message: result.message,
+      });
+    }
+
+    return apiResponse(true, undefined, {
+      userId: result.userId!,
+      message: result.message,
+    });
+  }
+
+  @Post('setup-account')
+  @Throttle({ short: { limit: 3, ttl: 300000 } })
+  async setupAccount(
+    @Body() dto: SetupAccountDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ApiResponse<SetupAccountData>> {
+    // This endpoint will be implemented when we add the setup token logic
+    // For now, return a placeholder
+    return apiResponse(false, undefined, null as any, 'Not implemented yet');
+  }
+
+  @Post('verify-forgot-password-otp')
+  @Throttle({ short: { limit: 5, ttl: 300000 } }) // 5 requests per 5 minutes
+  async verifyForgotPasswordOtp(
+    @Body() dto: VerifyOtpDto,
+  ): Promise<ApiResponse<{ resetToken: string }>> {
+    const result = await this.otpService.verifyOTP(dto.phoneNumber, dto.code);
+
+    if (!result.success) {
+      return apiResponse(
+        false,
+        undefined,
+        {
+          resetToken: '',
+        },
+        result.message,
+      );
+    }
+
+    // Generate a reset token for password reset
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    // Find user and save reset token
+    const user = await this.authService.getUserByPhoneNumber(dto.phoneNumber);
+    if (!user) {
+      return apiResponse(
+        false,
+        undefined,
+        {
+          resetToken: '',
+        },
+        'User not found',
+      );
+    }
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordTokenExpiry = resetTokenExpiry;
+    await user.save();
+
+    return apiResponse(
+      true,
+      undefined,
+      {
+        resetToken,
+      },
+      'OTP verified successfully',
+    );
+  }
+
   // -----------------------------
   // Helper methods for cookie management
   // -----------------------------

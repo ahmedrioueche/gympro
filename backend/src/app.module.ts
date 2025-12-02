@@ -8,8 +8,9 @@ import { AppService } from './app.service';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
 import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
 import { GymModule } from './modules/gym/gym.module';
+import { SmsModule } from './modules/sms/sms.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { GymModule } from './modules/gym/gym.module';
     AuthModule,
     UsersModule,
     GymModule,
+    SmsModule,
   ],
   controllers: [AppController],
   providers: [

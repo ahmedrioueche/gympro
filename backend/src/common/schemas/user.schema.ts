@@ -8,8 +8,8 @@ export class UserProfile {
   @Prop({ required: true })
   username: string;
 
-  @Prop({ required: true, unique: true })
-  email: string;
+  @Prop()
+  email?: string;
 
   @Prop()
   fullName?: string;
@@ -25,6 +25,16 @@ export class UserProfile {
 
   @Prop()
   phoneNumber?: string;
+
+  @Prop({ default: false })
+  phoneNumberVerified?: boolean;
+
+  @Prop({
+    type: String,
+    enum: ['active', 'pending_setup'],
+    default: 'active',
+  })
+  accountStatus?: 'active' | 'pending_setup';
 
   @Prop()
   address?: string;
@@ -171,8 +181,47 @@ export class User extends Document {
   @Prop()
   resetPasswordTokenExpiry?: Date;
 
+  // OTP fields for phone verification
+  @Prop()
+  otpCode?: string;
+
+  @Prop()
+  otpExpiry?: Date;
+
+  @Prop({ default: 0 })
+  otpAttempts?: number;
+
+  @Prop()
+  otpLastSentAt?: Date;
+
+  // Account setup fields for manager-created accounts
+  @Prop()
+  setupToken?: string;
+
+  @Prop()
+  setupTokenExpiry?: Date;
+
+  @Prop({ default: false })
+  setupTokenUsed?: boolean;
+
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.index(
+  { 'profile.email': 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: { 'profile.email': { $type: 'string' } },
+  },
+);
+UserSchema.index(
+  { 'profile.phoneNumber': 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: { 'profile.phoneNumber': { $type: 'string' } },
+  },
+);

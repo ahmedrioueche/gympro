@@ -9,12 +9,14 @@ import { GymModel, GymSchema } from '../gym/gym.schema';
 import { GymMembershipSchema } from '../gymMembership/membership.schema';
 import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
 import { BaseNotificationSchema } from '../notifications/notifications.schema';
+import { SmsModule } from '../sms/sms.module';
 import {
   ProgramHistorySchema,
   TrainingProgramSchema,
 } from '../training/training.schema';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { OtpService } from './otp.service';
 
 @Module({
   imports: [
@@ -41,9 +43,11 @@ import { AuthService } from './auth.service';
       }),
       inject: [ConfigService],
     }),
+
+    SmsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailerService],
+  providers: [AuthService, MailerService, OtpService],
   exports: [AuthService],
 })
 export class AuthModule {}

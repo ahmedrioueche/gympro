@@ -15,8 +15,8 @@ import {
 } from 'class-validator';
 
 export class SigninDto implements ISigninDto {
-  @IsEmail()
-  email: string;
+  @IsString()
+  identifier: string; // email OR phone number
 
   @IsString()
   @MinLength(6)
@@ -28,16 +28,22 @@ export class SigninDto implements ISigninDto {
 }
 
 export class SignupDto implements ISignupDto {
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  phoneNumber?: string;
 
   @IsString()
   @MinLength(6)
   password: string;
 
+  @IsOptional()
   @IsString()
   @MinLength(2)
-  username: string;
+  username?: string;
 }
 
 export class RefreshDto implements IRefreshDto {
@@ -71,4 +77,49 @@ export class GoogleUserDto implements IGoogleUserDto {
 
   @IsString()
   sub: string; // Google's unique identifier
+}
+
+// New DTOs for phone authentication
+export class SendOtpDto {
+  @IsString()
+  phoneNumber: string;
+}
+
+export class VerifyOtpDto {
+  @IsString()
+  phoneNumber: string;
+
+  @IsString()
+  @MinLength(6)
+  @MinLength(6)
+  code: string;
+}
+
+export class SetupAccountDto {
+  @IsString()
+  token: string;
+
+  @IsString()
+  @MinLength(8)
+  password: string;
+}
+
+export class CreateMemberDto {
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  phoneNumber?: string;
+
+  @IsString()
+  role: string;
+
+  @IsString()
+  gymId: string;
+
+  @IsOptional()
+  @IsString()
+  fullName?: string;
 }
