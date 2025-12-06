@@ -8,6 +8,7 @@ interface FormData {
   subscriptionTypeId: string;
   sendWelcomeMessage: boolean;
   notes: string;
+  isContactless: boolean;
 }
 
 interface StepContactPreferencesProps {
@@ -24,7 +25,7 @@ function StepContactPreferences({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
       <div className="mb-6">
         <h2 className="text-xl font-bold text-text-primary mb-2 flex items-center gap-2">
           <span className="text-2xl">📱</span>
@@ -36,26 +37,28 @@ function StepContactPreferences({
       </div>
 
       {/* Send Welcome Message Toggle */}
-      <div className="bg-surface/50 border border-border rounded-xl p-4">
-        <label className="flex items-center justify-between cursor-pointer">
-          <div className="flex-1">
-            <h3 className="font-semibold text-text-primary mb-1">
-              {t("createMember.form.welcomeMessage.label")}
-            </h3>
-            <p className="text-sm text-text-secondary">
-              {t("createMember.form.welcomeMessage.description")}
-            </p>
-          </div>
-          <input
-            type="checkbox"
-            checked={formData.sendWelcomeMessage}
-            onChange={(e) =>
-              handleInputChange("sendWelcomeMessage", e.target.checked)
-            }
-            className="w-5 h-5 text-primary bg-surface border-border rounded focus:ring-primary focus:ring-2"
-          />
-        </label>
-      </div>
+      {!formData.isContactless && (
+        <div className="bg-surface/50 border border-border rounded-xl p-4">
+          <label className="flex items-center justify-between cursor-pointer">
+            <div className="flex-1">
+              <h3 className="font-semibold text-text-primary mb-1">
+                {t("createMember.form.welcomeMessage.label")}
+              </h3>
+              <p className="text-sm text-text-secondary">
+                {t("createMember.form.welcomeMessage.description")}
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={formData.sendWelcomeMessage}
+              onChange={(e) =>
+                handleInputChange("sendWelcomeMessage", e.target.checked)
+              }
+              className="w-5 h-5 text-primary bg-surface border-border rounded focus:ring-primary focus:ring-2"
+            />
+          </label>
+        </div>
+      )}
 
       {/* Notes */}
       <div>
@@ -87,15 +90,25 @@ function StepContactPreferences({
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-text-secondary">
-              {t("createMember.review.contact")}:
-            </span>
+            <span className="text-text-secondary">Type:</span>
             <span className="text-text-primary font-semibold">
-              {formData.contactMethod === "email"
-                ? formData.email
-                : formData.phoneNumber || "-"}
+              {formData.isContactless
+                ? "Contactless (No Login)"
+                : "Standard Member"}
             </span>
           </div>
+          {!formData.isContactless && (
+            <div className="flex justify-between">
+              <span className="text-text-secondary">
+                {t("createMember.review.contact")}:
+              </span>
+              <span className="text-text-primary font-semibold">
+                {formData.contactMethod === "email"
+                  ? formData.email
+                  : formData.phoneNumber || "-"}
+              </span>
+            </div>
+          )}
           {formData.subscriptionTypeId && (
             <div className="flex justify-between">
               <span className="text-text-secondary">

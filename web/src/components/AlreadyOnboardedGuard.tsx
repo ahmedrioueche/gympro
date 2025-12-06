@@ -2,7 +2,7 @@ import type { UserRole } from "@ahmedrioueche/gympro-client";
 import { Navigate, useNavigate } from "@tanstack/react-router";
 import React from "react";
 import { useUserStore } from "../store/user";
-import { redirectUserToHomePageAfterTimeout } from "../utils/helper";
+import { redirectToHomePageAfterTimeout } from "../utils/helper";
 import LoadingPage from "./ui/LoadingPage";
 
 interface AlreadyOnboardedGuardProps {
@@ -24,7 +24,7 @@ export const AlreadyOnboardedGuard: React.FC<AlreadyOnboardedGuardProps> = ({
 
   if (user.profile.isOnBoarded) {
     console.log("onboarded");
-    redirectUserToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
+    redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
   }
 
   // Otherwise, allow access to onboarding

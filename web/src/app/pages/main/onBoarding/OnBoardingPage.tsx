@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
 import useScreen from "../../../../hooks/useScreen";
 import { useUserStore } from "../../../../store/user";
-import { redirectUserToHomePageAfterTimeout } from "../../../../utils/helper";
+import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
 import {
   BaseView,
   InputView,
@@ -63,7 +63,7 @@ export function OnboardingPage() {
           });
           updateProfile({ isOnBoarded: true });
 
-          redirectUserToHomePageAfterTimeout(data.role, 3000, navigate);
+          redirectToHomePageAfterTimeout(data.role, 3000, navigate);
         } catch (error) {
           console.error("Failed to complete onboarding:", error);
           // Handle error (show toast, etc.)

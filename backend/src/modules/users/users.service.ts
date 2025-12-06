@@ -101,6 +101,24 @@ export class UsersService {
     return this.sanitizeUser(user);
   }
 
+  async findByPhone(phoneNumber: string) {
+    const user = await this.userModel
+      .findOne({ 'profile.phoneNumber': phoneNumber })
+      .populate('memberships')
+      .populate('currentProgram')
+      .populate('notifications')
+      .exec();
+
+    if (!user) {
+      throw new NotFoundException({
+        message: 'User not found',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+      });
+    }
+
+    return this.sanitizeUser(user);
+  }
+
   async update(id: string, updateData: Partial<User>) {
     const user = await this.userModel.findById(id);
 

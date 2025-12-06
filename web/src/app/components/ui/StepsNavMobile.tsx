@@ -13,7 +13,7 @@ function StepsNavMobile({ steps, step }) {
                 ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md shadow-purple-500/20 scale-105"
                 : step > s.number
                 ? "bg-success/20 text-success"
-                : "bg-gray-800/50 border border-gray-700/50 text-text-secondary"
+                : "bg-background border border-border text-text-secondary"
             }`}
           >
             <span className="text-lg">{s.icon}</span>

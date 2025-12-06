@@ -19,12 +19,21 @@ export const cn = (
   return classes.filter(Boolean).join(" ");
 };
 
-export const redirectUserToHomePageAfterTimeout = (
+export const redirectToHomePageAfterTimeout = (
   role: UserRole,
   timeout: number,
   navigate: (options: any) => void
 ) => {
   const redirectUrl = getRoleHomePage(role);
+
+  redirectAfterTimeout(redirectUrl, timeout, navigate);
+};
+
+export const redirectAfterTimeout = (
+  redirectUrl: string,
+  timeout: number,
+  navigate: (options: any) => void
+) => {
   setTimeout(() => {
     navigate({ to: redirectUrl });
   }, timeout);

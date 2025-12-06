@@ -1,13 +1,14 @@
-import { User } from '../types/user';
+import { User } from "../types/user";
 
 export interface ISignupDto {
-  email: string;
+  email?: string;
+  phoneNumber?: string;
   password: string;
   username?: string;
 }
 
 export interface ISigninDto {
-  email: string;
+  identifier: string; // email OR phone number
   password: string;
   rememberMe?: boolean;
 }
@@ -21,7 +22,7 @@ export interface IResendVerificationDto {
 }
 
 export interface IForgotPasswordDto {
-  email: string;
+  identifier: string;
 }
 
 export interface IResetPasswordDto {
@@ -75,4 +76,57 @@ export type ResetPasswordData = null;
 
 export interface GoogleAuthUrlData {
   authUrl: string;
+}
+
+// Phone authentication DTOs
+export interface ISendOtpDto {
+  phoneNumber: string;
+}
+
+export interface IVerifyOtpDto {
+  phoneNumber: string;
+  code: string;
+}
+
+export interface IVerifyForgotPasswordOtpDto {
+  phoneNumber: string;
+  code: string;
+}
+
+export interface ISetupAccountDto {
+  token: string;
+  password: string;
+}
+
+export interface ICreateMemberDto {
+  email?: string;
+  phoneNumber?: string;
+  role: string;
+  gymId: string;
+  fullName?: string;
+}
+
+export interface SendOtpData {
+  message: string;
+  remainingTime?: number;
+}
+
+export interface VerifyOtpData {
+  userId: string;
+  message: string;
+}
+
+export interface VerifyForgotPasswordOtpData {
+  resetToken: string;
+}
+
+export interface SetupAccountData {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface CreateMemberData {
+  user: User;
+  setupLink?: string;
 }

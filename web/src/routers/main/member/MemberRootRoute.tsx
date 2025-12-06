@@ -1,9 +1,9 @@
 import { createRoute } from "@tanstack/react-router";
-import UserDashboardPage from "../../../app/pages/main/user/userDashboarsPage";
+import MemberPage from "../../../app/pages/main/member/MemberPage";
 import { MainRootRoute } from "../MainRootRoute";
 
 export const MemberRootRoute = createRoute({
   getParentRoute: () => MainRootRoute,
   path: "/member",
-  component: () => <UserDashboardPage />,
+  component: () => <MemberPage />,
 });

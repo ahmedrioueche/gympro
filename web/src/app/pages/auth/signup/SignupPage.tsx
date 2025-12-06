@@ -1,42 +1,75 @@
 import { authApi } from "@ahmedrioueche/gympro-client";
-import { Key, Lock, Mail } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Key, Lock, Mail, Phone } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Hero from "../../../../components/Hero";
 import Button from "../../../../components/ui/Button";
+import CustomSelect from "../../../../components/ui/CustomSelect";
 import InputField from "../../../../components/ui/InputField";
+import { COUNTRY_CODES } from "../../../../constants/countryCodes";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { bgGradient } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
 import { useUserStore } from "../../../../store/user";
+import {
+  formatPhoneDigitsForInput,
+  getExampleNumber,
+  parsePhoneNumber,
+} from "../../../../utils/phone.util";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import AuthHeader from "../components/AuthHeader";
 
+type SignupMethod = "email" | "phone";
+
 function SignupPage() {
   const { t } = useTranslation();
+  const [method, setMethod] = useState<SignupMethod>("email");
+  const [countryCode, setCountryCode] = useState("+213");
   const [formData, setFormData] = useState({
     email: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useUserStore();
   const { mode } = useTheme();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    // For phone number, only allow digits
+    if (name === "phoneNumber") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setFormData((prev) => ({
+        ...prev,
+        [name]: digitsOnly,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  // Validation function (returns boolean - no error messages)
   const isFormValid = () => {
-    const { email, password, confirmPassword } = formData;
+    const { email, phoneNumber, password, confirmPassword } = formData;
 
-    // Basic validation checks
-    if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) return false;
+    if (method === "email") {
+      if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) return false;
+    } else {
+      // Validate phone number length (should be between 7-15 digits)
+      if (
+        !phoneNumber.trim() ||
+        phoneNumber.length < 7 ||
+        phoneNumber.length > 15
+      )
+        return false;
+    }
+
     if (!password || password.length < 8) return false;
     if (password !== confirmPassword) return false;
 
@@ -46,18 +79,22 @@ function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Don't submit if form is invalid
     if (!isFormValid()) return;
 
     setIsLoading(true);
 
     try {
-      const response = await authApi.signup({
-        email: formData.email,
+      const payload = {
         password: formData.password,
-      });
+        ...(method === "email"
+          ? { email: formData.email }
+          : {
+              phoneNumber: parsePhoneNumber(countryCode, formData.phoneNumber),
+            }),
+      };
 
-      //Handle status code with toast
+      const response = await authApi.signup(payload);
+
       const statusMessage = getMessage(response, {
         t: t,
         showToast: true,
@@ -66,12 +103,18 @@ function SignupPage() {
       showStatusToast(statusMessage, toast);
       if (response.success) {
         setUser(response.data.user);
-        window.location.href = `${
-          APP_PAGES.email_sent.link
-        }?email=${encodeURIComponent(formData.email)}`;
+
+        if (method === "email") {
+          window.location.href = `${
+            APP_PAGES.email_sent.link
+          }?email=${encodeURIComponent(formData.email)}`;
+        } else {
+          window.location.href = `/auth/verify-phone?phone=${encodeURIComponent(
+            parsePhoneNumber(countryCode, formData.phoneNumber)
+          )}`;
+        }
       }
     } catch (error: any) {
-      // Handle API errors with status codes
       if (error?.statusCode) {
         const statusMessage = getMessage(error, {
           t: t,
@@ -99,8 +142,14 @@ function SignupPage() {
     }
   };
 
-  // Check if form is valid for button disabling
   const formIsValid = isFormValid();
+
+  // Format country code options with flags
+  const countryCodeOptions = COUNTRY_CODES.map((country) => ({
+    value: country.code,
+    label: country.code,
+    flag: country.flag,
+  }));
 
   return (
     <div
@@ -108,26 +157,81 @@ function SignupPage() {
         mode === "dark" ? bgGradient : "bg-background"
       }`}
     >
-      {/* Left Side - Signup Form */}
       <div className="overflow-y-auto flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <AuthHeader type="signup" />
+
           {/* Form */}
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
-              {/* Email Field */}
-              <div>
-                <InputField
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder={t("auth.email_placeholder")}
-                  className="pl-12"
-                  leftIcon={<Mail className="h-5 w-5" />}
-                />
+              {/* Email or Phone Field with Inline Toggle */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  {method === "email" ? (
+                    <InputField
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder={t("auth.email_placeholder")}
+                      className="pl-12"
+                      leftIcon={<Mail className="h-5 w-5" />}
+                    />
+                  ) : (
+                    <div className="flex gap-2">
+                      {/* Country Code Selector - Smaller */}
+                      <div className="w-32 flex-shrink-0">
+                        <CustomSelect
+                          title=""
+                          options={countryCodeOptions}
+                          selectedOption={countryCode}
+                          onChange={setCountryCode}
+                          className="text-sm"
+                          marginTop="mt-0"
+                        />
+                      </div>
+
+                      {/* Phone Number Input - Flexible */}
+                      <div className="flex-1">
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Phone className="h-5 w-5 text-text-secondary" />
+                          </div>
+                          <input
+                            id="phoneNumber"
+                            name="phoneNumber"
+                            type="tel"
+                            required
+                            value={formatPhoneDigitsForInput(
+                              formData.phoneNumber
+                            )}
+                            onChange={handleChange}
+                            placeholder={getExampleNumber(countryCode)}
+                            className="pl-10 w-full px-4 py-3 border border-border rounded-lg bg-surface text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Slick Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMethod(method === "email" ? "phone" : "email")
+                  }
+                  className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg border border-border bg-surface hover:bg-border text-text-secondary hover:text-primary transition-all"
+                  title={method === "email" ? t("auth.phone") : t("auth.email")}
+                >
+                  {method === "email" ? (
+                    <Phone className="w-5 h-5" />
+                  ) : (
+                    <Mail className="w-5 h-5" />
+                  )}
+                </button>
               </div>
 
               {/* Password Field */}
@@ -161,7 +265,7 @@ function SignupPage() {
               </div>
             </div>
 
-            {/* Sign Up Button - Disabled when form is invalid */}
+            {/* Sign Up Button */}
             <Button
               type="submit"
               size="lg"
@@ -178,7 +282,7 @@ function SignupPage() {
                 <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2  text-text-secondary">
+                <span className="px-2 text-text-secondary">
                   {t("auth.or_continue_with")}
                 </span>
               </div>
@@ -216,12 +320,12 @@ function SignupPage() {
             <div className="text-center">
               <p className="text-text-secondary">
                 {t("auth.already_have_account")}{" "}
-                <a
-                  href={APP_PAGES.login.link}
+                <Link
+                  to={APP_PAGES.login.link}
                   className="font-medium text-primary hover:text-secondary transition-colors"
                 >
                   {t("auth.sign_in")}
-                </a>
+                </Link>
               </p>
             </div>
           </form>

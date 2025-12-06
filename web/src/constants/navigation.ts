@@ -106,24 +106,6 @@ export const APP_PAGES = {
     },
   },
 
-  // Shared dashboard (all roles)
-  dashboard: {
-    name: "pages.dashboard",
-    link: "/dashboard",
-    home: {
-      name: "pages.dashboard.home",
-      link: "/",
-    },
-    notifications: {
-      name: "pages.dashboard.notifications",
-      link: "/dashboard/notifications",
-    },
-    settings: {
-      name: "pages.dashboard.settings",
-      link: "/dashboard/settings",
-    },
-  },
-
   // Member pages
   member: {
     name: "pages.member",

@@ -19,7 +19,7 @@ export class CustomPermissionsModel implements Partial<RolePermissions> {
   @Prop() canCustomizePermissions?: boolean;
 }
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'gym_memberships' })
 export class GymMembershipModel extends Document {
   declare _id: Types.ObjectId;
 

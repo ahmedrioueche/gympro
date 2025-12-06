@@ -1,32 +1,45 @@
 import { authApi, UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
-import { Key, Lock, Mail } from "lucide-react";
-import React, { useState } from "react";
+import { Lock, Mail, Phone } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Hero from "../../../../components/Hero";
 import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputField";
+import PhoneNumberInput, {
+  usePhoneNumber,
+} from "../../../../components/ui/PhoneNumberInput";
+import { DEFAULT_COUNTRY_CODE } from "../../../../constants/common";
+import { COUNTRY_CODES } from "../../../../constants/countryCodes";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { bgGradient } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
 import { useUserStore } from "../../../../store/user";
+import { parsePhoneNumber } from "../../../../utils/phone.util";
 import { getRoleHomePage } from "../../../../utils/roles";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import AuthHeader from "../components/AuthHeader";
 
+type LoginMethod = "email" | "phone";
+
 function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [method, setMethod] = useState<LoginMethod>("email");
+  const [formData, setFormData] = useState({
+    email: "",
+    phoneNumber: "",
+    password: "",
+  });
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useUserStore();
   const { mode } = useTheme();
+  const phone = usePhoneNumber(DEFAULT_COUNTRY_CODE);
 
   // Check for Google OAuth error in URL
-  React.useEffect(() => {
+  useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const error = urlParams.get("error");
     if (error === "google_auth_failed") {
@@ -34,23 +47,83 @@ function LoginPage() {
       // Clean up the URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
+
+    // Pre-fill email or phone from URL params (from invitation links)
+    const emailParam = urlParams.get("email");
+    const phoneParam = urlParams.get("phone");
+
+    if (emailParam) {
+      setMethod("email");
+      setFormData((prev) => ({ ...prev, email: emailParam }));
+    } else if (phoneParam) {
+      setMethod("phone");
+      // Parse phone number to extract country code and number
+      const parsed = parsePhoneNumber(DEFAULT_COUNTRY_CODE, phoneParam);
+      if (parsed) {
+        // Extract country code (e.g., +213 from +213123456789)
+        const match = parsed.match(/^(\+\d{1,4})(\d+)$/);
+        if (match) {
+          phone.setCountryCode(match[1]);
+          phone.setPhoneNumber(match[2]);
+        }
+      }
+    }
   }, [t]);
 
-  // Validation function (returns boolean - no error messages)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    // For phone number, only allow digits
+    if (name === "phoneNumber") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setFormData((prev) => ({
+        ...prev,
+        [name]: digitsOnly,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  // Validation function
   const isFormValid = () => {
-    if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) return false;
-    if (!password || password.length < 8) return false;
+    const { email, phoneNumber, password } = formData;
+
+    if (method === "email") {
+      if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) return false;
+    } else {
+      // Validate phone number length (should be between 7-15 digits)
+      if (
+        !phoneNumber.trim() ||
+        phoneNumber.length < 7 ||
+        phoneNumber.length > 15
+      )
+        return false;
+    }
+
+    if (!password || password.length < 6) return false;
     return true;
   };
-  const isEmailValid = !!email.trim() && /^\S+@\S+\.\S+$/.test(email);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isFormValid()) return;
+
     setIsLoading(true);
+
     try {
+      const identifier =
+        method === "email"
+          ? formData.email
+          : parsePhoneNumber(phone.countryCode, formData.phoneNumber);
+
       const response = await authApi.signin({
-        email: email,
-        password: password,
+        identifier: identifier,
+        password: formData.password,
         rememberMe: rememberMe,
       });
 
@@ -99,6 +172,13 @@ function LoginPage() {
   // Check if form is valid for button disabling
   const formIsValid = isFormValid();
 
+  // Format country code options with flags
+  const countryCodeOptions = COUNTRY_CODES.map((country) => ({
+    value: country.code,
+    label: country.code,
+    flag: country.flag,
+  }));
+
   return (
     <div
       className={`min-h-screen ${
@@ -113,37 +193,62 @@ function LoginPage() {
           {/* Form */}
           <form className="mt-8 space-y-6" onSubmit={handleLogin}>
             <div className="space-y-4">
-              {/* Email Field */}
-              <div>
-                <InputField
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("auth.email_placeholder")}
-                  className="pl-12"
-                  leftIcon={<Mail className="h-5 w-5" />}
-                />
+              {/* Email or Phone Field with Inline Toggle */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  {method === "email" ? (
+                    <InputField
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder={t("auth.email_placeholder")}
+                      className="pl-12"
+                      leftIcon={<Mail className="h-5 w-5" />}
+                    />
+                  ) : (
+                    <PhoneNumberInput
+                      countryCode={phone.countryCode}
+                      phoneNumber={phone.phoneNumber}
+                      onCountryCodeChange={phone.setCountryCode}
+                      onPhoneNumberChange={phone.setPhoneNumber}
+                      required
+                    />
+                  )}
+                </div>
+
+                {/* Slick Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMethod(method === "email" ? "phone" : "email")
+                  }
+                  className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg border border-border bg-surface hover:bg-border text-text-secondary hover:text-primary transition-all"
+                  title={method === "email" ? t("auth.phone") : t("auth.email")}
+                >
+                  {method === "email" ? (
+                    <Phone className="w-5 h-5" />
+                  ) : (
+                    <Mail className="w-5 h-5" />
+                  )}
+                </button>
               </div>
 
               {/* Password Field */}
               <div>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-text-secondary" />
-                  </div>
-                  <InputField
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t("auth.password_placeholder")}
-                    className="pl-12 pr-12"
-                    leftIcon={<Key />}
-                  />
-                </div>
+                <InputField
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder={t("auth.password_placeholder")}
+                  className="pl-12"
+                  leftIcon={<Lock className="h-5 w-5" />}
+                />
               </div>
             </div>
 
@@ -166,17 +271,8 @@ function LoginPage() {
               </div>
               <button
                 type="button"
-                className={`text-sm font-medium transition-colors ${
-                  isEmailValid
-                    ? "text-primary hover:text-secondary cursor-pointer"
-                    : "text-gray-400"
-                }`}
-                disabled={!isEmailValid}
-                onClick={() => {
-                  if (isEmailValid) {
-                    navigate({ to: "/auth/forgot-password" });
-                  }
-                }}
+                className="text-sm font-medium transition-colors text-primary hover:text-secondary cursor-pointer"
+                onClick={() => navigate({ to: "/auth/forgot-password" })}
               >
                 {t("auth.forgot_password")}
               </button>

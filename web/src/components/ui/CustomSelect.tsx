@@ -2,13 +2,20 @@ import { useEffect, useRef, useState } from "react";
 
 interface CustomSelectProps<T> {
   title: string;
-  options: { value: T; label: string }[];
+  options: {
+    value: T;
+    label: string;
+    flag?: string;
+    name?: string;
+  }[];
   selectedOption: T;
   label?: T;
   onChange: (value: T) => void;
   disabled?: boolean;
   className?: string;
   bgColor?: string;
+  error?: string;
+  marginTop?: string;
 }
 
 const CustomSelect = <T extends string>({
@@ -20,6 +27,8 @@ const CustomSelect = <T extends string>({
   disabled,
   className,
   bgColor,
+  error,
+  marginTop = "mt-2",
 }: CustomSelectProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -82,9 +91,13 @@ const CustomSelect = <T extends string>({
     }
   }, [isOpen]);
 
+  const selectedOptionData = options.find((o) => o.value === selectedOption);
+
   return (
     <div className="relative" ref={selectRef}>
-      <label className="font-normal text-sm text-text-primary">{title}</label>
+      {title && (
+        <label className="font-normal text-sm text-text-primary">{title}</label>
+      )}
 
       <div
         role="button"
@@ -94,15 +107,18 @@ const CustomSelect = <T extends string>({
         aria-label={title}
         aria-disabled={disabled}
         className={`
-      mt-2 p-3 px-4 rounded-lg 
-      border border-border 
-      bg-surface
-      hover:bg-surface/60
-      text-text-primary
-      cursor-pointer
-      ${bgColor ?? ""}
-      ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-    `}
+          ${marginTop}
+          p-3 px-4 rounded-lg 
+          border 
+          bg-surface
+         
+          text-text-primary
+          
+          ${disabled ? "" : "cursor-pointer  hover:bg-surface/60"}
+          ${bgColor ?? ""}
+          ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+          ${error ? "border-danger" : "border-border"}
+        `}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onKeyDown={(e) => {
           if (!disabled && (e.key === "Enter" || e.key === " ")) {
@@ -110,9 +126,16 @@ const CustomSelect = <T extends string>({
           }
         }}
       >
-        {options.find((o) => o.value === selectedOption)?.label ||
-          label ||
-          selectedOption}
+        <div className="flex items-center gap-2">
+          {selectedOptionData?.flag && (
+            <img
+              src={selectedOptionData.flag}
+              alt=""
+              className="w-5 h-3.5 object-cover flex-shrink-0"
+            />
+          )}
+          <span>{selectedOptionData?.label || label || selectedOption}</span>
+        </div>
       </div>
 
       {isOpen && !disabled && (
@@ -120,12 +143,12 @@ const CustomSelect = <T extends string>({
           ref={listRef}
           role="listbox"
           className={`
-        absolute z-10 mt-1 w-full rounded-md shadow-lg 
-        bg-background
-        max-h-60 overflow-auto backdrop-blur-xl 
-        border border-border
-        ${className ?? ""}
-      `}
+            absolute z-10 mt-1 w-full rounded-md shadow-lg 
+            bg-background
+            max-h-60 overflow-auto backdrop-blur-xl 
+            border border-border
+            ${className ?? ""}
+          `}
           onScroll={handleListScroll}
         >
           {options.map((option) => (
@@ -135,13 +158,13 @@ const CustomSelect = <T extends string>({
               aria-selected={option.value === selectedOption}
               tabIndex={0}
               className={`
-            px-4 py-2 
-            text-text-primary
-            hover:bg-border-secondary
-            hover:cursor-pointer
-            focus:bg-border-secondary
-            focus:outline-none
-          `}
+                px-4 py-2 
+                text-text-primary
+                hover:bg-border-secondary
+                hover:cursor-pointer
+                focus:bg-border-secondary
+                focus:outline-none
+              `}
               onClick={() => {
                 onChange(option.value);
                 setIsOpen(false);
@@ -153,7 +176,21 @@ const CustomSelect = <T extends string>({
                 }
               }}
             >
-              {option.label}
+              <div className="flex items-center gap-2">
+                {option.flag && (
+                  <img
+                    src={option.flag}
+                    alt=""
+                    className="w-5 h-3.5 object-cover flex-shrink-0"
+                  />
+                )}
+                <span>{option.label}</span>
+                {option.name && (
+                  <span className="text-xs text-text-secondary ml-auto">
+                    {option.name}
+                  </span>
+                )}
+              </div>
             </li>
           ))}
         </ul>

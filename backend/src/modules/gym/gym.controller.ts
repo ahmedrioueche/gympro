@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -92,6 +93,31 @@ export class GymController {
       return apiResponse(
         false,
         ErrorCode.FETCH_ALL_MY_GYMS_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Get(':id/members')
+  @UseGuards(JwtAuthGuard)
+  async getGymMembers(
+    @Param('id') gymId: string,
+    @Query('search') search?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    try {
+      const result = await this.gymService.getGymMembers(gymId, {
+        search,
+        page: page ? parseInt(page, 10) : 1,
+        limit: limit ? parseInt(limit, 10) : 12,
+      });
+      return apiResponse(true, undefined, result);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.FETCH_GYMS_FAILED,
         undefined,
         error.message,
       );

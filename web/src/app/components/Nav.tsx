@@ -1,8 +1,9 @@
-import type { UserRole } from "@ahmedrioueche/gympro-client";
+import { authApi, type UserRole } from "@ahmedrioueche/gympro-client";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AnimatedLogo from "../../components/ui/AnimatedLogo";
+import { APP_PAGES } from "../../constants/navigation";
 import { bgGradient } from "../../constants/styles";
 import { useTheme } from "../../context/ThemeContext";
 import { useAllMyGyms } from "../../hooks/queries/useGyms";
@@ -21,7 +22,7 @@ export default function Nav({ children, sidebarLinks }) {
   const { mode, toggleMode } = useTheme();
   const sidebarRef = useRef(null);
   const { isMobile } = useScreen();
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const activeRoute = location.pathname;
 
   // Fetch all gyms for current user (owned + member)
@@ -54,8 +55,15 @@ export default function Nav({ children, sidebarLinks }) {
     console.log("Navigate to memberships");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     console.log("Logout user");
+    try {
+      await authApi.logout();
+      setUser(null);
+      window.location.href = APP_PAGES.login.link;
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleNotificationClick = (notificationId: string) => {
@@ -71,7 +79,7 @@ export default function Nav({ children, sidebarLinks }) {
   };
 
   return (
-    <div className={`flex h-screen`}>
+    <div className={`flex h-screen w-full overflow-hidden`}>
       {/* SIDEBAR */}
       <div
         ref={sidebarRef}
@@ -153,7 +161,10 @@ export default function Nav({ children, sidebarLinks }) {
 
         {/* Sidebar Footer */}
         <div className="flex-shrink-0 p-4 border-t border-r border-border">
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 bg-danger/20 text-danger hover:bg-danger/30">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 bg-danger/20 text-danger hover:bg-danger/30"
+          >
             <span>🚪</span>
             <span className="text-sm">{t("actions.logout")}</span>
           </button>
@@ -191,7 +202,7 @@ export default function Nav({ children, sidebarLinks }) {
                   <span className="text-lg">←</span>
                 </button>
 
-                <div className="min-w-[200px]">
+                <div className="flex-1 min-w-[200px]">
                   <GymSelector gyms={gyms} />
                 </div>
               </div>

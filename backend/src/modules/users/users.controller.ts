@@ -7,8 +7,8 @@ import {
   Get,
   Param,
   Patch,
-  Put,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -24,7 +24,7 @@ import { UsersService } from './users.service';
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @UseGuards(PermissionsGuard)
@@ -69,6 +69,13 @@ export class UsersController {
   @RequirePermission('canManageMembers')
   async findByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);
+  }
+
+  @Get('phone/:phone')
+  @UseGuards(PermissionsGuard)
+  @RequirePermission('canManageMembers')
+  async findByPhone(@Param('phone') phone: string) {
+    return this.usersService.findByPhone(phone);
   }
 
   @Put(':id')

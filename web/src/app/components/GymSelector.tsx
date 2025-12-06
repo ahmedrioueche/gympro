@@ -145,7 +145,7 @@ export default function GymSelector({
                       className={`w-full flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-md sm:rounded-lg transition-all duration-200 ${
                         isSelected
                           ? "bg-gradient-to-r from-primary/10 to-secondary/10 ring-1 sm:ring-2 ring-primary/20"
-                          : "hover:bg-gray-100/50 dark:hover:bg-gray-800/50"
+                          : "hover:bg-surface-hover"
                       }`}
                     >
                       {/* Gym Logo/Icon */}

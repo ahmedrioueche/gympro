@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { AxiosError } from "axios";
 import type {
   ForgotPasswordData,
   GetMeData,
@@ -6,26 +6,37 @@ import type {
   IForgotPasswordDto,
   IResendVerificationDto,
   IResetPasswordDto,
+  ISendOtpDto,
+  ISetupAccountDto,
   ISigninDto,
   ISignupDto,
   IVerifyEmailDto,
+  IVerifyForgotPasswordOtpDto,
+  IVerifyOtpDto,
   LogoutData,
   RefreshData,
   ResendVerificationData,
   ResetPasswordData,
+  SendOtpData,
+  SetupAccountData,
   SigninData,
   SignupData,
   VerifyEmailData,
-} from '../dto/auth';
-import type { ApiResponse } from '../types/api';
-import { IS_DEV } from './config';
-import { apiClient, handleApiError } from './helper';
+  VerifyForgotPasswordOtpData,
+  VerifyOtpData,
+} from "../dto/auth";
+import type { ApiResponse } from "../types/api";
+import { IS_DEV } from "./config";
+import { apiClient, handleApiError } from "./helper";
 
 export const authApi = {
   /** Signup */
   signup: async (data: ISignupDto): Promise<ApiResponse<SignupData>> => {
     try {
-      const res = await apiClient.post<ApiResponse<SignupData>>('/auth/signup', data);
+      const res = await apiClient.post<ApiResponse<SignupData>>(
+        "/auth/signup",
+        data
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -35,7 +46,10 @@ export const authApi = {
   /** Signin */
   signin: async (data: ISigninDto): Promise<ApiResponse<SigninData>> => {
     try {
-      const res = await apiClient.post<ApiResponse<SigninData>>('/auth/signin', data);
+      const res = await apiClient.post<ApiResponse<SigninData>>(
+        "/auth/signin",
+        data
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -45,7 +59,9 @@ export const authApi = {
   /** Refresh token */
   refresh: async (): Promise<ApiResponse<RefreshData>> => {
     try {
-      const res = await apiClient.post<ApiResponse<RefreshData>>('/auth/refresh');
+      const res = await apiClient.post<ApiResponse<RefreshData>>(
+        "/auth/refresh"
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -55,7 +71,7 @@ export const authApi = {
   /** Logout */
   logout: async (): Promise<ApiResponse<LogoutData>> => {
     try {
-      const res = await apiClient.post<ApiResponse<LogoutData>>('/auth/logout');
+      const res = await apiClient.post<ApiResponse<LogoutData>>("/auth/logout");
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -65,7 +81,7 @@ export const authApi = {
   /** Get current user */
   getMe: async (): Promise<ApiResponse<GetMeData>> => {
     try {
-      const res = await apiClient.get<ApiResponse<GetMeData>>('/auth/me');
+      const res = await apiClient.get<ApiResponse<GetMeData>>("/auth/me");
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -76,7 +92,10 @@ export const authApi = {
   verifyEmail: async (token: string): Promise<ApiResponse<VerifyEmailData>> => {
     try {
       const dto: IVerifyEmailDto = { token };
-      const res = await apiClient.post<ApiResponse<VerifyEmailData>>('/auth/verify-email', dto);
+      const res = await apiClient.post<ApiResponse<VerifyEmailData>>(
+        "/auth/verify-email",
+        dto
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -89,7 +108,7 @@ export const authApi = {
   ): Promise<ApiResponse<ResendVerificationData>> => {
     try {
       const res = await apiClient.post<ApiResponse<ResendVerificationData>>(
-        '/auth/resend-verification',
+        "/auth/resend-verification",
         data
       );
       return res.data;
@@ -99,11 +118,13 @@ export const authApi = {
   },
 
   /** Forgot password */
-  forgotPassword: async (email: string): Promise<ApiResponse<ForgotPasswordData>> => {
+  forgotPassword: async (
+    identifier: string
+  ): Promise<ApiResponse<ForgotPasswordData>> => {
     try {
-      const dto: IForgotPasswordDto = { email };
+      const dto: IForgotPasswordDto = { identifier };
       const res = await apiClient.post<ApiResponse<ForgotPasswordData>>(
-        '/auth/forgot-password',
+        "/auth/forgot-password",
         dto
       );
       return res.data;
@@ -119,7 +140,10 @@ export const authApi = {
   ): Promise<ApiResponse<ResetPasswordData>> => {
     try {
       const dto: IResetPasswordDto = { token, password };
-      const res = await apiClient.post<ApiResponse<ResetPasswordData>>('/auth/reset-password', dto);
+      const res = await apiClient.post<ApiResponse<ResetPasswordData>>(
+        "/auth/reset-password",
+        dto
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -129,7 +153,9 @@ export const authApi = {
   /** Get Google OAuth URL */
   getGoogleAuthUrl: async (): Promise<ApiResponse<GoogleAuthUrlData>> => {
     try {
-      const res = await apiClient.get<ApiResponse<GoogleAuthUrlData>>('/auth/google');
+      const res = await apiClient.get<ApiResponse<GoogleAuthUrlData>>(
+        "/auth/google"
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -140,6 +166,84 @@ export const authApi = {
   redirectToGoogleAuth: async (): Promise<void> => {
     const res = await authApi.getGoogleAuthUrl();
     if (res?.data) window.location.href = res?.data?.authUrl;
+  },
+
+  /** Send OTP to phone number */
+  sendOtp: async (phoneNumber: string): Promise<ApiResponse<SendOtpData>> => {
+    try {
+      const dto: ISendOtpDto = { phoneNumber };
+      const res = await apiClient.post<ApiResponse<SendOtpData>>(
+        "/auth/send-otp",
+        dto
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Verify OTP code */
+  verifyOtp: async (
+    phoneNumber: string,
+    code: string
+  ): Promise<ApiResponse<VerifyOtpData>> => {
+    try {
+      const dto: IVerifyOtpDto = { phoneNumber, code };
+      const res = await apiClient.post<ApiResponse<VerifyOtpData>>(
+        "/auth/verify-otp",
+        dto
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Setup account with token */
+  setupAccount: async (
+    token: string,
+    password: string
+  ): Promise<ApiResponse<SetupAccountData>> => {
+    try {
+      const dto: ISetupAccountDto = { token, password };
+      const res = await apiClient.post<ApiResponse<SetupAccountData>>(
+        "/auth/setup-account",
+        dto
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Validate setup token */
+  validateSetupToken: async (
+    token: string
+  ): Promise<ApiResponse<{ valid: boolean }>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<{ valid: boolean }>>(
+        `/auth/validate-setup-token?token=${token}`
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Verify OTP code for forgot password */
+  verifyForgotPasswordOtp: async (
+    phoneNumber: string,
+    code: string
+  ): Promise<ApiResponse<VerifyForgotPasswordOtpData>> => {
+    try {
+      const dto: IVerifyForgotPasswordOtpDto = { phoneNumber, code };
+      const res = await apiClient.post<
+        ApiResponse<VerifyForgotPasswordOtpData>
+      >("/auth/verify-forgot-password-otp", dto);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 };
 
@@ -156,8 +260,8 @@ apiClient.interceptors.response.use(
         await authApi.refresh();
         return apiClient(original);
       } catch {
-        if (!window.location.pathname.includes('/auth/')) {
-          window.location.href = '/auth/signin';
+        if (!window.location.pathname.includes("/auth/")) {
+          window.location.href = "/auth/signin";
         }
         return Promise.reject(error);
       }
@@ -170,17 +274,22 @@ apiClient.interceptors.response.use(
 /** Dev logging */
 if (IS_DEV) {
   apiClient.interceptors.request.use((config) => {
-    console.log('[API Request]', config.method?.toUpperCase(), config.url, config.data);
+    console.log(
+      "[API Request]",
+      config.method?.toUpperCase(),
+      config.url,
+      config.data
+    );
     return config;
   });
 
   apiClient.interceptors.response.use(
     (response) => {
-      console.log('[API Response]', response.config.url, response.data);
+      console.log("[API Response]", response.config.url, response.data);
       return response;
     },
     (error) => {
-      console.error('[API Error]', error.config?.url, error.response?.data);
+      console.error("[API Error]", error.config?.url, error.response?.data);
       return Promise.reject(error);
     }
   );

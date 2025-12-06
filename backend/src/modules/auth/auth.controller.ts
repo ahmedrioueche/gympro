@@ -11,7 +11,6 @@ import type {
   SetupAccountData,
   SigninData,
   SignupData,
-  VerifyEmailData,
   VerifyOtpData,
 } from '@ahmedrioueche/gympro-client';
 import { apiResponse } from '@ahmedrioueche/gympro-client';
@@ -127,16 +126,6 @@ export class AuthController {
     return apiResponse(true, undefined, { user });
   }
 
-  @Post('verify-email')
-  async verifyEmail(
-    @Body('token') token: string,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<ApiResponse<VerifyEmailData>> {
-    const result = await this.authService.verifyEmail(token);
-    this.setAuthCookies(res, result.accessToken, result.refreshToken, false);
-    return apiResponse(true, undefined, { user: result.user }, result.message);
-  }
-
   @Post('resend-verification')
   async resendVerification(
     @Body() dto: ResendVerificationDto,
@@ -144,6 +133,14 @@ export class AuthController {
   ): Promise<ApiResponse<ResendVerificationData>> {
     await this.authService.resendVerification(dto.email, req.ip);
     return apiResponse(true, undefined, null, 'Verification email sent');
+  }
+
+  @Get('validate-setup-token')
+  async validateSetupToken(
+    @Query('token') token: string,
+  ): Promise<ApiResponse<{ valid: boolean }>> {
+    const result = await this.authService.validateSetupToken(token);
+    return apiResponse(true, undefined, result);
   }
 
   @Post('forgot-password')
@@ -292,9 +289,24 @@ export class AuthController {
     @Body() dto: SetupAccountDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<ApiResponse<SetupAccountData>> {
-    // This endpoint will be implemented when we add the setup token logic
-    // For now, return a placeholder
-    return apiResponse(false, undefined, null as any, 'Not implemented yet');
+    const result = await this.authService.setupMemberAccount(
+      dto.token,
+      dto.password,
+    );
+
+    // Set auth cookies for auto-login
+    this.setAuthCookies(res, result.accessToken, result.refreshToken, false);
+
+    return apiResponse(
+      true,
+      undefined,
+      {
+        user: result.user,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      },
+      'Account setup successful',
+    );
   }
 
   @Post('verify-forgot-password-otp')

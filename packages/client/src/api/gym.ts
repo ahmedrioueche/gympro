@@ -1,6 +1,7 @@
 import { CreateGymDto } from "../dto/gym";
-import { ApiResponse } from "../types/api";
+import { ApiResponse, PaginatedResponse } from "../types/api";
 import { Gym } from "../types/gym";
+import { User } from "../types/user";
 import { apiClient, handleApiError } from "./helper";
 
 export const gymApi = {
@@ -84,6 +85,27 @@ export const gymApi = {
   remove: async (id: string): Promise<ApiResponse<Gym>> => {
     try {
       const res = await apiClient.delete<ApiResponse<Gym>>(`/gyms/${id}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Get all members for a specific gym (paginated) */
+  getGymMembers: async (
+    gymId: string,
+    options: { search?: string; page?: number; limit?: number } = {}
+  ): Promise<ApiResponse<PaginatedResponse<User>>> => {
+    try {
+      const { search, page = 1, limit = 12 } = options;
+      const params: Record<string, any> = { page, limit };
+      if (search) {
+        params.search = search;
+      }
+      const res = await apiClient.get<ApiResponse<PaginatedResponse<User>>>(
+        `/gyms/${gymId}/members`,
+        { params }
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

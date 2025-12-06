@@ -15,12 +15,14 @@ export enum UserRole {
 
 export interface BaseUserProfile extends AuditInfo {
   username: string;
-  email: string;
+  email?: string; // Now optional - can use phone instead
   fullName?: string;
   age?: string;
   gender?: string;
   profileImageUrl?: string;
   phoneNumber?: string;
+  phoneNumberVerified?: boolean;
+  accountStatus?: "active" | "pending_setup";
   address?: string;
   city?: string;
   state?: string;

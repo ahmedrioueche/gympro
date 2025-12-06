@@ -5,10 +5,12 @@ import {
   IResendVerificationDto,
   ISigninDto,
   ISignupDto,
+  PAYMENT_METHODS,
 } from '@ahmedrioueche/gympro-client';
 import {
   IsBoolean,
   IsEmail,
+  IsIn,
   IsOptional,
   IsString,
   MinLength,
@@ -114,12 +116,30 @@ export class CreateMemberDto {
   phoneNumber?: string;
 
   @IsString()
-  role: string;
-
-  @IsString()
   gymId: string;
 
   @IsOptional()
   @IsString()
   fullName?: string;
+
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @IsOptional()
+  @IsString()
+  age?: string;
+
+  // Subscription fields
+  @IsOptional()
+  @IsString()
+  subscriptionTypeId?: string;
+
+  @IsOptional()
+  @IsString()
+  subscriptionStartDate?: string;
+
+  @IsOptional()
+  @IsIn([...PAYMENT_METHODS])
+  paymentMethod?: string;
 }

@@ -1,3 +1,5 @@
+import { PaymentMethod } from "../types/common";
+
 export interface CompleteOnboardingDto {
   role: string;
   gymName?: string;
@@ -11,9 +13,12 @@ export interface CompleteOnboardingDto {
 export interface CreateMemberDto {
   email?: string;
   phoneNumber?: string;
-  name?: string;
   fullName?: string;
   gender?: string;
   age?: string;
   gymId: string;
+  // Subscription fields
+  subscriptionTypeId?: string;
+  subscriptionStartDate?: string;
+  paymentMethod?: PaymentMethod;
 }

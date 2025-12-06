@@ -13,6 +13,7 @@
     "please_wait": "Please wait while we load the page..."
   },
   "common": {
+    "error": "Something went wrong, please try again later",
     "loading": "Loading...",
     "selectSection": "Select a section from the sidebar to get started",
     "currentLanguage": "Current Language",
@@ -23,7 +24,11 @@
     "logout": "Logout",
     "cancel": "Cancel",
     "back": "Back",
-    "next": "Next"
+    "next": "Next",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "save": "Save",
+    "saving": "Saving..."
   },
   "auth": {
     "welcome_back": "Welcome back",
@@ -34,6 +39,8 @@
     "email_placeholder": "Enter your email",
     "password": "Password",
     "password_placeholder": "Enter your password",
+    "phone": "Phone number",
+    "phone_placeholder": "ex: 0556874526",
     "remember_me": "Remember me",
     "forgot_password": "Forgot your password?",
     "sign_in": "Sign in",
@@ -44,6 +51,14 @@
     "google_auth_success": "Successfully authenticated with Google!",
     "dont_have_account": "Don't have an account?",
     "sign_up": "Sign up",
+    "verify_phone": "Verify Phone Number",
+    "phone_required": "Phone number is required",
+    "phone_verified_success": "Phone number verified successfully",
+    "enter_otp_sent_to": "Enter code sent to",
+    "send_reset_code": "Send Reset Code",
+    "verify": "Verify",
+    "resend_code": "Resend code",
+    "resend_in": "Resend in",
     "name": "Full Name",
     "name_placeholder": "Enter your full name",
     "confirm_password": "Confirm Password",
@@ -92,10 +107,25 @@
     "redirecting_to_login": "Redirecting to login page...",
     "forgot_password_success": "If the email exists, a reset link has been sent.",
     "send_reset_link": "Send Reset Link",
+    "forgot_password_email_description": "We'll send you a link to reset your password.",
+    "forgot_password_phone_description": "We'll send you a code to reset your password.",
     "account_secured": "Account Secured",
     "account_secured_desc": "Your account is now protected with a new password",
     "request_new_reset": "Request New Reset Link",
-    "enter_new_password": "Enter your new password below to secure your account"
+    "enter_new_password": "Enter your new password below to secure your account",
+    "setup": {
+      "title": "Set Up Your Account",
+      "subtitle": "Create a password to complete your account setup",
+      "invalid_link": "Invalid setup link",
+      "password_placeholder": "Create Password (min 8 characters)",
+      "confirm_password_placeholder": "Confirm Password",
+      "passwords_match": "✓ Passwords match",
+      "passwords_no_match": "✗ Passwords do not match",
+      "password_validation_error": "Passwords must match and be at least 8 characters",
+      "success_message": "Account setup successful! Redirecting to login...",
+      "complete_button": "Complete Setup",
+      "already_have_account": "Already have an account?"
+    }
   },
   "status": {
     "success": {
@@ -110,6 +140,7 @@
       "service_unavailable": "Service temporarily unavailable",
       "gateway_timeout": "Gateway timeout. Please try again",
       "method_not_allowed": "Method not allowed",
+      "unexpected": "Unexpected error occured. Please try again",
       "auth": {
         "invalid_credentials": "Invalid email or password",
         "account_deactivated": "Your account has been deactivated",
@@ -141,6 +172,16 @@
         "cannot_deactivate_self": "You cannot deactivate your own account",
         "invalid_profile_data": "Invalid profile data",
         "profile_update_failed": "Failed to update profile"
+      },
+      "gym": {
+        "not_found": "Gym not found",
+        "create_failed": "Failed to create gym",
+        "fetch_failed": "Failed to fetch gyms",
+        "fetch_my_failed": "Failed to fetch your gyms",
+        "fetch_member_failed": "Failed to fetch gyms where you are a member",
+        "fetch_all_my_failed": "Failed to fetch all your gyms",
+        "update_failed": "Failed to update gym",
+        "delete_failed": "Failed to delete gym"
       }
     }
   },
@@ -438,22 +479,24 @@
     "title": "Members Management",
     "subtitle": "Manage your gym members and their subscriptions",
     "addMember": "Add New Member",
-    "searchPlaceholder": "Search members by name or email...",
+    "search": "Search",
+    "searchPlaceholder": "Search members",
     "viewMode": {
       "cards": "Cards View",
       "table": "Table View"
     },
     "filters": {
-      "all": "All Members",
+      "all": "All",
       "active": "Active",
       "inactive": "Inactive",
       "expired": "Expired",
-      "pending": "Pending"
+      "pending": "Pending",
+      "banned": "Banned"
     },
     "sort": {
       "label": "Sort by",
       "name": "Name",
-      "joinDate": "Join Date",
+      "joinDate": "Joined",
       "status": "Status",
       "membership": "Membership"
     },
@@ -476,7 +519,7 @@
       "active": "Active",
       "inactive": "Inactive",
       "expired": "Expired",
-      "pending": "Pending Approval"
+      "pending": "Pending"
     },
     "membership": {
       "basic": "Basic",
@@ -493,10 +536,50 @@
       "total": "Total Members",
       "active": "Active",
       "inactive": "Inactive",
-      "thisMonth": "New This Month"
+      "thisMonth": "New This Month",
+      "expired": "Expired"
+    },
+    "pagination": {
+      "showing": "Showing {{start}} to {{end}} of {{total}} members",
+      "showingSingle": "Showing 1 member",
+      "noMembers": "No members found",
+      "previous": "Previous",
+      "next": "Next",
+      "itemsPerPage": "Items per page:"
+    },
+    "edit": {
+      "title": "Edit Member",
+      "success": "Member updated successfully",
+      "generalError": "Failed to update member",
+      "errors": {
+        "membershipNotFound": "Membership not found"
+      }
+    },
+    "delete": {
+      "success": "Member removed successfully",
+      "generalError": "Failed to remove member",
+      "errors": {
+        "membershipNotFound": "Membership not found"
+      }
+    },
+    "search": {
+      "noResults": {
+        "title": "No Results Found",
+        "description": "We couldn't find any members matching your search. Try adjusting your search or filters.",
+        "action": "Try Again"
+      }
+    },
+    "profile": {
+      "title": "Profile",
+      "email": "Email",
+      "phone": "Phone",
+      "joinDate": "Member Since",
+      "subscription": "Subscription",
+      "subscriptionType": "Subscription Type",
+      "membershipStatus": "Status",
+      "noSubscription": "No active subscription"
     }
   },
-
   "createMember": {
     "title": "Add New Member",
     "subtitle": "Create a new gym membership in just a few steps",
@@ -588,7 +671,15 @@
       "emailInvalid": "Please enter a valid email address",
       "phoneInvalid": "Please enter a valid phone number (min 10 digits)",
       "nameRequired": "Full name is required",
-      "ageInvalid": "Please enter a valid age"
+      "ageInvalid": "Please enter a valid age",
+      "subscriptionRequired": "Subscription type is required",
+      "paymentRequired": "Payment method is required",
+      "checkForm": "Please check the form for errors",
+      "sameEmail": "You cannot create a member with the same email as your account",
+      "samePhone": "You cannot create a member with the same phone number as your account",
+      "emailInUse": "TThis email cannot be used to create a member",
+      "phoneInUse": "This phone number cannot be used to create a member",
+      "invalidStartDate": "Start date cannot be in the past"
     },
 
     "actions": {

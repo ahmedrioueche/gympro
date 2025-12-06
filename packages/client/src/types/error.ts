@@ -1,5 +1,6 @@
 export enum ErrorCode {
   INTERNAL_SERVER_ERROR = "ERR_500",
+  NOT_FOUND = "ERR_404",
   NOT_IMPLEMENTED = "ERR_501",
   TOO_MANY_REQUESTS = "ERR_429",
   BAD_GATEWAY = "ERR_502",
@@ -47,6 +48,9 @@ export enum ErrorCode {
   FETCH_ALL_MY_GYMS_FAILED = "GYM_006",
   UPDATE_GYM_FAILED = "GYM_007",
   DELETE_GYM_FAILED = "GYM_008",
+  FETCH_MEMBER_FAILED = "GYM_009",
+  UPDATE_MEMBER_FAILED = "GYM_010",
+  DELETE_MEMBER_FAILED = "GYM_011",
 }
 
 export const HttpStatusToErrorCode: Record<number, ErrorCode> = {

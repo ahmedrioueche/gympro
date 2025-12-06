@@ -5,16 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "cp -r ../packages ./packages 2>/dev/null || xcopy /E /I /Y ..\\packages .\\packages 2>nul || true && tsc -b && vite build",
+    "copy-packages": "xcopy /E /I /Y ..\\packages .\\packages >nul 2>&1 || echo Packages copied",
+    "build": "npm run copy-packages && tsc -b && vite build",
     "vercel-build": "npm run build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.0.42",
+    "@ahmedrioueche/gympro-client": "0.0.65",
     "@tanstack/react-query": "^5.84.2",
     "@tanstack/react-router": "^1.131.2",
     "i18next": "^25.3.2",
+    "libphonenumber-js": "^1.12.30",
     "lucide-react": "^0.539.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

@@ -22,7 +22,6 @@ import { MailerService } from '../../common/services/mailer.service';
 import { getI18nText } from '../../common/utils/i18n';
 import { Platform, buildRedirectUrl } from '../../common/utils/platform.util';
 import { SigninDto, SignupDto } from './auth.dto';
-
 import { OtpService } from './otp.service';
 
 @Injectable()
@@ -547,6 +546,73 @@ export class AuthService {
     delete userObj.resetPasswordTokenExpiry;
 
     return userObj;
+  }
+
+  // --- SETUP MEMBER ACCOUNT ---
+  async setupMemberAccount(setupToken: string, password: string) {
+    const user = await this.userModel.findOne({
+      setupToken,
+      setupTokenExpiry: { $gt: new Date() },
+      setupTokenUsed: false,
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: 'Invalid or expired setup token',
+        errorCode: ErrorCode.INVALID_RESET_TOKEN,
+      });
+    }
+
+    // Hash the new password
+    user.profile.password = await bcrypt.hash(password, 10);
+    user.setupTokenUsed = true;
+    user.profile.accountStatus = 'active';
+    user.profile.isActive = true;
+    user.profile.isValidated = true;
+
+    // Mark phone as verified if phone number exists
+    if (user.profile.phoneNumber) {
+      user.profile.phoneNumberVerified = true;
+    }
+
+    await user.save();
+
+    // Generate JWT tokens for auto-login
+    const payload: JwtPayload = {
+      sub: user._id?.toString()!,
+      email: user.profile.email || user.profile.phoneNumber || '',
+      role: user.role,
+    };
+
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_REFRESH_SECRET'),
+      expiresIn: '7d',
+    });
+
+    return {
+      user: this.sanitizeUser(user),
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  // --- VALIDATE SETUP TOKEN ---
+  async validateSetupToken(token: string) {
+    const user = await this.userModel.findOne({
+      setupToken: token,
+      setupTokenExpiry: { $gt: new Date() },
+      setupTokenUsed: false,
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: 'Invalid or expired setup token',
+        errorCode: ErrorCode.INVALID_RESET_TOKEN,
+      });
+    }
+
+    return { valid: true };
   }
 
   // --- HELPER METHODS ---

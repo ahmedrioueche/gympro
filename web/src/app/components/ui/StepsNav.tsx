@@ -17,7 +17,7 @@ function StepsNav({ steps, step }: { steps: any; step: number }) {
                   ? "bg-blue-500 text-white"
                   : step > stepItem.number
                   ? "bg-green-500 text-white"
-                  : "bg-gray-700 text-gray-400"
+                  : "bg-background text-text-primary"
               }`}
             >
               {step > stepItem.number ? "✓" : stepItem.number}

@@ -1,13 +1,15 @@
-import { AuthRootRoute } from './AuthRootRoute';
+import { AuthRootRoute } from "./AuthRootRoute";
 import {
   AuthCallbackRoute,
   EmailSentRoute,
   ForgotPasswordRoute,
   LoginRoute,
   ResetPasswordRoute,
+  SetupRoute,
   SignUpRoute,
   VerifyEmailRoute,
-} from './AuthRoutes';
+  VerifyPhoneRoute,
+} from "./AuthRoutes";
 
 export const AuthRouteTree = AuthRootRoute.addChildren([
   LoginRoute,
@@ -17,4 +19,6 @@ export const AuthRouteTree = AuthRootRoute.addChildren([
   ForgotPasswordRoute,
   ResetPasswordRoute,
   AuthCallbackRoute,
+  VerifyPhoneRoute,
+  SetupRoute,
 ]);

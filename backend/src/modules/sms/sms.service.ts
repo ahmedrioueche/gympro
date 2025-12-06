@@ -41,8 +41,15 @@ export class SmsService {
       };
     }
 
-    const { to, from, text } = smsData;
+    let to = smsData.to;
 
+    // Ensure phone number has + prefix
+    if (!to.startsWith('+')) {
+      to = '+' + to;
+      this.logger.warn(`Added + prefix to phone number: ${to}`);
+    }
+
+    const { from, text } = smsData;
     try {
       this.logger.log(`Sending SMS to ${to}`);
 

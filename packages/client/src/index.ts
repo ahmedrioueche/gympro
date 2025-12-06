@@ -2,6 +2,7 @@ export * from "./api/auth";
 export * from "./api/config";
 export * from "./api/gym";
 export * from "./api/helper";
+export * from "./api/members";
 export * from "./api/users";
 export * from "./dto/auth";
 export * from "./dto/gym";
