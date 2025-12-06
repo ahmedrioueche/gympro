@@ -37,7 +37,7 @@ export function OnboardingPage() {
     gender: "",
   });
   const { isMobile } = useScreen();
-  const { updateProfile } = useUserStore();
+  const { updateProfile, updateUser } = useUserStore();
 
   const updateData = (key: keyof OnboardingData, value: any) => {
     setData((prev) => ({ ...prev, [key]: value }));
@@ -61,9 +61,11 @@ export function OnboardingPage() {
             age: data.age,
             gender: data.gender,
           });
+          // Update store with new role and onboarded status
+          updateUser({ role: data.role as UserRole });
           updateProfile({ isOnBoarded: true });
 
-          redirectToHomePageAfterTimeout(data.role, 3000, navigate);
+          redirectToHomePageAfterTimeout(data.role as UserRole, 3000, navigate);
         } catch (error) {
           console.error("Failed to complete onboarding:", error);
           // Handle error (show toast, etc.)

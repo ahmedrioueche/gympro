@@ -42,9 +42,20 @@ export default function Dropdown({
 
       {isOpen && (
         <div
-          className={`absolute top-10 mt-2 w-72 rounded-lg border border-border bg-background shadow-xl z-50 ${
-            align === "right" ? "right-0" : "left-0"
+          className={`fixed w-72 rounded-lg border border-border bg-background shadow-xl z-50 ${
+            align === "right" ? "right-auto" : "left-auto"
           } ${className}`}
+          style={{
+            top: `${
+              dropdownRef.current?.getBoundingClientRect().bottom ?? 0
+            }px`,
+            [align === "right" ? "right" : "left"]: `${
+              align === "right"
+                ? window.innerWidth -
+                  (dropdownRef.current?.getBoundingClientRect().right ?? 0)
+                : dropdownRef.current?.getBoundingClientRect().left ?? 0
+            }px`,
+          }}
         >
           <div className="py-2">{children}</div>
         </div>

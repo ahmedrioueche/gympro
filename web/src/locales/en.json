@@ -677,7 +677,7 @@
       "checkForm": "Please check the form for errors",
       "sameEmail": "You cannot create a member with the same email as your account",
       "samePhone": "You cannot create a member with the same phone number as your account",
-      "emailInUse": "TThis email cannot be used to create a member",
+      "emailInUse": "This email cannot be used to create a member",
       "phoneInUse": "This phone number cannot be used to create a member",
       "invalidStartDate": "Start date cannot be in the past"
     },
