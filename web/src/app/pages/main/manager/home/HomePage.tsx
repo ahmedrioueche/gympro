@@ -13,7 +13,6 @@ function HomePage() {
       ? user.profile.username
       : user.profile.country,
     accountStatus: "Free trial",
-    lastLogin: "",
   };
 
   const businessMetrics = {
@@ -118,14 +117,7 @@ function HomePage() {
                   )}
                 </p>
               </div>
-              <div className="bg-surface/50 backdrop-blur-sm border border-border rounded-xl px-4 py-3">
-                <p className="text-xs text-text-secondary mb-1">
-                  {t("home.manager.profile.lastLogin")}
-                </p>
-                <p className="text-sm font-semibold text-text-primary">
-                  {managerData.lastLogin}
-                </p>
-              </div>
+
               <Link
                 to="#"
                 className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/30 flex items-center justify-center gap-2"

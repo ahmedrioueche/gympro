@@ -10,6 +10,7 @@ const AnimatedLogo = ({
   leftPosition = "50%",
   paddingTop = "pt-0",
   onClick,
+  compact = false,
 }: {
   height?: string;
   width?: string;
@@ -18,6 +19,7 @@ const AnimatedLogo = ({
   leftPosition?: string;
   paddingTop?: string;
   onClick?: () => void;
+  compact?: boolean;
 }) => {
   const { t } = useTranslation();
 
@@ -43,12 +45,14 @@ const AnimatedLogo = ({
       </div>
 
       {/* App Name with slide-in and shiny effect */}
-      <span
-        className={`${textSize} app-name animate-app-slide font-bold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary`}
-        style={{ left: leftPosition }}
-      >
-        {t("app.name")}
-      </span>
+      {!compact && (
+        <span
+          className={`${textSize} app-name animate-app-slide font-bold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary`}
+          style={{ left: leftPosition }}
+        >
+          {t("app.name")}
+        </span>
+      )}
     </div>
   );
 };

@@ -7,10 +7,12 @@ import {
   Dumbbell,
   MapPin,
   Plus,
+  Sparkles,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../constants/navigation";
+import useScreen from "../../hooks/useScreen";
 import { useGymStore } from "../../store/gym";
 
 interface GymSelectorProps {
@@ -29,6 +31,7 @@ export default function GymSelector({
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
   const { currentGym, setGym } = useGymStore();
+  const { isMobile } = useScreen();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -65,75 +68,133 @@ export default function GymSelector({
     : undefined;
 
   return (
-    <div className={`relative w-full ${className}`} ref={selectRef}>
-      {/* Trigger Button */}
+    <div className={`relative ${className}`} ref={selectRef}>
+      {/* Trigger Button - Completely Borderless and Free */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`group relative flex items-center gap-2 sm:gap-3 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl border transition-all duration-200 w-full md:min-w-[280px] ${
-          selectedGym
-            ? "bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 hover:border-primary/40"
-            : "bg-background/50 border-border hover:border-primary/30 hover:bg-primary/5"
+        className={`group flex items-center gap-3 px-2 py-2 rounded-2xl transition-all duration-300 hover:bg-transparent ${
+          isMobile ? "scale-90 -ml-2" : ""
         }`}
       >
-        {/* Icon/Logo */}
-        <div
-          className={`flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-md sm:rounded-lg flex-shrink-0 transition-all ${
-            selectedGym
-              ? "bg-gradient-to-br from-primary to-secondary text-white shadow-md sm:shadow-lg shadow-primary/20"
-              : "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-500 dark:text-gray-400"
-          }`}
-        >
-          {selectedGym?.logoUrl ? (
-            <img
-              src={selectedGym.logoUrl}
-              alt={selectedGym.name}
-              className="w-full h-full object-cover rounded-md sm:rounded-lg"
-            />
-          ) : (
-            <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5" />
+        {/* Gym Icon/Logo - Floating Style */}
+        <div className="relative flex-shrink-0">
+          <div
+            className={`${
+              isMobile ? "w-11 h-11" : "w-14 h-14"
+            } rounded-2xl bg-gradient-to-br from-primary via-primary to-secondary flex items-center justify-center shadow-xl shadow-primary/20 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-primary/30 group-hover:scale-105 group-hover:-rotate-3`}
+          >
+            {selectedGym?.logoUrl ? (
+              <img
+                src={selectedGym.logoUrl}
+                alt={selectedGym.name}
+                className="w-full h-full object-cover rounded-2xl"
+              />
+            ) : (
+              <Dumbbell
+                className={`${
+                  isMobile ? "w-6 h-6" : "w-7 h-7"
+                } text-white drop-shadow-lg`}
+              />
+            )}
+          </div>
+          {/* Floating Active Indicator */}
+          {selectedGym && (
+            <div
+              className={`absolute ${
+                isMobile
+                  ? "-top-1 -right-1 w-4 h-4"
+                  : "-top-1.5 -right-1.5 w-5 h-5"
+              } rounded-full ${
+                selectedGym.isActive !== false ? "bg-success" : "bg-warning"
+              } ring-4 ring-background shadow-lg animate-pulse`}
+            ></div>
           )}
         </div>
 
-        {/* Text Content */}
+        {/* Text Content - Clean Typography */}
         <div className="flex-1 text-left min-w-0">
           {selectedGym ? (
             <>
-              <div className="text-xs sm:text-sm font-semibold text-text-primary truncate">
+              <div
+                className={`${
+                  isMobile ? "text-base" : "text-xl"
+                } font-bold text-text-primary truncate leading-tight tracking-tight`}
+              >
                 {selectedGym.name}
               </div>
-              {selectedGym.city && (
-                <div className="hidden sm:flex items-center gap-1 text-xs text-text-secondary mt-0.5">
-                  <MapPin className="w-3 h-3" />
+              {selectedGym.city && !isMobile && (
+                <div className="flex items-center gap-1.5 text-sm text-text-secondary/70 mt-1 font-medium">
+                  <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                   <span className="truncate">{selectedGym.city}</span>
                 </div>
               )}
             </>
           ) : (
             <>
-              <div className="text-xs sm:text-sm font-medium text-text-secondary">
+              <div
+                className={`${
+                  isMobile ? "text-sm" : "text-lg"
+                } font-bold text-text-secondary/60`}
+              >
                 {t("gym.no_gym_selected", "Select a gym")}
               </div>
-              <div className="hidden sm:block text-xs text-text-secondary/70 mt-0.5">
-                {gyms.length} {gyms.length === 1 ? "gym" : "gyms"} available
-              </div>
+              {!isMobile && (
+                <div className="text-sm text-text-secondary/50 mt-0.5 font-medium">
+                  {gyms.length} available
+                </div>
+              )}
             </>
           )}
         </div>
 
-        {/* Dropdown Arrow */}
-        <ChevronDown
-          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-text-secondary transition-transform duration-200 flex-shrink-0 ${
-            isOpen ? "rotate-180" : ""
+        {/* Minimal Dropdown Indicator */}
+        <div
+          className={`${
+            isMobile ? "w-8 h-8" : "w-10 h-10"
+          } rounded-xl bg-surface-hover/50 flex items-center justify-center transition-all duration-300 group-hover:bg-surface-hover group-hover:rotate-180 ${
+            isOpen ? "bg-surface-hover rotate-180" : ""
           }`}
-        />
+        >
+          <ChevronDown
+            className={`${
+              isMobile ? "w-4 h-4" : "w-5 h-5"
+            } text-text-secondary`}
+          />
+        </div>
       </button>
 
-      {/* Dropdown Menu */}
+      {/* Dropdown Menu - Glass Morphism Design */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 sm:mt-2 bg-background/95 backdrop-blur-xl border border-border rounded-lg sm:rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="max-h-[60vh] sm:max-h-[400px] overflow-y-auto">
+        <div
+          className={`absolute ${
+            isMobile
+              ? "top-full left-0 right-0 mt-2"
+              : "top-full left-0 mt-3 w-[420px]"
+          } bg-background/80 backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden z-50 border border-white/10 dark:border-white/5`}
+          style={{
+            animation: "dropdown-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none"></div>
+
+          <div
+            className={`relative max-h-[70vh] ${
+              isMobile ? "max-h-[50vh]" : "max-h-[600px]"
+            } overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent`}
+          >
             {Array.isArray(gyms) && gyms.length > 0 ? (
-              <div className="p-1.5 sm:p-2 space-y-0.5 sm:space-y-1">
+              <div className="p-3 space-y-2">
+                {/* Header */}
+                <div className="px-3 py-2 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">
+                    Your Gyms
+                  </span>
+                  <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent"></div>
+                </div>
+
+                {/* Gym List */}
                 {gyms.map((gym) => {
                   const isSelected = selectedGym
                     ? gym._id === selectedGym._id
@@ -142,91 +203,102 @@ export default function GymSelector({
                     <button
                       key={gym._id}
                       onClick={() => handleGymChange(gym._id)}
-                      className={`w-full flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-md sm:rounded-lg transition-all duration-200 ${
+                      className={`w-full flex items-center gap-4 px-4 ${
+                        isMobile ? "py-3" : "py-4"
+                      } rounded-2xl transition-all duration-300 group ${
                         isSelected
-                          ? "bg-gradient-to-r from-primary/10 to-secondary/10 ring-1 sm:ring-2 ring-primary/20"
-                          : "hover:bg-surface-hover"
+                          ? "bg-gradient-to-r from-primary/20 via-primary/10 to-secondary/20 shadow-lg shadow-primary/10 scale-[1.02]"
+                          : "hover:bg-surface-hover/60 hover:scale-[1.01] active:scale-[0.99]"
                       }`}
                     >
                       {/* Gym Logo/Icon */}
-                      <div
-                        className={`relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-md sm:rounded-lg flex-shrink-0 ${
-                          isSelected
-                            ? "bg-gradient-to-br from-primary to-secondary"
-                            : "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700"
-                        }`}
-                      >
-                        {gym.logoUrl ? (
-                          <img
-                            src={gym.logoUrl}
-                            alt={gym.name}
-                            className="w-full h-full object-cover rounded-md sm:rounded-lg"
-                          />
-                        ) : (
-                          <Dumbbell
-                            className={`w-5 h-5 sm:w-5.5 sm:h-5.5 ${
-                              isSelected
-                                ? "text-white"
-                                : "text-gray-400 dark:text-gray-500"
-                            }`}
-                          />
+                      <div className="relative flex-shrink-0">
+                        <div
+                          className={`${
+                            isMobile ? "w-12 h-12" : "w-14 h-14"
+                          } rounded-2xl bg-gradient-to-br ${
+                            isSelected
+                              ? "from-primary via-primary to-secondary shadow-xl shadow-primary/30"
+                              : "from-gray-100 to-gray-200 dark:from-gray-800/80 dark:to-gray-700/80 group-hover:scale-105"
+                          } flex items-center justify-center transition-all duration-300`}
+                        >
+                          {gym.logoUrl ? (
+                            <img
+                              src={gym.logoUrl}
+                              alt={gym.name}
+                              className="w-full h-full object-cover rounded-2xl"
+                            />
+                          ) : (
+                            <Dumbbell
+                              className={`${isMobile ? "w-6 h-6" : "w-7 h-7"} ${
+                                isSelected
+                                  ? "text-white"
+                                  : "text-gray-400 dark:text-gray-500"
+                              }`}
+                            />
+                          )}
+                        </div>
+
+                        {/* Glow Effect for Selected */}
+                        {isSelected && (
+                          <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl"></div>
                         )}
                       </div>
 
                       {/* Gym Info */}
                       <div className="flex-1 text-left min-w-0">
-                        <div className="flex items-center gap-1.5 sm:gap-2">
+                        <div className="flex items-center gap-2 mb-1">
                           <span
-                            className={`text-xs sm:text-sm font-semibold truncate ${
+                            className={`${
+                              isMobile ? "text-base" : "text-lg"
+                            } font-bold truncate ${
                               isSelected ? "text-primary" : "text-text-primary"
                             }`}
                           >
                             {gym.name}
                           </span>
                           {gym.isActive === false && (
-                            <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-warning/20 text-warning font-medium flex-shrink-0">
-                              Inactive
+                            <span className="text-[10px] px-2 py-1 rounded-lg bg-warning/20 text-warning font-bold flex-shrink-0 border border-warning/30">
+                              INACTIVE
                             </span>
                           )}
                         </div>
-                        {(gym.city || gym.slogan) && (
-                          <div className="flex items-center gap-1 text-[10px] sm:text-xs text-text-secondary mt-0.5 sm:mt-1">
-                            {gym.city && (
-                              <>
-                                <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
-                                <span className="truncate">{gym.city}</span>
-                              </>
-                            )}
-                            {!gym.city && gym.slogan && (
-                              <span className="truncate italic">
-                                {gym.slogan}
-                              </span>
-                            )}
+                        {gym.city && (
+                          <div className="flex items-center gap-1.5 text-sm text-text-secondary/70">
+                            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                            <span className="truncate font-medium">
+                              {gym.city}
+                            </span>
                           </div>
                         )}
                       </div>
 
                       {/* Selection Indicator */}
-                      {isSelected && (
-                        <div className="flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary flex items-center justify-center">
-                          <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
+                      {isSelected ? (
+                        <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/50">
+                          <Check
+                            className="w-5 h-5 text-white"
+                            strokeWidth={3}
+                          />
                         </div>
+                      ) : (
+                        <div className="flex-shrink-0 w-8 h-8 rounded-xl border-2 border-border/50 group-hover:border-primary/30 transition-colors duration-300"></div>
                       )}
                     </button>
                   );
                 })}
               </div>
             ) : (
-              <div className="px-4 sm:px-6 py-8 sm:py-10 text-center">
-                <div className="flex justify-center mb-2 sm:mb-3">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center">
-                    <Building2 className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 dark:text-gray-500" />
+              <div className="px-8 py-12 text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-gray-100/80 to-gray-200/80 dark:from-gray-800/50 dark:to-gray-700/50 flex items-center justify-center backdrop-blur-sm">
+                    <Building2 className="w-10 h-10 text-gray-400 dark:text-gray-500" />
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-text-primary mb-1">
+                <p className="text-base font-bold text-text-primary mb-2">
                   {t("gym.noGyms", "No gyms yet")}
                 </p>
-                <p className="text-[10px] sm:text-xs text-text-secondary">
+                <p className="text-sm text-text-secondary/70 font-medium">
                   {t("gym.createFirst", "Create your first gym to get started")}
                 </p>
               </div>
@@ -235,16 +307,20 @@ export default function GymSelector({
 
           {/* Create New Gym Button */}
           {showAllGymsOption && (
-            <div className="border-t border-border p-1.5 sm:p-2 bg-background/50">
+            <div className="relative border-t border-white/5 p-3 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5">
               <button
                 onClick={() => {
                   setIsOpen(false);
                   navigate({ to: APP_PAGES.manager.createGym.link });
                 }}
-                className="w-full flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-md sm:rounded-lg bg-gradient-to-r from-success/10 to-success/5 hover:from-success/20 hover:to-success/10 border border-success/20 hover:border-success/30 text-success font-medium transition-all duration-200 group"
+                className={`w-full flex items-center justify-center gap-2.5 ${
+                  isMobile ? "px-4 py-3" : "px-5 py-3.5"
+                } rounded-2xl bg-gradient-to-r from-success/15 via-success/10 to-success/15 hover:from-success/25 hover:via-success/20 hover:to-success/25 border-2 border-success/30 hover:border-success/50 text-success font-bold transition-all duration-300 group shadow-lg shadow-success/10 hover:shadow-xl hover:shadow-success/20 hover:scale-[1.02] active:scale-[0.98]`}
               >
-                <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:scale-110 group-hover:rotate-90 duration-200" />
-                <span className="text-xs sm:text-sm font-semibold">
+                <div className="w-6 h-6 rounded-lg bg-success/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-300">
+                  <Plus className="w-4 h-4" strokeWidth={3} />
+                </div>
+                <span className={`${isMobile ? "text-sm" : "text-base"}`}>
                   {t("gym.createNew", "Create New Gym")}
                 </span>
               </button>
@@ -252,6 +328,19 @@ export default function GymSelector({
           )}
         </div>
       )}
+
+      <style>{`
+        @keyframes dropdown-appear {
+          from {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 }

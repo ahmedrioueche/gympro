@@ -556,6 +556,8 @@
       }
     },
     "delete": {
+      "title": "Delete Member",
+      "message": "Are you sure you want to remove {{name}} from the gym? This action cannot be undone.",
       "success": "Member removed successfully",
       "generalError": "Failed to remove member",
       "errors": {

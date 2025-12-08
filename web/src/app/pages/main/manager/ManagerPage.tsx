@@ -1,48 +1,50 @@
 import { Outlet } from "@tanstack/react-router";
+import {
+  BarChart3,
+  Bell,
+  CreditCard,
+  Dumbbell,
+  Home,
+  Settings,
+} from "lucide-react";
 import { APP_PAGES } from "../../../../constants/navigation";
 import Nav from "../../../components/Nav";
 
 const sidebarLinks = [
   {
     label: "home",
-    icon: "🏠",
+    icon: <Home className="w-5 h-5" />,
     path: APP_PAGES.manager.home.link,
-    description: "manageAccount",
     matchPaths: [APP_PAGES.manager.home.link],
   },
   {
     label: "gyms",
-    icon: "🏋️",
+    icon: <Dumbbell className="w-5 h-5" />,
     path: APP_PAGES.manager.gyms.link,
-    description: "manageGyms",
     matchPaths: [APP_PAGES.manager.gyms.link, APP_PAGES.manager.createGym.link],
   },
   {
     label: "payments",
-    icon: "💳",
+    icon: <CreditCard className="w-5 h-5" />,
     path: APP_PAGES.manager.payments.link,
-    description: "managePayments",
     matchPaths: [APP_PAGES.manager.payments.link],
   },
   {
     label: "analytics",
-    icon: "📊",
+    icon: <BarChart3 className="w-5 h-5" />,
     path: APP_PAGES.manager.analytics.link,
-    description: "viewAnalytics",
     matchPaths: [APP_PAGES.manager.analytics.link],
   },
   {
     label: "notifications",
-    icon: "🔔",
+    icon: <Bell className="w-5 h-5" />,
     path: APP_PAGES.manager.notifications.link,
-    description: "viewNotifications",
     matchPaths: [APP_PAGES.manager.notifications.link],
   },
   {
     label: "settings",
-    icon: "⚙️",
+    icon: <Settings className="w-5 h-5" />,
     path: APP_PAGES.manager.settings.link,
-    description: "customizeSettings",
     matchPaths: [APP_PAGES.manager.settings.link],
   },
 ];
