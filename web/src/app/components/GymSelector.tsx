@@ -1,10 +1,11 @@
-import type { Gym } from "@ahmedrioueche/gympro-client";
-import { useNavigate } from "@tanstack/react-router";
+import type { Gym, UserRole } from "@ahmedrioueche/gympro-client";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   Building2,
   Check,
   ChevronDown,
   Dumbbell,
+  Home,
   MapPin,
   Plus,
   Sparkles,
@@ -14,6 +15,8 @@ import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../constants/navigation";
 import useScreen from "../../hooks/useScreen";
 import { useGymStore } from "../../store/gym";
+import { useUserStore } from "../../store/user";
+import { redirectToHomePageAfterTimeout } from "../../utils/helper";
 
 interface GymSelectorProps {
   gyms?: Gym[];
@@ -28,12 +31,15 @@ export default function GymSelector({
 }: GymSelectorProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const routerState = useRouterState();
+  const { user } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
   const { currentGym, setGym } = useGymStore();
   const { isMobile } = useScreen();
 
-  // Close dropdown when clicking outside
+  const isOnGymDashboard = routerState.location.pathname.startsWith("/gym");
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -51,7 +57,6 @@ export default function GymSelector({
     }
   }, [isOpen]);
 
-  // Handle gym selection
   const handleGymChange = (gymId: string | null) => {
     setIsOpen(false);
     const selected = gyms.find((g) => g._id === gymId) || null;
@@ -62,21 +67,18 @@ export default function GymSelector({
     }
   };
 
-  // Safe selection
   const selectedGym = Array.isArray(gyms)
     ? gyms.find((gym) => gym._id === currentGym?._id)
     : undefined;
 
   return (
-    <div className={`relative ${className}`} ref={selectRef}>
-      {/* Trigger Button - Completely Borderless and Free */}
+    <div className={`relative w-full ${className}`} ref={selectRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`group flex items-center gap-3 px-2 py-2 rounded-2xl transition-all duration-300 hover:bg-transparent ${
           isMobile ? "scale-90 -ml-2" : ""
         }`}
       >
-        {/* Gym Icon/Logo - Floating Style */}
         <div className="relative flex-shrink-0">
           <div
             className={`${
@@ -97,7 +99,6 @@ export default function GymSelector({
               />
             )}
           </div>
-          {/* Floating Active Indicator */}
           {selectedGym && (
             <div
               className={`absolute ${
@@ -111,7 +112,6 @@ export default function GymSelector({
           )}
         </div>
 
-        {/* Text Content - Clean Typography */}
         <div className="flex-1 text-left min-w-0">
           {selectedGym ? (
             <>
@@ -147,7 +147,6 @@ export default function GymSelector({
           )}
         </div>
 
-        {/* Minimal Dropdown Indicator */}
         <div
           className={`${
             isMobile ? "w-8 h-8" : "w-10 h-10"
@@ -163,7 +162,6 @@ export default function GymSelector({
         </div>
       </button>
 
-      {/* Dropdown Menu - Glass Morphism Design */}
       {isOpen && (
         <div
           className={`absolute ${
@@ -175,7 +173,6 @@ export default function GymSelector({
             animation: "dropdown-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
-          {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none"></div>
 
           <div
@@ -185,20 +182,35 @@ export default function GymSelector({
           >
             {Array.isArray(gyms) && gyms.length > 0 ? (
               <div className="p-3 space-y-2">
-                {/* Header */}
                 <div className="px-3 py-2 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" />
                   <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">
-                    Your Gyms
+                    {t("gym.yourGyms", "Your Gyms")}
                   </span>
                   <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent"></div>
+                  {isOnGymDashboard && (
+                    <div
+                      onClick={() => {
+                        setIsOpen(false);
+                        redirectToHomePageAfterTimeout(
+                          user.role as UserRole,
+                          0,
+                          navigate
+                        );
+                      }}
+                      className="group flex flex-row space-x-2 cursor-pointer"
+                    >
+                      <Home className="w-4 h-4 mt-0.5 text-text-secondary transition-colors duration-300 group-hover:text-primary" />
+                      <span className="text-sm text-text-secondary transition-colors duration-300 group-hover:text-text-primary">
+                        {t("gym.backToDashboard", "Back to Dashboard")}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Gym List */}
                 {gyms.map((gym) => {
-                  const isSelected = selectedGym
-                    ? gym._id === selectedGym._id
-                    : false;
+                  const isSelected = selectedGym && gym._id === selectedGym._id;
+
                   return (
                     <button
                       key={gym._id}
@@ -211,7 +223,6 @@ export default function GymSelector({
                           : "hover:bg-surface-hover/60 hover:scale-[1.01] active:scale-[0.99]"
                       }`}
                     >
-                      {/* Gym Logo/Icon */}
                       <div className="relative flex-shrink-0">
                         <div
                           className={`${
@@ -239,13 +250,11 @@ export default function GymSelector({
                           )}
                         </div>
 
-                        {/* Glow Effect for Selected */}
                         {isSelected && (
                           <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl"></div>
                         )}
                       </div>
 
-                      {/* Gym Info */}
                       <div className="flex-1 text-left min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span
@@ -259,7 +268,7 @@ export default function GymSelector({
                           </span>
                           {gym.isActive === false && (
                             <span className="text-[10px] px-2 py-1 rounded-lg bg-warning/20 text-warning font-bold flex-shrink-0 border border-warning/30">
-                              INACTIVE
+                              {t("gym.inactive", "Inactive")}
                             </span>
                           )}
                         </div>
@@ -273,7 +282,6 @@ export default function GymSelector({
                         )}
                       </div>
 
-                      {/* Selection Indicator */}
                       {isSelected ? (
                         <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/50">
                           <Check
@@ -305,7 +313,6 @@ export default function GymSelector({
             )}
           </div>
 
-          {/* Create New Gym Button */}
           {showAllGymsOption && (
             <div className="relative border-t border-white/5 p-3 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5">
               <button

@@ -4,34 +4,32 @@ import { useTheme } from "../context/ThemeContext";
 
 function Hero() {
   const { t } = useTranslation();
-  const { mode } = useTheme();
+  const { isDark } = useTheme();
 
   // Conditional colors for light/dark mode
-  const backgroundGradient =
-    mode === "dark"
-      ? "from-gray-900 via-gray-800 to-gray-700"
-      : "from-primary via-secondary to-accent";
+  const backgroundGradient = isDark
+    ? "from-gray-900 via-gray-800 to-gray-700"
+    : "from-primary via-secondary to-accent";
 
-  const overlayGradient =
-    mode === "dark"
-      ? "bg-gradient-to-t from-black/40 to-black/0"
-      : "bg-gradient-to-t from-black/20 to-transparent";
+  const overlayGradient = isDark
+    ? "bg-gradient-to-t from-black/40 to-black/0"
+    : "bg-gradient-to-t from-black/20 to-transparent";
 
   const animatedCircles = [
     {
       className: `absolute top-20 left-20 w-32 h-32 rounded-full blur-xl animate-pulse ${
-        mode === "dark" ? "bg-purple-800/30" : "bg-white/10"
+        isDark ? "bg-purple-800/30" : "bg-white/10"
       }`,
     },
     {
       className: `absolute top-1/3 right-32 w-48 h-48 rounded-full blur-2xl animate-pulse ${
-        mode === "dark" ? "bg-indigo-900/20" : "bg-white/5"
+        isDark ? "bg-indigo-900/20" : "bg-white/5"
       }`,
       style: { animationDelay: "1s" },
     },
     {
       className: `absolute bottom-32 left-1/3 w-24 h-24 rounded-full blur-lg animate-pulse ${
-        mode === "dark" ? "bg-pink-900/25" : "bg-white/15"
+        isDark ? "bg-pink-900/25" : "bg-white/15"
       }`,
       style: { animationDelay: "2s" },
     },
@@ -58,14 +56,14 @@ function Hero() {
       <div className="relative z-10 flex flex-col justify-center px-12 text-white flex-1 -mt-18">
         <h1
           className={`text-5xl max-w-lg font-bold mb-6 leading-tight ${
-            mode === "dark" ? "text-gray-100" : "text-white"
+            isDark ? "text-gray-100" : "text-white"
           }`}
         >
           {t("auth.hero_title")}
         </h1>
         <p
           className={`text-xl leading-relaxed max-w-md ${
-            mode === "dark" ? "text-gray-300" : "text-white/90"
+            isDark ? "text-gray-300" : "text-white/90"
           }`}
         >
           {t("auth.hero_subtitle")}
@@ -78,20 +76,16 @@ function Hero() {
               <li key={i} className="flex items-center">
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 ${
-                    mode === "dark" ? "bg-gray-700/50" : "bg-white/20"
+                    isDark ? "bg-gray-700/50" : "bg-white/20"
                   }`}
                 >
                   <Check
                     className={`w-3 h-3 ${
-                      mode === "dark" ? "text-purple-300" : "text-white"
+                      isDark ? "text-purple-300" : "text-white"
                     }`}
                   />
                 </div>
-                <span
-                  className={`${
-                    mode === "dark" ? "text-gray-300" : "opacity-90"
-                  }`}
-                >
+                <span className={`${isDark ? "text-gray-300" : "opacity-90"}`}>
                   {feature}
                 </span>
               </li>

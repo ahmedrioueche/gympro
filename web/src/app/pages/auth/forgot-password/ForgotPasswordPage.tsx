@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
   const [step, setStep] = useState<ForgotPasswordStep>("form");
   const [error, setError] = useState("");
   const [submittedIdentifier, setSubmittedIdentifier] = useState("");
-  const { mode } = useTheme();
+  const { isDark } = useTheme();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -133,7 +133,7 @@ export default function ForgotPasswordPage() {
   return (
     <div
       className={`min-h-screen flex items-center justify-center p-4 ${
-        mode === "dark" ? bgGradient : "bg-background"
+        isDark ? bgGradient : "bg-background"
       } `}
     >
       <div className="max-w-md w-full">
@@ -144,7 +144,7 @@ export default function ForgotPasswordPage() {
 
         <div
           className={`bg-background rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden ${
-            mode === "dark" ? bgGradient : "bg-background"
+            isDark ? bgGradient : "bg-background"
           }`}
         >
           {step === "success" ? (

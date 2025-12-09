@@ -1,18 +1,20 @@
 import { ManagerRootRoute } from "./ManagerRootRoute";
 import {
   analyticsRoute,
+  billingRoute,
   coachingRoute,
   createGymRoute,
   gymsRoute,
   homeRoute,
   notificationsRoute,
+  paymentsRoute,
   settingsRoute,
-  subscriptionsRoute,
 } from "./ManagerRoutes";
 
 export const ManagerRootTree = ManagerRootRoute.addChildren([
   homeRoute,
-  subscriptionsRoute,
+  paymentsRoute,
+  billingRoute,
   gymsRoute,
   createGymRoute,
   notificationsRoute,

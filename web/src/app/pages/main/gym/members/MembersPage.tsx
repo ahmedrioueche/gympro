@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import ErrorComponent from "../../../../../components/ui/Error";
 import Loading from "../../../../../components/ui/Loading";
 import { APP_PAGES } from "../../../../../constants/navigation";
+import { useTheme } from "../../../../../context/ThemeContext";
 import { useMembers } from "../../../../../hooks/queries/useMembers";
 import { useGymStore } from "../../../../../store/gym";
 import {
@@ -35,7 +36,7 @@ function MembersPage() {
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [sortBy, setSortBy] = useState<SortBy>("name");
   const [currentPage, setCurrentPage] = useState(1);
-
+  const { isDark } = useTheme();
   // Modal state
   const [selectedMember, setSelectedMember] = useState<MemberDisplay | null>(
     null
@@ -219,7 +220,9 @@ function MembersPage() {
     <div className="min-h-screen p-3 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-surface via-surface to-primary/5 border border-border rounded-2xl p-4 md:p-8">
+        <div
+          className={`bg-gradient-to-br from-primary/5 via-secondary/5 border border-border rounded-2xl p-4 md:p-8`}
+        >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-1 md:mb-2">

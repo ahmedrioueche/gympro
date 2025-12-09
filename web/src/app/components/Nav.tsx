@@ -1,6 +1,6 @@
 import { authApi } from "@ahmedrioueche/gympro-client";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { LogOut, Menu, Moon, Sun } from "lucide-react";
+import { LogOut, Menu, Moon, Sun, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../constants/navigation";
@@ -20,7 +20,7 @@ export default function Nav({ children, sidebarLinks }) {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false); // for mobile
   const [sidebarExpanded, setSidebarExpanded] = useState(false); // for desktop hover
-  const { mode, toggleMode } = useTheme();
+  const { isDark, toggleMode } = useTheme();
   const sidebarRef = useRef(null);
   const { isMobile } = useScreen();
   const { user, setUser } = useUserStore();
@@ -72,7 +72,7 @@ export default function Nav({ children, sidebarLinks }) {
           className={`sidebar-menu-item w-full group relative overflow-hidden rounded-r-xl flex items-center gap-3 px-3 py-3.5 transition-all duration-300 ${
             isActive
               ? "bg-gradient-to-r from-primary/20 to-secondary/20 text-primary shadow-md"
-              : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+              : "text-text-secondary hover:text-text-primary hover:bg-gradient-to-r hover:from-primary/25 via-accent/20 hover:to-secondary/25"
           }`}
           tabIndex={0}
         >
@@ -132,13 +132,9 @@ export default function Nav({ children, sidebarLinks }) {
     <div className="flex items-center gap-2 md:gap-4 px-4 py-4">
       <button
         onClick={toggleMode}
-        className="p-2.5 rounded-xl transition-all duration-300 text-warning hover:bg-surface-hover hover:scale-110"
+        className="p-2.5 hidden md:block rounded-xl transition-all duration-300 text-warning hover:bg-surface-hover hover:scale-110"
       >
-        {mode === "dark" ? (
-          <Sun className="w-5 h-5" />
-        ) : (
-          <Moon className="w-5 h-5" />
-        )}
+        {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
       </button>
       <NotificationsDropdown
         onNotificationClick={handleNotificationClick}
@@ -158,7 +154,11 @@ export default function Nav({ children, sidebarLinks }) {
       {/* SIDEBAR */}
       <div
         ref={sidebarRef}
-        className={`h-screen flex backdrop-blur-lg
+        className={`h-screen flex backdrop-blur-lg ${
+          isMobile
+            ? "bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900"
+            : ""
+        }
     flex-col fixed md:relative z-40 transition-all duration-300 
    shadow-[2px_0_8px_rgba(0,0,0,0.15)]
 
@@ -174,13 +174,24 @@ export default function Nav({ children, sidebarLinks }) {
       >
         {/* Sidebar Header */}
         <div className="flex flex-col">
-          <SidebarAnimatedLogo
-            collapsed={!sidebarExpanded && !isMobile}
-            onClick={() => {
-              const url = getRoleHomePage(user.role as any);
-              navigate({ to: url });
-            }}
-          />
+          <div className="flex items-center justify-between">
+            <SidebarAnimatedLogo
+              collapsed={!sidebarExpanded && !isMobile}
+              onClick={() => {
+                const url = getRoleHomePage(user.role as any);
+                navigate({ to: url });
+              }}
+            />
+            {/* Close button - Mobile only */}
+            {isMobile && (
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="p-2 mr-4 rounded-lg hover:bg-surface-hover transition-colors"
+              >
+                <X className="w-5 h-5 text-text-primary" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Sidebar Content */}
@@ -202,16 +213,25 @@ export default function Nav({ children, sidebarLinks }) {
       {/* OVERLAY (Mobile) */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/20 z-30 md:hidden"
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col h-screen">
-        {/* Top Bar: GymSelector left, controls right */}
-        <div className="flex items-center justify-between min-h-[80px] px-4 md:px-6">
-          <div className="flex-1">
+        {/* Top Bar: Menu button + GymSelector left, controls right */}
+        <div className="flex items-center justify-between min-h-[80px] px-1 md:px-6">
+          <div className="flex items-center gap-3 flex-1">
+            {/* Mobile menu button - relative positioning */}
+            {isMobile && (
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="p-2.5 rounded-xl bg-background shadow-lg border border-border hover:bg-surface-hover transition-all duration-300 hover:scale-110"
+              >
+                <Menu className="w-6 h-6 text-text-primary" />
+              </button>
+            )}
             <GymSelector gyms={gyms} />
           </div>
           <TopRightControls />
@@ -234,16 +254,6 @@ export default function Nav({ children, sidebarLinks }) {
             </div>
           )}
         </div>
-
-        {/* Mobile menu icon */}
-        {isMobile && (
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-background shadow-lg border border-border hover:bg-surface-hover transition-all duration-300 hover:scale-110"
-          >
-            <Menu className="w-6 h-6 text-text-primary" />
-          </button>
-        )}
       </div>
     </div>
   );

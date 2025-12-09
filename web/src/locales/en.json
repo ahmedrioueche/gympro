@@ -201,6 +201,7 @@
     "members": "Members",
     "subscriptions": "Subscriptions",
     "coaching": "Coaching",
+    "billing": "Billing",
     "payments": "Payments",
     "analytics": "Analytics",
     "notifications": "Notifications",
@@ -581,6 +582,15 @@
       "membershipStatus": "Status",
       "noSubscription": "No active subscription"
     }
+  },
+  "gym": {
+    "no_gym_selected": "Select a gym",
+    "backToDashboard": "Back to Dashboard",
+    "yourGyms": "Your Gyms",
+    "inactive": "Inactive",
+    "noGyms": "No gyms yet",
+    "createFirst": "Create your first gym to get started",
+    "createNew": "Create New Gym"
   },
   "createMember": {
     "title": "Add New Member",

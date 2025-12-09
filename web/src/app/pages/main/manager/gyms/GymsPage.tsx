@@ -11,7 +11,7 @@ export default function GymsPage() {
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       {/* 🔥 Combined Header + Create Gym Section */}
-      <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl p-8 gap-6 mb-8">
+      <div className="bg-gradient-to-br from-primary/5 via-secondary/5 border border-border rounded-xl p-8 gap-6 mb-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Left side: Page header */}
           <div>

@@ -1,12 +1,13 @@
 import { createRoute } from "@tanstack/react-router";
 import AnalyticsPage from "../../../app/pages/main/manager/analytics/AnalyticsPage";
+import BillingPage from "../../../app/pages/main/manager/billing/BillingPage";
 import CoachingPage from "../../../app/pages/main/manager/coaching/CoachingPage";
 import CreateGymPage from "../../../app/pages/main/manager/createGym/CreateGymPage";
 import GymsPage from "../../../app/pages/main/manager/gyms/GymsPage";
 import HomePage from "../../../app/pages/main/manager/home/HomePage";
 import NotificationsPage from "../../../app/pages/main/manager/notifications/NotificationsPage";
+import PaymentsPage from "../../../app/pages/main/manager/payments/PaymentsPage";
 import SettingsPage from "../../../app/pages/main/manager/settings/SettingsPage";
-import SubscriptionsPage from "../../../app/pages/main/manager/subscriptions/SubscriptionsPage";
 import { ManagerRootRoute } from "./ManagerRootRoute";
 
 export const homeRoute = createRoute({
@@ -27,10 +28,16 @@ export const createGymRoute = createRoute({
   component: () => <CreateGymPage />,
 });
 
-export const subscriptionsRoute = createRoute({
+export const billingRoute = createRoute({
   getParentRoute: () => ManagerRootRoute,
-  path: "/subscriptions",
-  component: () => <SubscriptionsPage />,
+  path: "/billing",
+  component: () => <BillingPage />,
+});
+
+export const paymentsRoute = createRoute({
+  getParentRoute: () => ManagerRootRoute,
+  path: "/payments",
+  component: () => <PaymentsPage />,
 });
 
 export const coachingRoute = createRoute({

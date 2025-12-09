@@ -10,6 +10,7 @@ type ThemeMode = "light" | "dark";
 
 interface ThemeContextType {
   mode: ThemeMode;
+  isDark: boolean; // NEW
   toggleMode: () => void;
   setMode: (mode: ThemeMode) => void;
 }
@@ -22,30 +23,24 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [mode, setMode] = useState<ThemeMode>(() => {
-    // 1. If user manually chose a theme → respect it
     try {
       const saved = localStorage.getItem("themeMode");
       if (saved === "light" || saved === "dark") return saved;
     } catch {}
-
-    // 2. Otherwise → detect OS theme
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      return "dark";
-    }
-
-    return "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
   });
 
   // Apply theme class + persist choice
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", mode === "dark");
+    document.documentElement.classList.toggle("dark", isDark);
     localStorage.setItem("themeMode", mode);
   }, [mode]);
 
-  // 3. Sync with OS theme changes (ONLY if user never manually selected)
+  // Sync with OS theme changes (if user never manually selected)
   useEffect(() => {
     const saved = localStorage.getItem("themeMode");
-    // If user chose manually → don't override
     if (saved === "light" || saved === "dark") return;
 
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -61,8 +56,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     setMode((prev) => (prev === "light" ? "dark" : "light"));
   };
 
+  const isDark = mode === "dark";
+
   return (
-    <ThemeContext.Provider value={{ mode, toggleMode, setMode }}>
+    <ThemeContext.Provider value={{ mode, isDark, toggleMode, setMode }}>
       {children}
     </ThemeContext.Provider>
   );

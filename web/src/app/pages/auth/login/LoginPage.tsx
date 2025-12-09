@@ -11,7 +11,6 @@ import PhoneNumberInput, {
   usePhoneNumber,
 } from "../../../../components/ui/PhoneNumberInput";
 import { DEFAULT_COUNTRY_CODE } from "../../../../constants/common";
-import { COUNTRY_CODES } from "../../../../constants/countryCodes";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { bgGradient } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
@@ -35,7 +34,7 @@ function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useUserStore();
-  const { mode } = useTheme();
+  const { isDark } = useTheme();
   const phone = usePhoneNumber(DEFAULT_COUNTRY_CODE);
 
   // Check for Google OAuth error in URL
@@ -172,17 +171,10 @@ function LoginPage() {
   // Check if form is valid for button disabling
   const formIsValid = isFormValid();
 
-  // Format country code options with flags
-  const countryCodeOptions = COUNTRY_CODES.map((country) => ({
-    value: country.code,
-    label: country.code,
-    flag: country.flag,
-  }));
-
   return (
     <div
       className={`min-h-screen ${
-        mode === "dark" ? bgGradient : "bg-background"
+        isDark ? bgGradient : "bg-background"
       } flex flex-col lg:flex-row overflow-x-hidden`}
     >
       {/* Left Side - Login Form */}

@@ -1,6 +1,7 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../../../../../../context/ThemeContext";
 
 interface GymCardProps {
   gym: Gym;
@@ -10,6 +11,7 @@ interface GymCardProps {
 export default function GymCard({ gym, onSelect }: GymCardProps) {
   const { t } = useTranslation();
   const [showSettings, setShowSettings] = useState(false);
+  const { isDark } = useTheme();
 
   return (
     <div
@@ -17,7 +19,11 @@ export default function GymCard({ gym, onSelect }: GymCardProps) {
         e.preventDefault();
         onSelect();
       }}
-      className="w-full hover:cursor-pointer bg-gradient-to-br from-surface via-surface to-primary/5 border-2 border-border rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group"
+      className={`w-full hover:cursor-pointer ${
+        isDark
+          ? "dark:bg-gradient-to-br dark:from-gray-900 dark:via-indigo-950 dark:to-gray-900"
+          : "bg-background"
+      } border border-border rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group`}
     >
       {/* Header */}
       <div className="relative bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 p-6 md:p-8 border-b border-border/50">

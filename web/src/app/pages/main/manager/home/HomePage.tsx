@@ -90,7 +90,7 @@ function HomePage() {
     <div className="min-h-screen  p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Manager Profile Overview */}
-        <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 border border-primary/20 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
+        <div className="bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/10 border border-primary/20 rounded-2xl p-6 md:p-8 backdrop-blur-sm">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-2xl md:text-3xl font-bold shadow-lg">

@@ -1,5 +1,6 @@
 // components/ui/Dropdown.tsx
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "../../context/ThemeContext";
 
 interface DropdownProps {
   trigger: React.ReactNode;
@@ -16,6 +17,7 @@ export default function Dropdown({
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -42,7 +44,11 @@ export default function Dropdown({
 
       {isOpen && (
         <div
-          className={`fixed w-72 rounded-lg border border-border bg-background shadow-xl z-50 ${
+          className={`fixed w-72 rounded-lg border border-border ${
+            isDark
+              ? "dark:bg-gradient-to-br dark:from-gray-900 dark:via-indigo-950 dark:to-gray-900"
+              : "bg-background"
+          }  shadow-xl z-50 ${
             align === "right" ? "right-auto" : "left-auto"
           } ${className}`}
           style={{

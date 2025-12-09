@@ -5,7 +5,7 @@ import { useTheme } from "./context/ThemeContext";
 import { useGymStore } from "./store/gym";
 
 const App = () => {
-  const { mode } = useTheme();
+  const { isDark } = useTheme();
   const { clearGym } = useGymStore();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const App = () => {
   return (
     <div
       className={`font-primary max-w-[1920px]
-     ${mode === "dark" ? bgGradient : "bg-background"}`}
+     ${isDark ? bgGradient : "bg-background"}`}
     >
       <Outlet />
     </div>
