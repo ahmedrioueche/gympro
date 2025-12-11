@@ -21,6 +21,8 @@ import { User } from '../../common/schemas/user.schema';
 import { MailerService } from '../../common/services/mailer.service';
 import { getI18nText } from '../../common/utils/i18n';
 import { Platform, buildRedirectUrl } from '../../common/utils/platform.util';
+import { AppPlanModel } from '../appBilling/appBilling.schema';
+import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
 import { SigninDto, SignupDto } from './auth.dto';
 import { OtpService } from './otp.service';
 
@@ -30,6 +32,8 @@ export class AuthService {
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(AppPlanModel.name) private appPlanModel: Model<AppPlanModel>,
+    private readonly subscriptionService: AppSubscriptionService,
     private jwtService: JwtService,
     private configService: ConfigService,
     private mailerService: MailerService,
@@ -135,6 +139,30 @@ export class AuthService {
       } catch (error) {
         this.logger.error(`Failed to send OTP to ${phoneNumber}: ${error}`);
       }
+    }
+
+    try {
+      const freePlan = await this.appPlanModel
+        .findOne({ level: 'free' })
+        .exec();
+
+      if (freePlan) {
+        await this.subscriptionService.subscribe(
+          newUser._id.toString(),
+          freePlan._id.toString(),
+          'monthly',
+        );
+        this.logger.log(`User ${newUser._id} auto-subscribed to free plan`);
+      } else {
+        this.logger.warn(
+          'Free plan not found - user created without subscription',
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to auto-subscribe user ${newUser._id} to free plan: ${error}`,
+      );
+      // Don't throw error - user account is already created
     }
 
     return this.sanitizeUser(newUser);
@@ -267,7 +295,13 @@ export class AuthService {
       .findById(payload.sub)
       .populate('memberships')
       .populate('currentProgram')
-      .populate('notifications');
+      .populate('notifications')
+      .populate({
+        path: 'appSubscription',
+        populate: {
+          path: 'planId',
+        },
+      });
 
     if (!user) {
       throw new UnauthorizedException({
@@ -513,6 +547,31 @@ export class AuthService {
           notifications: [],
         });
         await user.save();
+
+        //  AUTO-SUBSCRIBE NEW USERS TO FREE PLAN
+        try {
+          const freePlan = await this.appPlanModel
+            .findOne({ level: 'free' })
+            .exec();
+
+          if (freePlan) {
+            await this.subscriptionService.subscribe(
+              user._id.toString(),
+              freePlan._id.toString(),
+              'monthly',
+            );
+            this.logger.log(`User ${user._id} auto-subscribed to free plan`);
+          } else {
+            this.logger.warn(
+              'Free plan not found - user created without subscription',
+            );
+          }
+        } catch (error) {
+          this.logger.error(
+            `Failed to auto-subscribe user ${user._id} to free plan: ${error}`,
+          );
+          // Don't throw error - user account is already created
+        }
       }
     }
 

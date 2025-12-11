@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
+import { AppBillingModule } from './modules/appBilling/appBilling.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
@@ -55,6 +56,7 @@ import { UsersModule } from './modules/users/users.module';
     GymModule,
     SmsModule,
     MembershipModule,
+    AppBillingModule,
   ],
   controllers: [AppController],
   providers: [

@@ -4,6 +4,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/common/schemas/user.schema';
 import { MailerService } from 'src/common/services/mailer.service';
+import { AppBillingModule } from '../appBilling/appBilling.module';
+import {
+  AppPlanModel,
+  AppPlanSchema,
+  AppSubscriptionHistoryModel,
+  AppSubscriptionHistorySchema,
+  AppSubscriptionModel,
+  AppSubscriptionSchema,
+} from '../appBilling/appBilling.schema';
 import { AttendanceRecordSchema } from '../attendace/attendance.schema';
 import { GymModel, GymSchema } from '../gym/gym.schema';
 import { GymMembershipSchema } from '../gymMembership/membership.schema';
@@ -32,6 +41,12 @@ import { OtpService } from './otp.service';
       },
       { name: 'ProgramHistory', schema: ProgramHistorySchema },
       { name: 'AttendanceRecord', schema: AttendanceRecordSchema },
+      { name: AppPlanModel.name, schema: AppPlanSchema },
+      { name: AppSubscriptionModel.name, schema: AppSubscriptionSchema },
+      {
+        name: AppSubscriptionHistoryModel.name,
+        schema: AppSubscriptionHistorySchema,
+      },
     ]),
 
     // JWT configuration
@@ -43,7 +58,7 @@ import { OtpService } from './otp.service';
       }),
       inject: [ConfigService],
     }),
-
+    AppBillingModule,
     SmsModule,
   ],
   controllers: [AuthController],

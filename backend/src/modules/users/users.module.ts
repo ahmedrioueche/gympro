@@ -1,6 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../common/schemas/user.schema';
+import {
+  AppPlanModel,
+  AppPlanSchema,
+  AppSubscriptionHistoryModel,
+  AppSubscriptionHistorySchema,
+  AppSubscriptionModel,
+  AppSubscriptionSchema,
+} from '../appBilling/appBilling.schema';
 import { AttendanceRecordSchema } from '../attendace/attendance.schema';
 import { GymModule } from '../gym/gym.module';
 import { GymModel, GymSchema } from '../gym/gym.schema';
@@ -30,7 +38,14 @@ import { UsersService } from './users.service';
       },
       { name: 'ProgramHistory', schema: ProgramHistorySchema },
       { name: 'AttendanceRecord', schema: AttendanceRecordSchema },
+      { name: AppPlanModel.name, schema: AppPlanSchema },
+      { name: AppSubscriptionModel.name, schema: AppSubscriptionSchema },
+      {
+        name: AppSubscriptionHistoryModel.name,
+        schema: AppSubscriptionHistorySchema,
+      },
     ]),
+
     GymModule,
   ],
   controllers: [UsersController],

@@ -117,6 +117,9 @@ export class User extends Document {
   @Prop({ type: UserProfileSchema, required: true })
   profile: UserProfile;
 
+  @Prop({ type: Types.ObjectId, ref: 'AppSubscriptionModel' })
+  appSubscription?: Types.ObjectId;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'GymMembership' }], default: [] })
   memberships: Types.ObjectId[];
 
