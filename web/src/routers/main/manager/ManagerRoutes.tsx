@@ -1,6 +1,5 @@
 import { createRoute } from "@tanstack/react-router";
 import AnalyticsPage from "../../../app/pages/main/manager/analytics/AnalyticsPage";
-import BillingPage from "../../../app/pages/main/manager/billing/BillingPage";
 import CoachingPage from "../../../app/pages/main/manager/coaching/CoachingPage";
 import CreateGymPage from "../../../app/pages/main/manager/createGym/CreateGymPage";
 import GymsPage from "../../../app/pages/main/manager/gyms/GymsPage";
@@ -8,6 +7,7 @@ import HomePage from "../../../app/pages/main/manager/home/HomePage";
 import NotificationsPage from "../../../app/pages/main/manager/notifications/NotificationsPage";
 import PaymentsPage from "../../../app/pages/main/manager/payments/PaymentsPage";
 import SettingsPage from "../../../app/pages/main/manager/settings/SettingsPage";
+import SubscriptionPage from "../../../app/pages/main/manager/subscription/SubscriptionsPage";
 import { ManagerRootRoute } from "./ManagerRootRoute";
 
 export const homeRoute = createRoute({
@@ -28,10 +28,10 @@ export const createGymRoute = createRoute({
   component: () => <CreateGymPage />,
 });
 
-export const billingRoute = createRoute({
+export const subscriptionRoute = createRoute({
   getParentRoute: () => ManagerRootRoute,
-  path: "/billing",
-  component: () => <BillingPage />,
+  path: "/subscription",
+  component: () => <SubscriptionPage />,
 });
 
 export const paymentsRoute = createRoute({

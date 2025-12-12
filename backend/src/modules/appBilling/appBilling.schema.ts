@@ -4,6 +4,7 @@ import type {
   AppPlanLevel,
   AppPlanType,
   AppSubscription,
+  AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
   PaymentMethod,
 } from '@ahmedrioueche/gympro-client';
@@ -11,13 +12,18 @@ import {
   APP_CURRENCIES,
   APP_PLAN_LEVELS,
   APP_PLAN_TYPES,
+  APP_SUBSCRIPTION_BILLING_CYCLES,
+  APP_SUBSCRIPTION_HISTORY_ACTIONS,
   APP_SUBSCRIPTION_STATUSES,
   PAYMENT_METHODS,
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 
-// Nested schemas
+// ---------------------
+// Nested Schemas
+// ---------------------
+
 @Schema({ _id: false })
 class AppPlanPricing {
   @Prop({ min: 0 })
@@ -42,9 +48,45 @@ class AppPlanLimits {
   maxGems?: number;
 }
 
+// Multi-currency pricing map
+export type AppPlanPricingMap = {
+  [key in AppCurrency]?: {
+    monthly?: number;
+    yearly?: number;
+    oneTime?: number;
+  };
+};
+
+const CurrencyPricingSchema = new MongooseSchema(
+  {
+    monthly: { type: Number },
+    yearly: { type: Number },
+    oneTime: { type: Number },
+  },
+  { _id: false },
+);
+
+const AppPlanPricingSchema = new MongooseSchema(
+  APP_CURRENCIES.reduce(
+    (acc, currency) => {
+      acc[currency] = { type: CurrencyPricingSchema };
+      return acc;
+    },
+    {} as Record<AppCurrency, any>,
+  ),
+  { _id: false },
+);
+
+// ---------------------
+// AppPlan Schema
+// ---------------------
+
 @Schema({ timestamps: true })
 export class AppPlanModel extends Document implements AppPlan {
   declare _id: string;
+
+  @Prop({ required: true, unique: true, type: String })
+  planId: string;
 
   @Prop({ default: 1 })
   version?: number;
@@ -52,18 +94,10 @@ export class AppPlanModel extends Document implements AppPlan {
   @Prop()
   order?: number;
 
-  @Prop({
-    type: String,
-    required: true,
-    enum: APP_PLAN_TYPES,
-  })
+  @Prop({ type: String, required: true, enum: APP_PLAN_TYPES })
   type: AppPlanType;
 
-  @Prop({
-    type: String,
-    required: true,
-    enum: APP_PLAN_LEVELS,
-  })
+  @Prop({ type: String, required: true, enum: APP_PLAN_LEVELS })
   level: AppPlanLevel;
 
   @Prop({ required: true })
@@ -72,15 +106,8 @@ export class AppPlanModel extends Document implements AppPlan {
   @Prop()
   description?: string;
 
-  @Prop({
-    type: String,
-    required: true,
-    enum: APP_CURRENCIES,
-  })
-  currency: AppCurrency;
-
-  @Prop({ type: AppPlanPricing, required: true })
-  pricing: AppPlanPricing;
+  @Prop({ type: AppPlanPricingSchema, required: true })
+  pricing: AppPlanPricingMap;
 
   @Prop({ type: AppPlanLimits, required: true })
   limits: AppPlanLimits;
@@ -92,7 +119,7 @@ export class AppPlanModel extends Document implements AppPlan {
   createdAt: Date;
 
   @Prop()
-  trialDays: number;
+  trialDays?: number;
 
   @Prop()
   createdBy?: string;
@@ -105,8 +132,13 @@ export class AppPlanModel extends Document implements AppPlan {
 }
 
 export const AppPlanSchema = SchemaFactory.createForClass(AppPlanModel);
+AppPlanSchema.index({ level: 1, type: 1 });
+AppPlanSchema.index({ planId: 1 });
 
-// Trial nested schema
+// ---------------------
+// Trial Info Schema
+// ---------------------
+
 @Schema({ _id: false })
 class TrialInfo {
   @Prop({ type: Date, required: true })
@@ -122,7 +154,10 @@ class TrialInfo {
   convertedToPaid?: boolean;
 }
 
-// AddOns nested schema
+// ---------------------
+// AddOns Schema
+// ---------------------
+
 @Schema({ _id: false })
 class AddOns {
   @Prop({ min: 0 })
@@ -135,6 +170,10 @@ class AddOns {
   gems?: number;
 }
 
+// ---------------------
+// AppSubscription Schema
+// ---------------------
+
 @Schema({ timestamps: true })
 export class AppSubscriptionModel extends Document implements AppSubscription {
   declare _id: string;
@@ -142,7 +181,7 @@ export class AppSubscriptionModel extends Document implements AppSubscription {
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
   userId: string;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'AppPlanModel' })
+  @Prop({ required: true, type: String }) // reference by planId
   planId: string;
 
   @Prop({ type: Date, required: true })
@@ -151,27 +190,17 @@ export class AppSubscriptionModel extends Document implements AppSubscription {
   @Prop({ type: Date })
   endDate?: Date;
 
-  @Prop({
-    type: String,
-    required: true,
-    enum: APP_SUBSCRIPTION_STATUSES,
-  })
+  @Prop({ type: String, required: true, enum: APP_SUBSCRIPTION_STATUSES })
   status: AppSubscriptionStatus;
 
-  @Prop({
-    type: String,
-    enum: PAYMENT_METHODS,
-  })
+  @Prop({ type: String, enum: PAYMENT_METHODS })
   paymentMethod?: PaymentMethod;
 
   @Prop({ default: false })
   autoRenew?: boolean;
 
-  @Prop({
-    type: String,
-    enum: ['monthly', 'yearly', 'oneTime'],
-  })
-  billingCycle?: 'monthly' | 'yearly' | 'oneTime';
+  @Prop({ type: String, enum: APP_SUBSCRIPTION_BILLING_CYCLES })
+  billingCycle?: AppSubscriptionBillingCycle;
 
   @Prop()
   lastPaymentDate?: string;
@@ -206,13 +235,14 @@ export class AppSubscriptionModel extends Document implements AppSubscription {
 
 export const AppSubscriptionSchema =
   SchemaFactory.createForClass(AppSubscriptionModel);
-
-// Add indexes for better query performance
 AppSubscriptionSchema.index({ userId: 1, status: 1 });
-AppSubscriptionSchema.index({ status: 1, endDate: 1 }); // For finding expiring trials
-AppPlanSchema.index({ level: 1, type: 1 });
+AppSubscriptionSchema.index({ status: 1, endDate: 1 });
+AppSubscriptionSchema.index({ planId: 1 });
 
+// ---------------------
 // AppSubscriptionHistory Schema
+// ---------------------
+
 @Schema({ timestamps: true })
 export class AppSubscriptionHistoryModel extends Document {
   declare _id: string;
@@ -223,24 +253,13 @@ export class AppSubscriptionHistoryModel extends Document {
   @Prop({ required: true, type: Types.ObjectId, ref: 'AppSubscription' })
   subscriptionId: string;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'AppPlanModel' })
+  @Prop({ required: true, type: String })
   planId: string;
 
   @Prop({
     type: String,
     required: true,
-    enum: [
-      'created',
-      'upgraded',
-      'downgraded',
-      'renewed',
-      'cancelled',
-      'expired',
-      'reactivated',
-      'trial_started',
-      'trial_converted',
-      'trial_expired',
-    ],
+    enum: APP_SUBSCRIPTION_HISTORY_ACTIONS,
   })
   action: string;
 
@@ -250,26 +269,16 @@ export class AppSubscriptionHistoryModel extends Document {
   @Prop({ type: Date })
   endDate?: string | Date;
 
-  @Prop({
-    type: String,
-    required: true,
-    enum: APP_SUBSCRIPTION_STATUSES,
-  })
+  @Prop({ type: String, required: true, enum: APP_SUBSCRIPTION_STATUSES })
   status: AppSubscriptionStatus;
 
   @Prop({ min: 0 })
   amountPaid?: number;
 
-  @Prop({
-    type: String,
-    enum: APP_CURRENCIES,
-  })
+  @Prop({ type: String, enum: APP_CURRENCIES })
   currency?: AppCurrency;
 
-  @Prop({
-    type: String,
-    enum: PAYMENT_METHODS,
-  })
+  @Prop({ type: String, enum: PAYMENT_METHODS })
   paymentMethod?: PaymentMethod;
 
   @Prop()
@@ -295,6 +304,6 @@ export const AppSubscriptionHistorySchema = SchemaFactory.createForClass(
   AppSubscriptionHistoryModel,
 );
 
-// Add indexes for history queries
 AppSubscriptionHistorySchema.index({ userId: 1, createdAt: -1 });
 AppSubscriptionHistorySchema.index({ subscriptionId: 1 });
+AppSubscriptionHistorySchema.index({ planId: 1 });

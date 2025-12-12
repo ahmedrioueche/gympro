@@ -1,3 +1,8 @@
+import {
+  AppCurrency,
+  AppSubscriptionBillingCycle,
+  DEFAULT_CURRENCY,
+} from '@ahmedrioueche/gympro-client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -29,8 +34,12 @@ export class AppSubscriptionService {
 
     if (!sub) return null;
 
-    // Populate plan details (attach as `plan` field) for frontend convenience
-    const plan = await this.appPlanModel.findById(sub.planId).lean().exec();
+    // Find plan by planId field (not _id)
+    const plan = await this.appPlanModel
+      .findOne({ planId: sub.planId })
+      .lean()
+      .exec();
+
     const result = sub.toObject() as any;
     result.plan = plan || null;
     return result;
@@ -39,9 +48,11 @@ export class AppSubscriptionService {
   async subscribe(
     userId: string,
     planId: string,
-    billingCycle: 'monthly' | 'yearly' | 'oneTime' = 'monthly',
+    billingCycle: AppSubscriptionBillingCycle = 'monthly',
+    currency: AppCurrency = DEFAULT_CURRENCY,
   ) {
-    const plan = await this.appPlanModel.findById(planId).exec();
+    // Find plan by planId field (not _id)
+    const plan = await this.appPlanModel.findOne({ planId }).exec();
     if (!plan) {
       throw new NotFoundException('Plan not found');
     }
@@ -53,21 +64,48 @@ export class AppSubscriptionService {
     );
 
     const now = new Date();
-    const nextDate = new Date(now);
-    nextDate.setDate(nextDate.getDate() + 30);
+    const startDate = new Date(now);
 
-    const sub = new this.subscriptionModel({
+    // Calculate endDate and nextPaymentDate based on billing cycle and plan type
+    let endDate: Date | undefined;
+    let nextPaymentDate: string | undefined;
+
+    if (plan.type === 'oneTime') {
+      // One-time plans have lifetime access (set a far future date or omit)
+      // Option 1: Set a far future date (100 years from now)
+      endDate = new Date(startDate);
+      endDate.setFullYear(endDate.getFullYear() + 100);
+      nextPaymentDate = undefined;
+    } else if (billingCycle === 'monthly') {
+      endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1);
+      nextPaymentDate = new Date(endDate).toISOString();
+    } else if (billingCycle === 'yearly') {
+      endDate = new Date(startDate);
+      endDate.setFullYear(endDate.getFullYear() + 1);
+      nextPaymentDate = new Date(endDate).toISOString();
+    }
+
+    const subscriptionData: any = {
       userId,
       planId,
-      startDate: now,
+      startDate,
       status: 'active',
-      billingCycle,
       lastPaymentDate: now.toISOString(),
-      nextPaymentDate: nextDate.toISOString(),
-      autoRenew: true,
+      autoRenew: plan.type !== 'oneTime',
       createdAt: new Date(),
-    });
+    };
 
+    // Only add optional fields if they exist
+    if (endDate) {
+      subscriptionData.endDate = endDate;
+    }
+    if (nextPaymentDate) {
+      subscriptionData.nextPaymentDate = nextPaymentDate;
+    }
+    subscriptionData.billingCycle = billingCycle;
+
+    const sub = new this.subscriptionModel(subscriptionData);
     const saved = await sub.save();
 
     // Update user document with subscription reference
@@ -75,22 +113,40 @@ export class AppSubscriptionService {
       appSubscription: saved._id,
     });
 
+    const currencyPricing = plan.pricing[currency] || {};
+
+    // Determine amountPaid
+    let amountPaid = 0;
+    if (plan.type === 'subscription') {
+      if (billingCycle === 'monthly') amountPaid = currencyPricing.monthly || 0;
+      else if (billingCycle === 'yearly')
+        amountPaid = currencyPricing.yearly || 0;
+    } else if (plan.type === 'oneTime') {
+      amountPaid = currencyPricing.oneTime || 0;
+    }
+
     // Create history entry
-    const history = new this.subscriptionHistoryModel({
+    const historyData: any = {
       userId,
       subscriptionId: saved._id,
       planId: planId,
       action: 'created',
       startDate: now,
       status: 'active',
+      amountPaid: amountPaid,
+      currency: currency,
       createdAt: new Date(),
-    });
+    };
 
+    if (endDate) {
+      historyData.endDate = endDate;
+    }
+
+    const history = new this.subscriptionHistoryModel(historyData);
     await history.save();
 
     return saved;
   }
-
   async cancelSubscription(userId: string, reason?: string) {
     const sub = await this.subscriptionModel
       .findOne({ userId, status: { $in: ['active', 'trialing'] } })
@@ -110,7 +166,7 @@ export class AppSubscriptionService {
     const history = new this.subscriptionHistoryModel({
       userId,
       subscriptionId: sub._id,
-      planId: sub.planId,
+      planId: sub.planId, // Use the custom planId string
       action: 'cancelled',
       startDate: sub.startDate,
       endDate: new Date(),
@@ -125,10 +181,27 @@ export class AppSubscriptionService {
   }
 
   async getSubscriptionHistory(userId: string) {
-    return this.subscriptionHistoryModel
+    // Get history records
+    const history = await this.subscriptionHistoryModel
       .find({ userId })
-      .populate('planId')
       .sort({ createdAt: -1 })
+      .lean()
       .exec();
+
+    // Manually populate plan data
+    const planIds = [...new Set(history.map((h) => h.planId))];
+    const plans = await this.appPlanModel
+      .find({ planId: { $in: planIds } })
+      .lean()
+      .exec();
+
+    // Create a map for quick lookup
+    const planMap = new Map(plans.map((p) => [p.planId, p]));
+
+    // Attach plan data to each history record
+    return history.map((h) => ({
+      ...h,
+      plan: planMap.get(h.planId) || null,
+    }));
   }
 }

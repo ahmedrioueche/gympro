@@ -201,7 +201,7 @@
     "members": "Members",
     "subscriptions": "Subscriptions",
     "coaching": "Coaching",
-    "billing": "Billing",
+    "subscription": "Subscription",
     "payments": "Payments",
     "analytics": "Analytics",
     "notifications": "Notifications",
@@ -716,6 +716,148 @@
     "tips": {
       "title": "Access Notification",
       "description": "When you create a member, they will automatically receive a message with their account access details via their chosen contact method (email or SMS)."
+    }
+  },
+  "subscriptions": {
+    "title": "Subscriptions",
+    "subtitle": "Manage your app subscription and billing",
+    "no_subscription": "No active subscription",
+    "current_subscription": "Current Subscription",
+    "status": "Status",
+    "renews_on": "Renews on",
+    "gyms_count": "Locations",
+    "billing_email": "Billing Email",
+    "footer_info": "All plans include 14-day free trial • Cancel anytime • No credit card required"
+  },
+  "plans": {
+    "max_gyms": "Max Locations",
+    "per_month": "per month",
+    "subscribe": "Subscribe",
+    "current": "Current Plan",
+    "recommended": "RECOMMENDED",
+    "one_time": "one-time",
+    "year": "year",
+    "month": "month",
+    "save": "Save",
+    "per_year": "per year",
+    "up_to": "Up to",
+    "gym": "gym",
+    "gyms": "gyms",
+    "unlimited_gyms": "Unlimited gyms",
+    "subscription": "Subscription",
+    "one_time_purchase": "One-Time Purchase",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "save_percentage": "Save 20%",
+    "upgrade_now": "Upgrade Now",
+    "current_plan": "Current Plan",
+    "processing": "Processing...",
+    "members": "Members",
+    "up_to_members_each": "Up to {{number}} members each"
+  },
+  "subscription": {
+    "current_subscription": "Current Subscription",
+    "no_subscription": "No active subscription",
+    "status": "Status",
+    "renews_on": "Renews on",
+    "gyms_count": "Locations",
+    "billing_email": "Billing Email",
+    "billing": "Billing",
+    "trial_ends": "Trial Ends",
+    "gym_limit": "Gym Limit",
+    "member_limit": "Member Limit",
+    "members": "members",
+    "gyms": "gyms",
+    "started_on": "Started on",
+    "ends_on": "Ends on",
+    "trial_period": "Trial Period",
+    "active_since": "Active since",
+    "expires_on": "Expires on",
+    "cancelled_on": "Cancelled on",
+    "plan_type": "Plan Type",
+    "subscription_type": "Subscription",
+    "one_time_type": "One-Time Purchase",
+    "access_status": "Access Status",
+    "lifetime_access": "Lifetime Access",
+    "trial_remaining": "Trial Days Remaining",
+    "days_remaining": "days remaining",
+    "subscription_period": "Subscription Period",
+    "trial_plan": "Free Trial",
+    "trial_started": "Trial Started",
+    "valid_until": "Valid Until",
+    "billing_cycle": "Billing Cycle",
+    "access_type": "Access Type",
+    "gyms_allowed": "Gyms Allowed",
+    "members_allowed": "Members Allowed",
+    "active_gyms": "Active Gyms",
+    "days_left": "days left",
+    "hours_left": "hours",
+    "minutes_left": "minutes",
+    "left": "left",
+    "trial_ends_in": "Trial Ends In",
+    "access_ends_in": "Access Ends In",
+    "renews_in": "Renews In",
+    "expired": "Expired",
+    "next_payment": "Next Payment"
+  },
+  "plan": {
+    "free": {
+      "name": "Free",
+      "description": "Perfect for trying out with real members",
+      "feature": {
+        "full_dashboard": "Full dashboard access",
+        "member_management": "Complete member management",
+        "basic_reports": "Basic reports & analytics",
+        "mobile_app": "Mobile app access"
+      }
+    },
+    "starter": {
+      "name": "Starter",
+      "description": "Ideal for small to medium gyms",
+      "feature": {
+        "everything_free": "Everything in Free",
+        "advanced_reports": "Advanced reports & analytics",
+        "email_notifications": "Email notifications",
+        "attendance_tracking": "Attendance tracking",
+        "payment_processing": "Payment processing integration"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "For serious gyms ready to scale",
+      "feature": {
+        "everything_starter": "Everything in Starter",
+        "sms_notifications": "SMS notifications",
+        "custom_workflows": "Custom workflows & automation",
+        "advanced_analytics": "Advanced analytics & insights",
+        "priority_support": "Priority support",
+        "api_access": "Full API access"
+      }
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "Enterprise solution for multi-location brands",
+      "feature": {
+        "everything_pro": "Everything in Pro",
+        "multi_location": "Up to 10 locations",
+        "white_label": "White-label branding",
+        "custom_integrations": "Custom integrations",
+        "dedicated_manager": "Dedicated account manager",
+        "training_onboarding": "Personal training & onboarding"
+      }
+    },
+
+    "starter_onetime": {
+      "name": "Starter (Lifetime)",
+      "description": "One-time purchase, yours forever"
+    },
+    "pro_onetime": {
+      "name": "Pro (Lifetime)",
+      "description": "One-time purchase, yours forever"
+    },
+    "premium_onetime": {
+      "name": "Premium (Lifetime)",
+      "description": "One-time purchase, yours forever"
     }
   }
 }

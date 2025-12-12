@@ -55,9 +55,9 @@ export const APP_PAGES = {
       name: "pages.manager.coaching",
       link: "/manager/coaching",
     },
-    billing: {
-      name: "pages.manager.billing",
-      link: "/manager/billing",
+    subscription: {
+      name: "pages.manager.subscription",
+      link: "/manager/subscription",
     },
     payments: {
       name: "pages.manager.payments",

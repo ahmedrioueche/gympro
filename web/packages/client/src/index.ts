@@ -8,7 +8,7 @@ export * from "./dto/gym";
 export * from "./dto/users";
 export * from "./roles/permissions";
 export * from "./types/api";
-export * from "./types/appBilling";
+export * from "./types/appSubscription";
 export * from "./types/attendance";
 export * from "./types/common";
 export * from "./types/error";

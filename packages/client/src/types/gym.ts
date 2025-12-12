@@ -1,4 +1,4 @@
-import { AppSubscription } from "./appBilling";
+import { AppSubscription } from "./appSubscription";
 import { AuditInfo, PaymentMethod, TimeRange, WeeklyTimeRange } from "./common";
 import { BaseSubscriptionType } from "./subscription";
 import { User } from "./user";

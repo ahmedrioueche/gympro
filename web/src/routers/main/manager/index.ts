@@ -1,7 +1,6 @@
 import { ManagerRootRoute } from "./ManagerRootRoute";
 import {
   analyticsRoute,
-  billingRoute,
   coachingRoute,
   createGymRoute,
   gymsRoute,
@@ -9,12 +8,13 @@ import {
   notificationsRoute,
   paymentsRoute,
   settingsRoute,
+  subscriptionRoute,
 } from "./ManagerRoutes";
 
 export const ManagerRootTree = ManagerRootRoute.addChildren([
   homeRoute,
   paymentsRoute,
-  billingRoute,
+  subscriptionRoute,
   gymsRoute,
   createGymRoute,
   notificationsRoute,

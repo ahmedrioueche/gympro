@@ -1,0 +1,120 @@
+import { AppCurrency, AuditInfo, PaymentMethod } from "./common";
+
+export const APP_PLAN_TYPES = ["subscription", "oneTime"] as const;
+export const APP_SUBSCRIPTION_BILLING_CYCLES = [
+  "monthly",
+  "yearly",
+  "oneTime",
+] as const;
+export const APP_PLAN_LEVELS = ["free", "starter", "pro", "premium"] as const;
+
+export const APP_SUBSCRIPTION_STATUSES = [
+  "active",
+  "expired",
+  "cancelled",
+  "trialing",
+] as const;
+
+export const APP_SUBSCRIPTION_HISTORY_ACTIONS = [
+  "created",
+  "upgraded",
+  "downgraded",
+  "renewed",
+  "cancelled",
+  "expired",
+  "reactivated",
+] as const;
+
+export type AppSubscriptionBillingCycle =
+  (typeof APP_SUBSCRIPTION_BILLING_CYCLES)[number];
+export type AppPlanType = (typeof APP_PLAN_TYPES)[number];
+export type AppPlanLevel = (typeof APP_PLAN_LEVELS)[number];
+export type AppSubscriptionStatus = (typeof APP_SUBSCRIPTION_STATUSES)[number];
+
+export type AppSubscriptionHistoryAction =
+  (typeof APP_SUBSCRIPTION_HISTORY_ACTIONS)[number];
+
+export type AppPlanPricing = {
+  [currency in AppCurrency]?: {
+    monthly?: number;
+    yearly?: number;
+    oneTime?: number;
+  };
+};
+
+export interface AppPlan extends AuditInfo {
+  _id: string;
+  planId: string; //custom stable id
+  version?: number;
+  type: AppPlanType; // subscription | oneTime
+  level: AppPlanLevel; // starter | standard | premium | enterprise
+  order?: number; // for sorting plans
+  name: string;
+  description?: string;
+  pricing: AppPlanPricing;
+  trialDays?: number; // only for subscription plans
+
+  // flexible limits
+  limits: {
+    maxGyms?: number;
+    maxMembers?: number;
+    maxGems?: number;
+  };
+
+  features: string[];
+}
+
+export interface AppSubscription extends AuditInfo {
+  _id: string;
+  userId: string;
+  planId: string;
+  startDate: string | Date;
+  endDate?: string | Date;
+  status: AppSubscriptionStatus;
+  paymentMethod?: PaymentMethod;
+  autoRenew?: boolean;
+
+  // Billing cycle tracking
+  billingCycle?: AppSubscriptionBillingCycle;
+  lastPaymentDate?: string;
+  nextPaymentDate?: string;
+
+  trial?: {
+    startDate: string | Date;
+    endDate: string | Date;
+    hasUsedTrial: boolean; // Prevent multiple trials
+    convertedToPaid?: boolean;
+  };
+
+  addOns?: {
+    members?: number; // +100 members
+    gyms?: number; // +1 gym
+    gems?: number; // +200 gems
+  }[];
+
+  // Cancellation tracking
+  cancelledAt?: string;
+  cancellationReason?: string;
+}
+
+// Separate history model for tracking all subscription changes
+export interface AppSubscriptionHistory extends AuditInfo {
+  _id: string;
+  userId: string;
+  subscriptionId: string; // reference to the AppSubscription
+  planId: string;
+
+  // Snapshot of subscription state at this point in time
+  action: AppSubscriptionHistoryAction;
+  startDate: string | Date;
+  endDate?: string | Date;
+  status: AppSubscriptionStatus;
+
+  // Payment info for this history entry
+  amountPaid?: number;
+  currency?: AppCurrency;
+  paymentMethod?: PaymentMethod;
+
+  // Additional context
+  notes?: string;
+}

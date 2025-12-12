@@ -17,7 +17,8 @@ export function AuthCallbackPage() {
     const handleCallback = async () => {
       if (success === "false" || error) {
         toast.error(
-          t(`error.auth.${error}`) || t("error.auth.google_auth_failed")
+          t(`status.error.auth.${error}`) ||
+            t("status.error.auth.google_auth_failed")
         );
         navigate({ to: "/auth/login" });
         return;

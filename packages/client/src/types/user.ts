@@ -1,7 +1,9 @@
+import { AppSubscription } from "./appSubscription";
 import { AttendanceRecord } from "./attendance";
 import { AuditInfo } from "./common";
 import { GymMembership } from "./membership";
 import { AppNotification } from "./notification";
+import { AppSettings } from "./settings";
 import { SubscriptionHistory } from "./subscription";
 import { ProgramHistory, ProgramProgress, TrainingProgram } from "./training";
 
@@ -15,7 +17,7 @@ export enum UserRole {
 
 export interface BaseUserProfile extends AuditInfo {
   username: string;
-  email?: string; // Now optional - can use phone instead
+  email?: string;
   fullName?: string;
   age?: string;
   gender?: string;
@@ -34,6 +36,8 @@ export interface BaseUserProfile extends AuditInfo {
 export interface BaseUser extends AuditInfo {
   _id: string;
   profile: BaseUserProfile;
+  appSubscription?: AppSubscription;
+  AppSettings?: AppSettings;
   memberships: GymMembership[];
   subscriptionHistory: SubscriptionHistory[];
   notifications: AppNotification[];

@@ -1,4 +1,5 @@
 import {
+  APP_SUBSCRIPTION_BILLING_CYCLES,
   ErrorCode,
   IGoogleAuthDto,
   JwtPayload,
@@ -143,14 +144,14 @@ export class AuthService {
 
     try {
       const freePlan = await this.appPlanModel
-        .findOne({ level: 'free' })
+        .findOne({ planId: 'subscription-free' })
         .exec();
 
       if (freePlan) {
         await this.subscriptionService.subscribe(
           newUser._id.toString(),
-          freePlan._id.toString(),
-          'monthly',
+          freePlan.planId,
+          APP_SUBSCRIPTION_BILLING_CYCLES[2],
         );
         this.logger.log(`User ${newUser._id} auto-subscribed to free plan`);
       } else {
@@ -296,12 +297,7 @@ export class AuthService {
       .populate('memberships')
       .populate('currentProgram')
       .populate('notifications')
-      .populate({
-        path: 'appSubscription',
-        populate: {
-          path: 'planId',
-        },
-      });
+      .exec();
 
     if (!user) {
       throw new UnauthorizedException({
@@ -310,7 +306,18 @@ export class AuthService {
       });
     }
 
-    return this.sanitizeUser(user);
+    const sanitizedUser = this.sanitizeUser(user);
+
+    // Manually populate plan data if subscription exists
+    if (sanitizedUser.appSubscription?.planId) {
+      const plan = await this.appPlanModel
+        .findOne({ planId: sanitizedUser.appSubscription.planId })
+        .lean()
+        .exec();
+      sanitizedUser.appSubscription.plan = plan;
+    }
+
+    return sanitizedUser;
   }
 
   // --- VERIFY EMAIL ---
@@ -551,14 +558,14 @@ export class AuthService {
         //  AUTO-SUBSCRIBE NEW USERS TO FREE PLAN
         try {
           const freePlan = await this.appPlanModel
-            .findOne({ level: 'free' })
+            .findOne({ planId: 'subscription-free' })
             .exec();
 
           if (freePlan) {
             await this.subscriptionService.subscribe(
               user._id.toString(),
-              freePlan._id.toString(),
-              'monthly',
+              freePlan.planId,
+              APP_SUBSCRIPTION_BILLING_CYCLES[2],
             );
             this.logger.log(`User ${user._id} auto-subscribed to free plan`);
           } else {
