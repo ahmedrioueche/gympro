@@ -21,7 +21,7 @@
     "seed": "ts-node -r tsconfig-paths/register scripts/seed-plans.ts"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.1.22",
+    "@ahmedrioueche/gympro-client": "0.1.26",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",

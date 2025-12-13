@@ -64,7 +64,100 @@ export class AppSubscriptionService {
       throw new NotFoundException('Plan not found');
     }
 
-    // Deactivate existing active subscriptions
+    // Check for existing active subscription
+    const currentSub = await this.subscriptionModel
+      .findOne({ userId, status: { $in: ['active', 'trialing'] } })
+      .exec();
+
+    if (currentSub) {
+      const currentPlan = await this.appPlanModel
+        .findOne({ planId: currentSub.planId })
+        .exec();
+
+      if (currentPlan) {
+        // Compare Logic
+        const levels = ['free', 'starter', 'pro', 'premium']; // Hardcoded to avoid import issues or use constant if available
+        const cycles = ['monthly', 'yearly', 'oneTime'];
+
+        const currentLevelIndex = levels.indexOf(currentPlan.level);
+        const targetLevelIndex = levels.indexOf(plan.level);
+
+        const currentCycleIndex = cycles.indexOf(
+          currentSub.billingCycle || 'monthly',
+        );
+        const targetCycleIndex = cycles.indexOf(billingCycle);
+
+        const isDowngrade = targetLevelIndex < currentLevelIndex;
+        const isSwitchDown =
+          targetLevelIndex === currentLevelIndex &&
+          targetCycleIndex < currentCycleIndex;
+
+        // If Downgrade or Switch Down -> Schedule for end of period
+        if (isDowngrade || isSwitchDown) {
+          if (currentSub.pendingPlanId) {
+            throw new BadRequestException(
+              'A plan change is already scheduled. Please cancel it before making new changes.',
+            );
+          }
+          currentSub.pendingPlanId = planId;
+          currentSub.pendingBillingCycle = billingCycle;
+          currentSub.pendingChangeEffectiveDate = currentSub.currentPeriodEnd;
+          await currentSub.save();
+
+          // Create history entry
+          const history = new this.subscriptionHistoryModel({
+            userId,
+            subscriptionId: currentSub._id,
+            planId: planId,
+            action: 'downgrade_scheduled',
+            status: currentSub.status,
+            startDate: new Date(), // Log the time of scheduling
+            details: `Downgrade/Switch scheduled to ${plan.name} (${billingCycle}) on ${currentSub.currentPeriodEnd}`,
+            createdAt: new Date(),
+          });
+          await history.save();
+
+          return currentSub;
+        }
+      }
+    }
+
+    // Deactivate existing active subscriptions (Immediate Upgrade or New Subscription)
+    let prorationCredit = 0;
+    let isUpgrade = false;
+
+    if (currentSub) {
+      // If we are here, it's an UPGRADE or SWITCH UP
+      isUpgrade = true;
+      const currentPlan = await this.appPlanModel
+        .findOne({ planId: currentSub.planId })
+        .exec();
+
+      if (currentPlan && currentSub.status !== 'trialing') {
+        const periodStart =
+          currentSub.currentPeriodStart || currentSub.startDate;
+        const periodEnd = currentSub.currentPeriodEnd;
+        const nowTime = new Date().getTime();
+        const startTime = new Date(periodStart).getTime();
+        const endTime = new Date(periodEnd).getTime();
+        const totalDuration = endTime - startTime;
+        const elapsed = nowTime - startTime;
+
+        if (totalDuration > 0) {
+          const remainingShow = Math.max(0, totalDuration - elapsed);
+          const ratio = remainingShow / totalDuration;
+
+          const oldPriceMap = currentPlan.pricing?.[currency] || {};
+          const oldPrice =
+            currentSub.billingCycle === 'yearly'
+              ? oldPriceMap.yearly || 0
+              : oldPriceMap.monthly || 0;
+
+          prorationCredit = oldPrice * ratio;
+        }
+      }
+    }
+
     await this.subscriptionModel.updateMany(
       { userId, status: { $in: ['active', 'trialing'] } },
       { status: 'cancelled', endDate: new Date() },
@@ -131,25 +224,29 @@ export class AppSubscriptionService {
     const currencyPricing = plan.pricing[currency] || {};
 
     // Determine amountPaid
-    let amountPaid = 0;
+    let newCost = 0;
     if (plan.type === 'subscription') {
-      if (billingCycle === 'monthly') amountPaid = currencyPricing.monthly || 0;
-      else if (billingCycle === 'yearly')
-        amountPaid = currencyPricing.yearly || 0;
+      if (billingCycle === 'monthly') newCost = currencyPricing.monthly || 0;
+      else if (billingCycle === 'yearly') newCost = currencyPricing.yearly || 0;
     } else if (plan.type === 'oneTime') {
-      amountPaid = currencyPricing.oneTime || 0;
+      newCost = currencyPricing.oneTime || 0;
     }
+
+    const amountPaid = Math.max(0, newCost - prorationCredit);
 
     // Create history entry
     const historyData: any = {
       userId,
       subscriptionId: saved._id,
       planId: planId,
-      action: 'created',
+      action: isUpgrade ? 'upgraded' : 'created',
       startDate: now,
       status: 'active',
       amountPaid: amountPaid,
       currency: currency,
+      details: isUpgrade
+        ? `Upgraded from previous plan. Price: ${newCost.toFixed(2)}, Credit: ${prorationCredit.toFixed(2)}, Paid: ${amountPaid.toFixed(2)}`
+        : `New subscription created. Paid: ${amountPaid.toFixed(2)}`,
       createdAt: new Date(),
     };
 
@@ -212,6 +309,7 @@ export class AppSubscriptionService {
       userId,
       subscriptionId: sub._id,
       action: 'cancelled',
+      startDate: new Date(),
       details: `Subscription cancelled. Reason: ${reason || 'No reason provided'}`,
       changes: {
         cancelAtPeriodEnd: true,
@@ -264,6 +362,40 @@ export class AppSubscriptionService {
       endDate: sub.currentPeriodEnd,
       status: sub.status,
       details: 'Subscription reactivated by user',
+      createdAt: new Date(),
+    });
+    await history.save();
+
+    return sub;
+  }
+
+  async cancelPendingChange(userId: string) {
+    const sub = await this.subscriptionModel
+      .findOne({ userId, status: { $in: ['active', 'trialing'] } })
+      .exec();
+
+    if (!sub) {
+      throw new NotFoundException('No active subscription found');
+    }
+
+    if (!sub.pendingPlanId) {
+      throw new BadRequestException('No pending plan change found to cancel');
+    }
+
+    // Clear pending changes
+    sub.pendingPlanId = undefined;
+    sub.pendingBillingCycle = undefined;
+    sub.pendingChangeEffectiveDate = undefined;
+    await sub.save();
+
+    // Add history entry
+    const history = new this.subscriptionHistoryModel({
+      userId,
+      subscriptionId: sub._id,
+      planId: sub.planId,
+      action: 'pending_change_cancelled',
+      status: sub.status,
+      details: 'Pending plan change cancelled by user',
       createdAt: new Date(),
     });
     await history.save();

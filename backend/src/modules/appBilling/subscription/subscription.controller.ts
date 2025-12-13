@@ -156,6 +156,31 @@ export class AppSubscriptionController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('cancel-pending-change')
+  async cancelPendingChange(@Req() req: any) {
+    try {
+      const userId = req.user?.sub;
+
+      const subscription =
+        await this.appSubscriptionService.cancelPendingChange(userId);
+
+      return apiResponse(
+        true,
+        undefined,
+        subscription,
+        'Pending plan change cancelled successfully',
+      );
+    } catch (error: any) {
+      const errorCode =
+        error.status === 404
+          ? ErrorCode.NO_ACTIVE_SUBSCRIPTION
+          : ErrorCode.SUBSCRIPTION_UPDATE_ERROR;
+      const message = error.message || 'Failed to cancel pending change';
+      return apiResponse(false, errorCode, null, message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('history')
   async getSubscriptionHistory(@Req() req: any) {
     try {

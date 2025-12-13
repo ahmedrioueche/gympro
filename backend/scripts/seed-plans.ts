@@ -29,7 +29,7 @@ async function run() {
       order: 0,
       type: 'subscription',
       level: 'free',
-      name: 'plan.free.name',
+      name: 'Free',
       description: 'plan.free.description',
       pricing: {
         EUR: { monthly: 0, yearly: 0 },
@@ -54,7 +54,7 @@ async function run() {
       order: 1,
       type: 'subscription',
       level: 'starter',
-      name: 'plan.starter.name',
+      name: 'Starter',
       description: 'plan.starter.description',
       pricing: {
         EUR: { monthly: 15, yearly: 150 },
@@ -79,7 +79,7 @@ async function run() {
       order: 2,
       type: 'subscription',
       level: 'pro',
-      name: 'plan.pro.name',
+      name: 'Pro',
       description: 'plan.pro.description',
       pricing: {
         EUR: { monthly: 30, yearly: 300 },
@@ -105,7 +105,7 @@ async function run() {
       order: 3,
       type: 'subscription',
       level: 'premium',
-      name: 'plan.premium.name',
+      name: 'Premium',
       description: 'plan.premium.description',
       pricing: {
         EUR: { monthly: 60, yearly: 600 },
@@ -131,7 +131,7 @@ async function run() {
       order: 1,
       type: 'oneTime',
       level: 'starter',
-      name: 'plan.starter_onetime.name',
+      name: 'Starter (Lifetime)',
       description: 'plan.starter_onetime.description',
       pricing: {
         EUR: { oneTime: 300 },
@@ -154,7 +154,7 @@ async function run() {
       order: 2,
       type: 'oneTime',
       level: 'pro',
-      name: 'plan.pro_onetime.name',
+      name: 'Pro (Lifetime)',
       description: 'plan.pro_onetime.description',
       pricing: {
         EUR: { oneTime: 600 },
@@ -178,7 +178,7 @@ async function run() {
       order: 3,
       type: 'oneTime',
       level: 'premium',
-      name: 'plan.premium_onetime.name',
+      name: 'Premium (Lifetime)',
       description: 'plan.premium_onetime.description',
       pricing: {
         EUR: { oneTime: 1200 },
