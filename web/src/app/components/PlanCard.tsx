@@ -1,7 +1,6 @@
 import {
   DEFAULT_CURRENCY,
   formatPrice,
-  getCurrencySymbol,
   type AppPlan,
   type AppSubscriptionBillingCycle,
 } from "@ahmedrioueche/gympro-client";
@@ -9,6 +8,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../context/ThemeContext";
 import { useLanguageStore } from "../../store/language";
+import { useUserStore } from "../../store/user";
 
 interface PlanCardProps {
   plan: AppPlan;
@@ -27,9 +27,11 @@ export default function PlanCard({
   const { t } = useTranslation();
   const { isDark } = useTheme();
   const { language } = useLanguageStore();
+  const { user } = useUserStore();
+  const currency = user?.appSettings?.locale?.currency || DEFAULT_CURRENCY;
 
   // Get price for the default currency
-  const priceMap = plan.pricing?.[DEFAULT_CURRENCY] || {};
+  const priceMap = plan.pricing?.[currency] || {};
   const price =
     plan.type === "oneTime"
       ? priceMap.oneTime || 0
@@ -194,13 +196,13 @@ export default function PlanCard({
           <div className="mb-8">
             <div className="flex items-baseline gap-2 mb-2">
               <span
-                className={`text-5xl font-black bg-gradient-to-br ${
+                className={`text-3xl md:text-4xl font-black bg-gradient-to-br ${
                   isDark
                     ? "from-white to-gray-400"
                     : "from-gray-900 to-gray-600"
                 } bg-clip-text text-transparent`}
               >
-                {formatPrice(price, DEFAULT_CURRENCY, language)}
+                {formatPrice(price, currency, language)}
               </span>
               <span
                 className={`${
@@ -225,8 +227,8 @@ export default function PlanCard({
                     : "bg-green-100 text-green-700"
                 }`}
               >
-                {t("plans.save")} {getCurrencySymbol(DEFAULT_CURRENCY)}
-                {savings.toFixed(0)} {t("plans.per_year")}
+                {t("plans.save")} {formatPrice(savings, currency, language)}{" "}
+                {t("plans.per_year")}
               </div>
             )}
 

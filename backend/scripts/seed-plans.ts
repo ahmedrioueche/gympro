@@ -59,7 +59,7 @@ async function run() {
       pricing: {
         EUR: { monthly: 15, yearly: 150 },
         USD: { monthly: 16, yearly: 160 },
-        DZD: { monthly: 2250, yearly: 22500 },
+        DZD: { monthly: 2500, yearly: 25000 },
       },
       limits: { maxGyms: 1, maxMembers: 300, maxGems: 100 },
       features: [

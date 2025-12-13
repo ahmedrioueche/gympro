@@ -58,6 +58,8 @@ export enum ErrorCode {
   NO_ACTIVE_SUBSCRIPTION = "SUB_004",
   SUBSCRIPTION_CANCEL_ERROR = "SUB_005",
   HISTORY_FETCH_ERROR = "SUB_006",
+  SUBSCRIPTION_UPDATE_ERROR = "SUB_007",
+  SUBSCRIPTION_CANCEL_LIMIT_EXCEEDED = "SUB_008",
 }
 
 export const HttpStatusToErrorCode: Record<number, ErrorCode> = {

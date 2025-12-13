@@ -1,9 +1,21 @@
-import { CompleteOnboardingDto } from "../dto/users";
+import { CompleteOnboardingDto, RegionDetectionResult } from "../dto/users";
 import { ApiResponse } from "../types/api";
 import { User } from "../types/user";
 import { apiClient, handleApiError } from "./helper";
 
 export const usersApi = {
+  /** Detect region from IP address */
+  detectRegion: async (): Promise<ApiResponse<RegionDetectionResult>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<RegionDetectionResult>>(
+        "/users/onboarding/detect-region"
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** Complete Onboarding */
   completeOnboarding: async (
     data: CompleteOnboardingDto

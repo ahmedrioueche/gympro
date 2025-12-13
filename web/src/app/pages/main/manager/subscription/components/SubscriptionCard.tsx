@@ -1,9 +1,10 @@
-import {
-  DEFAULT_TRIAL_DAYS_NUMBER,
-  type GetSubscriptionDto,
-} from "@ahmedrioueche/gympro-client";
-import { useMemo } from "react";
+import { type GetSubscriptionDto } from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
+import { useReactivateSubscription } from "../../../../../../hooks/queries/usePlans";
+import { useSubscriptionStatus } from "../../../../../../hooks/useSubscriptionStatus";
+import { useToast } from "../../../../../../hooks/useToast";
+
+import { useModalStore } from "../../../../../../store/modal";
 
 interface SubscriptionCardProps {
   mySubscription: GetSubscriptionDto | undefined;
@@ -11,127 +12,45 @@ interface SubscriptionCardProps {
 
 function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
   const { t } = useTranslation();
+  const toast = useToast();
+  const { openModal } = useModalStore();
 
-  const statusConfig: Record<
-    string,
-    { color: string; bg: string; icon: string; dotColor: string }
-  > = {
-    active: {
-      color: "text-success",
-      bg: "bg-success/10",
-      icon: "✓",
-      dotColor: "bg-success",
-    },
-    trialing: {
-      color: "text-warning",
-      bg: "bg-warning/10",
-      icon: "⏱",
-      dotColor: "bg-warning",
-    },
-    expired: {
-      color: "text-danger",
-      bg: "bg-danger/10",
-      icon: "✕",
-      dotColor: "bg-danger",
-    },
-    cancelled: {
-      color: "text-text-secondary",
-      bg: "bg-surface-hover",
-      icon: "⊘",
-      dotColor: "bg-text-secondary",
-    },
+  const {
+    status,
+    isCancelled,
+    isFree,
+    isOneTime,
+    isLifetime,
+    start,
+    formattedTimeRemaining,
+    urgencyColor,
+    shouldShowTimeRemaining,
+  } = useSubscriptionStatus(mySubscription);
+
+  const { mutate: reactivate, isPending: isReactivating } =
+    useReactivateSubscription();
+
+  const handleReactivate = () => {
+    openModal("confirm", {
+      title: t("confirm.reactivate.title"),
+      text: t("confirm.reactivate.text", {
+        date: mySubscription?.currentPeriodEnd
+          ? new Date(mySubscription.currentPeriodEnd).toLocaleDateString()
+          : "",
+      }),
+      confirmVariant: "primary",
+      onConfirm: () => {
+        reactivate(undefined, {
+          onSuccess: () => {
+            toast.success(t("subscription.reactivate_success"));
+          },
+          onError: () => {
+            toast.error(t("subscription.reactivate_error"));
+          },
+        });
+      },
+    });
   };
-
-  const status = statusConfig[mySubscription?.status || "active"];
-  const isFree = mySubscription?.plan?.level === "free";
-  const isOneTime = mySubscription?.plan?.type === "oneTime";
-  const start = new Date(mySubscription.startDate);
-  const trialDays = mySubscription.plan.trialDays || DEFAULT_TRIAL_DAYS_NUMBER;
-
-  // Check if it's lifetime (one-time purchase with very far future or no end date)
-  const isLifetime = useMemo(() => {
-    if (!isOneTime) return false;
-    if (!mySubscription?.endDate) return true;
-
-    // Check if end date is more than 50 years in the future (considered lifetime)
-    const endDate = new Date(mySubscription.endDate);
-    const fiftyYearsFromNow = new Date();
-    fiftyYearsFromNow.setFullYear(fiftyYearsFromNow.getFullYear() + 50);
-
-    return endDate > fiftyYearsFromNow;
-  }, [isOneTime, mySubscription?.endDate]);
-
-  // Calculate time remaining
-  const timeRemaining = useMemo(() => {
-    if (!mySubscription) return null;
-    if (isLifetime) return null; // No time remaining for lifetime access
-
-    let targetDate;
-
-    if (isFree) {
-      // For free/trial plans, calculate trial end date
-      targetDate = new Date(start.getTime() + trialDays * 24 * 60 * 60 * 1000);
-    } else if (mySubscription.status === "cancelled") {
-      // For cancelled subscriptions, use the end date
-      targetDate = mySubscription.endDate;
-    } else if (mySubscription.endDate) {
-      // For active subscriptions with endDate (like yearly), use endDate
-      targetDate = mySubscription.endDate;
-    } else {
-      // Fallback to nextPaymentDate for recurring subscriptions without endDate
-      targetDate = mySubscription.nextPaymentDate;
-    }
-
-    if (!targetDate) return null;
-
-    const now = new Date();
-    const target = new Date(targetDate);
-    const diff = target.getTime() - now.getTime();
-
-    if (diff <= 0) return { expired: true };
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    return { days, hours, minutes, expired: false };
-  }, [mySubscription, isFree, start, trialDays, isLifetime]);
-
-  const getTimeRemainingText = () => {
-    if (isLifetime) return t("subscription.lifetime_access");
-    if (!timeRemaining || timeRemaining.expired)
-      return t("subscription.expired");
-
-    const { days, hours, minutes } = timeRemaining;
-
-    if (days > 7) {
-      return `${days} ${t("subscription.days_left")}`;
-    } else if (days > 0) {
-      return `${days} ${t("subscription.days_left")}, ${hours}h`;
-    } else if (hours > 0) {
-      return `${hours}h ${minutes}m ${t("subscription.left")}`;
-    } else {
-      return `${minutes}m ${t("subscription.left")}`;
-    }
-  };
-
-  const getUrgencyColor = () => {
-    if (isLifetime) return "text-success";
-    if (!timeRemaining || timeRemaining.expired) return "text-danger";
-    const { days } = timeRemaining;
-    if (days <= 1) return "text-danger";
-    if (days <= 3) return "text-warning";
-    if (days <= 7) return "text-warning";
-    return "text-success";
-  };
-
-  // Determine if we should show the time remaining card
-  const shouldShowTimeRemaining =
-    isLifetime ||
-    isFree ||
-    mySubscription.status === "cancelled" ||
-    mySubscription.nextPaymentDate ||
-    mySubscription.endDate;
 
   return (
     <div className="mb-10">
@@ -184,35 +103,20 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
                         ? t("subscription.access_status")
                         : isFree
                         ? t("subscription.trial_ends_in")
-                        : mySubscription.status === "cancelled"
-                        ? t("subscription.access_ends_in")
+                        : isCancelled
+                        ? t("subscription.access_ends_on")
                         : t("subscription.renews_in")}
                     </p>
                     <div
-                      className={`text-3xl md:text-4xl font-bold ${getUrgencyColor()} text-center mb-2`}
+                      className={`text-3xl md:text-4xl font-bold ${urgencyColor} text-center mb-2`}
                     >
-                      {getTimeRemainingText()}
+                      {formattedTimeRemaining}
                     </div>
-                    {!isLifetime && (
+                    {!isLifetime && mySubscription.currentPeriodEnd && (
                       <p className="text-xs text-text-secondary text-center">
-                        {isFree && mySubscription.trial?.endDate
-                          ? new Date(
-                              mySubscription.trial.endDate
-                            ).toLocaleDateString()
-                          : mySubscription.status === "cancelled" &&
-                            mySubscription.endDate
-                          ? new Date(
-                              mySubscription.endDate
-                            ).toLocaleDateString()
-                          : mySubscription.endDate
-                          ? new Date(
-                              mySubscription.endDate
-                            ).toLocaleDateString()
-                          : mySubscription.nextPaymentDate
-                          ? new Date(
-                              mySubscription.nextPaymentDate
-                            ).toLocaleDateString()
-                          : ""}
+                        {new Date(
+                          mySubscription.currentPeriodEnd
+                        ).toLocaleDateString()}
                       </p>
                     )}
                   </div>
@@ -303,6 +207,12 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
                           strokeLinejoin="round"
                           d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
+                      ) : isCancelled ? (
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       ) : (
                         <path
                           strokeLinecap="round"
@@ -316,6 +226,8 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
                     <p className="text-xs text-text-secondary font-medium mb-1">
                       {isOneTime
                         ? t("subscription.access_type")
+                        : isCancelled
+                        ? t("subscription.cancelled_on")
                         : t("subscription.billing_cycle")}
                     </p>
                     <p className="text-2xl font-bold text-text-primary capitalize">
@@ -323,6 +235,11 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
                         ? t("subscription.lifetime_access")
                         : isFree
                         ? t("subscription.trial_plan")
+                        : isCancelled
+                        ? mySubscription.cancelledAt &&
+                          new Date(
+                            mySubscription.cancelledAt
+                          ).toLocaleDateString()
                         : mySubscription.billingCycle || "-"}
                     </p>
                   </div>
@@ -352,7 +269,7 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
                       {t("subscription.started_on")}
                     </p>
                     <p className="text-2xl font-bold text-text-primary">
-                      {new Date(mySubscription.startDate).toLocaleDateString()}
+                      {start.toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -360,35 +277,36 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
             </div>
           </div>
 
-          {/* Additional Dates Footer */}
+          {/* Footer: Dates & Reactivate Button */}
           {!isFree &&
             (mySubscription.startDate ||
-              (mySubscription.endDate && !isLifetime) ||
-              mySubscription.nextPaymentDate) && (
-              <div className="border-t border-border bg-background/30 px-6 md:px-8 py-4">
-                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+              mySubscription.currentPeriodEnd ||
+              mySubscription.nextPaymentDate ||
+              isCancelled) && (
+              <div className="border-t border-border bg-background/30 px-6 md:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm justify-center md:justify-start">
                   {mySubscription.startDate && (
                     <div className="flex items-center gap-2">
                       <span className="text-text-secondary">
                         {t("subscription.started_on")}:
                       </span>
                       <span className="font-semibold text-text-primary">
-                        {new Date(
-                          mySubscription.startDate
-                        ).toLocaleDateString()}
+                        {start.toLocaleDateString()}
                       </span>
                     </div>
                   )}
-                  {mySubscription.endDate && !isLifetime && (
+                  {mySubscription.currentPeriodEnd && !isLifetime && (
                     <div className="flex items-center gap-2">
                       <span className="text-text-secondary">
-                        {mySubscription.status === "cancelled"
-                          ? t("subscription.ends_on")
-                          : t("subscription.valid_until")}
+                        {isCancelled
+                          ? t("subscription.access_ends_on")
+                          : t("subscription.period_ends_on")}
                         :
                       </span>
                       <span className="font-semibold text-text-primary">
-                        {new Date(mySubscription.endDate).toLocaleDateString()}
+                        {new Date(
+                          mySubscription.currentPeriodEnd
+                        ).toLocaleDateString()}
                       </span>
                     </div>
                   )}
@@ -405,6 +323,32 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
                     </div>
                   )}
                 </div>
+
+                {isCancelled && (
+                  <button
+                    onClick={handleReactivate}
+                    disabled={isReactivating}
+                    className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg shadow-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isReactivating ? (
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="w-4 h-4"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0v2.433l-.31-.31a7 7 0 00-11.712 3.138.75.75 0 001.449.39 5.5 5.5 0 019.201-2.466l.312.312H11.75a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                    {t("subscription.reactivate_subscription")}
+                  </button>
+                )}
               </div>
             )}
         </div>

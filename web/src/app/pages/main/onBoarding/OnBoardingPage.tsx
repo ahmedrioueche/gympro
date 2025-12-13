@@ -1,17 +1,25 @@
-import { usersApi, type UserRole } from "@ahmedrioueche/gympro-client";
+import {
+  usersApi,
+  type AppCurrency,
+  type UserRole,
+} from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
 import useScreen from "../../../../hooks/useScreen";
 import { useUserStore } from "../../../../store/user";
 import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
+import { detectRegion } from "../../../../utils/regionDetection";
+import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import {
   BaseView,
   InputView,
   QuestionView,
   SelectionView,
 } from "./components/OnboardingViews";
+import { RegionCurrencyView } from "./components/RegionCurrencyView";
 
 type OnboardingData = {
   role: UserRole | null;
@@ -21,6 +29,10 @@ type OnboardingData = {
   username: string;
   age: string;
   gender: string;
+  region: string;
+  regionName: string;
+  currency: AppCurrency;
+  timezone?: string;
 };
 
 export function OnboardingPage() {
@@ -35,6 +47,10 @@ export function OnboardingPage() {
     username: "",
     age: "",
     gender: "",
+    region: "DZ",
+    regionName: "Algeria",
+    currency: "DZD",
+    timezone: "Africa/Algiers",
   });
   const { isMobile } = useScreen();
   const { updateProfile, updateUser } = useUserStore();
@@ -43,12 +59,31 @@ export function OnboardingPage() {
     setData((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Detect region on component mount
+  useEffect(() => {
+    const loadRegion = async () => {
+      try {
+        const detected = await detectRegion();
+        setData((prev) => ({
+          ...prev,
+          region: detected.region,
+          regionName: detected.regionName,
+          currency: detected.currency,
+          timezone: detected.timezone,
+        }));
+      } catch (error) {
+        console.error("Failed to detect region:", error);
+      }
+    };
+    loadRegion();
+  }, []);
+
   const handleFinish = () => {
-    setStep(9);
+    setStep(10);
   };
 
   useEffect(() => {
-    if (step === 9) {
+    if (step === 10) {
       const complete = async () => {
         try {
           console.log("Onboarding finished:", data);
@@ -60,6 +95,10 @@ export function OnboardingPage() {
             username: data.username,
             age: data.age,
             gender: data.gender,
+            region: data.region,
+            regionName: data.regionName,
+            currency: data.currency,
+            timezone: data.timezone,
           });
           // Update store with new role and onboarded status
           updateUser({ role: data.role as UserRole });
@@ -68,7 +107,8 @@ export function OnboardingPage() {
           redirectToHomePageAfterTimeout(data.role as UserRole, 3000, navigate);
         } catch (error) {
           console.error("Failed to complete onboarding:", error);
-          // Handle error (show toast, etc.)
+          const msg = getMessage(error, t);
+          showStatusToast(msg, toast);
         }
       };
       complete();
@@ -81,8 +121,11 @@ export function OnboardingPage() {
     switch (step) {
       case 0: // Welcome - No back
         return;
-      case 1: // Owner Check -> Welcome
+      case 0.5: // Region/Currency -> Welcome
         setStep(0);
+        break;
+      case 1: // Owner Check -> Region/Currency
+        setStep(0.5);
         break;
       case 2: // Gym Name -> Owner Check
         setStep(1);
@@ -109,6 +152,8 @@ export function OnboardingPage() {
       case 8: // Owner Name -> Gym Name
         setStep(2);
         break;
+      case 10: // Success - No back
+        return;
       default:
         setStep((s) => Math.max(0, s - 1));
     }
@@ -123,7 +168,7 @@ export function OnboardingPage() {
             subtitle={t("onboarding.welcome.subtitle")}
           >
             <button
-              onClick={nextStep}
+              onClick={() => setStep(0.5)}
               className="w-full p-4 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25"
             >
               {t("onboarding.welcome.start")}
@@ -168,6 +213,18 @@ export function OnboardingPage() {
             onNext={handleFinish}
             placeholder={t("onboarding.placeholders.username")}
             buttonLabel={t("onboarding.actions.finish")}
+          />
+        );
+
+      case 0.5: // Region/Currency Selection
+        return (
+          <RegionCurrencyView
+            selectedRegion={data.region}
+            selectedCurrency={data.currency}
+            onRegionChange={(region, regionName, currency) => {
+              setData((prev) => ({ ...prev, region, regionName, currency }));
+            }}
+            onNext={() => setStep(1)}
           />
         );
 

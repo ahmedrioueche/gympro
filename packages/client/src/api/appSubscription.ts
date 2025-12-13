@@ -58,4 +58,33 @@ export const appSubscriptionsApi = {
       throw handleApiError(error);
     }
   },
+
+  /**
+   * Cancel current subscription - user keeps access until period end
+   */
+  cancelSubscription: async (reason?: string) => {
+    try {
+      const res = await apiClient.delete<ApiResponse<GetSubscriptionDto>>(
+        `/app-subscriptions/cancel`,
+        { data: { reason } }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Reactivate a cancelled subscription
+   */
+  reactivateSubscription: async () => {
+    try {
+      const res = await apiClient.post<ApiResponse<GetSubscriptionDto>>(
+        `/app-subscriptions/reactivate`
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };

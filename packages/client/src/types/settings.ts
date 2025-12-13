@@ -11,12 +11,14 @@ export interface NotificationSettings {
 
 export interface LocaleSettings {
   language: string;
+  currency: AppCurrency;
   timezone?: string;
+  region?: string;
+  regionName?: string;
 }
 
 export interface AppSettings {
   theme: ThemeOption;
   notifications: NotificationSettings;
-  currency: AppCurrency;
   locale?: LocaleSettings;
 }

@@ -116,20 +116,14 @@ function SetupPage() {
         formData.password
       );
 
-      const statusMessage = getMessage(response, {
-        t: t,
-        showToast: true,
-      });
+      const statusMessage = getMessage(response, t);
 
       showStatusToast(statusMessage, toast);
 
       redirectAfterTimeout(APP_PAGES.member.link, 3000, navigate);
     } catch (error: any) {
       if (error?.statusCode) {
-        const statusMessage = getMessage(error.statusCode, {
-          t: t,
-          showToast: true,
-        });
+        const statusMessage = getMessage(error, t);
         showStatusToast(statusMessage, toast);
       } else {
         toast.error(t("status.error.unexpected"));

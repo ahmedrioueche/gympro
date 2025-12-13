@@ -4,6 +4,7 @@ import {
   AppPlanType,
   AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
+  AutoRenewType,
 } from "../types/appSubscription";
 import { PaymentMethod } from "../types/common";
 
@@ -84,13 +85,15 @@ export interface GetSubscriptionDto {
   planId: string;
   startDate: string | Date;
   endDate?: string | Date;
+  currentPeriodStart: string | Date;
+  currentPeriodEnd: string | Date;
   status: AppSubscriptionStatus;
   paymentMethod?: PaymentMethod;
   autoRenew?: boolean;
-
+  autoRenewType?: AutoRenewType;
   billingCycle?: AppSubscriptionBillingCycle;
-  lastPaymentDate?: string;
-  nextPaymentDate?: string;
+  lastPaymentDate?: string | Date;
+  nextPaymentDate?: string | Date;
 
   trial?: {
     startDate: string | Date;
@@ -106,6 +109,12 @@ export interface GetSubscriptionDto {
   }[];
 
   cancelledAt?: string;
+  cancelAtPeriodEnd?: boolean;
   cancellationReason?: string;
+
+  pendingPlanId?: string;
+  pendingBillingCycle?: AppSubscriptionBillingCycle;
+  pendingChangeEffectiveDate?: string | Date;
+
   plan: PlanDto;
 }

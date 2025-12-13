@@ -149,6 +149,11 @@ export class UsersController {
     return this.usersService.delete(id, currentUserId);
   }
 
+  @Post('onboarding/detect-region')
+  async detectRegion(@Req() req: any) {
+    return this.usersService.detectRegion(req);
+  }
+
   @Post('onboarding/complete')
   async completeOnboarding(@Body() data: any, @Req() req: any) {
     const currentUserId = req.user?.sub;

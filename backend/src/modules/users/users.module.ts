@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { GeolocationService } from 'src/common/services/geolocation.service';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import {
   AppPlanModel,
@@ -49,7 +50,7 @@ import { UsersService } from './users.service';
     GymModule,
   ],
   controllers: [UsersController],
-  providers: [UsersService, RolesGuard, PermissionsGuard],
+  providers: [UsersService, RolesGuard, PermissionsGuard, GeolocationService],
   exports: [UsersService],
 })
 export class UsersModule {}

@@ -1,5 +1,4 @@
 import {
-  APP_SUBSCRIPTION_BILLING_CYCLES,
   ErrorCode,
   IGoogleAuthDto,
   JwtPayload,
@@ -151,7 +150,7 @@ export class AuthService {
         await this.subscriptionService.subscribe(
           newUser._id.toString(),
           freePlan.planId,
-          APP_SUBSCRIPTION_BILLING_CYCLES[2],
+          'monthly', // Free plan uses monthly billing cycle for trial
         );
         this.logger.log(`User ${newUser._id} auto-subscribed to free plan`);
       } else {
@@ -565,7 +564,7 @@ export class AuthService {
             await this.subscriptionService.subscribe(
               user._id.toString(),
               freePlan.planId,
-              APP_SUBSCRIPTION_BILLING_CYCLES[2],
+              'monthly', // Free plan uses monthly billing cycle for trial
             );
             this.logger.log(`User ${user._id} auto-subscribed to free plan`);
           } else {

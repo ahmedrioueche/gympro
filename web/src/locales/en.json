@@ -17,7 +17,22 @@
     "loading": "Loading...",
     "selectSection": "Select a section from the sidebar to get started",
     "currentLanguage": "Current Language",
-    "currentRoute": "Current Route"
+    "currentRoute": "Current Route",
+    "back": "Back",
+    "close": "Close",
+    "processing": "Processing...",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "confirm": {
+    "default": {
+      "title": "Are you sure?",
+      "text": "This action cannot be undone."
+    },
+    "reactivate": {
+      "title": "Reactivate Subscription?",
+      "text": "Your subscription will be restored and will renew on {{date}}. Proceed?"
+    }
   },
   "actions": {
     "go_back": "Go back",
@@ -182,6 +197,26 @@
         "fetch_all_my_failed": "Failed to fetch all your gyms",
         "update_failed": "Failed to update gym",
         "delete_failed": "Failed to delete gym"
+      },
+      "subscription": {
+        "not_found": "Subscription not found",
+        "create_failed": "Failed to create subscription",
+        "fetch_failed": "Failed to fetch subscriptions",
+        "update_failed": "Failed to update subscription",
+        "cancel_failed": "Failed to cancel subscription",
+        "cancel_limit_exceeded": "You have reached the daily cancellation limit. Please try again tomorrow."
+      },
+      "member": {
+        "not_found": "Member not found",
+        "fetch_failed": "Failed to fetch members",
+        "update_failed": "Failed to update member",
+        "delete_failed": "Failed to delete member"
+      },
+      "plan": {
+        "not_found": "Plan not found"
+      },
+      "history": {
+        "fetch_error": "Failed to fetch history"
       }
     }
   },
@@ -249,6 +284,15 @@
       "next": "Next",
       "previous": "Back",
       "finish": "Finish"
+    },
+    "regionCurrency": {
+      "title": "Select Your Region",
+      "subtitle": "This helps us provide accurate pricing",
+      "defaultCurrency": "Default currency",
+      "region": "Region",
+      "currencyLockInfo": "You can change your region below. Currency will be locked after confirmation.",
+      "selectRegion": "Select your region",
+      "confirm": "Confirm"
     }
   },
   "role": {
@@ -795,10 +839,34 @@
     "minutes_left": "minutes",
     "left": "left",
     "trial_ends_in": "Trial Ends In",
-    "access_ends_in": "Access Ends In",
+    "access_ends_on": "Access Ends On",
     "renews_in": "Renews In",
     "expired": "Expired",
-    "next_payment": "Next Payment"
+    "next_payment": "Next Payment",
+    "period_ends_on": "Period ends on",
+    "cancel_subscription": "Cancel subscription",
+    "cancel_support_subject": "I need help with my GymPro subscription",
+    "cancel_support_body": "Hi GymPro Support Team,\n\nI'm considering cancelling my subscription, but I wanted to reach out first to see if you can help me with...\n\n[Please describe your concern here]\n\nThank you!",
+    "cancel_modal_title": "Cancel Subscription",
+    "cancel_reason_title": "Tell Us Why You're Leaving",
+    "cancel_contact_message": "We're sorry to see you considering cancellation. Before you go, would you like to tell us what's wrong? We're here to help!",
+    "cancel_reason_billing": "Billing or payment issues",
+    "cancel_reason_features": "Missing features or functionality",
+    "cancel_reason_support": "Need help or support",
+    "cancel_reason_other": "Other concerns",
+    "cancel_contact_encourage": "Our support team is ready to assist you and may have solutions you haven't considered yet.",
+    "contact_support": "Contact Support",
+    "continue_cancellation": "Continue with Cancellation",
+    "cancel_warning_title": "Your subscription will be cancelled",
+    "cancel_warning_message": "You'll keep access to all features until {{date}}, then your subscription will end.",
+    "cancel_reason_label": "Please tell us why you're cancelling (required)",
+    "cancel_reason_placeholder": "Help us improve by sharing your reason for leaving...",
+    "cancel_reason_too_short": "Please provide a more detailed reason (minimum 10 characters)",
+    "cancel_success": "Subscription was cancelled successfully.",
+    "cancel_error": "Failed to cancel subscription. Please try again.",
+    "reactivate_success": "Subscription was reactivated successfully.",
+    "reactivate_error": "Failed to reactivate subscription. Please try again.",
+    "reactivate_subscription": "Reactivate Subscription"
   },
   "plan": {
     "free": {

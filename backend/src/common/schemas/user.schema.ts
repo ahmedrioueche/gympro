@@ -1,11 +1,8 @@
-import type { AppCurrency, StaffType } from '@ahmedrioueche/gympro-client';
-import {
-  APP_CURRENCIES,
-  STAFF_TYPES,
-  UserRole,
-} from '@ahmedrioueche/gympro-client';
+import type { AppSettings, StaffType } from '@ahmedrioueche/gympro-client';
+import { STAFF_TYPES, UserRole } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { AppSettingsSchema } from '../../modules/settings/settings.schema';
 
 @Schema({ _id: false })
 export class NotificationSettingsSchema {
@@ -17,30 +14,6 @@ export class NotificationSettingsSchema {
 
   @Prop()
   defaultReminderMinutes?: number;
-}
-
-@Schema({ _id: false })
-export class LocaleSettingsSchema {
-  @Prop({ default: 'en' })
-  language: string;
-
-  @Prop()
-  timezone?: string;
-}
-
-@Schema({ _id: false })
-export class AppSettingsSchema {
-  @Prop({ default: 'light', enum: ['light', 'dark', 'auto'] })
-  theme: 'light' | 'dark' | 'auto';
-
-  @Prop({ type: NotificationSettingsSchema })
-  notifications: NotificationSettingsSchema;
-
-  @Prop({ enum: APP_CURRENCIES, required: true })
-  currency: AppCurrency;
-
-  @Prop({ type: LocaleSettingsSchema })
-  locale?: LocaleSettingsSchema;
 }
 
 @Schema({ _id: false, timestamps: false })
@@ -182,7 +155,7 @@ export class User extends Document {
   role: UserRole;
 
   @Prop({ type: AppSettingsSchema })
-  appSettings?: AppSettingsSchema;
+  appSettings?: AppSettings;
 
   // Member-specific fields
   @Prop({ type: Types.ObjectId, ref: 'TrainingProgram' })

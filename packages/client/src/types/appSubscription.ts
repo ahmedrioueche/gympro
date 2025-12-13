@@ -64,20 +64,26 @@ export interface AppPlan extends AuditInfo {
   features: string[];
 }
 
+export const APP_SUBSCRIPTION_AUTO_RENEW_TYPES = ["auto", "manual"] as const;
+
+export type AutoRenewType = (typeof APP_SUBSCRIPTION_AUTO_RENEW_TYPES)[number];
 export interface AppSubscription extends AuditInfo {
   _id: string;
   userId: string;
   planId: string;
   startDate: string | Date;
   endDate?: string | Date;
+  currentPeriodStart: string | Date;
+  currentPeriodEnd: string | Date;
   status: AppSubscriptionStatus;
   paymentMethod?: PaymentMethod;
   autoRenew?: boolean;
+  autoRenewType?: AutoRenewType;
 
   // Billing cycle tracking
   billingCycle?: AppSubscriptionBillingCycle;
-  lastPaymentDate?: string;
-  nextPaymentDate?: string;
+  lastPaymentDate?: string | Date;
+  nextPaymentDate?: string | Date;
 
   trial?: {
     startDate: string | Date;
@@ -94,7 +100,12 @@ export interface AppSubscription extends AuditInfo {
 
   // Cancellation tracking
   cancelledAt?: string;
+  cancelAtPeriodEnd?: boolean;
   cancellationReason?: string;
+
+  pendingPlanId?: string;
+  pendingBillingCycle?: AppSubscriptionBillingCycle;
+  pendingChangeEffectiveDate?: string | Date;
 }
 
 // Separate history model for tracking all subscription changes

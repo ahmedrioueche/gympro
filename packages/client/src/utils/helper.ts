@@ -8,14 +8,16 @@ export function getCurrencySymbol(currency: AppCurrency): string {
 export const formatPrice = (
   amount: number,
   currency: AppCurrency,
-  language: AppLanguage
+  language: AppLanguage,
+  minimumFractionDigits: number = 0,
+  maximumFractionDigits: number = 0
 ) => {
   const locale = LANGUAGES[language].locale || "en-US";
 
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: minimumFractionDigits,
+    maximumFractionDigits: maximumFractionDigits,
   }).format(amount);
 };

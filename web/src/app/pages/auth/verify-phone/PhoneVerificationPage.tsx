@@ -9,7 +9,6 @@ import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputField";
 import { bgGradient } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
-import { useUserStore } from "../../../../store/user";
 import { formatPhoneForDisplay } from "../../../../utils/phone.util";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import AuthHeader from "../components/AuthHeader";
@@ -17,8 +16,7 @@ import AuthHeader from "../components/AuthHeader";
 function PhoneVerificationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { setUser } = useUserStore();
-  const { mode } = useTheme();
+  const { isDark } = useTheme();
 
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -58,10 +56,7 @@ function PhoneVerificationPage() {
     try {
       const response = await authApi.verifyOtp(phoneNumber, otp);
 
-      const statusMessage = getMessage(response, {
-        t: t,
-        showToast: true,
-      });
+      const statusMessage = getMessage(response, t);
 
       showStatusToast(statusMessage, toast);
 
@@ -79,10 +74,7 @@ function PhoneVerificationPage() {
       }
     } catch (error: any) {
       if (error?.statusCode) {
-        const statusMessage = getMessage(error.statusCode, {
-          t: t,
-          showToast: true,
-        });
+        const statusMessage = getMessage(error, t);
         showStatusToast(statusMessage, toast);
       } else {
         toast.error(t("status.error.unexpected"));
@@ -99,10 +91,7 @@ function PhoneVerificationPage() {
     try {
       const response = await authApi.sendOtp(phoneNumber);
 
-      const statusMessage = getMessage(response, {
-        t: t,
-        showToast: true,
-      });
+      const statusMessage = getMessage(response, t);
       showStatusToast(statusMessage, toast);
 
       if (response.success) {

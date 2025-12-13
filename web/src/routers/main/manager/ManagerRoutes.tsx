@@ -7,7 +7,7 @@ import HomePage from "../../../app/pages/main/manager/home/HomePage";
 import NotificationsPage from "../../../app/pages/main/manager/notifications/NotificationsPage";
 import PaymentsPage from "../../../app/pages/main/manager/payments/PaymentsPage";
 import SettingsPage from "../../../app/pages/main/manager/settings/SettingsPage";
-import SubscriptionPage from "../../../app/pages/main/manager/subscription/SubscriptionsPage";
+import SubscriptionPage from "../../../app/pages/main/manager/subscription/SubscriptionPage";
 import { ManagerRootRoute } from "./ManagerRootRoute";
 
 export const homeRoute = createRoute({

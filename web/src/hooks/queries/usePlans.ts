@@ -54,3 +54,17 @@ export const useSubscribeToPlan = () => {
     },
   });
 };
+
+export const useReactivateSubscription = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const res = await appSubscriptionsApi.reactivateSubscription();
+      return res;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: planKeys.mySubscription() });
+      qc.invalidateQueries({ queryKey: planKeys.subscription() });
+    },
+  });
+};

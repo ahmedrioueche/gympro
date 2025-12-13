@@ -126,10 +126,7 @@ function LoginPage() {
         rememberMe: rememberMe,
       });
 
-      const statusMessage = getMessage(response, {
-        t: t,
-        showToast: true,
-      });
+      const statusMessage = getMessage(response, t);
 
       showStatusToast(statusMessage, toast);
 
@@ -142,10 +139,7 @@ function LoginPage() {
       }
     } catch (error: any) {
       if (error?.statusCode) {
-        const statusMessage = getMessage(error.statusCode, {
-          t: t,
-          showToast: true,
-        });
+        const statusMessage = getMessage(error, t);
 
         showStatusToast(statusMessage, toast);
       } else {

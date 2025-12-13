@@ -95,10 +95,7 @@ function SignupPage() {
 
       const response = await authApi.signup(payload);
 
-      const statusMessage = getMessage(response, {
-        t: t,
-        showToast: true,
-      });
+      const statusMessage = getMessage(response, t);
 
       showStatusToast(statusMessage, toast);
       if (response.success) {
@@ -116,10 +113,7 @@ function SignupPage() {
       }
     } catch (error: any) {
       if (error?.statusCode) {
-        const statusMessage = getMessage(error, {
-          t: t,
-          showToast: true,
-        });
+        const statusMessage = getMessage(error, t);
 
         showStatusToast(statusMessage, toast);
       } else {

@@ -11,6 +11,7 @@ import { AppBillingModule } from './modules/appBilling/appBilling.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
+import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
 import { UsersModule } from './modules/users/users.module';
 
@@ -57,6 +58,7 @@ import { UsersModule } from './modules/users/users.module';
     SmsModule,
     MembershipModule,
     AppBillingModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [

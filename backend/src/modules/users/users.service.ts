@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 
+import { GeolocationService } from '../../common/services/geolocation.service';
 import { GymService } from '../gym/gym.service';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private readonly gymService: GymService,
+    private readonly geolocationService: GeolocationService,
   ) {}
 
   async findAll(
@@ -347,6 +349,22 @@ export class UsersService {
     return userObj;
   }
 
+  /**
+   * Detect region from user's IP address
+   */
+  async detectRegion(req: any) {
+    // Extract IP from request
+    const ip =
+      req.headers['x-forwarded-for']?.split(',')[0] ||
+      req.headers['x-real-ip'] ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      '';
+
+    this.logger.log(`Detecting region for IP: ${ip}`);
+    return this.geolocationService.detectRegionFromIP(ip);
+  }
+
   async completeOnboarding(userId: string, data: any) {
     const user = await this.userModel.findById(userId);
 
@@ -367,6 +385,33 @@ export class UsersService {
     if (data.age) user.profile.age = data.age;
     if (data.gender) user.profile.gender = data.gender;
     if (data.ownerName) user.profile.fullName = data.ownerName;
+
+    // Initialize appSettings if not exists
+    if (!user.appSettings) {
+      user.appSettings = {
+        theme: 'auto',
+        notifications: {
+          enablePush: true,
+          enableEmail: true,
+        },
+        locale: {
+          language: data.language || 'en',
+          currency: data.currency || 'DZD',
+          region: data.region || 'DZ',
+          regionName: data.regionName || 'Algeria',
+          timezone: data.timezone || 'Africa/Algiers',
+        },
+      } as any;
+    } else {
+      // Set locale with region/currency data
+      user.appSettings.locale = {
+        language: data.language || 'en',
+        currency: data.currency || 'DZD',
+        region: data.region || 'DZ',
+        regionName: data.regionName || 'Algeria',
+        timezone: data.timezone || 'Africa/Algiers',
+      };
+    }
 
     // Create Gym if owner and gymName provided
     if (user.role === UserRole.Owner && data.gymName) {

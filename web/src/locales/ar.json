@@ -184,6 +184,15 @@
     "finish": "إنهاء",
     "step_role": "الدور",
     "step_details": "التفاصيل",
-    "step_confirmation": "التأكيد"
+    "step_confirmation": "التأكيد",
+    "regionCurrency": {
+      "title": "ح&#1583;&#1583; منطقتك",
+      "subtitle": "يساعدنا هذا في توفير أسعار دقيقة",
+      "defaultCurrency": "العملة الافتراضية",
+      "region": "المنطقة",
+      "currencyLockInfo": "يمكنك تغيير منطقتك أدناه. سيتم قفل العملة بعد التأكيد.",
+      "selectRegion": "اختر منطقتك",
+      "confirm": "تأكيد"
+    }
   }
 }

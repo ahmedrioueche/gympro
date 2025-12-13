@@ -6,12 +6,14 @@ import type {
   AppSubscription,
   AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
+  AutoRenewType,
   PaymentMethod,
 } from '@ahmedrioueche/gympro-client';
 import {
   APP_CURRENCIES,
   APP_PLAN_LEVELS,
   APP_PLAN_TYPES,
+  APP_SUBSCRIPTION_AUTO_RENEW_TYPES,
   APP_SUBSCRIPTION_BILLING_CYCLES,
   APP_SUBSCRIPTION_HISTORY_ACTIONS,
   APP_SUBSCRIPTION_STATUSES,
@@ -190,23 +192,32 @@ export class AppSubscriptionModel extends Document implements AppSubscription {
   @Prop({ type: Date })
   endDate?: Date;
 
+  @Prop({ type: Date, required: true })
+  currentPeriodStart: Date;
+
+  @Prop({ type: Date, required: true })
+  currentPeriodEnd: Date;
+
   @Prop({ type: String, required: true, enum: APP_SUBSCRIPTION_STATUSES })
   status: AppSubscriptionStatus;
 
   @Prop({ type: String, enum: PAYMENT_METHODS })
   paymentMethod?: PaymentMethod;
 
-  @Prop({ default: false })
+  @Prop()
   autoRenew?: boolean;
+
+  @Prop({ type: String, enum: APP_SUBSCRIPTION_AUTO_RENEW_TYPES })
+  autoRenewType?: AutoRenewType;
 
   @Prop({ type: String, enum: APP_SUBSCRIPTION_BILLING_CYCLES })
   billingCycle?: AppSubscriptionBillingCycle;
 
-  @Prop()
-  lastPaymentDate?: string;
+  @Prop({ type: Date })
+  lastPaymentDate?: Date;
 
-  @Prop()
-  nextPaymentDate?: string;
+  @Prop({ type: Date })
+  nextPaymentDate?: Date;
 
   @Prop({ type: TrialInfo })
   trial?: TrialInfo;
@@ -218,7 +229,19 @@ export class AppSubscriptionModel extends Document implements AppSubscription {
   cancelledAt?: string;
 
   @Prop()
+  cancelAtPeriodEnd?: boolean;
+
+  @Prop()
   cancellationReason?: string;
+
+  @Prop({ type: String })
+  pendingPlanId?: string;
+
+  @Prop({ type: String, enum: APP_SUBSCRIPTION_BILLING_CYCLES })
+  pendingBillingCycle?: AppSubscriptionBillingCycle;
+
+  @Prop({ type: Date })
+  pendingChangeEffectiveDate?: Date;
 
   @Prop({ required: true })
   createdAt: Date;

@@ -25,7 +25,6 @@ export class MembershipService {
   async createMember(dto: CreateMemberDto, createdBy: string) {
     const { email, phoneNumber, gymId, fullName, gender, age } = dto;
 
-    // Validate that at least one contact method is provided
     // Validate that at least one contact method is provided or generate dummy ones
     let finalEmail = email;
     let finalPhone = phoneNumber;

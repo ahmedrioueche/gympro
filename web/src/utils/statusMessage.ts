@@ -1,14 +1,9 @@
 import { ErrorCode, type ApiResponse } from "@ahmedrioueche/gympro-client";
+import type { TFunction } from "i18next";
 
 export interface StatusMessage {
   status: "success" | "error" | "info" | "warning";
   message: string;
-  showToast?: boolean;
-}
-
-export interface MessageHandlerConfig {
-  t: (key: string) => string;
-  showToast?: boolean;
 }
 
 // Map ErrorCode to translation keys
@@ -70,6 +65,24 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.FETCH_ALL_MY_GYMS_FAILED]: "status.error.gym.fetch_all_my_failed",
   [ErrorCode.UPDATE_GYM_FAILED]: "status.error.gym.update_failed",
   [ErrorCode.DELETE_GYM_FAILED]: "status.error.gym.delete_failed",
+
+  [ErrorCode.SUBSCRIPTION_CANCEL_ERROR]:
+    "status.error.subscription.cancel_error",
+  [ErrorCode.SUBSCRIPTION_CREATE_ERROR]:
+    "status.error.subscription.create_error",
+  [ErrorCode.SUBSCRIPTION_FETCH_ERROR]: "status.error.subscription.fetch_error",
+  [ErrorCode.NO_ACTIVE_SUBSCRIPTION]:
+    "status.error.subscription.no_active_subscription",
+  [ErrorCode.NOT_FOUND]: "status.error.not_found",
+  [ErrorCode.FETCH_MEMBER_FAILED]: "status.error.member.fetch_failed",
+  [ErrorCode.UPDATE_MEMBER_FAILED]: "status.error.member.update_failed",
+  [ErrorCode.DELETE_MEMBER_FAILED]: "status.error.member.delete_failed",
+  [ErrorCode.PLAN_NOT_FOUND]: "status.error.plan.not_found",
+  [ErrorCode.HISTORY_FETCH_ERROR]: "status.error.history.fetch_error",
+  [ErrorCode.SUBSCRIPTION_UPDATE_ERROR]:
+    "status.error.subscription.update_failed",
+  [ErrorCode.SUBSCRIPTION_CANCEL_LIMIT_EXCEEDED]:
+    "status.error.subscription.cancel_limit_exceeded",
 };
 
 /**
@@ -80,17 +93,14 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
  */
 export const getMessage = <T = any>(
   response: ApiResponse<T>,
-  config: MessageHandlerConfig
+  t: TFunction<"translation", undefined>
 ): StatusMessage => {
-  const { t, showToast = true } = config;
-
   // Success case
   if (response.success) {
     const message = response.message || t("status.success.operation_completed");
     return {
       status: "success",
       message,
-      showToast,
     };
   }
 
@@ -102,8 +112,7 @@ export const getMessage = <T = any>(
     if (translationKey) {
       return {
         status: "error",
-        message: t(translationKey),
-        showToast,
+        message: t(translationKey as string),
       };
     }
   }
@@ -113,7 +122,6 @@ export const getMessage = <T = any>(
   return {
     status: "error",
     message: fallbackMessage,
-    showToast,
   };
 };
 
@@ -131,8 +139,6 @@ export const showStatusToast = (
     warning?: (msg: string) => void;
   }
 ) => {
-  if (!statusMessage.showToast) return;
-
   const { status, message } = statusMessage;
 
   switch (status) {

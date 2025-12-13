@@ -8,6 +8,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Post,
   Req,
   UseGuards,
@@ -106,11 +108,49 @@ export class AppSubscriptionController {
         'Subscription cancelled successfully',
       );
     } catch (error: any) {
+      if (error.status === HttpStatus.TOO_MANY_REQUESTS) {
+        throw new HttpException(
+          apiResponse(
+            false,
+            ErrorCode.SUBSCRIPTION_CANCEL_LIMIT_EXCEEDED,
+            null,
+            error.message,
+          ),
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
+      }
+
+      let errorCode = ErrorCode.SUBSCRIPTION_CANCEL_ERROR;
+      if (error.status === 404) {
+        errorCode = ErrorCode.NO_ACTIVE_SUBSCRIPTION;
+      }
+
+      const message = error.message || 'Failed to cancel subscription';
+      return apiResponse(false, errorCode, null, message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('reactivate')
+  async reactivateSubscription(@Req() req: any) {
+    try {
+      const userId = req.user?.sub;
+
+      const subscription =
+        await this.appSubscriptionService.reactivateSubscription(userId);
+
+      return apiResponse(
+        true,
+        undefined,
+        subscription,
+        'Subscription reactivated successfully',
+      );
+    } catch (error: any) {
       const errorCode =
         error.status === 404
           ? ErrorCode.NO_ACTIVE_SUBSCRIPTION
-          : ErrorCode.SUBSCRIPTION_CANCEL_ERROR;
-      const message = error.message || 'Failed to cancel subscription';
+          : ErrorCode.SUBSCRIPTION_UPDATE_ERROR;
+      const message = error.message || 'Failed to reactivate subscription';
       return apiResponse(false, errorCode, null, message);
     }
   }

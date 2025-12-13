@@ -37,7 +37,7 @@ export interface BaseUser extends AuditInfo {
   _id: string;
   profile: BaseUserProfile;
   appSubscription?: AppSubscription;
-  AppSettings?: AppSettings;
+  appSettings?: AppSettings;
   memberships: GymMembership[];
   subscriptionHistory: SubscriptionHistory[];
   notifications: AppNotification[];

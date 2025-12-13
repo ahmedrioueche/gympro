@@ -3,7 +3,8 @@ import {
   type AppPlan,
   type AppSubscriptionBillingCycle,
 } from "@ahmedrioueche/gympro-client";
-import { useState } from "react";
+import { X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
 import {
@@ -12,6 +13,7 @@ import {
   useSubscribeToPlan,
 } from "../../../../../hooks/queries/usePlans";
 import PlanCard from "../../../../components/PlanCard";
+import CancelSubscriptionModal from "./components/CancelSubscriptionModal";
 import SubscriptionCard from "./components/SubscriptionCard";
 
 function SubscriptionPage() {
@@ -19,6 +21,7 @@ function SubscriptionPage() {
   const [billingCycle, setBillingCycle] = useState<AppSubscriptionBillingCycle>(
     APP_SUBSCRIPTION_BILLING_CYCLES[0]
   );
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
   const { data: plans = [], isLoading: plansLoading } = useAllPlans();
   const { data: mySubscription, isLoading: subLoading } = useMySubscription();
@@ -30,8 +33,8 @@ function SubscriptionPage() {
 
   const isCurrentPlan = (plan: AppPlan) => {
     return (
-      mySubscription.plan.planId === plan.planId &&
-      mySubscription.billingCycle === billingCycle
+      mySubscription?.plan?.planId === plan.planId &&
+      mySubscription?.billingCycle === billingCycle
     );
   };
 
@@ -55,6 +58,15 @@ function SubscriptionPage() {
       const orderB = b.order ?? 999;
       return orderA - orderB;
     });
+
+  useEffect(() => {
+    if (window.location.hash === "#plans-section") {
+      const plansSection = document.getElementById("plans-section");
+      if (plansSection) {
+        plansSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, []);
 
   if (plansLoading || subLoading) {
     return (
@@ -97,11 +109,13 @@ function SubscriptionPage() {
         </div>
 
         {mySubscription && mySubscription?.planId && mySubscription?.plan && (
-          <SubscriptionCard mySubscription={mySubscription} />
+          <div className="mb-12">
+            <SubscriptionCard mySubscription={mySubscription} />
+          </div>
         )}
 
         {/* Billing Cycle Filter */}
-        <div className="flex justify-center mb-12">
+        <div id="plans-section" className="flex justify-center mb-12">
           <div className="bg-surface/80 backdrop-blur-md border-2 border-border rounded-2xl p-2 inline-flex shadow-xl">
             <button
               onClick={() =>
@@ -181,8 +195,38 @@ function SubscriptionPage() {
           </div>
         )}
 
+        {mySubscription && mySubscription?.planId && mySubscription?.plan && (
+          <div className="flex items-center justify-center">
+            {/* Cancel Button */}
+            {mySubscription.status === "active" &&
+              !mySubscription.cancelAtPeriodEnd &&
+              mySubscription.plan?.level !== "free" &&
+              mySubscription.plan?.type === "subscription" && (
+                <div className="flex justify-end mt-4 px-2">
+                  <button
+                    onClick={() => setIsCancelModalOpen(true)}
+                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-danger hover:underline transition-colors px-4 py-2 rounded-lg hover:bg-danger/5"
+                  >
+                    <X className="w-4 h-4" />
+                    {t("subscription.cancel_subscription")}
+                  </button>
+                </div>
+              )}
+          </div>
+        )}
+
+        <CancelSubscriptionModal
+          isOpen={isCancelModalOpen}
+          onClose={() => setIsCancelModalOpen(false)}
+          subscriptionEndDate={
+            mySubscription?.currentPeriodEnd
+              ? new Date(mySubscription.currentPeriodEnd)
+              : undefined
+          }
+        />
+
         {/* Footer Info */}
-        <div className="mt-16 text-center p-8">
+        <div className=" text-center p-8">
           <p className="text-text-secondary text-sm max-w-2xl mx-auto">
             {t("subscriptions.footer_info")}
           </p>
