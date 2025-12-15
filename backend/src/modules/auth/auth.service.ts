@@ -18,8 +18,8 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
-import { MailerService } from '../../common/services/mailer.service';
-import { getI18nText } from '../../common/utils/i18n';
+import { NotificationService } from '../../common/services/notification.service';
+import { isPhoneNumber } from '../../common/utils/phone.util';
 import { Platform, buildRedirectUrl } from '../../common/utils/platform.util';
 import { AppPlanModel } from '../appBilling/appBilling.schema';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
@@ -34,9 +34,9 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(AppPlanModel.name) private appPlanModel: Model<AppPlanModel>,
     private readonly subscriptionService: AppSubscriptionService,
+    private readonly notificationService: NotificationService,
     private jwtService: JwtService,
     private configService: ConfigService,
-    private mailerService: MailerService,
     private otpService: OtpService,
   ) {}
 
@@ -44,7 +44,6 @@ export class AuthService {
   async signup(dto: SignupDto, platform: Platform = Platform.WEB) {
     const { email, phoneNumber, password, username } = dto;
 
-    // Validate that at least one contact method is provided
     if (!email && !phoneNumber) {
       throw new BadRequestException({
         message: 'Either email or phone number is required',
@@ -52,11 +51,9 @@ export class AuthService {
       });
     }
 
-    // Check if user already exists with email or phone
+    // Check if user already exists
     const existingUserQuery: any = {};
-    if (email) {
-      existingUserQuery['profile.email'] = email;
-    }
+    if (email) existingUserQuery['profile.email'] = email;
     if (phoneNumber) {
       if (Object.keys(existingUserQuery).length > 0) {
         existingUserQuery.$or = [
@@ -70,7 +67,6 @@ export class AuthService {
     }
 
     const existingUser = await this.userModel.findOne(existingUserQuery);
-
     if (existingUser) {
       throw new ConflictException({
         message: 'User with this email or phone number already exists',
@@ -79,14 +75,11 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Generate username if not provided
     const generatedUsername =
       username ||
       (email ? email.split('@')[0] : `user_${phoneNumber?.slice(-4)}`);
 
-    // For email signup: send verification email
-    // For phone signup: user needs to verify via OTP after signup
+    // Generate verification token for email signup
     const verificationToken = email
       ? crypto.randomBytes(32).toString('hex')
       : undefined;
@@ -100,7 +93,7 @@ export class AuthService {
         email: email || undefined,
         phoneNumber: phoneNumber || undefined,
         password: hashedPassword,
-        isValidated: !email, // Auto-validate if no email (will verify phone via OTP)
+        isValidated: !email,
         phoneNumberVerified: false,
         accountStatus: 'active',
         isOnBoarded: false,
@@ -116,23 +109,20 @@ export class AuthService {
 
     await newUser.save();
 
-    // Send verification email if email was provided
-    if (email) {
-      try {
-        await this.sendVerificationEmail(
-          email,
-          verificationToken!,
-          newUser.profile.fullName || newUser.profile.username,
-          platform,
-        );
-      } catch (error) {
-        this.logger.error(
-          `Failed to send verification email to ${email}: ${error}`,
-        );
-      }
+    // Send verification email
+    if (email && verificationToken) {
+      const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
+        token: verificationToken,
+      });
+
+      await this.notificationService.notifyUser(newUser, {
+        key: 'auth.verify',
+        vars: { verifyUrl: verificationUrl },
+        sendSms: false,
+      });
     }
 
-    // Send OTP if phone number was provided
+    // Send OTP for phone verification
     if (phoneNumber) {
       try {
         await this.otpService.sendOTP(phoneNumber, newUser._id.toString());
@@ -141,29 +131,8 @@ export class AuthService {
       }
     }
 
-    try {
-      const freePlan = await this.appPlanModel
-        .findOne({ planId: 'subscription-free' })
-        .exec();
-
-      if (freePlan) {
-        await this.subscriptionService.subscribe(
-          newUser._id.toString(),
-          freePlan.planId,
-          'monthly', // Free plan uses monthly billing cycle for trial
-        );
-        this.logger.log(`User ${newUser._id} auto-subscribed to free plan`);
-      } else {
-        this.logger.warn(
-          'Free plan not found - user created without subscription',
-        );
-      }
-    } catch (error) {
-      this.logger.error(
-        `Failed to auto-subscribe user ${newUser._id} to free plan: ${error}`,
-      );
-      // Don't throw error - user account is already created
-    }
+    // Auto-subscribe to free plan
+    await this.autoSubscribeToFreePlan(newUser._id.toString());
 
     return this.sanitizeUser(newUser);
   }
@@ -171,14 +140,7 @@ export class AuthService {
   // --- SIGNIN ---
   async signin(dto: SigninDto) {
     const { identifier } = dto;
-
-    // Import phone utility
-    const { isPhoneNumber } = await import('../../common/utils/phone.util');
-
-    // Determine if identifier is phone or email
     const isPhone = isPhoneNumber(identifier);
-
-    // Query by phone or email
     const query = isPhone
       ? { 'profile.phoneNumber': identifier }
       : { 'profile.email': identifier };
@@ -211,15 +173,14 @@ export class AuthService {
       });
     }
 
-    // Check if phone number is verified (if logging in with phone)
+    // Check verification status
     if (isPhone && !user.profile.phoneNumberVerified) {
       throw new UnauthorizedException({
         message: 'Please verify your phone number before signing in',
-        errorCode: ErrorCode.EMAIL_NOT_VERIFIED, // Reusing error code
+        errorCode: ErrorCode.EMAIL_NOT_VERIFIED,
       });
     }
 
-    // Check if email is verified (if logging in with email)
     if (!isPhone && !user.profile.isValidated) {
       throw new UnauthorizedException({
         message: 'Please verify your email before signing in',
@@ -227,20 +188,10 @@ export class AuthService {
       });
     }
 
-    const payload: JwtPayload = {
-      sub: user._id?.toString()!,
-      email: user.profile.email || user.profile.phoneNumber || '',
-      role: user.role,
-    };
-
-    const accessToken = this.jwtService.sign(payload, {
-      expiresIn: dto.rememberMe ? '7d' : '15m',
-    });
-
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
-      expiresIn: dto.rememberMe ? '30d' : '7d',
-    });
+    const { accessToken, refreshToken } = this.generateTokens(
+      user,
+      dto.rememberMe,
+    );
 
     return {
       user: this.sanitizeUser(user),
@@ -249,7 +200,7 @@ export class AuthService {
     };
   }
 
-  // --- REFRESH ---
+  // --- REFRESH TOKEN ---
   async refresh(refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken, {
@@ -307,7 +258,7 @@ export class AuthService {
 
     const sanitizedUser = this.sanitizeUser(user);
 
-    // Manually populate plan data if subscription exists
+    // Manually populate plan data
     if (sanitizedUser.appSubscription?.planId) {
       const plan = await this.appPlanModel
         .findOne({ planId: sanitizedUser.appSubscription.planId })
@@ -338,17 +289,7 @@ export class AuthService {
     user.verificationTokenExpiry = undefined;
     await user.save();
 
-    const payload: JwtPayload = {
-      sub: user._id?.toString()!,
-      email: user.profile.email || '',
-      role: user.role,
-    };
-
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
-      expiresIn: '7d',
-    });
+    const { accessToken, refreshToken } = this.generateTokens(user, false);
 
     return {
       message: 'Email verified successfully',
@@ -387,33 +328,22 @@ export class AuthService {
     user.verificationTokenExpiry = verificationTokenExpiry;
     await user.save();
 
-    try {
-      await this.sendVerificationEmail(
-        email,
-        verificationToken,
-        user.profile.fullName || user.profile.username,
-        platform,
-      );
-    } catch (error) {
-      this.logger.error(
-        `Failed to send verification email to ${email}: ${error}`,
-      );
-    }
+    const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
+      token: verificationToken,
+    });
 
-    return {
-      message: 'Verification email resent successfully',
-    };
+    await this.notificationService.notifyUser(user, {
+      key: 'auth.verify',
+      vars: { verifyUrl: verificationUrl },
+      sendSms: false,
+    });
+
+    return { message: 'Verification email resent successfully' };
   }
 
   // --- FORGOT PASSWORD ---
   async forgotPassword(identifier: string, platform: Platform = Platform.WEB) {
-    // Import phone utility
-    const { isPhoneNumber } = await import('../../common/utils/phone.util');
-
-    // Determine if identifier is phone or email
     const isPhone = isPhoneNumber(identifier);
-
-    // Query by phone or email
     const query = isPhone
       ? { 'profile.phoneNumber': identifier }
       : { 'profile.email': identifier };
@@ -427,7 +357,7 @@ export class AuthService {
     if (!user) return { message, method: isPhone ? 'phone' : 'email' };
 
     if (isPhone) {
-      // Send OTP for phone-based password reset
+      // Send OTP for phone-based reset
       try {
         await this.otpService.sendOTP(identifier, user._id.toString());
       } catch (error) {
@@ -436,7 +366,7 @@ export class AuthService {
         );
       }
     } else {
-      // Send reset link for email-based password reset
+      // Send reset link for email-based reset
       const resetToken = crypto.randomBytes(32).toString('hex');
       const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
 
@@ -444,18 +374,15 @@ export class AuthService {
       user.resetPasswordTokenExpiry = resetTokenExpiry;
       await user.save();
 
-      try {
-        await this.sendPasswordResetEmail(
-          identifier,
-          resetToken,
-          user.profile.fullName || user.profile.username,
-          platform,
-        );
-      } catch (error) {
-        this.logger.error(
-          `Failed to send password reset email to ${identifier}: ${error}`,
-        );
-      }
+      const resetUrl = buildRedirectUrl(platform, '/auth/reset-password', {
+        token: resetToken,
+      });
+
+      await this.notificationService.notifyUser(user, {
+        key: 'auth.reset_password',
+        vars: { resetUrl },
+        sendSms: false,
+      });
     }
 
     return { message, method: isPhone ? 'phone' : 'email' };
@@ -554,63 +481,17 @@ export class AuthService {
         });
         await user.save();
 
-        //  AUTO-SUBSCRIBE NEW USERS TO FREE PLAN
-        try {
-          const freePlan = await this.appPlanModel
-            .findOne({ planId: 'subscription-free' })
-            .exec();
-
-          if (freePlan) {
-            await this.subscriptionService.subscribe(
-              user._id.toString(),
-              freePlan.planId,
-              'monthly', // Free plan uses monthly billing cycle for trial
-            );
-            this.logger.log(`User ${user._id} auto-subscribed to free plan`);
-          } else {
-            this.logger.warn(
-              'Free plan not found - user created without subscription',
-            );
-          }
-        } catch (error) {
-          this.logger.error(
-            `Failed to auto-subscribe user ${user._id} to free plan: ${error}`,
-          );
-          // Don't throw error - user account is already created
-        }
+        await this.autoSubscribeToFreePlan(user._id.toString());
       }
     }
 
-    const payload: JwtPayload = {
-      sub: user._id?.toString()!,
-      email: user.profile.email || '',
-      role: user.role,
-    };
-
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '7d' });
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
-      expiresIn: '30d',
-    });
+    const { accessToken, refreshToken } = this.generateTokens(user, true);
 
     return {
       user: this.sanitizeUser(user),
       accessToken,
       refreshToken,
     };
-  }
-
-  // --- SANITIZE USER ---
-  private sanitizeUser(user: any) {
-    const userObj = user.toObject ? user.toObject() : user;
-
-    if (userObj.profile?.password) delete userObj.profile.password;
-    delete userObj.verificationToken;
-    delete userObj.verificationTokenExpiry;
-    delete userObj.resetPasswordToken;
-    delete userObj.resetPasswordTokenExpiry;
-
-    return userObj;
   }
 
   // --- SETUP MEMBER ACCOUNT ---
@@ -628,32 +509,19 @@ export class AuthService {
       });
     }
 
-    // Hash the new password
     user.profile.password = await bcrypt.hash(password, 10);
     user.setupTokenUsed = true;
     user.profile.accountStatus = 'active';
     user.profile.isActive = true;
     user.profile.isValidated = true;
 
-    // Mark phone as verified if phone number exists
     if (user.profile.phoneNumber) {
       user.profile.phoneNumberVerified = true;
     }
 
     await user.save();
 
-    // Generate JWT tokens for auto-login
-    const payload: JwtPayload = {
-      sub: user._id?.toString()!,
-      email: user.profile.email || user.profile.phoneNumber || '',
-      role: user.role,
-    };
-
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
-      expiresIn: '7d',
-    });
+    const { accessToken, refreshToken } = this.generateTokens(user, false);
 
     return {
       user: this.sanitizeUser(user),
@@ -680,49 +548,66 @@ export class AuthService {
     return { valid: true };
   }
 
-  // --- HELPER METHODS ---
+  // --- HELPER: GET USER BY PHONE ---
   async getUserByPhoneNumber(phoneNumber: string) {
     return this.userModel.findOne({ 'profile.phoneNumber': phoneNumber });
   }
 
-  // --- EMAILS ---
-  private async sendVerificationEmail(
-    email: string,
-    token: string,
-    name?: string,
-    platform: Platform = Platform.WEB,
-  ) {
-    // Build platform-specific verification URL
-    const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
-      token,
-    });
+  // --- PRIVATE HELPERS ---
 
-    const subject = getI18nText('email.verify_subject');
-    const html = getI18nText(
-      'email.verify_body',
-      { fullName: name, email },
-      { verifyUrl: verificationUrl },
-    );
-    await this.mailerService.sendMail(email, subject, html);
+  private sanitizeUser(user: any) {
+    const userObj = user.toObject ? user.toObject() : user;
+
+    if (userObj.profile?.password) delete userObj.profile.password;
+    delete userObj.verificationToken;
+    delete userObj.verificationTokenExpiry;
+    delete userObj.resetPasswordToken;
+    delete userObj.resetPasswordTokenExpiry;
+
+    return userObj;
   }
 
-  private async sendPasswordResetEmail(
-    email: string,
-    token: string,
-    name?: string,
-    platform: Platform = Platform.WEB,
-  ) {
-    // Build platform-specific reset URL
-    const resetUrl = buildRedirectUrl(platform, '/auth/reset-password', {
-      token,
+  private generateTokens(user: any, rememberMe: boolean = false) {
+    const payload: JwtPayload = {
+      sub: user._id?.toString()!,
+      email: user.profile.email || user.profile.phoneNumber || '',
+      role: user.role,
+    };
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: rememberMe ? '7d' : '15m',
     });
 
-    const subject = getI18nText('email.reset_password_subject');
-    const html = getI18nText(
-      'email.reset_password_body',
-      { fullName: name, email },
-      { resetUrl },
-    );
-    await this.mailerService.sendMail(email, subject, html);
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_REFRESH_SECRET'),
+      expiresIn: rememberMe ? '30d' : '7d',
+    });
+
+    return { accessToken, refreshToken };
+  }
+
+  private async autoSubscribeToFreePlan(userId: string) {
+    try {
+      const freePlan = await this.appPlanModel
+        .findOne({ planId: 'subscription-free' })
+        .exec();
+
+      if (freePlan) {
+        await this.subscriptionService.subscribe(
+          userId,
+          freePlan.planId,
+          'monthly',
+        );
+        this.logger.log(`User ${userId} auto-subscribed to free plan`);
+      } else {
+        this.logger.warn(
+          'Free plan not found - user created without subscription',
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to auto-subscribe user ${userId} to free plan: ${error}`,
+      );
+    }
   }
 }

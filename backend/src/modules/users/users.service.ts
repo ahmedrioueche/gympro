@@ -1,4 +1,9 @@
-import { ErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
+import {
+  DEFAULT_REGION,
+  DEFAULT_TRIAL_DAYS_NUMBER,
+  ErrorCode,
+  UserRole,
+} from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
   Injectable,
@@ -9,6 +14,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 
+import { NotificationService } from 'src/common/services/notification.service';
 import { GeolocationService } from '../../common/services/geolocation.service';
 import { GymService } from '../gym/gym.service';
 
@@ -20,6 +26,7 @@ export class UsersService {
     @InjectModel(User.name) private userModel: Model<User>,
     private readonly gymService: GymService,
     private readonly geolocationService: GeolocationService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async findAll(
@@ -395,21 +402,21 @@ export class UsersService {
           enableEmail: true,
         },
         locale: {
-          language: data.language || 'en',
-          currency: data.currency || 'DZD',
-          region: data.region || 'DZ',
-          regionName: data.regionName || 'Algeria',
-          timezone: data.timezone || 'Africa/Algiers',
+          language: data.language || DEFAULT_REGION.language,
+          currency: data.currency || DEFAULT_REGION.currency,
+          region: data.region || DEFAULT_REGION.region,
+          regionName: data.regionName || DEFAULT_REGION.regionName,
+          timezone: data.timezone || DEFAULT_REGION.timezone,
         },
       } as any;
     } else {
       // Set locale with region/currency data
       user.appSettings.locale = {
-        language: data.language || 'en',
-        currency: data.currency || 'DZD',
-        region: data.region || 'DZ',
-        regionName: data.regionName || 'Algeria',
-        timezone: data.timezone || 'Africa/Algiers',
+        language: data.language || DEFAULT_REGION.language,
+        currency: data.currency || DEFAULT_REGION.currency,
+        region: data.region || DEFAULT_REGION.region,
+        regionName: data.regionName || DEFAULT_REGION.regionName,
+        timezone: data.timezone || DEFAULT_REGION.timezone,
       };
     }
 
@@ -427,10 +434,26 @@ export class UsersService {
         throw new BadRequestException('Failed to create gym: ' + error.message);
       }
     }
+
     // Mark as onboarded
     user.profile.isOnBoarded = true;
-
     await user.save();
+
+    // Send welcome notification after onboarding completion
+    try {
+      await this.notificationService.notifyUser(user, {
+        key: 'onboarding.completed',
+        vars: {
+          name: user.profile?.fullName || user.profile?.email || 'User',
+          trialDays: DEFAULT_TRIAL_DAYS_NUMBER.toString(),
+        },
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to send onboarding completion notification to user ${userId}: ${error.message}`,
+      );
+      // Don't throw error - notification failure shouldn't prevent onboarding completion
+    }
 
     return this.sanitizeUser(user);
   }

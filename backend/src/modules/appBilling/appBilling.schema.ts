@@ -79,6 +79,20 @@ const AppPlanPricingSchema = new MongooseSchema(
   { _id: false },
 );
 
+const ChargilyPriceIdsSchema = new MongooseSchema(
+  APP_SUBSCRIPTION_BILLING_CYCLES.reduce(
+    (acc, cycle) => {
+      acc[cycle] = { type: String };
+      return acc;
+    },
+    {} as Record<AppSubscriptionBillingCycle, any>,
+  ),
+  {
+    _id: false,
+    strict: 'throw', // 🔥 rejects unknown keys
+  },
+);
+
 // ---------------------
 // AppPlan Schema
 // ---------------------

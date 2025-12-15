@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { NotificationService } from 'src/common/services/notification.service';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import {
   AppPlanModel,
@@ -27,7 +28,11 @@ import { AppSubscriptionService } from './subscription/subscription.service';
     ]),
   ],
   controllers: [AppPlansController, AppSubscriptionController],
-  providers: [AppPlansService, AppSubscriptionService],
+  providers: [
+    AppPlansService,
+    AppSubscriptionService,
+    NotificationService
+  ],
   exports: [AppPlansService, AppSubscriptionService],
 })
 export class AppBillingModule {}

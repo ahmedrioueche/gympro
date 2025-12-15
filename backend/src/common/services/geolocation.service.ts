@@ -1,4 +1,4 @@
-import { AppCurrency } from '@ahmedrioueche/gympro-client';
+import { AppCurrency, DEFAULT_REGION } from '@ahmedrioueche/gympro-client';
 import { Injectable, Logger } from '@nestjs/common';
 
 export interface RegionDetectionResult {
@@ -12,12 +12,6 @@ export interface RegionDetectionResult {
 export class GeolocationService {
   private readonly logger = new Logger(GeolocationService.name);
   private readonly IPAPI_BASE_URL = 'https://ipapi.co';
-  private readonly DEFAULT_REGION = {
-    region: 'DZ',
-    regionName: 'Algeria',
-    currency: 'DZD' as AppCurrency,
-    timezone: 'Africa/Algiers',
-  };
 
   // Simple in-memory cache to reduce API calls
   private cache = new Map<string, RegionDetectionResult>();
@@ -40,7 +34,7 @@ export class GeolocationService {
         this.logger.warn(
           `Private/localhost IP detected (${ip}), using default region`,
         );
-        return this.DEFAULT_REGION;
+        return DEFAULT_REGION;
       }
 
       // Call ipapi.co API
@@ -58,10 +52,10 @@ export class GeolocationService {
       }
 
       const result: RegionDetectionResult = {
-        region: data.country_code || this.DEFAULT_REGION.region,
-        regionName: data.country_name || this.DEFAULT_REGION.regionName,
+        region: data.country_code || DEFAULT_REGION.region,
+        regionName: data.country_name || DEFAULT_REGION.regionName,
         currency: this.mapRegionToCurrency(data.country_code),
-        timezone: data.timezone || this.DEFAULT_REGION.timezone,
+        timezone: data.timezone || DEFAULT_REGION.timezone,
       };
 
       // Cache the result
@@ -78,7 +72,7 @@ export class GeolocationService {
         `Failed to detect region from IP ${ip}: ${error.message}`,
       );
       // Return default region on error
-      return this.DEFAULT_REGION;
+      return DEFAULT_REGION;
     }
   }
 

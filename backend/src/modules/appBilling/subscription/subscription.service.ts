@@ -1,4 +1,6 @@
 import {
+  APP_PLAN_LEVELS,
+  APP_SUBSCRIPTION_BILLING_CYCLES,
   AppCurrency,
   AppSubscriptionBillingCycle,
   DEFAULT_CURRENCY,
@@ -8,12 +10,14 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MAX_DAILY_CANCELLATIONS } from 'src/common/constants/subscription.constants';
 import { User } from 'src/common/schemas/user.schema';
+import { NotificationService } from 'src/common/services/notification.service';
 import {
   AppPlanModel,
   AppSubscriptionHistoryModel,
@@ -22,6 +26,8 @@ import {
 
 @Injectable()
 export class AppSubscriptionService {
+  private readonly logger = new Logger(AppSubscriptionService.name);
+
   constructor(
     @InjectModel(AppSubscriptionModel.name)
     private readonly subscriptionModel: Model<AppSubscriptionModel>,
@@ -31,6 +37,7 @@ export class AppSubscriptionService {
     private readonly appPlanModel: Model<AppPlanModel>,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async getMySubscription(userId: string) {
@@ -58,7 +65,12 @@ export class AppSubscriptionService {
     billingCycle: AppSubscriptionBillingCycle = 'monthly',
     currency: AppCurrency = DEFAULT_CURRENCY,
   ) {
-    // Find plan by planId field (not _id)
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Find target plan by planId field
     const plan = await this.appPlanModel.findOne({ planId }).exec();
     if (!plan) {
       throw new NotFoundException('Plan not found');
@@ -69,111 +81,258 @@ export class AppSubscriptionService {
       .findOne({ userId, status: { $in: ['active', 'trialing'] } })
       .exec();
 
+    // ✅ NEW: Validate plan availability if there's a current subscription
     if (currentSub) {
       const currentPlan = await this.appPlanModel
         .findOne({ planId: currentSub.planId })
         .exec();
 
       if (currentPlan) {
-        // Compare Logic
-        const levels = ['free', 'starter', 'pro', 'premium']; // Hardcoded to avoid import issues or use constant if available
-        const cycles = ['monthly', 'yearly', 'oneTime'];
-
-        const currentLevelIndex = levels.indexOf(currentPlan.level);
-        const targetLevelIndex = levels.indexOf(plan.level);
-
-        const currentCycleIndex = cycles.indexOf(
+        const availability = this.validatePlanAvailability(
+          currentPlan,
           currentSub.billingCycle || 'monthly',
+          plan,
+          billingCycle,
         );
-        const targetCycleIndex = cycles.indexOf(billingCycle);
 
-        const isDowngrade = targetLevelIndex < currentLevelIndex;
-        const isSwitchDown =
-          targetLevelIndex === currentLevelIndex &&
-          targetCycleIndex < currentCycleIndex;
+        if (!availability.available) {
+          throw new BadRequestException(
+            availability.message || 'This plan change is not allowed',
+          );
+        }
 
-        // If Downgrade or Switch Down -> Schedule for end of period
-        if (isDowngrade || isSwitchDown) {
-          if (currentSub.pendingPlanId) {
-            throw new BadRequestException(
-              'A plan change is already scheduled. Please cancel it before making new changes.',
-            );
-          }
-          currentSub.pendingPlanId = planId;
-          currentSub.pendingBillingCycle = billingCycle;
-          currentSub.pendingChangeEffectiveDate = currentSub.currentPeriodEnd;
-          await currentSub.save();
-
-          // Create history entry
-          const history = new this.subscriptionHistoryModel({
-            userId,
-            subscriptionId: currentSub._id,
-            planId: planId,
-            action: 'downgrade_scheduled',
-            status: currentSub.status,
-            startDate: new Date(), // Log the time of scheduling
-            details: `Downgrade/Switch scheduled to ${plan.name} (${billingCycle}) on ${currentSub.currentPeriodEnd}`,
-            createdAt: new Date(),
-          });
-          await history.save();
-
-          return currentSub;
+        // ❌ Block downgrades - must use dedicated endpoint
+        if (
+          availability.changeType === 'downgrade' ||
+          availability.changeType === 'switch_down'
+        ) {
+          throw new BadRequestException(
+            'Downgrades must be scheduled using the downgrade endpoint',
+          );
         }
       }
     }
 
-    // Deactivate existing active subscriptions (Immediate Upgrade or New Subscription)
+    // Calculate proration credit for upgrades
     let prorationCredit = 0;
     let isUpgrade = false;
 
     if (currentSub) {
-      // If we are here, it's an UPGRADE or SWITCH UP
       isUpgrade = true;
       const currentPlan = await this.appPlanModel
         .findOne({ planId: currentSub.planId })
         .exec();
 
       if (currentPlan && currentSub.status !== 'trialing') {
-        const periodStart =
-          currentSub.currentPeriodStart || currentSub.startDate;
-        const periodEnd = currentSub.currentPeriodEnd;
-        const nowTime = new Date().getTime();
-        const startTime = new Date(periodStart).getTime();
-        const endTime = new Date(periodEnd).getTime();
-        const totalDuration = endTime - startTime;
-        const elapsed = nowTime - startTime;
-
-        if (totalDuration > 0) {
-          const remainingShow = Math.max(0, totalDuration - elapsed);
-          const ratio = remainingShow / totalDuration;
-
-          const oldPriceMap = currentPlan.pricing?.[currency] || {};
-          const oldPrice =
-            currentSub.billingCycle === 'yearly'
-              ? oldPriceMap.yearly || 0
-              : oldPriceMap.monthly || 0;
-
-          prorationCredit = oldPrice * ratio;
-        }
+        prorationCredit = this.calculateProrationCredit(
+          currentSub,
+          currentPlan,
+          currency,
+        );
       }
     }
 
-    await this.subscriptionModel.updateMany(
-      { userId, status: { $in: ['active', 'trialing'] } },
-      { status: 'cancelled', endDate: new Date() },
-    );
+    // Deactivate existing active subscriptions (for immediate upgrades)
+    if (currentSub) {
+      await this.subscriptionModel.updateMany(
+        { userId, status: { $in: ['active', 'trialing'] } },
+        { status: 'cancelled', endDate: new Date() },
+      );
+    }
 
+    // Create new subscription
     const now = new Date();
-    const startDate = new Date(now);
+    const { endDate, currentPeriodEnd, nextPaymentDate } =
+      this.calculateSubscriptionDates(now, billingCycle, plan.type);
 
-    // Calculate endDate and nextPaymentDate based on billing cycle and plan type
+    const subscriptionData: any = {
+      userId,
+      planId,
+      startDate: now,
+      currentPeriodStart: now,
+      currentPeriodEnd,
+      status: 'active',
+      lastPaymentDate: now,
+      autoRenewType: 'auto',
+      billingCycle,
+      createdAt: new Date(),
+    };
+
+    if (endDate) subscriptionData.endDate = endDate;
+    if (nextPaymentDate) subscriptionData.nextPaymentDate = nextPaymentDate;
+
+    const sub = new this.subscriptionModel(subscriptionData);
+    const saved = await sub.save();
+
+    // Update user document with subscription reference
+    await this.userModel.findByIdAndUpdate(userId, {
+      appSubscription: saved._id,
+    });
+
+    // Calculate amount paid
+    const currencyPricing = plan.pricing[currency] || {};
+    const newCost = this.calculatePlanCost(
+      plan.type,
+      billingCycle,
+      currencyPricing,
+    );
+    const amountPaid = Math.max(0, newCost - prorationCredit);
+
+    if (plan.level !== 'free') {
+      await this.notificationService.notifyUser(user, {
+        key: 'subscription.created',
+        vars: {
+          name: user.profile?.fullName || user.profile?.email || 'User',
+          planName: plan.name,
+        },
+      });
+    }
+
+    // Create history entry
+    const historyData: any = {
+      userId,
+      subscriptionId: saved._id,
+      planId: planId,
+      action: isUpgrade ? 'upgraded' : 'created',
+      startDate: now,
+      status: 'active',
+      amountPaid: amountPaid,
+      currency: currency,
+      details: isUpgrade
+        ? `Upgraded from previous plan. Price: ${newCost.toFixed(2)}, Credit: ${prorationCredit.toFixed(2)}, Paid: ${amountPaid.toFixed(2)}`
+        : `New subscription created. Paid: ${amountPaid.toFixed(2)}`,
+      createdAt: new Date(),
+    };
+
+    if (endDate) historyData.endDate = endDate;
+
+    const history = new this.subscriptionHistoryModel(historyData);
+    await history.save();
+
+    return saved;
+  }
+
+  private validatePlanAvailability(
+    currentPlan: AppPlanModel,
+    currentBillingCycle: AppSubscriptionBillingCycle,
+    targetPlan: AppPlanModel,
+    targetBillingCycle: AppSubscriptionBillingCycle,
+  ): {
+    available: boolean;
+    changeType?: string;
+    message?: string;
+  } {
+    const currentLevelIndex = APP_PLAN_LEVELS.indexOf(currentPlan.level);
+    const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan.level);
+
+    // ❌ RULE 1: Cannot select the same plan with same billing cycle
+    if (
+      currentPlan.planId === targetPlan.planId &&
+      currentBillingCycle === targetBillingCycle
+    ) {
+      return {
+        available: false,
+        message: 'You are already subscribed to this plan',
+      };
+    }
+
+    // ✅ Handle lifetime (one-time) plans
+    if (currentBillingCycle === 'oneTime' && targetBillingCycle === 'oneTime') {
+      // Can only upgrade to higher tier
+      if (targetLevelIndex > currentLevelIndex) {
+        return { available: true, changeType: 'upgrade' };
+      } else {
+        return {
+          available: false,
+          message: 'Cannot downgrade from lifetime plan to lower lifetime tier',
+        };
+      }
+    }
+
+    // ❌ RULE 2: Cannot switch from lifetime to subscription plans
+    if (currentBillingCycle === 'oneTime' && targetBillingCycle !== 'oneTime') {
+      return {
+        available: false,
+        message: 'Cannot switch from lifetime plan to subscription plan',
+      };
+    }
+
+    // Determine change type for regular subscriptions
+    const currentCycleIndex =
+      APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(currentBillingCycle);
+    const targetCycleIndex =
+      APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(targetBillingCycle);
+
+    const isDowngrade = targetLevelIndex < currentLevelIndex;
+    const isSwitchDown =
+      targetLevelIndex === currentLevelIndex &&
+      targetCycleIndex < currentCycleIndex;
+    const isUpgrade = targetLevelIndex > currentLevelIndex;
+    const isSwitchUp =
+      targetLevelIndex === currentLevelIndex &&
+      targetCycleIndex > currentCycleIndex;
+
+    if (isDowngrade) {
+      return { available: true, changeType: 'downgrade' };
+    } else if (isSwitchDown) {
+      return { available: true, changeType: 'switch_down' };
+    } else if (isUpgrade) {
+      return { available: true, changeType: 'upgrade' };
+    } else if (isSwitchUp) {
+      return { available: true, changeType: 'switch_up' };
+    }
+
+    return { available: true, changeType: 'upgrade' };
+  }
+
+  /**
+   * ✅ NEW: Calculate proration credit for upgrades
+   */
+  private calculateProrationCredit(
+    currentSub: AppSubscriptionModel,
+    currentPlan: AppPlanModel,
+    currency: AppCurrency,
+  ): number {
+    const periodStart = currentSub.currentPeriodStart || currentSub.startDate;
+    const periodEnd = currentSub.currentPeriodEnd;
+    const nowTime = new Date().getTime();
+    const startTime = new Date(periodStart).getTime();
+    const endTime = new Date(periodEnd).getTime();
+    const totalDuration = endTime - startTime;
+    const elapsed = nowTime - startTime;
+
+    if (totalDuration <= 0) return 0;
+
+    const remainingTime = Math.max(0, totalDuration - elapsed);
+    const ratio = remainingTime / totalDuration;
+
+    const oldPriceMap = currentPlan.pricing?.[currency] || {};
+    const oldPrice =
+      currentSub.billingCycle === 'yearly'
+        ? oldPriceMap.yearly || 0
+        : oldPriceMap.monthly || 0;
+
+    return oldPrice * ratio;
+  }
+
+  /**
+   * ✅ NEW: Calculate subscription dates based on billing cycle
+   */
+  private calculateSubscriptionDates(
+    startDate: Date,
+    billingCycle: AppSubscriptionBillingCycle,
+    planType: string,
+  ): {
+    endDate?: Date;
+    currentPeriodEnd: Date;
+    nextPaymentDate?: Date;
+  } {
     let endDate: Date | undefined;
     let currentPeriodEnd: Date;
     let nextPaymentDate: Date | undefined;
 
-    if (plan.type === 'oneTime') {
-      // One-time plans have lifetime access (set a far future date or omit)
-      // Option 1: Set a far future date (100 years from now)
+    if (planType === 'oneTime') {
+      // Lifetime access (100 years from now)
       endDate = new Date(startDate);
       endDate.setFullYear(endDate.getFullYear() + 100);
       currentPeriodEnd = new Date(endDate);
@@ -192,75 +351,127 @@ export class AppSubscriptionService {
       currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
     }
 
-    const subscriptionData: any = {
-      userId,
-      planId,
-      startDate,
-      currentPeriodStart: startDate,
-      currentPeriodEnd,
-      status: 'active',
-      lastPaymentDate: now,
-      autoRenewType: 'auto',
-      createdAt: new Date(),
-    };
+    return { endDate, currentPeriodEnd, nextPaymentDate };
+  }
 
-    // Only add optional fields if they exist
-    if (endDate) {
-      subscriptionData.endDate = endDate;
+  /**
+   * ✅ NEW: Calculate plan cost based on type and billing cycle
+   */
+  private calculatePlanCost(
+    planType: string,
+    billingCycle: AppSubscriptionBillingCycle,
+    pricing: any,
+  ): number {
+    if (planType === 'oneTime') {
+      return pricing.oneTime || 0;
+    } else if (billingCycle === 'monthly') {
+      return pricing.monthly || 0;
+    } else if (billingCycle === 'yearly') {
+      return pricing.yearly || 0;
     }
-    if (nextPaymentDate) {
-      subscriptionData.nextPaymentDate = nextPaymentDate;
+    return 0;
+  }
+
+  async downgradeSubscription(
+    userId: string,
+    planId: string,
+    billingCycle: AppSubscriptionBillingCycle = 'monthly',
+  ) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-    subscriptionData.billingCycle = billingCycle;
 
-    const sub = new this.subscriptionModel(subscriptionData);
-    const saved = await sub.save();
+    // Check for existing active subscription
+    const currentSub = await this.subscriptionModel
+      .findOne({ userId, status: { $in: ['active', 'trialing'] } })
+      .exec();
 
-    // Update user document with subscription reference
-    await this.userModel.findByIdAndUpdate(userId, {
-      appSubscription: saved._id,
+    if (!currentSub) {
+      throw new NotFoundException('No active subscription found');
+    }
+
+    // Find target plan by planId field
+    const targetPlan = await this.appPlanModel.findOne({ planId }).exec();
+    if (!targetPlan) {
+      throw new NotFoundException('Target plan not found');
+    }
+
+    // Find current plan
+    const currentPlan = await this.appPlanModel
+      .findOne({ planId: currentSub.planId })
+      .exec();
+
+    if (!currentPlan) {
+      throw new NotFoundException('Current plan not found');
+    }
+
+    // Validate it's actually a downgrade/switch down
+    const currentLevelIndex = APP_PLAN_LEVELS.indexOf(currentPlan.level);
+    const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan.level);
+
+    const currentCycleIndex = APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(
+      currentSub.billingCycle || 'monthly',
+    );
+    const targetCycleIndex =
+      APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(billingCycle);
+
+    const isDowngrade = targetLevelIndex < currentLevelIndex;
+    const isSwitchDown =
+      targetLevelIndex === currentLevelIndex &&
+      targetCycleIndex < currentCycleIndex;
+
+    if (!isDowngrade && !isSwitchDown) {
+      throw new BadRequestException(
+        'Target plan is not a downgrade. Use upgrade endpoint instead.',
+      );
+    }
+
+    // Check if there's already a pending change
+    if (currentSub.pendingPlanId) {
+      throw new BadRequestException(
+        'A plan change is already scheduled. Please cancel it before making new changes.',
+      );
+    }
+
+    // Schedule the downgrade for end of current period
+    currentSub.pendingPlanId = planId;
+    currentSub.pendingBillingCycle = billingCycle;
+    currentSub.pendingChangeEffectiveDate = currentSub.currentPeriodEnd;
+    await currentSub.save();
+
+    // ✅ Use reusable notification method
+    await this.notificationService.notifyUser(user, {
+      key: 'subscription.downgrade_scheduled',
+      vars: {
+        name: user.profile?.fullName || user.profile?.email || 'User',
+        planName: targetPlan.name,
+        date: currentSub.currentPeriodEnd.toLocaleDateString(),
+      },
     });
 
-    const currencyPricing = plan.pricing[currency] || {};
-
-    // Determine amountPaid
-    let newCost = 0;
-    if (plan.type === 'subscription') {
-      if (billingCycle === 'monthly') newCost = currencyPricing.monthly || 0;
-      else if (billingCycle === 'yearly') newCost = currencyPricing.yearly || 0;
-    } else if (plan.type === 'oneTime') {
-      newCost = currencyPricing.oneTime || 0;
-    }
-
-    const amountPaid = Math.max(0, newCost - prorationCredit);
-
     // Create history entry
-    const historyData: any = {
+    const history = new this.subscriptionHistoryModel({
       userId,
-      subscriptionId: saved._id,
+      subscriptionId: currentSub._id,
       planId: planId,
-      action: isUpgrade ? 'upgraded' : 'created',
-      startDate: now,
-      status: 'active',
-      amountPaid: amountPaid,
-      currency: currency,
-      details: isUpgrade
-        ? `Upgraded from previous plan. Price: ${newCost.toFixed(2)}, Credit: ${prorationCredit.toFixed(2)}, Paid: ${amountPaid.toFixed(2)}`
-        : `New subscription created. Paid: ${amountPaid.toFixed(2)}`,
+      action: 'downgrade_scheduled',
+      status: currentSub.status,
+      startDate: new Date(),
+      details: `Downgrade/Switch scheduled to ${targetPlan.name} (${billingCycle}) on ${currentSub.currentPeriodEnd}`,
       createdAt: new Date(),
-    };
-
-    if (endDate) {
-      historyData.endDate = endDate;
-    }
-
-    const history = new this.subscriptionHistoryModel(historyData);
+    });
     await history.save();
 
-    return saved;
+    return currentSub;
   }
 
   async cancelSubscription(userId: string, reason?: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     const sub = await this.subscriptionModel
       .findOne({ userId, status: { $in: ['active', 'trialing'] } })
       .exec();
@@ -269,44 +480,49 @@ export class AppSubscriptionService {
       throw new NotFoundException('No active subscription found');
     }
 
-    // Debug Logs for Rate Limiting
+    // Rate limiting check
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
     const cancellationsToday =
       await this.subscriptionHistoryModel.countDocuments({
         userId,
-        action: 'reactivated',
+        action: 'cancelled',
         createdAt: { $gte: startOfDay },
       });
 
-    console.log('--- Cancellation Check ---');
-    console.log('User:', userId);
-    console.log('Start of Day:', startOfDay);
-    console.log('Cancellations Found:', cancellationsToday);
-    console.log('Limit:', MAX_DAILY_CANCELLATIONS);
-
     if (cancellationsToday >= MAX_DAILY_CANCELLATIONS) {
-      console.log('BLOCKING CANCELLATION: Limit exceeded');
       throw new HttpException(
         'Daily cancellation limit exceeded',
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }
 
-    // Don't change status - user keeps access until currentPeriodEnd
-    // sub.status stays 'active' or 'trialing' until period end
+    // Mark for cancellation at period end
     sub.cancelledAt = new Date().toISOString();
     sub.cancellationReason = reason;
     sub.cancelAtPeriodEnd = true;
     sub.autoRenew = false;
     sub.nextPaymentDate = undefined;
     sub.endDate = sub.currentPeriodEnd;
+    sub.pendingPlanId = undefined;
+    sub.pendingBillingCycle = undefined;
     await sub.save();
+
+    // ✅ Use reusable notification method
+    await this.notificationService.notifyUser(user, {
+      key: 'subscription.cancelled',
+      vars: {
+        name: user.profile?.fullName || user.profile?.email || 'User',
+        date: sub.currentPeriodEnd.toLocaleDateString(),
+      },
+    });
 
     // Create history entry
     const history = new this.subscriptionHistoryModel({
       userId,
+      planId: sub.planId,
+      status: 'cancelled',
       subscriptionId: sub._id,
       action: 'cancelled',
       startDate: new Date(),
@@ -315,7 +531,7 @@ export class AppSubscriptionService {
         cancelAtPeriodEnd: true,
         autoRenew: false,
       },
-      createdAt: new Date(), // Ensure createdAt is explicitly set
+      createdAt: new Date(),
     });
     await history.save();
 
@@ -323,6 +539,11 @@ export class AppSubscriptionService {
   }
 
   async reactivateSubscription(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     const sub = await this.subscriptionModel
       .findOne({ userId, status: { $in: ['active', 'trialing'] } })
       .exec();
@@ -341,16 +562,19 @@ export class AppSubscriptionService {
     sub.cancelAtPeriodEnd = false;
     sub.cancelledAt = undefined;
     sub.cancellationReason = undefined;
-
-    // Restore auto-renew
     sub.autoRenew = true;
-    // We do NOT change autoRenewType here, assuming it was preserved
-
-    // Restore payment date and clear end date
     sub.nextPaymentDate = sub.currentPeriodEnd;
     sub.endDate = undefined;
 
     await sub.save();
+
+    // ✅ Use reusable notification method
+    await this.notificationService.notifyUser(user, {
+      key: 'subscription.reactivated',
+      vars: {
+        name: user.profile?.fullName || user.profile?.email || 'User',
+      },
+    });
 
     // Add history entry for reactivation
     const history = new this.subscriptionHistoryModel({

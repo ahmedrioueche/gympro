@@ -1,5 +1,6 @@
 import type {
   AppCurrency,
+  AppLanguage,
   AppSettings,
   LocaleSettings,
   NotificationSettings,
@@ -8,6 +9,7 @@ import type {
 import {
   APP_CURRENCIES,
   DEFAULT_CURRENCY,
+  DEFAULT_LANGUAGE,
   THEME_OPTIONS,
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -22,7 +24,7 @@ export class NotificationSettingsModel implements NotificationSettings {
 
 @Schema({ _id: false })
 export class LocaleSettingsModel implements LocaleSettings {
-  @Prop({ required: true, default: 'en' }) language: string;
+  @Prop({ required: true, default: DEFAULT_LANGUAGE }) language: AppLanguage;
   @Prop({ enum: APP_CURRENCIES, required: true, default: DEFAULT_CURRENCY })
   currency: AppCurrency;
   @Prop() timezone?: string;

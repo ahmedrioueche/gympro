@@ -1,4 +1,4 @@
-type User = { fullName?: string; email: string };
+import { User } from '@ahmedrioueche/gympro-client';
 
 const translations: Record<string, string> = {
   'email.verify_subject': 'Verify your email',
@@ -21,7 +21,10 @@ export function getI18nText(
   vars: Record<string, string> = {},
 ) {
   let text = translations[key] || key;
-  text = text.replace(/{{name}}/g, user?.fullName || user?.email || '');
+  text = text.replace(
+    /{{name}}/g,
+    user?.profile.fullName || user?.profile.email || '',
+  );
   for (const [k, v] of Object.entries(vars)) {
     text = text.replace(new RegExp(`{{${k}}}`, 'g'), v);
   }

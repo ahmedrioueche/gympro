@@ -1,5 +1,6 @@
 import {
   apiResponse,
+  AppSubscriptionBillingCycle,
   ErrorCode,
   GetSubscriptionDto,
 } from '@ahmedrioueche/gympro-client';
@@ -14,6 +15,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { GeminiService } from 'src/common/services/gemini.service';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { AppSubscriptionService } from './subscription.service';
 
@@ -21,6 +23,7 @@ import { AppSubscriptionService } from './subscription.service';
 export class AppSubscriptionController {
   constructor(
     private readonly appSubscriptionService: AppSubscriptionService,
+    private readonly geminiService: GeminiService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -57,34 +60,37 @@ export class AppSubscriptionController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('subscribe')
-  async subscribe(
+  @Post('downgrade')
+  async downgradeSubscription(
     @Req() req: any,
-    @Body()
-    body: { planId: string; billingCycle?: 'monthly' | 'yearly' | 'oneTime' },
+    @Body() body: { planId: string; billingCycle?: string },
   ) {
     try {
       const userId = req.user?.sub;
-      const { planId, billingCycle = 'monthly' } = body;
+      const { planId, billingCycle } = body;
 
-      const subscription = await this.appSubscriptionService.subscribe(
-        userId,
-        planId,
-        billingCycle,
-      );
+      const subscription =
+        await this.appSubscriptionService.downgradeSubscription(
+          userId,
+          planId,
+          billingCycle as AppSubscriptionBillingCycle,
+        );
 
       return apiResponse(
         true,
         undefined,
         subscription,
-        'Subscription created successfully',
+        'Downgrade scheduled successfully',
       );
     } catch (error: any) {
-      const errorCode =
-        error.status === 404
-          ? ErrorCode.PLAN_NOT_FOUND
-          : ErrorCode.SUBSCRIPTION_CREATE_ERROR;
-      const message = error.message || 'Failed to create subscription';
+      let errorCode = ErrorCode.SUBSCRIPTION_UPDATE_ERROR;
+      if (error.status === 404) {
+        errorCode = ErrorCode.NO_ACTIVE_SUBSCRIPTION;
+      } else if (error.status === 400) {
+        errorCode = ErrorCode.SUBSCRIPTION_UPDATE_ERROR;
+      }
+
+      const message = error.message || 'Failed to schedule downgrade';
       return apiResponse(false, errorCode, null, message);
     }
   }
@@ -127,6 +133,31 @@ export class AppSubscriptionController {
 
       const message = error.message || 'Failed to cancel subscription';
       return apiResponse(false, errorCode, null, message);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('validate-cancel-reason')
+  async validateCancellationReason(
+    @Req() req: any,
+    @Body() body: { reason?: string },
+  ) {
+    try {
+      const { reason } = body;
+      console.log({ reason });
+      const prompt = `Is the following reason for canceling a subscription valid? "${reason}".
+       Return only "true" if it is a coherent sentence that explains a probable reason for canceling a subscription 
+       or "false" if it is not, or if it is an insult, return no introduction no conclusion, just "true" or "false"`;
+      const response = await this.geminiService.generateText(prompt);
+      console.log({ response });
+      return apiResponse(true, undefined, response);
+    } catch (error: any) {
+      return apiResponse(
+        true,
+        undefined,
+        'true',
+        'Could not validate reason, move forward anyways',
+      );
     }
   }
 

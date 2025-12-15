@@ -5,10 +5,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
 import { AppBillingModule } from './modules/appBilling/appBilling.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ChargilyModule } from './modules/chargily/chargily.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
 import { SettingsModule } from './modules/settings/settings.module';
@@ -59,6 +61,8 @@ import { UsersModule } from './modules/users/users.module';
     MembershipModule,
     AppBillingModule,
     SettingsModule,
+    CommonModule,
+    ChargilyModule,
   ],
   controllers: [AppController],
   providers: [

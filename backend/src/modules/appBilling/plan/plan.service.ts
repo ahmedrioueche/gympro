@@ -1,4 +1,5 @@
 import {
+  AppPlan,
   DEFAULT_CURRENCY,
   DEFAULT_TRIAL_DAYS_NUMBER,
   type AppPlanLevel,
@@ -105,6 +106,18 @@ export class AppPlansService {
     return plan;
   }
 
+  async getPlanByPlanId(planId: string): Promise<AppPlan | null> {
+    try {
+      const plan = await this.appPlanModel.findOne({ planId }).lean().exec();
+      if (!plan) {
+        throw new NotFoundException(`Plan with planId ${planId} not found`);
+      }
+      return plan;
+    } catch (error) {
+      throw new NotFoundException(`Plan with planId ${planId} not found`);
+    }
+  }
+
   async updatePlan(
     planId: string,
     updates: UpdateAppPlanDto,
@@ -136,7 +149,7 @@ export class AppPlansService {
 
     Object.assign(plan, {
       ...updates,
-      version: (plan.version || 1) + 1,
+      version: (plan.version || 1) + 0.1,
       updatedBy,
       updatedAt: new Date(),
     });

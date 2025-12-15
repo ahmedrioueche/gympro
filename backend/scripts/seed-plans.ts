@@ -1,4 +1,7 @@
-import { CreateAppPlanDto } from '@ahmedrioueche/gympro-client';
+import {
+  CreateAppPlanDto,
+  DEFAULT_TRIAL_DAYS_NUMBER,
+} from '@ahmedrioueche/gympro-client';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
 import { AppPlansService } from '../src/modules/appBilling/plan/plan.service';
@@ -22,7 +25,6 @@ async function run() {
 
   console.log('\n🌱 Creating new plans...\n');
   const plans: CreateAppPlanDto[] = [
-    // Free plan - Generous trial to hook users
     {
       planId: 'subscription-free',
       version: 1,
@@ -36,7 +38,7 @@ async function run() {
         USD: { monthly: 0, yearly: 0 },
         DZD: { monthly: 0, yearly: 0 },
       },
-      trialDays: 30,
+      trialDays: DEFAULT_TRIAL_DAYS_NUMBER,
       limits: { maxGyms: 1, maxMembers: 100, maxGems: 0 },
       features: [
         'plan.free.feature.full_dashboard',
