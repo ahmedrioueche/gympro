@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd web && npm install && npm run build",
+  "buildCommand": "cd web && node scripts/setup-npmrc.js && npm install && npm run build",
   "outputDirectory": "web/dist",
   "framework": "vite",
   "rewrites": [
