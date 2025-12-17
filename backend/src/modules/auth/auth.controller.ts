@@ -368,14 +368,14 @@ export class AuthController {
     rememberMe: boolean = false,
   ) {
     const isProduction = process.env.NODE_ENV === 'prod';
-    const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
+    console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+    console.log('isProduction', isProduction);
 
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax' as const,
+      sameSite: isProduction ? ('none' as const) : ('lax' as const),
       path: '/',
-      domain: cookieDomain,
     };
 
     res.cookie('accessToken', accessToken, {
@@ -391,28 +391,24 @@ export class AuthController {
 
   private setAccessTokenCookie(res: Response, accessToken: string) {
     const isProduction = process.env.NODE_ENV === 'prod';
-    const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
 
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax' as const,
+      sameSite: isProduction ? ('none' as const) : ('lax' as const),
       path: '/',
-      domain: cookieDomain,
       maxAge: 15 * 60 * 1000,
     });
   }
 
   private clearAuthCookies(res: Response) {
     const isProduction = process.env.NODE_ENV === 'prod';
-    const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
 
     const cookieOptions = {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax' as const,
+      sameSite: isProduction ? ('none' as const) : ('lax' as const),
       path: '/',
-      domain: cookieDomain,
     };
 
     res.clearCookie('accessToken', cookieOptions);
