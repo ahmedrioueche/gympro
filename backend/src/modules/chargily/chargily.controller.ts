@@ -2,11 +2,11 @@ import {
   apiResponse,
   APP_PLAN_LEVELS,
   APP_SUBSCRIPTION_BILLING_CYCLES,
-  AppCurrency,
   AppPlan,
   AppSubscription,
   AppSubscriptionBillingCycle,
   ErrorCode,
+  SupportedCurrency,
 } from '@ahmedrioueche/gympro-client';
 import { verifySignature } from '@chargily/chargily-pay';
 import {
@@ -29,29 +29,40 @@ import { Request } from 'express';
 import { AppPlansService } from '../appBilling/plan/plan.service';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UsersService } from '../users/users.service';
 import { ChargilyService } from './chargily.service';
 
 @Controller('chargily')
 export class ChargilyController {
+  private readonly successUrl: string;
+  private readonly failureUrl: string;
   constructor(
+    private readonly userService: UsersService,
     private readonly chargilyService: ChargilyService,
     private readonly configService: ConfigService,
     private readonly appPlanService: AppPlansService,
     private readonly appSubscriptionService: AppSubscriptionService,
-  ) {}
+  ) {
+    const frontendUrl =
+      this.configService.get('NODE_ENV') === 'production'
+        ? this.configService.get('PROD_FRONTEND_URL')
+        : this.configService.get('DEV_FRONTEND_URL');
+
+    this.successUrl =
+      this.configService.get<string>('CHARGILY_SUCCESS_URL') ||
+      `${frontendUrl}/payment/success`;
+    this.failureUrl =
+      this.configService.get<string>('CHARGILY_FAILURE_URL') ||
+      `${frontendUrl}/payment/failure`;
+  }
 
   @Post('checkout')
   async createCheckout(@Body() checkoutData: any) {
     try {
-      const frontendUrl =
-        this.configService.get('NODE_ENV') === 'production'
-          ? this.configService.get('PROD_FRONTEND_URL')
-          : this.configService.get('DEV_FRONTEND_URL');
-
       const checkout = await this.chargilyService.createCheckout({
         items: checkoutData.items,
-        success_url: `${frontendUrl}/payment/success`,
-        failure_url: `${frontendUrl}/payment/failure`,
+        success_url: this.successUrl,
+        failure_url: this.failureUrl,
         payment_method: checkoutData.payment_method || 'edahabia',
         locale: checkoutData.locale || 'en',
         pass_fees_to_customer: checkoutData.pass_fees_to_customer || false,
@@ -82,6 +93,7 @@ export class ChargilyController {
   ) {
     try {
       const userId = req.user?.sub;
+      const user = await this.userService.findById(userId);
       const { planId, billingCycle = 'monthly' } = body;
 
       // Fetch plan details from database
@@ -126,7 +138,8 @@ export class ChargilyController {
         success_url: `${frontendUrl}/payment/success`,
         failure_url: `${frontendUrl}/payment/failure`,
         payment_method: 'edahabia',
-        locale: 'en',
+        locale:
+          (user?.appSettings?.locale?.language as 'ar' | 'en' | 'fr') || 'en',
         description: `${plan.name} - ${billingCycle}`,
         metadata: {
           userId,
@@ -157,7 +170,7 @@ export class ChargilyController {
     userId: string,
     targetPlan: AppPlan,
     targetBillingCycle: AppSubscriptionBillingCycle,
-    currency: AppCurrency,
+    currency: SupportedCurrency,
   ): Promise<number | null> {
     // Get base price for target plan
     const targetPrice = this.getPlanAmount(
@@ -175,8 +188,6 @@ export class ChargilyController {
     const currentSub =
       await this.appSubscriptionService.getMySubscription(userId);
 
-    console.log({ currentSub });
-
     if (!currentSub) {
       // No existing subscription, return full price
       return targetPrice;
@@ -186,8 +197,6 @@ export class ChargilyController {
     const currentPlan = await this.appPlanService.getPlanByPlanId(
       currentSub.planId,
     );
-
-    console.log({ currentPlan });
 
     if (!currentPlan) {
       // Can't find current plan, return full price
@@ -222,7 +231,6 @@ export class ChargilyController {
       currency,
     );
 
-    console.log({ prorationCredit });
     // Return prorated amount (can't go below 0)
     return Math.max(0, Math.round(targetPrice - prorationCredit));
   }
@@ -233,7 +241,7 @@ export class ChargilyController {
   private async calculateProrationCredit(
     currentSub: AppSubscription,
     currentPlan: AppPlan,
-    currency: AppCurrency,
+    currency: SupportedCurrency,
   ): Promise<number> {
     // Don't give credit for trial subscriptions
     if (currentSub.status === 'trialing') {
@@ -274,7 +282,7 @@ export class ChargilyController {
   private getPlanAmount(
     plan: AppPlan,
     billingCycle?: AppSubscriptionBillingCycle,
-    currency: AppCurrency = 'DZD',
+    currency: SupportedCurrency = 'DZD',
   ): number | null {
     const pricing = plan.pricing?.[currency];
 

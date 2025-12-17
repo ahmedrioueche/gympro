@@ -1,3 +1,5 @@
+import { SupportedCurrency } from "./common";
+
 export type AppLanguage = "en" | "fr" | "ar";
 
 export const LANGUAGES = {
@@ -39,6 +41,9 @@ export const SUPPORTED_LANGUAGES = Object.keys(LANGUAGES) as AppLanguage[];
 export const RTL_LANGUAGES = SUPPORTED_LANGUAGES.filter(
   (lng) => LANGUAGES[lng].dir === "rtl"
 );
+
+export const DEFAULT_CURRENCY: SupportedCurrency = "USD";
+
 export const SUPPORTED_TIMEZONES = [
   "UTC",
   "America/New_York",
@@ -60,3 +65,28 @@ export const SUPPORTED_TIMEZONES = [
   "Africa/Addis_Ababa",
   "Africa/Luanda",
 ];
+
+export const SUPPORTED_REGIONS = {
+  DZ: { name: "Algeria", currency: "DZD" as SupportedCurrency },
+  US: { name: "United States", currency: "USD" as SupportedCurrency },
+  FR: { name: "France", currency: "EUR" as SupportedCurrency },
+  DE: { name: "Germany", currency: "EUR" as SupportedCurrency },
+  IT: { name: "Italy", currency: "EUR" as SupportedCurrency },
+  ES: { name: "Spain", currency: "EUR" as SupportedCurrency },
+  BE: { name: "Belgium", currency: "EUR" as SupportedCurrency },
+  NL: { name: "Netherlands", currency: "EUR" as SupportedCurrency },
+  PT: { name: "Portugal", currency: "EUR" as SupportedCurrency },
+  AT: { name: "Austria", currency: "EUR" as SupportedCurrency },
+  IE: { name: "Ireland", currency: "EUR" as SupportedCurrency },
+  GR: { name: "Greece", currency: "EUR" as SupportedCurrency },
+} as const;
+
+export type RegionCode = keyof typeof SUPPORTED_REGIONS;
+
+export const DEFAULT_REGION = {
+  region: "US",
+  regionName: "United States",
+  currency: DEFAULT_CURRENCY,
+  timezone: "America/New_York",
+  language: DEFAULT_LANGUAGE,
+};

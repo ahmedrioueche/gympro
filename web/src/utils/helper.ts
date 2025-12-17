@@ -38,3 +38,9 @@ export const redirectAfterTimeout = (
     navigate({ to: redirectUrl });
   }, timeout);
 };
+
+export function capitalize(input: string): string {
+  return input
+    .toLocaleLowerCase()
+    .replace(/(^|\s)\p{L}/gu, (m) => m.toLocaleUpperCase());
+}

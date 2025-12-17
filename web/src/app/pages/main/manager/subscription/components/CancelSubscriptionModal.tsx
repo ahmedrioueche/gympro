@@ -3,13 +3,15 @@ import {
   type ApiResponse,
 } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, Mail } from "lucide-react";
-import { useState } from "react";
+import { AlertTriangle, CheckCircle, Mail, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../components/ui/BaseModal";
 import TextArea from "../../../../../../components/ui/TextArea";
 import { planKeys } from "../../../../../../hooks/queries/usePlans";
+import { useDebounce } from "../../../../../../hooks/useDebounce";
 import { useToast } from "../../../../../../hooks/useToast";
+import { handleContactSupport } from "../../../../../../utils/contact";
 import {
   getMessage,
   showStatusToast,
@@ -22,6 +24,7 @@ interface CancelSubscriptionModalProps {
 }
 
 type CancelStep = "contact" | "reason";
+type ValidationState = "idle" | "validating" | "valid" | "invalid";
 
 function CancelSubscriptionModal({
   isOpen,
@@ -31,15 +34,42 @@ function CancelSubscriptionModal({
   const { t } = useTranslation();
   const [step, setStep] = useState<CancelStep>("contact");
   const [reason, setReason] = useState("");
+  const [validationState, setValidationState] =
+    useState<ValidationState>("idle");
   const queryClient = useQueryClient();
   const { success, error } = useToast();
+
+  // Debounce the reason input (wait 800ms after user stops typing)
+  const debouncedReason = useDebounce(reason, 800);
 
   const handleClose = () => {
     setStep("contact");
     setReason("");
+    setValidationState("idle");
     onClose();
   };
 
+  // Validation mutation
+  const validateMutation = useMutation({
+    mutationFn: async (reason: string) => {
+      const response = await appSubscriptionsApi.validateCancellationReason(
+        reason
+      );
+      return response;
+    },
+    onSuccess: (response: ApiResponse<"true" | "false">) => {
+      if (response.data === "true") {
+        setValidationState("valid");
+      } else {
+        setValidationState("invalid");
+      }
+    },
+    onError: () => {
+      setValidationState("invalid");
+    },
+  });
+
+  // Cancel subscription mutation
   const cancelMutation = useMutation({
     mutationFn: async (reason: string) => {
       return await appSubscriptionsApi.cancelSubscription(reason);
@@ -47,30 +77,31 @@ function CancelSubscriptionModal({
     onSuccess: (response: ApiResponse) => {
       queryClient.invalidateQueries({ queryKey: planKeys.mySubscription() });
       const msg = getMessage(response, t);
-      console.log(msg);
       showStatusToast(msg, { success, error });
       handleClose();
     },
     onError: (err: ApiResponse) => {
       const msg = getMessage(err, t);
-      console.log(msg);
       showStatusToast(msg, { success, error });
       queryClient.invalidateQueries({ queryKey: planKeys.mySubscription() });
       handleClose();
     },
   });
 
-  const handleContactSupport = () => {
-    const email = "support@gympro.com";
-    const subject = encodeURIComponent(
-      t("subscription.cancel_support_subject")
-    );
-    const body = encodeURIComponent(t("subscription.cancel_support_body"));
-    window.open(
-      `https://mail.google.com/mail/?view=cm&to=${email}&su=${subject}&body=${body}`,
-      "_blank"
-    );
-  };
+  // Validate reason when debounced value changes
+  useEffect(() => {
+    if (step === "reason" && debouncedReason.trim().length >= 10) {
+      setValidationState("validating");
+      validateMutation.mutate(debouncedReason);
+    } else if (
+      debouncedReason.trim().length > 0 &&
+      debouncedReason.trim().length < 10
+    ) {
+      setValidationState("invalid");
+    } else {
+      setValidationState("idle");
+    }
+  }, [debouncedReason, step]);
 
   const handleContinueToCancellation = () => {
     setStep("reason");
@@ -78,20 +109,22 @@ function CancelSubscriptionModal({
 
   const handleBackToContact = () => {
     setStep("contact");
+    setReason("");
+    setValidationState("idle");
   };
 
   const handleCancel = () => {
-    if (isReasonValid) {
+    if (validationState === "valid") {
       cancelMutation.mutate(reason);
     }
   };
 
-  // Validation: must be at least 10 characters and not just whitespace
-  const isReasonValid = reason.trim().length >= 10;
-
   const endDateFormatted = subscriptionEndDate
     ? new Date(subscriptionEndDate).toLocaleDateString()
     : "";
+
+  // Determine if cancel button should be enabled
+  const canSubmit = validationState === "valid" && !cancelMutation.isPending;
 
   return (
     <BaseModal
@@ -127,7 +160,13 @@ function CancelSubscriptionModal({
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
             <button
-              onClick={handleContactSupport}
+              onClick={() =>
+                handleContactSupport(
+                  t,
+                  t("subscription.cancel_support_subject"),
+                  t("subscription.cancel_support_body")
+                )
+              }
               className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-all font-medium"
             >
               <Mail className="w-4 h-4" />
@@ -155,20 +194,44 @@ function CancelSubscriptionModal({
             </p>
           </div>
 
-          <TextArea
-            label={t("subscription.cancel_reason_label")}
-            placeholder={t("subscription.cancel_reason_placeholder")}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            rows={4}
-            className="resize-none"
-          />
+          <div className="space-y-2">
+            <TextArea
+              label={t("subscription.cancel_reason_label")}
+              placeholder={t("subscription.cancel_reason_placeholder")}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              rows={4}
+              className="resize-none"
+            />
 
-          {reason.trim().length > 0 && !isReasonValid && (
-            <p className="text-warning text-sm">
-              {t("subscription.cancel_reason_too_short")}
-            </p>
-          )}
+            {/* Validation Feedback */}
+            {validationState === "validating" && reason.trim().length >= 10 && (
+              <div className="flex items-center gap-2 text-text-secondary text-sm">
+                <div className="w-4 h-4 border-2 border-text-secondary/30 border-t-text-secondary rounded-full animate-spin" />
+                <span>{t("subscription.validating_reason")}</span>
+              </div>
+            )}
+
+            {validationState === "valid" && (
+              <div className="flex items-center gap-2 text-success text-sm">
+                <CheckCircle className="w-4 h-4" />
+                <span>{t("subscription.thanks_for_feedback")}</span>
+              </div>
+            )}
+
+            {validationState === "invalid" && reason.trim().length >= 10 && (
+              <div className="flex items-center gap-2 text-danger text-sm">
+                <XCircle className="w-4 h-4" />
+                <span>{t("subscription.reason_invalid")}</span>
+              </div>
+            )}
+
+            {reason.trim().length > 0 && reason.trim().length < 10 && (
+              <p className="text-warning text-sm">
+                {t("subscription.cancel_reason_too_short")}
+              </p>
+            )}
+          </div>
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
@@ -180,7 +243,7 @@ function CancelSubscriptionModal({
             </button>
             <button
               onClick={handleCancel}
-              disabled={!isReasonValid || cancelMutation.isPending}
+              disabled={!canSubmit}
               className="flex-1 px-4 py-3 bg-danger text-white rounded-xl hover:bg-danger/90 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {cancelMutation.isPending

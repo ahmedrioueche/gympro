@@ -1,34 +1,46 @@
 import {
-  DEFAULT_CURRENCY,
   formatPrice,
+  type SupportedCurrency,
   type AppPlan,
   type AppSubscriptionBillingCycle,
+  type GetSubscriptionDto,
 } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../context/ThemeContext";
+import { useSubscriptionStatus } from "../../hooks/useSubscriptionStatus";
 import { useLanguageStore } from "../../store/language";
-import { useUserStore } from "../../store/user";
+import { getPlanChangeType } from "../../utils/subscription.util";
 
 interface PlanCardProps {
   plan: AppPlan;
+  currency: SupportedCurrency;
   isCurrentPlan: boolean;
   billingCycle: AppSubscriptionBillingCycle;
   onSelect: (planId: string) => void;
+  currentSubscription?: GetSubscriptionDto | null;
+  disabled?: boolean;
 }
 
 export default function PlanCard({
   plan,
+  currency,
   isCurrentPlan,
   billingCycle,
   onSelect,
+  currentSubscription,
+  disabled,
 }: PlanCardProps) {
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const { isDark } = useTheme();
   const { language } = useLanguageStore();
-  const { user } = useUserStore();
-  const currency = user?.appSettings?.locale?.currency || DEFAULT_CURRENCY;
+
+  // ✅ Use the availability checker
+  const { isPlanAvailable } = useSubscriptionStatus(
+    currentSubscription || undefined
+  );
+  const availability = isPlanAvailable(plan, billingCycle);
 
   // Get price for the default currency
   const priceMap = plan.pricing?.[currency] || {};
@@ -85,7 +97,7 @@ export default function PlanCard({
   const style = planStyles[plan.level] || planStyles.starter;
 
   const handleClick = () => {
-    if (isCurrentPlan || loading) return;
+    if (disabled || isCurrentPlan || loading || !availability.available) return;
     setLoading(true);
     onSelect(plan._id);
     setTimeout(() => setLoading(false), 2000);
@@ -102,6 +114,79 @@ export default function PlanCard({
     if (!maxMembers) return t("plans.unlimited_members");
     return t("plans.up_to_members_each", { number: maxMembers });
   };
+
+  // ✅ Determine button state with availability check
+  let buttonLabel = t("plans.upgrade_now");
+  let isDowngradeOrSwitch = false;
+  let isUpgrade = false;
+  let isUnavailable = false;
+
+  // Check availability first
+  if (!availability.available) {
+    isUnavailable = true;
+    switch (availability.reason) {
+      case "lifetime_to_subscription_blocked":
+        buttonLabel = t("plans.unavailable");
+        break;
+      case "already_subscribed":
+        buttonLabel = t("plans.current");
+        break;
+      case "lifetime_downgrade_blocked":
+        buttonLabel = t("plans.unavailable");
+        break;
+      default:
+        buttonLabel = t("plans.unavailable");
+    }
+  } else if (currentSubscription && !isCurrentPlan) {
+    // Need full plan object for current subscription level
+    const currentPlan = currentSubscription.plan;
+    if (currentPlan) {
+      const changeType = getPlanChangeType(
+        currentPlan.level,
+        currentSubscription.billingCycle || "monthly",
+        plan.level,
+        billingCycle
+      );
+
+      switch (changeType) {
+        case "downgrade":
+          buttonLabel = t("plans.downgrade");
+          isDowngradeOrSwitch = true;
+          break;
+        case "switch_down":
+          buttonLabel = t("plans.switch_plan");
+          isDowngradeOrSwitch = true;
+          break;
+        case "switch_up":
+          buttonLabel = t("plans.switch_plan");
+          isUpgrade = true;
+          isDowngradeOrSwitch = true;
+          break;
+        case "upgrade":
+        default:
+          buttonLabel = t("plans.upgrade_now");
+          isUpgrade = true;
+      }
+    }
+  }
+
+  if (isCurrentPlan) {
+    buttonLabel = t("plans.current");
+  }
+
+  const hasPendingChange =
+    currentSubscription && (currentSubscription as any).pendingPlanId;
+
+  if (hasPendingChange && !isCurrentPlan && !isUpgrade) {
+    buttonLabel = t("plans.change_pending");
+  }
+
+  const isButtonDisabled =
+    disabled ||
+    loading ||
+    isCurrentPlan ||
+    isUnavailable ||
+    (hasPendingChange && !isCurrentPlan && !isUpgrade);
 
   return (
     <div className="relative pt-4">
@@ -140,11 +225,13 @@ export default function PlanCard({
       <div
         className={`group relative flex flex-col rounded-3xl border-2 overflow-hidden transition-all duration-500 ease-out
         ${isDark ? "bg-[#0d0d0f]" : "bg-white"}
-        ${
-          isCurrentPlan
-            ? "border-blue-500 shadow-2xl shadow-blue-500/20 scale-105"
-            : `${style.border} hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-500/10 hover:scale-105`
-        }`}
+         ${
+           disabled
+             ? "opacity-50 pointer-events-none border-gray-300 dark:border-gray-700"
+             : isCurrentPlan
+             ? "border-blue-500 shadow-2xl shadow-blue-500/20 scale-105"
+             : `${style.border} hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-500/10 hover:scale-105`
+         }`}
       >
         <div
           className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-60 pointer-events-none`}
@@ -178,7 +265,7 @@ export default function PlanCard({
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
-                {t(plan.name)}
+                {plan.name}
               </h3>
               <p
                 className={`text-sm ${
@@ -295,21 +382,19 @@ export default function PlanCard({
           {/* Button */}
           <button
             onClick={handleClick}
-            disabled={loading || isCurrentPlan}
+            disabled={isButtonDisabled}
             className={`relative mt-auto w-full py-4 rounded-2xl font-bold text-base transition-all duration-300 overflow-hidden ${
-              isCurrentPlan
+              isButtonDisabled
                 ? "bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed"
                 : loading
                 ? "bg-blue-500 text-white cursor-wait"
+                : isDowngradeOrSwitch
+                ? "bg-transparent border-2 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                 : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-xl hover:shadow-blue-500/50 hover:scale-105 active:scale-95"
             }`}
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
-              {loading
-                ? t("plans.processing")
-                : isCurrentPlan
-                ? t("plans.current")
-                : t("plans.upgrade_now")}
+              {loading ? t("plans.processing") : buttonLabel}
             </span>
           </button>
         </div>

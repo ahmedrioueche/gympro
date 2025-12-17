@@ -1,10 +1,10 @@
-import { AppCurrency, DEFAULT_REGION } from '@ahmedrioueche/gympro-client';
+import { SupportedCurrency, DEFAULT_REGION } from '@ahmedrioueche/gympro-client';
 import { Injectable, Logger } from '@nestjs/common';
 
 export interface RegionDetectionResult {
   region: string;
   regionName: string;
-  currency: AppCurrency;
+  currency: SupportedCurrency;
   timezone?: string;
 }
 
@@ -79,8 +79,8 @@ export class GeolocationService {
   /**
    * Map country code to supported currency
    */
-  private mapRegionToCurrency(countryCode: string): AppCurrency {
-    const currencyMap: Record<string, AppCurrency> = {
+  private mapRegionToCurrency(countryCode: string): SupportedCurrency {
+    const currencyMap: Record<string, SupportedCurrency> = {
       DZ: 'DZD',
       US: 'USD',
       FR: 'EUR',

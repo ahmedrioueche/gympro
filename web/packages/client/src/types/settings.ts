@@ -1,9 +1,7 @@
-import { AuditInfo } from './common';
+import { SupportedCurrency } from "./common";
+import { AppLanguage } from "./local";
 
-// Export constants
-export const THEME_OPTIONS = ['light', 'dark', 'auto'] as const;
-
-// Derive types from constants
+export const THEME_OPTIONS = ["light", "dark", "auto"] as const;
 export type ThemeOption = (typeof THEME_OPTIONS)[number];
 
 export interface NotificationSettings {
@@ -12,29 +10,16 @@ export interface NotificationSettings {
   defaultReminderMinutes?: number;
 }
 
-export interface BillingSettings {
-  defaultCurrency: string;
-  autoRenewEnabled: boolean;
-  trialDays?: number;
-}
-
-export interface FeaturesSettings {
-  enableTrainingPrograms: boolean;
-  enableEquipmentInventory: boolean;
-  enableCoachAssignments: boolean;
-  enableAttendanceTracking: boolean;
-  enableGymBookings: boolean;
-}
-
 export interface LocaleSettings {
-  language: string;
+  language: AppLanguage;
+  currency: SupportedCurrency;
   timezone?: string;
+  region?: string;
+  regionName?: string;
 }
 
-export interface AppSettings extends AuditInfo {
+export interface AppSettings {
   theme: ThemeOption;
   notifications: NotificationSettings;
-  billing: BillingSettings;
-  features: FeaturesSettings;
   locale?: LocaleSettings;
 }

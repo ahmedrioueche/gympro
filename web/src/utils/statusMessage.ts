@@ -1,5 +1,5 @@
 import { ErrorCode, type ApiResponse } from "@ahmedrioueche/gympro-client";
-import type { TFunction } from "i18next";
+import type { TranslationType } from "../types/common";
 
 export interface StatusMessage {
   status: "success" | "error" | "info" | "warning";
@@ -66,23 +66,40 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.UPDATE_GYM_FAILED]: "status.error.gym.update_failed",
   [ErrorCode.DELETE_GYM_FAILED]: "status.error.gym.delete_failed",
 
-  [ErrorCode.SUBSCRIPTION_CANCEL_ERROR]:
-    "status.error.subscription.cancel_error",
-  [ErrorCode.SUBSCRIPTION_CREATE_ERROR]:
-    "status.error.subscription.create_error",
-  [ErrorCode.SUBSCRIPTION_FETCH_ERROR]: "status.error.subscription.fetch_error",
-  [ErrorCode.NO_ACTIVE_SUBSCRIPTION]:
-    "status.error.subscription.no_active_subscription",
-  [ErrorCode.NOT_FOUND]: "status.error.not_found",
   [ErrorCode.FETCH_MEMBER_FAILED]: "status.error.member.fetch_failed",
   [ErrorCode.UPDATE_MEMBER_FAILED]: "status.error.member.update_failed",
   [ErrorCode.DELETE_MEMBER_FAILED]: "status.error.member.delete_failed",
-  [ErrorCode.PLAN_NOT_FOUND]: "status.error.plan.not_found",
-  [ErrorCode.HISTORY_FETCH_ERROR]: "status.error.history.fetch_error",
+
+  [ErrorCode.SUBSCRIPTION_CANCEL_ERROR]:
+    "status.error.subscription.cancel_failed",
+  [ErrorCode.SUBSCRIPTION_CREATE_ERROR]:
+    "status.error.subscription.create_failed",
   [ErrorCode.SUBSCRIPTION_UPDATE_ERROR]:
     "status.error.subscription.update_failed",
+  [ErrorCode.SUBSCRIPTION_FETCH_ERROR]:
+    "status.error.subscription.fetch_failed",
+  [ErrorCode.NO_ACTIVE_SUBSCRIPTION]:
+    "status.error.subscription.no_active_subscription",
+  [ErrorCode.NOT_FOUND]: "status.error.not_found",
+  [ErrorCode.PLAN_NOT_FOUND]: "status.error.plan.not_found",
+  [ErrorCode.HISTORY_FETCH_ERROR]: "status.error.history.fetch_error",
   [ErrorCode.SUBSCRIPTION_CANCEL_LIMIT_EXCEEDED]:
     "status.error.subscription.cancel_limit_exceeded",
+  [ErrorCode.CHECKOUT_CREATION_FAILED]:
+    "status.error.payment.checkout_creation_failed",
+  [ErrorCode.CHECKOUT_NOT_FOUND]: "status.error.payment.checkout_not_found",
+  [ErrorCode.SUBSCRIPTION_CHECKOUT_FAILED]:
+    "status.error.payment.subscription_checkout_failed",
+  [ErrorCode.PRICE_NOT_CONFIGURED]: "status.error.payment.price_not_configured",
+  [ErrorCode.PAYMENT_FAILED]: "status.error.payment.payment_failed",
+  [ErrorCode.PAYMENT_PROCESSING_ERROR]:
+    "status.error.payment.payment_processing_error",
+  [ErrorCode.INVALID_PAYMENT_METHOD]:
+    "status.error.payment.invalid_payment_method",
+  [ErrorCode.WEBHOOK_SIGNATURE_INVALID]:
+    "status.error.payment.webhook_signature_invalid",
+  [ErrorCode.WEBHOOK_PROCESSING_ERROR]:
+    "status.error.payment.webhook_processing_error",
 };
 
 /**
@@ -93,7 +110,7 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
  */
 export const getMessage = <T = any>(
   response: ApiResponse<T>,
-  t: TFunction<"translation", undefined>
+  t: TranslationType
 ): StatusMessage => {
   // Success case
   if (response.success) {

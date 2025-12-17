@@ -5,6 +5,7 @@ import { SubscriptionInfo } from "./subscription";
 import { UserRole } from "./user";
 
 export interface GymMembership extends AuditInfo {
+  _id: string;
   gym: Gym;
   roles: UserRole[];
   joinedAt: string;

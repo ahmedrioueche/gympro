@@ -10,36 +10,51 @@ import { PaymentMethod } from "../types/common";
 
 export interface CreateAppPlanDto {
   planId: string;
-  version?: number; // optional
-  order?: number; // optional
+  version?: number;
+  order?: number;
   type: AppPlanType;
   level: AppPlanLevel;
-  name: string; // changed from nameKey
-  description?: string; // changed from descriptionKey
+  name: string;
+  description?: string;
   pricing: AppPlanPricing;
+  paddleProductId?: string;
+  paddlePriceIds?: {
+    monthly?: string;
+    yearly?: string;
+    oneTime?: string;
+  };
   trialDays?: number;
   limits: {
     maxGyms?: number;
     maxMembers?: number;
     maxGems?: number;
   };
-  features: string[]; // changed from featureKeys
+  features: string[];
   createdAt?: Date;
 }
 
 export interface UpdateAppPlanDto {
-  planId: string;
+  planId?: string;
+  version?: number;
+  order?: number;
   type?: AppPlanType;
   level?: AppPlanLevel;
-  nameKey?: string;
-  descriptionKey?: string;
-  pricing: AppPlanPricing;
+  name?: string;
+  description?: string;
+  pricing?: AppPlanPricing;
+  paddleProductId?: string;
+  paddlePriceIds?: {
+    monthly?: string;
+    yearly?: string;
+    oneTime?: string;
+  };
+  trialDays?: number;
   limits?: {
     maxGyms?: number;
     maxMembers?: number;
     maxGems?: number;
   };
-  featureKeys?: string[];
+  features?: string[];
 }
 
 export interface PlanPricingDto {
@@ -63,7 +78,6 @@ export interface PlanDto {
   level: AppPlanLevel;
   name: string;
   description: string;
-  currency: string;
   pricing: AppPlanPricing;
   trialDays?: number;
   limits: PlanLimitsDto;

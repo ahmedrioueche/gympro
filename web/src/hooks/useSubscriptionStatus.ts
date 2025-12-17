@@ -1,4 +1,9 @@
-import { type GetSubscriptionDto } from "@ahmedrioueche/gympro-client";
+import {
+  APP_PLAN_LEVELS,
+  type AppPlan,
+  type AppSubscriptionBillingCycle,
+  type GetSubscriptionDto,
+} from "@ahmedrioueche/gympro-client";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -44,7 +49,7 @@ export const useSubscriptionStatus = (
 
   const status = statusConfig[currentStatus];
   const isFree = mySubscription?.plan?.level === "free";
-  const isOneTime = mySubscription?.plan?.type === "oneTime";
+  const isOneTime = mySubscription?.billingCycle === "oneTime";
   const start = mySubscription
     ? new Date(mySubscription.startDate)
     : new Date();
@@ -118,6 +123,64 @@ export const useSubscriptionStatus = (
   const shouldShowTimeRemaining =
     isLifetime || mySubscription?.currentPeriodEnd;
 
+  /**
+   * ✅ FIXED: Check if a plan is available for selection
+   * Returns { available: boolean, reason?: string }
+   */
+  const isPlanAvailable = (
+    targetPlan: AppPlan,
+    targetBillingCycle: AppSubscriptionBillingCycle
+  ): { available: boolean; reason?: string } => {
+    // No current subscription - all plans available
+    if (!mySubscription) {
+      return { available: true };
+    }
+
+    const currentPlan = mySubscription.plan;
+    if (!currentPlan) {
+      return { available: true };
+    }
+
+    const currentBillingCycle = mySubscription.billingCycle || "monthly";
+    const currentLevelIndex = APP_PLAN_LEVELS.indexOf(currentPlan.level);
+    const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan.level);
+
+    // ❌ RULE 1: Cannot select the same plan with same billing cycle
+    if (
+      currentPlan.planId === targetPlan.planId &&
+      currentBillingCycle === targetBillingCycle
+    ) {
+      return {
+        available: false,
+        reason: "already_subscribed",
+      };
+    }
+
+    // ✅ FIXED: Allow upgrading from lifetime to higher lifetime tier
+    if (currentBillingCycle === "oneTime" && targetBillingCycle === "oneTime") {
+      // Can only upgrade to higher tier
+      if (targetLevelIndex > currentLevelIndex) {
+        return { available: true };
+      } else {
+        return {
+          available: false,
+          reason: "lifetime_downgrade_blocked",
+        };
+      }
+    }
+
+    // ❌ RULE 2: Cannot switch from lifetime to subscription plans
+    if (currentBillingCycle === "oneTime" && targetBillingCycle !== "oneTime") {
+      return {
+        available: false,
+        reason: "lifetime_to_subscription_blocked",
+      };
+    }
+
+    // ✅ All other plans are available
+    return { available: true };
+  };
+
   return {
     status,
     currentStatus,
@@ -130,5 +193,6 @@ export const useSubscriptionStatus = (
     formattedTimeRemaining: getTimeRemainingText(),
     urgencyColor: getUrgencyColor(),
     shouldShowTimeRemaining,
+    isPlanAvailable,
   };
 };

@@ -1,3 +1,4 @@
+import { DEFAULT_COUNTRY_CODE } from "@ahmedrioueche/gympro-client";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../../../../components/ui/CustomSelect";
@@ -5,7 +6,6 @@ import InputField from "../../../../../../components/ui/InputField";
 import PhoneNumberInput, {
   usePhoneNumber,
 } from "../../../../../../components/ui/PhoneNumberInput";
-import { DEFAULT_COUNTRY_CODE } from "../../../../../../constants/common";
 
 interface FormData {
   email: string;

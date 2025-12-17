@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "preinstall": "node scripts/setup-npmrc.js",
     "build": "nest build && echo 'Build completed. Checking dist folder:' && ls -la dist || dir dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -22,7 +23,7 @@
     "test:chargily": "ts-node -r tsconfig-paths/register scripts/test-chargily-product.ts"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.1.48",
+    "@ahmedrioueche/gympro-client": "0.1.56",
     "@chargily/chargily-pay": "^2.1.0",
     "@google/generative-ai": "^0.24.1",
     "@nestjs/common": "^11.0.1",

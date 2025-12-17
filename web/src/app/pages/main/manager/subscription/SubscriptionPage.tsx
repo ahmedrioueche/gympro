@@ -1,20 +1,34 @@
 import {
   APP_SUBSCRIPTION_BILLING_CYCLES,
+  DEFAULT_CURRENCY,
   type AppPlan,
   type AppSubscriptionBillingCycle,
+  type SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
+import { 
+  useCreateSubscriptionChargilyCheckout,
+} from "../../../../../hooks/queries/useChargilyCheckout";
+import { 
+    useSubscriptionPaddleCheckout,
+} from "../../../../../hooks/queries/usePaddleCheckout";
 import {
   useAllPlans,
+  useDowngradeSubscription,
   useMySubscription,
-  useSubscribeToPlan,
 } from "../../../../../hooks/queries/usePlans";
+import { useModalStore } from "../../../../../store/modal";
+import { useUserStore } from "../../../../../store/user";
+import { getPlanChangeType } from "../../../../../utils/subscription.util";
 import PlanCard from "../../../../components/PlanCard";
 import CancelSubscriptionModal from "./components/CancelSubscriptionModal";
 import SubscriptionCard from "./components/SubscriptionCard";
+import useCurrency from "../../../../../hooks/useCurrency";
+import { Link } from "@tanstack/react-router";
+import { handleContactSupport } from "../../../../../utils/contact";
 
 function SubscriptionPage() {
   const { t } = useTranslation();
@@ -22,13 +36,110 @@ function SubscriptionPage() {
     APP_SUBSCRIPTION_BILLING_CYCLES[0]
   );
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
-
   const { data: plans = [], isLoading: plansLoading } = useAllPlans();
   const { data: mySubscription, isLoading: subLoading } = useMySubscription();
-  const subscribeMutation = useSubscribeToPlan();
+  
+  // BOTH payment gateways available
+  const chargilyCheckoutMutation = useCreateSubscriptionChargilyCheckout();
+  const paddleCheckoutMutation = useSubscriptionPaddleCheckout();
+  
+  const downgradeSubscription = useDowngradeSubscription();
+  const { openModal } = useModalStore();
+  const currency = useCurrency();
+
+  useEffect(() => {
+    if (mySubscription && mySubscription.billingCycle) {
+      setBillingCycle(mySubscription.billingCycle);
+    }
+  }, [mySubscription]);
+
+  // Get user currency
+  const isDZD = currency === "DZD";
 
   const handleSelectPlan = (planId: string) => {
-    subscribeMutation.mutate({ planId, billingCycle });
+    // Find target plan
+    const targetPlan = plans.find((p: any) => p.planId === planId);
+    if (!targetPlan) return;
+
+    // Check for downgrade/switch if subscription active
+    if (
+      mySubscription &&
+      mySubscription.plan &&
+      !["cancelled", "expired"].includes(mySubscription.status)
+    ) {
+      const changeType = getPlanChangeType(
+        mySubscription.plan.level,
+        mySubscription.billingCycle || "monthly",
+        targetPlan.level,
+        billingCycle
+      );
+
+      const effectiveDate = mySubscription.currentPeriodEnd
+        ? new Date(mySubscription.currentPeriodEnd).toLocaleDateString()
+        : t("plans.billing_period_end");
+
+      if (changeType === "downgrade" || changeType === "switch_down") {
+        openModal("confirm", {
+          title:
+            changeType === "downgrade"
+              ? t("plans.confirm_downgrade_title")
+              : t("plans.confirm_switch_title"),
+          text:
+            changeType === "downgrade"
+              ? t("plans.confirm_downgrade_text", {
+                  plan: targetPlan.name,
+                  date: effectiveDate,
+                })
+              : t("plans.confirm_switch_text", {
+                  cycle: billingCycle,
+                  date: effectiveDate,
+                }),
+          confirmVariant: "primary",
+          onConfirm: () => executeDowngrade(planId, billingCycle),
+        });
+        return;
+      } else if (changeType === "upgrade") {
+        executeSubscribe(planId);
+        return;
+      } else if (changeType === "switch_up") {
+        openModal("confirm", {
+          title: t("plans.confirm_switch_title"),
+          text: t("plans.confirm_switch_immediate_text", {
+            cycle: billingCycle,
+          }),
+          confirmVariant: "primary",
+          onConfirm: () => executeSubscribe(planId),
+        });
+        return;
+      }
+    }
+
+    executeSubscribe(planId);
+  };
+
+  const executeSubscribe = (planId: string) => {
+    // Use Chargily for DZD (Algeria), Paddle for international
+    if (isDZD) {
+      chargilyCheckoutMutation.mutate({
+        planId,
+        billingCycle: billingCycle,
+      });
+    } else {
+      paddleCheckoutMutation.mutate({
+        planId,
+        billingCycle: billingCycle,
+      });
+    }
+  };
+
+  const executeDowngrade = (
+    planId: string,
+    billingCycle: AppSubscriptionBillingCycle
+  ) => {
+    downgradeSubscription.mutate({
+      planId,
+      billingCycle,
+    });
   };
 
   const isCurrentPlan = (plan: AppPlan) => {
@@ -76,6 +187,9 @@ function SubscriptionPage() {
     );
   }
 
+  // Check if EITHER payment gateway is processing
+  const isProcessing = chargilyCheckoutMutation.isPending || paddleCheckoutMutation.isPending;
+
   return (
     <div className="min-h-screen p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
@@ -110,7 +224,7 @@ function SubscriptionPage() {
 
         {mySubscription && mySubscription?.planId && mySubscription?.plan && (
           <div className="mb-12">
-            <SubscriptionCard mySubscription={mySubscription} />
+            <SubscriptionCard mySubscription={mySubscription} plans={plans} />
           </div>
         )}
 
@@ -121,7 +235,8 @@ function SubscriptionPage() {
               onClick={() =>
                 setBillingCycle(APP_SUBSCRIPTION_BILLING_CYCLES[0])
               }
-              className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
+              disabled={isProcessing}
+              className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
                 billingCycle === APP_SUBSCRIPTION_BILLING_CYCLES[0]
                   ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg scale-105"
                   : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary/50"
@@ -133,7 +248,8 @@ function SubscriptionPage() {
               onClick={() =>
                 setBillingCycle(APP_SUBSCRIPTION_BILLING_CYCLES[1])
               }
-              className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 relative ${
+              disabled={isProcessing}
+              className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 relative disabled:opacity-50 disabled:cursor-not-allowed ${
                 billingCycle === APP_SUBSCRIPTION_BILLING_CYCLES[1]
                   ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg scale-105"
                   : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary/50"
@@ -148,7 +264,8 @@ function SubscriptionPage() {
               onClick={() =>
                 setBillingCycle(APP_SUBSCRIPTION_BILLING_CYCLES[2])
               }
-              className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
+              disabled={isProcessing}
+              className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
                 billingCycle === APP_SUBSCRIPTION_BILLING_CYCLES[2]
                   ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg scale-105"
                   : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary/50"
@@ -159,6 +276,18 @@ function SubscriptionPage() {
           </div>
         </div>
 
+        {/* Processing Overlay */}
+        {isProcessing && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-surface rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl">
+              <Loading />
+              <p className="text-text-primary font-medium">
+                {t("checkout.redirecting")}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Plans Grid */}
         {filteredPlans.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -166,9 +295,12 @@ function SubscriptionPage() {
               <PlanCard
                 key={plan.planId}
                 plan={plan}
+                currency={currency}
                 isCurrentPlan={isCurrentPlan(plan)}
                 billingCycle={billingCycle}
                 onSelect={() => handleSelectPlan(plan.planId)}
+                currentSubscription={mySubscription}
+                disabled={isProcessing}
               />
             ))}
           </div>
@@ -205,7 +337,8 @@ function SubscriptionPage() {
                 <div className="flex justify-end mt-4 px-2">
                   <button
                     onClick={() => setIsCancelModalOpen(true)}
-                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-danger hover:underline transition-colors px-4 py-2 rounded-lg hover:bg-danger/5"
+                    disabled={isProcessing}
+                    className="flex items-center gap-2 text-sm text-text-secondary hover:text-danger hover:underline transition-colors px-4 py-2 rounded-lg hover:bg-danger/5 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <X className="w-4 h-4" />
                     {t("subscription.cancel_subscription")}
@@ -226,10 +359,16 @@ function SubscriptionPage() {
         />
 
         {/* Footer Info */}
-        <div className=" text-center p-8">
-          <p className="text-text-secondary text-sm max-w-2xl mx-auto">
-            {t("subscriptions.footer_info")}
+        <div className="flex flex-row justify-center items-center gap-1 text-center p-8">
+          <p className="text-text-secondary text-sm">
+            {t("subscriptions.footer_info").split("\n")[0]}
           </p>
+          <button 
+            onClick={() => handleContactSupport(t)} 
+            className="text-text-secondary text-sm underline hover:text-text-primary transition-colors"
+          >
+            {t("subscriptions.footer_info").split("\n")[1]}
+          </button>
         </div>
       </div>
     </div>

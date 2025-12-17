@@ -1,7 +1,7 @@
 import {
   APP_PLAN_LEVELS,
   APP_SUBSCRIPTION_BILLING_CYCLES,
-  AppCurrency,
+  SupportedCurrency,
   AppSubscriptionBillingCycle,
   DEFAULT_CURRENCY,
 } from '@ahmedrioueche/gympro-client';
@@ -63,7 +63,7 @@ export class AppSubscriptionService {
     userId: string,
     planId: string,
     billingCycle: AppSubscriptionBillingCycle = 'monthly',
-    currency: AppCurrency = DEFAULT_CURRENCY,
+    currency: SupportedCurrency = DEFAULT_CURRENCY,
   ) {
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -291,7 +291,7 @@ export class AppSubscriptionService {
   private calculateProrationCredit(
     currentSub: AppSubscriptionModel,
     currentPlan: AppPlanModel,
-    currency: AppCurrency,
+    currency: SupportedCurrency,
   ): number {
     const periodStart = currentSub.currentPeriodStart || currentSub.startDate;
     const periodEnd = currentSub.currentPeriodEnd;

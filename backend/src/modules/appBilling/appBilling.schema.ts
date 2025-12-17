@@ -1,5 +1,4 @@
 import type {
-  AppCurrency,
   AppPlan,
   AppPlanLevel,
   AppPlanType,
@@ -8,9 +7,9 @@ import type {
   AppSubscriptionStatus,
   AutoRenewType,
   PaymentMethod,
+  SupportedCurrency,
 } from '@ahmedrioueche/gympro-client';
 import {
-  APP_CURRENCIES,
   APP_PLAN_LEVELS,
   APP_PLAN_TYPES,
   APP_SUBSCRIPTION_AUTO_RENEW_TYPES,
@@ -18,6 +17,7 @@ import {
   APP_SUBSCRIPTION_HISTORY_ACTIONS,
   APP_SUBSCRIPTION_STATUSES,
   PAYMENT_METHODS,
+  SUPPORTED_CURRENCIES,
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema, Types } from 'mongoose';
@@ -52,7 +52,7 @@ class AppPlanLimits {
 
 // Multi-currency pricing map
 export type AppPlanPricingMap = {
-  [key in AppCurrency]?: {
+  [key in SupportedCurrency]?: {
     monthly?: number;
     yearly?: number;
     oneTime?: number;
@@ -69,12 +69,12 @@ const CurrencyPricingSchema = new MongooseSchema(
 );
 
 const AppPlanPricingSchema = new MongooseSchema(
-  APP_CURRENCIES.reduce(
+  SUPPORTED_CURRENCIES.reduce(
     (acc, currency) => {
       acc[currency] = { type: CurrencyPricingSchema };
       return acc;
     },
-    {} as Record<AppCurrency, any>,
+    {} as Record<SupportedCurrency, any>,
   ),
   { _id: false },
 );
@@ -124,6 +124,16 @@ export class AppPlanModel extends Document implements AppPlan {
 
   @Prop({ type: AppPlanPricingSchema, required: true })
   pricing: AppPlanPricingMap;
+
+  @Prop()
+  paddleProductId: string;
+
+  @Prop({ type: Object })
+  paddlePriceIds: {
+    monthly?: string;
+    yearly?: string;
+    oneTime?: string;
+  };
 
   @Prop({ type: AppPlanLimits, required: true })
   limits: AppPlanLimits;
@@ -312,8 +322,8 @@ export class AppSubscriptionHistoryModel extends Document {
   @Prop({ min: 0 })
   amountPaid?: number;
 
-  @Prop({ type: String, enum: APP_CURRENCIES })
-  currency?: AppCurrency;
+  @Prop({ type: String, enum: SUPPORTED_CURRENCIES })
+  currency?: SupportedCurrency;
 
   @Prop({ type: String, enum: PAYMENT_METHODS })
   paymentMethod?: PaymentMethod;

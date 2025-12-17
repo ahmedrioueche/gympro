@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "preinstall": "node scripts/setup-npmrc.js",
     "dev": "vite",
     "copy-packages": "xcopy /E /I /Y ..\\packages .\\packages >nul 2>&1 || echo Packages copied",
     "build": "npm run copy-packages && tsc -b && vite build",
@@ -12,7 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.1.22",
+    "@ahmedrioueche/gympro-client": "0.1.56",
     "@tanstack/react-query": "^5.84.2",
     "@tanstack/react-router": "^1.131.2",
     "i18next": "^25.3.2",

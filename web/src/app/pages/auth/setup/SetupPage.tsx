@@ -1,4 +1,4 @@
-import { authApi } from "@ahmedrioueche/gympro-client";
+import { authApi, DEFAULT_COUNTRY_CODE } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { Lock, Mail } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -11,7 +11,6 @@ import InputField from "../../../../components/ui/InputField";
 import PhoneNumberInput, {
   usePhoneNumber,
 } from "../../../../components/ui/PhoneNumberInput";
-import { DEFAULT_COUNTRY_CODE } from "../../../../constants/common";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { redirectAfterTimeout } from "../../../../utils/helper";
 import { extractCountryCodeAndNumber } from "../../../../utils/phone.util";

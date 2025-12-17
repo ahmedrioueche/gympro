@@ -1,6 +1,7 @@
 import {
+  DEFAULT_LANGUAGE,
   usersApi,
-  type AppCurrency,
+  type SupportedCurrency,
   type UserRole,
 } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
@@ -8,10 +9,10 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
+import { useRegionDetection } from "../../../../hooks/useRegionDetection";
 import useScreen from "../../../../hooks/useScreen";
 import { useUserStore } from "../../../../store/user";
 import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
-import { detectRegion } from "../../../../utils/regionDetection";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import {
   BaseView,
@@ -31,7 +32,7 @@ type OnboardingData = {
   gender: string;
   region: string;
   regionName: string;
-  currency: AppCurrency;
+  currency: SupportedCurrency;
   timezone?: string;
 };
 
@@ -55,28 +56,42 @@ export function OnboardingPage() {
   const { isMobile } = useScreen();
   const { updateProfile, updateUser } = useUserStore();
 
+  // Use the region detection hook
+  const {
+    regionData,
+    isLoading: isDetectingRegion,
+  } = useRegionDetection({
+    autoDetect: true,
+    onDetected: (detected) => {
+      setData((prev) => ({
+        ...prev,
+        region: detected?.region?.toUpperCase() || prev.region,
+        regionName: detected.regionName,
+        currency: detected.currency,
+        timezone: detected.timezone,
+      }));
+    },
+    onError: (error) => {
+      console.error("Failed to detect region:", error);
+      // Optionally show a toast notification
+      // toast.error(t("onboarding.errors.regionDetection"));
+    },
+  });
+
+  // Sync regionData to onboarding data whenever it changes
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      region: regionData.region,
+      regionName: regionData.regionName,
+      currency: regionData.currency,
+      timezone: regionData.timezone,
+    }));
+  }, [regionData]);
+
   const updateData = (key: keyof OnboardingData, value: any) => {
     setData((prev) => ({ ...prev, [key]: value }));
   };
-
-  // Detect region on component mount
-  useEffect(() => {
-    const loadRegion = async () => {
-      try {
-        const detected = await detectRegion();
-        setData((prev) => ({
-          ...prev,
-          region: detected.region,
-          regionName: detected.regionName,
-          currency: detected.currency,
-          timezone: detected.timezone,
-        }));
-      } catch (error) {
-        console.error("Failed to detect region:", error);
-      }
-    };
-    loadRegion();
-  }, []);
 
   const handleFinish = () => {
     setStep(10);
@@ -101,7 +116,20 @@ export function OnboardingPage() {
             timezone: data.timezone,
           });
           // Update store with new role and onboarded status
-          updateUser({ role: data.role as UserRole });
+          updateUser({
+            role: data.role as UserRole,
+            appSettings: {
+              locale: {
+                language: DEFAULT_LANGUAGE,
+                region: data.region,
+                regionName: data.regionName,
+                currency: data.currency,
+                timezone: data.timezone,
+              },
+              theme: "auto",
+              notifications: undefined,
+            },
+          });
           updateProfile({ isOnBoarded: true });
 
           redirectToHomePageAfterTimeout(data.role as UserRole, 3000, navigate);
@@ -114,8 +142,6 @@ export function OnboardingPage() {
       complete();
     }
   }, [step, data, navigate]);
-
-  const nextStep = () => setStep((s) => s + 1);
 
   const prevStep = () => {
     switch (step) {
@@ -225,6 +251,7 @@ export function OnboardingPage() {
               setData((prev) => ({ ...prev, region, regionName, currency }));
             }}
             onNext={() => setStep(1)}
+            isDetecting={isDetectingRegion}
           />
         );
 
@@ -299,7 +326,7 @@ export function OnboardingPage() {
           />
         );
 
-      case 9: // Success
+      case 10: // Success
         return (
           <BaseView
             title={t("onboarding.success.title", "All Set!")}
@@ -321,7 +348,6 @@ export function OnboardingPage() {
 
   // Calculate progress (approximate based on max steps)
   const totalSteps = 10; // Max possible steps
-  const progress = ((step + 1) / totalSteps) * 100;
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
@@ -367,7 +393,7 @@ export function OnboardingPage() {
       {/* Footer / Back Button */}
       <footer className="px-4 sm:px-8 py-4 sm:py-6 relative z-10 flex justify-start max-w-4xl mx-auto w-full lg:max-w-7xl">
         <button
-          disabled={step === 0 || step === 9}
+          disabled={step === 0 || step === 10}
           onClick={prevStep}
           className="px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:bg-surface text-text-primary flex items-center gap-2"
         >

@@ -7,10 +7,10 @@ export const PAYMENT_METHODS = [
 ] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
-export const APP_CURRENCIES = ["USD", "EUR", "DZD"] as const;
-export type AppCurrency = (typeof APP_CURRENCIES)[number];
+export const SUPPORTED_CURRENCIES = ["USD", "EUR", "DZD"] as const;
+export type SupportedCurrency = (typeof SUPPORTED_CURRENCIES)[number];
 
-export const CURRENCY_SYMBOLS: Record<AppCurrency, string> = {
+export const CURRENCY_SYMBOLS: Record<SupportedCurrency, string> = {
   USD: "$",
   EUR: "€",
   DZD: "دج",
@@ -48,20 +48,3 @@ export interface AuditInfo {
   updatedAt?: string | Date;
   updatedBy?: string;
 }
-
-export const SUPPORTED_REGIONS = {
-  DZ: { name: "Algeria", currency: "DZD" as AppCurrency },
-  US: { name: "United States", currency: "USD" as AppCurrency },
-  FR: { name: "France", currency: "EUR" as AppCurrency },
-  DE: { name: "Germany", currency: "EUR" as AppCurrency },
-  IT: { name: "Italy", currency: "EUR" as AppCurrency },
-  ES: { name: "Spain", currency: "EUR" as AppCurrency },
-  BE: { name: "Belgium", currency: "EUR" as AppCurrency },
-  NL: { name: "Netherlands", currency: "EUR" as AppCurrency },
-  PT: { name: "Portugal", currency: "EUR" as AppCurrency },
-  AT: { name: "Austria", currency: "EUR" as AppCurrency },
-  IE: { name: "Ireland", currency: "EUR" as AppCurrency },
-  GR: { name: "Greece", currency: "EUR" as AppCurrency },
-} as const;
-
-export type RegionCode = keyof typeof SUPPORTED_REGIONS;

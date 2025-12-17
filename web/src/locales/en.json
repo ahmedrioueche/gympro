@@ -156,6 +156,7 @@
       "gateway_timeout": "Gateway timeout. Please try again",
       "method_not_allowed": "Method not allowed",
       "unexpected": "Unexpected error occured. Please try again",
+      "not_found": "Not found error",
       "auth": {
         "invalid_credentials": "Invalid email or password",
         "account_deactivated": "Your account has been deactivated",
@@ -217,6 +218,17 @@
       },
       "history": {
         "fetch_error": "Failed to fetch history"
+      },
+      "payment": {
+        "checkout_creation_failed": "Failed to create checkout. Please try again.",
+        "checkout_not_found": "Checkout session not found. Please start a new checkout.",
+        "subscription_checkout_failed": "Failed to process subscription checkout. Please try again.",
+        "price_not_configured": "Pricing is not configured for this plan. Please contact support.",
+        "payment_failed": "Payment was declined. Please check your payment details and try again.",
+        "payment_processing_error": "An error occurred while processing your payment. Please try again later.",
+        "invalid_payment_method": "This payment method is not supported. Please use EDAHABIA or CIB.",
+        "webhook_signature_invalid": "Payment verification failed. Please contact support if you were charged.",
+        "webhook_processing_error": "Payment processing error. Please contact support if you were charged."
       }
     }
   },
@@ -287,12 +299,13 @@
     },
     "regionCurrency": {
       "title": "Select Your Region",
-      "subtitle": "This helps us provide accurate pricing",
-      "defaultCurrency": "Default currency",
+      "defaultCurrency": "Default Currency",
       "region": "Region",
-      "currencyLockInfo": "You can change your region below. Currency will be locked after confirmation.",
-      "selectRegion": "Select your region",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "detecting": "Detecting your region...",
+      "detected": "Region detected automatically",
+      "detectLocation": "Detect my location",
+      "info": "Make sure to select your correct region to avoid any issues with our services."
     }
   },
   "role": {
@@ -771,8 +784,8 @@
     "renews_on": "Renews on",
     "gyms_count": "Locations",
     "billing_email": "Billing Email",
-    "footer_info": "All plans include 14-day free trial • Cancel anytime • No credit card required"
-  },
+    "footer_info": "Need help? \n Contact us"
+    },
   "plans": {
     "max_gyms": "Max Locations",
     "per_month": "per month",
@@ -797,7 +810,28 @@
     "current_plan": "Current Plan",
     "processing": "Processing...",
     "members": "Members",
-    "up_to_members_each": "Up to {{number}} members each"
+    "up_to_members_each": "Up to {{number}} members each",
+    "downgrade": "Downgrade",
+    "switch_plan": "Switch Plan",
+    "pending_downgrade": "Downgrade to {{plan}} on {{date}}",
+    "pending_switch": "Switch to {{cycle}} on {{date}}",
+    "confirm_downgrade_title": "Confirm Downgrade",
+    "confirm_downgrade_text": "Your plan will be downgraded to {{plan}} at the end of your current billing period on {{date}}. You will lose access to higher tier features at that time.",
+    "confirm_switch_title": "Confirm Plan Switch",
+    "confirm_switch_text": "Your billing cycle will switch to {{cycle}} at the end of your current billing period on {{date}}.",
+    "change_pending": "Change Pending",
+    "confirm_upgrade_title": "Confirm Upgrade",
+    "confirm_upgrade_text": "You will be upgraded to {{plan}} immediately. You will be charged the difference (if applicable).",
+    "confirm_upgrade_free_text": "You will be upgraded to {{plan}} immediately.",
+    "confirm_switch_immediate_text": "Your billing cycle will switch to {{cycle}} immediately.",
+    "cancel_request": "Cancel Request",
+    "cancel_request_success": "Pending change cancelled",
+    "confirm_cancel_request_title": "Cancel Pending Change?",
+    "confirm_cancel_request_text": "Are you sure you want to cancel this pending change? You will remain on your current plan.",
+    "unavailable": "Unavailable",
+    "not_available": "This plan is not available",
+    "lifetime_to_subscription_error": "You have lifetime access. Cannot switch to subscription plans without refund.",
+    "lifetime_downgrade_error": "Cannot downgrade from your current lifetime plan."
   },
   "subscription": {
     "current_subscription": "Current Subscription",
@@ -866,7 +900,14 @@
     "cancel_error": "Failed to cancel subscription. Please try again.",
     "reactivate_success": "Subscription was reactivated successfully.",
     "reactivate_error": "Failed to reactivate subscription. Please try again.",
-    "reactivate_subscription": "Reactivate Subscription"
+    "reactivate_subscription": "Reactivate Subscription",
+    "update_success": "Subscription was updated successfully.",
+    "update_error": "Failed to update subscription. Please try again.",
+    "cancelled_subscription": "You have cancelled your subscription",
+    "reason_invalid": "Please provide a valid reason.",
+    "validating_reason": "Validating...",
+    "thanks_for_feedback": "Thank you for your feedback!",
+    "processing": "Processing subscription..."
   },
   "plan": {
     "free": {
@@ -926,6 +967,55 @@
     "premium_onetime": {
       "name": "Premium (Lifetime)",
       "description": "One-time purchase, yours forever"
+    }
+  },
+  "checkout": {
+    "creation_failed": "Failed to create checkout. Please try again.",
+    "status_fetch_failed": "Failed to fetch checkout status.",
+    "paying_with_chargily": "Payments powered by Chargily (EDAHABIA & CIB)",
+    "redirecting": "Redirecting to secure payment page...",
+    "processing": "Processing your request..."
+  },
+  "support": {
+    "subject": "I need help with my GymPro account",
+    "body": "Hi GymPro Support Team,\n\nI need help with my GymPro account"
+  },
+  "payment": {
+    "success": {
+      "title": "Payment Successful!",
+      "subtitle": "Your payment has been processed successfully",
+      "verifying_title": "Verifying Payment",
+      "verifying_text": "Please wait while we confirm your payment...",
+      "confirmed_title": "Payment Confirmed",
+      "confirmed_text": "Your subscription has been activated and is ready to use.",
+      "whats_next": "What's Next?",
+      "step_one": "Your subscription is now active and all features have been unlocked.",
+      "step_two": "You can view your subscription details and manage your plan in the settings.",
+      "step_three": "Start exploring all the premium features available to you!",
+      "view_subscription": "View Subscription",
+      "back_to_dashboard": "Back to Dashboard",
+      "email_note": "A confirmation email has been sent to your registered email address with your receipt and subscription details."
+    },
+    "failure": {
+      "title": "Payment Failed",
+      "subtitle": "We couldn't process your payment",
+      "error_details": "Error Details",
+      "checkout_id": "Checkout ID",
+      "common_reasons": "Common Reasons for Payment Failure",
+      "reason_insufficient_funds": "Insufficient funds in your account",
+      "reason_incorrect_details": "Incorrect payment details or card information",
+      "reason_expired_card": "Expired or invalid payment card",
+      "reason_bank_declined": "Payment declined by your bank or card issuer",
+      "reason_network_issue": "Network connection issue during transaction",
+      "what_to_do": "What Should You Do?",
+      "suggestion_verify_details": "Double-check your payment details and card information",
+      "suggestion_check_balance": "Ensure you have sufficient funds in your account",
+      "suggestion_try_different": "Try using a different payment method or card",
+      "suggestion_contact_bank": "Contact your bank if the issue persists",
+      "try_again": "Try Again",
+      "back_to_dashboard": "Back to Dashboard",
+      "need_help": "Need help with your payment?",
+      "contact_support": "Contact Support"
     }
   }
 }

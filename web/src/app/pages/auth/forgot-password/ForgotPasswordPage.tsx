@@ -3,12 +3,12 @@ import { useSearch } from "@tanstack/react-router";
 import { CheckCircle, Mail, Phone, Smartphone, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { COUNTRY_CODES } from "../../../../../../packages/client/src/constants/countryCodes";
 import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
 import Button from "../../../../components/ui/Button";
 import Confetti from "../../../../components/ui/Confetti";
 import CustomSelect from "../../../../components/ui/CustomSelect";
 import InputField from "../../../../components/ui/InputField";
-import { COUNTRY_CODES } from "../../../../constants/countryCodes";
 import { bgGradient } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
 import {

@@ -30,36 +30,36 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      "cursor-pointer inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transform active:scale-95";
+      "inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 transform active:scale-95";
 
     const variants = {
       filled: {
         primary:
-          "bg-gradient-to-r from-primary to-secondary text-white hover:from-secondary hover:to-primary hover:shadow-lg hover:shadow-primary/25 focus:ring-primary",
+          "bg-primary text-white hover:brightness-110 focus:ring-primary shadow-md",
         secondary:
-          "bg-secondary text-white hover:bg-secondary/90 hover:shadow-lg hover:shadow-secondary/25 focus:ring-secondary",
+          "bg-secondary text-white hover:brightness-110 focus:ring-secondary shadow-md",
         accent:
-          "bg-accent text-white hover:bg-accent/90 hover:shadow-lg hover:shadow-accent/25 focus:ring-accent",
+          "bg-accent text-white hover:brightness-110 focus:ring-accent shadow-md",
         success:
-          "bg-success text-white hover:bg-success/90 hover:shadow-lg hover:shadow-success/25 focus:ring-success",
+          "bg-success text-white hover:brightness-110 focus:ring-success shadow-md",
         warning:
-          "bg-warning text-white hover:bg-warning/90 hover:shadow-lg hover:shadow-warning/25 focus:ring-warning",
+          "bg-warning text-white hover:brightness-110 focus:ring-warning shadow-md",
         danger:
-          "bg-danger text-white hover:bg-danger/90 hover:shadow-lg hover:shadow-danger/25 focus:ring-danger",
+          "bg-danger text-white hover:brightness-110 focus:ring-danger shadow-md",
       },
       outline: {
         primary:
-          "border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-primary/15 focus:ring-primary",
+          "border-2 border-primary text-primary bg-transparent hover:bg-primary/10 hover:text-primary focus:ring-primary",
         secondary:
-          "border-2 border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white hover:shadow-lg hover:shadow-secondary/15 focus:ring-secondary",
+          "border-2 border-secondary text-secondary bg-transparent hover:bg-secondary/10 hover:text-secondary focus:ring-secondary",
         accent:
-          "border-2 border-accent text-accent bg-transparent hover:bg-accent hover:text-white hover:shadow-lg hover:shadow-accent/15 focus:ring-accent",
+          "border-2 border-accent text-accent bg-transparent hover:bg-accent/10 hover:text-accent focus:ring-accent",
         success:
-          "border-2 border-success text-success bg-transparent hover:bg-success hover:text-white hover:shadow-lg hover:shadow-success/15 focus:ring-success",
+          "border-2 border-success text-success bg-transparent hover:bg-success/10 hover:text-success focus:ring-success",
         warning:
-          "border-2 border-warning text-warning bg-transparent hover:bg-warning hover:text-white hover:shadow-lg hover:shadow-warning/15 focus:ring-warning",
+          "border-2 border-warning text-warning bg-transparent hover:bg-warning/10 hover:text-warning focus:ring-warning",
         danger:
-          "border-2 border-danger text-danger bg-transparent hover:bg-danger hover:text-white hover:shadow-lg hover:shadow-danger/15 focus:ring-danger",
+          "border-2 border-danger text-danger bg-transparent hover:bg-danger/10 hover:text-danger focus:ring-danger",
       },
       ghost: {
         primary:
@@ -79,28 +79,28 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const sizes = {
       sm: "h-8 px-3 text-sm",
-      default: "h-10 px-4 py-2",
-      lg: "h-12 px-6 py-3 text-lg",
+      default: "h-10 px-5",
+      lg: "h-12 px-6 text-lg",
     };
 
     const widthClass = fullWidth ? "w-full" : "";
 
-    const iconElement = loading ? <Loader className="animate-spin" /> : icon;
+    const iconElement = loading ? (
+      <Loader className="animate-spin w-4 h-4 mr-2 text-white" />
+    ) : (
+      icon
+    );
 
     return (
       <button
-        className={`${baseStyles} ${variants[variant][color]} ${sizes[size]} ${widthClass} ${className}`}
         ref={ref}
         disabled={disabled || loading}
+        className={`${baseStyles} ${variants[variant][color]} ${sizes[size]} ${widthClass} ${className} flex items-center justify-center gap-2`}
         {...props}
       >
-        {iconElement && iconPosition === "left" && (
-          <span className={children ? "mr-2" : ""}>{iconElement}</span>
-        )}
-        {loading ? "Loading..." : children}
-        {iconElement && iconPosition === "right" && !loading && (
-          <span className={children ? "ml-2" : ""}>{iconElement}</span>
-        )}
+        {iconElement && iconPosition === "left" && iconElement}
+        {loading ? <span>Loading...</span> : children}
+        {iconElement && iconPosition === "right" && !loading && iconElement}
       </button>
     );
   }

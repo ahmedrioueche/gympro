@@ -1,5 +1,4 @@
 import type {
-  AppCurrency,
   AppLanguage,
   AppSettings,
   LocaleSettings,
@@ -7,7 +6,6 @@ import type {
   ThemeOption,
 } from '@ahmedrioueche/gympro-client';
 import {
-  APP_CURRENCIES,
   DEFAULT_CURRENCY,
   DEFAULT_LANGUAGE,
   THEME_OPTIONS,
@@ -25,8 +23,8 @@ export class NotificationSettingsModel implements NotificationSettings {
 @Schema({ _id: false })
 export class LocaleSettingsModel implements LocaleSettings {
   @Prop({ required: true, default: DEFAULT_LANGUAGE }) language: AppLanguage;
-  @Prop({ enum: APP_CURRENCIES, required: true, default: DEFAULT_CURRENCY })
-  currency: AppCurrency;
+  @Prop({ required: true, default: DEFAULT_CURRENCY })
+  currency: string;
   @Prop() timezone?: string;
   @Prop() region?: string;
   @Prop() regionName?: string;

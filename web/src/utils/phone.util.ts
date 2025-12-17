@@ -3,7 +3,7 @@ import {
   parsePhoneNumberWithError as libParsePhoneNumber,
   type CountryCode,
 } from "libphonenumber-js";
-import { COUNTRY_CODES } from "../constants/countryCodes";
+import { COUNTRY_CODES } from "../../../packages/client/src/constants/countryCodes";
 
 /**
  * Create a map of country codes to ISO codes

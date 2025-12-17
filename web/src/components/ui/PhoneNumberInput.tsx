@@ -1,6 +1,6 @@
 import { Phone } from "lucide-react";
 import React from "react";
-import { COUNTRY_CODES } from "../../constants/countryCodes";
+import { COUNTRY_CODES } from "../../../../packages/client/src/constants/countryCodes";
 import {
   formatPhoneDigitsForInput,
   getExampleNumber,

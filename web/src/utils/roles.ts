@@ -51,6 +51,7 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
       "/profile",
       "/settings",
       "/notifications",
+      "/payment",
     ],
     [UserRole.Manager]: [
       "/manager",

@@ -1,9 +1,21 @@
-import { CompleteOnboardingDto, CreateMemberDto } from "../dto/users";
+import { CompleteOnboardingDto, RegionDetectionResult } from "../dto/users";
 import { ApiResponse } from "../types/api";
 import { User } from "../types/user";
 import { apiClient, handleApiError } from "./helper";
 
 export const usersApi = {
+  /** Detect region from IP address */
+  detectRegion: async (): Promise<ApiResponse<RegionDetectionResult>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<RegionDetectionResult>>(
+        "/users/onboarding/detect-region"
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** Complete Onboarding */
   completeOnboarding: async (
     data: CompleteOnboardingDto
@@ -19,20 +31,7 @@ export const usersApi = {
     }
   },
 
-  /** Create Member */
-  createMember: async (data: CreateMemberDto): Promise<ApiResponse<User>> => {
-    try {
-      const res = await apiClient.post<ApiResponse<User>>(
-        "/users/members",
-        data
-      );
-      return res.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
-
-  /** List users (paginated) */
+  /** List users / members (paginated) */
   list: async (
     page: number = 1,
     limit: number = 10,
@@ -44,6 +43,7 @@ export const usersApi = {
       const params: any = { page: page.toString(), limit: limit.toString() };
       if (search) params.search = search;
       if (role) params.role = role;
+
       const res = await apiClient.get<ApiResponse<User[]>>("/users", {
         params,
         signal,

@@ -13,6 +13,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ChargilyModule } from './modules/chargily/chargily.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
+import { PaddleModule } from './modules/paddle/paddle.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
 import { UsersModule } from './modules/users/users.module';
@@ -63,6 +64,7 @@ import { UsersModule } from './modules/users/users.module';
     SettingsModule,
     CommonModule,
     ChargilyModule,
+    PaddleModule,
   ],
   controllers: [AppController],
   providers: [

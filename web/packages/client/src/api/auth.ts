@@ -216,6 +216,20 @@ export const authApi = {
     }
   },
 
+  /** Validate setup token */
+  validateSetupToken: async (
+    token: string
+  ): Promise<ApiResponse<{ valid: boolean }>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<{ valid: boolean }>>(
+        `/auth/validate-setup-token?token=${token}`
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** Verify OTP code for forgot password */
   verifyForgotPasswordOtp: async (
     phoneNumber: string,

@@ -1,4 +1,4 @@
-import { AppCurrency, AuditInfo, PaymentMethod } from "./common";
+import { AuditInfo, PaymentMethod, SupportedCurrency } from "./common";
 
 export const APP_PLAN_TYPES = ["subscription", "oneTime"] as const;
 export const APP_SUBSCRIPTION_BILLING_CYCLES = [
@@ -23,6 +23,10 @@ export const APP_SUBSCRIPTION_HISTORY_ACTIONS = [
   "cancelled",
   "expired",
   "reactivated",
+  "downgrade_scheduled",
+  "switch_scheduled",
+  "upgraded",
+  "pending_change_cancelled",
 ] as const;
 
 export type AppSubscriptionBillingCycle =
@@ -35,7 +39,7 @@ export type AppSubscriptionHistoryAction =
   (typeof APP_SUBSCRIPTION_HISTORY_ACTIONS)[number];
 
 export type AppPlanPricing = {
-  [currency in AppCurrency]?: {
+  [currency in SupportedCurrency]?: {
     monthly?: number;
     yearly?: number;
     oneTime?: number;
@@ -52,6 +56,12 @@ export interface AppPlan extends AuditInfo {
   name: string;
   description?: string;
   pricing: AppPlanPricing;
+  paddleProductId?: string;
+  paddlePriceIds?: {
+    monthly?: string;
+    yearly?: string;
+    oneTime?: string;
+  };
   trialDays?: number; // only for subscription plans
 
   // flexible limits
@@ -123,7 +133,7 @@ export interface AppSubscriptionHistory extends AuditInfo {
 
   // Payment info for this history entry
   amountPaid?: number;
-  currency?: AppCurrency;
+  currency?: SupportedCurrency;
   paymentMethod?: PaymentMethod;
 
   // Additional context

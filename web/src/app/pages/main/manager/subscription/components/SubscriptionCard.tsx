@@ -1,6 +1,12 @@
-import { type GetSubscriptionDto } from "@ahmedrioueche/gympro-client";
+import {
+  type AppPlan,
+  type GetSubscriptionDto,
+} from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
-import { useReactivateSubscription } from "../../../../../../hooks/queries/usePlans";
+import {
+  useCancelPendingChange,
+  useReactivateSubscription,
+} from "../../../../../../hooks/queries/usePlans";
 import { useSubscriptionStatus } from "../../../../../../hooks/useSubscriptionStatus";
 import { useToast } from "../../../../../../hooks/useToast";
 
@@ -8,9 +14,10 @@ import { useModalStore } from "../../../../../../store/modal";
 
 interface SubscriptionCardProps {
   mySubscription: GetSubscriptionDto | undefined;
+  plans: AppPlan[];
 }
 
-function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
+function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
   const { t } = useTranslation();
   const toast = useToast();
   const { openModal } = useModalStore();
@@ -29,6 +36,29 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
 
   const { mutate: reactivate, isPending: isReactivating } =
     useReactivateSubscription();
+
+  const { mutate: cancelPendingChange, isPending: isCancellingChange } =
+    useCancelPendingChange();
+
+  const handleCancelPending = () => {
+    openModal("confirm", {
+      title: t("plans.confirm_cancel_request_title"),
+      text: t("plans.confirm_cancel_request_text"),
+      confirmVariant: "danger",
+      onConfirm: () => {
+        cancelPendingChange(undefined, {
+          onSuccess: () => {
+            toast.success(
+              t("plans.cancel_request_success") || "Request cancelled"
+            );
+          },
+          onError: (error: any) => {
+            toast.error(error.message || "Failed to cancel request");
+          },
+        });
+      },
+    });
+  };
 
   const handleReactivate = () => {
     openModal("confirm", {
@@ -52,11 +82,124 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
     });
   };
 
+  const getPlanNameById = (planId: string) => {
+    const plan = plans.find((plan) => plan.planId === planId);
+    return plan?.name;
+  };
+
   return (
     <div className="mb-10">
       {/* Subscription Info Card */}
       {mySubscription && (
         <div className="mt-4 bg-surface border border-border rounded-2xl overflow-hidden shadow-sm">
+          {/* Pending Change Banner */}
+          {mySubscription.pendingPlanId &&
+            mySubscription.pendingChangeEffectiveDate && (
+              <div className="bg-amber-500/10 border-l-4 border-amber-500 p-4 rounded-r-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex gap-3">
+                  <div className="text-amber-500">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-amber-500 text-sm">
+                      {t("plans.switch_plan")}
+                    </h4>
+                    <p className="text-sm text-text-secondary">
+                      {mySubscription.pendingBillingCycle ===
+                      mySubscription.billingCycle
+                        ? t("plans.pending_downgrade", {
+                            plan: getPlanNameById(mySubscription.pendingPlanId),
+                            date: new Date(
+                              mySubscription.pendingChangeEffectiveDate
+                            ).toLocaleDateString(),
+                          })
+                        : t("plans.pending_switch", {
+                            cycle: mySubscription.pendingBillingCycle,
+                            date: new Date(
+                              mySubscription.pendingChangeEffectiveDate
+                            ).toLocaleDateString(),
+                          })}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleCancelPending}
+                  disabled={isCancellingChange}
+                  className="px-3 py-1.5 text-xs sm:text-sm font-bold text-amber-600 bg-amber-500/10 hover:bg-amber-500/20 rounded-lg transition-colors whitespace-nowrap"
+                >
+                  {isCancellingChange
+                    ? t("plans.processing")
+                    : t("plans.cancel_request")}
+                </button>
+              </div>
+            )}
+
+          {/* Cancellation Banner */}
+          {isCancelled && mySubscription.currentPeriodEnd && (
+            <div className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex gap-3">
+                <div className="text-red-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-bold text-red-500 text-sm">
+                    {t("subscription.cancelled_subscription")}
+                  </h4>
+                  <p className="text-sm text-text-secondary">
+                    {t("subscription.access_ends_on")}:{" "}
+                    {new Date(
+                      mySubscription.currentPeriodEnd
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={handleReactivate}
+                disabled={isReactivating}
+                className="px-3 py-1.5 text-xs sm:text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors whitespace-nowrap flex items-center gap-2"
+              >
+                {isReactivating ? (
+                  <span className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-4 h-4"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0v2.433l-.31-.31a7 7 0 00-11.712 3.138.75.75 0 001.449.39 5.5 5.5 0 019.201-2.466l.312.312H11.75a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
+                {t("subscription.reactivate_subscription")}
+              </button>
+            </div>
+          )}
           {/* Plan Header with Time Remaining */}
           <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 md:p-8 border-b border-border">
             <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
@@ -71,11 +214,7 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
                   </p>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-4">
-                  {t(
-                    mySubscription?.plan?.name ||
-                      mySubscription?.planId ||
-                      "Unknown Plan"
-                  )}
+                  {mySubscription?.plan?.name || mySubscription?.planId}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
                   <span
@@ -323,32 +462,6 @@ function SubscriptionCard({ mySubscription }: SubscriptionCardProps) {
                     </div>
                   )}
                 </div>
-
-                {isCancelled && (
-                  <button
-                    onClick={handleReactivate}
-                    disabled={isReactivating}
-                    className="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg shadow-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
-                    {isReactivating ? (
-                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        className="w-4 h-4"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0v2.433l-.31-.31a7 7 0 00-11.712 3.138.75.75 0 001.449.39 5.5 5.5 0 019.201-2.466l.312.312H11.75a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    )}
-                    {t("subscription.reactivate_subscription")}
-                  </button>
-                )}
               </div>
             )}
         </div>

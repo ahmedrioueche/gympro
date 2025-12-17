@@ -63,6 +63,11 @@ async function run() {
         USD: { monthly: 16, yearly: 160 },
         DZD: { monthly: 2500, yearly: 25000 },
       },
+      paddleProductId: 'pro_01kcmb7nfehz9cggs5r8cvc6tf',
+      paddlePriceIds: {
+        monthly: 'pri_01kcmbm4wfpqwwegz0m8tg6hfq',
+        yearly: 'pri_01kcmbm4wfpqwwegz0m8tg6hfq',
+      },
       limits: { maxGyms: 1, maxMembers: 300, maxGems: 100 },
       features: [
         'plan.starter.feature.everything_free',
@@ -87,6 +92,11 @@ async function run() {
         EUR: { monthly: 30, yearly: 300 },
         USD: { monthly: 32, yearly: 320 },
         DZD: { monthly: 4500, yearly: 45000 },
+      },
+      paddleProductId: 'pro_01kcmc9wqxgmkpqgdcd0zneemk',
+      paddlePriceIds: {
+        monthly: 'pri_01kcmcdqp97degdvapfgvagjhk',
+        yearly: 'pri_01kcmcgaj9pm5px8thx21d9kv9',
       },
       limits: { maxGyms: 3, maxMembers: 1000, maxGems: 500 },
       features: [
@@ -114,6 +124,11 @@ async function run() {
         USD: { monthly: 64, yearly: 640 },
         DZD: { monthly: 9000, yearly: 90000 },
       },
+      paddleProductId: 'pro_01kcmcngynzqne4hk82gcfrtq8',
+      paddlePriceIds: {
+        monthly: 'pri_01kcmcqrscpry1fwpew33xtf1s',
+        yearly: 'pri_01kcmcsf8x20hexgzbg5t0tem4',
+      },
       limits: { maxGyms: 10, maxMembers: 2000, maxGems: 2000 },
       features: [
         'plan.premium.feature.everything_pro',
@@ -140,6 +155,10 @@ async function run() {
         USD: { oneTime: 320 },
         DZD: { oneTime: 45000 },
       },
+      paddleProductId: 'pro_01kcmd9jn8e0r2q2qrqnrh6fgr',
+      paddlePriceIds: {
+        oneTime: 'pri_01kcmdc4wna170yk68bchfjvcp',
+      },
       limits: { maxGyms: 1, maxMembers: 300, maxGems: 100 },
       features: [
         'plan.starter.feature.everything_free',
@@ -162,6 +181,10 @@ async function run() {
         EUR: { oneTime: 600 },
         USD: { oneTime: 640 },
         DZD: { oneTime: 90000 },
+      },
+      paddleProductId: 'pro_01kcmdemc28prxaqm9wk801et7',
+      paddlePriceIds: {
+        oneTime: 'pri_01kcmdhn0d4q5jcyq5rbcasgft',
       },
       limits: { maxGyms: 3, maxMembers: 1000, maxGems: 500 },
       features: [
@@ -186,6 +209,10 @@ async function run() {
         EUR: { oneTime: 1200 },
         USD: { oneTime: 1280 },
         DZD: { oneTime: 180000 },
+      },
+      paddleProductId: 'pro_01kcmdm2jcy1y3hm33310b0xam',
+      paddlePriceIds: {
+        oneTime: 'pri_01kcmdp0rtfrk03kjxzrx23hac',
       },
       limits: { maxGyms: 10, maxMembers: 2000, maxGems: 2000 },
       features: [

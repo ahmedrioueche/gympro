@@ -23,14 +23,11 @@ export class I18nService {
    */
   private loadTranslations() {
     const localesPath = path.join(__dirname, 'locales');
-    console.log({ localesPath });
 
     for (const lang of SUPPORTED_LANGUAGES) {
       try {
         const filePath = path.join(localesPath, `${lang}.json`);
-        console.log({ filePath });
         const fileContent = fs.readFileSync(filePath, 'utf-8');
-        console.log({ fileContent });
 
         this.translations[lang] = JSON.parse(fileContent);
       } catch (error) {

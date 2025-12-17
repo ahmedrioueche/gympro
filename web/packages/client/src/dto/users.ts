@@ -1,3 +1,5 @@
+import { SupportedCurrency, PaymentMethod } from "../types/common";
+
 export interface CompleteOnboardingDto {
   role: string;
   gymName?: string;
@@ -6,14 +8,28 @@ export interface CompleteOnboardingDto {
   username?: string;
   age?: string;
   gender?: string;
+  region?: string;
+  regionName?: string;
+  currency?: string;
+  timezone?: string;
+}
+
+export interface RegionDetectionResult {
+  region: string;
+  regionName: string;
+  currency: SupportedCurrency;
+  timezone?: string;
 }
 
 export interface CreateMemberDto {
   email?: string;
   phoneNumber?: string;
-  name?: string;
   fullName?: string;
   gender?: string;
   age?: string;
   gymId: string;
+  // Subscription fields
+  subscriptionTypeId?: string;
+  subscriptionStartDate?: string;
+  paymentMethod?: PaymentMethod;
 }

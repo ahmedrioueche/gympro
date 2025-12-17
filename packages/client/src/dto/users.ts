@@ -1,4 +1,4 @@
-import { AppCurrency, PaymentMethod } from "../types/common";
+import { SupportedCurrency, PaymentMethod } from "../types/common";
 
 export interface CompleteOnboardingDto {
   role: string;
@@ -17,7 +17,7 @@ export interface CompleteOnboardingDto {
 export interface RegionDetectionResult {
   region: string;
   regionName: string;
-  currency: AppCurrency;
+  currency: SupportedCurrency;
   timezone?: string;
 }
 

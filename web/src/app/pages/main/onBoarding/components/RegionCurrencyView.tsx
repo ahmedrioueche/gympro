@@ -1,21 +1,22 @@
 import {
   CURRENCY_SYMBOLS,
-  type AppCurrency,
+  type SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
-import { Globe } from "lucide-react";
+import { Globe, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../../../components/ui/CustomSelect";
-import { getSupportedRegions } from "../../../../../utils/regionDetection";
+import { getSupportedRegions } from "../../../../../lib/api/regionDetection";
 
 interface RegionCurrencyViewProps {
   selectedRegion: string;
-  selectedCurrency: AppCurrency;
+  selectedCurrency: SupportedCurrency;
   onRegionChange: (
     region: string,
     regionName: string,
-    currency: AppCurrency
+    currency: SupportedCurrency
   ) => void;
   onNext: () => void;
+  isDetecting?: boolean;
 }
 
 export function RegionCurrencyView({
@@ -23,10 +24,11 @@ export function RegionCurrencyView({
   selectedCurrency,
   onRegionChange,
   onNext,
+  isDetecting,
 }: RegionCurrencyViewProps) {
   const { t } = useTranslation();
   const regions = getSupportedRegions();
-
+  console.log({ selectedRegion });
   const regionOptions = regions.map((r) => ({
     value: r.code,
     label: r.name,
@@ -52,16 +54,17 @@ export function RegionCurrencyView({
         <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
           {t("onboarding.regionCurrency.title")}
         </h2>
-      </div>
+        <p className="text-sm text-text-secondary max-w-md mx-auto">
+          {t("onboarding.regionCurrency.info")}
+        </p>
 
-      {/* Default Currency Display */}
-      <div className="mb-6 p-4 bg-surface rounded-xl border border-border">
-        <p className="text-sm text-text-secondary mb-1">
-          {t("onboarding.regionCurrency.defaultCurrency")}
-        </p>
-        <p className="text-2xl font-bold text-text-primary">
-          {CURRENCY_SYMBOLS[selectedCurrency]} ({selectedCurrency})
-        </p>
+        {/* Detection Status */}
+        {isDetecting && (
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-4">
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent"></div>
+            <span>{t("onboarding.regionCurrency.detecting")}</span>
+          </div>
+        )}
       </div>
 
       {/* Region Selector */}
@@ -72,10 +75,12 @@ export function RegionCurrencyView({
         onChange={handleRegionChange}
       />
 
+      {/* Detect Location Button */}
       {/* Confirm Button */}
       <button
         onClick={onNext}
-        className="w-full p-4 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25 mt-6"
+        disabled={isDetecting}
+        className="w-full p-4 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25 mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {t("onboarding.regionCurrency.confirm")}
       </button>

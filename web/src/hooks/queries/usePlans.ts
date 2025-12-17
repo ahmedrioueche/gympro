@@ -3,6 +3,9 @@ import {
   type AppSubscriptionBillingCycle,
 } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import { getMessage, showStatusToast } from "../../utils/statusMessage";
 
 export const planKeys = {
   all: ["plans"] as const,
@@ -33,19 +36,23 @@ export const useMySubscription = () => {
   });
 };
 
-export const useSubscribeToPlan = () => {
+export const useDowngradeSubscription = () => {
   const qc = useQueryClient();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({
       planId,
       billingCycle,
     }: {
       planId: string;
-      billingCycle: AppSubscriptionBillingCycle;
+      billingCycle?: AppSubscriptionBillingCycle;
     }) => {
-      const res = await appSubscriptionsApi.subscribeToPlan(planId, {
-        billingCycle,
-      });
+      const res = await appSubscriptionsApi.downgradeSubscription(
+        planId,
+        billingCycle
+      );
+      const msg = getMessage(res, t);
+      showStatusToast(msg, toast);
       return res;
     },
     onSuccess: () => {
@@ -60,6 +67,20 @@ export const useReactivateSubscription = () => {
   return useMutation({
     mutationFn: async () => {
       const res = await appSubscriptionsApi.reactivateSubscription();
+      return res;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: planKeys.mySubscription() });
+      qc.invalidateQueries({ queryKey: planKeys.subscription() });
+    },
+  });
+};
+
+export const useCancelPendingChange = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const res = await appSubscriptionsApi.cancelPendingChange();
       return res;
     },
     onSuccess: () => {
