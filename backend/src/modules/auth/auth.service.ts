@@ -110,26 +110,26 @@ export class AuthService {
     await newUser.save();
 
     // Send verification email
-    if (email && verificationToken) {
-      const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
-        token: verificationToken,
-      });
-
-      await this.notificationService.notifyUser(newUser, {
-        key: 'auth.verify',
-        vars: { verifyUrl: verificationUrl },
-        sendSms: false,
-      });
-    }
-
-    // Send OTP for phone verification
-    if (phoneNumber) {
-      try {
-        await this.otpService.sendOTP(phoneNumber, newUser._id.toString());
-      } catch (error) {
-        this.logger.error(`Failed to send OTP to ${phoneNumber}: ${error}`);
-      }
-    }
+    //if (email && verificationToken) {
+    //  const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
+    //    token: verificationToken,
+    //  });
+    //
+    //  await this.notificationService.notifyUser(newUser, {
+    //    key: 'auth.verify',
+    //    vars: { verifyUrl: verificationUrl },
+    //    sendSms: false,
+    //  });
+    //}
+    //
+    //// Send OTP for phone verification
+    //if (phoneNumber) {
+    //  try {
+    //    await this.otpService.sendOTP(phoneNumber, newUser._id.toString());
+    //  } catch (error) {
+    //    this.logger.error(`Failed to send OTP to ${phoneNumber}: ${error}`);
+    //  }
+    //}
 
     // Auto-subscribe to free plan
     await this.autoSubscribeToFreePlan(newUser._id.toString());
