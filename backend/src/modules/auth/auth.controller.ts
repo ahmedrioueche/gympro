@@ -361,57 +361,53 @@ export class AuthController {
   // -----------------------------
   // Helper methods for cookie management
   // -----------------------------
+
+  private getCookieOptions(maxAge?: number) {
+    const isProduction = process.env.NODE_ENV === 'prod';
+
+    return {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? ('none' as const) : ('lax' as const),
+      partitioned: true,
+      path: '/',
+      ...(maxAge && { maxAge }),
+    };
+  }
+
   private setAuthCookies(
     res: Response,
     accessToken: string,
     refreshToken: string,
     rememberMe: boolean = false,
   ) {
-    const isProduction = process.env.NODE_ENV === 'prod';
-    console.log('process.env.NODE_ENV', process.env.NODE_ENV);
-    console.log('isProduction', isProduction);
+    res.cookie(
+      'accessToken',
+      accessToken,
+      this.getCookieOptions(
+        rememberMe ? 7 * 24 * 60 * 60 * 1000 : 15 * 60 * 1000,
+      ),
+    );
 
-    const cookieOptions = {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? ('none' as const) : ('lax' as const),
-      path: '/',
-    };
-
-    res.cookie('accessToken', accessToken, {
-      ...cookieOptions,
-      maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 15 * 60 * 1000,
-    });
-
-    res.cookie('refreshToken', refreshToken, {
-      ...cookieOptions,
-      maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie(
+      'refreshToken',
+      refreshToken,
+      this.getCookieOptions(
+        rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000,
+      ),
+    );
   }
 
   private setAccessTokenCookie(res: Response, accessToken: string) {
-    const isProduction = process.env.NODE_ENV === 'prod';
-
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? ('none' as const) : ('lax' as const),
-      path: '/',
-      maxAge: 15 * 60 * 1000,
-    });
+    res.cookie(
+      'accessToken',
+      accessToken,
+      this.getCookieOptions(15 * 60 * 1000),
+    );
   }
 
   private clearAuthCookies(res: Response) {
-    const isProduction = process.env.NODE_ENV === 'prod';
-
-    const cookieOptions = {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? ('none' as const) : ('lax' as const),
-      path: '/',
-    };
-
-    res.clearCookie('accessToken', cookieOptions);
-    res.clearCookie('refreshToken', cookieOptions);
+    res.clearCookie('accessToken', this.getCookieOptions());
+    res.clearCookie('refreshToken', this.getCookieOptions());
   }
 }
