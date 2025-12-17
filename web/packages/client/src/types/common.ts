@@ -7,10 +7,10 @@ export const PAYMENT_METHODS = [
 ] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
-export const APP_CURRENCIES = ["USD", "EUR", "DZD"] as const;
-export type AppCurrency = (typeof APP_CURRENCIES)[number];
+export const SUPPORTED_CURRENCIES = ["USD", "EUR", "DZD"] as const;
+export type SupportedCurrency = (typeof SUPPORTED_CURRENCIES)[number];
 
-export const CURRENCY_SYMBOLS: Record<AppCurrency, string> = {
+export const CURRENCY_SYMBOLS: Record<SupportedCurrency, string> = {
   USD: "$",
   EUR: "€",
   DZD: "دج",

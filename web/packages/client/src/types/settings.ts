@@ -1,4 +1,3 @@
-import { SupportedCurrency } from "./common";
 import { AppLanguage } from "./local";
 
 export const THEME_OPTIONS = ["light", "dark", "auto"] as const;
@@ -12,7 +11,7 @@ export interface NotificationSettings {
 
 export interface LocaleSettings {
   language: AppLanguage;
-  currency: SupportedCurrency;
+  currency: string;
   timezone?: string;
   region?: string;
   regionName?: string;

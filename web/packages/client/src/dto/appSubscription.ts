@@ -17,6 +17,12 @@ export interface CreateAppPlanDto {
   name: string;
   description?: string;
   pricing: AppPlanPricing;
+  paddleProductId?: string;
+  paddlePriceIds?: {
+    monthly?: string;
+    yearly?: string;
+    oneTime?: string;
+  };
   trialDays?: number;
   limits: {
     maxGyms?: number;
@@ -36,7 +42,12 @@ export interface UpdateAppPlanDto {
   name?: string;
   description?: string;
   pricing?: AppPlanPricing;
-
+  paddleProductId?: string;
+  paddlePriceIds?: {
+    monthly?: string;
+    yearly?: string;
+    oneTime?: string;
+  };
   trialDays?: number;
   limits?: {
     maxGyms?: number;

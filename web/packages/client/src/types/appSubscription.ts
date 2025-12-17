@@ -1,4 +1,4 @@
-import { SupportedCurrency, AuditInfo, PaymentMethod } from "./common";
+import { AuditInfo, PaymentMethod, SupportedCurrency } from "./common";
 
 export const APP_PLAN_TYPES = ["subscription", "oneTime"] as const;
 export const APP_SUBSCRIPTION_BILLING_CYCLES = [
@@ -56,6 +56,12 @@ export interface AppPlan extends AuditInfo {
   name: string;
   description?: string;
   pricing: AppPlanPricing;
+  paddleProductId?: string;
+  paddlePriceIds?: {
+    monthly?: string;
+    yearly?: string;
+    oneTime?: string;
+  };
   trialDays?: number; // only for subscription plans
 
   // flexible limits

@@ -1,7 +1,7 @@
 import type {
-  SupportedCurrency,
   RegionCode,
   RegionDetectionResult,
+  SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
 import {
   DEFAULT_REGION,
@@ -35,7 +35,7 @@ export async function detectRegion(): Promise<RegionDetectionResult> {
 /**
  * Map region code to currency
  */
-export function mapRegionToCurrency(regionCode: string): SupportedCurrency {
+export function mapRegionToCurrency(regionCode: string): string {
   const code = regionCode.toUpperCase() as RegionCode;
   const region = SUPPORTED_REGIONS[code];
   return region?.currency || "DZD";
