@@ -25,13 +25,15 @@ const getAllowedOrigins = (): (string | RegExp)[] => {
       /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$/,
       /^http:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}:\d+$/,
     );
-  } else {
-    // Production origins
-    origins.push(
-      process.env.PROD_FRONTEND_URL || 'https://gympro-power.vercel.app',
-      process.env.PROD_DESKTOP_URL || 'https://desktop.gympro-power.com',
-    );
   }
+  origins.push(
+    process.env.PROD_FRONTEND_URL || 'https://gympro-power.vercel.app',
+    process.env.PROD_DESKTOP_URL || 'https://desktop.gympro-power.com',
+    // ✅ ADD THIS: Allow ALL Vercel preview deployments
+    /^https:\/\/gympro-[a-z0-9]+-ahmeds-projects-[a-z0-9]+\.vercel\.app$/,
+    // ✅ ADD THIS: Allow ALL Vercel app deployments
+    /^https:\/\/gympro-.*\.vercel\.app$/,
+  );
 
   // Custom scheme for mobile deep links (if needed for some endpoints)
   const mobileScheme = process.env.PROD_MOBILE_URL || 'gympro://';
