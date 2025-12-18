@@ -52,6 +52,8 @@ export interface SignupData {
 
 export interface SigninData {
   user: User;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface GetMeData {

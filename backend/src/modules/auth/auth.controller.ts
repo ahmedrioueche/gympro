@@ -369,7 +369,6 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? ('none' as const) : ('lax' as const),
-      partitioned: true,
       path: '/',
       ...(maxAge && { maxAge }),
     };
