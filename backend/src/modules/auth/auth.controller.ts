@@ -31,6 +31,7 @@ import type { Response } from 'express';
 import { ClientPlatform } from 'src/common/decorators/platform.decorator';
 import { buildRedirectUrl, Platform } from 'src/common/utils/platform.util';
 import {
+  RefreshDto,
   ResendVerificationDto,
   SendOtpDto,
   SetupAccountDto,
@@ -89,11 +90,15 @@ export class AuthController {
   @Post('refresh')
   async refresh(
     @Req() req: any,
+    @Body() dto: RefreshDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<ApiResponse<RefreshData>> {
-    const refreshToken = req.cookies?.refreshToken;
+    const refreshToken = req.cookies?.refreshToken || dto.refreshToken;
     if (!refreshToken) {
-      throw new UnauthorizedException('No refresh token provided');
+      throw new UnauthorizedException({
+        message: 'No refresh token provided',
+        errorCode: 'AUTH_001',
+      });
     }
 
     const { accessToken } = await this.authService.refresh(refreshToken);
@@ -218,6 +223,8 @@ export class AuthController {
         '/auth/callback',
         {
           success: 'true',
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
         },
       );
 

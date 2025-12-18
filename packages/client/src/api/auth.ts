@@ -66,8 +66,10 @@ export const authApi = {
   /** Refresh token */
   refresh: async (): Promise<ApiResponse<RefreshData>> => {
     try {
+      const refreshToken = TokenManager.getRefreshToken();
       const res = await apiClient.post<ApiResponse<RefreshData>>(
-        "/auth/refresh"
+        "/auth/refresh",
+        { refreshToken }
       );
       if (res.data.success && res.data.data) {
         TokenManager.setAccessToken(res.data.data.accessToken);
@@ -107,6 +109,12 @@ export const authApi = {
         "/auth/verify-email",
         dto
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setTokens(
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);

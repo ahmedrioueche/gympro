@@ -62,6 +62,8 @@ export const AuthCallbackRoute = createRoute({
   validateSearch: (search: Record<string, unknown>) => ({
     success: search.success as string | undefined,
     error: search.error as string | undefined,
+    accessToken: search.accessToken as string | undefined,
+    refreshToken: search.refreshToken as string | undefined,
   }),
 });
 

@@ -49,6 +49,7 @@ export class SignupDto implements ISignupDto {
 }
 
 export class RefreshDto implements IRefreshDto {
+  @IsOptional()
   @IsString()
   refreshToken: string;
 }

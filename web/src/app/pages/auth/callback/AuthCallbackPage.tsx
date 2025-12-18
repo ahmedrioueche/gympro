@@ -1,4 +1,4 @@
-import { UserRole } from "@ahmedrioueche/gympro-client";
+import { TokenManager, UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { t } from "i18next";
 import { useEffect } from "react";
@@ -9,12 +9,19 @@ import { getCurrentUser } from "../../../../utils";
 import { getRoleHomePage } from "../../../../utils/roles";
 
 export function AuthCallbackPage() {
-  const { success, error } = useSearch({ from: "/auth/callback" });
+  const { success, error, accessToken, refreshToken } = useSearch({
+    from: "/auth/callback",
+  });
   const navigate = useNavigate();
   const { setUser } = useUserStore();
 
   useEffect(() => {
     const handleCallback = async () => {
+      // If we have tokens in the URL, save them first
+      if (accessToken && refreshToken) {
+        TokenManager.setTokens(accessToken, refreshToken);
+      }
+
       if (success === "false" || error) {
         toast.error(
           t(`status.error.auth.${error}`) ||
