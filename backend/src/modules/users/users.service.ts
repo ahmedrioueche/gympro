@@ -439,21 +439,20 @@ export class UsersService {
     user.profile.isOnBoarded = true;
     await user.save();
 
-    // Send welcome notification after onboarding completion
-    try {
-      await this.notificationService.notifyUser(user, {
+    // Send welcome notification after onboarding completion (background task)
+    this.notificationService
+      .notifyUser(user, {
         key: 'onboarding.completed',
         vars: {
           name: user.profile?.fullName || user.profile?.email || 'User',
           trialDays: DEFAULT_TRIAL_DAYS_NUMBER.toString(),
         },
+      })
+      .catch((error) => {
+        this.logger.error(
+          `Failed to send onboarding completion notification to user ${userId}: ${error.message}`,
+        );
       });
-    } catch (error) {
-      this.logger.error(
-        `Failed to send onboarding completion notification to user ${userId}: ${error.message}`,
-      );
-      // Don't throw error - notification failure shouldn't prevent onboarding completion
-    }
 
     return this.sanitizeUser(user);
   }

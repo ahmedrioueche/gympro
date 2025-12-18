@@ -332,11 +332,15 @@ export class AuthService {
       token: verificationToken,
     });
 
-    await this.notificationService.notifyUser(user, {
-      key: 'auth.verify',
-      vars: { verifyUrl: verificationUrl },
-      sendSms: false,
-    });
+    this.notificationService
+      .notifyUser(user, {
+        key: 'auth.verify',
+        vars: { verifyUrl: verificationUrl },
+        sendSms: false,
+      })
+      .catch((err) => {
+        this.logger.error(`Failed to send verification email: ${err.message}`);
+      });
 
     return { message: 'Verification email resent successfully' };
   }
@@ -378,11 +382,17 @@ export class AuthService {
         token: resetToken,
       });
 
-      await this.notificationService.notifyUser(user, {
-        key: 'auth.reset_password',
-        vars: { resetUrl },
-        sendSms: false,
-      });
+      this.notificationService
+        .notifyUser(user, {
+          key: 'auth.reset_password',
+          vars: { resetUrl },
+          sendSms: false,
+        })
+        .catch((err) => {
+          this.logger.error(
+            `Failed to send reset password email: ${err.message}`,
+          );
+        });
     }
 
     return { message, method: isPhone ? 'phone' : 'email' };
