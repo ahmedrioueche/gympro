@@ -39,6 +39,11 @@ function LoginPage() {
   const { setUser } = useUserStore();
   const { isDark } = useTheme();
   const phone = usePhoneNumber(DEFAULT_COUNTRY_CODE);
+  const { setMode } = useTheme();
+
+  useEffect(() => {
+    setMode("dark");
+  }, []);
 
   // Check for Google OAuth error in URL
   useEffect(() => {
@@ -130,7 +135,6 @@ function LoginPage() {
       });
 
       const statusMessage = getMessage(response, t);
-
       showStatusToast(statusMessage, toast);
 
       if (response.success) {
@@ -147,7 +151,7 @@ function LoginPage() {
         showStatusToast(statusMessage, toast);
       } else {
         // Handle unexpected errors
-        toast.error(t("status.error.unexpected"));
+        toast.error(error?.message || t("status.error.unexpected"));
       }
     } finally {
       setIsLoading(false);

@@ -1,22 +1,25 @@
-import { authApi } from "@ahmedrioueche/gympro-client";
+import { authApi, UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowRight, RefreshCw, Smartphone } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Hero from "../../../../components/Hero";
+import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
 import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputField";
 import { bgGradient } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
+import { useUserStore } from "../../../../store/user";
 import { formatPhoneForDisplay } from "../../../../utils/phone.util";
+import { getRoleHomePage } from "../../../../utils/roles";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
-import AuthHeader from "../components/AuthHeader";
 
 function PhoneVerificationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isDark } = useTheme();
+  const { setUser } = useUserStore();
 
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -56,28 +59,34 @@ function PhoneVerificationPage() {
     try {
       const response = await authApi.verifyOtp(phoneNumber, otp);
 
-      const statusMessage = getMessage(response, t);
+      if (response.success && response.data) {
+        const { user } = response.data;
+        setUser(user);
 
-      showStatusToast(statusMessage, toast);
+        const statusMessage = getMessage(response, t);
 
-      if (response.success) {
-        // After verification, we might need to fetch the user profile or login
-        // For now, let's assume the user needs to login again or we can auto-login if the backend supported it
-        // But the verifyOtp endpoint returns userId.
-        // Ideally, we should auto-login.
-        // Since verifyOtp doesn't return a token, we redirect to login page with a success message
-        // OR we could modify the backend to return tokens on verification.
-        // For now, let's redirect to login.
+        showStatusToast(
+          statusMessage || {
+            status: "success",
+            message: t("auth.phone_verified_success"),
+          },
+          toast
+        );
 
-        toast.success(t("auth.phone_verified_success"));
-        navigate({ to: "/auth/login" });
+        // Redirect based on user onboarding status
+        if (user.profile.isOnBoarded) {
+          const url = getRoleHomePage(user.role as UserRole);
+          navigate({ to: url });
+        } else {
+          navigate({ to: "/onboarding" });
+        }
       }
     } catch (error: any) {
       if (error?.statusCode) {
         const statusMessage = getMessage(error, t);
         showStatusToast(statusMessage, toast);
       } else {
-        toast.error(t("status.error.unexpected"));
+        toast.error(error?.message || t("status.error.unexpected"));
       }
     } finally {
       setIsLoading(false);
@@ -123,7 +132,7 @@ function PhoneVerificationPage() {
       <div className="overflow-y-auto flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
-            <AuthHeader />
+            <AnimatedLogo />
             <h2 className="mt-6 text-3xl font-extrabold text-text-primary">
               {t("auth.verify_phone")}
             </h2>

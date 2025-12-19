@@ -2,7 +2,7 @@ import {
   CURRENCY_SYMBOLS,
   type SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
-import { Globe, MapPin } from "lucide-react";
+import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../../../components/ui/CustomSelect";
 import { getSupportedRegions } from "../../../../../lib/api/regionDetection";
@@ -54,7 +54,7 @@ export function RegionCurrencyView({
         <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
           {t("onboarding.regionCurrency.title")}
         </h2>
-        <p className="text-sm text-text-secondary max-w-md mx-auto">
+        <p className="text-sm text-text-secondary max-w-sm mx-auto">
           {t("onboarding.regionCurrency.info")}
         </p>
 

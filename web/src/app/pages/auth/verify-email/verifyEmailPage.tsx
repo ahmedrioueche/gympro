@@ -6,6 +6,7 @@ import ErrorSection from "../../../../components/ui/ErrorSection";
 import LoadingPage from "../../../../components/ui/LoadingPage";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { getRoleHomePage } from "../../../../utils/roles";
+import { getMessage } from "../../../../utils/statusMessage";
 
 const VERIFY_SUCCESS_REDIRECT_DELAY = 3000;
 
@@ -33,12 +34,10 @@ const VerifyEmailPage: React.FC = () => {
       .then((res) => {
         console.log("Verify email response:", res); // Debug log
 
-        if (res) {
+        if (res?.success) {
           isSuccessRef.current = true;
           setStatus("success");
-          setSuccessMessage(
-            res.message || t("auth.verifyEmail.successMessage")
-          );
+          setSuccessMessage(t("auth.verifyEmail.successMessage"));
 
           // Store user data for automatic authentication
           if (res.data.user) {
@@ -64,7 +63,8 @@ const VerifyEmailPage: React.FC = () => {
           // Only set error if not already in success state
           if (!isSuccessRef.current) {
             setStatus("error");
-            setError(res?.message || t("auth.verifyEmail.error"));
+            const msg = getMessage(res, t);
+            setError(msg.message || t("auth.verifyEmail.error"));
           }
         }
       })
@@ -73,7 +73,8 @@ const VerifyEmailPage: React.FC = () => {
         // Only set error if not already in success state
         if (!isSuccessRef.current) {
           setStatus("error");
-          setError(err?.message || t("auth.verifyEmail.error"));
+          const msg = getMessage(err, t);
+          setError(msg.message || err?.message || t("auth.verifyEmail.error"));
         }
       });
   }, [search, t, router]);
@@ -85,7 +86,7 @@ const VerifyEmailPage: React.FC = () => {
     return <ErrorSection message={error} />;
   }
   return (
-    <div className="min-h-screen bg-background text-text-primary flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen text-text-primary flex flex-col items-center justify-center px-4">
       <div className="max-w-xl w-full text-center">
         {/* Success Icon Section */}
         <div className="mb-8 animate-bounce">

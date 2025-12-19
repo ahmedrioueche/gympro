@@ -84,53 +84,75 @@ export class NotificationService {
     this.logger.log(`Resolved subject: ${subject}`);
 
     // Send Email
-    if (shouldSendEmail && user.profile?.email) {
-      try {
-        const subject = this.i18nService.t(
-          emailSubjectKey,
-          language,
-          commonVars,
-        );
-        const emailBody = this.i18nService.t(
-          emailBodyKey,
-          language,
-          commonVars,
-        );
+    if (shouldSendEmail) {
+      if (user.profile?.email) {
+        this.logger.log(`Attempting to send email to ${user.profile.email}...`);
+        try {
+          const emailSubject = this.i18nService.t(
+            emailSubjectKey,
+            language,
+            commonVars,
+          );
+          const emailBody = this.i18nService.t(
+            emailBodyKey,
+            language,
+            commonVars,
+          );
 
-        await this.mailerService.sendMail(
-          user.profile.email,
-          subject,
-          emailBody,
-        );
-      } catch (error) {
-        this.logger.error(
-          `Failed to send email to ${user.profile.email}: ${error}`,
+          await this.mailerService.sendMail(
+            user.profile.email,
+            emailSubject,
+            emailBody,
+          );
+          this.logger.log(
+            `✅ Email sent successfully to ${user.profile.email}`,
+          );
+        } catch (error) {
+          this.logger.error(
+            `❌ Failed to send email to ${user.profile.email}: ${error.message}`,
+          );
+        }
+      } else {
+        this.logger.warn(
+          `Skipping email notification: User has no email in profile`,
         );
       }
     }
 
     // Send SMS
-    if (shouldSendSms && user.profile?.phoneNumber) {
-      try {
-        let smsMessage: string;
-        if (this.i18nService.exists(smsBodyKey, language)) {
-          smsMessage = this.i18nService.t(smsBodyKey, language, commonVars);
-        } else {
-          // Fallback to email body and strip HTML
-          smsMessage = this.i18nService
-            .t(emailBodyKey, language, commonVars)
-            .replace(/<[^>]*>/g, '')
-            .substring(0, 160);
-        }
-
-        await this.smsService.send(
-          user.profile.phoneNumber,
-          'GymPro',
-          smsMessage,
+    if (shouldSendSms) {
+      if (user.profile?.phoneNumber) {
+        this.logger.log(
+          `Attempting to send SMS to ${user.profile.phoneNumber}...`,
         );
-      } catch (error) {
-        this.logger.error(
-          `Failed to send SMS to ${user.profile.phoneNumber}: ${error}`,
+        try {
+          let smsMessage: string;
+          if (this.i18nService.exists(smsBodyKey, language)) {
+            smsMessage = this.i18nService.t(smsBodyKey, language, commonVars);
+          } else {
+            // Fallback to email body and strip HTML
+            smsMessage = this.i18nService
+              .t(emailBodyKey, language, commonVars)
+              .replace(/<[^>]*>/g, '')
+              .substring(0, 160);
+          }
+
+          await this.smsService.send(
+            user.profile.phoneNumber,
+            'GymPro',
+            smsMessage,
+          );
+          this.logger.log(
+            `✅ SMS sent successfully to ${user.profile.phoneNumber}`,
+          );
+        } catch (error) {
+          this.logger.error(
+            `❌ Failed to send SMS to ${user.profile.phoneNumber}: ${error.message}`,
+          );
+        }
+      } else {
+        this.logger.warn(
+          `Skipping SMS notification: User has no phone number in profile`,
         );
       }
     }

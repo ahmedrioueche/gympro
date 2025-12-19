@@ -1,8 +1,10 @@
 import { useTranslation } from "react-i18next";
 import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
+import useScreen from "../../../../hooks/useScreen";
 
 const AuthHeader = ({ type = "login" }: { type?: "login" | "signup" }) => {
   const { t } = useTranslation();
+  const { isMobile } = useScreen();
 
   const title =
     type === "login" ? t("auth.welcome_back") : t("auth.create_account");
@@ -12,7 +14,7 @@ const AuthHeader = ({ type = "login" }: { type?: "login" | "signup" }) => {
 
   return (
     <div className="text-center overflow-hidden">
-      <AnimatedLogo />
+      <AnimatedLogo leftPosition={`${isMobile ? "40%" : "50%"}`} />
       {title && (
         <h2 className="text-xl md:text-3xl font-bold text-text-primary animate-fade-in">
           {title}

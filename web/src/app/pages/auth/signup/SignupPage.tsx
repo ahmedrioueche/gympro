@@ -1,7 +1,7 @@
 import { authApi } from "@ahmedrioueche/gympro-client";
 import { Link } from "@tanstack/react-router";
 import { Key, Lock, Mail, Phone } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { COUNTRY_CODES } from "../../../../../../packages/client/src/constants/countryCodes";
@@ -35,7 +35,11 @@ function SignupPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const { setUser } = useUserStore();
-  const { isDark } = useTheme();
+  const { isDark, setMode } = useTheme();
+
+  useEffect(() => {
+    setMode("dark");
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -102,6 +106,10 @@ function SignupPage() {
         setUser(response.data.user);
 
         if (method === "email") {
+          // Store signup session data for EmailSentPage protection
+          sessionStorage.setItem("signupEmail", formData.email);
+          sessionStorage.setItem("signupTimestamp", Date.now().toString());
+
           window.location.href = `${
             APP_PAGES.email_sent.link
           }?email=${encodeURIComponent(formData.email)}`;

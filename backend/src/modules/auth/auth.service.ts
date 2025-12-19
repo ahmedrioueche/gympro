@@ -40,6 +40,26 @@ export class AuthService {
     private otpService: OtpService,
   ) {}
 
+  // --- LOGIN BY ID (for automatic login after verification) ---
+  async loginById(userId: string) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user || !user.profile.isActive) {
+      throw new UnauthorizedException({
+        message: 'Account is deactivated or not found',
+        errorCode: ErrorCode.ACCOUNT_DEACTIVATED,
+      });
+    }
+
+    const { accessToken, refreshToken } = this.generateTokens(user, false);
+
+    return {
+      user: this.sanitizeUser(user),
+      accessToken,
+      refreshToken,
+    };
+  }
+
   // --- SIGNUP ---
   async signup(dto: SignupDto, platform: Platform = Platform.WEB) {
     const { email, phoneNumber, password, username } = dto;
@@ -110,31 +130,38 @@ export class AuthService {
     await newUser.save();
 
     // Send verification email
-    //if (email && verificationToken) {
-    //  const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
-    //    token: verificationToken,
-    //  });
-    //
-    //  await this.notificationService.notifyUser(newUser, {
-    //    key: 'auth.verify',
-    //    vars: { verifyUrl: verificationUrl },
-    //    sendSms: false,
-    //  });
-    //}
-    //
-    //// Send OTP for phone verification
-    //if (phoneNumber) {
-    //  try {
-    //    await this.otpService.sendOTP(phoneNumber, newUser._id.toString());
-    //  } catch (error) {
-    //    this.logger.error(`Failed to send OTP to ${phoneNumber}: ${error}`);
-    //  }
-    //}
+    if (email && verificationToken) {
+      const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
+        token: verificationToken,
+      });
+
+      await this.notificationService.notifyUser(newUser, {
+        key: 'auth.verify',
+        vars: { verifyUrl: verificationUrl },
+        sendSms: false,
+      });
+    }
+
+    // Send OTP for phone verification
+    if (phoneNumber) {
+      try {
+        await this.otpService.sendOTP(phoneNumber, newUser._id.toString());
+      } catch (error) {
+        this.logger.error(`Failed to send OTP to ${phoneNumber}: ${error}`);
+      }
+    }
 
     // Auto-subscribe to free plan
     await this.autoSubscribeToFreePlan(newUser._id.toString());
 
-    return this.sanitizeUser(newUser);
+    // Generate tokens for automatic login
+    const { accessToken, refreshToken } = this.generateTokens(newUser, false);
+
+    return {
+      user: this.sanitizeUser(newUser),
+      accessToken,
+      refreshToken,
+    };
   }
 
   // --- SIGNIN ---

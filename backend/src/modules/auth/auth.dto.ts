@@ -5,6 +5,7 @@ import {
   IResendVerificationDto,
   ISigninDto,
   ISignupDto,
+  IVerifyEmailDto,
   PAYMENT_METHODS,
 } from '@ahmedrioueche/gympro-client';
 import {
@@ -57,6 +58,11 @@ export class RefreshDto implements IRefreshDto {
 export class ResendVerificationDto implements IResendVerificationDto {
   @IsEmail()
   email: string;
+}
+
+export class VerifyEmailDto implements IVerifyEmailDto {
+  @IsString()
+  token: string;
 }
 
 export class GoogleAuthDto implements IGoogleAuthDto {

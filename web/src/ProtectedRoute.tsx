@@ -19,7 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
       if (!user) return router.navigate({ to: "/auth/login" });
       if (!user.profile.isValidated)
-        return router.navigate({ to: "/auth/verify-email" });
+        return router.navigate({ to: "/auth/email-sent" });
       if (!user.profile.isOnBoarded)
         return router.navigate({ to: "/onboarding" });
       // Role-based access: prevent users from accessing routes they're not allowed to

@@ -11,9 +11,10 @@ import type {
   SetupAccountData,
   SigninData,
   SignupData,
+  VerifyEmailData,
   VerifyOtpData,
 } from '@ahmedrioueche/gympro-client';
-import { apiResponse } from '@ahmedrioueche/gympro-client';
+import { apiResponse, ErrorCode } from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -37,6 +38,7 @@ import {
   SetupAccountDto,
   SigninDto,
   SignupDto,
+  VerifyEmailDto,
   VerifyOtpDto,
 } from './auth.dto';
 import { AuthService } from './auth.service';
@@ -55,9 +57,18 @@ export class AuthController {
   async signup(
     @Body() dto: SignupDto,
     @ClientPlatform() platform: Platform,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<ApiResponse<SignupData>> {
-    const user = await this.authService.signup(dto, platform);
-    return apiResponse(true, undefined, { user }, 'Signup successful');
+    const result = await this.authService.signup(dto, platform);
+
+    this.setAuthCookies(
+      res,
+      result.accessToken,
+      result.refreshToken,
+      false, // default to false for signup
+    );
+
+    return apiResponse(true, undefined, result, 'Signup successful');
   }
 
   @Post('signin')
@@ -138,6 +149,23 @@ export class AuthController {
   ): Promise<ApiResponse<ResendVerificationData>> {
     await this.authService.resendVerification(dto.email, req.ip);
     return apiResponse(true, undefined, null, 'Verification email sent');
+  }
+
+  @Post('verify-email')
+  async verifyEmail(
+    @Body() dto: VerifyEmailDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ApiResponse<VerifyEmailData>> {
+    const result = await this.authService.verifyEmail(dto.token);
+
+    this.setAuthCookies(
+      res,
+      result.accessToken,
+      result.refreshToken,
+      false, // default to false
+    );
+
+    return apiResponse(true, undefined, result, 'Email verified successfully');
   }
 
   @Get('validate-setup-token')
@@ -259,33 +287,53 @@ export class AuthController {
     const result = await this.otpService.sendOTP(dto.phoneNumber);
 
     if (!result.success) {
-      return apiResponse(false, undefined, {
-        message: result.message,
-        remainingTime: result.remainingTime,
-      });
+      return apiResponse(
+        false,
+        ErrorCode.INVALID_OTP,
+        {
+          remainingTime: result?.remainingTime,
+        },
+        result.message,
+      );
     }
 
-    return apiResponse(true, undefined, {
-      message: result.message,
-    });
+    return apiResponse(
+      true,
+      undefined,
+      { remainingTime: result?.remainingTime },
+      result.message,
+    );
   }
 
   @Post('verify-otp')
   @Throttle({ short: { limit: 5, ttl: 300000 } }) // 5 requests per 5 minutes
   async verifyOtp(
     @Body() dto: VerifyOtpDto,
-  ): Promise<ApiResponse<VerifyOtpData>> {
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ApiResponse<VerifyOtpData | undefined>> {
     const result = await this.otpService.verifyOTP(dto.phoneNumber, dto.code);
 
     if (!result.success) {
-      return apiResponse(false, undefined, {
-        userId: '',
-        message: result.message,
-      });
+      return apiResponse(
+        false,
+        ErrorCode.INVALID_OTP,
+        undefined,
+        result.message,
+      );
     }
 
+    const loginResult = await this.authService.loginById(result.userId!);
+
+    this.setAuthCookies(
+      res,
+      loginResult.accessToken,
+      loginResult.refreshToken,
+      false, // default to false
+    );
+
     return apiResponse(true, undefined, {
-      userId: result.userId!,
+      ...loginResult,
+      userId: result.userId,
       message: result.message,
     });
   }

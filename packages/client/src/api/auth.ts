@@ -38,6 +38,12 @@ export const authApi = {
         "/auth/signup",
         data
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setTokens(
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -212,6 +218,12 @@ export const authApi = {
         "/auth/verify-otp",
         dto
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setTokens(
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);
