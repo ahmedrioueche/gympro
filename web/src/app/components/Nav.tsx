@@ -1,12 +1,12 @@
 import { authApi } from "@ahmedrioueche/gympro-client";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { LogOut, Menu, Moon, Sun, X } from "lucide-react";
+import { LogOut, Menu, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../constants/navigation";
-import { useTheme } from "../../context/ThemeContext";
 import { useAllMyGyms } from "../../hooks/queries/useGyms";
 import useScreen from "../../hooks/useScreen";
+import { useSidebarStore } from "../../store/sidebar";
 import { useUserStore } from "../../store/user";
 import { getRoleHomePage } from "../../utils/roles";
 import GymSelector from "./GymSelector";
@@ -20,7 +20,7 @@ export default function Nav({ children, sidebarLinks }) {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false); // for mobile
   const [sidebarExpanded, setSidebarExpanded] = useState(false); // for desktop hover
-  const { isDark, toggleMode } = useTheme();
+  const { isPinned, togglePin } = useSidebarStore();
   const sidebarRef = useRef(null);
   const { isMobile } = useScreen();
   const { user, setUser } = useUserStore();
@@ -59,7 +59,7 @@ export default function Nav({ children, sidebarLinks }) {
 
   // Sidebar menu item with light sweep effect
   const SidebarMenuItem = ({ link, isActive }) => {
-    const isCollapsed = !sidebarExpanded && !isMobile;
+    const isCollapsed = !sidebarExpanded && !isMobile && !isPinned;
 
     return (
       <Link
@@ -101,28 +101,55 @@ export default function Nav({ children, sidebarLinks }) {
 
   // Sidebar footer
   const SidebarFooter = () => {
-    const isCollapsed = !sidebarExpanded && !isMobile;
+    const isCollapsed = !sidebarExpanded && !isMobile && !isPinned;
 
     return (
       <div className="flex-shrink-0 p-4">
-        <button
-          onClick={handleLogout}
-          className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all duration-300 bg-danger/20 text-danger hover:bg-danger/30 group`}
-        >
-          {/* Icon - Fixed width */}
-          <LogOut className="w-5 h-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
-
-          {/* Text - absolute positioning */}
-          <span
-            className={`text-sm font-semibold whitespace-nowrap transition-opacity duration-300 ${
-              isCollapsed
-                ? "opacity-0 pointer-events-none absolute"
-                : "opacity-100"
-            }`}
+        {/* Desktop: Pin/Unpin button */}
+        {!isMobile && (
+          <button
+            onClick={togglePin}
+            className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all duration-300 ${
+              isPinned
+                ? "bg-primary/20 text-primary hover:bg-primary/30"
+                : "bg-primary/20 text-text-secondary hover:bg-primary/30 hover:text-text-primary"
+            } group`}
           >
-            {t("actions.logout")}
-          </span>
-        </button>
+            {/* Icon - Fixed width */}
+            {isPinned ? (
+              <PanelLeftClose className="w-5 h-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+            ) : (
+              <PanelLeftOpen className="w-5 h-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+            )}
+
+            {/* Text - absolute positioning */}
+            <span
+              className={`text-sm font-semibold whitespace-nowrap transition-opacity duration-300 ${
+                isCollapsed
+                  ? "opacity-0 pointer-events-none absolute"
+                  : "opacity-100"
+              }`}
+            >
+              {isPinned ? t("sidebar.unpin") : t("sidebar.pin")}
+            </span>
+          </button>
+        )}
+
+        {/* Mobile: Logout button */}
+        {isMobile && (
+          <button
+            onClick={handleLogout}
+            className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all duration-300 bg-danger/20 text-danger hover:bg-danger/30 group`}
+          >
+            {/* Icon - Fixed width */}
+            <LogOut className="w-5 h-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+
+            {/* Text */}
+            <span className={`text-sm font-semibold whitespace-nowrap`}>
+              {t("actions.logout")}
+            </span>
+          </button>
+        )}
       </div>
     );
   };
@@ -130,12 +157,6 @@ export default function Nav({ children, sidebarLinks }) {
   // Top right controls
   const TopRightControls = () => (
     <div className="flex items-center gap-2 md:gap-4 px-4 py-4">
-      <button
-        onClick={toggleMode}
-        className="p-2.5 hidden md:block rounded-xl transition-all duration-300 text-warning hover:bg-surface-hover hover:scale-110"
-      >
-        {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-      </button>
       <NotificationsDropdown
         onNotificationClick={handleNotificationClick}
         onViewAllClick={handleViewAllNotifications}
@@ -159,24 +180,24 @@ export default function Nav({ children, sidebarLinks }) {
             ? "bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900"
             : ""
         }
-    flex-col fixed md:relative z-40 transition-all duration-300 
-   shadow-[2px_0_8px_rgba(0,0,0,0.15)]
+          flex-col fixed md:relative z-40 transition-all duration-300 
+        shadow-[2px_0_8px_rgba(0,0,0,0.15)]
 
     ${
       isMobile
         ? `${sidebarOpen ? "translate-x-0" : "-translate-x-64"} w-64`
-        : sidebarExpanded
+        : sidebarExpanded || isPinned
         ? "w-56"
         : "w-20"
     }`}
-        onMouseEnter={() => !isMobile && setSidebarExpanded(true)}
-        onMouseLeave={() => !isMobile && setSidebarExpanded(false)}
+        onMouseEnter={() => !isMobile && !isPinned && setSidebarExpanded(true)}
+        onMouseLeave={() => !isMobile && !isPinned && setSidebarExpanded(false)}
       >
         {/* Sidebar Header */}
         <div className="flex flex-col">
           <div className="flex items-center justify-between">
             <SidebarAnimatedLogo
-              collapsed={!sidebarExpanded && !isMobile}
+              collapsed={!sidebarExpanded && !isMobile && !isPinned}
               onClick={() => {
                 const url = getRoleHomePage(user.role as any);
                 navigate({ to: url });

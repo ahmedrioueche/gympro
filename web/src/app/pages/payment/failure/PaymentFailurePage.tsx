@@ -12,18 +12,28 @@ function PaymentFailurePage() {
   const { user } = useUserStore();
   const searchParams = useSearch({ strict: false });
   const checkoutId = searchParams.checkout_id as string | undefined;
+  const paddleTransactionId = searchParams._ptxn as string | undefined;
   const errorMessage = searchParams.error as string | undefined;
 
   useEffect(() => {
-    if (!checkoutId) {
+    // If no payment identifiers, redirect to home
+    if (!checkoutId && !paddleTransactionId) {
       redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
       return;
     }
-  }, [checkoutId, navigate, user.role]);
+  }, [checkoutId, paddleTransactionId, navigate, user.role]);
 
   const handleBackToDashboard = () => {
     redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
   };
+
+  // Determine payment provider
+  const paymentProvider = checkoutId
+    ? "Chargily"
+    : paddleTransactionId
+    ? "Paddle"
+    : "Unknown";
+  const transactionId = checkoutId || paddleTransactionId;
 
   return (
     <div className="min-h-screen  flex items-center justify-center p-4">
@@ -60,7 +70,7 @@ function PaymentFailurePage() {
           {/* Content */}
           <div className="p-8 md:p-12">
             {/* Error details */}
-            {(errorMessage || checkoutId) && (
+            {(errorMessage || transactionId) && (
               <div className="bg-danger/5 border border-danger/20 rounded-xl p-6 mb-8">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-danger/10 flex items-center justify-center flex-shrink-0">
@@ -87,10 +97,21 @@ function PaymentFailurePage() {
                         {errorMessage}
                       </p>
                     )}
-                    {checkoutId && (
-                      <p className="text-xs text-text-secondary font-mono bg-background/50 px-3 py-2 rounded">
-                        {t("payment.failure.checkout_id")}: {checkoutId}
-                      </p>
+                    {transactionId && (
+                      <div className="space-y-1">
+                        <p className="text-xs text-text-secondary font-mono bg-background/50 px-3 py-2 rounded">
+                          {checkoutId
+                            ? `${t(
+                                "payment.failure.checkout_id"
+                              )}: ${transactionId}`
+                            : `${t(
+                                "payment.failure.transaction_id"
+                              )}: ${transactionId}`}
+                        </p>
+                        <p className="text-xs text-text-secondary">
+                          {t("payment.failure.provider")}: {paymentProvider}
+                        </p>
+                      </div>
                     )}
                   </div>
                 </div>

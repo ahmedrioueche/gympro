@@ -3,6 +3,7 @@ import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useChargilyCheckoutStatus } from "../../../../hooks/queries/useChargilyCheckout";
+import { usePaddleTransactionStatus } from "../../../../hooks/queries/usePaddleCheckout";
 import { useUserStore } from "../../../../store/user";
 import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
 
@@ -11,17 +12,38 @@ function PaymentSuccessPage() {
   const navigate = useNavigate();
   const searchParams = useSearch({ strict: false });
   const checkoutId = searchParams.checkout_id as string | undefined;
+  const paddleTransactionId = searchParams._ptxn as string | undefined;
   const { user } = useUserStore();
-  const { mutate: checkStatus, isPending } = useChargilyCheckoutStatus();
+  const { mutate: checkChargilyStatus, isPending: isChargilyPending } =
+    useChargilyCheckoutStatus();
+  const { mutate: checkPaddleStatus, isPending: isPaddlePending } =
+    usePaddleTransactionStatus();
 
   useEffect(() => {
-    if (!checkoutId) {
-      redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
+    // Handle Chargily checkout
+    if (checkoutId) {
+      checkChargilyStatus(checkoutId);
       return;
     }
 
-    checkStatus(checkoutId);
-  }, [checkoutId, checkStatus, navigate, user.role]);
+    // Handle Paddle transaction
+    if (paddleTransactionId) {
+      checkPaddleStatus(paddleTransactionId);
+      return;
+    }
+
+    // No payment params, redirect to home
+    redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
+  }, [
+    checkoutId,
+    paddleTransactionId,
+    checkChargilyStatus,
+    checkPaddleStatus,
+    navigate,
+    user.role,
+  ]);
+
+  const isPending = isChargilyPending || isPaddlePending;
 
   const handleBackToDashboard = () => {
     redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);

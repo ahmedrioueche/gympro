@@ -41,7 +41,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   placeholder,
   disabled = false,
   className = "",
-  countryCodeWidth = "w-32",
+  countryCodeWidth = "w-24 md:w-28",
   showIcon = true,
 }) => {
   // Format country code options with flags

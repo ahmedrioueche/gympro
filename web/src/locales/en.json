@@ -263,7 +263,9 @@
     "managePayments": "Payments & billing",
     "viewAnalytics": "Analytics & reports",
     "viewNotifications": "Notifications & alerts",
-    "customizeSettings": "App settings"
+    "customizeSettings": "App settings",
+    "pin": "Pin ",
+    "unpin": "Unpin "
   },
   "onboarding": {
     "welcome": {

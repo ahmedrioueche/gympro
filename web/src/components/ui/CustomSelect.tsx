@@ -111,7 +111,8 @@ const CustomSelect = <T extends string>({
           p-3 px-4 rounded-lg 
           border 
           bg-surface
-         
+          focus:border-2
+          focus:border-primary
           text-text-primary
           
           ${disabled ? "" : "cursor-pointer  hover:bg-surface/60"}
@@ -160,9 +161,9 @@ const CustomSelect = <T extends string>({
               className={`
                 px-4 py-2 
                 text-text-primary
-                hover:bg-border-secondary
+                hover:bg-primary/30
                 hover:cursor-pointer
-                focus:bg-border-secondary
+                focus:bg-primary/30
                 focus:outline-none
               `}
               onClick={() => {

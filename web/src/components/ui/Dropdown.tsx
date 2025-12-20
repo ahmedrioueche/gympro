@@ -78,7 +78,6 @@ interface DropdownItemProps {
   onClick?: () => void;
   variant?: "default" | "danger";
 }
-
 export function DropdownItem({
   icon,
   label,
@@ -89,13 +88,17 @@ export function DropdownItem({
   return (
     <button
       onClick={onClick}
-      className={`w-full px-4 py-3 flex items-start gap-3 transition-colors ${
+      className={`w-full px-4 py-3 flex items-${
+        description ? "start" : "center"
+      } gap-3 transition-colors ${
         variant === "danger"
           ? "hover:bg-danger/10 text-danger"
           : "hover:bg-border/50 text-text-primary"
       }`}
     >
-      {icon && <span className="text-lg mt-0.5">{icon}</span>}
+      {icon && (
+        <span className={`text-lg ${description ? "mt-0.5" : ""}`}>{icon}</span>
+      )}
       <div className="flex-1 text-left">
         <div className="font-medium text-sm">{label}</div>
         {description && (

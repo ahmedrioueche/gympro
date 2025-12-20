@@ -25,28 +25,14 @@ export class PaddleService {
   private readonly logger = new Logger(PaddleService.name);
   private readonly apiKey: string;
   private readonly apiUrl: string;
-  private readonly successUrl: string;
-  private readonly cancelUrl: string;
 
   constructor(
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
     private readonly appSubscriptionService: AppSubscriptionService,
     private readonly appPlansService: AppPlansService,
   ) {
     this.apiKey = PADDLE_API_KEY || '';
     this.apiUrl = PADDLE_URL || '';
-
-    const frontendUrl =
-      this.configService.get('NODE_ENV') === 'production'
-        ? this.configService.get('PROD_FRONTEND_URL')
-        : this.configService.get('DEV_FRONTEND_URL');
-
-    this.successUrl =
-      this.configService.get<string>('PADDLE_SUCCESS_URL') ||
-      `${frontendUrl}/payment/success`;
-    this.cancelUrl =
-      this.configService.get<string>('PADDLE_FAILURE_URL') ||
-      `${frontendUrl}/payment/failure`;
 
     if (!this.apiKey) {
       this.logger.warn('PADDLE_API_KEY is not configured');
@@ -54,26 +40,26 @@ export class PaddleService {
   }
 
   /**
-   * Create a checkout session
+   * Create a Paddle-hosted checkout session
+   * Paddle will return a real checkout URL (checkout.paddle.com)
    */
   async createCheckout(dto: CreateCheckoutDto, userId: string) {
     try {
+      const payload = {
+        items: dto.items.map((item) => ({
+          price_id: item.priceId,
+          quantity: item.quantity,
+        })),
+        customer_id: dto.customerId,
+        custom_data: {
+          userId,
+          ...dto.customData,
+        },
+      };
+
       const response = await axios.post(
         `${this.apiUrl}/transactions`,
-        {
-          items: dto.items.map((item) => ({
-            price_id: item.priceId,
-            quantity: item.quantity,
-          })),
-          customer_id: dto.customerId,
-          custom_data: {
-            userId,
-            ...dto.customData,
-          },
-          checkout: {
-            url: this.successUrl,
-          },
-        },
+        payload,
         {
           headers: {
             Authorization: `Bearer ${this.apiKey}`,
@@ -82,9 +68,19 @@ export class PaddleService {
         },
       );
 
+      const transaction = response.data.data;
+      console.log({ transaction });
+      if (!transaction?.checkout?.url) {
+        throw new Error('Paddle did not return a checkout URL');
+      }
+
+      this.logger.log(
+        `Checkout created: txn=${transaction.id}, url=${transaction.checkout.url}`,
+      );
+
       return {
-        checkout_url: response.data.data.checkout.url,
-        transaction_id: response.data.data.id,
+        checkout_url: transaction.checkout.url,
+        transaction_id: transaction.id,
       };
     } catch (error) {
       this.logger.error(
@@ -104,87 +100,71 @@ export class PaddleService {
     userId: string,
     customerId?: string,
   ) {
-    try {
-      // Fetch plan from database
-      const plan = await this.appPlansService.getPlanByPlanId(planId);
-
-      if (!plan) {
-        throw new BadRequestException('Plan not found');
-      }
-
-      // Check if plan has Paddle product ID configured
-      if (!plan.paddleProductId) {
-        throw new BadRequestException(
-          `Paddle product ID not configured for plan: ${planId}`,
-        );
-      }
-
-      // Get the correct price ID based on billing cycle
-      const priceId = this.getPaddlePriceId(plan, billingCycle);
-
-      if (!priceId) {
-        throw new BadRequestException(
-          `Paddle price ID not configured for plan: ${planId}, billing cycle: ${billingCycle}`,
-        );
-      }
-
-      this.logger.log(
-        `Creating checkout for plan ${planId}, billing cycle: ${billingCycle}, price ID: ${priceId}`,
-      );
-
-      return await this.createCheckout(
-        {
-          items: [{ priceId, quantity: 1 }],
-          customerId,
-          customData: {
-            planId,
-            billingCycle,
-            type: plan.type, // 'subscription' or 'oneTime'
-          },
-        },
-        userId,
-      );
-    } catch (error) {
-      this.logger.error('Failed to create subscription checkout', error);
-      throw error;
+    // 1️⃣ Fetch plan
+    const plan = await this.appPlansService.getPlanByPlanId(planId);
+    if (!plan) {
+      throw new BadRequestException('Plan not found');
     }
+
+    // 2️⃣ Validate Paddle config
+    if (!plan.paddleProductId || !plan.paddlePriceIds) {
+      throw new BadRequestException(
+        `Paddle configuration missing for plan: ${planId}`,
+      );
+    }
+
+    // 3️⃣ Resolve price ID
+    const priceId = this.getPaddlePriceId(plan, billingCycle);
+    if (!priceId) {
+      throw new BadRequestException(
+        `Price ID not found for plan=${planId}, billing=${billingCycle}`,
+      );
+    }
+
+    this.logger.log(
+      `Creating Paddle checkout → plan=${planId}, billing=${billingCycle}, price=${priceId}`,
+    );
+
+    // 4️⃣ Create hosted checkout
+    return this.createCheckout(
+      {
+        items: [{ priceId, quantity: 1 }],
+        customerId,
+        customData: {
+          planId,
+          billingCycle,
+          type: plan.type, // subscription | oneTime
+        },
+      },
+      userId,
+    );
   }
 
   /**
-   * Get Paddle price ID from plan based on billing cycle
+   * Resolve Paddle price ID from plan + billing cycle
    */
   private getPaddlePriceId(
     plan: any,
     billingCycle: AppSubscriptionBillingCycle,
   ): string | null {
-    if (!plan.paddlePriceIds) {
-      this.logger.error(`Plan ${plan.planId} has no paddlePriceIds configured`);
-      return null;
-    }
-
-    // For subscription plans
     if (plan.type === 'subscription') {
-      if (billingCycle === 'monthly' && plan.paddlePriceIds.monthly) {
-        return plan.paddlePriceIds.monthly;
+      if (billingCycle === 'monthly') {
+        return plan.paddlePriceIds.monthly || null;
       }
-      if (billingCycle === 'yearly' && plan.paddlePriceIds.yearly) {
-        return plan.paddlePriceIds.yearly;
+      if (billingCycle === 'yearly') {
+        return plan.paddlePriceIds.yearly || null;
       }
     }
 
-    // For one-time plans
-    if (plan.type === 'oneTime' && plan.paddlePriceIds.oneTime) {
-      return plan.paddlePriceIds.oneTime;
+    if (plan.type === 'oneTime') {
+      return plan.paddlePriceIds.oneTime || null;
     }
 
-    this.logger.error(
-      `No price ID found for plan ${plan.planId}, type: ${plan.type}, billing cycle: ${billingCycle}`,
-    );
     return null;
   }
 
   /**
-   * Get transaction status
+   * Fetch transaction status (used by frontend polling)
    */
   async getTransactionStatus(transactionId: string) {
     try {
@@ -199,95 +179,66 @@ export class PaddleService {
 
       return response.data.data;
     } catch (error) {
-      this.logger.error('Failed to get transaction status', error);
-      throw new BadRequestException('Failed to get transaction status');
+      this.logger.error('Failed to fetch transaction', error);
+      throw new BadRequestException('Failed to fetch transaction status');
     }
   }
 
   /**
-   * Verify webhook signature
+   * Verify Paddle webhook signature
    */
   verifyWebhookSignature(signature: string, body: string): boolean {
     try {
       const crypto = require('crypto');
       const secret = this.configService.get<string>('PADDLE_WEBHOOK_SECRET');
+      if (!secret) return false;
 
-      if (!secret) {
-        this.logger.error('PADDLE_WEBHOOK_SECRET not configured');
-        return false;
-      }
-
-      // Paddle uses ts_and_hash format: ts={timestamp};h1={hash}
       const parts = signature.split(';');
-      const tsMatch = parts[0].match(/ts=(\d+)/);
-      const h1Match = parts[1].match(/h1=([a-f0-9]+)/);
+      const ts = parts[0]?.split('=')[1];
+      const h1 = parts[1]?.split('=')[1];
+      if (!ts || !h1) return false;
 
-      if (!tsMatch || !h1Match) {
-        return false;
-      }
+      const payload = `${ts}:${body}`;
+      const computed = crypto
+        .createHmac('sha256', secret)
+        .update(payload)
+        .digest('hex');
 
-      const timestamp = tsMatch[1];
-      const hash = h1Match[1];
-
-      // Recreate the signature
-      const payload = `${timestamp}:${body}`;
-      const hmac = crypto.createHmac('sha256', secret);
-      hmac.update(payload);
-      const computedHash = hmac.digest('hex');
-
-      return crypto.timingSafeEqual(
-        Buffer.from(hash),
-        Buffer.from(computedHash),
-      );
-    } catch (error) {
-      this.logger.error('Webhook signature verification failed', error);
+      return crypto.timingSafeEqual(Buffer.from(h1), Buffer.from(computed));
+    } catch {
       return false;
     }
   }
 
   /**
-   * Handle webhook event
+   * Paddle webhook dispatcher
    */
   async handleWebhook(event: any) {
-    this.logger.log(`Received Paddle webhook: ${event.event_type}`);
+    this.logger.log(`Paddle webhook: ${event.event_type}`);
 
     switch (event.event_type) {
       case 'transaction.completed':
         await this.handleTransactionCompleted(event.data);
         break;
-      case 'transaction.updated':
-        await this.handleTransactionUpdated(event.data);
-        break;
-      case 'subscription.created':
-        await this.handleSubscriptionCreated(event.data);
-        break;
-      case 'subscription.updated':
-        await this.handleSubscriptionUpdated(event.data);
-        break;
-      case 'subscription.canceled':
-        await this.handleSubscriptionCanceled(event.data);
-        break;
+
       default:
-        this.logger.warn(`Unhandled webhook event: ${event.event_type}`);
+        this.logger.warn(`Unhandled Paddle event: ${event.event_type}`);
     }
   }
 
+  /**
+   * Activate subscription after successful payment
+   */
   private async handleTransactionCompleted(data: any) {
-    this.logger.log(`Transaction completed: ${data.id}`);
-
     try {
-      // Extract user metadata
       const customData = data.custom_data;
       if (!customData?.userId || !customData?.planId) {
-        this.logger.error(
-          'Missing userId or planId in transaction custom_data',
-        );
+        this.logger.error('Missing custom_data in transaction');
         return;
       }
 
-      const { userId, planId, billingCycle, type } = customData;
+      const { userId, planId, billingCycle } = customData;
 
-      // Activate subscription
       await this.appSubscriptionService.subscribe(
         userId,
         planId,
@@ -295,31 +246,10 @@ export class PaddleService {
       );
 
       this.logger.log(
-        `Subscription activated for user ${userId} with plan ${planId} (${type})`,
+        `Subscription activated → user=${userId}, plan=${planId}`,
       );
     } catch (error) {
-      this.logger.error('Error activating subscription', error);
-      // Don't throw - webhook should return 200 even if our logic fails
+      this.logger.error('Subscription activation failed', error);
     }
-  }
-
-  private async handleTransactionUpdated(data: any) {
-    this.logger.log(`Transaction updated: ${data.id}`);
-    // TODO: Handle transaction updates if needed
-  }
-
-  private async handleSubscriptionCreated(data: any) {
-    this.logger.log(`Subscription created: ${data.id}`);
-    // TODO: Handle subscription creation
-  }
-
-  private async handleSubscriptionUpdated(data: any) {
-    this.logger.log(`Subscription updated: ${data.id}`);
-    // TODO: Handle subscription updates (renewals, changes)
-  }
-
-  private async handleSubscriptionCanceled(data: any) {
-    this.logger.log(`Subscription canceled: ${data.id}`);
-    // TODO: Handle subscription cancellation
   }
 }

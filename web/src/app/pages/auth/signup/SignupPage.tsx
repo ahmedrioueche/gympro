@@ -7,17 +7,13 @@ import { useTranslation } from "react-i18next";
 import { COUNTRY_CODES } from "../../../../../../packages/client/src/constants/countryCodes";
 import Hero from "../../../../components/Hero";
 import Button from "../../../../components/ui/Button";
-import CustomSelect from "../../../../components/ui/CustomSelect";
 import InputField from "../../../../components/ui/InputField";
+import PhoneNumberInput from "../../../../components/ui/PhoneNumberInput";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { bgGradient } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
 import { useUserStore } from "../../../../store/user";
-import {
-  formatPhoneDigitsForInput,
-  getExampleNumber,
-  parsePhoneNumber,
-} from "../../../../utils/phone.util";
+import { parsePhoneNumber } from "../../../../utils/phone.util";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import AuthHeader from "../components/AuthHeader";
 
@@ -57,6 +53,13 @@ function SignupPage() {
         [name]: value,
       }));
     }
+  };
+
+  const handlePhoneChange = (digits: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      phoneNumber: digits,
+    }));
   };
 
   const isFormValid = () => {
@@ -180,40 +183,13 @@ function SignupPage() {
                       leftIcon={<Mail className="h-5 w-5" />}
                     />
                   ) : (
-                    <div className="flex gap-2">
-                      {/* Country Code Selector - Smaller */}
-                      <div className="w-32 flex-shrink-0">
-                        <CustomSelect
-                          title=""
-                          options={countryCodeOptions}
-                          selectedOption={countryCode}
-                          onChange={setCountryCode}
-                          className="text-sm"
-                          marginTop="mt-0"
-                        />
-                      </div>
-
-                      {/* Phone Number Input - Flexible */}
-                      <div className="flex-1">
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Phone className="h-5 w-5 text-text-secondary" />
-                          </div>
-                          <input
-                            id="phoneNumber"
-                            name="phoneNumber"
-                            type="tel"
-                            required
-                            value={formatPhoneDigitsForInput(
-                              formData.phoneNumber
-                            )}
-                            onChange={handleChange}
-                            placeholder={getExampleNumber(countryCode)}
-                            className="pl-10 w-full px-4 py-3 border border-border rounded-lg bg-surface text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                          />
-                        </div>
-                      </div>
-                    </div>
+                    <PhoneNumberInput
+                      countryCode={countryCode}
+                      phoneNumber={formData.phoneNumber}
+                      onCountryCodeChange={setCountryCode}
+                      onPhoneNumberChange={handlePhoneChange}
+                      required
+                    />
                   )}
                 </div>
 
