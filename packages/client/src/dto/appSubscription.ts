@@ -109,6 +109,10 @@ export interface GetSubscriptionDto {
   lastPaymentDate?: string | Date;
   nextPaymentDate?: string | Date;
 
+  provider?: "chargily" | "paddle";
+  paddleSubscriptionId?: string;
+  paddleCustomerId?: string;
+
   trial?: {
     startDate: string | Date;
     endDate: string | Date;

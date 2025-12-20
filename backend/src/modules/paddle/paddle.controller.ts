@@ -77,9 +77,6 @@ export class PaddleController {
         );
       }
 
-      // Get user for metadata
-      const user = await this.userService.findById(userId);
-
       // Create Paddle checkout
       const result = await this.paddleService.createSubscriptionCheckout(
         planId,
@@ -97,6 +94,151 @@ export class PaddleController {
         ErrorCode.SUBSCRIPTION_CHECKOUT_FAILED,
         undefined,
         error.message || 'Failed to create subscription checkout',
+      );
+    }
+  }
+
+  // ✅ NEW: Preview upgrade endpoint
+  @Post('upgrade/preview')
+  @UseGuards(JwtAuthGuard)
+  async previewUpgrade(
+    @Body() dto: CreateSubscriptionCheckoutDto,
+    @Req() req: any,
+  ) {
+    try {
+      const userId = req.user?.sub;
+      const { planId, billingCycle = 'monthly' } = dto;
+
+      // 1. Find user's current Paddle subscription
+      const activeSub =
+        await this.paddleService.appSubscriptionService.getMySubscription(
+          userId,
+        );
+
+      if (
+        !activeSub ||
+        activeSub.provider !== 'paddle' ||
+        !activeSub.paddleSubscriptionId
+      ) {
+        throw new BadRequestException(
+          'No active Paddle subscription found to upgrade',
+        );
+      }
+
+      // 2. Fetch target plan
+      const targetPlan = await this.appPlanService.getPlanByPlanId(planId);
+      if (!targetPlan) {
+        throw new BadRequestException('Target plan not found');
+      }
+
+      // 3. Resolve price ID
+      const priceId = this.paddleService.getPaddlePriceId(
+        targetPlan,
+        billingCycle,
+      );
+      if (!priceId) {
+        throw new BadRequestException(
+          'Price ID not found for target plan/billing cycle',
+        );
+      }
+
+      // 4. Get preview from Paddle
+      const preview = await this.paddleService.previewUpgrade(
+        activeSub.paddleSubscriptionId,
+        priceId,
+      );
+
+      return apiResponse(true, undefined, {
+        preview,
+        target_plan: targetPlan,
+        billing_cycle: billingCycle,
+      });
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.SUBSCRIPTION_UPDATE_ERROR,
+        undefined,
+        error.message || 'Failed to preview upgrade',
+      );
+    }
+  }
+
+  // ✅ FIXED: Apply upgrade endpoint (renamed from prepareUpgrade)
+  @Post('upgrade')
+  @UseGuards(JwtAuthGuard)
+  async applyUpgrade(
+    @Body() dto: CreateSubscriptionCheckoutDto,
+    @Req() req: any,
+  ) {
+    try {
+      const userId = req.user?.sub;
+      const { planId, billingCycle = 'monthly' } = dto;
+
+      // 1. Find user's current Paddle subscription
+      const activeSub =
+        await this.paddleService.appSubscriptionService.getMySubscription(
+          userId,
+        );
+
+      if (
+        !activeSub ||
+        activeSub.provider !== 'paddle' ||
+        !activeSub.paddleSubscriptionId
+      ) {
+        throw new BadRequestException(
+          'No active Paddle subscription found to upgrade',
+        );
+      }
+
+      // 2. Fetch target plan
+      const targetPlan = await this.appPlanService.getPlanByPlanId(planId);
+      if (!targetPlan) {
+        throw new BadRequestException('Target plan not found');
+      }
+
+      // 3. Resolve price ID
+      const priceId = this.paddleService.getPaddlePriceId(
+        targetPlan,
+        billingCycle,
+      );
+      if (!priceId) {
+        throw new BadRequestException(
+          'Price ID not found for target plan/billing cycle',
+        );
+      }
+
+      // 4. Apply the upgrade via Paddle
+      const result = await this.paddleService.createUpgradeTransaction(
+        activeSub.paddleSubscriptionId,
+        priceId,
+      );
+
+      // 5. Handle different response scenarios
+      if (result.success && result.message === 'Upgrade applied immediately') {
+        // No payment needed - upgrade was applied immediately
+        return apiResponse(true, undefined, {
+          upgrade_applied: true,
+          message: 'Upgrade applied successfully',
+        });
+      }
+
+      // Payment needed - return checkout URL
+      if (result.checkout_url) {
+        return apiResponse(true, undefined, {
+          upgrade_applied: false,
+          checkout_url: result.checkout_url,
+          transaction_id: result.transaction_id,
+        });
+      }
+
+      // Fallback
+      throw new BadRequestException('Unexpected response from Paddle');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.SUBSCRIPTION_UPDATE_ERROR,
+        undefined,
+        error.message || 'Failed to apply upgrade',
       );
     }
   }

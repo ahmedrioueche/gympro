@@ -1,4 +1,5 @@
 import type {
+  AppPaymentProvider,
   AppPlan,
   AppPlanLevel,
   AppPlanType,
@@ -10,12 +11,14 @@ import type {
   SupportedCurrency,
 } from '@ahmedrioueche/gympro-client';
 import {
+  APP_PAYMENT_PROVIDERS,
   APP_PLAN_LEVELS,
   APP_PLAN_TYPES,
   APP_SUBSCRIPTION_AUTO_RENEW_TYPES,
   APP_SUBSCRIPTION_BILLING_CYCLES,
   APP_SUBSCRIPTION_HISTORY_ACTIONS,
   APP_SUBSCRIPTION_STATUSES,
+  DEFAULT_APP_PAYMENT_PROVIDER,
   PAYMENT_METHODS,
   SUPPORTED_CURRENCIES,
 } from '@ahmedrioueche/gympro-client';
@@ -266,6 +269,25 @@ export class AppSubscriptionModel extends Document implements AppSubscription {
 
   @Prop({ type: Date })
   pendingChangeEffectiveDate?: Date;
+
+  @Prop({
+    type: String,
+    enum: APP_PAYMENT_PROVIDERS,
+    default: DEFAULT_APP_PAYMENT_PROVIDER,
+  })
+  provider?: AppPaymentProvider;
+
+  @Prop()
+  paddleSubscriptionId?: string;
+
+  @Prop()
+  paddleCustomerId?: string;
+
+  @Prop()
+  chargilyCheckoutId?: string;
+
+  @Prop()
+  chargilyInvoiceId?: string;
 
   @Prop({ required: true })
   createdAt: Date;

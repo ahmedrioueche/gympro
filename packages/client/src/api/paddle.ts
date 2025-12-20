@@ -2,6 +2,7 @@ import {
   CreatePaddleCheckoutDto,
   PaddleCheckoutResponse,
   PaddleTransactionStatus,
+  PaddleUpgradePreviewResponse,
 } from "../dto/paddle";
 import { ApiResponse } from "../types/api";
 import { AppSubscriptionBillingCycle } from "../types/appSubscription";
@@ -51,6 +52,48 @@ export const paddleCheckoutApi = {
     try {
       const res = await apiClient.post<ApiResponse<PaddleCheckoutResponse>>(
         "/paddle/checkout/subscription",
+        {
+          planId,
+          billingCycle,
+        }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Preview upgrade pricing before committing
+   */
+  previewUpgrade: async (
+    planId: string,
+    billingCycle?: AppSubscriptionBillingCycle
+  ): Promise<ApiResponse<PaddleUpgradePreviewResponse>> => {
+    try {
+      const res = await apiClient.post<
+        ApiResponse<PaddleUpgradePreviewResponse>
+      >("/paddle/upgrade/preview", {
+        planId,
+        billingCycle,
+      });
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Apply upgrade/downgrade to existing subscription
+   * This charges the stored payment method immediately
+   */
+  applyUpgrade: async (
+    planId: string,
+    billingCycle?: AppSubscriptionBillingCycle
+  ): Promise<ApiResponse<PaddleCheckoutResponse>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<PaddleCheckoutResponse>>(
+        "/paddle/upgrade",
         {
           planId,
           billingCycle,

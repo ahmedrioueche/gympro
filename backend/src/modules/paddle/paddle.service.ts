@@ -1,13 +1,16 @@
 import { AppSubscriptionBillingCycle } from '@ahmedrioueche/gympro-client';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import * as crypto from 'crypto';
 import { AppPlansService } from '../appBilling/plan/plan.service';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
-
-const PADDLE_API_KEY = process.env.PADDLE_API_KEY;
-const PADDLE_URL = process.env.PADDLE_URL;
 
 interface PaddleCheckoutItem {
   priceId: string;
@@ -23,16 +26,17 @@ interface CreateCheckoutDto {
 @Injectable()
 export class PaddleService {
   private readonly logger = new Logger(PaddleService.name);
-  private readonly apiKey: string;
-  private readonly apiUrl: string;
+  public readonly apiKey: string;
+  public readonly apiUrl: string;
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly appSubscriptionService: AppSubscriptionService,
+    @Inject(forwardRef(() => AppSubscriptionService))
+    public readonly appSubscriptionService: AppSubscriptionService,
     private readonly appPlansService: AppPlansService,
   ) {
-    this.apiKey = PADDLE_API_KEY || '';
-    this.apiUrl = PADDLE_URL || '';
+    this.apiKey = this.configService.get<string>('PADDLE_API_KEY') || '';
+    this.apiUrl = this.configService.get<string>('PADDLE_URL') || '';
 
     const webhookSecret = this.configService.get<string>(
       'PADDLE_WEBHOOK_SECRET',
@@ -49,10 +53,6 @@ export class PaddleService {
     }
   }
 
-  /**
-   * Create a Paddle-hosted checkout session
-   * Paddle will return a real checkout URL (checkout.paddle.com)
-   */
   async createCheckout(dto: CreateCheckoutDto, userId: string) {
     try {
       const payload = {
@@ -153,7 +153,7 @@ export class PaddleService {
   /**
    * Resolve Paddle price ID from plan + billing cycle
    */
-  private getPaddlePriceId(
+  public getPaddlePriceId(
     plan: any,
     billingCycle: AppSubscriptionBillingCycle,
   ): string | null {
@@ -171,6 +171,185 @@ export class PaddleService {
     }
 
     return null;
+  }
+
+  /**
+   * Cancel a subscription at the end of the billing period
+   */
+  async cancelSubscription(subscriptionId: string) {
+    try {
+      this.logger.log(`Cancelling Paddle subscription: ${subscriptionId}`);
+
+      const response = await axios.post(
+        `${this.apiUrl}/subscriptions/${subscriptionId}/cancel`,
+        {
+          effective_from: 'next_billing_period',
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      return response.data.data;
+    } catch (error) {
+      this.logger.error(
+        'Failed to cancel Paddle subscription',
+        error.response?.data || error,
+      );
+      throw new BadRequestException('Failed to cancel subscription in Paddle');
+    }
+  }
+
+  /**
+   * Preview the proration for an upgrade before committing
+   */
+  async previewUpgrade(subscriptionId: string, priceId: string) {
+    try {
+      this.logger.log(
+        `Previewing upgrade: sub=${subscriptionId}, newPrice=${priceId}`,
+      );
+
+      const payload = {
+        proration_billing_mode: 'prorated_immediately',
+        items: [
+          {
+            price_id: priceId,
+            quantity: 1,
+          },
+        ],
+      };
+
+      const response = await axios.post(
+        `${this.apiUrl}/subscriptions/${subscriptionId}/preview`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      const preview = response.data.data;
+
+      this.logger.log(
+        `Upgrade preview: immediateTotal=${preview.immediate_transaction?.details?.totals?.total}, credit=${preview.credit}`,
+      );
+
+      return {
+        immediate_transaction: preview.immediate_transaction,
+        next_transaction: preview.next_transaction,
+        credit: preview.credit,
+        update_summary: preview.update_summary,
+      };
+    } catch (error) {
+      this.logger.error(
+        'Failed to preview upgrade',
+        error.response?.data || error,
+      );
+      throw new BadRequestException('Failed to preview upgrade in Paddle');
+    }
+  }
+
+  /**
+   * ✅ Create a transaction for upgrading/downgrading an existing subscription
+   * This handles proration automatically in Paddle and charges immediately
+   */
+  async createUpgradeTransaction(
+    subscriptionId: string,
+    priceId: string,
+  ): Promise<{
+    success?: boolean;
+    message?: string;
+    transaction_id?: string;
+    checkout_url?: string;
+    details?: any;
+  }> {
+    try {
+      this.logger.log(
+        `Creating Upgrade Transaction: sub=${subscriptionId}, newPrice=${priceId}`,
+      );
+
+      const payload = {
+        proration_billing_mode: 'prorated_immediately',
+        items: [
+          {
+            price_id: priceId,
+            quantity: 1,
+          },
+        ],
+      };
+
+      // ✅ Use PATCH to update subscription (Paddle charges immediately if needed)
+      const response = await axios.patch(
+        `${this.apiUrl}/subscriptions/${subscriptionId}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      const data = response.data.data;
+      const transaction = data.immediate_transaction;
+
+      // ✅ Case 1: No immediate transaction (fully covered by credit or no payment needed)
+      if (!transaction) {
+        this.logger.log(
+          `Upgrade applied immediately without transaction (covered by credit). SubId: ${subscriptionId}`,
+        );
+        return {
+          success: true,
+          message: 'Upgrade applied immediately',
+        };
+      }
+
+      // ✅ Case 2: Transaction created but payment succeeded immediately
+      if (transaction.status === 'completed') {
+        this.logger.log(
+          `Upgrade transaction completed immediately: id=${transaction.id}`,
+        );
+        return {
+          success: true,
+          message: 'Upgrade applied immediately',
+          transaction_id: transaction.id,
+        };
+      }
+
+      // ✅ Case 3: Payment requires action (e.g., authentication, new payment method)
+      if (transaction.checkout?.url) {
+        this.logger.log(
+          `Upgrade requires payment: id=${transaction.id}, url=${transaction.checkout.url}`,
+        );
+        return {
+          success: false,
+          transaction_id: transaction.id,
+          checkout_url: transaction.checkout.url,
+          details: transaction.details,
+        };
+      }
+
+      // ✅ Case 4: Transaction pending
+      this.logger.log(
+        `Upgrade transaction pending: id=${transaction.id}, status=${transaction.status}`,
+      );
+      return {
+        success: false,
+        transaction_id: transaction.id,
+        message: 'Payment pending',
+      };
+    } catch (error) {
+      this.logger.error(
+        'Failed to create upgrade transaction',
+        error.response?.data || error,
+      );
+      throw new BadRequestException('Failed to prepare upgrade in Paddle');
+    }
   }
 
   /**
@@ -222,7 +401,6 @@ export class PaddleService {
         .update(payload)
         .digest('hex');
 
-      // h1 and computed are hex strings. Buffers must have same length for timingSafeEqual.
       const h1Buffer = Buffer.from(h1, 'hex');
       const computedBuffer = Buffer.from(computed, 'hex');
 
@@ -268,6 +446,20 @@ export class PaddleService {
         await this.handleTransactionCompleted(event.data);
         break;
 
+      case 'subscription.updated':
+        this.logger.log(
+          `Processing subscription.updated for sub=${event.data.id}`,
+        );
+        await this.handleSubscriptionUpdated(event.data);
+        break;
+
+      case 'subscription.canceled':
+        this.logger.log(
+          `Processing subscription.canceled for sub=${event.data.id}`,
+        );
+        await this.handleSubscriptionCanceled(event.data);
+        break;
+
       default:
         this.logger.warn(`Unhandled Paddle event: ${event.event_type}`);
     }
@@ -288,18 +480,124 @@ export class PaddleService {
       }
 
       const { userId, planId, billingCycle } = customData;
+      const paddleSubscriptionId = data.subscription_id;
+      const paddleCustomerId = data.customer_id;
+      const currency = data.currency_code || 'USD';
+
+      this.logger.log(
+        `Activating subscription → userId=${userId}, planId=${planId}, billingCycle=${billingCycle || 'monthly'}, provider=paddle, paddleSubId=${paddleSubscriptionId}`,
+      );
 
       await this.appSubscriptionService.subscribe(
         userId,
         planId,
         billingCycle || 'monthly',
+        currency,
+        'paddle',
+        paddleSubscriptionId,
+        paddleCustomerId,
       );
 
       this.logger.log(
-        `Subscription activated → user=${userId}, plan=${planId}`,
+        `Subscription activated via Paddle → user=${userId}, plan=${planId}, subId=${paddleSubscriptionId}`,
       );
     } catch (error) {
       this.logger.error('Subscription activation failed', error);
+      this.logger.error(`Error details: ${JSON.stringify(error)}`);
+    }
+  }
+
+  private async handleSubscriptionUpdated(data: any) {
+    try {
+      const paddleSubscriptionId = data.id;
+      const status = data.status;
+      const currentPeriodEnd = data.current_billing_period?.ends_at;
+
+      const sub = await this.appSubscriptionService.subscriptionModel
+        .findOne({ paddleSubscriptionId })
+        .exec();
+
+      if (!sub) {
+        this.logger.warn(
+          `Subscription not found for update: ${paddleSubscriptionId}`,
+        );
+        return;
+      }
+
+      // Sync status
+      if (status === 'active' || status === 'trialing') {
+        sub.status = 'active';
+      } else if (status === 'past_due') {
+        sub.status = 'active';
+      } else {
+        sub.status = 'cancelled';
+      }
+
+      // Sync billing period
+      if (currentPeriodEnd) {
+        sub.currentPeriodEnd = new Date(currentPeriodEnd);
+        if (sub.status === 'active') sub.endDate = sub.currentPeriodEnd;
+      }
+
+      // ✅ Sync cancellation scheduled state
+      if (data.scheduled_change?.action === 'cancel') {
+        sub.cancelAtPeriodEnd = true;
+        sub.autoRenew = false;
+        if (data.scheduled_change.effective_at) {
+          sub.endDate = new Date(data.scheduled_change.effective_at);
+        }
+      } else if (!data.scheduled_change) {
+        sub.cancelAtPeriodEnd = false;
+        sub.autoRenew = true;
+      }
+
+      // If items changed, update planId
+      const newPriceId = data.items?.[0]?.price?.id;
+      if (newPriceId) {
+        const plan =
+          (await this.appPlansService.appPlanModel
+            .findOne({
+              'paddlePriceIds.monthly': newPriceId,
+            })
+            .exec()) ||
+          (await this.appPlansService.appPlanModel
+            .findOne({
+              'paddlePriceIds.yearly': newPriceId,
+            })
+            .exec());
+
+        if (plan) {
+          sub.planId = plan.planId;
+          sub.billingCycle =
+            data.items[0].price.billing_cycle?.interval === 'year'
+              ? 'yearly'
+              : 'monthly';
+        }
+      }
+
+      await sub.save();
+      this.logger.log(
+        `Subscription update synced: ${paddleSubscriptionId}, status=${status}, cancelAtPeriodEnd=${sub.cancelAtPeriodEnd}`,
+      );
+    } catch (error) {
+      this.logger.error('Failed to handle subscription.updated', error);
+    }
+  }
+
+  private async handleSubscriptionCanceled(data: any) {
+    try {
+      const paddleSubscriptionId = data.id;
+
+      await this.appSubscriptionService['subscriptionModel'].updateOne(
+        { paddleSubscriptionId },
+        { status: 'cancelled', endDate: new Date() },
+      );
+
+      this.logger.log(
+        `Subscription canceled in Paddle: ${paddleSubscriptionId}`,
+      );
+    } catch (error) {
+      this.logger.error('Failed to handle subscription.canceled', error);
     }
   }
 }

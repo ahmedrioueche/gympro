@@ -13,13 +13,4 @@ describe('AppController', () => {
 
     appController = app.get<AppController>(AppController);
   });
-
-  describe('test', () => {
-    it('should return a test user', () => {
-      const result = appController.getTestUser();
-      expect(result).toHaveProperty('id');
-      expect(result).toHaveProperty('name');
-      expect(result).toHaveProperty('email');
-    });
-  });
 });

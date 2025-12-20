@@ -1,34 +1,31 @@
 import {
   APP_SUBSCRIPTION_BILLING_CYCLES,
-  DEFAULT_CURRENCY,
   type AppPlan,
   type AppSubscriptionBillingCycle,
-  type SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
-import { 
-  useCreateSubscriptionChargilyCheckout,
-} from "../../../../../hooks/queries/useChargilyCheckout";
-import { 
-    useSubscriptionPaddleCheckout,
+import { useCreateSubscriptionChargilyCheckout } from "../../../../../hooks/queries/useChargilyCheckout";
+import {
+  useApplyPaddleUpgrade,
+  usePreviewPaddleUpgrade,
+  useSubscriptionPaddleCheckout,
 } from "../../../../../hooks/queries/usePaddleCheckout";
 import {
   useAllPlans,
   useDowngradeSubscription,
   useMySubscription,
 } from "../../../../../hooks/queries/usePlans";
+import useCurrency from "../../../../../hooks/useCurrency";
 import { useModalStore } from "../../../../../store/modal";
-import { useUserStore } from "../../../../../store/user";
+import { handleContactSupport } from "../../../../../utils/contact";
 import { getPlanChangeType } from "../../../../../utils/subscription.util";
 import PlanCard from "../../../../components/PlanCard";
 import CancelSubscriptionModal from "./components/CancelSubscriptionModal";
 import SubscriptionCard from "./components/SubscriptionCard";
-import useCurrency from "../../../../../hooks/useCurrency";
-import { Link } from "@tanstack/react-router";
-import { handleContactSupport } from "../../../../../utils/contact";
 
 function SubscriptionPage() {
   const { t } = useTranslation();
@@ -37,15 +34,55 @@ function SubscriptionPage() {
   );
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const { data: plans = [], isLoading: plansLoading } = useAllPlans();
-  const { data: mySubscription, isLoading: subLoading } = useMySubscription();
-  
-  // BOTH payment gateways available
+  const {
+    data: mySubscription,
+    isLoading: subLoading,
+    refetch: refetchSubscription,
+  } = useMySubscription();
+
+  // Payment gateways
   const chargilyCheckoutMutation = useCreateSubscriptionChargilyCheckout();
   const paddleCheckoutMutation = useSubscriptionPaddleCheckout();
-  
+
   const downgradeSubscription = useDowngradeSubscription();
-  const { openModal } = useModalStore();
+  const { openModal, closeModal } = useModalStore();
   const currency = useCurrency();
+
+  // Preview upgrade mutation
+  const previewUpgradeMutation = usePreviewPaddleUpgrade({
+    onSuccess: (data) => {
+      // Data contains the preview information
+      const targetPlan = plans.find(
+        (p: any) => p.planId === data.target_plan?.planId
+      );
+
+      if (targetPlan) {
+        openModal("upgradePreview", {
+          currentPlan: mySubscription?.plan!,
+          targetPlan: targetPlan,
+          previewData: data.preview,
+          onConfirm: () => {
+            closeModal();
+            // Apply the upgrade
+            applyUpgradeMutation.mutate({
+              planId: targetPlan.planId,
+              billingCycle: data.billing_cycle || billingCycle,
+            });
+          },
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message || t("errors.generic"));
+    },
+  });
+
+  // Apply upgrade mutation
+  const applyUpgradeMutation = useApplyPaddleUpgrade({
+    onSuccess: () => {
+      setTimeout(() => refetchSubscription(), 2000);
+    },
+  });
 
   useEffect(() => {
     if (mySubscription && mySubscription.billingCycle) {
@@ -53,11 +90,9 @@ function SubscriptionPage() {
     }
   }, [mySubscription]);
 
-  // Get user currency
   const isDZD = currency === "DZD";
 
   const handleSelectPlan = (planId: string) => {
-    // Find target plan
     const targetPlan = plans.find((p: any) => p.planId === planId);
     if (!targetPlan) return;
 
@@ -73,11 +108,12 @@ function SubscriptionPage() {
         targetPlan.level,
         billingCycle
       );
-
+      console.log({ changeType });
       const effectiveDate = mySubscription.currentPeriodEnd
         ? new Date(mySubscription.currentPeriodEnd).toLocaleDateString()
         : t("plans.billing_period_end");
 
+      // Handle downgrades
       if (changeType === "downgrade" || changeType === "switch_down") {
         openModal("confirm", {
           title:
@@ -98,26 +134,44 @@ function SubscriptionPage() {
           onConfirm: () => executeDowngrade(planId, billingCycle),
         });
         return;
-      } else if (changeType === "upgrade") {
-        executeSubscribe(planId);
+      }
+      // Handle upgrades
+      else if (changeType === "upgrade") {
+        console.log({ mySubscription });
+
+        if (mySubscription.provider === "paddle") {
+          // Fetch preview and show modal via the mutation's onSuccess
+          previewUpgradeMutation.mutate({ planId, billingCycle });
+        } else {
+          executeSubscribe(planId, true);
+        }
         return;
-      } else if (changeType === "switch_up") {
+      }
+      // Handle billing cycle switch with upgrade
+      else if (changeType === "switch_up") {
         openModal("confirm", {
           title: t("plans.confirm_switch_title"),
           text: t("plans.confirm_switch_immediate_text", {
             cycle: billingCycle,
           }),
           confirmVariant: "primary",
-          onConfirm: () => executeSubscribe(planId),
+          onConfirm: () => {
+            if (mySubscription.provider === "paddle") {
+              previewUpgradeMutation.mutate({ planId, billingCycle });
+            } else {
+              executeSubscribe(planId, true);
+            }
+          },
         });
         return;
       }
     }
 
+    // New subscription
     executeSubscribe(planId);
   };
 
-  const executeSubscribe = (planId: string) => {
+  const executeSubscribe = (planId: string, isUpgrade: boolean = false) => {
     // Use Chargily for DZD (Algeria), Paddle for international
     if (isDZD) {
       chargilyCheckoutMutation.mutate({
@@ -125,6 +179,7 @@ function SubscriptionPage() {
         billingCycle: billingCycle,
       });
     } else {
+      // For new subscriptions or non-Paddle upgrades
       paddleCheckoutMutation.mutate({
         planId,
         billingCycle: billingCycle,
@@ -187,8 +242,12 @@ function SubscriptionPage() {
     );
   }
 
-  // Check if EITHER payment gateway is processing
-  const isProcessing = chargilyCheckoutMutation.isPending || paddleCheckoutMutation.isPending;
+  // Check if any payment gateway is processing
+  const isProcessing =
+    chargilyCheckoutMutation.isPending ||
+    paddleCheckoutMutation.isPending ||
+    applyUpgradeMutation.isPending ||
+    previewUpgradeMutation.isPending;
 
   return (
     <div className="min-h-screen p-6 md:p-8">
@@ -222,6 +281,7 @@ function SubscriptionPage() {
           </div>
         </div>
 
+        {/* Current Subscription Card */}
         {mySubscription && mySubscription?.planId && mySubscription?.plan && (
           <div className="mb-12">
             <SubscriptionCard mySubscription={mySubscription} plans={plans} />
@@ -282,7 +342,14 @@ function SubscriptionPage() {
             <div className="bg-surface rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl">
               <Loading />
               <p className="text-text-primary font-medium">
-                {t("checkout.redirecting")}
+                {applyUpgradeMutation.isPending
+                  ? t(
+                      "subscriptions.processing_upgrade",
+                      "Processing upgrade..."
+                    )
+                  : previewUpgradeMutation.isPending
+                  ? t("subscriptions.loading_preview", "Loading preview...")
+                  : t("checkout.redirecting")}
               </p>
             </div>
           </div>
@@ -327,9 +394,9 @@ function SubscriptionPage() {
           </div>
         )}
 
+        {/* Cancel Subscription Button */}
         {mySubscription && mySubscription?.planId && mySubscription?.plan && (
           <div className="flex items-center justify-center">
-            {/* Cancel Button */}
             {mySubscription.status === "active" &&
               !mySubscription.cancelAtPeriodEnd &&
               mySubscription.plan?.level !== "free" &&
@@ -348,6 +415,7 @@ function SubscriptionPage() {
           </div>
         )}
 
+        {/* Cancel Subscription Modal */}
         <CancelSubscriptionModal
           isOpen={isCancelModalOpen}
           onClose={() => setIsCancelModalOpen(false)}
@@ -363,8 +431,8 @@ function SubscriptionPage() {
           <p className="text-text-secondary text-sm">
             {t("subscriptions.footer_info").split("\n")[0]}
           </p>
-          <button 
-            onClick={() => handleContactSupport(t)} 
+          <button
+            onClick={() => handleContactSupport(t)}
             className="text-text-secondary text-sm underline hover:text-text-primary transition-colors"
           >
             {t("subscriptions.footer_info").split("\n")[1]}

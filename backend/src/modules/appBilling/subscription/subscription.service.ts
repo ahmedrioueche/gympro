@@ -1,14 +1,18 @@
 import {
   APP_PLAN_LEVELS,
   APP_SUBSCRIPTION_BILLING_CYCLES,
-  SupportedCurrency,
+  AppPaymentProvider,
   AppSubscriptionBillingCycle,
+  DEFAULT_APP_PAYMENT_PROVIDER,
   DEFAULT_CURRENCY,
+  SupportedCurrency,
 } from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
+  forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
@@ -18,6 +22,7 @@ import { Model } from 'mongoose';
 import { MAX_DAILY_CANCELLATIONS } from 'src/common/constants/subscription.constants';
 import { User } from 'src/common/schemas/user.schema';
 import { NotificationService } from 'src/common/services/notification.service';
+import { PaddleService } from 'src/modules/paddle/paddle.service';
 import {
   AppPlanModel,
   AppSubscriptionHistoryModel,
@@ -30,14 +35,16 @@ export class AppSubscriptionService {
 
   constructor(
     @InjectModel(AppSubscriptionModel.name)
-    private readonly subscriptionModel: Model<AppSubscriptionModel>,
+    public readonly subscriptionModel: Model<AppSubscriptionModel>,
     @InjectModel(AppSubscriptionHistoryModel.name)
-    private readonly subscriptionHistoryModel: Model<AppSubscriptionHistoryModel>,
+    public readonly subscriptionHistoryModel: Model<AppSubscriptionHistoryModel>,
     @InjectModel(AppPlanModel.name)
     private readonly appPlanModel: Model<AppPlanModel>,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     private readonly notificationService: NotificationService,
+    @Inject(forwardRef(() => PaddleService))
+    private readonly paddleService: PaddleService,
   ) {}
 
   async getMySubscription(userId: string) {
@@ -64,6 +71,9 @@ export class AppSubscriptionService {
     planId: string,
     billingCycle: AppSubscriptionBillingCycle = 'monthly',
     currency: SupportedCurrency = DEFAULT_CURRENCY,
+    provider: AppPaymentProvider = DEFAULT_APP_PAYMENT_PROVIDER,
+    paddleSubscriptionId?: string,
+    paddleCustomerId?: string,
   ) {
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -78,42 +88,65 @@ export class AppSubscriptionService {
 
     // Check for existing active subscription
     const currentSub = await this.subscriptionModel
-      .findOne({ userId, status: { $in: ['active', 'trialing'] } })
+      .findOne({ userId, status: { $in: ['active', 'trialing', 'past_due'] } })
       .exec();
 
-    // ✅ NEW: Validate plan availability if there's a current subscription
-    if (currentSub) {
-      const currentPlan = await this.appPlanModel
-        .findOne({ planId: currentSub.planId })
+    // ✅ IDENTITY CHECK: If this is a Paddle subscription upgrade/renewal, update existing record
+    if (provider === 'paddle' && paddleSubscriptionId) {
+      const existingPaddleSub = await this.subscriptionModel
+        .findOne({
+          paddleSubscriptionId,
+        })
         .exec();
 
-      if (currentPlan) {
-        const availability = this.validatePlanAvailability(
-          currentPlan,
-          currentSub.billingCycle || 'monthly',
-          plan,
-          billingCycle,
+      if (existingPaddleSub) {
+        this.logger.log(
+          `Updating existing Paddle subscription: ${paddleSubscriptionId}`,
         );
 
-        if (!availability.available) {
-          throw new BadRequestException(
-            availability.message || 'This plan change is not allowed',
-          );
-        }
+        const now = new Date();
+        const { endDate, currentPeriodEnd, nextPaymentDate } =
+          this.calculateSubscriptionDates(now, billingCycle, plan.type);
 
-        // ❌ Block downgrades - must use dedicated endpoint
-        if (
-          availability.changeType === 'downgrade' ||
-          availability.changeType === 'switch_down'
-        ) {
-          throw new BadRequestException(
-            'Downgrades must be scheduled using the downgrade endpoint',
-          );
-        }
+        const isActualUpgrade =
+          existingPaddleSub.planId !== planId ||
+          existingPaddleSub.billingCycle !== billingCycle;
+
+        existingPaddleSub.planId = planId;
+        existingPaddleSub.billingCycle = billingCycle;
+        existingPaddleSub.status = 'active';
+        existingPaddleSub.currentPeriodStart = now;
+        existingPaddleSub.currentPeriodEnd = currentPeriodEnd;
+        existingPaddleSub.lastPaymentDate = now;
+        if (endDate) existingPaddleSub.endDate = endDate;
+        if (nextPaymentDate)
+          existingPaddleSub.nextPaymentDate = nextPaymentDate;
+
+        // Reset cancellation flags if it was previously scheduled to cancel
+        existingPaddleSub.cancelAtPeriodEnd = false;
+        existingPaddleSub.autoRenew = true;
+        existingPaddleSub.cancelledAt = undefined;
+
+        const saved = await existingPaddleSub.save();
+
+        // Update user ref if needed
+        await this.userModel.findByIdAndUpdate(userId, {
+          appSubscription: saved._id,
+        });
+
+        // Add history and notify...
+        return this.recordSubscriptionAction(
+          user,
+          saved,
+          plan,
+          isActualUpgrade,
+          currency,
+          0,
+        ); // Credit handled by Paddle
       }
     }
 
-    // Calculate proration credit for upgrades
+    // Calculate proration credit for upgrades (Manual/Chargily flow)
     let prorationCredit = 0;
     let isUpgrade = false;
 
@@ -135,7 +168,7 @@ export class AppSubscriptionService {
     // Deactivate existing active subscriptions (for immediate upgrades)
     if (currentSub) {
       await this.subscriptionModel.updateMany(
-        { userId, status: { $in: ['active', 'trialing'] } },
+        { userId, status: { $in: ['active', 'trialing', 'past_due'] } },
         { status: 'cancelled', endDate: new Date() },
       );
     }
@@ -155,6 +188,9 @@ export class AppSubscriptionService {
       lastPaymentDate: now,
       autoRenewType: 'auto',
       billingCycle,
+      provider,
+      paddleSubscriptionId,
+      paddleCustomerId,
       createdAt: new Date(),
     };
 
@@ -210,6 +246,56 @@ export class AppSubscriptionService {
     await history.save();
 
     return saved;
+  }
+
+  private async recordSubscriptionAction(
+    user: any,
+    subscription: any,
+    plan: any,
+    isUpgrade: boolean,
+    currency: SupportedCurrency,
+    prorationCredit: number,
+  ) {
+    const now = new Date();
+    const currencyPricing = plan.pricing[currency] || {};
+    const newCost = this.calculatePlanCost(
+      plan.type,
+      subscription.billingCycle,
+      currencyPricing,
+    );
+    const amountPaid = Math.max(0, newCost - prorationCredit);
+
+    if (plan.level !== 'free') {
+      await this.notificationService.notifyUser(user, {
+        key: 'subscription.created',
+        vars: {
+          name: user.profile?.fullName || user.profile?.email || 'User',
+          planName: plan.name,
+        },
+      });
+    }
+
+    const historyData: any = {
+      userId: user._id,
+      subscriptionId: subscription._id,
+      planId: plan.planId,
+      action: isUpgrade ? 'upgraded' : 'created',
+      startDate: now,
+      status: 'active',
+      amountPaid: amountPaid,
+      currency: currency,
+      details: isUpgrade
+        ? `Upgraded from previous plan. Paid: ${amountPaid.toFixed(2)}`
+        : `New subscription created. Paid: ${amountPaid.toFixed(2)}`,
+      createdAt: new Date(),
+    };
+
+    if (subscription.endDate) historyData.endDate = subscription.endDate;
+
+    const history = new this.subscriptionHistoryModel(historyData);
+    await history.save();
+
+    return subscription;
   }
 
   private validatePlanAvailability(
@@ -499,6 +585,10 @@ export class AppSubscriptionService {
     }
 
     // Mark for cancellation at period end
+    if (sub.provider === 'paddle' && sub.paddleSubscriptionId) {
+      await this.paddleService.cancelSubscription(sub.paddleSubscriptionId);
+    }
+
     sub.cancelledAt = new Date().toISOString();
     sub.cancellationReason = reason;
     sub.cancelAtPeriodEnd = true;

@@ -1,6 +1,7 @@
+import type { AppPlan } from "@ahmedrioueche/gympro-client";
 import { create } from "zustand";
 
-type ModalType = "confirm" | null;
+type ModalType = "confirm" | "upgradePreview" | null;
 
 interface ConfirmModalProps {
   text?: string;
@@ -10,9 +11,17 @@ interface ConfirmModalProps {
   onCancel?: () => void;
 }
 
+interface UpgradePreviewModalProps {
+  currentPlan: AppPlan;
+  targetPlan: AppPlan;
+  previewData: any;
+  onConfirm: () => void;
+}
+
 interface ModalState {
   currentModal: ModalType;
   confirmModalProps?: ConfirmModalProps;
+  upgradePreviewProps?: UpgradePreviewModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -24,6 +33,9 @@ export const useModalStore = create<ModalState>((set) => ({
     set(() => {
       if (modal === "confirm") {
         return { currentModal: "confirm", confirmModalProps: props };
+      }
+      if (modal === "upgradePreview") {
+        return { currentModal: "upgradePreview", upgradePreviewProps: props };
       }
       return { currentModal: null };
     }),

@@ -20,7 +20,7 @@ import { AppPlanModel } from '../appBilling.schema';
 export class AppPlansService {
   constructor(
     @InjectModel(AppPlanModel.name)
-    private readonly appPlanModel: Model<AppPlanModel>,
+    public readonly appPlanModel: Model<AppPlanModel>,
   ) {}
 
   /**
