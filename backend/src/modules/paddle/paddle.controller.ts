@@ -30,7 +30,9 @@ export class PaddleController {
     private readonly paddleService: PaddleService,
     private readonly userService: UsersService,
     private readonly appPlanService: AppPlansService,
-  ) {}
+  ) {
+    console.log('[PaddleController] Initialized and ready to receive webhooks');
+  }
 
   @Post('checkout')
   @UseGuards(JwtAuthGuard)
@@ -117,24 +119,34 @@ export class PaddleController {
     }
   }
 
-  @Post('webhook')
+  @Post('checkout/webhook')
   @HttpCode(200)
   async handleWebhook(
     @Headers('paddle-signature') signature: string,
     @Req() req: RawBodyRequest<Request>,
     @Body() event: any,
   ) {
-    if (!signature) {
-      throw new BadRequestException('Paddle-Signature header is missing');
-    }
-
-    const rawBody = req.rawBody;
-
-    if (!rawBody) {
-      throw new BadRequestException('Raw body is missing');
-    }
-
     try {
+      console.log('--- PADDLE WEBHOOK ENDPOINT HIT ---');
+      console.log('Headers:', JSON.stringify(req.headers));
+      console.log('Body type:', typeof event);
+
+      if (!signature) {
+        console.error('Paddle-Signature header is missing');
+        throw new BadRequestException('Paddle-Signature header is missing');
+      }
+
+      const rawBody = req.rawBody;
+      if (!rawBody) {
+        console.error('Raw body is missing! Check main.ts for rawBody: true');
+        throw new BadRequestException('Raw body is missing');
+      }
+
+      console.log(`Raw body length: ${rawBody.length} bytes`);
+      console.log(
+        `Raw body preview: ${rawBody.toString().substring(0, 50)}...`,
+      );
+
       // Verify webhook signature
       const isValid = this.paddleService.verifyWebhookSignature(
         signature,
@@ -142,23 +154,16 @@ export class PaddleController {
       );
 
       if (!isValid) {
+        console.error('Invalid signature for webhook event');
         throw new ForbiddenException('Invalid signature');
       }
-    } catch (error) {
-      throw new ForbiddenException('Signature verification failed');
-    }
 
-    // Handle the webhook event
-    console.log('Paddle webhook event received:', event);
-
-    try {
+      // Handle the webhook event
       await this.paddleService.handleWebhook(event);
       return { received: true };
     } catch (error) {
-      console.error('Error handling Paddle webhook:', error);
-      // Return 200 even if internal processing fails
-      // Paddle will retry failed webhooks
-      return { received: true, error: 'Processing failed but acknowledged' };
+      console.error('CRITICAL WEBHOOK ERROR:', error.message);
+      return { received: true, error: error.message };
     }
   }
 }

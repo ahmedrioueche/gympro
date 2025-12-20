@@ -4,6 +4,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
+import { PaddleProvider } from "./context/PaddleContext.tsx";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
 import "./i18n";
 import "./index.css";
@@ -27,8 +28,10 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <Toaster position={"top-right"} />
-        <RouterProvider router={router} />
+        <PaddleProvider>
+          <Toaster position={"top-right"} />
+          <RouterProvider router={router} />
+        </PaddleProvider>
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>

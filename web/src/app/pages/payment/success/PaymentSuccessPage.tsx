@@ -12,7 +12,9 @@ function PaymentSuccessPage() {
   const navigate = useNavigate();
   const searchParams = useSearch({ strict: false });
   const checkoutId = searchParams.checkout_id as string | undefined;
-  const paddleTransactionId = searchParams._ptxn as string | undefined;
+  const paddleTransactionId = (searchParams.gp_payment_id ||
+    searchParams.paddle_txn ||
+    searchParams._ptxn) as string | undefined;
   const { user } = useUserStore();
   const { mutate: checkChargilyStatus, isPending: isChargilyPending } =
     useChargilyCheckoutStatus();
@@ -20,6 +22,13 @@ function PaymentSuccessPage() {
     usePaddleTransactionStatus();
 
   useEffect(() => {
+    // Force close Paddle overlay if it managed to follow us here
+    try {
+      if (window.Paddle?.Checkout) {
+        window.Paddle.Checkout.close();
+      }
+    } catch (e) {}
+
     // Handle Chargily checkout
     if (checkoutId) {
       checkChargilyStatus(checkoutId);

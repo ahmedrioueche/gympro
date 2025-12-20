@@ -2,7 +2,7 @@ import { AppSubscriptionBillingCycle } from '@ahmedrioueche/gympro-client';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import 'dotenv/config';
+import * as crypto from 'crypto';
 import { AppPlansService } from '../appBilling/plan/plan.service';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
 
@@ -33,6 +33,16 @@ export class PaddleService {
   ) {
     this.apiKey = PADDLE_API_KEY || '';
     this.apiUrl = PADDLE_URL || '';
+
+    const webhookSecret = this.configService.get<string>(
+      'PADDLE_WEBHOOK_SECRET',
+    );
+    this.logger.log(
+      `Paddle Config: API_URL=${this.apiUrl || 'MISSING'}, API_KEY=${this.apiKey ? 'PRESENT' : 'MISSING'}`,
+    );
+    this.logger.log(
+      `Webhook Secret: ${webhookSecret ? `PRESENT (Length: ${webhookSecret.length}, Prefix: ${webhookSecret.substring(0, 4)}...)` : 'MISSING'}`,
+    );
 
     if (!this.apiKey) {
       this.logger.warn('PADDLE_API_KEY is not configured');
@@ -189,14 +199,22 @@ export class PaddleService {
    */
   verifyWebhookSignature(signature: string, body: string): boolean {
     try {
-      const crypto = require('crypto');
       const secret = this.configService.get<string>('PADDLE_WEBHOOK_SECRET');
-      if (!secret) return false;
+      if (!secret) {
+        this.logger.error('PADDLE_WEBHOOK_SECRET is not configured in .env');
+        return false;
+      }
 
       const parts = signature.split(';');
-      const ts = parts[0]?.split('=')[1];
-      const h1 = parts[1]?.split('=')[1];
-      if (!ts || !h1) return false;
+      const ts = parts.find((p) => p.startsWith('ts='))?.split('=')[1];
+      const h1 = parts.find((p) => p.startsWith('h1='))?.split('=')[1];
+
+      if (!ts || !h1) {
+        this.logger.error(
+          `Invalid signature format. Missing ts or h1 in: ${signature}`,
+        );
+        return false;
+      }
 
       const payload = `${ts}:${body}`;
       const computed = crypto
@@ -204,8 +222,31 @@ export class PaddleService {
         .update(payload)
         .digest('hex');
 
-      return crypto.timingSafeEqual(Buffer.from(h1), Buffer.from(computed));
-    } catch {
+      // h1 and computed are hex strings. Buffers must have same length for timingSafeEqual.
+      const h1Buffer = Buffer.from(h1, 'hex');
+      const computedBuffer = Buffer.from(computed, 'hex');
+
+      if (h1Buffer.length !== computedBuffer.length) {
+        this.logger.error(
+          `Signature length mismatch. h1=${h1Buffer.length}, computed=${computedBuffer.length}`,
+        );
+        return false;
+      }
+
+      const isValid = crypto.timingSafeEqual(h1Buffer, computedBuffer);
+
+      if (!isValid) {
+        this.logger.error(
+          'SIGNATURE VERIFICATION FAILED: The computed HMAC did not match the h1 header.',
+        );
+        this.logger.debug(`Payload used: ${payload}`);
+      } else {
+        this.logger.log('Signature verified successfully.');
+      }
+
+      return isValid;
+    } catch (error) {
+      this.logger.error('Error during signature verification', error);
       return false;
     }
   }
@@ -214,10 +255,16 @@ export class PaddleService {
    * Paddle webhook dispatcher
    */
   async handleWebhook(event: any) {
-    this.logger.log(`Paddle webhook: ${event.event_type}`);
+    this.logger.log(
+      `Paddle webhook received: type=${event.event_type}, id=${event.id}`,
+    );
+    console.log('Full Event Data:', JSON.stringify(event, null, 2));
 
     switch (event.event_type) {
       case 'transaction.completed':
+        this.logger.log(
+          `Processing transaction.completed for txn=${event.data.id}`,
+        );
         await this.handleTransactionCompleted(event.data);
         break;
 
@@ -226,14 +273,17 @@ export class PaddleService {
     }
   }
 
-  /**
-   * Activate subscription after successful payment
-   */
   private async handleTransactionCompleted(data: any) {
     try {
       const customData = data.custom_data;
+      this.logger.log(
+        `Transaction data: id=${data.id}, status=${data.status}, hasCustomData=${!!customData}`,
+      );
+
       if (!customData?.userId || !customData?.planId) {
-        this.logger.error('Missing custom_data in transaction');
+        this.logger.error(
+          `Missing custom_data or required fields in transaction ${data.id}. CustomData: ${JSON.stringify(customData)}`,
+        );
         return;
       }
 
