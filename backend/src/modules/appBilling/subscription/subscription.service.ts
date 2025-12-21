@@ -584,22 +584,37 @@ export class AppSubscriptionService {
       );
     }
 
-    // Mark for cancellation at period end
+    // ✅ If Paddle subscription, cancel in Paddle first
     if (sub.provider === 'paddle' && sub.paddleSubscriptionId) {
-      await this.paddleService.cancelSubscription(sub.paddleSubscriptionId);
+      const paddleData = await this.paddleService.cancelSubscription(
+        sub.paddleSubscriptionId,
+      );
+
+      // ✅ Sync DB from Paddle response
+      await this.syncFromPaddleData(paddleData);
+    } else {
+      // ✅ For non-Paddle subscriptions, update DB directly
+      sub.cancelledAt = new Date().toISOString();
+      sub.cancellationReason = reason;
+      sub.cancelAtPeriodEnd = true;
+      sub.autoRenew = false;
+      sub.nextPaymentDate = undefined;
+      sub.endDate = sub.currentPeriodEnd;
+      sub.pendingPlanId = undefined;
+      sub.pendingBillingCycle = undefined;
+      await sub.save();
     }
 
-    sub.cancelledAt = new Date().toISOString();
-    sub.cancellationReason = reason;
-    sub.cancelAtPeriodEnd = true;
-    sub.autoRenew = false;
-    sub.nextPaymentDate = undefined;
-    sub.endDate = sub.currentPeriodEnd;
-    sub.pendingPlanId = undefined;
-    sub.pendingBillingCycle = undefined;
-    await sub.save();
+    // Add cancellation reason to DB record
+    const updatedSub = await this.subscriptionModel
+      .findOne({ _id: sub._id })
+      .exec();
+    if (updatedSub) {
+      updatedSub.cancellationReason = reason;
+      await updatedSub.save();
+    }
 
-    // ✅ Use reusable notification method
+    // Send notification
     await this.notificationService.notifyUser(user, {
       key: 'subscription.cancelled',
       vars: {
@@ -625,7 +640,7 @@ export class AppSubscriptionService {
     });
     await history.save();
 
-    return sub;
+    return updatedSub || sub;
   }
 
   async reactivateSubscription(userId: string) {
@@ -648,17 +663,41 @@ export class AppSubscriptionService {
       );
     }
 
-    // Reset cancellation flags
-    sub.cancelAtPeriodEnd = false;
-    sub.cancelledAt = undefined;
-    sub.cancellationReason = undefined;
-    sub.autoRenew = true;
-    sub.nextPaymentDate = sub.currentPeriodEnd;
-    sub.endDate = undefined;
+    // ✅ If Paddle subscription, reactivate in Paddle first
+    if (sub.provider === 'paddle' && sub.paddleSubscriptionId) {
+      try {
+        this.logger.log(
+          `Reactivating Paddle subscription: ${sub.paddleSubscriptionId}`,
+        );
 
-    await sub.save();
+        const paddleData = await this.paddleService.removeScheduledCancellation(
+          sub.paddleSubscriptionId,
+        );
 
-    // ✅ Use reusable notification method
+        // ✅ Sync DB from Paddle response
+        await this.syncFromPaddleData(paddleData);
+
+        this.logger.log(
+          `✅ Paddle subscription reactivated: ${sub.paddleSubscriptionId}`,
+        );
+      } catch (error) {
+        this.logger.error('Failed to reactivate subscription in Paddle', error);
+        throw new BadRequestException(
+          'Failed to reactivate subscription with payment provider',
+        );
+      }
+    } else {
+      // ✅ For non-Paddle subscriptions, update DB directly
+      sub.cancelAtPeriodEnd = false;
+      sub.cancelledAt = undefined;
+      sub.cancellationReason = undefined;
+      sub.autoRenew = true;
+      sub.nextPaymentDate = sub.currentPeriodEnd;
+      sub.endDate = undefined;
+      await sub.save();
+    }
+
+    // Send notification
     await this.notificationService.notifyUser(user, {
       key: 'subscription.reactivated',
       vars: {
@@ -666,7 +705,7 @@ export class AppSubscriptionService {
       },
     });
 
-    // Add history entry for reactivation
+    // Add history entry
     const history = new this.subscriptionHistoryModel({
       userId,
       subscriptionId: sub._id,
@@ -675,12 +714,17 @@ export class AppSubscriptionService {
       startDate: sub.startDate,
       endDate: sub.currentPeriodEnd,
       status: sub.status,
-      details: 'Subscription reactivated by user',
+      details: `Subscription reactivated${sub.provider === 'paddle' ? ' (via Paddle)' : ''}`,
       createdAt: new Date(),
     });
     await history.save();
 
-    return sub;
+    // Fetch fresh data
+    const updatedSub = await this.subscriptionModel
+      .findOne({ _id: sub._id })
+      .exec();
+
+    return updatedSub || sub;
   }
 
   async cancelPendingChange(userId: string) {
@@ -715,6 +759,168 @@ export class AppSubscriptionService {
     await history.save();
 
     return sub;
+  }
+
+  async handlePaddleTransactionCompleted(data: {
+    transactionId: string;
+    paddleSubscriptionId: string;
+    customData: any;
+    paddleCustomerId: string;
+    currency: string;
+  }) {
+    try {
+      // Check if subscription already exists (upgrade scenario)
+      const existingSub = await this.subscriptionModel
+        .findOne({ paddleSubscriptionId: data.paddleSubscriptionId })
+        .exec();
+
+      if (existingSub) {
+        this.logger.log(
+          `⚠️ [WEBHOOK] Subscription exists: ${data.paddleSubscriptionId} - Ignoring transaction (handled by subscription.updated)`,
+        );
+        return;
+      }
+
+      // This is a NEW subscription
+      if (!data.customData?.userId || !data.customData?.planId) {
+        this.logger.error(
+          `❌ [WEBHOOK] Missing custom_data fields in transaction ${data.transactionId}`,
+        );
+        return;
+      }
+
+      const { userId, planId, billingCycle } = data.customData;
+
+      this.logger.log(
+        `✅ [WEBHOOK] Creating NEW subscription → userId=${userId}, planId=${planId}`,
+      );
+
+      await this.subscribe(
+        userId,
+        planId,
+        billingCycle || 'monthly',
+        (data.currency as SupportedCurrency) || 'USD',
+        'paddle',
+        data.paddleSubscriptionId,
+        data.paddleCustomerId,
+      );
+
+      this.logger.log(
+        `✅ [WEBHOOK] Subscription created: ${data.paddleSubscriptionId}`,
+      );
+    } catch (error) {
+      this.logger.error('❌ [WEBHOOK] Failed to handle transaction', error);
+    }
+  }
+
+  /**
+   * ✅ NEW: Sync local subscription from Paddle data
+   * This is the SINGLE source of truth for updating subscriptions from Paddle
+   */
+  async syncFromPaddleData(paddleData: {
+    paddleSubscriptionId: string;
+    status: string;
+    planId?: string;
+    billingCycle?: AppSubscriptionBillingCycle;
+    currentPeriodStart?: Date;
+    currentPeriodEnd?: Date;
+    nextPaymentDate?: Date;
+    cancelAtPeriodEnd?: boolean;
+    scheduledCancellationDate?: Date;
+    priceId?: string;
+  }) {
+    try {
+      this.logger.log(
+        `🔄 [SYNC] Syncing subscription: ${paddleData.paddleSubscriptionId}`,
+      );
+
+      const sub = await this.subscriptionModel
+        .findOne({ paddleSubscriptionId: paddleData.paddleSubscriptionId })
+        .exec();
+
+      if (!sub) {
+        this.logger.warn(
+          `⚠️ [SYNC] Subscription not found: ${paddleData.paddleSubscriptionId}`,
+        );
+        return;
+      }
+
+      const oldPlanId = sub.planId;
+      const oldBillingCycle = sub.billingCycle;
+
+      // Update status
+      if (paddleData.status === 'active' || paddleData.status === 'trialing') {
+        sub.status = 'active';
+      } else if (paddleData.status === 'past_due') {
+        sub.status = 'active';
+      } else if (paddleData.status === 'canceled') {
+        sub.status = 'cancelled';
+      }
+
+      // Update billing periods
+      if (paddleData.currentPeriodStart) {
+        sub.currentPeriodStart = paddleData.currentPeriodStart;
+      }
+      if (paddleData.currentPeriodEnd) {
+        sub.currentPeriodEnd = paddleData.currentPeriodEnd;
+        if (sub.status === 'active') {
+          sub.endDate = paddleData.currentPeriodEnd;
+        }
+      }
+
+      // Update next payment date
+      if (paddleData.nextPaymentDate) {
+        sub.nextPaymentDate = paddleData.nextPaymentDate;
+      }
+
+      // Update cancellation state
+      sub.cancelAtPeriodEnd = paddleData.cancelAtPeriodEnd || false;
+      sub.autoRenew = !paddleData.cancelAtPeriodEnd;
+      if (paddleData.scheduledCancellationDate) {
+        sub.endDate = paddleData.scheduledCancellationDate;
+      }
+
+      // If priceId changed, resolve the new plan
+      if (paddleData.priceId) {
+        const plan =
+          (await this.appPlanModel
+            .findOne({ 'paddlePriceIds.monthly': paddleData.priceId })
+            .exec()) ||
+          (await this.appPlanModel
+            .findOne({ 'paddlePriceIds.yearly': paddleData.priceId })
+            .exec()) ||
+          (await this.appPlanModel
+            .findOne({ 'paddlePriceIds.oneTime': paddleData.priceId })
+            .exec());
+
+        if (plan) {
+          sub.planId = plan.planId;
+          if (paddleData.billingCycle) {
+            sub.billingCycle = paddleData.billingCycle;
+          }
+
+          if (
+            oldPlanId !== sub.planId ||
+            oldBillingCycle !== sub.billingCycle
+          ) {
+            this.logger.log(
+              `🔄 [SYNC] Plan updated: ${oldPlanId}(${oldBillingCycle}) → ${sub.planId}(${sub.billingCycle})`,
+            );
+          }
+        }
+      }
+
+      await sub.save();
+
+      this.logger.log(
+        `✅ [SYNC] Subscription synced: ${paddleData.paddleSubscriptionId}`,
+      );
+
+      return sub;
+    } catch (error) {
+      this.logger.error('❌ [SYNC] Failed to sync subscription', error);
+      throw error;
+    }
   }
 
   async getSubscriptionHistory(userId: string) {
