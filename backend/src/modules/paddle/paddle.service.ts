@@ -79,7 +79,6 @@ export class PaddleService {
       );
 
       const transaction = response.data.data;
-      console.log({ transaction });
       if (!transaction?.checkout?.url) {
         throw new Error('Paddle did not return a checkout URL');
       }
@@ -436,7 +435,6 @@ export class PaddleService {
     this.logger.log(
       `Paddle webhook received: type=${event.event_type}, id=${event.id}`,
     );
-    console.log('Full Event Data:', JSON.stringify(event, null, 2));
 
     switch (event.event_type) {
       case 'transaction.completed':
