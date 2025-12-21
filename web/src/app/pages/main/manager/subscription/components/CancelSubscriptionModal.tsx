@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../components/ui/BaseModal";
 import TextArea from "../../../../../../components/ui/TextArea";
-import { planKeys } from "../../../../../../hooks/queries/usePlans";
+import { planKeys } from "../../../../../../hooks/queries/useSubscription";
 import { useDebounce } from "../../../../../../hooks/useDebounce";
 import { useToast } from "../../../../../../hooks/useToast";
 import { handleContactSupport } from "../../../../../../utils/contact";

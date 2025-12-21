@@ -250,9 +250,12 @@ export class PaddleService {
         return this.mapPaddleSubscriptionData(subscription);
       }
 
-      // Remove the scheduled cancellation
-      await axios.delete(
-        `${this.apiUrl}/subscriptions/${subscriptionId}/scheduled-changes`,
+      // PATCH the subscription with scheduled_change: null
+      const response = await axios.patch(
+        `${this.apiUrl}/subscriptions/${subscriptionId}`,
+        {
+          scheduled_change: null, // This removes the scheduled cancellation
+        },
         {
           headers: {
             Authorization: `Bearer ${this.apiKey}`,
@@ -265,17 +268,8 @@ export class PaddleService {
         `✅ [REACTIVATION] Cancellation removed in Paddle: ${subscriptionId}`,
       );
 
-      // Fetch updated state
-      const updatedState = await axios.get(
-        `${this.apiUrl}/subscriptions/${subscriptionId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.apiKey}`,
-          },
-        },
-      );
-
-      return this.mapPaddleSubscriptionData(updatedState.data.data);
+      // Return the updated subscription data from the response
+      return this.mapPaddleSubscriptionData(response.data.data);
     } catch (error) {
       this.logger.error(
         `❌ [REACTIVATION] Failed to remove cancellation: ${subscriptionId}`,
@@ -490,6 +484,55 @@ export class PaddleService {
       }
 
       throw new BadRequestException('Failed to prepare upgrade in Paddle');
+    }
+  }
+
+  /**
+   * ✅ Schedule a downgrade in Paddle (applies at end of billing period)
+   * For downgrades, we use prorated_next_billing_period to avoid immediate refunds
+   */
+  async scheduleDowngrade(
+    subscriptionId: string,
+    newPriceId: string,
+  ): Promise<PaddleSubscriptionData> {
+    try {
+      this.logger.log(
+        `📉 [DOWNGRADE] Scheduling downgrade: sub=${subscriptionId}, newPrice=${newPriceId}`,
+      );
+
+      // Update subscription with new price, but defer billing to next period
+      const response = await axios.patch(
+        `${this.apiUrl}/subscriptions/${subscriptionId}`,
+        {
+          items: [
+            {
+              price_id: newPriceId,
+              quantity: 1,
+            },
+          ],
+          // ✅ Key: Use prorated_next_billing_period for downgrades
+          // This applies the change at the next billing date without immediate charge/refund
+          proration_billing_mode: 'prorated_next_billing_period',
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      this.logger.log(
+        `✅ [DOWNGRADE] Downgrade scheduled in Paddle: ${subscriptionId}`,
+      );
+
+      return this.mapPaddleSubscriptionData(response.data.data);
+    } catch (error) {
+      this.logger.error(
+        `❌ [DOWNGRADE] Failed to schedule downgrade: ${subscriptionId}`,
+        error.response?.data || error,
+      );
+      throw new BadRequestException('Failed to schedule downgrade in Paddle');
     }
   }
 

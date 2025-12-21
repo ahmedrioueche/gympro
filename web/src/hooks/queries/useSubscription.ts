@@ -64,11 +64,15 @@ export const useDowngradeSubscription = () => {
 
 export const useReactivateSubscription = () => {
   const qc = useQueryClient();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async () => {
       const res = await appSubscriptionsApi.reactivateSubscription();
+      const msg = getMessage(res, t);
+      showStatusToast(msg, toast);
       return res;
     },
+
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: planKeys.mySubscription() });
       qc.invalidateQueries({ queryKey: planKeys.subscription() });
@@ -78,9 +82,12 @@ export const useReactivateSubscription = () => {
 
 export const useCancelPendingChange = () => {
   const qc = useQueryClient();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async () => {
       const res = await appSubscriptionsApi.cancelPendingChange();
+      const msg = getMessage(res, t);
+      showStatusToast(msg, toast);
       return res;
     },
     onSuccess: () => {

@@ -6,9 +6,8 @@ import { useTranslation } from "react-i18next";
 import {
   useCancelPendingChange,
   useReactivateSubscription,
-} from "../../../../../../hooks/queries/usePlans";
+} from "../../../../../../hooks/queries/useSubscription";
 import { useSubscriptionStatus } from "../../../../../../hooks/useSubscriptionStatus";
-import { useToast } from "../../../../../../hooks/useToast";
 
 import { useModalStore } from "../../../../../../store/modal";
 
@@ -19,7 +18,6 @@ interface SubscriptionCardProps {
 
 function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
   const { t } = useTranslation();
-  const toast = useToast();
   const { openModal } = useModalStore();
 
   const {
@@ -46,16 +44,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
       text: t("plans.confirm_cancel_request_text"),
       confirmVariant: "danger",
       onConfirm: () => {
-        cancelPendingChange(undefined, {
-          onSuccess: () => {
-            toast.success(
-              t("plans.cancel_request_success") || "Request cancelled"
-            );
-          },
-          onError: (error: any) => {
-            toast.error(error.message || "Failed to cancel request");
-          },
-        });
+        cancelPendingChange();
       },
     });
   };
@@ -70,14 +59,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
       }),
       confirmVariant: "primary",
       onConfirm: () => {
-        reactivate(undefined, {
-          onSuccess: () => {
-            toast.success(t("subscription.reactivate_success"));
-          },
-          onError: () => {
-            toast.error(t("subscription.reactivate_error"));
-          },
-        });
+        reactivate();
       },
     });
   };

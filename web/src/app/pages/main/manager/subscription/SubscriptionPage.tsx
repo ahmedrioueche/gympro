@@ -18,7 +18,7 @@ import {
   useAllPlans,
   useDowngradeSubscription,
   useMySubscription,
-} from "../../../../../hooks/queries/usePlans";
+} from "../../../../../hooks/queries/useSubscription";
 import useCurrency from "../../../../../hooks/useCurrency";
 import { useModalStore } from "../../../../../store/modal";
 import { handleContactSupport } from "../../../../../utils/contact";

@@ -520,13 +520,59 @@ export class AppSubscriptionService {
       );
     }
 
-    // Schedule the downgrade for end of current period
-    currentSub.pendingPlanId = planId;
-    currentSub.pendingBillingCycle = billingCycle;
-    currentSub.pendingChangeEffectiveDate = currentSub.currentPeriodEnd;
-    await currentSub.save();
+    // ✅ Handle Paddle subscriptions differently
+    if (currentSub.provider === 'paddle' && currentSub.paddleSubscriptionId) {
+      try {
+        this.logger.log(
+          `📉 [DOWNGRADE] Processing Paddle downgrade: ${currentSub.paddleSubscriptionId}`,
+        );
 
-    // ✅ Use reusable notification method
+        // Get the new price ID
+        const newPriceId = this.paddleService.getPaddlePriceId(
+          targetPlan,
+          billingCycle,
+        );
+
+        if (!newPriceId) {
+          throw new BadRequestException(
+            `Price ID not found for plan=${planId}, billing=${billingCycle}`,
+          );
+        }
+
+        // Schedule downgrade in Paddle (applies at end of billing period)
+        const paddleData = await this.paddleService.scheduleDowngrade(
+          currentSub.paddleSubscriptionId,
+          newPriceId,
+        );
+
+        // ✅ For Paddle downgrades, we DON'T use pendingPlanId
+        // Instead, we store it in the DB but know Paddle will handle the switch
+        currentSub.pendingPlanId = planId;
+        currentSub.pendingBillingCycle = billingCycle;
+        currentSub.pendingChangeEffectiveDate = currentSub.currentPeriodEnd;
+        await currentSub.save();
+
+        this.logger.log(
+          `✅ [DOWNGRADE] Paddle downgrade scheduled: ${currentSub.paddleSubscriptionId}`,
+        );
+      } catch (error) {
+        this.logger.error(
+          '❌ [DOWNGRADE] Failed to schedule downgrade in Paddle',
+          error,
+        );
+        throw new BadRequestException(
+          'Failed to schedule downgrade with payment provider',
+        );
+      }
+    } else {
+      // ✅ For manual/Chargily subscriptions, use pending change logic
+      currentSub.pendingPlanId = planId;
+      currentSub.pendingBillingCycle = billingCycle;
+      currentSub.pendingChangeEffectiveDate = currentSub.currentPeriodEnd;
+      await currentSub.save();
+    }
+
+    // Send notification
     await this.notificationService.notifyUser(user, {
       key: 'subscription.downgrade_scheduled',
       vars: {
@@ -544,7 +590,7 @@ export class AppSubscriptionService {
       action: 'downgrade_scheduled',
       status: currentSub.status,
       startDate: new Date(),
-      details: `Downgrade/Switch scheduled to ${targetPlan.name} (${billingCycle}) on ${currentSub.currentPeriodEnd}`,
+      details: `Downgrade/Switch scheduled to ${targetPlan.name} (${billingCycle}) on ${currentSub.currentPeriodEnd}${currentSub.provider === 'paddle' ? ' (via Paddle)' : ''}`,
       createdAt: new Date(),
     });
     await history.save();
