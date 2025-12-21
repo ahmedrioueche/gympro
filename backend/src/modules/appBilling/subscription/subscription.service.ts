@@ -927,6 +927,7 @@ export class AppSubscriptionService {
       }
 
       // If priceId changed, resolve the new plan
+      // If priceId changed, resolve the new plan
       if (paddleData.priceId) {
         const plan =
           (await this.appPlanModel
@@ -940,17 +941,30 @@ export class AppSubscriptionService {
             .exec());
 
         if (plan) {
-          sub.planId = plan.planId;
-          if (paddleData.billingCycle) {
-            sub.billingCycle = paddleData.billingCycle;
-          }
+          // Only update current plan if it's an immediate change (upgrade)
+          // For scheduled changes (downgrades), keep current plan until effective date
+          const isScheduledChange =
+            sub.pendingPlanId &&
+            sub.pendingChangeEffectiveDate &&
+            sub.pendingChangeEffectiveDate > new Date();
 
-          if (
-            oldPlanId !== sub.planId ||
-            oldBillingCycle !== sub.billingCycle
-          ) {
+          if (!isScheduledChange) {
+            sub.planId = plan.planId;
+            if (paddleData.billingCycle) {
+              sub.billingCycle = paddleData.billingCycle;
+            }
+
+            if (
+              oldPlanId !== sub.planId ||
+              oldBillingCycle !== sub.billingCycle
+            ) {
+              this.logger.log(
+                `🔄 [SYNC] Plan updated: ${oldPlanId}(${oldBillingCycle}) → ${sub.planId}(${sub.billingCycle})`,
+              );
+            }
+          } else {
             this.logger.log(
-              `🔄 [SYNC] Plan updated: ${oldPlanId}(${oldBillingCycle}) → ${sub.planId}(${sub.billingCycle})`,
+              `⏳ [SYNC] Scheduled change detected - keeping current plan until ${sub.pendingChangeEffectiveDate}`,
             );
           }
         }
