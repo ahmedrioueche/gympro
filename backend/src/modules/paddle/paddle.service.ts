@@ -254,6 +254,148 @@ export class PaddleService {
   }
 
   /**
+   * ✅ Immediately sync subscription from Paddle after upgrade
+   * This ensures the UI updates right away without waiting for webhooks
+   */
+  private async syncSubscriptionImmediately(
+    paddleSubscriptionId: string,
+    expectedPriceId: string,
+  ) {
+    try {
+      this.logger.log(
+        `🔄 [IMMEDIATE SYNC] Fetching subscription from Paddle: ${paddleSubscriptionId}`,
+      );
+
+      // Fetch latest data from Paddle API
+      const response = await axios.get(
+        `${this.apiUrl}/subscriptions/${paddleSubscriptionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+        },
+      );
+
+      const paddleData = response.data.data;
+
+      // Find local subscription record
+      const sub = await this.appSubscriptionService.subscriptionModel
+        .findOne({ paddleSubscriptionId })
+        .exec();
+
+      if (!sub) {
+        this.logger.error(
+          `❌ [IMMEDIATE SYNC] Local subscription not found: ${paddleSubscriptionId}`,
+        );
+        return;
+      }
+
+      const oldPlanId = sub.planId;
+      const oldBillingCycle = sub.billingCycle;
+
+      // Get the new price ID from Paddle's subscription items
+      const newPriceId = paddleData.items?.[0]?.price?.id;
+
+      this.logger.log(
+        `📊 [IMMEDIATE SYNC] Price comparison: current=${newPriceId}, expected=${expectedPriceId}, match=${newPriceId === expectedPriceId}`,
+      );
+
+      if (!newPriceId) {
+        this.logger.warn('[IMMEDIATE SYNC] No price ID found in Paddle data');
+        return;
+      }
+
+      // Find the plan that matches this price ID
+      const newPlan =
+        (await this.appPlansService.appPlanModel
+          .findOne({ 'paddlePriceIds.monthly': newPriceId })
+          .exec()) ||
+        (await this.appPlansService.appPlanModel
+          .findOne({ 'paddlePriceIds.yearly': newPriceId })
+          .exec()) ||
+        (await this.appPlansService.appPlanModel
+          .findOne({ 'paddlePriceIds.oneTime': newPriceId })
+          .exec());
+
+      if (!newPlan) {
+        this.logger.error(
+          `❌ [IMMEDIATE SYNC] Could not find plan for price: ${newPriceId}`,
+        );
+        return;
+      }
+
+      // Update plan and billing cycle
+      sub.planId = newPlan.planId;
+      sub.billingCycle =
+        paddleData.items[0].price.billing_cycle?.interval === 'year'
+          ? 'yearly'
+          : paddleData.items[0].price.billing_cycle?.interval === 'month'
+            ? 'monthly'
+            : 'oneTime';
+
+      // Update status
+      const status = paddleData.status;
+      if (status === 'active' || status === 'trialing') {
+        sub.status = 'active';
+      } else if (status === 'past_due') {
+        sub.status = 'active';
+      } else {
+        sub.status = 'cancelled';
+      }
+
+      // Update billing periods
+      if (paddleData.current_billing_period) {
+        sub.currentPeriodStart = new Date(
+          paddleData.current_billing_period.starts_at,
+        );
+        sub.currentPeriodEnd = new Date(
+          paddleData.current_billing_period.ends_at,
+        );
+        if (sub.status === 'active') {
+          sub.endDate = sub.currentPeriodEnd;
+        }
+      }
+
+      // Update next payment date
+      if (paddleData.next_billed_at) {
+        sub.nextPaymentDate = new Date(paddleData.next_billed_at);
+      }
+
+      // Update last payment date
+      sub.lastPaymentDate = new Date();
+
+      // Reset cancellation flags (upgrade reactivates subscription)
+      sub.cancelAtPeriodEnd = false;
+      sub.autoRenew = true;
+      sub.cancelledAt = undefined;
+      sub.cancellationReason = undefined;
+
+      // Handle scheduled changes
+      if (paddleData.scheduled_change?.action === 'cancel') {
+        sub.cancelAtPeriodEnd = true;
+        sub.autoRenew = false;
+        if (paddleData.scheduled_change.effective_at) {
+          sub.endDate = new Date(paddleData.scheduled_change.effective_at);
+        }
+      }
+
+      await sub.save();
+
+      this.logger.log(
+        `✅ [IMMEDIATE SYNC] Subscription updated: ${oldPlanId}(${oldBillingCycle}) → ${sub.planId}(${sub.billingCycle})`,
+      );
+
+      return sub;
+    } catch (error) {
+      this.logger.error(
+        `❌ [IMMEDIATE SYNC] Failed to sync subscription`,
+        error.response?.data || error,
+      );
+      // Don't throw - webhook will handle it as backup
+    }
+  }
+
+  /**
    * ✅ Create a transaction for upgrading/downgrading an existing subscription
    * This handles proration automatically in Paddle and charges immediately
    */
@@ -269,7 +411,7 @@ export class PaddleService {
   }> {
     try {
       this.logger.log(
-        `Creating Upgrade Transaction: sub=${subscriptionId}, newPrice=${priceId}`,
+        `🚀 [UPGRADE] Starting upgrade: sub=${subscriptionId}, newPrice=${priceId}`,
       );
 
       const payload = {
@@ -282,7 +424,11 @@ export class PaddleService {
         ],
       };
 
-      // ✅ Use PATCH to update subscription (Paddle charges immediately if needed)
+      // Call Paddle API to update subscription
+      this.logger.log(
+        `📡 [UPGRADE] Calling Paddle API: PATCH /subscriptions/${subscriptionId}`,
+      );
+
       const response = await axios.patch(
         `${this.apiUrl}/subscriptions/${subscriptionId}`,
         payload,
@@ -297,10 +443,19 @@ export class PaddleService {
       const data = response.data.data;
       const transaction = data.immediate_transaction;
 
+      this.logger.log(
+        `📦 [UPGRADE] Paddle response received: hasTransaction=${!!transaction}, transactionStatus=${transaction?.status || 'none'}`,
+      );
+
+      // ✅ CRITICAL: Immediately sync the local database from Paddle
+      // Don't wait for webhooks - they may be delayed or arrive out of order
+      this.logger.log(`🔄 [UPGRADE] Syncing local database immediately...`);
+      await this.syncSubscriptionImmediately(subscriptionId, priceId);
+
       // ✅ Case 1: No immediate transaction (fully covered by credit or no payment needed)
       if (!transaction) {
         this.logger.log(
-          `Upgrade applied immediately without transaction (covered by credit). SubId: ${subscriptionId}`,
+          `✅ [UPGRADE] Success - No payment needed (covered by credit)`,
         );
         return {
           success: true,
@@ -311,7 +466,7 @@ export class PaddleService {
       // ✅ Case 2: Transaction created but payment succeeded immediately
       if (transaction.status === 'completed') {
         this.logger.log(
-          `Upgrade transaction completed immediately: id=${transaction.id}`,
+          `✅ [UPGRADE] Success - Payment completed: txn=${transaction.id}`,
         );
         return {
           success: true,
@@ -320,10 +475,10 @@ export class PaddleService {
         };
       }
 
-      // ✅ Case 3: Payment requires action (e.g., authentication, new payment method)
+      // ✅ Case 3: Payment requires action (e.g., 3DS authentication, new payment method)
       if (transaction.checkout?.url) {
         this.logger.log(
-          `Upgrade requires payment: id=${transaction.id}, url=${transaction.checkout.url}`,
+          `⚠️ [UPGRADE] Payment required: txn=${transaction.id}, url=${transaction.checkout.url}`,
         );
         return {
           success: false,
@@ -335,7 +490,7 @@ export class PaddleService {
 
       // ✅ Case 4: Transaction pending
       this.logger.log(
-        `Upgrade transaction pending: id=${transaction.id}, status=${transaction.status}`,
+        `⏳ [UPGRADE] Transaction pending: txn=${transaction.id}, status=${transaction.status}`,
       );
       return {
         success: false,
@@ -344,9 +499,20 @@ export class PaddleService {
       };
     } catch (error) {
       this.logger.error(
-        'Failed to create upgrade transaction',
-        error.response?.data || error,
+        `❌ [UPGRADE] Failed to create upgrade transaction`,
+        error.response?.data || error.message,
       );
+
+      // Log more details for debugging
+      if (error.response) {
+        this.logger.error(
+          `[UPGRADE] Response status: ${error.response.status}`,
+        );
+        this.logger.error(
+          `[UPGRADE] Response data: ${JSON.stringify(error.response.data)}`,
+        );
+      }
+
       throw new BadRequestException('Failed to prepare upgrade in Paddle');
     }
   }
@@ -432,58 +598,107 @@ export class PaddleService {
    * Paddle webhook dispatcher
    */
   async handleWebhook(event: any) {
+    // ✅ FIX: Use event_id, not event.id
     this.logger.log(
-      `Paddle webhook received: type=${event.event_type}, id=${event.id}`,
+      `🔔 [WEBHOOK] Received: type=${event.event_type}, event_id=${event.event_id}, occurred_at=${event.occurred_at}`,
     );
 
     switch (event.event_type) {
       case 'transaction.completed':
         this.logger.log(
-          `Processing transaction.completed for txn=${event.data.id}`,
+          `💰 [WEBHOOK] Processing transaction.completed: txn=${event.data.id}`,
         );
         await this.handleTransactionCompleted(event.data);
         break;
 
+      case 'transaction.created':
+        this.logger.log(
+          `📝 [WEBHOOK] Transaction created: txn=${event.data.id} - Ignoring (waiting for completion)`,
+        );
+        // No action needed - we process on transaction.completed
+        break;
+
+      case 'transaction.updated':
+        this.logger.log(
+          `📝 [WEBHOOK] Transaction updated: txn=${event.data.id} - Ignoring (waiting for completion)`,
+        );
+        // No action needed - we process on transaction.completed
+        break;
+
+      case 'transaction.billed':
+        this.logger.log(
+          `💳 [WEBHOOK] Transaction billed: txn=${event.data.id} - Ignoring (waiting for completion)`,
+        );
+        // No action needed - we process on transaction.completed
+        break;
+
+      case 'transaction.paid':
+        this.logger.log(
+          `💵 [WEBHOOK] Transaction paid: txn=${event.data.id} - Ignoring (waiting for completion)`,
+        );
+        // No action needed - we process on transaction.completed
+        break;
+
       case 'subscription.updated':
         this.logger.log(
-          `Processing subscription.updated for sub=${event.data.id}`,
+          `🔄 [WEBHOOK] Processing subscription.updated: sub=${event.data.id}`,
         );
         await this.handleSubscriptionUpdated(event.data);
         break;
 
       case 'subscription.canceled':
         this.logger.log(
-          `Processing subscription.canceled for sub=${event.data.id}`,
+          `❌ [WEBHOOK] Processing subscription.canceled: sub=${event.data.id}`,
         );
         await this.handleSubscriptionCanceled(event.data);
         break;
 
       default:
-        this.logger.warn(`Unhandled Paddle event: ${event.event_type}`);
+        this.logger.warn(`⚠️ [WEBHOOK] Unhandled event: ${event.event_type}`);
     }
   }
 
+  /**
+   * ✅ FIXED: Handle transaction.completed webhook
+   * Now ignores upgrade transactions and only processes NEW subscriptions
+   */
   private async handleTransactionCompleted(data: any) {
     try {
       const customData = data.custom_data;
+      const paddleSubscriptionId = data.subscription_id;
+
       this.logger.log(
-        `Transaction data: id=${data.id}, status=${data.status}, hasCustomData=${!!customData}`,
+        `💰 [WEBHOOK] Transaction completed: id=${data.id}, status=${data.status}, hasCustomData=${!!customData}, subscription=${paddleSubscriptionId}`,
       );
 
+      // ✅ Check if this subscription already exists (upgrade scenario)
+      if (paddleSubscriptionId) {
+        const existingSub = await this.appSubscriptionService.subscriptionModel
+          .findOne({ paddleSubscriptionId })
+          .exec();
+
+        if (existingSub) {
+          this.logger.log(
+            `⚠️ [WEBHOOK] Subscription already exists: ${paddleSubscriptionId} - This is an upgrade/renewal transaction, ignoring (subscription.updated will handle it)`,
+          );
+          return; // ✅ Don't process - let subscription.updated handle upgrades
+        }
+      }
+
+      // ✅ This is a NEW subscription (initial checkout)
       if (!customData?.userId || !customData?.planId) {
         this.logger.error(
-          `Missing custom_data or required fields in transaction ${data.id}. CustomData: ${JSON.stringify(customData)}`,
+          `❌ [WEBHOOK] Missing custom_data or required fields in transaction ${data.id}. CustomData: ${JSON.stringify(customData)}`,
         );
         return;
       }
 
       const { userId, planId, billingCycle } = customData;
-      const paddleSubscriptionId = data.subscription_id;
       const paddleCustomerId = data.customer_id;
       const currency = data.currency_code || 'USD';
 
       this.logger.log(
-        `Activating subscription → userId=${userId}, planId=${planId}, billingCycle=${billingCycle || 'monthly'}, provider=paddle, paddleSubId=${paddleSubscriptionId}`,
+        `✅ [WEBHOOK] Activating NEW subscription → userId=${userId}, planId=${planId}, billingCycle=${billingCycle || 'monthly'}, provider=paddle, paddleSubId=${paddleSubscriptionId}`,
       );
 
       await this.appSubscriptionService.subscribe(
@@ -497,16 +712,22 @@ export class PaddleService {
       );
 
       this.logger.log(
-        `Subscription activated via Paddle → user=${userId}, plan=${planId}, subId=${paddleSubscriptionId}`,
+        `✅ [WEBHOOK] Subscription activated via Paddle → user=${userId}, plan=${planId}, subId=${paddleSubscriptionId}`,
       );
     } catch (error) {
-      this.logger.error('Subscription activation failed', error);
+      this.logger.error('❌ [WEBHOOK] Subscription activation failed', error);
       this.logger.error(`Error details: ${JSON.stringify(error)}`);
     }
   }
 
+  /**
+   * Webhook handler for subscription.updated
+   * This serves as a BACKUP mechanism in case immediate sync fails
+   */
   private async handleSubscriptionUpdated(data: any) {
     try {
+      this.logger.log(`🔔 [WEBHOOK] subscription.updated received: ${data.id}`);
+
       const paddleSubscriptionId = data.id;
       const status = data.status;
       const currentPeriodEnd = data.current_billing_period?.ends_at;
@@ -517,10 +738,13 @@ export class PaddleService {
 
       if (!sub) {
         this.logger.warn(
-          `Subscription not found for update: ${paddleSubscriptionId}`,
+          `⚠️ [WEBHOOK] Subscription not found: ${paddleSubscriptionId}`,
         );
         return;
       }
+
+      const oldPlanId = sub.planId;
+      const oldBillingCycle = sub.billingCycle;
 
       // Sync status
       if (status === 'active' || status === 'trialing') {
@@ -537,7 +761,7 @@ export class PaddleService {
         if (sub.status === 'active') sub.endDate = sub.currentPeriodEnd;
       }
 
-      // ✅ Sync cancellation scheduled state
+      // Sync cancellation scheduled state
       if (data.scheduled_change?.action === 'cancel') {
         sub.cancelAtPeriodEnd = true;
         sub.autoRenew = false;
@@ -554,14 +778,10 @@ export class PaddleService {
       if (newPriceId) {
         const plan =
           (await this.appPlansService.appPlanModel
-            .findOne({
-              'paddlePriceIds.monthly': newPriceId,
-            })
+            .findOne({ 'paddlePriceIds.monthly': newPriceId })
             .exec()) ||
           (await this.appPlansService.appPlanModel
-            .findOne({
-              'paddlePriceIds.yearly': newPriceId,
-            })
+            .findOne({ 'paddlePriceIds.yearly': newPriceId })
             .exec());
 
         if (plan) {
@@ -570,15 +790,28 @@ export class PaddleService {
             data.items[0].price.billing_cycle?.interval === 'year'
               ? 'yearly'
               : 'monthly';
+
+          if (
+            oldPlanId !== sub.planId ||
+            oldBillingCycle !== sub.billingCycle
+          ) {
+            this.logger.log(
+              `🔄 [WEBHOOK] Plan updated: ${oldPlanId}(${oldBillingCycle}) → ${sub.planId}(${sub.billingCycle})`,
+            );
+          }
         }
       }
 
       await sub.save();
+
       this.logger.log(
-        `Subscription update synced: ${paddleSubscriptionId}, status=${status}, cancelAtPeriodEnd=${sub.cancelAtPeriodEnd}`,
+        `✅ [WEBHOOK] Subscription synced: ${paddleSubscriptionId}, status=${status}`,
       );
     } catch (error) {
-      this.logger.error('Failed to handle subscription.updated', error);
+      this.logger.error(
+        '❌ [WEBHOOK] Failed to handle subscription.updated',
+        error,
+      );
     }
   }
 
@@ -592,10 +825,13 @@ export class PaddleService {
       );
 
       this.logger.log(
-        `Subscription canceled in Paddle: ${paddleSubscriptionId}`,
+        `✅ [WEBHOOK] Subscription canceled in Paddle: ${paddleSubscriptionId}`,
       );
     } catch (error) {
-      this.logger.error('Failed to handle subscription.canceled', error);
+      this.logger.error(
+        '❌ [WEBHOOK] Failed to handle subscription.canceled',
+        error,
+      );
     }
   }
 }
