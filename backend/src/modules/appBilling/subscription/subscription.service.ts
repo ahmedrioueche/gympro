@@ -797,6 +797,7 @@ export class AppSubscriptionService {
       userId,
       subscriptionId: sub._id,
       planId: sub.planId,
+      startDate: new Date(),
       action: 'pending_change_cancelled',
       status: sub.status,
       details: 'Pending plan change cancelled by user',
