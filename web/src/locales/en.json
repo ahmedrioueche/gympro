@@ -910,7 +910,14 @@
     "reason_invalid": "Please provide a valid reason.",
     "validating_reason": "Validating...",
     "thanks_for_feedback": "Thank you for your feedback!",
-    "processing": "Processing subscription..."
+    "processing": "Processing subscription...",
+    "upgrade_success": "Subscription was upgraded successfully.",
+    "upgrade_error": "Failed to upgrade subscription. Please try again.",
+    "downgrade_success": "Subscription was downgraded successfully.",
+    "downgrade_error": "Failed to downgrade subscription. Please try again.",
+    "payment_retry": "operation failed. Please retry payment.",
+    "downgrade": "Downgrade Subscription",
+    "upgrade": "Upgrade Subscription"
   },
   "plan": {
     "free": {

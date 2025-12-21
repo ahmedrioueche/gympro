@@ -192,6 +192,19 @@ export class PaddleService {
         },
       );
 
+      // ✅ Immediately sync cancellation to local DB
+      await this.appSubscriptionService.subscriptionModel.updateOne(
+        { paddleSubscriptionId: subscriptionId },
+        {
+          cancelAtPeriodEnd: true,
+          autoRenew: false,
+        },
+      );
+
+      this.logger.log(
+        `✅ [CANCEL] Subscription cancelled and DB synced: ${subscriptionId}`,
+      );
+
       return response.data.data;
     } catch (error) {
       this.logger.error(
@@ -199,6 +212,73 @@ export class PaddleService {
         error.response?.data || error,
       );
       throw new BadRequestException('Failed to cancel subscription in Paddle');
+    }
+  }
+
+  async removeScheduledCancellation(subscriptionId: string) {
+    try {
+      this.logger.log(
+        `🔄 [REACTIVATION] Removing scheduled cancellation: ${subscriptionId}`,
+      );
+
+      // Check current subscription state in Paddle
+      const currentState = await axios.get(
+        `${this.apiUrl}/subscriptions/${subscriptionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+        },
+      );
+
+      const subscription = currentState.data.data;
+
+      // If no scheduled cancellation, nothing to do
+      if (subscription.scheduled_change?.action !== 'cancel') {
+        this.logger.log(
+          `✅ [REACTIVATION] No cancellation scheduled for: ${subscriptionId}`,
+        );
+        return { reactivated: false, reason: 'no_cancellation_scheduled' };
+      }
+
+      // Remove the scheduled cancellation via Paddle API
+      await axios.delete(
+        `${this.apiUrl}/subscriptions/${subscriptionId}/scheduled-changes`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      this.logger.log(
+        `✅ [REACTIVATION] Cancellation removed in Paddle: ${subscriptionId}`,
+      );
+
+      // ✅ Immediately update local database
+      await this.appSubscriptionService.subscriptionModel.updateOne(
+        { paddleSubscriptionId: subscriptionId },
+        {
+          cancelAtPeriodEnd: false,
+          autoRenew: true,
+          cancelledAt: undefined,
+          cancellationReason: undefined,
+          status: 'active',
+        },
+      );
+
+      this.logger.log(`✅ [REACTIVATION] Local DB synced: ${subscriptionId}`);
+
+      return { reactivated: true };
+    } catch (error) {
+      this.logger.error(
+        `❌ [REACTIVATION] Failed to remove cancellation: ${subscriptionId}`,
+        error.response?.data || error,
+      );
+      throw new BadRequestException(
+        'Failed to reactivate subscription in Paddle',
+      );
     }
   }
 

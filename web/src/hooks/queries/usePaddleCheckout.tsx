@@ -123,12 +123,12 @@ export const useApplyPaddleUpgrade = (options?: UseCheckoutOptions) => {
       if (response.success && response.data) {
         // Check if upgrade was applied directly (payment succeeded)
         if (response.data.upgrade_applied) {
-          toast.success(t("subscriptions.upgrade_success"));
+          toast.success(t("subscription.upgrade_success"));
           options?.onSuccess?.(response.data);
         }
         // Payment failed - needs retry via checkout
         else if (response.data.checkout_url) {
-          toast.error(t("subscriptions.payment_retry"));
+          toast.error(t("subscription.payment_retry"));
           openCheckout({
             checkoutUrl: response.data.checkout_url,
             transactionId: response.data.transaction_id,
@@ -136,12 +136,12 @@ export const useApplyPaddleUpgrade = (options?: UseCheckoutOptions) => {
           options?.onSuccess?.(response.data);
         }
       } else {
-        toast.error(response.message || t("subscriptions.upgrade_failed"));
+        toast.error(response.message || t("subscription.upgrade_failed"));
         options?.onError?.(new Error(response.message || "Upgrade failed"));
       }
     },
     onError: (error: any) => {
-      toast.error(t("subscriptions.upgrade_failed"));
+      toast.error(t("subscription.upgrade_failed"));
       options?.onError?.(error);
     },
   });
