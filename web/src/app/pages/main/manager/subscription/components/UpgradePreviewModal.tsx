@@ -1,70 +1,26 @@
-import { type AppPlan } from "@ahmedrioueche/gympro-client";
 import { Check, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useModalStore } from "../../../../../../store/modal";
 
-interface UpgradePreviewModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  currentPlan: AppPlan;
-  targetPlan: AppPlan;
-  previewData: {
-    immediate_transaction?: {
-      details: {
-        totals: {
-          total: string;
-          subtotal: string;
-          credit: string;
-          balance: string;
-        };
-        line_items: Array<{
-          totals: {
-            total: string;
-            subtotal: string;
-          };
-          proration?: {
-            rate: string;
-          };
-        }>;
-      };
-    };
-    credit?: string;
-    update_summary?: {
-      credit: {
-        used: string;
-      };
-      charge: {
-        total: string;
-      };
-    };
-  };
-  isLoading?: boolean;
-}
-
-export default function UpgradePreviewModal({
-  isOpen,
-  onClose,
-  onConfirm,
-  currentPlan,
-  targetPlan,
-  previewData,
-  isLoading = false,
-}: UpgradePreviewModalProps) {
+export default function UpgradePreviewModal() {
   const { t } = useTranslation();
-
-  if (!isOpen) return null;
+  const { currentModal, closeModal, upgradePreviewProps } = useModalStore();
 
   const immediateTotal =
-    previewData?.immediate_transaction?.details?.totals?.total || "0";
-  const credit = previewData?.credit || "0";
+    upgradePreviewProps?.previewData?.immediate_transaction?.details?.totals
+      ?.total || "0";
+  const credit = upgradePreviewProps?.previewData?.credit || "0";
   const chargeTotal =
-    previewData?.update_summary?.charge?.total || immediateTotal;
+    upgradePreviewProps?.previewData?.update_summary?.charge?.total ||
+    immediateTotal;
 
   // Format currency
   const formatAmount = (amount: string) => {
     const num = parseFloat(amount);
     return `$${(num / 100).toFixed(2)}`;
   };
+
+  if (currentModal !== "upgrade_preview") return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -81,9 +37,9 @@ export default function UpgradePreviewModal({
               </p>
             </div>
             <button
-              onClick={onClose}
+              onClick={closeModal}
               className="text-white/80 hover:text-white transition-colors"
-              disabled={isLoading}
+              disabled={upgradePreviewProps.isLoading}
             >
               <X className="w-5 h-5" />
             </button>
@@ -100,7 +56,7 @@ export default function UpgradePreviewModal({
                   {t("upgrade.current_plan", "Current Plan")}
                 </p>
                 <p className="font-semibold text-text-primary">
-                  {currentPlan.name}
+                  {upgradePreviewProps.currentPlan.name}
                 </p>
               </div>
             </div>
@@ -129,7 +85,7 @@ export default function UpgradePreviewModal({
                   {t("upgrade.new_plan", "New Plan")}
                 </p>
                 <p className="font-semibold text-text-primary">
-                  {targetPlan.name}
+                  {upgradePreviewProps.targetPlan.name}
                 </p>
               </div>
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
@@ -204,18 +160,18 @@ export default function UpgradePreviewModal({
         {/* Footer */}
         <div className="p-6 bg-surface-secondary border-t border-border flex gap-3">
           <button
-            onClick={onClose}
-            disabled={isLoading}
+            onClick={closeModal}
+            disabled={upgradePreviewProps.isLoading}
             className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border border-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("common.cancel", "Cancel")}
           </button>
           <button
-            onClick={onConfirm}
-            disabled={isLoading}
+            onClick={upgradePreviewProps.onConfirm}
+            disabled={upgradePreviewProps.isLoading}
             className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {isLoading && (
+            {upgradePreviewProps.isLoading && (
               <svg
                 className="animate-spin h-5 w-5 text-white"
                 viewBox="0 0 24 24"

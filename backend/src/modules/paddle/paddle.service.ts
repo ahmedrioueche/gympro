@@ -222,7 +222,7 @@ export class PaddleService {
         ],
       };
 
-      const response = await axios.post(
+      const response = await axios.patch(
         `${this.apiUrl}/subscriptions/${subscriptionId}/preview`,
         payload,
         {

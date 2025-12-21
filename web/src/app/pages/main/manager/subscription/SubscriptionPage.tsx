@@ -55,9 +55,9 @@ function SubscriptionPage() {
       const targetPlan = plans.find(
         (p: any) => p.planId === data.target_plan?.planId
       );
-
+      console.log({ targetPlan });
       if (targetPlan) {
-        openModal("upgradePreview", {
+        openModal("upgrade_preview", {
           currentPlan: mySubscription?.plan!,
           targetPlan: targetPlan,
           previewData: data.preview,
@@ -108,7 +108,6 @@ function SubscriptionPage() {
         targetPlan.level,
         billingCycle
       );
-      console.log({ changeType });
       const effectiveDate = mySubscription.currentPeriodEnd
         ? new Date(mySubscription.currentPeriodEnd).toLocaleDateString()
         : t("plans.billing_period_end");
@@ -137,8 +136,6 @@ function SubscriptionPage() {
       }
       // Handle upgrades
       else if (changeType === "upgrade") {
-        console.log({ mySubscription });
-
         if (mySubscription.provider === "paddle") {
           // Fetch preview and show modal via the mutation's onSuccess
           previewUpgradeMutation.mutate({ planId, billingCycle });

@@ -5,6 +5,12 @@ import { useTheme } from "./context/ThemeContext";
 import { useGymStore } from "./store/gym";
 
 const ConfirmModal = lazy(() => import("./components/ConfirmModal"));
+const UpgradePreviewModal = lazy(
+  () =>
+    import(
+      "./app/pages/main/manager/subscription/components/UpgradePreviewModal"
+    )
+);
 
 const App = () => {
   const { isDark } = useTheme();
@@ -24,6 +30,7 @@ const App = () => {
       <Outlet />
       <Suspense fallback={null}>
         <ConfirmModal />
+        <UpgradePreviewModal />
       </Suspense>
     </div>
   );
