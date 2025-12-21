@@ -539,10 +539,13 @@ export class AppSubscriptionService {
           );
         }
 
+        const isBillingCycleChange = currentSub.billingCycle !== billingCycle;
+
         // Schedule downgrade in Paddle (applies at end of billing period)
         const paddleData = await this.paddleService.scheduleDowngrade(
           currentSub.paddleSubscriptionId,
           newPriceId,
+          isBillingCycleChange,
         );
 
         // ✅ For Paddle downgrades, we DON'T use pendingPlanId
