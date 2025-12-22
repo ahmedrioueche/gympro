@@ -282,10 +282,44 @@ export class PaddleService {
   /**
    * Preview the proration for an upgrade before committing
    */
+
   async previewUpgrade(subscriptionId: string, priceId: string) {
     try {
       this.logger.log(
         `Previewing upgrade: sub=${subscriptionId}, newPrice=${priceId}`,
+      );
+
+      // First, get the current subscription to check billing cycle
+      const currentSub = await axios.get(
+        `${this.apiUrl}/subscriptions/${subscriptionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+        },
+      );
+
+      const currentPriceId = currentSub.data.data.items?.[0]?.price?.id;
+      const currentBillingInterval =
+        currentSub.data.data.items?.[0]?.price?.billing_cycle?.interval;
+
+      // Get target price details
+      const targetPriceResponse = await axios.get(
+        `${this.apiUrl}/prices/${priceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+        },
+      );
+
+      const targetBillingInterval =
+        targetPriceResponse.data.data.billing_cycle?.interval;
+      const isBillingCycleChange =
+        currentBillingInterval !== targetBillingInterval;
+
+      this.logger.log(
+        `📋 [PREVIEW] Current billing: ${currentBillingInterval}, Target billing: ${targetBillingInterval}, isBillingCycleChange: ${isBillingCycleChange}`,
       );
 
       const payload = {
@@ -310,9 +344,17 @@ export class PaddleService {
       );
 
       const preview = response.data.data;
+      const immediateTransaction = preview.immediate_transaction;
+      const credit = preview.credit;
+
+      // Calculate the actual amount to charge
+      let amountDue = 0;
+      if (immediateTransaction?.details?.totals) {
+        amountDue = parseFloat(immediateTransaction.details.totals.total) || 0;
+      }
 
       this.logger.log(
-        `Upgrade preview: immediateTotal=${preview.immediate_transaction?.details?.totals?.total}, credit=${preview.credit}`,
+        `💰 [PREVIEW] Immediate charge: ${amountDue}, Credit: ${credit || 0}, isBillingCycleChange: ${isBillingCycleChange}`,
       );
 
       return {
@@ -320,6 +362,9 @@ export class PaddleService {
         next_transaction: preview.next_transaction,
         credit: preview.credit,
         update_summary: preview.update_summary,
+        is_billing_cycle_change: isBillingCycleChange,
+        current_billing_interval: currentBillingInterval,
+        target_billing_interval: targetBillingInterval,
       };
     } catch (error) {
       this.logger.error(
@@ -329,7 +374,6 @@ export class PaddleService {
       throw new BadRequestException('Failed to preview upgrade in Paddle');
     }
   }
-
   /**
    * ✅ Fetch latest subscription data from Paddle (does NOT update database)
    * Returns normalized subscription data for the AppSubscriptionService to process
