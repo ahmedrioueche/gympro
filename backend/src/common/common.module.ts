@@ -11,17 +11,17 @@ import { NotificationService } from './services/notification.service';
   imports: [ConfigModule],
   providers: [
     GeminiService,
-    NotificationService,
     I18nService,
     SmsService,
     MailerService,
+    NotificationService,
   ],
   exports: [
     GeminiService,
-    NotificationService,
     I18nService,
     SmsService,
     MailerService,
+    NotificationService,
   ],
 })
 export class CommonModule {}

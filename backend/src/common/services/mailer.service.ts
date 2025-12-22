@@ -1,57 +1,72 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class MailerService implements OnModuleInit {
-  private transporter;
+  private resend: Resend;
   private readonly logger = new Logger(MailerService.name);
+  private readonly fromEmail: string;
+  private isConfigured: boolean = false;
 
   constructor(private readonly configService: ConfigService) {
-    const host =
-      this.configService.get<string>('SMTP_HOST') || 'smtp.gmail.com';
-    const port = Number(this.configService.get<number>('SMTP_PORT')) || 587;
-    const user = this.configService.get<string>('EMAIL_USER');
-    const pass = this.configService.get<string>('EMAIL_PASS');
+    const apiKey = this.configService.get<string>('RESEND_API_KEY');
+    this.fromEmail =
+      this.configService.get<string>('EMAIL_FROM') ||
+      'GymPro <onboarding@resend.dev>';
 
     this.logger.log(
-      `Initializing MailerService with host: ${host}, port: ${port}`,
+      'Initializing MailerService with Resend (HTTP API - No SMTP)',
     );
-    this.logger.log(`EMAIL_USER is ${user ? 'SET' : 'NOT SET'}`);
-    this.logger.log(`EMAIL_PASS is ${pass ? 'SET' : 'NOT SET'}`);
+    this.logger.log(`RESEND_API_KEY is ${apiKey ? 'SET' : 'NOT SET'}`);
+    this.logger.log(`EMAIL_FROM: ${this.fromEmail}`);
 
-    this.transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465, // true for 465, false for other ports
-      auth: {
-        user,
-        pass,
-      },
-      connectionTimeout: 10000, // 10 seconds
-      greetingTimeout: 10000, // 10 seconds
-    });
+    if (!apiKey) {
+      this.logger.warn(
+        '⚠️ RESEND_API_KEY is not configured - emails will fail',
+      );
+      this.resend = new Resend('dummy-key');
+      this.isConfigured = false;
+    } else {
+      this.resend = new Resend(apiKey);
+      this.isConfigured = true;
+    }
   }
 
   async onModuleInit() {
-    this.logger.log('Verifying SMTP connection...');
-    try {
-      await this.transporter.verify();
-      this.logger.log('✅ SMTP connection verified successfully');
-    } catch (error) {
-      this.logger.error('❌ SMTP connection failed:', error.message);
-      this.logger.warn(
-        'Email sending will likely fail. Check your SMTP credentials and network (port 587/465).',
-      );
+    if (this.isConfigured) {
+      this.logger.log('✅ Email service ready (Resend via HTTPS)');
+    } else {
+      this.logger.error('❌ Email service not configured - set RESEND_API_KEY');
     }
   }
 
   async sendMail(to: string, subject: string, html: string) {
-    return this.transporter.sendMail({
-      from: process.env.SMTP_FROM || `"GymPro" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      html,
-    });
+    if (!this.isConfigured) {
+      this.logger.warn(`⚠️ Skipping email to ${to} - Resend not configured`);
+      return;
+    }
+
+    try {
+      this.logger.log(`📧 Sending email to ${to}: ${subject}`);
+
+      const result = await this.resend.emails.send({
+        from: this.fromEmail,
+        to: [to],
+        subject,
+        html,
+      });
+
+      this.logger.log(
+        `✅ Email sent successfully: ${result.data?.id || 'unknown'}`,
+      );
+      return result;
+    } catch (error) {
+      this.logger.error(
+        `❌ Failed to send email to ${to}:`,
+        error.message || error,
+      );
+      throw error;
+    }
   }
 }
