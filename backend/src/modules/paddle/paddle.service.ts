@@ -494,13 +494,19 @@ export class PaddleService {
   async scheduleDowngrade(
     subscriptionId: string,
     newPriceId: string,
+    isBillingCycleChange: boolean = false,
   ): Promise<PaddleSubscriptionData> {
     try {
       this.logger.log(
-        `📉 [DOWNGRADE] Scheduling downgrade: sub=${subscriptionId}, newPrice=${newPriceId}`,
+        `📉 [DOWNGRADE] Scheduling downgrade: sub=${subscriptionId}, newPrice=${newPriceId}, billingCycleChange=${isBillingCycleChange}`,
       );
 
-      // Update subscription with new price, but defer billing to next period
+      // ✅ If billing cycle is changing, use do_not_bill
+      // Otherwise, use prorated_next_billing_period for plan tier downgrades
+      const prorationMode = isBillingCycleChange
+        ? 'do_not_bill'
+        : 'prorated_next_billing_period';
+
       const response = await axios.patch(
         `${this.apiUrl}/subscriptions/${subscriptionId}`,
         {
@@ -510,9 +516,7 @@ export class PaddleService {
               quantity: 1,
             },
           ],
-          // ✅ Key: Use prorated_next_billing_period for downgrades
-          // This applies the change at the next billing date without immediate charge/refund
-          proration_billing_mode: 'prorated_next_billing_period',
+          proration_billing_mode: prorationMode,
         },
         {
           headers: {
@@ -535,7 +539,6 @@ export class PaddleService {
       throw new BadRequestException('Failed to schedule downgrade in Paddle');
     }
   }
-
   /**
    * Fetch transaction status (used by frontend polling)
    */
