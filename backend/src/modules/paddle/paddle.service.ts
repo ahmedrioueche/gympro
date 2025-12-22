@@ -1,5 +1,3 @@
-// paddle.service.ts - Handles ONLY Paddle API operations
-
 import { AppSubscriptionBillingCycle } from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,

@@ -215,13 +215,20 @@ export class AppSubscriptionService {
     const amountPaid = Math.max(0, newCost - prorationCredit);
 
     if (plan.level !== 'free') {
-      await this.notificationService.notifyUser(user, {
-        key: 'subscription.created',
-        vars: {
-          name: user.profile?.fullName || user.profile?.email || 'User',
-          planName: plan.name,
-        },
-      });
+      this.notificationService
+        .notifyUser(user, {
+          key: 'subscription.created',
+          vars: {
+            name: user.profile?.fullName || user.profile?.email || 'User',
+            planName: plan.name,
+          },
+        })
+        .catch((error) => {
+          this.logger.error(
+            'Failed to send subscription created notification',
+            error,
+          );
+        });
     }
 
     // Create history entry
@@ -266,13 +273,20 @@ export class AppSubscriptionService {
     const amountPaid = Math.max(0, newCost - prorationCredit);
 
     if (plan.level !== 'free') {
-      await this.notificationService.notifyUser(user, {
-        key: 'subscription.created',
-        vars: {
-          name: user.profile?.fullName || user.profile?.email || 'User',
-          planName: plan.name,
-        },
-      });
+      this.notificationService
+        .notifyUser(user, {
+          key: 'subscription.created',
+          vars: {
+            name: user.profile?.fullName || user.profile?.email || 'User',
+            planName: plan.name,
+          },
+        })
+        .catch((error) => {
+          this.logger.error(
+            'Failed to send subscription created notification',
+            error,
+          );
+        });
     }
 
     const historyData: any = {
@@ -576,14 +590,21 @@ export class AppSubscriptionService {
     }
 
     // Send notification
-    await this.notificationService.notifyUser(user, {
-      key: 'subscription.downgrade_scheduled',
-      vars: {
-        name: user.profile?.fullName || user.profile?.email || 'User',
-        planName: targetPlan.name,
-        date: currentSub.currentPeriodEnd.toLocaleDateString(),
-      },
-    });
+    this.notificationService
+      .notifyUser(user, {
+        key: 'subscription.downgrade_scheduled',
+        vars: {
+          name: user.profile?.fullName || user.profile?.email || 'User',
+          planName: targetPlan.name,
+          date: currentSub.currentPeriodEnd.toLocaleDateString(),
+        },
+      })
+      .catch((error) => {
+        this.logger.error(
+          'Failed to send subscription downgrade scheduled notification',
+          error,
+        );
+      });
 
     // Create history entry
     const history = new this.subscriptionHistoryModel({
@@ -664,13 +685,20 @@ export class AppSubscriptionService {
     }
 
     // Send notification
-    await this.notificationService.notifyUser(user, {
-      key: 'subscription.cancelled',
-      vars: {
-        name: user.profile?.fullName || user.profile?.email || 'User',
-        date: sub.currentPeriodEnd.toLocaleDateString(),
-      },
-    });
+    this.notificationService
+      .notifyUser(user, {
+        key: 'subscription.cancelled',
+        vars: {
+          name: user.profile?.fullName || user.profile?.email || 'User',
+          date: sub.currentPeriodEnd.toLocaleDateString(),
+        },
+      })
+      .catch((error) => {
+        this.logger.error(
+          'Failed to send subscription cancelled notification',
+          error,
+        );
+      });
 
     // Create history entry
     const history = new this.subscriptionHistoryModel({
@@ -747,12 +775,19 @@ export class AppSubscriptionService {
     }
 
     // Send notification
-    await this.notificationService.notifyUser(user, {
-      key: 'subscription.reactivated',
-      vars: {
-        name: user.profile?.fullName || user.profile?.email || 'User',
-      },
-    });
+    this.notificationService
+      .notifyUser(user, {
+        key: 'subscription.reactivated',
+        vars: {
+          name: user.profile?.fullName || user.profile?.email || 'User',
+        },
+      })
+      .catch((error) => {
+        this.logger.error(
+          'Failed to send subscription reactivated notification',
+          error,
+        );
+      });
 
     // Add history entry
     const history = new this.subscriptionHistoryModel({
