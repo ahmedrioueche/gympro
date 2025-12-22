@@ -829,14 +829,14 @@ export class AppSubscriptionService {
       throw new BadRequestException('No pending plan change found to cancel');
     }
 
-    // ✅ If Paddle subscription, cancel the scheduled change in Paddle
+    // ✅ If Paddle subscription, cancel the scheduled change
     if (sub.provider === 'paddle' && sub.paddleSubscriptionId) {
       try {
         this.logger.log(
-          `🔄 [CANCEL_PENDING] Removing scheduled change in Paddle: ${sub.paddleSubscriptionId}`,
+          `🔄 [CANCEL_PENDING] Cancelling scheduled change in Paddle: ${sub.paddleSubscriptionId}`,
         );
 
-        // Get current plan details to revert to
+        // Get current plan to revert back to
         const currentPlan = await this.appPlanModel
           .findOne({ planId: sub.planId })
           .exec();
@@ -856,13 +856,14 @@ export class AppSubscriptionService {
           );
         }
 
-        // Cancel the scheduled change by setting scheduled_change to null
+        // Cancel/revert the scheduled change
         await this.paddleService.cancelScheduledChange(
           sub.paddleSubscriptionId,
+          currentPriceId,
         );
 
         this.logger.log(
-          `✅ [CANCEL_PENDING] Scheduled change removed in Paddle: ${sub.paddleSubscriptionId}`,
+          `✅ [CANCEL_PENDING] Scheduled change cancelled in Paddle: ${sub.paddleSubscriptionId}`,
         );
       } catch (error) {
         this.logger.error(
@@ -911,7 +912,6 @@ export class AppSubscriptionService {
 
     return sub;
   }
-
   async handlePaddleTransactionCompleted(data: {
     transactionId: string;
     paddleSubscriptionId: string;
