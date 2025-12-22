@@ -557,6 +557,68 @@ export class PaddleService {
   }
 
   /**
+   * ✅ Cancel a scheduled change in Paddle (removes pending downgrade/upgrade)
+   * Returns the updated Paddle subscription state
+   */
+  async cancelScheduledChange(
+    subscriptionId: string,
+  ): Promise<PaddleSubscriptionData> {
+    try {
+      this.logger.log(
+        `🔄 [CANCEL_SCHEDULED] Removing scheduled change: ${subscriptionId}`,
+      );
+
+      // Check current state
+      const currentState = await axios.get(
+        `${this.apiUrl}/subscriptions/${subscriptionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+          },
+        },
+      );
+
+      const subscription = currentState.data.data;
+
+      // If no scheduled change, return current state
+      if (!subscription.scheduled_change) {
+        this.logger.log(
+          `✅ [CANCEL_SCHEDULED] No scheduled change for: ${subscriptionId}`,
+        );
+        return this.mapPaddleSubscriptionData(subscription);
+      }
+
+      // PATCH the subscription with scheduled_change: null
+      const response = await axios.patch(
+        `${this.apiUrl}/subscriptions/${subscriptionId}`,
+        {
+          scheduled_change: null, // This removes any scheduled change
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      this.logger.log(
+        `✅ [CANCEL_SCHEDULED] Scheduled change removed in Paddle: ${subscriptionId}`,
+      );
+
+      return this.mapPaddleSubscriptionData(response.data.data);
+    } catch (error) {
+      this.logger.error(
+        `❌ [CANCEL_SCHEDULED] Failed to cancel scheduled change: ${subscriptionId}`,
+        error.response?.data || error,
+      );
+      throw new BadRequestException(
+        'Failed to cancel scheduled change in Paddle',
+      );
+    }
+  }
+
+  /**
    * Verify Paddle webhook signature
    */
   verifyWebhookSignature(signature: string, body: string): boolean {

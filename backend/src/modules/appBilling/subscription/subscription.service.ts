@@ -812,6 +812,11 @@ export class AppSubscriptionService {
   }
 
   async cancelPendingChange(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     const sub = await this.subscriptionModel
       .findOne({ userId, status: { $in: ['active', 'trialing'] } })
       .exec();
@@ -824,11 +829,72 @@ export class AppSubscriptionService {
       throw new BadRequestException('No pending plan change found to cancel');
     }
 
-    // Clear pending changes
+    // ✅ If Paddle subscription, cancel the scheduled change in Paddle
+    if (sub.provider === 'paddle' && sub.paddleSubscriptionId) {
+      try {
+        this.logger.log(
+          `🔄 [CANCEL_PENDING] Removing scheduled change in Paddle: ${sub.paddleSubscriptionId}`,
+        );
+
+        // Get current plan details to revert to
+        const currentPlan = await this.appPlanModel
+          .findOne({ planId: sub.planId })
+          .exec();
+
+        if (!currentPlan) {
+          throw new NotFoundException('Current plan not found');
+        }
+
+        const currentPriceId = this.paddleService.getPaddlePriceId(
+          currentPlan,
+          sub.billingCycle as AppSubscriptionBillingCycle,
+        );
+
+        if (!currentPriceId) {
+          throw new BadRequestException(
+            `Price ID not found for current plan=${sub.planId}, billing=${sub.billingCycle}`,
+          );
+        }
+
+        // Cancel the scheduled change by setting scheduled_change to null
+        await this.paddleService.cancelScheduledChange(
+          sub.paddleSubscriptionId,
+        );
+
+        this.logger.log(
+          `✅ [CANCEL_PENDING] Scheduled change removed in Paddle: ${sub.paddleSubscriptionId}`,
+        );
+      } catch (error) {
+        this.logger.error(
+          '❌ [CANCEL_PENDING] Failed to cancel scheduled change in Paddle',
+          error,
+        );
+        throw new BadRequestException(
+          'Failed to cancel scheduled change with payment provider',
+        );
+      }
+    }
+
+    // Clear pending changes in DB
     sub.pendingPlanId = undefined;
     sub.pendingBillingCycle = undefined;
     sub.pendingChangeEffectiveDate = undefined;
     await sub.save();
+
+    // Send notification
+    this.notificationService
+      .notifyUser(user, {
+        key: 'subscription.pending_change_cancelled',
+        vars: {
+          name: user.profile?.fullName || user.profile?.email || 'User',
+        },
+      })
+      .catch((error) => {
+        this.logger.error(
+          'Failed to send pending change cancelled notification',
+          error,
+        );
+      });
 
     // Add history entry
     const history = new this.subscriptionHistoryModel({
@@ -838,7 +904,7 @@ export class AppSubscriptionService {
       startDate: new Date(),
       action: 'pending_change_cancelled',
       status: sub.status,
-      details: 'Pending plan change cancelled by user',
+      details: `Pending plan change cancelled by user${sub.provider === 'paddle' ? ' (via Paddle)' : ''}`,
       createdAt: new Date(),
     });
     await history.save();
