@@ -501,9 +501,7 @@ export class PaddleService {
 
       // ✅ If billing cycle is changing, use do_not_bill
       // Otherwise, use prorated_next_billing_period for plan tier downgrades
-      const prorationMode = isBillingCycleChange
-        ? 'do_not_bill'
-        : 'prorated_next_billing_period';
+      const prorationMode = 'do_not_bill';
 
       const response = await axios.patch(
         `${this.apiUrl}/subscriptions/${subscriptionId}`,
