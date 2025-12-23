@@ -316,49 +316,40 @@ export class PaddleService {
       const targetBillingInterval =
         targetPriceResponse.data.data.billing_cycle?.interval;
 
-      // ✅ NEW: Get plan details to detect downgrades
-      const currentPlanId = currentSub.data.data.custom_data?.planId;
-      const targetPlanId = targetPriceResponse.data.data.custom_data?.planId;
-
-      // ✅ NEW: Detect if this is a downgrade
-      const currentPlan =
-        await this.appPlansService.getPlanByPlanId(currentPlanId);
-      const targetPlan =
-        await this.appPlansService.getPlanByPlanId(targetPlanId);
-
-      const APP_PLAN_LEVELS = ['free', 'starter', 'pro', 'premium'];
-      const currentLevelIndex = APP_PLAN_LEVELS.indexOf(
-        currentPlan?.level || '',
-      );
-      const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan?.level || '');
-
-      const isDowngrade = targetLevelIndex < currentLevelIndex;
       const isBillingCycleChange =
         currentBillingInterval !== targetBillingInterval;
 
       this.logger.log(
-        `📋 [PREVIEW] Current: ${currentPlan?.level} (${currentBillingInterval}), Target: ${targetPlan?.level} (${targetBillingInterval}), isDowngrade: ${isDowngrade}, isBillingCycleChange: ${isBillingCycleChange}`,
+        `📋 [PREVIEW] Current billing: ${currentBillingInterval}, Target billing: ${targetBillingInterval}, isBillingCycleChange: ${isBillingCycleChange}`,
       );
 
-      // ✅ NEW: For downgrades with billing cycle changes, don't allow immediate preview
-      if (isDowngrade && isBillingCycleChange) {
-        this.logger.warn(
-          `⚠️ [PREVIEW] Cannot preview downgrade with billing cycle change - must be scheduled`,
+      // ✅ NEW: Reverse-lookup plans from your database using priceIds
+      const currentPlan = await this.findPlanByPaddlePriceId(currentPriceId);
+      const targetPlan = await this.findPlanByPaddlePriceId(priceId);
+
+      let isDowngrade = false;
+
+      if (currentPlan && targetPlan) {
+        const APP_PLAN_LEVELS = ['free', 'starter', 'pro', 'premium'];
+        const currentLevelIndex = APP_PLAN_LEVELS.indexOf(currentPlan.level);
+        const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan.level);
+
+        isDowngrade = targetLevelIndex < currentLevelIndex;
+
+        this.logger.log(
+          `📋 [PREVIEW] Current: ${currentPlan.level}, Target: ${targetPlan.level}, isDowngrade: ${isDowngrade}`,
         );
 
-        return {
-          immediate_transaction: null,
-          next_transaction: null,
-          credit: 0,
-          update_summary: null,
-          is_billing_cycle_change: true,
-          is_downgrade: true,
-          current_billing_interval: currentBillingInterval,
-          target_billing_interval: targetBillingInterval,
-          requires_scheduled_change: true, // ✅ NEW FLAG
-          error:
-            'Downgrades with billing cycle changes must be scheduled for end of period',
-        };
+        // ✅ Block downgrades with billing cycle changes
+        if (isDowngrade && isBillingCycleChange) {
+          this.logger.warn(
+            `⚠️ [PREVIEW] Downgrade with billing cycle change detected - must be scheduled`,
+          );
+
+          throw new BadRequestException(
+            'Downgrades with billing cycle changes must be scheduled for end of period. Please use the downgrade endpoint instead.',
+          );
+        }
       }
 
       const payload = {
@@ -392,7 +383,7 @@ export class PaddleService {
       }
 
       this.logger.log(
-        `💰 [PREVIEW] Immediate charge: ${amountDue}, Credit: ${credit || 0}`,
+        `💰 [PREVIEW] Immediate charge: ${amountDue}, Credit: ${credit || 0}, isBillingCycleChange: ${isBillingCycleChange}`,
       );
 
       return {
@@ -401,18 +392,41 @@ export class PaddleService {
         credit: preview.credit,
         update_summary: preview.update_summary,
         is_billing_cycle_change: isBillingCycleChange,
-        is_downgrade: isDowngrade,
         current_billing_interval: currentBillingInterval,
         target_billing_interval: targetBillingInterval,
-        requires_scheduled_change: false,
       };
     } catch (error) {
       this.logger.error(
         'Failed to preview upgrade',
         error.response?.data || error,
       );
+
+      // Re-throw BadRequestExceptions as-is
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
       throw new BadRequestException('Failed to preview upgrade in Paddle');
     }
+  }
+
+  /**
+   * ✅ NEW: Find plan by Paddle price ID
+   */
+  private async findPlanByPaddlePriceId(priceId: string): Promise<any> {
+    // Check all billing cycles for matching priceId
+    const plan = await this.appPlansService.appPlanModel
+      .findOne({
+        $or: [
+          { 'paddlePriceIds.monthly': priceId },
+          { 'paddlePriceIds.yearly': priceId },
+          { 'paddlePriceIds.oneTime': priceId },
+        ],
+      })
+      .lean()
+      .exec();
+
+    return plan;
   }
 
   /**
