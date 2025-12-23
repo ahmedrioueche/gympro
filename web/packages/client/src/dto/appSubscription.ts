@@ -1,7 +1,6 @@
 import {
   AppPlanLevel,
   AppPlanPricing,
-  AppPlanType,
   AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
   AutoRenewType,
@@ -12,7 +11,6 @@ export interface CreateAppPlanDto {
   planId: string;
   version?: number;
   order?: number;
-  type: AppPlanType;
   level: AppPlanLevel;
   name: string;
   description?: string;
@@ -37,7 +35,6 @@ export interface UpdateAppPlanDto {
   planId?: string;
   version?: number;
   order?: number;
-  type?: AppPlanType;
   level?: AppPlanLevel;
   name?: string;
   description?: string;
@@ -74,7 +71,6 @@ export interface PlanDto {
   planId: string;
   version: number;
   order?: number;
-  type: AppPlanType;
   level: AppPlanLevel;
   name: string;
   description: string;
@@ -108,6 +104,10 @@ export interface GetSubscriptionDto {
   billingCycle?: AppSubscriptionBillingCycle;
   lastPaymentDate?: string | Date;
   nextPaymentDate?: string | Date;
+
+  provider?: "chargily" | "paddle";
+  paddleSubscriptionId?: string;
+  paddleCustomerId?: string;
 
   trial?: {
     startDate: string | Date;

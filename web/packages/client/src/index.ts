@@ -6,6 +6,7 @@ export * from "./api/gym";
 export * from "./api/helper";
 export * from "./api/members";
 export * from "./api/paddle";
+export * from "./api/token";
 export * from "./api/users";
 export * from "./constants/common";
 export * from "./dto/appSubscription";

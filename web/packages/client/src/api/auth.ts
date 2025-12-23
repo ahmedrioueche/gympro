@@ -28,6 +28,7 @@ import type {
 import type { ApiResponse } from "../types/api";
 import { IS_DEV } from "./config";
 import { apiClient, handleApiError } from "./helper";
+import { TokenManager } from "./token";
 
 export const authApi = {
   /** Signup */
@@ -37,6 +38,12 @@ export const authApi = {
         "/auth/signup",
         data
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setTokens(
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -50,6 +57,12 @@ export const authApi = {
         "/auth/signin",
         data
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setTokens(
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -59,9 +72,14 @@ export const authApi = {
   /** Refresh token */
   refresh: async (): Promise<ApiResponse<RefreshData>> => {
     try {
+      const refreshToken = TokenManager.getRefreshToken();
       const res = await apiClient.post<ApiResponse<RefreshData>>(
-        "/auth/refresh"
+        "/auth/refresh",
+        { refreshToken }
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setAccessToken(res.data.data.accessToken);
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -72,6 +90,7 @@ export const authApi = {
   logout: async (): Promise<ApiResponse<LogoutData>> => {
     try {
       const res = await apiClient.post<ApiResponse<LogoutData>>("/auth/logout");
+      TokenManager.clearTokens();
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -96,6 +115,12 @@ export const authApi = {
         "/auth/verify-email",
         dto
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setTokens(
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -193,6 +218,12 @@ export const authApi = {
         "/auth/verify-otp",
         dto
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setTokens(
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -210,6 +241,12 @@ export const authApi = {
         "/auth/setup-account",
         dto
       );
+      if (res.data.success && res.data.data) {
+        TokenManager.setTokens(
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+      }
       return res.data;
     } catch (error) {
       throw handleApiError(error);

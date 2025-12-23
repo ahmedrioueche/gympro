@@ -23,8 +23,6 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
     status,
     isCancelled,
     isFree,
-    isOneTime,
-    isLifetime,
     start,
     formattedTimeRemaining,
     urgencyColor,
@@ -207,8 +205,6 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                   <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary/10 text-primary border border-primary/20">
                     {isFree
                       ? t("subscription.trial_plan")
-                      : isOneTime
-                      ? t("subscription.one_time_type")
                       : t("subscription.subscription_type")}
                   </span>
                 </div>
@@ -219,9 +215,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                 <div className="flex-shrink-0 lg:ml-6">
                   <div className="bg-surface rounded-xl p-6 border border-border shadow-sm min-w-[200px]">
                     <p className="text-xs text-text-secondary uppercase tracking-wider font-medium mb-3 text-center">
-                      {isLifetime
-                        ? t("subscription.access_status")
-                        : isFree
+                      {isFree
                         ? t("subscription.trial_ends_in")
                         : isCancelled
                         ? t("subscription.access_ends_on")
@@ -232,7 +226,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                     >
                       {formattedTimeRemaining}
                     </div>
-                    {!isLifetime && mySubscription.currentPeriodEnd && (
+                    {mySubscription.currentPeriodEnd && (
                       <p className="text-xs text-text-secondary text-center">
                         {new Date(
                           mySubscription.currentPeriodEnd
@@ -321,13 +315,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                       stroke="currentColor"
                       strokeWidth={2}
                     >
-                      {isOneTime ? (
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      ) : isCancelled ? (
+                      {isCancelled ? (
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -344,16 +332,12 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                   </div>
                   <div className="flex-1">
                     <p className="text-xs text-text-secondary font-medium mb-1">
-                      {isOneTime
-                        ? t("subscription.access_type")
-                        : isCancelled
+                      {isCancelled
                         ? t("subscription.cancelled_on")
                         : t("subscription.billing_cycle")}
                     </p>
                     <p className="text-2xl font-bold text-text-primary capitalize">
-                      {isOneTime
-                        ? t("subscription.lifetime_access")
-                        : isFree
+                      {isFree
                         ? t("subscription.trial_plan")
                         : isCancelled
                         ? mySubscription.cancelledAt &&
@@ -415,7 +399,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                       </span>
                     </div>
                   )}
-                  {mySubscription.currentPeriodEnd && !isLifetime && (
+                  {mySubscription.currentPeriodEnd && (
                     <div className="flex items-center gap-2">
                       <span className="text-text-secondary">
                         {isCancelled
@@ -430,7 +414,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                       </span>
                     </div>
                   )}
-                  {!isFree && !isOneTime && mySubscription.nextPaymentDate && (
+                  {!isFree && mySubscription.nextPaymentDate && (
                     <div className="flex items-center gap-2">
                       <span className="text-text-secondary">
                         {t("subscription.next_payment")}:

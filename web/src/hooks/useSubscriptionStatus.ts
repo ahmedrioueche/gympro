@@ -1,5 +1,4 @@
 import {
-  APP_PLAN_LEVELS,
   type AppPlan,
   type AppSubscriptionBillingCycle,
   type GetSubscriptionDto,
@@ -49,28 +48,13 @@ export const useSubscriptionStatus = (
 
   const status = statusConfig[currentStatus];
   const isFree = mySubscription?.plan?.level === "free";
-  const isOneTime = mySubscription?.billingCycle === "oneTime";
   const start = mySubscription
     ? new Date(mySubscription.startDate)
     : new Date();
 
-  // Check if it's lifetime (one-time purchase with very far future or no end date)
-  const isLifetime = useMemo(() => {
-    if (!isOneTime) return false;
-    if (!mySubscription?.endDate) return true;
-
-    // Check if end date is more than 50 years in the future (considered lifetime)
-    const endDate = new Date(mySubscription.endDate);
-    const fiftyYearsFromNow = new Date();
-    fiftyYearsFromNow.setFullYear(fiftyYearsFromNow.getFullYear() + 50);
-
-    return endDate > fiftyYearsFromNow;
-  }, [isOneTime, mySubscription?.endDate]);
-
   // Calculate time remaining until current period ends
   const timeRemaining = useMemo(() => {
     if (!mySubscription) return null;
-    if (isLifetime) return null; // No time remaining for lifetime access
 
     // Always use currentPeriodEnd - this shows when the current billing period ends
     // Works for: active subscriptions, cancelled (with cancelAtPeriodEnd), and trials
@@ -89,10 +73,9 @@ export const useSubscriptionStatus = (
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
     return { days, hours, minutes, expired: false };
-  }, [mySubscription, isLifetime]);
+  }, [mySubscription]);
 
   const getTimeRemainingText = () => {
-    if (isLifetime) return t("subscription.lifetime_access");
     if (!timeRemaining || timeRemaining.expired)
       return t("subscription.expired");
 
@@ -110,7 +93,6 @@ export const useSubscriptionStatus = (
   };
 
   const getUrgencyColor = () => {
-    if (isLifetime) return "text-success";
     if (!timeRemaining || timeRemaining.expired) return "text-danger";
     const { days } = timeRemaining;
     if (days <= 1) return "text-danger";
@@ -120,8 +102,7 @@ export const useSubscriptionStatus = (
   };
 
   // Determine if we should show the time remaining card
-  const shouldShowTimeRemaining =
-    isLifetime || mySubscription?.currentPeriodEnd;
+  const shouldShowTimeRemaining = mySubscription?.currentPeriodEnd;
 
   /**
    * ✅ FIXED: Check if a plan is available for selection
@@ -142,8 +123,6 @@ export const useSubscriptionStatus = (
     }
 
     const currentBillingCycle = mySubscription.billingCycle || "monthly";
-    const currentLevelIndex = APP_PLAN_LEVELS.indexOf(currentPlan.level);
-    const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan.level);
 
     // ❌ RULE 1: Cannot select the same plan with same billing cycle
     if (
@@ -156,27 +135,6 @@ export const useSubscriptionStatus = (
       };
     }
 
-    // ✅ FIXED: Allow upgrading from lifetime to higher lifetime tier
-    if (currentBillingCycle === "oneTime" && targetBillingCycle === "oneTime") {
-      // Can only upgrade to higher tier
-      if (targetLevelIndex > currentLevelIndex) {
-        return { available: true };
-      } else {
-        return {
-          available: false,
-          reason: "lifetime_downgrade_blocked",
-        };
-      }
-    }
-
-    // ❌ RULE 2: Cannot switch from lifetime to subscription plans
-    if (currentBillingCycle === "oneTime" && targetBillingCycle !== "oneTime") {
-      return {
-        available: false,
-        reason: "lifetime_to_subscription_blocked",
-      };
-    }
-
     // ✅ All other plans are available
     return { available: true };
   };
@@ -186,8 +144,6 @@ export const useSubscriptionStatus = (
     currentStatus,
     isCancelled,
     isFree,
-    isOneTime,
-    isLifetime,
     start,
     timeRemaining,
     formattedTimeRemaining: getTimeRemainingText(),

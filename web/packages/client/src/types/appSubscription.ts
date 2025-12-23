@@ -1,11 +1,7 @@
 import { AuditInfo, PaymentMethod, SupportedCurrency } from "./common";
 
-export const APP_PLAN_TYPES = ["subscription", "oneTime"] as const;
-export const APP_SUBSCRIPTION_BILLING_CYCLES = [
-  "monthly",
-  "yearly",
-  "oneTime",
-] as const;
+export const APP_PAYMENT_PROVIDERS = ["chargily", "paddle"] as const;
+export const APP_SUBSCRIPTION_BILLING_CYCLES = ["monthly", "yearly"] as const;
 export const APP_PLAN_LEVELS = ["free", "starter", "pro", "premium"] as const;
 
 export const APP_SUBSCRIPTION_STATUSES = [
@@ -25,13 +21,12 @@ export const APP_SUBSCRIPTION_HISTORY_ACTIONS = [
   "reactivated",
   "downgrade_scheduled",
   "switch_scheduled",
-  "upgraded",
   "pending_change_cancelled",
 ] as const;
 
+export type AppPaymentProvider = (typeof APP_PAYMENT_PROVIDERS)[number];
 export type AppSubscriptionBillingCycle =
   (typeof APP_SUBSCRIPTION_BILLING_CYCLES)[number];
-export type AppPlanType = (typeof APP_PLAN_TYPES)[number];
 export type AppPlanLevel = (typeof APP_PLAN_LEVELS)[number];
 export type AppSubscriptionStatus = (typeof APP_SUBSCRIPTION_STATUSES)[number];
 
@@ -50,8 +45,7 @@ export interface AppPlan extends AuditInfo {
   _id: string;
   planId: string; //custom stable id
   version?: number;
-  type: AppPlanType; // subscription | oneTime
-  level: AppPlanLevel; // starter | standard | premium | enterprise
+  level: AppPlanLevel;
   order?: number; // for sorting plans
   name: string;
   description?: string;
@@ -89,6 +83,7 @@ export interface AppSubscription extends AuditInfo {
   paymentMethod?: PaymentMethod;
   autoRenew?: boolean;
   autoRenewType?: AutoRenewType;
+  provider?: AppPaymentProvider;
 
   // Billing cycle tracking
   billingCycle?: AppSubscriptionBillingCycle;
@@ -112,10 +107,14 @@ export interface AppSubscription extends AuditInfo {
   cancelledAt?: string;
   cancelAtPeriodEnd?: boolean;
   cancellationReason?: string;
-
+  pendingChangeEffectiveDate?: string | Date;
   pendingPlanId?: string;
   pendingBillingCycle?: AppSubscriptionBillingCycle;
-  pendingChangeEffectiveDate?: string | Date;
+
+  paddleSubscriptionId?: string;
+  paddleCustomerId?: string;
+  chargilyCheckoutId?: string;
+  chargilyInvoiceId?: string;
 }
 
 // Separate history model for tracking all subscription changes

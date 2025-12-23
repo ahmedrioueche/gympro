@@ -1,9 +1,9 @@
 import {
   formatPrice,
-  type SupportedCurrency,
   type AppPlan,
   type AppSubscriptionBillingCycle,
   type GetSubscriptionDto,
+  type SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -45,18 +45,11 @@ export default function PlanCard({
   // Get price for the default currency
   const priceMap = plan.pricing?.[currency] || {};
   const price =
-    plan.type === "oneTime"
-      ? priceMap.oneTime || 0
-      : billingCycle === "yearly"
-      ? priceMap.yearly || 0
-      : priceMap.monthly || 0;
+    billingCycle === "yearly" ? priceMap.yearly || 0 : priceMap.monthly || 0;
 
   // Calculate savings if yearly subscription
   const savings =
-    plan.type === "subscription" &&
-    billingCycle === "yearly" &&
-    priceMap.monthly &&
-    priceMap.yearly
+    billingCycle === "yearly" && priceMap.monthly && priceMap.yearly
       ? priceMap.monthly * 12 - priceMap.yearly
       : 0;
 
@@ -125,15 +118,10 @@ export default function PlanCard({
   if (!availability.available) {
     isUnavailable = true;
     switch (availability.reason) {
-      case "lifetime_to_subscription_blocked":
-        buttonLabel = t("plans.unavailable");
-        break;
       case "already_subscribed":
         buttonLabel = t("plans.current");
         break;
-      case "lifetime_downgrade_blocked":
-        buttonLabel = t("plans.unavailable");
-        break;
+
       default:
         buttonLabel = t("plans.unavailable");
     }
@@ -296,13 +284,9 @@ export default function PlanCard({
                   isDark ? "text-gray-400" : "text-gray-500"
                 } text-base`}
               >
-                {plan.type === "oneTime"
-                  ? `/${t("plans.one_time")}`
-                  : `/${
-                      billingCycle === "yearly"
-                        ? t("plans.year")
-                        : t("plans.month")
-                    }`}
+                {`/${
+                  billingCycle === "yearly" ? t("plans.year") : t("plans.month")
+                }`}
               </span>
             </div>
 

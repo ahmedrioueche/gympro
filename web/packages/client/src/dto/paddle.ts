@@ -1,10 +1,12 @@
 import { AppSubscriptionBillingCycle } from "../types/appSubscription";
 
+// Checkout item
 export interface PaddleCheckoutItem {
   priceId: string;
   quantity: number;
 }
 
+// Create checkout DTOs
 export interface CreatePaddleCheckoutDto {
   items: PaddleCheckoutItem[];
   customerId?: string;
@@ -16,12 +18,14 @@ export interface CreateSubscriptionCheckoutDto {
   billingCycle?: AppSubscriptionBillingCycle;
 }
 
+// Checkout response
 export interface PaddleCheckoutResponse {
-  success: boolean;
   checkout_url: string;
   transaction_id: string;
+  upgrade_applied?: boolean; // For direct upgrades without checkout
 }
 
+// Transaction status
 export interface PaddleTransactionStatus {
   id: string;
   status:
@@ -44,4 +48,47 @@ export interface PaddleTransactionStatus {
   }>;
   created_at: string;
   updated_at: string;
+}
+
+// Upgrade preview types
+export interface PaddleUpgradePreviewData {
+  immediate_transaction?: {
+    details: {
+      totals: {
+        total: string;
+        subtotal: string;
+        credit: string;
+        balance: string;
+      };
+      line_items: Array<{
+        totals: {
+          total: string;
+          subtotal: string;
+        };
+        proration?: {
+          rate: string;
+        };
+      }>;
+    };
+  };
+  credit?: string;
+  update_summary?: {
+    credit: {
+      used: string;
+    };
+    charge: {
+      total: string;
+    };
+  };
+  next_transaction?: any;
+}
+
+export interface PaddleUpgradePreviewResponse {
+  preview: PaddleUpgradePreviewData;
+  target_plan: {
+    planId: string;
+    name: string;
+    level: string;
+  };
+  billing_cycle: string;
 }

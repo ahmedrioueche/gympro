@@ -1,4 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from "axios";
+import { TokenManager } from "./token";
 
 export interface ApiConfig {
   baseURL?: string;
@@ -8,7 +9,7 @@ export interface ApiConfig {
 
 let configuredBaseURL: string | null = null;
 export let IS_DEV = false;
-export const DEFAULT_BASE_URL = 'http://localhost:3000/api';
+export const DEFAULT_BASE_URL = "http://localhost:3000/api";
 
 export const BASE_URL = (): string => {
   return configuredBaseURL || DEFAULT_BASE_URL;
@@ -33,9 +34,18 @@ export const getApiClient = (): AxiosInstance => {
       baseURL: BASE_URL(),
       withCredentials: true,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       timeout: 10000,
+    });
+
+    // Add interceptor to include token from localStorage if available
+    apiClientInstance.interceptors.request.use((config) => {
+      const token = TokenManager.getAccessToken();
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
     });
   }
 
