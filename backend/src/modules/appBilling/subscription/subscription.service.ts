@@ -106,7 +106,7 @@ export class AppSubscriptionService {
 
         const now = new Date();
         const { endDate, currentPeriodEnd, nextPaymentDate } =
-          this.calculateSubscriptionDates(now, billingCycle, plan.type);
+          this.calculateSubscriptionDates(now, billingCycle);
 
         const isActualUpgrade =
           existingPaddleSub.planId !== planId ||
@@ -176,7 +176,7 @@ export class AppSubscriptionService {
     // Create new subscription
     const now = new Date();
     const { endDate, currentPeriodEnd, nextPaymentDate } =
-      this.calculateSubscriptionDates(now, billingCycle, plan.type);
+      this.calculateSubscriptionDates(now, billingCycle);
 
     const subscriptionData: any = {
       userId,
@@ -207,11 +207,7 @@ export class AppSubscriptionService {
 
     // Calculate amount paid
     const currencyPricing = plan.pricing[currency] || {};
-    const newCost = this.calculatePlanCost(
-      plan.type,
-      billingCycle,
-      currencyPricing,
-    );
+    const newCost = this.calculatePlanCost(billingCycle, currencyPricing);
     const amountPaid = Math.max(0, newCost - prorationCredit);
 
     if (plan.level !== 'free') {
@@ -266,7 +262,6 @@ export class AppSubscriptionService {
     const now = new Date();
     const currencyPricing = plan.pricing[currency] || {};
     const newCost = this.calculatePlanCost(
-      plan.type,
       subscription.billingCycle,
       currencyPricing,
     );
@@ -336,27 +331,6 @@ export class AppSubscriptionService {
       };
     }
 
-    // ✅ Handle lifetime (one-time) plans
-    if (currentBillingCycle === 'oneTime' && targetBillingCycle === 'oneTime') {
-      // Can only upgrade to higher tier
-      if (targetLevelIndex > currentLevelIndex) {
-        return { available: true, changeType: 'upgrade' };
-      } else {
-        return {
-          available: false,
-          message: 'Cannot downgrade from lifetime plan to lower lifetime tier',
-        };
-      }
-    }
-
-    // ❌ RULE 2: Cannot switch from lifetime to subscription plans
-    if (currentBillingCycle === 'oneTime' && targetBillingCycle !== 'oneTime') {
-      return {
-        available: false,
-        message: 'Cannot switch from lifetime plan to subscription plan',
-      };
-    }
-
     // Determine change type for regular subscriptions
     const currentCycleIndex =
       APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(currentBillingCycle);
@@ -421,7 +395,6 @@ export class AppSubscriptionService {
   private calculateSubscriptionDates(
     startDate: Date,
     billingCycle: AppSubscriptionBillingCycle,
-    planType: string,
   ): {
     endDate?: Date;
     currentPeriodEnd: Date;
@@ -431,13 +404,7 @@ export class AppSubscriptionService {
     let currentPeriodEnd: Date;
     let nextPaymentDate: Date | undefined;
 
-    if (planType === 'oneTime') {
-      // Lifetime access (100 years from now)
-      endDate = new Date(startDate);
-      endDate.setFullYear(endDate.getFullYear() + 100);
-      currentPeriodEnd = new Date(endDate);
-      nextPaymentDate = undefined;
-    } else if (billingCycle === 'monthly') {
+    if (billingCycle === 'monthly') {
       currentPeriodEnd = new Date(startDate);
       currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
       nextPaymentDate = new Date(currentPeriodEnd);
@@ -458,13 +425,10 @@ export class AppSubscriptionService {
    * ✅ NEW: Calculate plan cost based on type and billing cycle
    */
   private calculatePlanCost(
-    planType: string,
     billingCycle: AppSubscriptionBillingCycle,
     pricing: any,
   ): number {
-    if (planType === 'oneTime') {
-      return pricing.oneTime || 0;
-    } else if (billingCycle === 'monthly') {
+    if (billingCycle === 'monthly') {
       return pricing.monthly || 0;
     } else if (billingCycle === 'yearly') {
       return pricing.yearly || 0;

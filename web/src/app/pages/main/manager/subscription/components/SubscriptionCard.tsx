@@ -8,7 +8,6 @@ import {
   useReactivateSubscription,
 } from "../../../../../../hooks/queries/useSubscription";
 import { useSubscriptionStatus } from "../../../../../../hooks/useSubscriptionStatus";
-
 import { useModalStore } from "../../../../../../store/modal";
 
 interface SubscriptionCardProps {

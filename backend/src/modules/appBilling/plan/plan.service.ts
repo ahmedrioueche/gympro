@@ -3,7 +3,6 @@ import {
   DEFAULT_CURRENCY,
   DEFAULT_TRIAL_DAYS_NUMBER,
   type AppPlanLevel,
-  type AppPlanType,
   type CreateAppPlanDto,
   type UpdateAppPlanDto,
 } from '@ahmedrioueche/gympro-client';
@@ -29,35 +28,25 @@ export class AppPlansService {
   async createPlan(dto: CreateAppPlanDto, createdBy?: string) {
     const pricing = dto.pricing[DEFAULT_CURRENCY] || {};
 
-    // Validate pricing based on type
-    if (dto.type === 'subscription') {
-      if (dto.level !== 'free') {
-        const hasMonthly =
-          pricing.monthly !== undefined && pricing.monthly !== null;
-        const hasYearly =
-          pricing.yearly !== undefined && pricing.yearly !== null;
+    if (dto.level !== 'free') {
+      const hasMonthly =
+        pricing.monthly !== undefined && pricing.monthly !== null;
+      const hasYearly = pricing.yearly !== undefined && pricing.yearly !== null;
 
-        if (!hasMonthly && !hasYearly) {
-          throw new BadRequestException(
-            'Subscription plans must have monthly or yearly pricing',
-          );
-        }
-
-        if (
-          hasMonthly &&
-          pricing.monthly === 0 &&
-          hasYearly &&
-          pricing.yearly === 0
-        ) {
-          throw new BadRequestException(
-            'Subscription plans must have at least one non-zero price',
-          );
-        }
-      }
-    } else if (dto.type === 'oneTime') {
-      if (pricing.oneTime === undefined || pricing.oneTime === null) {
+      if (!hasMonthly && !hasYearly) {
         throw new BadRequestException(
-          'One-time plans must have oneTime pricing',
+          'Subscription plans must have monthly or yearly pricing',
+        );
+      }
+
+      if (
+        hasMonthly &&
+        pricing.monthly === 0 &&
+        hasYearly &&
+        pricing.yearly === 0
+      ) {
+        throw new BadRequestException(
+          'Subscription plans must have at least one non-zero price',
         );
       }
     }
@@ -80,20 +69,14 @@ export class AppPlansService {
     return this.appPlanModel.find().sort({ level: 1, type: 1 }).exec();
   }
 
-  async getPlansByType(type: AppPlanType) {
-    return this.appPlanModel.find({ type }).sort({ level: 1 }).exec();
-  }
-
   async getPlansByLevel(level: AppPlanLevel) {
     return this.appPlanModel.find({ level }).sort({ type: 1 }).exec();
   }
 
-  async getPlanByLevelAndType(level: AppPlanLevel, type: AppPlanType) {
-    const plan = await this.appPlanModel.findOne({ level, type }).exec();
+  async getPlanByLevelAndType(level: AppPlanLevel) {
+    const plan = await this.appPlanModel.findOne({ level }).exec();
     if (!plan) {
-      throw new NotFoundException(
-        `Plan not found for level: ${level}, type: ${type}`,
-      );
+      throw new NotFoundException(`Plan not found for level: ${level}`);
     }
     return plan;
   }
@@ -128,22 +111,11 @@ export class AppPlansService {
       updates.pricing?.[DEFAULT_CURRENCY] || plan.pricing[DEFAULT_CURRENCY];
 
     if (updates.pricing) {
-      const newType = updates.type || plan.type;
-
-      if (newType === 'subscription') {
-        const hasPricing = updatedPricing?.monthly || updatedPricing?.yearly;
-        if (!hasPricing) {
-          throw new BadRequestException(
-            'Subscription plans must have monthly or yearly pricing',
-          );
-        }
-      } else if (newType === 'oneTime') {
-        const hasPricing = updatedPricing?.oneTime;
-        if (!hasPricing) {
-          throw new BadRequestException(
-            'One-time plans must have oneTime pricing',
-          );
-        }
+      const hasPricing = updatedPricing?.monthly || updatedPricing?.yearly;
+      if (!hasPricing) {
+        throw new BadRequestException(
+          'Subscription plans must have monthly or yearly pricing',
+        );
       }
     }
 
@@ -168,42 +140,5 @@ export class AppPlansService {
       .countDocuments({ _id: planId })
       .exec();
     return count > 0;
-  }
-
-  async getSubscriptionPlans() {
-    return this.getPlansByType('subscription');
-  }
-
-  async getOneTimePlans() {
-    return this.getPlansByType('oneTime');
-  }
-
-  async comparePlans(
-    level1: AppPlanLevel,
-    level2: AppPlanLevel,
-    type: AppPlanType,
-  ) {
-    const plan1 = await this.getPlanByLevelAndType(level1, type);
-    const plan2 = await this.getPlanByLevelAndType(level2, type);
-
-    const price1 = plan1.pricing[DEFAULT_CURRENCY] || {};
-    const price2 = plan2.pricing[DEFAULT_CURRENCY] || {};
-
-    return {
-      plan1,
-      plan2,
-      differences: {
-        priceDifference: {
-          monthly: (price2.monthly || 0) - (price1.monthly || 0),
-          yearly: (price2.yearly || 0) - (price1.yearly || 0),
-        },
-        limitDifferences: {
-          maxGyms: (plan2.limits.maxGyms || 0) - (plan1.limits.maxGyms || 0),
-          maxMembers:
-            (plan2.limits.maxMembers || 0) - (plan1.limits.maxMembers || 0),
-          maxGems: (plan2.limits.maxGems || 0) - (plan1.limits.maxGems || 0),
-        },
-      },
-    };
   }
 }

@@ -204,13 +204,6 @@ function SubscriptionPage() {
   // Filter and sort plans by order
   const filteredPlans = plans
     .filter((plan: any) => {
-      // Filter by billing cycle
-      if (billingCycle === "oneTime") {
-        if (plan.type !== "oneTime") return false;
-      } else {
-        if (plan.type !== "subscription") return false;
-      }
-
       // Don't show free plan (trial only)
       if (plan.level === "free") return false;
 
@@ -317,19 +310,6 @@ function SubscriptionPage() {
                 {t("plans.save_percentage")}
               </span>
             </button>
-            <button
-              onClick={() =>
-                setBillingCycle(APP_SUBSCRIPTION_BILLING_CYCLES[2])
-              }
-              disabled={isProcessing}
-              className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
-                billingCycle === APP_SUBSCRIPTION_BILLING_CYCLES[2]
-                  ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg scale-105"
-                  : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary/50"
-              }`}
-            >
-              {t("plans.one_time_purchase")}
-            </button>
           </div>
         </div>
 
@@ -396,8 +376,7 @@ function SubscriptionPage() {
           <div className="flex items-center justify-center">
             {mySubscription.status === "active" &&
               !mySubscription.cancelAtPeriodEnd &&
-              mySubscription.plan?.level !== "free" &&
-              mySubscription.plan?.type === "subscription" && (
+              mySubscription.plan?.level !== "free" && (
                 <div className="flex justify-end mt-4 px-2">
                   <button
                     onClick={() => setIsCancelModalOpen(true)}

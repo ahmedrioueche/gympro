@@ -2,7 +2,6 @@ import type {
   AppPaymentProvider,
   AppPlan,
   AppPlanLevel,
-  AppPlanType,
   AppSubscription,
   AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
@@ -13,7 +12,6 @@ import type {
 import {
   APP_PAYMENT_PROVIDERS,
   APP_PLAN_LEVELS,
-  APP_PLAN_TYPES,
   APP_SUBSCRIPTION_AUTO_RENEW_TYPES,
   APP_SUBSCRIPTION_BILLING_CYCLES,
   APP_SUBSCRIPTION_HISTORY_ACTIONS,
@@ -112,9 +110,6 @@ export class AppPlanModel extends Document implements AppPlan {
 
   @Prop()
   order?: number;
-
-  @Prop({ type: String, required: true, enum: APP_PLAN_TYPES })
-  type: AppPlanType;
 
   @Prop({ type: String, required: true, enum: APP_PLAN_LEVELS })
   level: AppPlanLevel;

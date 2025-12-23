@@ -917,7 +917,8 @@
     "downgrade_error": "Failed to downgrade subscription. Please try again.",
     "payment_retry": "operation failed. Please retry payment.",
     "downgrade": "Downgrade Subscription",
-    "upgrade": "Upgrade Subscription"
+    "upgrade": "Upgrade Subscription",
+    "upgrade_preview_failed": "Failed to fetch upgrade preview data, please try again later"
   },
   "plan": {
     "free": {

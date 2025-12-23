@@ -1,7 +1,6 @@
 import {
   apiResponse,
   type AppPlanLevel,
-  type AppPlanType,
   type CreateAppPlanDto,
   type UpdateAppPlanDto,
 } from '@ahmedrioueche/gympro-client';
@@ -42,42 +41,17 @@ export class AppPlansController {
    * @public
    */
   @Get()
-  async getAllPlans(
-    @Query('type') type?: AppPlanType,
-    @Query('level') level?: AppPlanLevel,
-  ) {
+  async getAllPlans(@Query('level') level?: AppPlanLevel) {
     let result;
 
-    // Filter by type if provided
-    if (type && !level) {
-      result = await this.appPlansService.getPlansByType(type);
-      return apiResponse(
-        true,
-        undefined,
-        result,
-        'Plans retrieved successfully',
-      );
-    }
-
     // Filter by level if provided
-    if (level && !type) {
+    if (level) {
       result = await this.appPlansService.getPlansByLevel(level);
       return apiResponse(
         true,
         undefined,
         result,
         'Plans retrieved successfully',
-      );
-    }
-
-    // Get specific plan if both provided
-    if (type && level) {
-      result = await this.appPlansService.getPlanByLevelAndType(level, type);
-      return apiResponse(
-        true,
-        undefined,
-        result,
-        'Plan retrieved successfully',
       );
     }
 
@@ -88,62 +62,6 @@ export class AppPlansController {
       undefined,
       result,
       'All plans retrieved successfully',
-    );
-  }
-
-  /**
-   * Get subscription plans only
-   * GET /app-plans/subscription
-   * @public
-   */
-  @Get('subscription')
-  async getSubscriptionPlans() {
-    const plans = await this.appPlansService.getSubscriptionPlans();
-    return apiResponse(
-      true,
-      undefined,
-      plans,
-      'Subscription plans retrieved successfully',
-    );
-  }
-
-  /**
-   * Get one-time purchase plans only
-   * GET /app-plans/one-time
-   * @public
-   */
-  @Get('one-time')
-  async getOneTimePlans() {
-    const plans = await this.appPlansService.getOneTimePlans();
-    return apiResponse(
-      true,
-      undefined,
-      plans,
-      'One-time plans retrieved successfully',
-    );
-  }
-
-  /**
-   * Compare two plans
-   * GET /app-plans/compare?level1=starter&level2=premium&type=subscription
-   * @public
-   */
-  @Get('compare')
-  async comparePlans(
-    @Query('level1') level1: AppPlanLevel,
-    @Query('level2') level2: AppPlanLevel,
-    @Query('type') type: AppPlanType,
-  ) {
-    const comparison = await this.appPlansService.comparePlans(
-      level1,
-      level2,
-      type,
-    );
-    return apiResponse(
-      true,
-      undefined,
-      comparison,
-      'Plans compared successfully',
     );
   }
 

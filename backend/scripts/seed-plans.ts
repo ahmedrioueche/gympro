@@ -29,7 +29,6 @@ async function run() {
       planId: 'subscription-free',
       version: 1,
       order: 0,
-      type: 'subscription',
       level: 'free',
       name: 'Free',
       description: 'plan.free.description',
@@ -54,7 +53,6 @@ async function run() {
       planId: 'subscription-starter',
       version: 1,
       order: 1,
-      type: 'subscription',
       level: 'starter',
       name: 'Starter',
       description: 'plan.starter.description',
@@ -84,7 +82,6 @@ async function run() {
       planId: 'subscription-pro',
       version: 1,
       order: 2,
-      type: 'subscription',
       level: 'pro',
       name: 'Pro',
       description: 'plan.pro.description',
@@ -115,7 +112,6 @@ async function run() {
       planId: 'subscription-premium',
       version: 1,
       order: 3,
-      type: 'subscription',
       level: 'premium',
       name: 'Premium',
       description: 'plan.premium.description',
@@ -140,97 +136,11 @@ async function run() {
       ],
       createdAt: new Date(),
     },
-
-    // One-time purchase plans
-    {
-      planId: 'onetime-starter',
-      version: 1,
-      order: 1,
-      type: 'oneTime',
-      level: 'starter',
-      name: 'Starter (Lifetime)',
-      description: 'plan.starter_onetime.description',
-      pricing: {
-        EUR: { oneTime: 300 },
-        USD: { oneTime: 320 },
-        DZD: { oneTime: 45000 },
-      },
-      paddleProductId: 'pro_01kcmd9jn8e0r2q2qrqnrh6fgr',
-      paddlePriceIds: {
-        oneTime: 'pri_01kcmdc4wna170yk68bchfjvcp',
-      },
-      limits: { maxGyms: 1, maxMembers: 300, maxGems: 100 },
-      features: [
-        'plan.starter.feature.everything_free',
-        'plan.starter.feature.advanced_reports',
-        'plan.starter.feature.email_notifications',
-        'plan.starter.feature.attendance_tracking',
-        'plan.starter.feature.payment_processing',
-      ],
-      createdAt: new Date(),
-    },
-    {
-      planId: 'onetime-pro',
-      version: 1,
-      order: 2,
-      type: 'oneTime',
-      level: 'pro',
-      name: 'Pro (Lifetime)',
-      description: 'plan.pro_onetime.description',
-      pricing: {
-        EUR: { oneTime: 600 },
-        USD: { oneTime: 640 },
-        DZD: { oneTime: 90000 },
-      },
-      paddleProductId: 'pro_01kcmdemc28prxaqm9wk801et7',
-      paddlePriceIds: {
-        oneTime: 'pri_01kcmdhn0d4q5jcyq5rbcasgft',
-      },
-      limits: { maxGyms: 3, maxMembers: 1000, maxGems: 500 },
-      features: [
-        'plan.pro.feature.everything_starter',
-        'plan.pro.feature.sms_notifications',
-        'plan.pro.feature.custom_workflows',
-        'plan.pro.feature.advanced_analytics',
-        'plan.pro.feature.priority_support',
-        'plan.pro.feature.api_access',
-      ],
-      createdAt: new Date(),
-    },
-    {
-      planId: 'onetime-premium',
-      version: 1,
-      order: 3,
-      type: 'oneTime',
-      level: 'premium',
-      name: 'Premium (Lifetime)',
-      description: 'plan.premium_onetime.description',
-      pricing: {
-        EUR: { oneTime: 1200 },
-        USD: { oneTime: 1280 },
-        DZD: { oneTime: 180000 },
-      },
-      paddleProductId: 'pro_01kcmdm2jcy1y3hm33310b0xam',
-      paddlePriceIds: {
-        oneTime: 'pri_01kcmdp0rtfrk03kjxzrx23hac',
-      },
-      limits: { maxGyms: 10, maxMembers: 2000, maxGems: 2000 },
-      features: [
-        'plan.premium.feature.everything_pro',
-        'plan.premium.feature.multi_location',
-        'plan.premium.feature.white_label',
-        'plan.premium.feature.custom_integrations',
-        'plan.premium.feature.dedicated_manager',
-        'plan.premium.feature.training_onboarding',
-      ],
-      createdAt: new Date(),
-    },
   ];
 
   for (const plan of plans) {
     try {
       await plansService.createPlan(plan);
-      console.log(`✅ ${plan.level} (${plan.type})`);
     } catch (error) {
       console.log(`❌ ${plan.level} - ${error}`);
     }

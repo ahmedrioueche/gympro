@@ -298,10 +298,6 @@ export class ChargilyController {
       return pricing.monthly;
     }
 
-    if (billingCycle === 'oneTime' && pricing.oneTime) {
-      return pricing.oneTime;
-    }
-
     return null;
   }
 

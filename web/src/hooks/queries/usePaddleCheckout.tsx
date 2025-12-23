@@ -92,12 +92,14 @@ export const usePreviewPaddleUpgrade = (options?: UseCheckoutOptions) => {
       if (response.success && response.data) {
         options?.onSuccess?.(response.data);
       } else {
-        toast.error(response.message || t("upgrade.preview_failed"));
+        toast.error(
+          response.message || t("subscription.upgrade_preview_failed")
+        );
         options?.onError?.(new Error(response.message || "Preview failed"));
       }
     },
     onError: (error: any) => {
-      toast.error(t("upgrade.preview_failed"));
+      toast.error(t("subscription.upgrade_preview_failed"));
       options?.onError?.(error);
     },
   });

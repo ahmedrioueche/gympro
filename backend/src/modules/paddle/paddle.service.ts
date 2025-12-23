@@ -152,7 +152,6 @@ export class PaddleService {
         customData: {
           planId,
           billingCycle,
-          type: plan.type,
         },
       },
       userId,
@@ -936,8 +935,6 @@ export class PaddleService {
       billingCycle = 'yearly';
     } else if (billingInterval === 'month') {
       billingCycle = 'monthly';
-    } else if (!billingInterval) {
-      billingCycle = 'oneTime';
     }
 
     const scheduledChange = paddleData.scheduled_change;
