@@ -675,27 +675,39 @@ export class PaddleService {
       );
 
       const subscription = currentState.data.data;
+      const currentPriceId = subscription.items?.[0]?.price?.id;
+      const hasScheduledChange = subscription.scheduled_change;
 
       this.logger.log(
-        `📋 [CANCEL_SCHEDULED] Current state: scheduled_change=${JSON.stringify(subscription.scheduled_change)}`,
+        `📋 [CANCEL_SCHEDULED] Current price: ${currentPriceId}, Original price: ${originalPriceId}, Has scheduled change: ${!!hasScheduledChange}`,
       );
 
-      // ✅ IMPORTANT: For downgrades scheduled with prorated_next_billing_period,
-      // the items have already been changed. We need to revert them.
+      // ✅ STEP 1: If there's a scheduled_change, clear it FIRST (separate request)
+      if (hasScheduledChange) {
+        this.logger.log(
+          `🔄 [CANCEL_SCHEDULED] Clearing scheduled_change first`,
+        );
 
-      const hasScheduledChange = subscription.scheduled_change?.action;
-      const currentItems = subscription.items || [];
-      const currentPriceId = currentItems[0]?.price?.id;
+        await axios.patch(
+          `${this.apiUrl}/subscriptions/${subscriptionId}`,
+          {
+            scheduled_change: null, // ONLY this field
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${this.apiKey}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
 
-      this.logger.log(
-        `📋 [CANCEL_SCHEDULED] Current price: ${currentPriceId}, Original price: ${originalPriceId}, Has scheduled change: ${hasScheduledChange}`,
-      );
+        this.logger.log(`✅ [CANCEL_SCHEDULED] Scheduled change cleared`);
+      }
 
-      // Case 1: Items already changed (downgrade in progress)
-      // Need to revert items back to original AND clear scheduled_change
+      // ✅ STEP 2: If items were changed, revert them (separate request)
       if (currentPriceId !== originalPriceId) {
         this.logger.log(
-          `🔄 [CANCEL_SCHEDULED] Items were changed - reverting to original price`,
+          `🔄 [CANCEL_SCHEDULED] Reverting items back to original price`,
         );
 
         const response = await axios.patch(
@@ -707,9 +719,8 @@ export class PaddleService {
                 quantity: 1,
               },
             ],
-            // ✅ Use 'prorated_immediately' to properly credit/charge the difference
+            // ✅ Use prorated_immediately to properly handle credits
             proration_billing_mode: 'prorated_immediately',
-            scheduled_change: null, // Also clear any scheduled changes
           },
           {
             headers: {
@@ -719,55 +730,41 @@ export class PaddleService {
           },
         );
 
-        this.logger.log(
-          `✅ [CANCEL_SCHEDULED] Items reverted and scheduled change cleared`,
-        );
+        this.logger.log(`✅ [CANCEL_SCHEDULED] Items reverted successfully`);
 
         return this.mapPaddleSubscriptionData(response.data.data);
       }
 
-      // Case 2: Items not changed yet (only scheduled_change exists)
-      // Just clear the scheduled_change
-      if (hasScheduledChange) {
-        this.logger.log(
-          `🔄 [CANCEL_SCHEDULED] Only scheduled_change exists - clearing it`,
-        );
-
-        const response = await axios.patch(
-          `${this.apiUrl}/subscriptions/${subscriptionId}`,
-          {
-            scheduled_change: null,
+      // ✅ STEP 3: Fetch final state and return
+      const finalState = await axios.get(
+        `${this.apiUrl}/subscriptions/${subscriptionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${this.apiKey}`,
-              'Content-Type': 'application/json',
-            },
-          },
-        );
-
-        this.logger.log(`✅ [CANCEL_SCHEDULED] Scheduled change cleared`);
-
-        return this.mapPaddleSubscriptionData(response.data.data);
-      }
-
-      // Case 3: Nothing to cancel
-      this.logger.log(
-        `⚠️ [CANCEL_SCHEDULED] No changes to cancel - returning current state`,
+        },
       );
 
-      return this.mapPaddleSubscriptionData(subscription);
+      this.logger.log(`✅ [CANCEL_SCHEDULED] Cancellation complete`);
+
+      return this.mapPaddleSubscriptionData(finalState.data.data);
     } catch (error) {
       this.logger.error(
         `❌ [CANCEL_SCHEDULED] Failed to cancel scheduled change: ${subscriptionId}`,
         error.response?.data || error,
       );
+
+      if (error.response?.data) {
+        this.logger.error(
+          `[CANCEL_SCHEDULED] Paddle error: ${JSON.stringify(error.response.data)}`,
+        );
+      }
+
       throw new BadRequestException(
         'Failed to cancel scheduled change in Paddle',
       );
     }
   }
-
   /**
    * Verify Paddle webhook signature
    */
