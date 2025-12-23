@@ -28,18 +28,6 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 // ---------------------
 
 @Schema({ _id: false })
-class AppPlanPricing {
-  @Prop({ min: 0 })
-  monthly?: number;
-
-  @Prop({ min: 0 })
-  yearly?: number;
-
-  @Prop({ min: 0 })
-  oneTime?: number;
-}
-
-@Schema({ _id: false })
 class AppPlanLimits {
   @Prop({ min: 1 })
   maxGyms?: number;
@@ -56,7 +44,6 @@ export type AppPlanPricingMap = {
   [key in SupportedCurrency]?: {
     monthly?: number;
     yearly?: number;
-    oneTime?: number;
   };
 };
 
@@ -64,7 +51,6 @@ const CurrencyPricingSchema = new MongooseSchema(
   {
     monthly: { type: Number },
     yearly: { type: Number },
-    oneTime: { type: Number },
   },
   { _id: false },
 );
@@ -78,20 +64,6 @@ const AppPlanPricingSchema = new MongooseSchema(
     {} as Record<SupportedCurrency, any>,
   ),
   { _id: false },
-);
-
-const ChargilyPriceIdsSchema = new MongooseSchema(
-  APP_SUBSCRIPTION_BILLING_CYCLES.reduce(
-    (acc, cycle) => {
-      acc[cycle] = { type: String };
-      return acc;
-    },
-    {} as Record<AppSubscriptionBillingCycle, any>,
-  ),
-  {
-    _id: false,
-    strict: 'throw', // 🔥 rejects unknown keys
-  },
 );
 
 // ---------------------
@@ -130,7 +102,6 @@ export class AppPlanModel extends Document implements AppPlan {
   paddlePriceIds: {
     monthly?: string;
     yearly?: string;
-    oneTime?: string;
   };
 
   @Prop({ type: AppPlanLimits, required: true })

@@ -165,17 +165,11 @@ export class PaddleService {
     plan: any,
     billingCycle: AppSubscriptionBillingCycle,
   ): string | null {
-    if (plan.type === 'subscription') {
-      if (billingCycle === 'monthly') {
-        return plan.paddlePriceIds.monthly || null;
-      }
-      if (billingCycle === 'yearly') {
-        return plan.paddlePriceIds.yearly || null;
-      }
+    if (billingCycle === 'monthly') {
+      return plan.paddlePriceIds.monthly || null;
     }
-
-    if (plan.type === 'oneTime') {
-      return plan.paddlePriceIds.oneTime || null;
+    if (billingCycle === 'yearly') {
+      return plan.paddlePriceIds.yearly || null;
     }
 
     return null;

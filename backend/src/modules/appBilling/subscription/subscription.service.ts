@@ -307,58 +307,6 @@ export class AppSubscriptionService {
     return subscription;
   }
 
-  private validatePlanAvailability(
-    currentPlan: AppPlanModel,
-    currentBillingCycle: AppSubscriptionBillingCycle,
-    targetPlan: AppPlanModel,
-    targetBillingCycle: AppSubscriptionBillingCycle,
-  ): {
-    available: boolean;
-    changeType?: string;
-    message?: string;
-  } {
-    const currentLevelIndex = APP_PLAN_LEVELS.indexOf(currentPlan.level);
-    const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan.level);
-
-    // ❌ RULE 1: Cannot select the same plan with same billing cycle
-    if (
-      currentPlan.planId === targetPlan.planId &&
-      currentBillingCycle === targetBillingCycle
-    ) {
-      return {
-        available: false,
-        message: 'You are already subscribed to this plan',
-      };
-    }
-
-    // Determine change type for regular subscriptions
-    const currentCycleIndex =
-      APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(currentBillingCycle);
-    const targetCycleIndex =
-      APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(targetBillingCycle);
-
-    const isDowngrade = targetLevelIndex < currentLevelIndex;
-    const isSwitchDown =
-      targetLevelIndex === currentLevelIndex &&
-      targetCycleIndex < currentCycleIndex;
-    const isUpgrade = targetLevelIndex > currentLevelIndex;
-    const isSwitchUp =
-      targetLevelIndex === currentLevelIndex &&
-      targetCycleIndex > currentCycleIndex;
-
-    if (isDowngrade) {
-      return { available: true, changeType: 'downgrade' };
-    } else if (isSwitchDown) {
-      return { available: true, changeType: 'switch_down' };
-    } else if (isUpgrade) {
-      return { available: true, changeType: 'upgrade' };
-    } else if (isSwitchUp) {
-      return { available: true, changeType: 'switch_up' };
-    }
-
-    return { available: true, changeType: 'upgrade' };
-  }
-
   /**
    * ✅ NEW: Calculate proration credit for upgrades
    */

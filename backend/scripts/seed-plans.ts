@@ -64,7 +64,7 @@ async function run() {
       paddleProductId: 'pro_01kcmb7nfehz9cggs5r8cvc6tf',
       paddlePriceIds: {
         monthly: 'pri_01kcmbm4wfpqwwegz0m8tg6hfq',
-        yearly: 'pri_01kcmbm4wfpqwwegz0m8tg6hfq',
+        yearly: 'pri_01kcmc2fbgxq1znpas7mpt2ckk',
       },
       limits: { maxGyms: 1, maxMembers: 300, maxGems: 100 },
       features: [
