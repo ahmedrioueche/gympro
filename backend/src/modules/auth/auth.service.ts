@@ -151,9 +151,6 @@ export class AuthService {
       }
     }
 
-    // Auto-subscribe to free plan
-    await this.autoSubscribeToFreePlan(newUser._id.toString());
-
     // Generate tokens for automatic login
     const { accessToken, refreshToken } = this.generateTokens(newUser, false);
 
@@ -517,8 +514,6 @@ export class AuthService {
           notifications: [],
         });
         await user.save();
-
-        await this.autoSubscribeToFreePlan(user._id.toString());
       }
     }
 
@@ -621,30 +616,5 @@ export class AuthService {
     });
 
     return { accessToken, refreshToken };
-  }
-
-  private async autoSubscribeToFreePlan(userId: string) {
-    try {
-      const freePlan = await this.appPlanModel
-        .findOne({ planId: 'subscription-free' })
-        .exec();
-
-      if (freePlan) {
-        await this.subscriptionService.subscribe(
-          userId,
-          freePlan.planId,
-          'monthly',
-        );
-        this.logger.log(`User ${userId} auto-subscribed to free plan`);
-      } else {
-        this.logger.warn(
-          'Free plan not found - user created without subscription',
-        );
-      }
-    } catch (error) {
-      this.logger.error(
-        `Failed to auto-subscribe user ${userId} to free plan: ${error}`,
-      );
-    }
   }
 }

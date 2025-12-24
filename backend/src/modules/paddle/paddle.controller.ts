@@ -21,14 +21,12 @@ import {
 import { Request } from 'express';
 import { AppPlansService } from '../appBilling/plan/plan.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { UsersService } from '../users/users.service';
 import { PaddleService } from './paddle.service';
 
 @Controller('paddle')
 export class PaddleController {
   constructor(
     private readonly paddleService: PaddleService,
-    private readonly userService: UsersService,
     private readonly appPlanService: AppPlansService,
   ) {
     console.log('[PaddleController] Initialized and ready to receive webhooks');

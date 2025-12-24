@@ -10,12 +10,15 @@ import {
   AppSubscriptionModel,
   AppSubscriptionSchema,
 } from '../appBilling/appBilling.schema';
+import { AppPlansService } from '../appBilling/plan/plan.service';
+import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
 import { AttendanceRecordSchema } from '../attendace/attendance.schema';
 import { GymModule } from '../gym/gym.module';
 import { GymModel, GymSchema } from '../gym/gym.schema';
 import { GymMembershipSchema } from '../gymMembership/membership.schema';
 import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
 import { BaseNotificationSchema } from '../notifications/notifications.schema';
+import { PaddleService } from '../paddle/paddle.service';
 import {
   ProgramHistorySchema,
   TrainingProgramSchema,
@@ -50,7 +53,15 @@ import { UsersService } from './users.service';
     GymModule,
   ],
   controllers: [UsersController],
-  providers: [UsersService, RolesGuard, PermissionsGuard, GeolocationService],
+  providers: [
+    UsersService,
+    RolesGuard,
+    PermissionsGuard,
+    GeolocationService,
+    AppSubscriptionService,
+    AppPlansService,
+    PaddleService,
+  ],
   exports: [UsersService],
 })
 export class UsersModule {}

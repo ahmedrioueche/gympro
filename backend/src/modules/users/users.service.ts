@@ -1,7 +1,9 @@
 import {
+  DEFAULT_CURRENCY,
   DEFAULT_REGION,
   DEFAULT_TRIAL_DAYS_NUMBER,
   ErrorCode,
+  SupportedCurrency,
   UserRole,
 } from '@ahmedrioueche/gympro-client';
 import {
@@ -16,6 +18,8 @@ import { User } from '../../common/schemas/user.schema';
 
 import { NotificationService } from 'src/common/services/notification.service';
 import { GeolocationService } from '../../common/services/geolocation.service';
+import { AppPlanModel } from '../appBilling/appBilling.schema';
+import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
 import { GymService } from '../gym/gym.service';
 
 @Injectable()
@@ -24,6 +28,8 @@ export class UsersService {
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(AppPlanModel.name) private appPlanModel: Model<AppPlanModel>,
+    private readonly subscriptionService: AppSubscriptionService,
     private readonly gymService: GymService,
     private readonly geolocationService: GeolocationService,
     private readonly notificationService: NotificationService,
@@ -439,6 +445,9 @@ export class UsersService {
     user.profile.isOnBoarded = true;
     await user.save();
 
+    // Auto-subscribe to free plan
+    await this.autoSubscribeToFreePlan(user._id.toString());
+
     // Send welcome notification after onboarding completion (background task)
     this.notificationService
       .notifyUser(user, {
@@ -455,5 +464,39 @@ export class UsersService {
       });
 
     return this.sanitizeUser(user);
+  }
+
+  private async autoSubscribeToFreePlan(userId: string) {
+    try {
+      const user = await this.userModel.findById(userId);
+      console.log({ user });
+      const currency =
+        (user?.appSettings?.locale?.currency as SupportedCurrency) ||
+        DEFAULT_CURRENCY;
+      const provider =
+        user?.appSettings?.locale?.region === 'DZ' ? 'chargily' : 'paddle';
+      const freePlan = await this.appPlanModel
+        .findOne({ planId: 'subscription-free' })
+        .exec();
+
+      if (freePlan) {
+        await this.subscriptionService.subscribe(
+          userId,
+          freePlan.planId,
+          'monthly',
+          currency,
+          provider,
+        );
+        this.logger.log(`User ${userId} auto-subscribed to free plan`);
+      } else {
+        this.logger.warn(
+          'Free plan not found - user created without subscription',
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to auto-subscribe user ${userId} to free plan: ${error}`,
+      );
+    }
   }
 }
