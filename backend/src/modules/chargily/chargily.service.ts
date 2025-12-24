@@ -727,6 +727,8 @@ export class ChargilyService {
           userId,
           planId,
           billingCycle || 'monthly',
+          'DZD',
+          'chargily',
         );
 
         this.logger.log(

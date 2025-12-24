@@ -3,8 +3,6 @@ import {
   APP_SUBSCRIPTION_BILLING_CYCLES,
   AppPaymentProvider,
   AppSubscriptionBillingCycle,
-  DEFAULT_APP_PAYMENT_PROVIDER,
-  DEFAULT_CURRENCY,
   SupportedCurrency,
 } from '@ahmedrioueche/gympro-client';
 import {
@@ -70,8 +68,8 @@ export class AppSubscriptionService {
     userId: string,
     planId: string,
     billingCycle: AppSubscriptionBillingCycle = 'monthly',
-    currency: SupportedCurrency = DEFAULT_CURRENCY,
-    provider: AppPaymentProvider = DEFAULT_APP_PAYMENT_PROVIDER,
+    currency: SupportedCurrency,
+    provider: AppPaymentProvider,
     paddleSubscriptionId?: string,
     paddleCustomerId?: string,
   ) {
