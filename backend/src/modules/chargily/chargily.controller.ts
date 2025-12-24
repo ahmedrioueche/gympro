@@ -158,6 +158,43 @@ export class ChargilyController {
     }
   }
 
+  // ==================== Subscription Upgrade Checkout ====================
+
+  @UseGuards(JwtAuthGuard)
+  @Post('upgrade')
+  async createSubscriptionUpgradeCheckout(
+    @Req() req: any,
+    @Body()
+    body: { planId: string; billingCycle?: AppSubscriptionBillingCycle },
+  ) {
+    try {
+      const userId = req.user?.sub;
+      const user = await this.userService.findById(userId);
+      const { planId, billingCycle = 'monthly' } = body;
+
+      const userLocale =
+        (user?.appSettings?.locale?.language as 'ar' | 'en' | 'fr') || 'en';
+
+      const result =
+        await this.chargilyService.createSubscriptionUpgradeCheckout(
+          userId,
+          planId,
+          billingCycle,
+          userLocale,
+          this.frontendUrl!,
+        );
+
+      return apiResponse(true, undefined, result);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPGRADE_FAILED,
+        undefined,
+        error.message || 'Failed to create subscription upgrade checkout',
+      );
+    }
+  }
+
   // ==================== Webhook Handler ====================
 
   @Post('webhook')

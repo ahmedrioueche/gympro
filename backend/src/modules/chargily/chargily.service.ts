@@ -425,7 +425,35 @@ export class ChargilyService {
         throw new BadRequestException('Current plan not found');
       }
 
-      // Determine if this is an upgrade/switch up or downgrade/switch down
+      // Get current plan price
+      const currentPrice = this.getPlanAmount(
+        currentPlan,
+        currentSub.billingCycle || 'monthly',
+        'DZD',
+      );
+
+      if (!currentPrice) {
+        this.logger.error(`❌ [PREVIEW] Current plan price not found`);
+        throw new BadRequestException('Current plan price not found');
+      }
+
+      // Calculate proration credit
+      const prorationCredit = await this.calculateProrationCredit(
+        currentSub,
+        currentPlan,
+        'DZD',
+      );
+
+      this.logger.log(`💰 [PREVIEW] Proration credit: ${prorationCredit} DZD`);
+      this.logger.log(
+        `💰 [PREVIEW] Current price: ${currentPrice} DZD, Target price: ${targetPrice} DZD`,
+      );
+
+      // Determine if this is an upgrade based on price comparison
+      // If target price is higher than or equal to current price, treat as immediate upgrade
+      const isImmediateUpgrade = targetPrice >= currentPrice;
+
+      // Also check traditional upgrade/switch up logic
       const currentLevelIndex = APP_PLAN_LEVELS.indexOf(currentPlan.level);
       const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan.level);
 
@@ -441,22 +469,13 @@ export class ChargilyService {
         targetCycleIndex > currentCycleIndex;
 
       this.logger.log(
-        `📋 [PREVIEW] CurrentPlan=${currentPlan.level}, TargetPlan=${targetPlan.level}, isUpgrade=${isUpgrade}, isSwitchUp=${isSwitchUp}`,
+        `📋 [PREVIEW] CurrentPlan=${currentPlan.level}, TargetPlan=${targetPlan.level}, isUpgrade=${isUpgrade}, isSwitchUp=${isSwitchUp}, isImmediateUpgrade=${isImmediateUpgrade}`,
       );
-
-      // Calculate proration credit
-      const prorationCredit = await this.calculateProrationCredit(
-        currentSub,
-        currentPlan,
-        'DZD',
-      );
-
-      this.logger.log(`💰 [PREVIEW] Proration credit: ${prorationCredit} DZD`);
 
       let immediateCharge: number;
       let creditUsed: number;
 
-      if (isUpgrade || isSwitchUp) {
+      if (isImmediateUpgrade || isUpgrade || isSwitchUp) {
         // Immediate change - apply proration credit
         creditUsed = prorationCredit;
         immediateCharge = Math.max(
@@ -464,7 +483,7 @@ export class ChargilyService {
           Math.round(targetPrice - prorationCredit),
         );
         this.logger.log(
-          `✅ [PREVIEW] Upgrade/SwitchUp - Immediate charge: ${immediateCharge} DZD`,
+          `✅ [PREVIEW] Immediate upgrade - Charge: ${immediateCharge} DZD`,
         );
       } else {
         // Downgrade/switch down - no proration, charged at period end
@@ -477,7 +496,7 @@ export class ChargilyService {
 
       const previewData: ChargilyUpgradePreviewData = {
         immediate_transaction:
-          isUpgrade || isSwitchUp
+          isImmediateUpgrade || isUpgrade || isSwitchUp
             ? {
                 details: {
                   totals: {
@@ -513,7 +532,7 @@ export class ChargilyService {
           },
         },
         next_transaction:
-          !isUpgrade && !isSwitchUp
+          !isImmediateUpgrade && !isUpgrade && !isSwitchUp
             ? {
                 billing_period: {
                   starts_at: currentSub.currentPeriodEnd,
@@ -544,7 +563,7 @@ export class ChargilyService {
           level: targetPlan.level,
         },
         billing_cycle: billingCycle,
-        is_upgrade: isUpgrade,
+        is_upgrade: isUpgrade || isImmediateUpgrade,
         is_switch_up: isSwitchUp,
         current_plan: {
           planId: currentPlan.planId,
@@ -562,6 +581,178 @@ export class ChargilyService {
     }
   }
 
+  // ==================== Upgrade ====================
+
+  async createSubscriptionUpgradeCheckout(
+    userId: string,
+    planId: string,
+    billingCycle: AppSubscriptionBillingCycle,
+    userLocale: 'ar' | 'en' | 'fr',
+    frontendUrl: string,
+  ): Promise<ChargilyCheckoutResult> {
+    try {
+      this.logger.log(
+        `🚀 [UPGRADE] Creating upgrade checkout for user=${userId}, plan=${planId}, billing=${billingCycle}`,
+      );
+
+      // Fetch target plan details
+      const targetPlan = await this.appPlansService.getPlanByPlanId(planId);
+
+      if (!targetPlan) {
+        this.logger.error(`❌ [UPGRADE] Plan not found: ${planId}`);
+        throw new BadRequestException('Plan not found');
+      }
+
+      // Get target plan price
+      const targetPrice = this.getPlanAmount(targetPlan, billingCycle, 'DZD');
+
+      if (!targetPrice) {
+        this.logger.error(
+          `❌ [UPGRADE] Price not configured for plan=${planId}, billing=${billingCycle}`,
+        );
+        throw new BadRequestException(
+          'Price not available for this billing cycle',
+        );
+      }
+
+      // Check for existing active subscription
+      const currentSub =
+        await this.appSubscriptionService.getMySubscription(userId);
+
+      // No existing subscription - charge full price
+      if (!currentSub) {
+        this.logger.log(
+          `📋 [UPGRADE] No existing subscription - charging full price: ${targetPrice} DZD`,
+        );
+
+        const result = await this.createCheckout({
+          amount: targetPrice,
+          currency: 'dzd',
+          success_url: `${frontendUrl}/payment/success`,
+          failure_url: `${frontendUrl}/payment/failure`,
+          payment_method: 'edahabia',
+          locale: userLocale,
+          description: `${targetPlan.name} - ${billingCycle}`,
+          metadata: {
+            userId,
+            planId: targetPlan.planId,
+            billingCycle,
+            type: 'subscription',
+          },
+        });
+
+        return result;
+      }
+
+      // Get current plan details
+      const currentPlan = await this.appPlansService.getPlanByPlanId(
+        currentSub.planId,
+      );
+
+      if (!currentPlan) {
+        this.logger.error(
+          `❌ [UPGRADE] Current plan not found: ${currentSub.planId}`,
+        );
+        throw new BadRequestException('Current plan not found');
+      }
+
+      // Get current plan price
+      const currentPrice = this.getPlanAmount(
+        currentPlan,
+        currentSub.billingCycle || 'monthly',
+        'DZD',
+      );
+
+      if (!currentPrice) {
+        this.logger.error(`❌ [UPGRADE] Current plan price not found`);
+        throw new BadRequestException('Current plan price not found');
+      }
+
+      // Determine if this is an immediate upgrade (price-based)
+      const isImmediateUpgrade = targetPrice >= currentPrice;
+
+      // Also check traditional upgrade/switch up logic
+      const currentLevelIndex = APP_PLAN_LEVELS.indexOf(currentPlan.level);
+      const targetLevelIndex = APP_PLAN_LEVELS.indexOf(targetPlan.level);
+
+      const currentCycleIndex = APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(
+        currentSub.billingCycle || 'monthly',
+      );
+      const targetCycleIndex =
+        APP_SUBSCRIPTION_BILLING_CYCLES.indexOf(billingCycle);
+
+      const isUpgrade = targetLevelIndex > currentLevelIndex;
+      const isSwitchUp =
+        targetLevelIndex === currentLevelIndex &&
+        targetCycleIndex > currentCycleIndex;
+
+      this.logger.log(
+        `📋 [UPGRADE] CurrentPlan=${currentPlan.level}(${currentPrice} DZD), TargetPlan=${targetPlan.level}(${targetPrice} DZD)`,
+      );
+      this.logger.log(
+        `📋 [UPGRADE] isUpgrade=${isUpgrade}, isSwitchUp=${isSwitchUp}, isImmediateUpgrade=${isImmediateUpgrade}`,
+      );
+
+      // Only apply proration for immediate upgrades
+      if (!isImmediateUpgrade && !isUpgrade && !isSwitchUp) {
+        this.logger.log(
+          `📉 [UPGRADE] Downgrade detected - changes will apply at period end`,
+        );
+        throw new BadRequestException(
+          'Downgrades are processed at the end of the current billing period. No payment needed now.',
+        );
+      }
+
+      // Calculate proration credit
+      const prorationCredit = await this.calculateProrationCredit(
+        currentSub,
+        currentPlan,
+        'DZD',
+      );
+
+      this.logger.log(`💰 [UPGRADE] Proration credit: ${prorationCredit} DZD`);
+
+      // Calculate final charge amount
+      const immediateCharge = Math.max(
+        0,
+        Math.round(targetPrice - prorationCredit),
+      );
+
+      this.logger.log(
+        `💰 [UPGRADE] Final charge amount: ${immediateCharge} DZD`,
+      );
+
+      // Create checkout with prorated amount
+      const result = await this.createCheckout({
+        amount: immediateCharge,
+        currency: 'dzd',
+        success_url: `${frontendUrl}/payment/success`,
+        failure_url: `${frontendUrl}/payment/failure`,
+        payment_method: 'edahabia',
+        locale: userLocale,
+        description: `Upgrade to ${targetPlan.name} - ${billingCycle}`,
+        metadata: {
+          userId,
+          planId: targetPlan.planId,
+          billingCycle,
+          type: 'subscription',
+          isUpgrade: true,
+          previousPlanId: currentPlan.planId,
+          prorationCredit: prorationCredit.toString(),
+        },
+      });
+
+      this.logger.log(`✅ [UPGRADE] Checkout created: ${result.checkout_id}`);
+
+      return result;
+    } catch (error) {
+      this.logger.error(
+        `❌ [UPGRADE] Failed to create checkout`,
+        error.message,
+      );
+      throw error;
+    }
+  }
   // ==================== Helper Methods ====================
 
   /**

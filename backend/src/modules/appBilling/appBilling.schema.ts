@@ -16,7 +16,6 @@ import {
   APP_SUBSCRIPTION_BILLING_CYCLES,
   APP_SUBSCRIPTION_HISTORY_ACTIONS,
   APP_SUBSCRIPTION_STATUSES,
-  DEFAULT_APP_PAYMENT_PROVIDER,
   PAYMENT_METHODS,
   SUPPORTED_CURRENCIES,
 } from '@ahmedrioueche/gympro-client';
@@ -238,10 +237,10 @@ export class AppSubscriptionModel extends Document implements AppSubscription {
 
   @Prop({
     type: String,
+    required: true,
     enum: APP_PAYMENT_PROVIDERS,
-    default: DEFAULT_APP_PAYMENT_PROVIDER,
   })
-  provider?: AppPaymentProvider;
+  provider: AppPaymentProvider;
 
   @Prop()
   paddleSubscriptionId?: string;
