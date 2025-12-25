@@ -753,6 +753,100 @@ export class ChargilyService {
       throw error;
     }
   }
+
+  async createRenewalCheckout(
+    userId: string,
+    billingCycle?: AppSubscriptionBillingCycle,
+    userLocale: 'ar' | 'en' | 'fr' = 'en',
+    frontendUrl?: string,
+  ): Promise<ChargilyCheckoutResult> {
+    try {
+      this.logger.log(
+        `🔄 [RENEWAL] Creating renewal checkout for user=${userId}, billing=${billingCycle || 'current'}`,
+      );
+
+      // Get existing subscription
+      const subscription =
+        await this.appSubscriptionService.getMySubscription(userId);
+
+      if (!subscription) {
+        throw new BadRequestException('No active subscription found to renew');
+      }
+
+      // Check if subscription can be renewed
+      if (
+        subscription.status === 'cancelled' ||
+        subscription.cancelAtPeriodEnd
+      ) {
+        throw new BadRequestException(
+          'Cannot renew a cancelled subscription. Please reactivate first.',
+        );
+      }
+
+      // For Paddle subscriptions, they auto-renew
+      if (
+        subscription.provider === 'paddle' &&
+        subscription.paddleSubscriptionId
+      ) {
+        throw new BadRequestException(
+          'Paddle subscriptions renew automatically. Please ensure auto-renewal is enabled.',
+        );
+      }
+
+      // Get plan details
+      const plan = await this.appPlansService.getPlanByPlanId(
+        subscription.planId,
+      );
+
+      if (!plan) {
+        throw new BadRequestException('Subscription plan not found');
+      }
+
+      // Use provided billing cycle or keep current one
+      const renewalBillingCycle =
+        billingCycle || subscription.billingCycle || 'monthly';
+
+      // Calculate renewal price
+      const price = this.getPlanAmount(plan, renewalBillingCycle, 'DZD');
+
+      if (!price) {
+        throw new BadRequestException(
+          `Price not available for ${renewalBillingCycle} billing cycle`,
+        );
+      }
+
+      this.logger.log(`💰 [RENEWAL] Renewal price: ${price} DZD`);
+
+      // Create checkout with renewal metadata
+      const result = await this.createCheckout({
+        amount: price,
+        currency: 'dzd',
+        success_url: `${frontendUrl}/payment/success`,
+        failure_url: `${frontendUrl}/payment/failure`,
+        payment_method: 'edahabia',
+        locale: userLocale,
+        description: `${plan.name} - Renewal (${renewalBillingCycle})`,
+        metadata: {
+          type: 'subscription_renewal',
+          userId,
+          subscriptionId: subscription._id.toString(),
+          planId: subscription.planId,
+          billingCycle: renewalBillingCycle,
+        },
+      });
+
+      this.logger.log(`✅ [RENEWAL] Checkout created: ${result.checkout_id}`);
+
+      return result;
+    } catch (error) {
+      this.logger.error(
+        `❌ [RENEWAL] Failed to create renewal checkout`,
+        error.message,
+      );
+      throw error;
+    }
+  }
+
   // ==================== Helper Methods ====================
 
   /**
@@ -898,41 +992,84 @@ export class ChargilyService {
     this.logger.log(`💰 [WEBHOOK] Payment successful: ${data.id}`);
 
     try {
-      // If this is a subscription payment, activate/update subscription
-      if (data.metadata?.type === 'subscription') {
-        const { userId, planId, billingCycle } = data.metadata;
+      const metadata = data.metadata;
 
-        if (!userId || !planId) {
-          this.logger.error(
-            '❌ [WEBHOOK] Missing userId or planId in metadata',
-          );
-          return;
-        }
+      if (!metadata?.type) {
+        this.logger.log('No metadata type, skipping');
+        return;
+      }
 
-        this.logger.log(
-          `🔄 [WEBHOOK] Activating subscription for user=${userId}, plan=${planId}`,
-        );
-
-        // Create or update subscription using the subscription service
-        await this.appSubscriptionService.subscribe(
-          userId,
-          planId,
-          billingCycle || 'monthly',
-          'DZD',
-          'chargily',
-        );
-
-        this.logger.log(
-          `✅ [WEBHOOK] Subscription activated for user ${userId} with plan ${planId}`,
-        );
+      switch (metadata.type) {
+        case 'subscription_renewal':
+          await this.handleSubscriptionRenewal(data, metadata);
+          break;
+        case 'subscription':
+          await this.handleNewSubscription(data, metadata);
+          break;
+        default:
+          this.logger.log('Unhandled checkout type:', metadata.type);
       }
     } catch (error) {
       this.logger.error(
         '❌ [WEBHOOK] Error handling successful payment',
         error,
       );
-      // Don't throw error - webhook should return 200 even if our logic fails
     }
+  }
+
+  private async handleSubscriptionRenewal(
+    checkoutData: any,
+    metadata: any,
+  ): Promise<void> {
+    this.logger.log('🔄 [WEBHOOK] Processing subscription renewal:', metadata);
+
+    try {
+      const { userId, billingCycle } = metadata;
+
+      if (!userId) {
+        this.logger.error('❌ [WEBHOOK] Missing userId in renewal metadata');
+        return;
+      }
+
+      // Renew subscription with new period dates
+      await this.appSubscriptionService.renewSubscription(userId, billingCycle);
+
+      this.logger.log(`✅ [WEBHOOK] Subscription renewed for user ${userId}`);
+    } catch (error) {
+      this.logger.error(
+        '❌ [WEBHOOK] Failed to process renewal:',
+        error.message,
+      );
+      throw error;
+    }
+  }
+
+  private async handleNewSubscription(
+    checkoutData: any,
+    metadata: any,
+  ): Promise<void> {
+    const { userId, planId, billingCycle } = metadata;
+
+    if (!userId || !planId) {
+      this.logger.error('❌ [WEBHOOK] Missing userId or planId in metadata');
+      return;
+    }
+
+    this.logger.log(
+      `🔄 [WEBHOOK] Activating subscription for user=${userId}, plan=${planId}`,
+    );
+
+    await this.appSubscriptionService.subscribe(
+      userId,
+      planId,
+      billingCycle || 'monthly',
+      'DZD',
+      'chargily',
+    );
+
+    this.logger.log(
+      `✅ [WEBHOOK] Subscription activated for user ${userId} with plan ${planId}`,
+    );
   }
 
   async handleCheckoutFailed(data: any): Promise<void> {

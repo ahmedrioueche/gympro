@@ -8,6 +8,7 @@ import type {
   AutoRenewType,
   PaymentMethod,
   SupportedCurrency,
+  WarningEmailType,
 } from '@ahmedrioueche/gympro-client';
 import {
   APP_PAYMENT_PROVIDERS,
@@ -16,6 +17,7 @@ import {
   APP_SUBSCRIPTION_BILLING_CYCLES,
   APP_SUBSCRIPTION_HISTORY_ACTIONS,
   APP_SUBSCRIPTION_STATUSES,
+  APP_WARNING_EMAIL_TYPES,
   PAYMENT_METHODS,
   SUPPORTED_CURRENCIES,
 } from '@ahmedrioueche/gympro-client';
@@ -168,6 +170,32 @@ class AddOns {
 // AppSubscription Schema
 // ---------------------
 
+/* ===== Grace Period ===== */
+@Schema({ _id: false })
+export class SoftGracePeriod {
+  @Prop({ type: Date, required: true })
+  startDate: Date;
+
+  @Prop({ type: Date, required: true })
+  expiresAt: Date;
+}
+
+export const SoftGracePeriodSchema =
+  SchemaFactory.createForClass(SoftGracePeriod);
+
+/* ===== Warning Emails ===== */
+@Schema({ _id: false })
+export class SubscriptionWarning {
+  @Prop({ type: String, enum: APP_WARNING_EMAIL_TYPES, required: true })
+  type: WarningEmailType;
+
+  @Prop({ type: Date, required: true })
+  sentAt: Date;
+}
+
+export const SubscriptionWarningSchema =
+  SchemaFactory.createForClass(SubscriptionWarning);
+
 @Schema({ timestamps: true })
 export class AppSubscriptionModel extends Document implements AppSubscription {
   declare _id: string;
@@ -216,6 +244,12 @@ export class AppSubscriptionModel extends Document implements AppSubscription {
 
   @Prop({ type: [AddOns] })
   addOns?: AddOns[];
+
+  @Prop({ type: SoftGracePeriodSchema })
+  softGracePeriod?: SoftGracePeriod;
+
+  @Prop({ type: [SubscriptionWarningSchema], default: [] })
+  warnings?: SubscriptionWarning[];
 
   @Prop()
   cancelledAt?: string;

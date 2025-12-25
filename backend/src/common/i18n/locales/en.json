@@ -22,7 +22,18 @@
       "downgrade_scheduled_subject": "Plan Change Scheduled - {{planName}}",
       "downgrade_scheduled_body": "<p>Hello {{name}},</p><p>We've received your request to change your subscription plan. Your plan will be updated to <strong>{{planName}}</strong> on <strong>{{date}}</strong>.</p><p><strong>Important Information:</strong></p><ul><li>Your current plan remains active until {{date}}</li><li>You'll continue to have full access to current features</li><li>The new plan will take effect automatically on {{date}}</li><li>You can cancel this change anytime before {{date}}</li></ul><p>After the change takes effect, your billing will be adjusted to reflect the new plan pricing.</p><p>If you have any questions about this change or need assistance, please don't hesitate to contact our support team.</p><p>Best regards,<br>The GymPro Team</p>",
       "pending_change_cancelled_body": "<p>Hello {{name}},</p><p>Your pending plan change has been cancelled successfully. Your subscription will continue on your current plan.</p><p>Best regards,<br>The GymPro Team</p>",
-      "pending_change_cancelled_subject": "Plan Change Cancelled"
+      "pending_change_cancelled_subject": "Plan Change Cancelled",
+      "subscription.expiring_soon_subject": "Your Subscription Is Ending Soon",
+      "subscription.expiring_soon_body": "<p>Hello {{name}},</p><p>This is a friendly reminder that your GymPro subscription will end on <strong>{{date}}</strong>.</p><p>You’ll continue to have full access to all features until then.</p><p><strong>What You Can Do:</strong></p><ul><li>Renew or upgrade your subscription to avoid interruption</li><li>Review your plan and billing details</li></ul><p>You can manage your subscription anytime from your account settings.</p><p>Best regards,<br>The GymPro Team</p>",
+
+      "subscription.expiring_tomorrow_subject": "Your Subscription Ends Tomorrow",
+      "subscription.expiring_tomorrow_body": "<p>Hello {{name}},</p><p>Just a quick reminder that your GymPro subscription will end <strong>tomorrow ({{date}})</strong>.</p><p>To avoid losing access to your features and data, you can renew your subscription at any time from your dashboard.</p><p>If you have any questions or need help, our support team is here for you.</p><p>Best regards,<br>The GymPro Team</p>",
+
+      "subscription.expired_subject": "Your Subscription Has Expired",
+      "subscription.expired_body": "<p>Hello {{name}},</p><p>Your GymPro subscription has expired, and access to premium features is now limited.</p><p><strong>Good news:</strong> Your data is still safe, and you can reactivate your subscription anytime to regain full access.</p><p>Simply visit your account settings to choose a plan and continue where you left off.</p><p>Best regards,<br>The GymPro Team</p>",
+
+      "subscription.downgrade_effective_soon_subject": "Upcoming Plan Change",
+      "subscription.downgrade_effective_soon_body": "<p>Hello {{name}},</p><p>This is a reminder that your subscription plan will change to <strong>{{planName}}</strong> on <strong>{{date}}</strong>.</p><p>Your current plan remains fully active until that date, with uninterrupted access to all features.</p><p>If you’d like to make changes or cancel this update, you can do so from your account settings before {{date}}.</p><p>Best regards,<br>The GymPro Team</p>"
     }
   },
   "sms": {
@@ -34,7 +45,11 @@
       "cancelled_body": "Your GymPro subscription has been cancelled. You'll have access until {{date}}. Reactivate anytime from your account.",
       "reactivated_body": "Welcome back! Your GymPro subscription has been reactivated. All your data and features are restored.",
       "downgrade_scheduled_body": "Your plan change to {{planName}} is scheduled for {{date}}. Cancel this change anytime from your account settings.",
-      "pending_change_cancelled_body": "Your pending plan change has been cancelled successfully. Your subscription will continue on your current plan."
+      "pending_change_cancelled_body": "Your pending plan change has been cancelled successfully. Your subscription will continue on your current plan.",
+      "subscription.expiring_soon_body": "Reminder: your GymPro subscription will end on {{date}}. Renew anytime from your account to avoid interruption.",
+      "subscription.expiring_tomorrow_body": "Your GymPro subscription ends tomorrow ({{date}}). Renew now to keep full access.",
+      "subscription.expired_body": "Your GymPro subscription has expired. Reactivate anytime from your account to restore full access.",
+      "subscription.downgrade_effective_soon_body": "Reminder: your GymPro plan will change to {{planName}} on {{date}}. Manage this anytime from your account."
     }
   }
 }

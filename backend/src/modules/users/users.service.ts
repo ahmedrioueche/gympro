@@ -486,6 +486,9 @@ export class UsersService {
           'monthly',
           currency,
           provider,
+          undefined,
+          undefined,
+          true,
         );
         this.logger.log(`User ${userId} auto-subscribed to free plan`);
       } else {

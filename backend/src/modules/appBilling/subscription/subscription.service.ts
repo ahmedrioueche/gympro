@@ -3,6 +3,7 @@ import {
   APP_SUBSCRIPTION_BILLING_CYCLES,
   AppPaymentProvider,
   AppSubscriptionBillingCycle,
+  DEFAULT_TRIAL_DAYS_NUMBER,
   SupportedCurrency,
 } from '@ahmedrioueche/gympro-client';
 import {
@@ -72,6 +73,7 @@ export class AppSubscriptionService {
     provider: AppPaymentProvider,
     paddleSubscriptionId?: string,
     paddleCustomerId?: string,
+    trialing?: boolean,
   ) {
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -176,19 +178,34 @@ export class AppSubscriptionService {
     const { endDate, currentPeriodEnd, nextPaymentDate } =
       this.calculateSubscriptionDates(now, billingCycle);
 
+    let trialData: any = undefined;
+
+    if (trialing) {
+      const trialEnd = new Date(now);
+      trialEnd.setDate(trialEnd.getDate() + DEFAULT_TRIAL_DAYS_NUMBER);
+
+      trialData = {
+        startDate: now,
+        endDate: trialEnd,
+        hasUsedTrial: true,
+        convertedToPaid: false,
+      };
+    }
+
     const subscriptionData: any = {
       userId,
       planId,
       startDate: now,
       currentPeriodStart: now,
       currentPeriodEnd,
-      status: 'active',
+      status: trialing ? 'trialing' : 'active',
       lastPaymentDate: now,
-      autoRenewType: 'auto',
+      autoRenewType: provider === 'chargily' ? 'manual' : 'auto',
       billingCycle,
       provider,
       paddleSubscriptionId,
       paddleCustomerId,
+      trial: trialData,
       createdAt: new Date(),
     };
 
@@ -232,7 +249,7 @@ export class AppSubscriptionService {
       planId: planId,
       action: isUpgrade ? 'upgraded' : 'created',
       startDate: now,
-      status: 'active',
+      status: trialing ? 'trialing' : 'active',
       amountPaid: amountPaid,
       currency: currency,
       details: isUpgrade
@@ -993,6 +1010,107 @@ export class AppSubscriptionService {
       this.logger.error('❌ [SYNC] Failed to sync subscription', error);
       throw error;
     }
+  }
+
+  async renewSubscription(
+    userId: string,
+    billingCycle?: AppSubscriptionBillingCycle,
+  ): Promise<AppSubscriptionModel> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Find existing subscription
+    const subscription = await this.subscriptionModel
+      .findOne({ userId, status: { $in: ['active', 'trialing', 'past_due'] } })
+      .exec();
+
+    if (!subscription) {
+      throw new NotFoundException('No active subscription found');
+    }
+
+    // Check if subscription is in a renewable state
+    if (subscription.status === 'cancelled' || subscription.cancelAtPeriodEnd) {
+      throw new BadRequestException(
+        'Cannot renew a cancelled subscription. Please reactivate first.',
+      );
+    }
+
+    // ✅ Handle Paddle subscriptions differently - cannot manually renew
+    if (
+      subscription.provider === 'paddle' &&
+      subscription.paddleSubscriptionId
+    ) {
+      throw new BadRequestException(
+        'Paddle subscriptions renew automatically. Please ensure auto-renewal is enabled.',
+      );
+    }
+
+    // Calculate new period dates based on billing cycle
+    const newBillingCycle =
+      billingCycle || subscription.billingCycle || 'monthly';
+    const now = new Date();
+    const { endDate, currentPeriodEnd, nextPaymentDate } =
+      this.calculateSubscriptionDates(now, newBillingCycle);
+
+    // Update subscription with new period dates
+    subscription.currentPeriodStart = now;
+    subscription.currentPeriodEnd = currentPeriodEnd;
+    subscription.lastPaymentDate = now;
+    subscription.nextPaymentDate = nextPaymentDate;
+    subscription.billingCycle = newBillingCycle;
+    subscription.status = 'active';
+
+    // Clear grace period and warnings
+    subscription.softGracePeriod = undefined;
+    subscription.warnings = [];
+
+    if (endDate) {
+      subscription.endDate = endDate;
+    }
+
+    await subscription.save();
+
+    // Get plan for notification
+    const plan = await this.appPlanModel
+      .findOne({ planId: subscription.planId })
+      .exec();
+
+    // Send notification
+    if (plan && plan.level !== 'free') {
+      this.notificationService
+        .notifyUser(user, {
+          key: 'subscription.renewed',
+          vars: {
+            name: user.profile?.fullName || user.profile?.email || 'User',
+            planName: plan.name,
+            date: currentPeriodEnd.toLocaleDateString(),
+          },
+        })
+        .catch((error) => {
+          this.logger.error(
+            'Failed to send subscription renewed notification',
+            error,
+          );
+        });
+    }
+
+    // Create history entry
+    const history = new this.subscriptionHistoryModel({
+      userId,
+      subscriptionId: subscription._id,
+      planId: subscription.planId,
+      action: 'renewed',
+      startDate: now,
+      endDate: currentPeriodEnd,
+      status: 'active',
+      details: `Subscription renewed manually for ${newBillingCycle} billing cycle`,
+      createdAt: new Date(),
+    });
+    await history.save();
+
+    return subscription;
   }
 
   async getSubscriptionHistory(userId: string) {

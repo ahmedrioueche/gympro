@@ -195,6 +195,39 @@ export class ChargilyController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('checkout/renew')
+  async createRenewalCheckout(
+    @Req() req: any,
+    @Body()
+    body: { billingCycle?: AppSubscriptionBillingCycle },
+  ) {
+    try {
+      const userId = req.user?.sub;
+      const user = await this.userService.findById(userId);
+      const { billingCycle } = body;
+
+      const userLocale =
+        (user?.appSettings?.locale?.language as 'ar' | 'en' | 'fr') || 'en';
+
+      const result = await this.chargilyService.createRenewalCheckout(
+        userId,
+        billingCycle,
+        userLocale,
+        this.frontendUrl!,
+      );
+
+      return apiResponse(true, undefined, result);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.SUBSCRIPTION_CHECKOUT_FAILED,
+        undefined,
+        error.message || 'Failed to create renewal checkout',
+      );
+    }
+  }
+
   // ==================== Webhook Handler ====================
 
   @Post('webhook')

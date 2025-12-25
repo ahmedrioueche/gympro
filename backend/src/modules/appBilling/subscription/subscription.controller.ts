@@ -17,6 +17,7 @@ import {
 } from '@nestjs/common';
 import { GeminiService } from 'src/common/services/gemini.service';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { SubscriptionBlockerService } from './subscription-blocker.service';
 import { AppSubscriptionService } from './subscription.service';
 
 @Controller('app-subscriptions')
@@ -24,6 +25,7 @@ export class AppSubscriptionController {
   constructor(
     private readonly appSubscriptionService: AppSubscriptionService,
     private readonly geminiService: GeminiService,
+    private readonly blockerService: SubscriptionBlockerService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -231,6 +233,42 @@ export class AppSubscriptionController {
         ErrorCode.HISTORY_FETCH_ERROR,
         null,
         'Failed to fetch subscription history',
+      );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('blocker-config')
+  async getBlockerConfig(@Req() req: any) {
+    try {
+      const userId = req.user?.sub;
+
+      if (!userId) {
+        return apiResponse(
+          false,
+          ErrorCode.UNAUTHORIZED,
+          null,
+          'User not authenticated',
+        );
+      }
+
+      const config = await this.blockerService.getBlockerConfig(userId);
+
+      return apiResponse(
+        true,
+        undefined,
+        config,
+        config
+          ? 'Blocker config retrieved successfully'
+          : 'No blocker required',
+      );
+    } catch (error: any) {
+      console.error('Error fetching blocker config:', error);
+      return apiResponse(
+        false,
+        ErrorCode.SUBSCRIPTION_FETCH_ERROR,
+        null,
+        'Failed to fetch blocker configuration',
       );
     }
   }
