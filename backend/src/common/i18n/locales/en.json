@@ -33,7 +33,9 @@
       "subscription.expired_body": "<p>Hello {{name}},</p><p>Your GymPro subscription has expired, and access to premium features is now limited.</p><p><strong>Good news:</strong> Your data is still safe, and you can reactivate your subscription anytime to regain full access.</p><p>Simply visit your account settings to choose a plan and continue where you left off.</p><p>Best regards,<br>The GymPro Team</p>",
 
       "subscription.downgrade_effective_soon_subject": "Upcoming Plan Change",
-      "subscription.downgrade_effective_soon_body": "<p>Hello {{name}},</p><p>This is a reminder that your subscription plan will change to <strong>{{planName}}</strong> on <strong>{{date}}</strong>.</p><p>Your current plan remains fully active until that date, with uninterrupted access to all features.</p><p>If you’d like to make changes or cancel this update, you can do so from your account settings before {{date}}.</p><p>Best regards,<br>The GymPro Team</p>"
+      "subscription.downgrade_effective_soon_body": "<p>Hello {{name}},</p><p>This is a reminder that your subscription plan will change to <strong>{{planName}}</strong> on <strong>{{date}}</strong>.</p><p>Your current plan remains fully active until that date, with uninterrupted access to all features.</p><p>If you’d like to make changes or cancel this update, you can do so from your account settings before {{date}}.</p><p>Best regards,<br>The GymPro Team</p>",
+      "renewed_subject": "Your Subscription Has Been Renewed - {{planName}}",
+      "renewed_body": "<p>Hello {{name}},</p><p>Great news! Your subscription to <strong>{{planName}}</strong> has been successfully renewed.</p><p>You now have uninterrupted access to all the features included in your plan. No action is required on your part.</p><p><strong>What’s Next?</strong></p><ul><li>Continue managing your gym with full access to all tools</li><li>Check your dashboard for updated billing and plan details</li><li>Invite or manage team members as needed</li></ul><p>If you have any questions or need assistance, our support team is always here to help.</p><p>Thank you for continuing to use GymPro!</p><p>Best regards,<br>The GymPro Team</p>"
     }
   },
   "sms": {
@@ -49,7 +51,8 @@
       "subscription.expiring_soon_body": "Reminder: your GymPro subscription will end on {{date}}. Renew anytime from your account to avoid interruption.",
       "subscription.expiring_tomorrow_body": "Your GymPro subscription ends tomorrow ({{date}}). Renew now to keep full access.",
       "subscription.expired_body": "Your GymPro subscription has expired. Reactivate anytime from your account to restore full access.",
-      "subscription.downgrade_effective_soon_body": "Reminder: your GymPro plan will change to {{planName}} on {{date}}. Manage this anytime from your account."
+      "subscription.downgrade_effective_soon_body": "Reminder: your GymPro plan will change to {{planName}} on {{date}}. Manage this anytime from your account.",
+      "renewed_body": "Good news, {{name}}! Your GymPro subscription for {{planName}} has been successfully renewed. Continue managing your gym without interruption."
     }
   }
 }

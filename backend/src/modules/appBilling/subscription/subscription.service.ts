@@ -65,136 +65,86 @@ export class AppSubscriptionService {
     return result;
   }
 
-  async subscribe(
-    userId: string,
-    planId: string,
-    billingCycle: AppSubscriptionBillingCycle = 'monthly',
-    currency: SupportedCurrency,
-    provider: AppPaymentProvider,
-    paddleSubscriptionId?: string,
-    paddleCustomerId?: string,
-    trialing?: boolean,
-  ) {
+  private async loadUserAndPlan(userId: string, planId: string) {
     const user = await this.userModel.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    if (!user) throw new NotFoundException('User not found');
 
-    // Find target plan by planId field
     const plan = await this.appPlanModel.findOne({ planId }).exec();
-    if (!plan) {
-      throw new NotFoundException('Plan not found');
-    }
+    if (!plan) throw new NotFoundException('Plan not found');
 
-    // Check for existing active subscription
-    const currentSub = await this.subscriptionModel
-      .findOne({ userId, status: { $in: ['active', 'trialing', 'past_due'] } })
-      .exec();
+    return { user, plan };
+  }
 
-    // ✅ IDENTITY CHECK: If this is a Paddle subscription upgrade/renewal, update existing record
-    if (provider === 'paddle' && paddleSubscriptionId) {
-      const existingPaddleSub = await this.subscriptionModel
-        .findOne({
-          paddleSubscriptionId,
-        })
-        .exec();
+  private async createNewSubscription(params: {
+    userId: string;
+    plan: AppPlanModel;
+    billingCycle: AppSubscriptionBillingCycle;
+    currency: SupportedCurrency;
+    provider: AppPaymentProvider;
+    trialing?: boolean;
+    paddleSubscriptionId?: string;
+    paddleCustomerId?: string;
+  }) {
+    const {
+      userId,
+      plan,
+      billingCycle,
+      provider,
+      trialing,
+      paddleSubscriptionId,
+      paddleCustomerId,
+    } = params;
 
-      if (existingPaddleSub) {
-        this.logger.log(
-          `Updating existing Paddle subscription: ${paddleSubscriptionId}`,
-        );
+    const currentSub = await this.subscriptionModel.findOne({
+      userId,
+      status: { $in: ['active', 'trialing', 'past_due'] },
+    });
 
-        const now = new Date();
-        const { endDate, currentPeriodEnd, nextPaymentDate } =
-          this.calculateSubscriptionDates(now, billingCycle);
-
-        const isActualUpgrade =
-          existingPaddleSub.planId !== planId ||
-          existingPaddleSub.billingCycle !== billingCycle;
-
-        existingPaddleSub.planId = planId;
-        existingPaddleSub.billingCycle = billingCycle;
-        existingPaddleSub.status = 'active';
-        existingPaddleSub.currentPeriodStart = now;
-        existingPaddleSub.currentPeriodEnd = currentPeriodEnd;
-        existingPaddleSub.lastPaymentDate = now;
-        if (endDate) existingPaddleSub.endDate = endDate;
-        if (nextPaymentDate)
-          existingPaddleSub.nextPaymentDate = nextPaymentDate;
-
-        // Reset cancellation flags if it was previously scheduled to cancel
-        existingPaddleSub.cancelAtPeriodEnd = false;
-        existingPaddleSub.autoRenew = true;
-        existingPaddleSub.cancelledAt = undefined;
-
-        const saved = await existingPaddleSub.save();
-
-        // Update user ref if needed
-        await this.userModel.findByIdAndUpdate(userId, {
-          appSubscription: saved._id,
-        });
-
-        // Add history and notify...
-        return this.recordSubscriptionAction(
-          user,
-          saved,
-          plan,
-          isActualUpgrade,
-          currency,
-          0,
-        ); // Credit handled by Paddle
-      }
-    }
-
-    // Calculate proration credit for upgrades (Manual/Chargily flow)
     let prorationCredit = 0;
     let isUpgrade = false;
 
     if (currentSub) {
       isUpgrade = true;
-      const currentPlan = await this.appPlanModel
-        .findOne({ planId: currentSub.planId })
-        .exec();
 
-      if (currentPlan && currentSub.status !== 'trialing') {
-        prorationCredit = this.calculateProrationCredit(
-          currentSub,
-          currentPlan,
-          currency,
-        );
+      if (currentSub.status !== 'trialing') {
+        const currentPlan = await this.appPlanModel.findOne({
+          planId: currentSub.planId,
+        });
+
+        if (currentPlan) {
+          prorationCredit = this.calculateProrationCredit(
+            currentSub,
+            currentPlan,
+            params.currency,
+          );
+        }
       }
-    }
 
-    // Deactivate existing active subscriptions (for immediate upgrades)
-    if (currentSub) {
       await this.subscriptionModel.updateMany(
         { userId, status: { $in: ['active', 'trialing', 'past_due'] } },
         { status: 'cancelled', endDate: new Date() },
       );
     }
 
-    // Create new subscription
     const now = new Date();
     const { endDate, currentPeriodEnd, nextPaymentDate } =
       this.calculateSubscriptionDates(now, billingCycle);
 
-    let trialData: any = undefined;
+    const trial =
+      trialing === true
+        ? {
+            startDate: now,
+            endDate: new Date(
+              now.getTime() + DEFAULT_TRIAL_DAYS_NUMBER * 86400000,
+            ),
+            hasUsedTrial: true,
+            convertedToPaid: false,
+          }
+        : undefined;
 
-    if (trialing) {
-      const trialEnd = new Date(now);
-      trialEnd.setDate(trialEnd.getDate() + DEFAULT_TRIAL_DAYS_NUMBER);
-
-      trialData = {
-        startDate: now,
-        endDate: trialEnd,
-        hasUsedTrial: true,
-        convertedToPaid: false,
-      };
-    }
-
-    const subscriptionData: any = {
+    const sub = new this.subscriptionModel({
       userId,
-      planId,
+      planId: plan.planId,
       startDate: now,
       currentPeriodStart: now,
       currentPeriodEnd,
@@ -205,71 +155,130 @@ export class AppSubscriptionService {
       provider,
       paddleSubscriptionId,
       paddleCustomerId,
-      trial: trialData,
-      createdAt: new Date(),
-    };
+      trial,
+      endDate,
+      nextPaymentDate,
+      createdAt: now,
+    });
 
-    if (endDate) subscriptionData.endDate = endDate;
-    if (nextPaymentDate) subscriptionData.nextPaymentDate = nextPaymentDate;
-
-    const sub = new this.subscriptionModel(subscriptionData);
     const saved = await sub.save();
 
-    // Update user document with subscription reference
     await this.userModel.findByIdAndUpdate(userId, {
       appSubscription: saved._id,
     });
 
-    // Calculate amount paid
-    const currencyPricing = plan.pricing[currency] || {};
-    const newCost = this.calculatePlanCost(billingCycle, currencyPricing);
-    const amountPaid = Math.max(0, newCost - prorationCredit);
+    return { saved, isUpgrade, prorationCredit };
+  }
 
-    if (plan.level !== 'free') {
-      this.notificationService
-        .notifyUser(user, {
-          key: 'subscription.created',
-          vars: {
-            name: user.profile?.fullName || user.profile?.email || 'User',
-            planName: plan.name,
-          },
-        })
-        .catch((error) => {
-          this.logger.error(
-            'Failed to send subscription created notification',
-            error,
-          );
-        });
+  private async handlePaddleIdentityUpdate(params: {
+    user: User;
+    plan: AppPlanModel;
+    billingCycle: AppSubscriptionBillingCycle;
+    currency: SupportedCurrency;
+    paddleSubscriptionId?: string;
+  }) {
+    const { user, plan, billingCycle, currency, paddleSubscriptionId } = params;
+
+    if (!paddleSubscriptionId) return null;
+
+    const existing = await this.subscriptionModel.findOne({
+      paddleSubscriptionId,
+    });
+
+    if (!existing) return null;
+
+    const now = new Date();
+    const { endDate, currentPeriodEnd, nextPaymentDate } =
+      this.calculateSubscriptionDates(now, billingCycle);
+
+    const isUpgrade =
+      existing.planId !== plan.planId || existing.billingCycle !== billingCycle;
+
+    existing.planId = plan.planId;
+    existing.billingCycle = billingCycle;
+    existing.status = 'active';
+    existing.currentPeriodStart = now;
+    existing.currentPeriodEnd = currentPeriodEnd;
+    existing.lastPaymentDate = now;
+    existing.autoRenew = true;
+    existing.cancelAtPeriodEnd = false;
+    existing.cancelledAt = undefined;
+
+    if (endDate) existing.endDate = endDate;
+    if (nextPaymentDate) existing.nextPaymentDate = nextPaymentDate;
+
+    const saved = await existing.save();
+
+    await this.userModel.findByIdAndUpdate(user._id, {
+      appSubscription: saved._id,
+    });
+
+    await this.recordSubscriptionAction(
+      user,
+      saved,
+      plan,
+      isUpgrade,
+      currency,
+      0,
+    );
+
+    return saved;
+  }
+
+  async subscribe(
+    userId: string,
+    planId: string,
+    billingCycle: AppSubscriptionBillingCycle = 'monthly',
+    currency: SupportedCurrency,
+    provider: AppPaymentProvider,
+    paddleSubscriptionId?: string,
+    paddleCustomerId?: string,
+    trialing?: boolean,
+  ) {
+    const { user, plan } = await this.loadUserAndPlan(userId, planId);
+
+    // Paddle identity-based update
+    if (provider === 'paddle') {
+      const paddleResult = await this.handlePaddleIdentityUpdate({
+        user,
+        plan,
+        billingCycle,
+        currency,
+        paddleSubscriptionId,
+      });
+
+      if (paddleResult) return paddleResult;
     }
 
-    // Create history entry
-    const historyData: any = {
-      userId,
-      subscriptionId: saved._id,
-      planId: planId,
-      action: isUpgrade ? 'upgraded' : 'created',
-      startDate: now,
-      status: trialing ? 'trialing' : 'active',
-      amountPaid: amountPaid,
-      currency: currency,
-      details: isUpgrade
-        ? `Upgraded from previous plan. Price: ${newCost.toFixed(2)}, Credit: ${prorationCredit.toFixed(2)}, Paid: ${amountPaid.toFixed(2)}`
-        : `New subscription created. Paid: ${amountPaid.toFixed(2)}`,
-      createdAt: new Date(),
-    };
+    // New subscription flow
+    const { saved, isUpgrade, prorationCredit } =
+      await this.createNewSubscription({
+        userId,
+        plan,
+        billingCycle,
+        currency,
+        provider,
+        trialing,
+        paddleSubscriptionId,
+        paddleCustomerId,
+      });
 
-    if (endDate) historyData.endDate = endDate;
-
-    const history = new this.subscriptionHistoryModel(historyData);
-    await history.save();
+    await this.recordSubscriptionAction(
+      user,
+      saved,
+      plan,
+      isUpgrade,
+      currency,
+      prorationCredit,
+    );
 
     return saved;
   }
 
   private async recordSubscriptionAction(
-    user: any,
-    subscription: any,
-    plan: any,
+    user: User,
+    subscription: AppSubscriptionModel,
+    plan: AppPlanModel,
     isUpgrade: boolean,
     currency: SupportedCurrency,
     prorationCredit: number,
@@ -277,7 +286,7 @@ export class AppSubscriptionService {
     const now = new Date();
     const currencyPricing = plan.pricing[currency] || {};
     const newCost = this.calculatePlanCost(
-      subscription.billingCycle,
+      subscription.billingCycle || 'monthly',
       currencyPricing,
     );
     const amountPaid = Math.max(0, newCost - prorationCredit);
@@ -1020,6 +1029,8 @@ export class AppSubscriptionService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
+    console.log('---------renewSubscription called-----------');
 
     // Find existing subscription
     const subscription = await this.subscriptionModel

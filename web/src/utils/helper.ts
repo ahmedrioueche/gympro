@@ -1,4 +1,5 @@
 import type { UserRole } from "@ahmedrioueche/gympro-client";
+import { format } from "date-fns";
 import { getRoleHomePage } from "./roles";
 
 export const getLocalStorageItem = <T>(key: string, defaultValue: T): T => {
@@ -43,4 +44,14 @@ export function capitalize(input: string): string {
   return input
     .toLocaleLowerCase()
     .replace(/(^|\s)\p{L}/gu, (m) => m.toLocaleUpperCase());
+}
+
+export function getTwoHourBucket(date: Date) {
+  const hours = date.getHours();
+  const bucketStartHour = Math.floor(hours / 2) * 2;
+
+  const bucketDate = new Date(date);
+  bucketDate.setHours(bucketStartHour, 0, 0, 0);
+
+  return format(bucketDate, "yyyy-MM-dd-HH");
 }

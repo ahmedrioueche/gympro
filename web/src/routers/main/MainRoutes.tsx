@@ -1,6 +1,6 @@
 import { createRoute } from "@tanstack/react-router";
 import { OnboardingPage } from "../../app/pages/main/onBoarding/OnBoardingPage";
-import { AlreadyOnboardedGuard } from "../../components/AlreadyOnboardedGuard";
+import { AlreadyOnboardedGuard } from "../../components/guards/AlreadyOnboardedGuard";
 import { MainRootRoute } from "./MainRootRoute";
 
 export const onBoardingRoute = createRoute({

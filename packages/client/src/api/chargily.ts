@@ -1,6 +1,7 @@
 import {
   ChargilyCheckoutResponse,
   ChargilyCheckoutStatus,
+  ChargilyUpgradePreviewResponse,
   CreateChargilyCheckoutDto,
 } from "../dto/chargily";
 import { ApiResponse } from "../types/api";
@@ -53,6 +54,60 @@ export const chargilyCheckoutApi = {
         "/chargily/checkout/subscription",
         {
           planId,
+          billingCycle,
+        }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Preview upgrade pricing before committing
+   */
+  previewUpgrade: async (
+    planId: string,
+    billingCycle?: AppSubscriptionBillingCycle
+  ): Promise<ApiResponse<ChargilyUpgradePreviewResponse>> => {
+    try {
+      const res = await apiClient.post<
+        ApiResponse<ChargilyUpgradePreviewResponse>
+      >("/chargily/upgrade/preview", {
+        planId,
+        billingCycle,
+      });
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  applyUpgrade: async (
+    planId: string,
+    billingCycle?: AppSubscriptionBillingCycle
+  ): Promise<ApiResponse<ChargilyCheckoutResponse>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<ChargilyCheckoutResponse>>(
+        "/chargily/upgrade",
+        {
+          planId,
+          billingCycle,
+        }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  createRenewalCheckout: async (
+    billingCycle?: AppSubscriptionBillingCycle
+  ): Promise<ApiResponse<ChargilyCheckoutResponse>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<ChargilyCheckoutResponse>>(
+        "/chargily/checkout/renew",
+        {
           billingCycle,
         }
       );

@@ -22,11 +22,13 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
   const {
     status,
     isCancelled,
+    isTrialing,
     isFree,
     start,
     formattedTimeRemaining,
     urgencyColor,
     shouldShowTimeRemaining,
+    timeRemaining,
   } = useSubscriptionStatus(mySubscription);
 
   const { mutate: reactivate, isPending: isReactivating } =
@@ -65,6 +67,9 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
     const plan = plans.find((plan) => plan.planId === planId);
     return plan?.name;
   };
+
+  // Determine if expired
+  const isExpired = timeRemaining?.expired;
 
   return (
     <div className="mb-10">
@@ -179,6 +184,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
               </button>
             </div>
           )}
+
           {/* Plan Header with Time Remaining */}
           <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 md:p-8 border-b border-border">
             <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
@@ -215,10 +221,14 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                 <div className="flex-shrink-0 lg:ml-6">
                   <div className="bg-surface rounded-xl p-6 border border-border shadow-sm min-w-[200px]">
                     <p className="text-xs text-text-secondary uppercase tracking-wider font-medium mb-3 text-center">
-                      {isFree
+                      {isExpired
+                        ? t("subscription.expired_on")
+                        : isTrialing
+                        ? t("subscription.trial_ends_in")
+                        : isFree
                         ? t("subscription.trial_ends_in")
                         : isCancelled
-                        ? t("subscription.access_ends_on")
+                        ? t("subscription.access_ends_in")
                         : t("subscription.renews_in")}
                     </p>
                     <div
@@ -226,12 +236,20 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                     >
                       {formattedTimeRemaining}
                     </div>
-                    {mySubscription.currentPeriodEnd && (
+                    {isTrialing && mySubscription.trial?.endDate ? (
                       <p className="text-xs text-text-secondary text-center">
                         {new Date(
-                          mySubscription.currentPeriodEnd
+                          mySubscription.trial.endDate
                         ).toLocaleDateString()}
                       </p>
+                    ) : (
+                      mySubscription.currentPeriodEnd && (
+                        <p className="text-xs text-text-secondary text-center">
+                          {new Date(
+                            mySubscription.currentPeriodEnd
+                          ).toLocaleDateString()}
+                        </p>
+                      )
                     )}
                   </div>
                 </div>

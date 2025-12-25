@@ -42,6 +42,7 @@ export const useSubscriptionStatus = (
   };
 
   const isCancelled = mySubscription?.cancelAtPeriodEnd;
+  const isTrialing = mySubscription?.status === "trialing";
   const currentStatus = isCancelled
     ? "cancelled"
     : mySubscription?.status || "active";
@@ -52,13 +53,19 @@ export const useSubscriptionStatus = (
     ? new Date(mySubscription.startDate)
     : new Date();
 
-  // Calculate time remaining until current period ends
+  // Calculate time remaining until current period ends or trial ends
   const timeRemaining = useMemo(() => {
     if (!mySubscription) return null;
 
-    // Always use currentPeriodEnd - this shows when the current billing period ends
-    // Works for: active subscriptions, cancelled (with cancelAtPeriodEnd), and trials
-    const targetDate = mySubscription.currentPeriodEnd;
+    // For trialing status, use trial.endDate if available
+    let targetDate: string | Date | undefined;
+
+    if (isTrialing && mySubscription.trial?.endDate) {
+      targetDate = mySubscription.trial.endDate;
+    } else {
+      // For active/cancelled subscriptions, use currentPeriodEnd
+      targetDate = mySubscription.currentPeriodEnd;
+    }
 
     if (!targetDate) return null;
 
@@ -73,7 +80,7 @@ export const useSubscriptionStatus = (
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
     return { days, hours, minutes, expired: false };
-  }, [mySubscription]);
+  }, [mySubscription, isTrialing]);
 
   const getTimeRemainingText = () => {
     if (!timeRemaining || timeRemaining.expired)
@@ -102,10 +109,12 @@ export const useSubscriptionStatus = (
   };
 
   // Determine if we should show the time remaining card
-  const shouldShowTimeRemaining = mySubscription?.currentPeriodEnd;
+  const shouldShowTimeRemaining = isTrialing
+    ? !!mySubscription?.trial?.endDate
+    : !!mySubscription?.currentPeriodEnd;
 
   /**
-   * ✅ FIXED: Check if a plan is available for selection
+   * Check if a plan is available for selection
    * Returns { available: boolean, reason?: string }
    */
   const isPlanAvailable = (
@@ -143,6 +152,7 @@ export const useSubscriptionStatus = (
     status,
     currentStatus,
     isCancelled,
+    isTrialing,
     isFree,
     start,
     timeRemaining,

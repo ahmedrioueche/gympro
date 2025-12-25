@@ -173,7 +173,8 @@
         "expired_reset_token": "Password reset link has expired. Please request a new one",
         "google_auth_failed": "Google authentication failed. Please try again",
         "google_user_info_failed": "Failed to get user information from Google",
-        "invalid_otp": "Invalid OTP code"
+        "invalid_otp": "Invalid OTP code",
+        "unauthorized": "Unauthorized"
       },
       "user": {
         "not_found": "User not found",
@@ -808,7 +809,7 @@
     "one_time_purchase": "One-Time Purchase",
     "monthly": "Monthly",
     "yearly": "Yearly",
-    "save_percentage": "Save 20%",
+    "save_percentage": "Save 17%",
     "upgrade_now": "Upgrade Now",
     "current_plan": "Current Plan",
     "processing": "Processing...",
@@ -879,6 +880,7 @@
     "access_ends_on": "Access Ends On",
     "renews_in": "Renews In",
     "expired": "Expired",
+    "expired_on": "Expired on",
     "next_payment": "Next Payment",
     "period_ends_on": "Period ends on",
     "cancel_subscription": "Cancel subscription",
@@ -918,7 +920,73 @@
     "payment_retry": "operation failed. Please retry payment.",
     "downgrade": "Downgrade Subscription",
     "upgrade": "Upgrade Subscription",
-    "upgrade_preview_failed": "Failed to fetch upgrade preview data, please try again later"
+    "upgrade_preview_failed": "Failed to fetch upgrade preview data, please try again later",
+    "upgrade_failed": "Failed to upgrade subscription. Please try again.",
+    "upgrade_now": "Upgrade now",
+    "see_plans": "See plans",
+    "blocker": {
+      "action_required": "Action Required",
+      "access_suspended": "Your access has been suspended",
+      "time_expired": "Expired",
+      "time_format": "{{hours}}h {{minutes}}m",
+
+      "urgency_title": "Time Remaining",
+      "urgency_message": "You have {{hours}} hours before access is blocked",
+
+      "after_grace_period": "After the grace period expires:",
+      "lose_access": "You'll lose access to all features",
+      "data_safe": "Your data will be safe and you can export it anytime",
+      "cannot_create": "You won't be able to create or edit content",
+
+      "can_continue": "You Can Still Work",
+      "grace_period_info": "You have full access during the grace period. Take your time to renew or export your data.",
+
+      "blocked_title": "Account Access Blocked",
+      "currently_blocked": "What's currently blocked:",
+      "blocked_features": "All premium features",
+      "blocked_editing": "Creating and editing content",
+      "blocked_members": "Managing members and gyms",
+      "blocked_reports": "Viewing reports and analytics",
+
+      "data_safe_title": "Your Data is Safe",
+      "data_safe_message": "All your data is securely stored and will be immediately accessible once you restore your subscription.",
+
+      "manual_renewal_title": "Manual Renewal Required",
+      "manual_renewal_message": "Your subscription requires manual renewal through Chargily. Click below to complete the payment process.",
+
+      "remind_later": "Remind Me Later",
+      "need_help": "Need help? ",
+
+      "action": {
+        "subscribe": "Subscribe Now",
+        "renew": "Renew Subscription",
+        "reactivate": "Reactivate Subscription",
+        "view_plans": "View Plans",
+        "export_data": "Export Data",
+        "contact_support": "Contact Support"
+      },
+
+      "trial_expired": {
+        "warning_title": "Free Trial Ended",
+        "warning_message": "Your free trial has expired. Subscribe now to continue using all features.",
+        "blocker_title": "Access Blocked",
+        "blocker_message": "Your free trial has ended and the grace period has expired. Subscribe now to restore access."
+      },
+
+      "manual_expired": {
+        "warning_title": "Subscription Expired",
+        "warning_message": "Your subscription period has ended. Renew now to maintain access.",
+        "blocker_title": "Access Blocked",
+        "blocker_message": "Your subscription has expired. Renew your subscription to restore access."
+      },
+
+      "cancelled_expired": {
+        "warning_title": "Subscription Cancelled",
+        "warning_message": "Your cancellation has taken effect. Resubscribe to continue.",
+        "blocker_title": "Access Blocked",
+        "blocker_message": "Your subscription was cancelled and has now expired. Resubscribe to restore access."
+      }
+    }
   },
   "plan": {
     "free": {

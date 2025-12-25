@@ -25,7 +25,7 @@ export enum ErrorCode {
   GOOGLE_AUTH_FAILED = "AUTH_014",
   GOOGLE_USER_INFO_FAILED = "AUTH_015",
   INVALID_OTP = "AUTH_016",
-
+  UNAUTHORIZED = "AUTH_017",
   // User errors
   USER_NOT_FOUND_USER = "USER_001",
   EMAIL_ALREADY_IN_USE = "USER_002",
@@ -71,6 +71,8 @@ export enum ErrorCode {
   INVALID_PAYMENT_METHOD = "PAY_007",
   WEBHOOK_SIGNATURE_INVALID = "PAY_008",
   WEBHOOK_PROCESSING_ERROR = "PAY_009",
+  UPGRADE_PREVIEW_FAILED = "PAY_010",
+  UPGRADE_FAILED = "PAY_011",
 }
 
 export const HttpStatusToErrorCode: Record<number, ErrorCode> = {

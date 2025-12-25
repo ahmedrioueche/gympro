@@ -1,8 +1,8 @@
 import { Navigate } from "@tanstack/react-router";
 import React from "react";
-import { OnboardingPage } from "../app/pages/main/onBoarding/OnBoardingPage";
-import { useUserStore } from "../store/user";
-import LoadingPage from "./ui/LoadingPage";
+import { OnboardingPage } from "../../app/pages/main/onBoarding/OnBoardingPage";
+import { useUserStore } from "../../store/user";
+import LoadingPage from "../ui/LoadingPage";
 
 interface OnboardingGuardProps {
   children: React.ReactNode;

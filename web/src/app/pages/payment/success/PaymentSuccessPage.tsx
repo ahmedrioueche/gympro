@@ -2,6 +2,7 @@ import type { UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../../constants/navigation";
 import { useChargilyCheckoutStatus } from "../../../../hooks/queries/useChargilyCheckout";
 import { usePaddleTransactionStatus } from "../../../../hooks/queries/usePaddleCheckout";
 import { useUserStore } from "../../../../store/user";
@@ -41,8 +42,10 @@ function PaymentSuccessPage() {
       return;
     }
 
-    // No payment params, redirect to home
-    redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
+    // No payment params
+    user.role === "owner" || "manager"
+      ? navigate({ to: APP_PAGES.manager.subscription.link })
+      : redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
   }, [
     checkoutId,
     paddleTransactionId,
@@ -55,7 +58,9 @@ function PaymentSuccessPage() {
   const isPending = isChargilyPending || isPaddlePending;
 
   const handleBackToDashboard = () => {
-    redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
+    user.role === "owner" || "manager"
+      ? navigate({ to: APP_PAGES.manager.subscription.link })
+      : redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
   };
 
   return (

@@ -1,10 +1,15 @@
+import { formatPrice } from "@ahmedrioueche/gympro-client";
 import { Check, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import useCurrency from "../../../../../../hooks/useCurrency";
+import { useLanguageStore } from "../../../../../../store/language";
 import { useModalStore } from "../../../../../../store/modal";
 
 export default function UpgradePreviewModal() {
   const { t } = useTranslation();
   const { currentModal, closeModal, upgradePreviewProps } = useModalStore();
+  const { language } = useLanguageStore();
+  const currency = useCurrency();
 
   const immediateTotal =
     upgradePreviewProps?.previewData?.immediate_transaction?.details?.totals
@@ -14,17 +19,17 @@ export default function UpgradePreviewModal() {
     upgradePreviewProps?.previewData?.update_summary?.charge?.total ||
     immediateTotal;
 
-  // Format currency
-  const formatAmount = (amount: string) => {
-    const num = parseFloat(amount);
-    return `$${(num / 100).toFixed(2)}`;
-  };
-
   if (currentModal !== "upgrade_preview") return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-surface rounded-2xl shadow-2xl max-w-lg w-full border border-border overflow-hidden animate-in fade-in zoom-in duration-200">
+    <div
+      onClick={closeModal}
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-surface rounded-2xl shadow-2xl max-w-lg w-full border border-border overflow-hidden animate-in fade-in zoom-in duration-200"
+      >
         {/* Header */}
         <div className="bg-gradient-to-r from-primary to-secondary p-6">
           <div className="flex items-start justify-between">
@@ -101,7 +106,7 @@ export default function UpgradePreviewModal() {
                 {t("upgrade.prorated_charge", "Prorated Charge")}
               </span>
               <span className="font-medium text-text-primary">
-                {formatAmount(immediateTotal)}
+                {formatPrice(Number(immediateTotal), currency, language)}
               </span>
             </div>
 
@@ -111,7 +116,7 @@ export default function UpgradePreviewModal() {
                   {t("upgrade.credit_applied", "Credit Applied")}
                 </span>
                 <span className="font-medium text-emerald-600">
-                  -{formatAmount(credit)}
+                  - {formatPrice(Number(credit), currency, language)}
                 </span>
               </div>
             )}
@@ -122,7 +127,7 @@ export default function UpgradePreviewModal() {
                   {t("upgrade.total_due_now", "Total Due Now")}
                 </span>
                 <span className="text-2xl font-bold text-primary">
-                  {formatAmount(chargeTotal)}
+                  {formatPrice(Number(chargeTotal), currency, language)}
                 </span>
               </div>
             </div>

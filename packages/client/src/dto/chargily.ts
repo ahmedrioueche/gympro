@@ -41,3 +41,46 @@ export interface ChargilyCheckoutStatus {
   updated_at: number;
   checkout_url: string;
 }
+
+// Upgrade preview types
+export interface ChargilyUpgradePreviewData {
+  immediate_transaction?: {
+    details: {
+      totals: {
+        total: string;
+        subtotal: string;
+        credit: string;
+        balance: string;
+      };
+      line_items: Array<{
+        totals: {
+          total: string;
+          subtotal: string;
+        };
+        proration?: {
+          rate: string;
+        };
+      }>;
+    };
+  };
+  credit?: string;
+  update_summary?: {
+    credit: {
+      used: string;
+    };
+    charge: {
+      total: string;
+    };
+  };
+  next_transaction?: any;
+}
+
+export interface ChargilyUpgradePreviewResponse {
+  preview: ChargilyUpgradePreviewData;
+  target_plan: {
+    planId: string;
+    name: string;
+    level: string;
+  };
+  billing_cycle: string;
+}

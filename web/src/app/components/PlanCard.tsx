@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "../../context/ThemeContext";
 import { useSubscriptionStatus } from "../../hooks/useSubscriptionStatus";
 import { useLanguageStore } from "../../store/language";
-import { getPlanChangeType } from "../../utils/subscription.util";
+import { getPlanChangeType } from "../pages/main/manager/subscription/utils/subscription.util";
 
 interface PlanCardProps {
   plan: AppPlan;

@@ -61,9 +61,9 @@ export const useSubscriptionPaddleCheckout = (options?: UseCheckoutOptions) => {
         options?.onSuccess?.();
       } else {
         options?.onError?.(new Error(response.message || "Checkout failed"));
+        const msg = getMessage(response, t);
+        showStatusToast(msg, toast);
       }
-      const msg = getMessage(response, t);
-      showStatusToast(msg, toast);
     },
     onError: (error: any) => {
       options?.onError?.(error);

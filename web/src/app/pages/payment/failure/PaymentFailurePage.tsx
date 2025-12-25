@@ -2,6 +2,7 @@ import type { UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../../constants/navigation";
 import { useUserStore } from "../../../../store/user";
 import { handleContactSupport } from "../../../../utils/contact";
 import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
@@ -18,13 +19,17 @@ function PaymentFailurePage() {
   useEffect(() => {
     // If no payment identifiers, redirect to home
     if (!checkoutId && !paddleTransactionId) {
-      redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
+      user.role === "owner" || "manager"
+        ? navigate({ to: APP_PAGES.manager.subscription.link })
+        : redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
       return;
     }
   }, [checkoutId, paddleTransactionId, navigate, user.role]);
 
   const handleBackToDashboard = () => {
-    redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
+    user.role === "owner" || "manager"
+      ? navigate({ to: APP_PAGES.manager.subscription.link })
+      : redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
   };
 
   // Determine payment provider

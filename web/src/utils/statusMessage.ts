@@ -38,6 +38,7 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.GOOGLE_USER_INFO_FAILED]:
     "status.error.auth.google_user_info_failed",
   [ErrorCode.INVALID_OTP]: "status.error.auth.invalid_otp",
+  [ErrorCode.UNAUTHORIZED]: "status.error.auth.unauthorized",
 
   // User errors
   [ErrorCode.USER_NOT_FOUND_USER]: "status.error.user.not_found",
@@ -101,6 +102,9 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
     "status.error.payment.webhook_signature_invalid",
   [ErrorCode.WEBHOOK_PROCESSING_ERROR]:
     "status.error.payment.webhook_processing_error",
+  [ErrorCode.UPGRADE_PREVIEW_FAILED]:
+    "status.error.payment.upgrade_preview_failed",
+  [ErrorCode.UPGRADE_FAILED]: "status.error.payment.upgrade_failed",
 };
 
 /**
