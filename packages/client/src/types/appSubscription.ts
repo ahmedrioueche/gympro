@@ -171,7 +171,7 @@ export interface AppSubscriptionHistory extends AuditInfo {
   paymentMethod?: PaymentMethod;
 
   // Additional context
-  notes?: string;
+  details?: string;
 }
 
 export type WarningSeverity =

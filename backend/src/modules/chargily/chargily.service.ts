@@ -1035,7 +1035,14 @@ export class ChargilyService {
       }
 
       // Renew subscription with new period dates
-      await this.appSubscriptionService.renewSubscription(userId, billingCycle);
+      await this.appSubscriptionService.renewSubscription(
+        userId,
+        billingCycle,
+        {
+          providerTransactionId: checkoutData.id,
+          paymentMethod: 'edahabia', // Default for now, as it's the main method for Chargily V2
+        },
+      );
 
       this.logger.log(`✅ [WEBHOOK] Subscription renewed for user ${userId}`);
     } catch (error) {
@@ -1068,6 +1075,13 @@ export class ChargilyService {
       billingCycle || 'monthly',
       'DZD',
       'chargily',
+      undefined, // No paddle sub ID
+      undefined, // No paddle cust ID
+      false, // Not trialing
+      {
+        providerTransactionId: checkoutData.id,
+        paymentMethod: 'edahabia',
+      },
     );
 
     this.logger.log(

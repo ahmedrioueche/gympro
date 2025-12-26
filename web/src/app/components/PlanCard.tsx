@@ -17,7 +17,7 @@ interface PlanCardProps {
   currency: SupportedCurrency;
   isCurrentPlan: boolean;
   billingCycle: AppSubscriptionBillingCycle;
-  onSelect: (planId: string) => void;
+  onSelect: () => void;
   currentSubscription?: GetSubscriptionDto | null;
   disabled?: boolean;
 }
@@ -92,7 +92,7 @@ export default function PlanCard({
   const handleClick = () => {
     if (disabled || isCurrentPlan || loading || !availability.available) return;
     setLoading(true);
-    onSelect(plan._id);
+    onSelect();
     setTimeout(() => setLoading(false), 2000);
   };
 

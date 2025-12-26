@@ -1,6 +1,6 @@
 {
   "name": "@ahmedrioueche/gympro-client",
-  "version": "0.1.72",
+  "version": "0.1.96",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

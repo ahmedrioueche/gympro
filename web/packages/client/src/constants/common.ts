@@ -1,3 +1,2 @@
 export const DEFAULT_TRIAL_DAYS_NUMBER = 30;
 export const DEFAULT_COUNTRY_CODE = "+1";
-export const DEFAULT_APP_PAYMENT_PROVIDER = "paddle";

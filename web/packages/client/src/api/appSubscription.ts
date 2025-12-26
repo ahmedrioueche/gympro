@@ -1,6 +1,10 @@
 import { GetSubscriptionDto } from "../dto/appSubscription";
 import { ApiResponse } from "../types/api";
-import { AppPlan, AppSubscriptionBillingCycle } from "../types/appSubscription";
+import {
+  AppPlan,
+  AppSubscriptionBillingCycle,
+  BlockerModalConfig,
+} from "../types/appSubscription";
 import { apiClient, handleApiError } from "./helper";
 
 export const appSubscriptionsApi = {
@@ -107,6 +111,17 @@ export const appSubscriptionsApi = {
     try {
       const res = await apiClient.post<ApiResponse<GetSubscriptionDto>>(
         `/app-subscriptions/cancel-pending-change`
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  getBlockConfig: async (): Promise<ApiResponse<BlockerModalConfig>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<BlockerModalConfig>>(
+        "/app-subscriptions/blocker-config"
       );
       return res.data;
     } catch (error) {

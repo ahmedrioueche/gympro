@@ -73,6 +73,10 @@ export enum ErrorCode {
   WEBHOOK_PROCESSING_ERROR = "PAY_009",
   UPGRADE_PREVIEW_FAILED = "PAY_010",
   UPGRADE_FAILED = "PAY_011",
+  PAYMENT_FETCH_ERROR = "PAY_012",
+  PAYMENT_NOT_FOUND = "PAY_013",
+  PAYMENT_UPDATE_ERROR = "PAY_014",
+  PAYMENT_CANCEL_ERROR = "PAY_015",
 }
 
 export const HttpStatusToErrorCode: Record<number, ErrorCode> = {

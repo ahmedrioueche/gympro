@@ -11,6 +11,9 @@ import {
   AppSubscriptionModel,
   AppSubscriptionSchema,
 } from './appBilling.schema';
+import { AppPaymentController } from './payment/appPayment.controller';
+import { AppPaymentModel, AppPaymentSchema } from './payment/appPayment.schema';
+import { AppPaymentService } from './payment/appPayment.service';
 import { AppPlansController } from './plan/plan.controller';
 import { AppPlansService } from './plan/plan.service';
 import { SubscriptionBlockerService } from './subscription/subscription-blocker.service';
@@ -28,15 +31,21 @@ import { AppSubscriptionService } from './subscription/subscription.service';
         name: AppSubscriptionHistoryModel.name,
         schema: AppSubscriptionHistorySchema,
       },
+      { name: AppPaymentModel.name, schema: AppPaymentSchema },
     ]),
   ],
-  controllers: [AppPlansController, AppSubscriptionController],
+  controllers: [
+    AppPlansController,
+    AppSubscriptionController,
+    AppPaymentController,
+  ],
   providers: [
     AppPlansService,
     AppSubscriptionService,
+    AppPaymentService,
     NotificationService,
     SubscriptionBlockerService,
   ],
-  exports: [AppPlansService, AppSubscriptionService],
+  exports: [AppPlansService, AppSubscriptionService, AppPaymentService],
 })
 export class AppBillingModule {}

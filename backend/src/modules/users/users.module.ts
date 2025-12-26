@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GeolocationService } from 'src/common/services/geolocation.service';
 import { User, UserSchema } from '../../common/schemas/user.schema';
+import { AppBillingModule } from '../appBilling/appBilling.module';
 import {
   AppPlanModel,
   AppPlanSchema,
@@ -51,6 +52,7 @@ import { UsersService } from './users.service';
     ]),
 
     GymModule,
+    forwardRef(() => AppBillingModule),
   ],
   controllers: [UsersController],
   providers: [

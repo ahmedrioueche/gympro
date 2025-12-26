@@ -41,6 +41,29 @@ export type AppPlanPricing = {
   };
 };
 
+export const APP_WARNING_EMAIL_TYPES = [
+  "trial_7d",
+  "trial_3d",
+  "trial_1d",
+  "trial_0d",
+  "trial_expired",
+  "renewal_7d",
+  "renewal_3d",
+  "renewal_1d",
+  "renewal_0d",
+  "renewal_expired",
+  "grace_started",
+  "grace_2d",
+  "grace_expired",
+  "cancelled_7d",
+  "cancelled_3d",
+  "cancelled_1d",
+  "cancelled_0d",
+  "payment_failed",
+] as const;
+
+export type WarningEmailType = (typeof APP_WARNING_EMAIL_TYPES)[number];
+
 export interface AppPlan extends AuditInfo {
   _id: string;
   planId: string; //custom stable id
@@ -54,7 +77,6 @@ export interface AppPlan extends AuditInfo {
   paddlePriceIds?: {
     monthly?: string;
     yearly?: string;
-    oneTime?: string;
   };
   trialDays?: number; // only for subscription plans
 
@@ -71,6 +93,7 @@ export interface AppPlan extends AuditInfo {
 export const APP_SUBSCRIPTION_AUTO_RENEW_TYPES = ["auto", "manual"] as const;
 
 export type AutoRenewType = (typeof APP_SUBSCRIPTION_AUTO_RENEW_TYPES)[number];
+
 export interface AppSubscription extends AuditInfo {
   _id: string;
   userId: string;
@@ -101,6 +124,18 @@ export interface AppSubscription extends AuditInfo {
     members?: number; // +100 members
     gyms?: number; // +1 gym
     gems?: number; // +200 gems
+  }[];
+
+  // ===== Grace Period Tracking =====
+  softGracePeriod?: {
+    startDate: string | Date; // When first warning shown
+    expiresAt: string | Date; // When hard block kicks in (e.g., +6 hours)
+  };
+
+  // ===== Warning/Email Tracking =====
+  warnings?: {
+    type: WarningEmailType;
+    sentAt: string | Date;
   }[];
 
   // Cancellation tracking
@@ -136,5 +171,55 @@ export interface AppSubscriptionHistory extends AuditInfo {
   paymentMethod?: PaymentMethod;
 
   // Additional context
-  notes?: string;
+  details?: string;
+}
+
+export type WarningSeverity =
+  | "info"
+  | "notice"
+  | "warning"
+  | "urgent"
+  | "critical"
+  | "blocker";
+
+export type WarningTiming =
+  | "days_7" // 7 days before
+  | "days_3" // 3 days before
+  | "days_1" // 1 day before
+  | "hours_6" // 6 hours before
+  | "expired" // Already expired (grace period)
+  | "post_grace"; // After grace period
+
+export interface BlockerModalConfig {
+  show: boolean;
+  type: "warning" | "blocker";
+
+  reason:
+    | "trial_expiring"
+    | "trial_expired"
+    | "manual_renewal_due"
+    | "manual_expired"
+    | "cancelled_ending"
+    | "cancelled_expired";
+
+  // Timing info
+  daysRemaining?: number;
+  expiryDate?: Date;
+  softGraceExpiresAt?: Date;
+  hoursUntilBlock?: number;
+  severity: WarningSeverity;
+  timing?: WarningTiming;
+  // UI control
+  canDismiss: boolean;
+
+  // Actions
+  primaryAction: "subscribe" | "renew" | "reactivate";
+  secondaryActions?: ("view_plans" | "contact_support" | "export_data")[];
+
+  // Content - NOW TRANSLATION KEYS
+  titleKey: string; // e.g., 'subscription.blocker.trial_expired.title'
+  messageKey: string; // e.g., 'subscription.blocker.trial_expired.message'
+  urgencyMessageKey?: string; // e.g., 'subscription.blocker.urgency_message'
+
+  showCountdown: boolean;
 }

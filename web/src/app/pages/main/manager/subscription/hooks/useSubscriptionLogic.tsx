@@ -230,7 +230,9 @@ export function useSubscriptionLogic({
     chargilyCheckoutMutation.isPending ||
     paddleCheckoutMutation.isPending ||
     applyPaddleUpgradeMutation.isPending ||
-    previewPaddleUpgradeMutation.isPending;
+    previewPaddleUpgradeMutation.isPending ||
+    applyChargilyUpgradeMutation.isPending ||
+    previewChargilyUpgradeMutation.isPending;
 
   return {
     handleSelectPlan,

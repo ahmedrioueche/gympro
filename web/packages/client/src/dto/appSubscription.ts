@@ -1,9 +1,11 @@
 import {
+  AppPaymentProvider,
   AppPlanLevel,
   AppPlanPricing,
   AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
   AutoRenewType,
+  WarningEmailType,
 } from "../types/appSubscription";
 import { PaymentMethod } from "../types/common";
 
@@ -105,9 +107,11 @@ export interface GetSubscriptionDto {
   lastPaymentDate?: string | Date;
   nextPaymentDate?: string | Date;
 
-  provider?: "chargily" | "paddle";
+  provider?: AppPaymentProvider;
   paddleSubscriptionId?: string;
   paddleCustomerId?: string;
+  chargilyCheckoutId?: string;
+  chargilyInvoiceId?: string;
 
   trial?: {
     startDate: string | Date;
@@ -120,6 +124,18 @@ export interface GetSubscriptionDto {
     members?: number;
     gyms?: number;
     gems?: number;
+  }[];
+
+  // ===== Grace Period Tracking =====
+  softGracePeriod?: {
+    startDate: string | Date; // When first warning shown
+    expiresAt: string | Date; // When hard block kicks in (e.g., +6 hours)
+  };
+
+  // ===== Warning/Email Tracking =====
+  warnings?: {
+    type: WarningEmailType;
+    sentAt: string | Date;
   }[];
 
   cancelledAt?: string;

@@ -1,4 +1,4 @@
-import { SupportedCurrency, PaymentMethod } from "../types/common";
+import { PaymentMethod, SupportedCurrency } from "../types/common";
 
 export interface CompleteOnboardingDto {
   role: string;
@@ -32,4 +32,18 @@ export interface CreateMemberDto {
   subscriptionTypeId?: string;
   subscriptionStartDate?: string;
   paymentMethod?: PaymentMethod;
+}
+
+export interface EditUserDto {
+  fullName?: string;
+  username?: string;
+  email?: string;
+  phoneNumber?: string;
+  age?: string;
+  gender?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  profileImageUrl?: string;
 }

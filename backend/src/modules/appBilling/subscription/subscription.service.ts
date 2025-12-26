@@ -44,6 +44,12 @@ export class AppSubscriptionService {
     private readonly notificationService: NotificationService,
     @Inject(forwardRef(() => PaddleService))
     private readonly paddleService: PaddleService,
+    @Inject(
+      forwardRef(
+        () => require('../payment/appPayment.service').AppPaymentService,
+      ),
+    )
+    private readonly paymentService: any,
   ) {}
 
   async getMySubscription(userId: string) {
@@ -234,6 +240,11 @@ export class AppSubscriptionService {
     paddleSubscriptionId?: string,
     paddleCustomerId?: string,
     trialing?: boolean,
+    paymentMetadata?: {
+      providerTransactionId?: string;
+      providerCustomerId?: string;
+      paymentMethod?: string;
+    },
   ) {
     const { user, plan } = await this.loadUserAndPlan(userId, planId);
 
@@ -270,6 +281,7 @@ export class AppSubscriptionService {
       isUpgrade,
       currency,
       prorationCredit,
+      paymentMetadata,
     );
 
     return saved;
@@ -282,6 +294,11 @@ export class AppSubscriptionService {
     isUpgrade: boolean,
     currency: SupportedCurrency,
     prorationCredit: number,
+    paymentMetadata?: {
+      providerTransactionId?: string;
+      providerCustomerId?: string;
+      paymentMethod?: string;
+    },
   ) {
     const now = new Date();
     const currencyPricing = plan.pricing[currency] || {};
@@ -327,6 +344,44 @@ export class AppSubscriptionService {
 
     const history = new this.subscriptionHistoryModel(historyData);
     await history.save();
+
+    // ✅ Record payment if not a trial and amount was paid
+    if (
+      plan.level !== 'free' &&
+      subscription.status !== 'trialing' &&
+      amountPaid > 0 &&
+      this.paymentService
+    ) {
+      try {
+        await this.paymentService.createPayment({
+          userId: user._id.toString(),
+          subscriptionId: subscription._id.toString(),
+          planId: plan.planId,
+          amount: amountPaid,
+          currency: currency,
+          status: 'completed',
+          provider: subscription.provider || 'paddle',
+          providerTransactionId:
+            paymentMetadata?.providerTransactionId ||
+            `sub_${subscription._id}_${Date.now()}`,
+          providerCustomerId:
+            paymentMetadata?.providerCustomerId ||
+            subscription.paddleCustomerId ||
+            subscription.chargilyCheckoutId,
+          paymentMethod: paymentMetadata?.paymentMethod,
+          description: isUpgrade
+            ? `Upgrade to ${plan.name} (${subscription.billingCycle})`
+            : `Subscription to ${plan.name} (${subscription.billingCycle})`,
+          paidAt: now,
+        });
+        this.logger.log(
+          `Payment record created for subscription ${subscription._id}`,
+        );
+      } catch (error) {
+        this.logger.error('Failed to create payment record', error);
+        // Don't throw - payment recording is supplementary
+      }
+    }
 
     return subscription;
   }
@@ -1024,6 +1079,11 @@ export class AppSubscriptionService {
   async renewSubscription(
     userId: string,
     billingCycle?: AppSubscriptionBillingCycle,
+    paymentMetadata?: {
+      providerTransactionId?: string;
+      providerCustomerId?: string;
+      paymentMethod?: string;
+    },
   ): Promise<AppSubscriptionModel> {
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -1120,6 +1180,40 @@ export class AppSubscriptionService {
       createdAt: new Date(),
     });
     await history.save();
+
+    // ✅ Record Payment for Renewal
+    if (plan && plan.level !== 'free' && this.paymentService) {
+      const currency = 'DZD'; // Default for manual renewals
+      const pricing = plan.pricing?.[currency];
+      const amountPaid = this.calculatePlanCost(newBillingCycle, pricing || {});
+
+      try {
+        await this.paymentService.createPayment({
+          userId: user._id.toString(),
+          subscriptionId: subscription._id.toString(),
+          planId: plan.planId,
+          amount: amountPaid,
+          currency: currency,
+          status: 'completed',
+          provider: subscription.provider || 'chargily',
+          providerTransactionId:
+            paymentMetadata?.providerTransactionId ||
+            `renew_${subscription._id}_${Date.now()}`,
+          providerCustomerId:
+            paymentMetadata?.providerCustomerId ||
+            subscription.paddleCustomerId ||
+            subscription.chargilyCheckoutId,
+          paymentMethod: paymentMetadata?.paymentMethod,
+          description: `Subscription Renewal for ${plan.name} (${newBillingCycle})`,
+          paidAt: now,
+        });
+        this.logger.log(
+          `Payment record created for renewal of subscription ${subscription._id}`,
+        );
+      } catch (error) {
+        this.logger.error('Failed to create payment record for renewal', error);
+      }
+    }
 
     return subscription;
   }

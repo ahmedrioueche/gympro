@@ -105,6 +105,10 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.UPGRADE_PREVIEW_FAILED]:
     "status.error.payment.upgrade_preview_failed",
   [ErrorCode.UPGRADE_FAILED]: "status.error.payment.upgrade_failed",
+  [ErrorCode.PAYMENT_FETCH_ERROR]: "status.error.payment.fetch_error",
+  [ErrorCode.PAYMENT_NOT_FOUND]: "status.error.payment.not_found",
+  [ErrorCode.PAYMENT_UPDATE_ERROR]: "status.error.payment.update_error",
+  [ErrorCode.PAYMENT_CANCEL_ERROR]: "status.error.payment.cancel_error",
 };
 
 /**

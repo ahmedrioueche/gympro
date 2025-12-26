@@ -230,7 +230,11 @@
         "payment_processing_error": "An error occurred while processing your payment. Please try again later.",
         "invalid_payment_method": "This payment method is not supported. Please use EDAHABIA or CIB.",
         "webhook_signature_invalid": "Payment verification failed. Please contact support if you were charged.",
-        "webhook_processing_error": "Payment processing error. Please contact support if you were charged."
+        "webhook_processing_error": "Payment processing error. Please contact support if you were charged.",
+        "fetch_error": "Failed to fetch payment",
+        "not_found": "Payment not found",
+        "update_error": "Failed to update payment",
+        "cancel_error": "Failed to cancel payment"
       }
     }
   },
@@ -1156,8 +1160,60 @@
       "suggestion_contact_bank": "Contact your bank if the issue persists",
       "try_again": "Try Again",
       "back_to_dashboard": "Back to Dashboard",
-      "need_help": "Need help with your payment?",
-      "contact_support": "Contact Support"
+      "need_help": "Need help with your payment?"
+    }
+  },
+  "payments": {
+    "title": "Payment History",
+    "subtitle": "View and manage your subscription payments",
+    "stats": {
+      "total": "Total Payments",
+      "revenue": "Total Revenue",
+      "thisMonth": "This Month",
+      "successRate": "Success Rate"
+    },
+    "table": {
+      "transactionId": "Transaction ID",
+      "date": "Date",
+      "plan": "Plan",
+      "amount": "Amount",
+      "status": "Status",
+      "provider": "Provider",
+      "actions": "Actions"
+    },
+    "status": {
+      "pending": "Pending",
+      "completed": "Completed",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "provider": {
+      "paddle": "Paddle",
+      "chargily": "Chargily"
+    },
+    "filters": {
+      "search": "Search by transaction ID...",
+      "status": "Filter by Status",
+      "provider": "Filter by Provider",
+      "dateRange": "Date Range",
+      "all": "All"
+    },
+    "details": {
+      "title": "Payment Details",
+      "transactionInfo": "Transaction Information",
+      "subscriptionInfo": "Subscription Information",
+      "paymentMethod": "Payment Method",
+      "paidAt": "Paid At",
+      "refundedAt": "Refunded At"
+    },
+    "empty": {
+      "noPayments": "No payments yet",
+      "noPaymentsDesc": "Your payment history will appear here once you make your first subscription payment",
+      "noResults": "No payments match your filters",
+      "noResultsDesc": "Try adjusting your search or filter criteria"
+    },
+    "pagination": {
+      "showing": "Showing {{start}}-{{end}} of {{total}}"
     }
   }
 }

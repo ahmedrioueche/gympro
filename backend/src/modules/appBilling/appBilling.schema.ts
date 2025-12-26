@@ -353,7 +353,7 @@ export class AppSubscriptionHistoryModel extends Document {
   wasTrial?: boolean;
 
   @Prop()
-  notes?: string;
+  details?: string;
 
   @Prop({ required: true })
   createdAt: Date;
