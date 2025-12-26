@@ -12,6 +12,10 @@ const UpgradePreviewModal = lazy(
     )
 );
 
+const EditUserProfileModal = lazy(
+  () => import("./app/components/modals/EditUserProfileModal")
+);
+
 const App = () => {
   const { isDark } = useTheme();
   const { clearGym } = useGymStore();
@@ -31,6 +35,7 @@ const App = () => {
       <Suspense fallback={null}>
         <ConfirmModal />
         <UpgradePreviewModal />
+        <EditUserProfileModal />
       </Suspense>
     </div>
   );

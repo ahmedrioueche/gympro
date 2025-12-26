@@ -443,8 +443,8 @@
   },
 
   "profile": {
-    "defaultName": "John Doe",
-    "defaultEmail": "john@example.com",
+    "defaultName": "User",
+    "defaultEmail": "user@example.com",
     "menu": {
       "profile": {
         "label": "Profile",
@@ -455,10 +455,41 @@
         "description": "Manage your preferences"
       },
       "memberships": {
-        "label": "My Memberships",
+        "label": "Memberships",
         "description": "View your gym memberships"
       },
       "logout": "Logout"
+    },
+    "edit": {
+      "title": "Edit Profile",
+      "subtitle": "Update your personal information",
+      "personal_info": "Personal Information",
+      "contact_info": "Contact Information",
+      "address_info": "Address Information",
+      "full_name": "Full Name",
+      "full_name_placeholder": "Enter your full name",
+      "username": "Username",
+      "username_placeholder": "Enter your username",
+      "age": "Age",
+      "age_placeholder": "Enter your age",
+      "gender": "Gender",
+      "select_gender": "Select gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "email": "Email",
+      "email_placeholder": "Enter your email",
+      "phone": "Phone Number",
+      "phone_placeholder": "Enter your phone number",
+      "address": "Address",
+      "address_placeholder": "Enter your address",
+      "city": "City",
+      "city_placeholder": "Enter city",
+      "state": "State",
+      "state_placeholder": "Enter state",
+      "country": "Country",
+      "country_placeholder": "Enter country",
+      "save_changes": "Save Changes"
     }
   },
   "notifications": {
@@ -483,6 +514,11 @@
   },
   "home": {
     "manager": {
+      "title": "Dashboard",
+      "subtitle": "Welcome back! Here's your business overview",
+      "header": {
+        "settings": "Business Settings"
+      },
       "profile": {
         "title": "Manager Profile",
         "businessName": "Business Name",
@@ -493,7 +529,24 @@
           "active": "Active",
           "trial": "Trial",
           "premium": "Premium",
-          "basic": "Basic"
+          "basic": "Basic",
+          "free": "Free",
+          "freeTrial": "Free Trial"
+        }
+      },
+      "businessOverview": {
+        "title": "Manager Profile",
+        "businessName": "Business Name",
+        "accountStatus": "Account Status",
+        "lastLogin": "Last Login",
+        "editProfile": "Edit Profile",
+        "status": {
+          "active": "Active",
+          "trial": "Trial",
+          "premium": "Premium",
+          "basic": "Basic",
+          "free": "Free",
+          "freeTrial": "Free Trial"
         }
       },
       "businessOverview": {
@@ -504,7 +557,10 @@
         "totalStaff": "Total Staff",
         "monthlyRevenue": "Monthly Revenue",
         "outstandingPayments": "Outstanding Payments",
-        "issues": "Issues"
+        "issues": "Issues",
+        "noDataTitle": "No Business Data Yet",
+        "noDataDescription": "Start by creating your first gym to begin tracking your business metrics",
+        "createFirstGym": "Create Your First Gym"
       },
       "quickActions": {
         "title": "Quick Actions",
@@ -518,6 +574,8 @@
         "title": "Alerts & Notifications",
         "viewAll": "View all notifications",
         "noAlerts": "No alerts at the moment",
+        "noAlertsTitle": "All Clear!",
+        "noAlertsDescription": "You have no alerts or notifications at this time",
         "types": {
           "paymentIssue": "Payment Issue",
           "contractExpiring": "Contract Expiring",
@@ -533,7 +591,10 @@
         "revenueTrend": "Revenue Trend",
         "viewDetails": "View Details",
         "noGym": "No gyms yet",
-        "createFirst": "Create your first gym to get started"
+        "createFirst": "Create your first gym to get started",
+        "noGymTitle": "No Gyms Yet",
+        "noGymDescription": "Create your first gym to start managing members and tracking performance",
+        "createGym": "Create New Gym"
       }
     }
   },
@@ -760,7 +821,8 @@
       "next": "Next Step",
       "submit": "Create Member",
       "submitting": "Creating...",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "saving": "Saving..."
     },
 
     "success": {
@@ -924,6 +986,7 @@
     "upgrade_failed": "Failed to upgrade subscription. Please try again.",
     "upgrade_now": "Upgrade now",
     "see_plans": "See plans",
+    "access_ends_in": "Access ends in",
     "blocker": {
       "action_required": "Action Required",
       "access_suspended": "Your access has been suspended",

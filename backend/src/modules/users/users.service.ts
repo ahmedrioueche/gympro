@@ -2,6 +2,7 @@ import {
   DEFAULT_CURRENCY,
   DEFAULT_REGION,
   DEFAULT_TRIAL_DAYS_NUMBER,
+  EditUserDto,
   ErrorCode,
   SupportedCurrency,
   UserRole,
@@ -187,7 +188,7 @@ export class UsersService {
     return this.sanitizeUser(user);
   }
 
-  async updateProfile(id: string, profileData: Partial<User['profile']>) {
+  async updateProfile(id: string, profileData: EditUserDto) {
     const user = await this.userModel.findById(id);
 
     if (!user) {

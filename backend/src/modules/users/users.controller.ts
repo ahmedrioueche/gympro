@@ -1,4 +1,9 @@
-import { ErrorCode, UserRole } from '@ahmedrioueche/gympro-client';
+import {
+  apiResponse,
+  EditUserDto,
+  ErrorCode,
+  UserRole,
+} from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -35,12 +40,13 @@ export class UsersController {
     @Query('role') role?: UserRole,
     @Query('search') search?: string,
   ) {
-    return this.usersService.findAll(
+    const result = await this.usersService.findAll(
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 10,
       role,
       search,
     );
+    return apiResponse(true, undefined, result, 'Users retrieved successfully');
   }
 
   @Get(':id')
@@ -61,21 +67,24 @@ export class UsersController {
       }
     }
 
-    return this.usersService.findById(id);
+    const result = await this.usersService.findById(id);
+    return apiResponse(true, undefined, result, 'User retrieved successfully');
   }
 
   @Get('email/:email')
   @UseGuards(PermissionsGuard)
   @RequirePermission('canManageMembers')
   async findByEmail(@Param('email') email: string) {
-    return this.usersService.findByEmail(email);
+    const result = await this.usersService.findByEmail(email);
+    return apiResponse(true, undefined, result, 'User retrieved successfully');
   }
 
   @Get('phone/:phone')
   @UseGuards(PermissionsGuard)
   @RequirePermission('canManageMembers')
   async findByPhone(@Param('phone') phone: string) {
-    return this.usersService.findByPhone(phone);
+    const result = await this.usersService.findByPhone(phone);
+    return apiResponse(true, undefined, result, 'User retrieved successfully');
   }
 
   @Put(':id')
@@ -86,13 +95,14 @@ export class UsersController {
     @Body() updateData: any,
     @Req() req: any,
   ) {
-    return this.usersService.update(id, updateData);
+    const result = await this.usersService.update(id, updateData);
+    return apiResponse(true, undefined, result, 'User updated successfully');
   }
 
   @Patch(':id/profile')
   async updateProfile(
     @Param('id') id: string,
-    @Body() profileData: any,
+    @Body() profileData: EditUserDto,
     @Req() req: any,
   ) {
     const currentUserId = req.user?.sub;
@@ -111,7 +121,8 @@ export class UsersController {
       }
     }
 
-    return this.usersService.updateProfile(id, profileData);
+    const result = await this.usersService.updateProfile(id, profileData);
+    return apiResponse(true, undefined, result, 'Profile updated successfully');
   }
 
   @Patch(':id/role')
@@ -123,14 +134,25 @@ export class UsersController {
     @Req() req: any,
   ) {
     const currentUserId = req.user?.sub;
-    return this.usersService.updateRole(id, newRole, currentUserId);
+    const result = await this.usersService.updateRole(
+      id,
+      newRole,
+      currentUserId,
+    );
+    return apiResponse(
+      true,
+      undefined,
+      result,
+      'User role updated successfully',
+    );
   }
 
   @Patch(':id/activate')
   @UseGuards(PermissionsGuard)
   @RequirePermission('canManageMembers')
   async activate(@Param('id') id: string) {
-    return this.usersService.activate(id);
+    const result = await this.usersService.activate(id);
+    return apiResponse(true, undefined, result, 'User activated successfully');
   }
 
   @Patch(':id/deactivate')
@@ -138,7 +160,13 @@ export class UsersController {
   @RequirePermission('canManageMembers')
   async deactivate(@Param('id') id: string, @Req() req: any) {
     const currentUserId = req.user?.sub;
-    return this.usersService.deactivate(id, currentUserId);
+    const result = await this.usersService.deactivate(id, currentUserId);
+    return apiResponse(
+      true,
+      undefined,
+      result,
+      'User deactivated successfully',
+    );
   }
 
   @Delete(':id')
@@ -146,17 +174,28 @@ export class UsersController {
   @Roles(UserRole.Owner)
   async delete(@Param('id') id: string, @Req() req: any) {
     const currentUserId = req.user?.sub;
-    return this.usersService.delete(id, currentUserId);
+    const result = await this.usersService.delete(id, currentUserId);
+    return apiResponse(true, undefined, result, 'User deleted successfully');
   }
 
   @Post('onboarding/detect-region')
   async detectRegion(@Req() req: any) {
-    return this.usersService.detectRegion(req);
+    const result = await this.usersService.detectRegion(req);
+    return apiResponse(true, undefined, result, 'Region detected successfully');
   }
 
   @Post('onboarding/complete')
   async completeOnboarding(@Body() data: any, @Req() req: any) {
     const currentUserId = req.user?.sub;
-    return this.usersService.completeOnboarding(currentUserId, data);
+    const result = await this.usersService.completeOnboarding(
+      currentUserId,
+      data,
+    );
+    return apiResponse(
+      true,
+      undefined,
+      result,
+      'Onboarding completed successfully',
+    );
   }
 }

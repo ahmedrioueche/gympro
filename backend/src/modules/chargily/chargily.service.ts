@@ -766,21 +766,26 @@ export class ChargilyService {
       );
 
       // Get existing subscription
-      const subscription =
+      let subscription =
         await this.appSubscriptionService.getMySubscription(userId);
 
       if (!subscription) {
         throw new BadRequestException('No active subscription found to renew');
       }
 
-      // Check if subscription can be renewed
+      // If subscription is cancelled or set to cancel at period end, reactivate it
       if (
         subscription.status === 'cancelled' ||
         subscription.cancelAtPeriodEnd
       ) {
-        throw new BadRequestException(
-          'Cannot renew a cancelled subscription. Please reactivate first.',
+        this.logger.log(
+          `♻️ [RENEWAL] Reactivating cancelled subscription for user=${userId}`,
         );
+        subscription =
+          await this.appSubscriptionService.reactivateSubscription(userId);
+        if (!subscription) {
+          throw new BadRequestException('Failed to reactivate subscription');
+        }
       }
 
       // For Paddle subscriptions, they auto-renew
@@ -797,7 +802,6 @@ export class ChargilyService {
       const plan = await this.appPlansService.getPlanByPlanId(
         subscription.planId,
       );
-
       if (!plan) {
         throw new BadRequestException('Subscription plan not found');
       }
@@ -808,7 +812,6 @@ export class ChargilyService {
 
       // Calculate renewal price
       const price = this.getPlanAmount(plan, renewalBillingCycle, 'DZD');
-
       if (!price) {
         throw new BadRequestException(
           `Price not available for ${renewalBillingCycle} billing cycle`,

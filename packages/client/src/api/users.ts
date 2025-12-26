@@ -1,4 +1,8 @@
-import { CompleteOnboardingDto, RegionDetectionResult } from "../dto/users";
+import {
+  CompleteOnboardingDto,
+  EditUserDto,
+  RegionDetectionResult,
+} from "../dto/users";
 import { ApiResponse } from "../types/api";
 import { User } from "../types/user";
 import { apiClient, handleApiError } from "./helper";
@@ -49,6 +53,21 @@ export const usersApi = {
         signal,
       });
 
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  editUser: async (
+    userId: string,
+    data: EditUserDto
+  ): Promise<ApiResponse<User>> => {
+    try {
+      const res = await apiClient.patch<ApiResponse<User>>(
+        `/users/${userId}/profile`,
+        data
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
