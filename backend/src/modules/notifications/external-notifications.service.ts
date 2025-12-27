@@ -11,7 +11,7 @@ export interface NotificationOptions {
    * Will automatically resolve to:
    * - email.{key}_subject
    * - email.{key}_body
-   * - sms.{key}_body
+   * - notification.{key}_body
    */
   key?: string;
   /**
@@ -58,18 +58,21 @@ export class ExternalNotificationService {
     // Determine keys to use
     let emailSubjectKey: string;
     let emailBodyKey: string;
-    let smsBodyKey: string;
+    let notificationBodyKey: string;
 
     if (options.subjectKey && options.messageKey) {
       // Explicit mode - use provided keys directly
       emailSubjectKey = options.subjectKey;
       emailBodyKey = options.messageKey;
-      smsBodyKey = options.messageKey.replace('email.', 'sms.');
+      notificationBodyKey = options.messageKey.replace(
+        'email.',
+        'notification.',
+      );
     } else if (options.key) {
       // Convention mode - auto-build keys
       emailSubjectKey = `email.${options.key}_subject`;
       emailBodyKey = `email.${options.key}_body`;
-      smsBodyKey = `sms.${options.key}_body`;
+      notificationBodyKey = `notification.${options.key}_body`;
     } else {
       throw new Error(
         'Either "key" or both "subjectKey" and "messageKey" must be provided',
@@ -127,8 +130,12 @@ export class ExternalNotificationService {
         );
         try {
           let smsMessage: string;
-          if (this.i18nService.exists(smsBodyKey, language)) {
-            smsMessage = this.i18nService.t(smsBodyKey, language, commonVars);
+          if (this.i18nService.exists(notificationBodyKey, language)) {
+            smsMessage = this.i18nService.t(
+              notificationBodyKey,
+              language,
+              commonVars,
+            );
           } else {
             // Fallback to email body and strip HTML
             smsMessage = this.i18nService

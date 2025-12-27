@@ -25,16 +25,40 @@
       "pending_change_cancelled_subject": "Changement de formule annulé"
     }
   },
-  "sms": {
+  "notification": {
+    "auth": {
+      "verify_title": "Vérifier votre e-mail",
+      "verify_body": "Veuillez vérifier votre boîte de réception pour confirmer votre compte.",
+      "reset_password_title": "Réinitialisation du mot de passe",
+      "reset_password_body": "Consultez vos e-mails pour les instructions de réinitialisation."
+    },
     "onboarding": {
-      "completed_body": "Bienvenue sur GymPro, {{name}} ! Votre compte est prêt avec un essai gratuit de {{trialDays}} jours. Consultez la page abonnement pour gérer votre essai."
+      "completed_title": "Bienvenue sur GymPro",
+      "completed_body": "Votre compte est prêt avec un essai gratuit de {{trialDays}} jours. Explorez votre tableau de bord !"
     },
     "subscription": {
-      "created_body": "Bienvenue sur GymPro ! Votre abonnement {{planName}} est maintenant actif. Accédez à app.gympro.com",
-      "cancelled_body": "Votre abonnement GymPro a été annulé. Accès valide jusqu’au {{date}}. Réactivez à tout moment.",
-      "reactivated_body": "Bon retour ! Votre abonnement GymPro a été réactivé avec toutes vos données.",
-      "downgrade_scheduled_body": "Votre changement de formule vers {{planName}} est prévu pour le {{date}}.",
-      "pending_change_cancelled_body": "Votre changement de formule en attente a été annulé. Votre abonnement reste actif."
+      "created_title": "Abonnement activé",
+      "created_body": "Bienvenue sur GymPro ! Votre abonnement {{planName}} est maintenant actif.",
+      "upgraded_title": "Plan mis à jour",
+      "upgraded_body": "Succès ! Votre abonnement a été mis à jour vers le plan {{planName}}.",
+      "cancelled_title": "Abonnement annulé",
+      "cancelled_body": "Votre abonnement a été annulé et prendra fin le {{date}}. Réactivez-le à tout moment.",
+      "reactivated_title": "Abonnement réactivé",
+      "reactivated_body": "Bon retour ! Votre abonnement GymPro a été réactivé avec succès.",
+      "downgrade_scheduled_title": "Changement programmé",
+      "downgrade_scheduled_body": "Votre passage au plan {{planName}} est prévu pour le {{date}}.",
+      "pending_change_cancelled_title": "Changement annulé",
+      "pending_change_cancelled_body": "Votre changement de plan en attente a été annulé avec succès.",
+      "expiring_soon_title": "Abonnement bientôt expiré",
+      "expiring_soon_body": "Votre abonnement se termine le {{date}}. Renouvelez-le pour garder l'accès.",
+      "expiring_tomorrow_title": "Expire demain",
+      "expiring_tomorrow_body": "Votre abonnement expire demain ({{date}}). Renouvelez-le maintenant !",
+      "expired_title": "Abonnement expiré",
+      "expired_body": "Votre abonnement a expiré. Réactivez-le pour restaurer votre accès.",
+      "downgrade_effective_soon_title": "Changement imminent",
+      "downgrade_effective_soon_body": "Rappel : votre plan passera à {{planName}} le {{date}}.",
+      "renewed_title": "Abonnement renouvelé",
+      "renewed_body": "Bonne nouvelle ! Votre abonnement {{planName}} a été renouvelé avec succès."
     }
   }
 }

@@ -501,6 +501,7 @@
     "new": "new",
     "viewAll": "View all notifications",
     "empty": "No notifications",
+    "markAllRead": "Mark all as read",
     "demo": {
       "memberJoined": {
         "label": "New member joined",

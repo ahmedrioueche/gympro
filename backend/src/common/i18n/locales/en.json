@@ -38,21 +38,40 @@
       "renewed_body": "<p>Hello {{name}},</p><p>Great news! Your subscription to <strong>{{planName}}</strong> has been successfully renewed.</p><p>You now have uninterrupted access to all the features included in your plan. No action is required on your part.</p><p><strong>What’s Next?</strong></p><ul><li>Continue managing your gym with full access to all tools</li><li>Check your dashboard for updated billing and plan details</li><li>Invite or manage team members as needed</li></ul><p>If you have any questions or need assistance, our support team is always here to help.</p><p>Thank you for continuing to use GymPro!</p><p>Best regards,<br>The GymPro Team</p>"
     }
   },
-  "sms": {
+  "notification": {
+    "auth": {
+      "verify_title": "Verify Your Email",
+      "verify_body": "Please check your email to verify your account.",
+      "reset_password_title": "Password Reset",
+      "reset_password_body": "Check your email for instructions to reset your password."
+    },
     "onboarding": {
-      "completed_body": "Welcome to GymPro, {{name}}! Your account is ready with a {{trialDays}}-day free trial. Visit the subscription page in your dashboard to view plans, upgrade, or manage your trial."
+      "completed_title": "Welcome to GymPro",
+      "completed_body": "Your account is ready with a {{trialDays}}-day free trial. Explore your dashboard to get started!"
     },
     "subscription": {
-      "created_body": "Welcome to GymPro! Your {{planName}} subscription is now active. Get started at app.gympro.com",
-      "cancelled_body": "Your GymPro subscription has been cancelled. You'll have access until {{date}}. Reactivate anytime from your account.",
-      "reactivated_body": "Welcome back! Your GymPro subscription has been reactivated. All your data and features are restored.",
-      "downgrade_scheduled_body": "Your plan change to {{planName}} is scheduled for {{date}}. Cancel this change anytime from your account settings.",
-      "pending_change_cancelled_body": "Your pending plan change has been cancelled successfully. Your subscription will continue on your current plan.",
-      "subscription.expiring_soon_body": "Reminder: your GymPro subscription will end on {{date}}. Renew anytime from your account to avoid interruption.",
-      "subscription.expiring_tomorrow_body": "Your GymPro subscription ends tomorrow ({{date}}). Renew now to keep full access.",
-      "subscription.expired_body": "Your GymPro subscription has expired. Reactivate anytime from your account to restore full access.",
-      "subscription.downgrade_effective_soon_body": "Reminder: your GymPro plan will change to {{planName}} on {{date}}. Manage this anytime from your account.",
-      "renewed_body": "Good news, {{name}}! Your GymPro subscription for {{planName}} has been successfully renewed. Continue managing your gym without interruption."
+      "created_title": "Subscription Activated",
+      "created_body": "Welcome to GymPro! Your {{planName}} subscription is now active.",
+      "upgraded_title": "Plan Upgraded",
+      "upgraded_body": "Success! Your subscription has been upgraded to {{planName}}.",
+      "cancelled_title": "Subscription Cancelled",
+      "cancelled_body": "Your subscription has been cancelled and will end on {{date}}. Reactivate anytime to keep your data.",
+      "reactivated_title": "Subscription Reactivated",
+      "reactivated_body": "Welcome back! Your GymPro subscription has been successfully reactivated.",
+      "downgrade_scheduled_title": "Change Scheduled",
+      "downgrade_scheduled_body": "Your plan change to {{planName}} is scheduled for {{date}}.",
+      "pending_change_cancelled_title": "Change Cancelled",
+      "pending_change_cancelled_body": "Your pending plan change has been cancelled. Your current plan remains active.",
+      "expiring_soon_title": "Subscription Expiring",
+      "expiring_soon_body": "Your subscription will end on {{date}}. Renew now to avoid any interruption.",
+      "expiring_tomorrow_title": "Expiring Tomorrow",
+      "expiring_tomorrow_body": "Your subscription ends tomorrow ({{date}}). Renew now to keep full access.",
+      "expired_title": "Subscription Expired",
+      "expired_body": "Your subscription has expired. Reactivate anytime from your account to restore access.",
+      "downgrade_effective_soon_title": "Upcoming Plan Change",
+      "downgrade_effective_soon_body": "Reminder: your plan will change to {{planName}} on {{date}}.",
+      "renewed_title": "Subscription Renewed",
+      "renewed_body": "Good news! Your {{planName}} subscription has been successfully renewed."
     }
   }
 }

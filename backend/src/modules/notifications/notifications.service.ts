@@ -69,21 +69,13 @@ export class NotificationsService {
     let title = options.title || '';
     let message = options.message || '';
 
-    // If keys provided, resolve for In-App
+    // If keys provided, resolve for In-App (using generic notification prefix)
     if (options.key) {
-      // Convention: In-App title = key + '_title', body = key + '_body' ?
-      // Legacy ExternalService uses 'email.{key}_subject'.
-      // For In-App, we might want to stick to a convention or use specific keys.
-      // Let's reuse 'email' keys for now if not specified, or define 'notification' keys.
-      // Given the requirement "make sure existing calls trigger in app", existing calls pass `key`.
-      // We should probably map `key` to something In-App friendly.
-      // Let's assume `email.{key}_subject` => Title, `email.{key}_body` => Message
-      // This ensures 1:1 match with what was sent before.
+      const titleKey =
+        options.subjectKey || `notification.${options.key}_title`;
+      const bodyKey = options.messageKey || `notification.${options.key}_body`;
 
-      const subjectKey = options.subjectKey || `email.${options.key}_subject`;
-      const bodyKey = options.messageKey || `email.${options.key}_body`;
-
-      title = await this.resolveContent(language, subjectKey, options.vars);
+      title = await this.resolveContent(language, titleKey, options.vars);
       message = await this.resolveContent(language, bodyKey, options.vars);
     } else if (options.subjectKey && options.messageKey) {
       title = await this.resolveContent(

@@ -25,16 +25,40 @@
       "pending_change_cancelled_subject": "تم إلغاء تغيير الخطة"
     }
   },
-  "sms": {
+  "notification": {
+    "auth": {
+      "verify_title": "تأكيد البريد الإلكتروني",
+      "verify_body": "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.",
+      "reset_password_title": "إعادة تعيين كلمة المرور",
+      "reset_password_body": "تحقق من بريدك الإلكتروني للحصول على تعليمات إعادة تعيين كلمة المرور."
+    },
     "onboarding": {
-      "completed_body": "مرحبًا {{name}}! حسابك في GymPro جاهز مع تجربة مجانية لمدة {{trialDays}} يومًا."
+      "completed_title": "مرحباً بك في GymPro",
+      "completed_body": "حسابك جاهز مع فترة تجريبية مجانية لمدة {{trialDays}} يومًا. استكشف لوحة التحكم للبدء!"
     },
     "subscription": {
-      "created_body": "تم تفعيل اشتراك {{planName}} في GymPro بنجاح.",
-      "cancelled_body": "تم إلغاء اشتراكك في GymPro. صالح حتى {{date}}.",
-      "reactivated_body": "مرحبًا بعودتك! تم إعادة تفعيل اشتراك GymPro.",
-      "downgrade_scheduled_body": "سيتم تغيير خطتك إلى {{planName}} بتاريخ {{date}}.",
-      "pending_change_cancelled_body": "تم إلغاء تغيير الخطة المعلق بنجاح."
+      "created_title": "تم تفعيل الاشتراك",
+      "created_body": "مرحباً بك في GymPro! تم تفعيل اشتراكك {{planName}} بنجاح.",
+      "upgraded_title": "تمت ترقية الخطة",
+      "upgraded_body": "نجاح! تمت ترقية اشتراكك إلى {{planName}}.",
+      "cancelled_title": "تم إلغاء الاشتراك",
+      "cancelled_body": "تم إلغاء اشتراكك وسينتهي في {{date}}. يمكنك إعادة التفعيل في أي وقت للحفاظ على بياناتك.",
+      "reactivated_title": "تم إعادة تفعيل الاشتراك",
+      "reactivated_body": "مرحباً بعودتك! تم إعادة تفعيل اشتراكك في GymPro بنجاح.",
+      "downgrade_scheduled_title": "تم جدولة تغيير الخطة",
+      "downgrade_scheduled_body": "من المقرر تغيير خطتك إلى {{planName}} في تاريخ {{date}}.",
+      "pending_change_cancelled_title": "تم إلغاء التغيير",
+      "pending_change_cancelled_body": "تم إلغاء تغيير الخطة المعلق بنجاح. ستبقى على خطتك الحالية.",
+      "expiring_soon_title": "اقتراب انتهاء الاشتراك",
+      "expiring_soon_body": "سينتهي اشتراكك في {{date}}. جدد الآن لتجنب أي انقطاع في الخدمة.",
+      "expiring_tomorrow_title": "الاشتراك ينتهي غداً",
+      "expiring_tomorrow_body": "ينتهي اشتراكك غداً ({{date}}). جدد الآن للحفاظ على كامل المميزات.",
+      "expired_title": "انتهت صلاحية الاشتراك",
+      "expired_body": "انتهت صلاحية اشتراكك. يمكنك إعادة التفعيل في أي وقت لاستعادة الوصول.",
+      "downgrade_effective_soon_title": "تغيير الخطة قريباً",
+      "downgrade_effective_soon_body": "تذكير: ستتغير خطتك إلى {{planName}} في تاريخ {{date}}.",
+      "renewed_title": "تم تجديد الاشتراك",
+      "renewed_body": "أخبار سارة! تم تجديد اشتراكك {{planName}} بنجاح."
     }
   }
 }
