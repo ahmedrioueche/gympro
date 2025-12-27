@@ -9,5 +9,33 @@
     "redirecting_to_login": "Redirection vers la page de connexion...",
     "forgot_password_success": "Si l'email existe, un lien de réinitialisation a été envoyé.",
     "send_reset_link": "Envoyer le lien de réinitialisation"
+  },
+  "common": {
+    "all": "Tout",
+    "actions": "Actions",
+    "pagination": {
+      "showing": "Affichage de {{start}}-{{end}} sur {{total}}"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "pageTitle": "Notifications",
+    "pageSubtitle": "Restez informé des événements importants",
+    "new": "nouveau",
+    "viewAll": "Voir toutes les notifications",
+    "empty": "Aucune notification trouvée",
+    "emptyDesc": "Vous êtes à jour !",
+    "markAllRead": "Tout marquer comme lu",
+    "markAsRead": "Marquer comme lu",
+    "search": "Rechercher des notifications...",
+    "unreadOnly": "Non lues",
+    "unread": "Non lue",
+    "read": "Lue",
+    "table": {
+      "type": "Type",
+      "message": "Contenu",
+      "date": "Date",
+      "status": "Statut"
+    }
   }
 }

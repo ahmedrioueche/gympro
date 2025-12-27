@@ -16,6 +16,7 @@ interface UserState {
   setUser: (user: User | null) => void;
   updateUser: (updates: Partial<User>) => void;
   updateProfile: (updates: Partial<User["profile"]>) => void;
+  updateSettings: (updates: Partial<User["appSettings"]>) => void;
   clearUser: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -64,6 +65,18 @@ export const useUserStore = create<UserState>()(
             ? {
                 ...state.user,
                 profile: { ...state.user.profile, ...updates },
+              }
+            : null,
+        })),
+
+      updateSettings: (updates) =>
+        set((state) => ({
+          user: state.user
+            ? {
+                ...state.user,
+                appSettings: state.user.appSettings
+                  ? { ...state.user.appSettings, ...updates }
+                  : (updates as any),
               }
             : null,
         })),

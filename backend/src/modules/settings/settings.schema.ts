@@ -4,19 +4,19 @@ import type {
   LocaleSettings,
   NotificationSettings,
   ThemeOption,
+  ViewPreference,
 } from '@ahmedrioueche/gympro-client';
 import {
   DEFAULT_CURRENCY,
   DEFAULT_LANGUAGE,
   THEME_OPTIONS,
+  VIEW_PREFERENCES,
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ _id: false })
 export class NotificationSettingsModel implements NotificationSettings {
-  @Prop({ required: true, default: true }) enablePush: boolean;
-  @Prop({ required: true, default: true }) enableEmail: boolean;
   @Prop({ min: 0 }) defaultReminderMinutes?: number;
 }
 
@@ -39,6 +39,14 @@ export class AppSettingsModel extends Document implements AppSettings {
     default: 'auto',
   })
   theme: ThemeOption;
+
+  @Prop({
+    type: String,
+    required: true,
+    enum: VIEW_PREFERENCES,
+    default: 'table',
+  })
+  viewPreference: ViewPreference;
 
   @Prop({ type: NotificationSettingsModel, required: true })
   notifications: NotificationSettings;

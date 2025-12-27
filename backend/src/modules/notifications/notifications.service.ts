@@ -14,6 +14,7 @@ import {
   ExternalNotificationService,
   NotificationOptions,
 } from './external-notifications.service';
+import { NotificationsGateway } from './notifications.gateway';
 import { BaseNotification } from './notifications.schema';
 
 export interface SendNotificationOptions extends NotificationOptions {
@@ -41,6 +42,7 @@ export class NotificationsService {
     private readonly notificationModel: Model<BaseNotification>,
     private readonly externalService: ExternalNotificationService,
     private readonly i18nService: I18nService,
+    private readonly gateway: NotificationsGateway,
   ) {}
 
   /**
@@ -196,6 +198,9 @@ export class NotificationsService {
       const notification = new NotificationClass(notificationData);
       const saved = await notification.save();
       this.logger.log(`✅ In-app notification created: ${saved._id}`);
+
+      // ✅ EMIT TO GATEWAY
+      this.gateway.sendNotificationToUser(user._id.toString(), saved);
     } catch (error) {
       this.logger.error(
         `❌ Failed to create in-app notification for user ${user._id}`,

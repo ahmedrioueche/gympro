@@ -22,7 +22,14 @@
     "close": "Close",
     "processing": "Processing...",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "all": "All",
+    "actions": "Actions",
+    "pagination": {
+      "showing": "Showing {{start}}-{{end}} of {{total}}"
+    },
+    "saveChanges": "Save Changes",
+    "contactSupport": "Contact Support"
   },
   "confirm": {
     "default": {
@@ -323,15 +330,6 @@
     "coach": "Coach",
     "staff": "Staff"
   },
-  "gym": {
-    "select": "Select gym",
-    "no_gym_selected": "No gym selected",
-    "selectLocation": "Select Location",
-    "noGyms": "No gyms yet",
-    "createFirst": "Create your first gym to get started",
-    "members": "members",
-    "createNew": "Create New Gym"
-  },
   "gyms": {
     "title": "Gym Management",
     "subtitle": "Manage your gym locations and settings",
@@ -498,23 +496,82 @@
   },
   "notifications": {
     "title": "Notifications",
+    "pageTitle": "Notifications",
+    "pageSubtitle": "Stay updated with important events",
     "new": "new",
     "viewAll": "View all notifications",
-    "empty": "No notifications",
+    "empty": "No notifications found",
+    "emptyDesc": "You're all caught up!",
     "markAllRead": "Mark all as read",
-    "demo": {
-      "memberJoined": {
-        "label": "New member joined",
-        "description": "John Doe joined your gym"
-      },
-      "paymentReceived": {
-        "label": "Payment received",
-        "description": "Subscription payment of $50"
-      },
-      "membershipExpiring": {
-        "label": "Membership expiring",
-        "description": "Jane's membership expires in 3 days"
-      }
+    "markAsRead": "Mark as read",
+    "search": "Search notifications...",
+    "unreadOnly": "Unread",
+    "unread": "Unread",
+    "read": "Read",
+    "table": {
+      "type": "Type",
+      "message": "Content",
+      "date": "Date",
+      "status": "Status"
+    }
+  },
+  "settings": {
+    "pageTitle": "Settings",
+    "pageSubtitle": "Manage your application preferences",
+    "saveSuccess": "Settings updated successfully",
+    "saveError": "Failed to update settings",
+    "tabs": {
+      "general": "General",
+      "notifications": "Notifications",
+      "locale": "Locale"
+    },
+    "general": {
+      "appearance": "Appearance",
+      "appearanceDesc": "Customize how GymPro looks on your device",
+      "layout": "Layout Preference",
+      "layoutDesc": "Choose your preferred data visualization mode",
+      "viewPreference": "Default View Mode",
+      "sidebarInfo": "Dynamic Sidebar",
+      "sidebarInfoDesc": "Your sidebar preference is automatically saved as you browse.",
+      "darkOnlyNote": "GymPro currently defaults to a premium dark aesthetic for the best experience."
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "System",
+      "cards": "Cards View",
+      "table": "Table View"
+    },
+    "notifications": {
+      "alerts": "Reminder Settings",
+      "alertsDesc": "Configure how early you want to be notified of events",
+      "reminderMinutes": "Default Reminder (minutes)",
+      "note": "Real-time delivery",
+      "noteDesc": "Notifications are delivered instantly via WebSockets when you are online."
+    },
+    "locale": {
+      "title": "Regional & Language",
+      "desc": "Set your preferred language, currency and timezone",
+      "language": "Language",
+      "currency": "Preferred Currency",
+      "timezone": "Timezone",
+      "region": "Region",
+      "contactSupportTitle": "Need a change?",
+      "contactSupportDesc": "Please contact our support team to update your business region or currency."
+    }
+  },
+  "demo": {
+    "memberJoined": {
+      "label": "New member joined",
+      "description": "John Doe joined your gym"
+    },
+    "paymentReceived": {
+      "label": "Payment received",
+      "description": "Subscription payment of $50"
+    },
+    "membershipExpiring": {
+      "label": "Membership expiring",
+      "description": "Jane's membership expires in 3 days"
     }
   },
   "home": {
@@ -525,21 +582,6 @@
         "settings": "Business Settings"
       },
       "profile": {
-        "title": "Manager Profile",
-        "businessName": "Business Name",
-        "accountStatus": "Account Status",
-        "lastLogin": "Last Login",
-        "editProfile": "Edit Profile",
-        "status": {
-          "active": "Active",
-          "trial": "Trial",
-          "premium": "Premium",
-          "basic": "Basic",
-          "free": "Free",
-          "freeTrial": "Free Trial"
-        }
-      },
-      "businessOverview": {
         "title": "Manager Profile",
         "businessName": "Business Name",
         "accountStatus": "Account Status",

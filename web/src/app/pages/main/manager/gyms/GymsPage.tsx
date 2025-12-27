@@ -11,7 +11,7 @@ export default function GymsPage() {
   const { data: gyms = [], isLoading } = useAllMyGyms();
   const navigate = useNavigate();
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto">
+    <div className="min-h-screen p-3 md:p-6 lg:p-8 max-w-7xl ">
       <PageHeader
         title={t("gyms.title")}
         subtitle={t("gyms.subtitle")}

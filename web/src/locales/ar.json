@@ -13,7 +13,12 @@
     "please_wait": "يرجى الانتظار بينما نقوم بتحميل الصفحة..."
   },
   "common": {
-    "loading": "جاري التحميل..."
+    "loading": "جاري التحميل...",
+    "all": "الكل",
+    "actions": "الإجراءات",
+    "pagination": {
+      "showing": "عرض {{start}}-{{end}} من أصل {{total}}"
+    }
   },
   "actions": {
     "go_back": "العودة"
@@ -167,7 +172,7 @@
     },
     "skip": "تخطي",
     "next": "التالي",
-    "getStarted": "ابدأ الآن",
+    "getStartedAction": "ابدأ الآن",
     "previous": "السابق",
     "select_role": "اختر دورك",
     "role_member": "عضو",
@@ -193,6 +198,27 @@
       "currencyLockInfo": "يمكنك تغيير منطقتك أدناه. سيتم قفل العملة بعد التأكيد.",
       "selectRegion": "اختر منطقتك",
       "confirm": "تأكيد"
+    }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "pageTitle": "الإشعارات",
+    "pageSubtitle": "ابق على اطلاع بالأحداث الهامة",
+    "new": "جديد",
+    "viewAll": "عرض جميع الإشعارات",
+    "empty": "لا توجد إشعارات",
+    "emptyDesc": "أنت متابع لكل شيء!",
+    "markAllRead": "تحديد الكل كمقروء",
+    "markAsRead": "تحديد كمقروء",
+    "search": "بحث في الإشعارات...",
+    "unreadOnly": "غير المقروءة",
+    "unread": "غير مقروءة",
+    "read": "مقروءة",
+    "table": {
+      "type": "النوع",
+      "message": "المحتوى",
+      "date": "التاريخ",
+      "status": "الحالة"
     }
   }
 }

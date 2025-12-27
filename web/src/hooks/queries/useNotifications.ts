@@ -40,8 +40,6 @@ export function useUnreadNotificationsCount() {
   return useQuery<ApiResponse<{ count: number }>, Error>({
     queryKey: notificationKeys.unreadCount(),
     queryFn: () => notificationsApi.getUnreadCount(),
-    // Poll every minute
-    refetchInterval: 1000 * 60,
   });
 }
 
