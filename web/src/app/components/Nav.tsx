@@ -55,7 +55,9 @@ export default function Nav({ children, sidebarLinks }) {
     }
   };
   const handleNotificationClick = (notificationId: string) => {};
-  const handleViewAllNotifications = () => {};
+  const handleViewAllNotifications = () => {
+    navigate({ to: "/manager/notifications" });
+  };
 
   // Sidebar menu item with light sweep effect
   const SidebarMenuItem = ({ link, isActive }) => {

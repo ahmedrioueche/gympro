@@ -1,6 +1,5 @@
 import {
   type AppPaymentFilterDto,
-  type AppPaymentProvider,
   type AppPaymentStatus,
 } from "@ahmedrioueche/gympro-client";
 import { ErrorComponent } from "@tanstack/react-router";
@@ -8,10 +7,7 @@ import { ChevronLeft, ChevronRight, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
-import {
-  useMyPayments,
-  useMyPaymentStats,
-} from "../../../../../hooks/queries/usePayments";
+import { useMyPayments } from "../../../../../hooks/queries/usePayments";
 import PageHeader from "../../../../components/PageHeader";
 import { PaymentsControls, PaymentsTable } from "./components";
 
@@ -23,9 +19,6 @@ function PaymentsPage() {
   const [filterStatus, setFilterStatus] = useState<AppPaymentStatus | "all">(
     "all"
   );
-  const [filterProvider, setFilterProvider] = useState<
-    AppPaymentProvider | "all"
-  >("all");
   const [currentPage, setCurrentPage] = useState(1);
 
   // Build filters
@@ -34,16 +27,12 @@ function PaymentsPage() {
     limit: ITEMS_PER_PAGE,
     search: searchQuery || undefined,
     status: filterStatus !== "all" ? filterStatus : undefined,
-    provider: filterProvider !== "all" ? filterProvider : undefined,
     sortBy: "date",
     sortOrder: "desc",
   };
 
   // Fetch payments
   const { data: paymentsResponse, isLoading, error } = useMyPayments(filters);
-
-  // Fetch stats
-  const { data: stats } = useMyPaymentStats();
 
   const payments = paymentsResponse?.data ?? [];
   const totalPayments = paymentsResponse?.total ?? 0;
@@ -57,11 +46,6 @@ function PaymentsPage() {
 
   const handleFilterStatusChange = (status: AppPaymentStatus | "all") => {
     setFilterStatus(status);
-    setCurrentPage(1);
-  };
-
-  const handleFilterProviderChange = (provider: AppPaymentProvider | "all") => {
-    setFilterProvider(provider);
     setCurrentPage(1);
   };
 
@@ -113,8 +97,6 @@ function PaymentsPage() {
           onSearchChange={handleSearchChange}
           filterStatus={filterStatus}
           onFilterStatusChange={handleFilterStatusChange}
-          filterProvider={filterProvider}
-          onFilterProviderChange={handleFilterProviderChange}
         />
 
         {/* Payments Display */}

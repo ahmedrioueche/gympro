@@ -74,16 +74,21 @@ export default function Dropdown({
 interface DropdownItemProps {
   icon?: React.ReactNode;
   label: string;
-  description?: string;
+  description?: string | React.ReactNode; // Now accepts both string and JSX
+  rightContent?: React.ReactNode; // New prop for content on the right
   onClick?: () => void;
   variant?: "default" | "danger";
+  className?: string; // New prop for custom styling
 }
+
 export function DropdownItem({
   icon,
   label,
   description,
+  rightContent,
   onClick,
   variant = "default",
+  className = "",
 }: DropdownItemProps) {
   return (
     <button
@@ -94,7 +99,7 @@ export function DropdownItem({
         variant === "danger"
           ? "hover:bg-danger/10 text-danger"
           : "hover:bg-border/50 text-text-primary"
-      }`}
+      } ${className}`}
     >
       {icon && (
         <span className={`text-lg ${description ? "mt-0.5" : ""}`}>{icon}</span>
@@ -107,6 +112,9 @@ export function DropdownItem({
           </div>
         )}
       </div>
+      {rightContent && (
+        <div className="flex items-center ml-2">{rightContent}</div>
+      )}
     </button>
   );
 }
@@ -119,11 +127,17 @@ export function DropdownDivider() {
 // Dropdown.Header subcomponent
 interface DropdownHeaderProps {
   children: React.ReactNode;
+  className?: string; // New prop for custom styling
 }
 
-export function DropdownHeader({ children }: DropdownHeaderProps) {
+export function DropdownHeader({
+  children,
+  className = "",
+}: DropdownHeaderProps) {
   return (
-    <div className="px-4 py-2 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+    <div
+      className={`px-4 py-2 text-xs font-semibold text-text-secondary uppercase tracking-wider ${className}`}
+    >
       {children}
     </div>
   );

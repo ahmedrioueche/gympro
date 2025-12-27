@@ -20,14 +20,12 @@ function PageHeader({
   title,
   subtitle,
   actionButton,
-  gradientFrom = "from-primary/10",
-  gradientTo = "to-secondary/10",
 }: PageHeaderProps) {
   const ActionIcon = actionButton?.icon;
 
   return (
     <div
-      className={`relative mb-12 overflow-hidden rounded-2xl border border-border bg-gradient-to-br ${gradientFrom} via-primary/5 ${gradientTo} p-6 md:p-8 shadow-sm`}
+      className={`relative mb-12 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-purple-600/10  p-6 md:p-8 shadow-sm`}
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         {/* Left */}
@@ -37,7 +35,7 @@ function PageHeader({
           </div>
 
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-1">
+            <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-1">
               {title}
             </h1>
             <p className="text-text-secondary text-sm md:text-base">

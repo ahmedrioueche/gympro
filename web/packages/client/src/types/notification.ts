@@ -50,3 +50,12 @@ export type AppNotification =
   | CoachNotification
   | StaffNotification
   | OwnerManagerNotification;
+
+export interface GetNotificationsResponseDto {
+  data: AppNotification[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  unreadCount: number;
+}

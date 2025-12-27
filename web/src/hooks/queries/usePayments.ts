@@ -1,7 +1,6 @@
 import {
   appPaymentsApi,
   type AppPaymentFilterDto,
-  type AppPaymentStatsDto,
   type GetAppPaymentDto,
   type GetAppPaymentsResponseDto,
 } from "@ahmedrioueche/gympro-client";
@@ -31,23 +30,6 @@ export function useMyPayments(
   return useQuery<GetAppPaymentsResponseDto, Error>({
     queryKey: paymentKeys.list(filters),
     queryFn: () => appPaymentsApi.getMyPayments(filters),
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    ...options,
-  });
-}
-
-/**
- * Hook to fetch payment statistics
- */
-export function useMyPaymentStats(
-  options?: Omit<
-    UseQueryOptions<AppPaymentStatsDto, Error>,
-    "queryKey" | "queryFn"
-  >
-) {
-  return useQuery<AppPaymentStatsDto, Error>({
-    queryKey: paymentKeys.stats(),
-    queryFn: () => appPaymentsApi.getMyPaymentStats(),
     staleTime: 1000 * 60 * 5, // 5 minutes
     ...options,
   });

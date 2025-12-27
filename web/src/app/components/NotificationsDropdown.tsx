@@ -1,110 +1,137 @@
+import { type AppNotification } from "@ahmedrioueche/gympro-client";
+import { formatDistanceToNow } from "date-fns";
+import { Bell, CheckCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Dropdown, {
   DropdownDivider,
   DropdownHeader,
   DropdownItem,
 } from "../../components/ui/Dropdown";
-
-interface Notification {
-  id: string;
-  icon: string;
-  label: string;
-  description: string;
-  isRead?: boolean;
-}
+import {
+  useMarkAllNotificationsAsRead,
+  useMarkNotificationAsRead,
+  useMyNotifications,
+  useUnreadNotificationsCount,
+} from "../../hooks/queries/useNotifications";
 
 interface NotificationsDropdownProps {
-  notifications?: Notification[];
-  unreadCount?: number;
   onNotificationClick?: (notificationId: string) => void;
   onViewAllClick?: () => void;
 }
 
 export default function NotificationsDropdown({
-  notifications = [],
-  unreadCount = 0,
   onNotificationClick,
   onViewAllClick,
 }: NotificationsDropdownProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  // Default notifications for demo
-  const defaultNotifications: Notification[] = [
-    {
-      id: "1",
-      icon: "👤",
-      label: t("notifications.demo.memberJoined.label"),
-      description: t("notifications.demo.memberJoined.description"),
-      isRead: false,
-    },
-    {
-      id: "2",
-      icon: "💰",
-      label: t("notifications.demo.paymentReceived.label"),
-      description: t("notifications.demo.paymentReceived.description"),
-      isRead: false,
-    },
-    {
-      id: "3",
-      icon: "⚠️",
-      label: t("notifications.demo.membershipExpiring.label"),
-      description: t("notifications.demo.membershipExpiring.description"),
-      isRead: true,
-    },
-  ];
+  // Data Fetching
+  const { data: notificationsData } = useMyNotifications(1, 5); // Fetch latest 5
+  const { data: unreadData } = useUnreadNotificationsCount();
+  const markAsReadMutation = useMarkNotificationAsRead();
+  const markAllAsReadMutation = useMarkAllNotificationsAsRead();
 
-  const displayNotifications =
-    notifications.length > 0 ? notifications : defaultNotifications;
-  const displayUnreadCount =
-    unreadCount > 0
-      ? unreadCount
-      : displayNotifications.filter((n) => !n.isRead).length;
+  const notifications = notificationsData?.data || [];
+  const unreadCount = unreadData?.count || 0;
+
+  // Icons mapping
+  const getIcon = (type: AppNotification["type"]) => {
+    switch (type) {
+      case "payment":
+        return "💰";
+      case "subscription":
+        return "🔄";
+      case "alert":
+        return "⚠️";
+      case "reminder":
+        return "⏰";
+      case "program":
+        return "💪";
+      default:
+        return "📢";
+    }
+  };
+
+  const handleItemClick = (notification: AppNotification) => {
+    if (notification.status === "unread") {
+      markAsReadMutation.mutate(notification._id);
+    }
+    onNotificationClick?.(notification._id);
+  };
+
+  const handleMarkAllRead = () => {
+    markAllAsReadMutation.mutate();
+  };
 
   return (
     <Dropdown
       trigger={
-        <div className="relative p-2 rounded-lg transition-colors hover:bg-border/50 text-text-secondary">
-          <span>🔔</span>
-          {displayUnreadCount > 0 && (
-            <span className="absolute top-1 right-1 w-2 h-2 bg-danger rounded-full animate-pulse" />
+        <div className="relative p-2 rounded-lg transition-colors hover:bg-border/50 text-text-secondary cursor-pointer">
+          <Bell className="w-6 h-6" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-danger rounded-full border-2 border-surface animate-pulse" />
           )}
         </div>
       }
       align="right"
+      className="w-80"
     >
-      <DropdownHeader>
-        {t("notifications.title")}
-        {displayUnreadCount > 0 && (
-          <span className="ml-2 text-danger">
-            ({displayUnreadCount} {t("notifications.new")})
-          </span>
+      <DropdownHeader className="flex items-center justify-between">
+        <span className="font-semibold">{t("notifications.title")}</span>
+        {unreadCount > 0 && (
+          <button
+            onClick={handleMarkAllRead}
+            className="text-xs text-primary hover:text-primary-hover flex items-center gap-1"
+          >
+            <CheckCheck className="w-3 h-3" />
+            {t("notifications.markAllRead")}
+          </button>
         )}
       </DropdownHeader>
 
-      {displayNotifications.length > 0 ? (
-        <>
-          {displayNotifications.map((notification) => (
+      <DropdownDivider />
+
+      <div className="max-h-[300px] overflow-y-auto">
+        {notifications.length > 0 ? (
+          notifications.map((notification) => (
             <DropdownItem
-              key={notification.id}
-              icon={notification.icon}
-              label={notification.label}
-              description={notification.description}
-              onClick={() => onNotificationClick?.(notification.id)}
+              key={notification._id}
+              icon={getIcon(notification.type)}
+              label={notification.title}
+              description={
+                <div className="flex flex-col gap-1">
+                  <span>{notification.message}</span>
+                  <span className="text-xs text-text-tertiary">
+                    {formatDistanceToNow(new Date(notification.createdAt), {
+                      addSuffix: true,
+                      locale: i18n.language === "fr" ? undefined : undefined,
+                    })}
+                  </span>
+                </div>
+              }
+              rightContent={
+                notification.status === "unread" && (
+                  <div className="w-2 h-2 bg-primary rounded-full" />
+                )
+              }
+              onClick={() => handleItemClick(notification)}
+              className={notification.status === "unread" ? "bg-primary/5" : ""}
             />
-          ))}
+          ))
+        ) : (
+          <div className="px-4 py-8 text-center text-text-secondary text-sm">
+            {t("notifications.empty")}
+          </div>
+        )}
+      </div>
 
-          <DropdownDivider />
+      <DropdownDivider />
 
-          <DropdownItem
-            label={t("notifications.viewAll")}
-            onClick={onViewAllClick}
-          />
-        </>
-      ) : (
-        <div className="px-4 py-8 text-center text-text-secondary text-sm">
-          {t("notifications.empty")}
-        </div>
-      )}
+      <DropdownItem
+        label={t("notifications.viewAll")}
+        onClick={onViewAllClick}
+        className="text-center justify-center font-medium text-primary hover:text-primary-hover py-3"
+      />
     </Dropdown>
   );
 }
