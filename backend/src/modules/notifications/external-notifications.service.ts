@@ -1,9 +1,9 @@
 import { AppLanguage, DEFAULT_LANGUAGE } from '@ahmedrioueche/gympro-client';
 import { Injectable, Logger } from '@nestjs/common';
-import { SmsService } from '../../modules/sms/sms.service';
-import { I18nService } from '../i18n/i18n.service';
-import { User } from '../schemas/user.schema';
-import { MailerService } from './mailer.service';
+import { I18nService } from '../../common/i18n/i18n.service';
+import { User } from '../../common/schemas/user.schema';
+import { MailerService } from '../../common/services/mailer.service';
+import { SmsService } from '../sms/sms.service';
 
 export interface NotificationOptions {
   /**
@@ -31,8 +31,8 @@ export interface NotificationOptions {
 }
 
 @Injectable()
-export class NotificationService {
-  private readonly logger = new Logger(NotificationService.name);
+export class ExternalNotificationService {
+  private readonly logger = new Logger(ExternalNotificationService.name);
 
   constructor(
     private readonly mailerService: MailerService,

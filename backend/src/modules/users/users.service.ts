@@ -17,11 +17,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 
-import { NotificationService } from 'src/common/services/notification.service';
 import { GeolocationService } from '../../common/services/geolocation.service';
 import { AppPlanModel } from '../appBilling/appBilling.schema';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
 import { GymService } from '../gym/gym.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class UsersService {
@@ -33,7 +33,7 @@ export class UsersService {
     private readonly subscriptionService: AppSubscriptionService,
     private readonly gymService: GymService,
     private readonly geolocationService: GeolocationService,
-    private readonly notificationService: NotificationService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async findAll(
@@ -450,7 +450,7 @@ export class UsersService {
     await this.autoSubscribeToFreePlan(user._id.toString());
 
     // Send welcome notification after onboarding completion (background task)
-    this.notificationService
+    this.notificationsService
       .notifyUser(user, {
         key: 'onboarding.completed',
         vars: {

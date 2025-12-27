@@ -20,7 +20,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MAX_DAILY_CANCELLATIONS } from 'src/common/constants/subscription.constants';
 import { User } from 'src/common/schemas/user.schema';
-import { NotificationService } from 'src/common/services/notification.service';
+import { NotificationsService } from 'src/modules/notifications/notifications.service';
 import { PaddleService } from 'src/modules/paddle/paddle.service';
 import {
   AppPlanModel,
@@ -41,7 +41,7 @@ export class AppSubscriptionService {
     private readonly appPlanModel: Model<AppPlanModel>,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
-    private readonly notificationService: NotificationService,
+    private readonly notificationsService: NotificationsService,
     @Inject(forwardRef(() => PaddleService))
     private readonly paddleService: PaddleService,
     @Inject(
@@ -309,9 +309,9 @@ export class AppSubscriptionService {
     const amountPaid = Math.max(0, newCost - prorationCredit);
 
     if (plan.level !== 'free') {
-      this.notificationService
+      this.notificationsService
         .notifyUser(user, {
-          key: 'subscription.created',
+          key: isUpgrade ? 'subscription.upgraded' : 'subscription.created',
           vars: {
             name: user.profile?.fullName || user.profile?.email || 'User',
             planName: plan.name,
@@ -578,7 +578,7 @@ export class AppSubscriptionService {
     }
 
     // Send notification
-    this.notificationService
+    this.notificationsService
       .notifyUser(user, {
         key: 'subscription.downgrade_scheduled',
         vars: {
@@ -673,7 +673,7 @@ export class AppSubscriptionService {
     }
 
     // Send notification
-    this.notificationService
+    this.notificationsService
       .notifyUser(user, {
         key: 'subscription.cancelled',
         vars: {
@@ -763,7 +763,7 @@ export class AppSubscriptionService {
     }
 
     // Send notification
-    this.notificationService
+    this.notificationsService
       .notifyUser(user, {
         key: 'subscription.reactivated',
         vars: {
@@ -871,7 +871,7 @@ export class AppSubscriptionService {
     await sub.save();
 
     // Send notification
-    this.notificationService
+    this.notificationsService
       .notifyUser(user, {
         key: 'subscription.pending_change_cancelled',
         vars: {
@@ -1150,7 +1150,7 @@ export class AppSubscriptionService {
 
     // Send notification
     if (plan && plan.level !== 'free') {
-      this.notificationService
+      this.notificationsService
         .notifyUser(user, {
           key: 'subscription.renewed',
           vars: {

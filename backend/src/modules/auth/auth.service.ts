@@ -18,11 +18,11 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
-import { NotificationService } from '../../common/services/notification.service';
 import { isPhoneNumber } from '../../common/utils/phone.util';
 import { Platform, buildRedirectUrl } from '../../common/utils/platform.util';
 import { AppPlanModel } from '../appBilling/appBilling.schema';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { SigninDto, SignupDto } from './auth.dto';
 import { OtpService } from './otp.service';
 
@@ -34,7 +34,7 @@ export class AuthService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(AppPlanModel.name) private appPlanModel: Model<AppPlanModel>,
     private readonly subscriptionService: AppSubscriptionService,
-    private readonly notificationService: NotificationService,
+    private readonly notificationsService: NotificationsService,
     private jwtService: JwtService,
     private configService: ConfigService,
     private otpService: OtpService,
@@ -135,7 +135,7 @@ export class AuthService {
         token: verificationToken,
       });
 
-      await this.notificationService.notifyUser(newUser, {
+      await this.notificationsService.notifyUser(newUser, {
         key: 'auth.verify',
         vars: { verifyUrl: verificationUrl },
         sendSms: false,
@@ -356,7 +356,7 @@ export class AuthService {
       token: verificationToken,
     });
 
-    this.notificationService
+    this.notificationsService
       .notifyUser(user, {
         key: 'auth.verify',
         vars: { verifyUrl: verificationUrl },
@@ -406,7 +406,7 @@ export class AuthService {
         token: resetToken,
       });
 
-      this.notificationService
+      this.notificationsService
         .notifyUser(user, {
           key: 'auth.reset_password',
           vars: { resetUrl },

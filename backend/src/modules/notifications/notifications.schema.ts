@@ -11,12 +11,16 @@ import type {
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema({ timestamps: true, discriminatorKey: 'roleType' })
+@Schema({
+  collection: 'appnotifications',
+  timestamps: true,
+  discriminatorKey: 'roleType',
+})
 export class BaseNotification
   extends Document
   implements ClientBaseNotification
 {
-  @Prop() declare _id: string;
+  declare _id: string;
   @Prop({ required: true }) userId: string;
   @Prop({ required: true }) title: string;
   @Prop({ required: true }) message: string;

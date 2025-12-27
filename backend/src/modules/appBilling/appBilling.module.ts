@@ -1,6 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { NotificationService } from 'src/common/services/notification.service';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import { PaddleModule } from '../paddle/paddle.module';
 import {
@@ -43,7 +42,6 @@ import { AppSubscriptionService } from './subscription/subscription.service';
     AppPlansService,
     AppSubscriptionService,
     AppPaymentService,
-    NotificationService,
     SubscriptionBlockerService,
   ],
   exports: [AppPlansService, AppSubscriptionService, AppPaymentService],

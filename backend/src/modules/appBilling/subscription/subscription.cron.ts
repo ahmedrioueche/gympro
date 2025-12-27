@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import { User } from 'src/common/schemas/user.schema';
-import { NotificationService } from 'src/common/services/notification.service';
+import { NotificationsService } from 'src/modules/notifications/notifications.service';
 import { AppPlanModel, AppSubscriptionModel } from '../appBilling.schema';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class SubscriptionCronService {
     private readonly planModel: Model<AppPlanModel>,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
-    private readonly notificationService: NotificationService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   /**
@@ -63,7 +63,7 @@ export class SubscriptionCronService {
       const user = await this.userModel.findById(sub.userId);
       if (!user) continue;
 
-      await this.notificationService.notifyUser(user, {
+      await this.notificationsService.notifyUser(user, {
         key: 'subscription.expiring_soon',
         vars: {
           date: sub.currentPeriodEnd.toLocaleDateString(),
@@ -93,7 +93,7 @@ export class SubscriptionCronService {
       const user = await this.userModel.findById(sub.userId);
       if (!user) continue;
 
-      await this.notificationService.notifyUser(user, {
+      await this.notificationsService.notifyUser(user, {
         key: 'subscription.expiring_tomorrow',
         vars: {
           date: sub.currentPeriodEnd.toLocaleDateString(),
@@ -123,7 +123,7 @@ export class SubscriptionCronService {
       sub.status = 'cancelled';
       await sub.save();
 
-      await this.notificationService.notifyUser(user, {
+      await this.notificationsService.notifyUser(user, {
         key: 'subscription.expired',
       });
 
@@ -150,7 +150,7 @@ export class SubscriptionCronService {
         planId: sub.pendingPlanId,
       });
 
-      await this.notificationService.notifyUser(user, {
+      await this.notificationsService.notifyUser(user, {
         key: 'subscription.downgrade_effective_soon',
         vars: {
           planName: targetPlan?.name || 'New plan',
