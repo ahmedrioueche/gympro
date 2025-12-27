@@ -31,8 +31,8 @@ export default function NotificationsDropdown({
   const markAsReadMutation = useMarkNotificationAsRead();
   const markAllAsReadMutation = useMarkAllNotificationsAsRead();
 
-  const notifications = notificationsData?.data || [];
-  const unreadCount = unreadData?.count || 0;
+  const notifications = notificationsData?.data?.data || [];
+  const unreadCount = unreadData?.data?.count || 0;
 
   // Icons mapping
   const getIcon = (type: AppNotification["type"]) => {

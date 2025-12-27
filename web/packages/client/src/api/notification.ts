@@ -1,3 +1,4 @@
+import { ApiResponse } from "../types/api";
 import { GetNotificationsResponseDto } from "../types/notification";
 import { apiClient, handleApiError } from "./helper";
 
@@ -10,14 +11,13 @@ export const notificationsApi = {
     limit = 20,
     status?: string,
     search?: string
-  ) => {
+  ): Promise<ApiResponse<GetNotificationsResponseDto>> => {
     try {
-      const response = await apiClient.get<GetNotificationsResponseDto>(
-        "/notifications",
-        {
-          params: { page, limit, status, search },
-        }
-      );
+      const response = await apiClient.get<
+        ApiResponse<GetNotificationsResponseDto>
+      >("/notifications", {
+        params: { page, limit, status, search },
+      });
       return response.data;
     } catch (error) {
       throw handleApiError(error);
@@ -27,9 +27,9 @@ export const notificationsApi = {
   /**
    * Get unread count
    */
-  getUnreadCount: async () => {
+  getUnreadCount: async (): Promise<ApiResponse<{ count: number }>> => {
     try {
-      const response = await apiClient.get<{ count: number }>(
+      const response = await apiClient.get<ApiResponse<{ count: number }>>(
         "/notifications/unread-count"
       );
       return response.data;
@@ -41,9 +41,9 @@ export const notificationsApi = {
   /**
    * Mark notification as read
    */
-  markAsRead: async (id: string) => {
+  markAsRead: async (id: string): Promise<ApiResponse<{ success: true }>> => {
     try {
-      const response = await apiClient.patch<{ success: true }>(
+      const response = await apiClient.patch<ApiResponse<{ success: true }>>(
         `/notifications/${id}/read`
       );
       return response.data;
@@ -55,9 +55,9 @@ export const notificationsApi = {
   /**
    * Mark all as read
    */
-  markAllAsRead: async () => {
+  markAllAsRead: async (): Promise<ApiResponse<{ success: true }>> => {
     try {
-      const response = await apiClient.patch<{ success: true }>(
+      const response = await apiClient.patch<ApiResponse<{ success: true }>>(
         "/notifications/read-all"
       );
       return response.data;
