@@ -4,6 +4,7 @@ import {
   Bell,
   CreditCard,
   Home,
+  Key,
   Settings,
   Users,
 } from "lucide-react";
@@ -28,6 +29,12 @@ const sidebarLinks = [
     icon: <CreditCard className="w-5 h-5" />,
     path: APP_PAGES.gym.subscriptions.link,
     matchPaths: [APP_PAGES.gym.subscriptions.link],
+  },
+  {
+    label: "access",
+    icon: <Key className="w-5 h-5" />,
+    path: APP_PAGES.gym.access.link,
+    matchPaths: [APP_PAGES.gym.access.link],
   },
   {
     label: "analytics",

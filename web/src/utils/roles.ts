@@ -80,6 +80,7 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
       "/settings",
       "/notifications",
       "/payment",
+      "/gym",
     ],
     [UserRole.Manager]: [
       "/manager",
@@ -87,6 +88,7 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
       "/profile",
       "/settings",
       "/notifications",
+      "/gym",
     ],
     [UserRole.Coach]: [
       "/coach",
@@ -94,6 +96,7 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
       "/profile",
       "/settings",
       "/notifications",
+      "/gym",
     ],
     [UserRole.Member]: [
       "/member",
@@ -108,6 +111,7 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
       "/profile",
       "/settings",
       "/notifications",
+      "/gym",
     ],
   };
 

@@ -9,6 +9,7 @@ import {
   GymMembershipModel,
   GymMembershipSchema,
 } from '../gymMembership/membership.schema';
+import { User, UserSchema } from 'src/common/schemas/user.schema';
 import { AnalyticsController } from './analytics.controller';
 import { AnalyticsService } from './analytics.service';
 
@@ -18,6 +19,7 @@ import { AnalyticsService } from './analytics.service';
       { name: GymModel.name, schema: GymSchema },
       { name: GymMembershipModel.name, schema: GymMembershipSchema },
       { name: AppPaymentModel.name, schema: AppPaymentSchema },
+      { name: User.name, schema: UserSchema },
     ]),
   ],
   controllers: [AnalyticsController],

@@ -1,13 +1,13 @@
 import { membersApi } from "@ahmedrioueche/gympro-client";
-import { Link } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import Button from "../../../../../components/ui/Button";
 import ErrorComponent from "../../../../../components/ui/Error";
 import Loading from "../../../../../components/ui/Loading";
 import { APP_PAGES } from "../../../../../constants/navigation";
-import { useTheme } from "../../../../../context/ThemeContext";
 import { useMembers } from "../../../../../hooks/queries/useMembers";
 import { useGymStore } from "../../../../../store/gym";
 import {
@@ -36,7 +36,7 @@ function MembersPage() {
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [sortBy, setSortBy] = useState<SortBy>("name");
   const [currentPage, setCurrentPage] = useState(1);
-  const { isDark } = useTheme();
+
   // Modal state
   const [selectedMember, setSelectedMember] = useState<MemberDisplay | null>(
     null
@@ -45,6 +45,7 @@ function MembersPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const navigate = useNavigate();
 
   // Fetch members using the API - paginated from backend
   const {
@@ -232,13 +233,14 @@ function MembersPage() {
                 {t("members.subtitle")}
               </p>
             </div>
-            <Link
-              to={APP_PAGES.gym.createMember.link}
-              className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg shadow-primary/30 hover:scale-105 transition-all duration-300 flex items-center gap-2 whitespace-nowrap justify-center"
+            <Button
+              onClick={() => navigate({ to: APP_PAGES.gym.createMember.link })}
+              className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
             >
-              <span>➕</span>
               {t("members.addMember")}
-            </Link>
+
+              <Plus className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+            </Button>
           </div>
 
           <MembersStats {...stats} />

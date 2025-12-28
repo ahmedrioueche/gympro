@@ -1,5 +1,5 @@
 import { Outlet } from "@tanstack/react-router";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy } from "react";
 import { bgGradient } from "./constants/styles";
 import { useTheme } from "./context/ThemeContext";
 import { useGymStore } from "./store/gym";
@@ -19,12 +19,6 @@ const EditUserProfileModal = lazy(
 const App = () => {
   const { isDark } = useTheme();
   const { clearGym } = useGymStore();
-
-  useEffect(() => {
-    return () => {
-      clearGym();
-    };
-  }, []);
 
   return (
     <div

@@ -266,6 +266,7 @@
     "analytics": "Analytics",
     "notifications": "Notifications",
     "settings": "Settings",
+    "access": "Access",
     "manageAccount": "Account management",
     "manageGym": "Gym management",
     "manageGyms": "Gym management",
@@ -580,6 +581,36 @@
       "title": "Insights Are Warming Up",
       "desc": "Once you have active gyms and member activity, we'll start visualizing your business performance here.",
       "action": "Manage My Gyms"
+    },
+    "gymHome": {
+      "title": "Gym Overview",
+      "slogan": "Slogan",
+      "address": "Address",
+      "hours": {
+        "title": "Operating Hours",
+        "mixed": "Mixed Session",
+        "menOnly": "Men Only",
+        "womenOnly": "Women Only",
+        "closed": "Closed"
+      },
+      "stats": {
+        "occupancy": "Current Occupancy",
+        "totalMembers": "Total Members",
+        "activeMembers": "Active Members",
+        "expiredMembers": "Expired Members"
+      },
+      "genderSplit": {
+        "title": "Gender Distribution",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "actions": {
+        "title": "Quick Actions",
+        "checkin": "Quick Check-in",
+        "enroll": "New Enrollment",
+        "report": "Report Issue"
+      }
     }
   },
   "demo": {
@@ -665,13 +696,41 @@
         "noGymDescription": "Create your first gym to start managing members and tracking performance",
         "createGym": "Create New Gym"
       }
+    },
+    "gym": {
+      "title": "Gym Branch Dashboard",
+      "subtitle": "Welcome back! Here's your branch performance overview",
+      "profile": {
+        "title": "Gym Profile",
+        "branchName": "Branch Name",
+        "accountStatus": "Status",
+        "editGym": "Edit Branch Settings"
+      },
+      "stats": {
+        "title": "Branch Performance",
+        "subtitle": "Real-time metrics for this location",
+        "totalMembers": "Total Members",
+        "activeMembers": "Active Members",
+        "occupancy": "Occupancy Rate",
+        "checkedIn": "Today's Check-ins"
+      },
+      "actions": {
+        "title": "Quick Actions",
+        "enroll": "New Enrollment",
+        "checkin": "Quick Check-in",
+        "report": "Report Issue"
+      },
+      "genderSplit": {
+        "title": "Gender Distribution",
+        "male": "Male",
+        "female": "Female"
+      }
     }
   },
   "members": {
     "title": "Members Management",
     "subtitle": "Manage your gym members and their subscriptions",
     "addMember": "Add New Member",
-    "search": "Search",
     "searchPlaceholder": "Search members",
     "viewMode": {
       "cards": "Cards View",

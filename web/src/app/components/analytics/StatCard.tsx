@@ -7,6 +7,8 @@ interface StatCardProps {
   trend?: number;
   trendLabel?: string;
   isLoading?: boolean;
+  loading?: boolean;
+  color?: "primary" | "success" | "warning" | "danger" | "secondary";
 }
 
 export default function StatCard({
@@ -16,8 +18,12 @@ export default function StatCard({
   trend,
   trendLabel,
   isLoading,
+  loading,
+  color = "primary",
 }: StatCardProps) {
-  if (isLoading) {
+  const isActuallyLoading = isLoading || loading;
+
+  if (isActuallyLoading) {
     return (
       <div className="bg-surface border border-border p-6 rounded-2xl animate-pulse">
         <div className="w-10 h-10 bg-border rounded-xl mb-4" />
@@ -29,11 +35,19 @@ export default function StatCard({
 
   const isPositive = trend && trend > 0;
 
+  const colorStyles = {
+    primary: "bg-primary/10 text-primary",
+    success: "bg-success/10 text-success",
+    warning: "bg-warning/10 text-warning",
+    danger: "bg-danger/10 text-danger",
+    secondary: "bg-secondary/10 text-secondary",
+  };
+
   return (
     <div className="bg-surface border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="flex items-center justify-between mb-4">
-        <div className="p-3 bg-primary/10 rounded-xl">
-          <Icon className="w-6 h-6 text-primary" />
+        <div className={`p-3 rounded-xl ${colorStyles[color]}`}>
+          <Icon className="w-6 h-6" />
         </div>
         {trend !== undefined && (
           <div

@@ -30,3 +30,21 @@ export interface GlobalAnalytics {
   revenueTrendData: { date: string; amount: number }[];
   memberTrendData: { date: string; count: number }[];
 }
+
+export interface GymAnalytics {
+  gymId: string;
+  metrics: {
+    totalMembers: number;
+    activeMembers: number;
+    expiredMembers: number;
+    checkedIn: number;
+    occupancyRate: number; // percentage based on some capacity
+  };
+  membershipDistribution: MembershipDistribution;
+  genderDistribution: {
+    male: number;
+    female: number;
+    other: number;
+  };
+  attendanceTrend: { date: string; count: number }[];
+}

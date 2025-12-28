@@ -1,5 +1,5 @@
 import { UserRole } from '@ahmedrioueche/gympro-client';
-import { Controller, Get, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles, RolesGuard } from '../users/guards/roles.guard';
 import { AnalyticsService } from './analytics.service';
@@ -14,6 +14,16 @@ export class AnalyticsController {
   async getGlobalStats(@Request() req: any) {
     const userId = req.user.sub;
     const stats = await this.analyticsService.getGlobalStats(userId);
+    return {
+      success: true,
+      data: stats,
+    };
+  }
+
+  @Get(':gymId')
+  @Roles(UserRole.Owner, UserRole.Manager)
+  async getGymStats(@Param('gymId') gymId: string) {
+    const stats = await this.analyticsService.getGymStats(gymId);
     return {
       success: true,
       data: stats,

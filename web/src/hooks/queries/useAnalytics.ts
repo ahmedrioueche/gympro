@@ -21,3 +21,22 @@ export function useGlobalAnalytics() {
     },
   });
 }
+
+export function useGymAnalytics(gymId: string) {
+  const { t } = useTranslation();
+
+  return useQuery({
+    queryKey: ["analytics", "gym", gymId],
+    queryFn: async () => {
+      const res = await analyticsApi.getGymStats(gymId);
+
+      if (!res.success) {
+        const msg = getMessage(res, t);
+        showStatusToast(msg, toast);
+        throw new Error(msg.message);
+      }
+      return res.data;
+    },
+    enabled: !!gymId,
+  });
+}
