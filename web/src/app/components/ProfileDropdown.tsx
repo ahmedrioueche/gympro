@@ -10,6 +10,7 @@ interface ProfileDropdownProps {
   onSettingsClick?: () => void;
   onMembershipsClick?: () => void;
   onLogoutClick?: () => void;
+  disabled?: boolean;
 }
 
 export default function ProfileDropdown({
@@ -17,6 +18,7 @@ export default function ProfileDropdown({
   onSettingsClick,
   onMembershipsClick,
   onLogoutClick,
+  disabled = false,
 }: ProfileDropdownProps) {
   const { t } = useTranslation();
   const { user } = useUserStore();
@@ -27,26 +29,29 @@ export default function ProfileDropdown({
     .join("")
     .toUpperCase();
 
+  const avatarElement = (
+    <>
+      {user?.profile?.profileImageUrl ? (
+        <img
+          src={user.profile.profileImageUrl}
+          alt={user?.profile?.fullName || "User"}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+      ) : (
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-white">
+          {initials}
+        </div>
+      )}
+    </>
+  );
+
+  // If disabled, just return the avatar without dropdown functionality
+  if (disabled) {
+    return <div className="cursor-default">{avatarElement}</div>;
+  }
+
   return (
-    <Dropdown
-      trigger={
-        <>
-          {/* Avatar */}
-          {user?.profile?.profileImageUrl ? (
-            <img
-              src={user.profile.profileImageUrl}
-              alt={user?.profile?.fullName || "User"}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-white">
-              {initials}
-            </div>
-          )}
-        </>
-      }
-      align="right"
-    >
+    <Dropdown trigger={avatarElement} align="right">
       {/* User Info Header */}
       <div className="px-4 py-3 border-b border-border flex items-center gap-3">
         {/* Avatar */}

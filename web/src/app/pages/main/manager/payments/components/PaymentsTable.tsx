@@ -40,7 +40,8 @@ function PaymentsTable({ payments }: PaymentsTableProps) {
 
   return (
     <div className="bg-surface border border-border rounded-2xl overflow-hidden">
-      <div className="overflow-x-auto">
+      {/* Desktop Table View - Hidden on Mobile */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border">
             <tr>
@@ -122,6 +123,73 @@ function PaymentsTable({ payments }: PaymentsTableProps) {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card View - Visible on Mobile Only */}
+      <div className="md:hidden divide-y divide-border">
+        {payments.map((payment) => (
+          <div key={payment._id} className="p-4 space-y-3">
+            {/* Header: Plan Name and Amount */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-text-primary text-base">
+                  {payment.plan?.name || "Unknown Plan"}
+                </h3>
+                {payment.description && (
+                  <p className="text-xs text-text-secondary mt-0.5">
+                    {payment.description}
+                  </p>
+                )}
+              </div>
+              <div className="text-right flex-shrink-0">
+                <div className="font-bold text-text-primary text-lg">
+                  {CURRENCY_SYMBOLS[
+                    payment.currency as keyof typeof CURRENCY_SYMBOLS
+                  ] || payment.currency}
+                  {payment.amount.toFixed(2)}
+                </div>
+              </div>
+            </div>
+
+            {/* Status and Provider Badges */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
+                  payment.status
+                )}`}
+              >
+                {t(`payments.status.${payment.status}`)}
+              </span>
+              <span
+                className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${getProviderColor(
+                  payment.provider
+                )}`}
+              >
+                {t(`payments.provider.${payment.provider}`)}
+              </span>
+            </div>
+
+            {/* Transaction Details */}
+            <div className="space-y-1.5 pt-2 border-t border-border/50">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-text-secondary">
+                  {t("payments.table.transactionId")}:
+                </span>
+                <span className="font-mono text-xs text-text-secondary">
+                  {payment.providerTransactionId.substring(0, 12)}...
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-text-secondary">
+                  {t("payments.table.date")}:
+                </span>
+                <span className="text-text-primary">
+                  {formatDate(payment.paidAt || payment.createdAt)}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

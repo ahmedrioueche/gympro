@@ -391,7 +391,7 @@
     "title": "Create Your Gym",
     "subtitle": "Set up your gym in just a few steps and start managing everything in one place",
     "step": "Step",
-    "success": "your gym was created successfully!",
+    "success": "Your gym was created successfully!",
     "error": "Could not create the gym right now, please try again later",
     "steps": {
       "step": "Step",
@@ -558,6 +558,28 @@
       "region": "Region",
       "contactSupportTitle": "Need a change?",
       "contactSupportDesc": "Please contact our support team to update your business region or currency."
+    }
+  },
+  "analytics": {
+    "title": "Business Insights",
+    "subtitle": "Track performance across all your gym locations",
+    "stats": {
+      "revenue": "Total Revenue",
+      "members": "Total Members",
+      "active": "Active Members",
+      "gyms": "Total Gyms",
+      "vsLastMonth": "vs. last month"
+    },
+    "charts": {
+      "revenueTrend": "Revenue Growth",
+      "revenueTrendDesc": "Monthly revenue across all locations",
+      "distribution": "Membership Status",
+      "distributionDesc": "Overview of current membership health"
+    },
+    "empty": {
+      "title": "Insights Are Warming Up",
+      "desc": "Once you have active gyms and member activity, we'll start visualizing your business performance here.",
+      "action": "Manage My Gyms"
     }
   },
   "demo": {

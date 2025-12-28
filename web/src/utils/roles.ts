@@ -24,6 +24,34 @@ export const getRoleHomePage = (role: UserRole): string => {
   }
 };
 
+export const getRoleBasedPage = (userRole: string, page: string): string => {
+  // Normalize the role (in case it comes in different formats)
+  let normalizedRole = userRole.toLowerCase().trim();
+  if (normalizedRole === "owner") normalizedRole = "manager";
+
+  // Check if the role exists in APP_PAGES
+  if (!(normalizedRole in APP_PAGES)) {
+    console.warn(`Role "${userRole}" not found in APP_PAGES`);
+    // Fallback to shared pages
+    const sharedPage = (APP_PAGES as any)[page];
+    return sharedPage?.link || "/";
+  }
+
+  const rolePages = (APP_PAGES as any)[normalizedRole];
+
+  // Check if rolePages is valid and has the requested page
+  if (rolePages && typeof rolePages === "object") {
+    const targetPage = rolePages[page];
+    if (targetPage && typeof targetPage === "object" && "link" in targetPage) {
+      return targetPage.link;
+    }
+  }
+
+  // Fallback to shared pages
+  const sharedPage = (APP_PAGES as any)[page];
+  return sharedPage?.link || "/";
+};
+
 /**
  * Get the redirect URL after login/signup based on user state
  */

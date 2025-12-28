@@ -4,7 +4,7 @@ import { useTheme } from "../../context/ThemeContext";
 
 interface DropdownProps {
   trigger: React.ReactNode;
-  children: React.ReactNode;
+  children: React.ReactNode | ((closeDropdown: () => void) => React.ReactNode);
   align?: "left" | "right";
   className?: string;
 }
@@ -19,13 +19,15 @@ export default function Dropdown({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { isDark } = useTheme();
 
+  const closeDropdown = () => setIsOpen(false);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        closeDropdown();
       }
     }
 
@@ -63,7 +65,11 @@ export default function Dropdown({
             }px`,
           }}
         >
-          <div className="py-2">{children}</div>
+          <div className="py-2">
+            {typeof children === "function"
+              ? children(closeDropdown)
+              : children}
+          </div>
         </div>
       )}
     </div>

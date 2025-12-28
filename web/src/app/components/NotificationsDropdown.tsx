@@ -1,4 +1,5 @@
 import { type AppNotification } from "@ahmedrioueche/gympro-client";
+import { useNavigate } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
 import { Bell, CheckCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -13,17 +14,13 @@ import {
   useMyNotifications,
   useUnreadNotificationsCount,
 } from "../../hooks/queries/useNotifications";
+import { useUserStore } from "../../store/user";
+import { getRoleBasedPage } from "../../utils/roles";
 
-interface NotificationsDropdownProps {
-  onNotificationClick?: (notificationId: string) => void;
-  onViewAllClick?: () => void;
-}
-
-export default function NotificationsDropdown({
-  onNotificationClick,
-  onViewAllClick,
-}: NotificationsDropdownProps) {
+export default function NotificationsDropdown() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { user } = useUserStore();
 
   // Data Fetching
   const { data: notificationsData } = useMyNotifications(1, 5); // Fetch latest 5
@@ -52,15 +49,24 @@ export default function NotificationsDropdown({
     }
   };
 
-  const handleItemClick = (notification: AppNotification) => {
+  const handleItemClick = (
+    notification: AppNotification,
+    closeDropdown: () => void
+  ) => {
     if (notification.status === "unread") {
       markAsReadMutation.mutate(notification._id);
     }
-    onNotificationClick?.(notification._id);
+    closeDropdown();
+    navigate({ to: getRoleBasedPage(user.role, "notifications") });
   };
 
   const handleMarkAllRead = () => {
     markAllAsReadMutation.mutate();
+  };
+
+  const handleViewAllClick = (closeDropdown: () => void) => {
+    closeDropdown();
+    navigate({ to: getRoleBasedPage(user.role, "notifications") });
   };
 
   return (
@@ -76,62 +82,69 @@ export default function NotificationsDropdown({
       align="right"
       className="w-80"
     >
-      <DropdownHeader className="flex items-center justify-between">
-        <span className="font-semibold">{t("notifications.title")}</span>
-        {unreadCount > 0 && (
-          <button
-            onClick={handleMarkAllRead}
-            className="text-xs text-primary hover:text-primary-hover flex items-center gap-1"
-          >
-            <CheckCheck className="w-3 h-3" />
-            {t("notifications.markAllRead")}
-          </button>
-        )}
-      </DropdownHeader>
+      {(closeDropdown) => (
+        <>
+          <DropdownHeader className="flex items-center justify-between">
+            <span className="font-semibold">{t("notifications.title")}</span>
+            {unreadCount > 0 && (
+              <button
+                onClick={handleMarkAllRead}
+                className="text-xs text-primary hover:text-primary-hover flex items-center gap-1"
+              >
+                <CheckCheck className="w-3 h-3" />
+                {t("notifications.markAllRead")}
+              </button>
+            )}
+          </DropdownHeader>
 
-      <DropdownDivider />
+          <DropdownDivider />
 
-      <div className="max-h-[300px] overflow-y-auto">
-        {notifications.length > 0 ? (
-          notifications.map((notification) => (
-            <DropdownItem
-              key={notification._id}
-              icon={getIcon(notification.type)}
-              label={notification.title}
-              description={
-                <div className="flex flex-col gap-1">
-                  <span>{notification.message}</span>
-                  <span className="text-xs text-text-tertiary">
-                    {formatDistanceToNow(new Date(notification.createdAt), {
-                      addSuffix: true,
-                      locale: i18n.language === "fr" ? undefined : undefined,
-                    })}
-                  </span>
-                </div>
-              }
-              rightContent={
-                notification.status === "unread" && (
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                )
-              }
-              onClick={() => handleItemClick(notification)}
-              className={notification.status === "unread" ? "bg-primary/5" : ""}
-            />
-          ))
-        ) : (
-          <div className="px-4 py-8 text-center text-text-secondary text-sm">
-            {t("notifications.empty")}
+          <div className="max-h-[300px] overflow-y-auto">
+            {notifications.length > 0 ? (
+              notifications.map((notification) => (
+                <DropdownItem
+                  key={notification._id}
+                  icon={getIcon(notification.type)}
+                  label={notification.title}
+                  description={
+                    <div className="flex flex-col gap-1">
+                      <span>{notification.message}</span>
+                      <span className="text-xs text-text-tertiary">
+                        {formatDistanceToNow(new Date(notification.createdAt), {
+                          addSuffix: true,
+                          locale:
+                            i18n.language === "fr" ? undefined : undefined,
+                        })}
+                      </span>
+                    </div>
+                  }
+                  rightContent={
+                    notification.status === "unread" && (
+                      <div className="w-2 h-2 bg-primary rounded-full" />
+                    )
+                  }
+                  onClick={() => handleItemClick(notification, closeDropdown)}
+                  className={
+                    notification.status === "unread" ? "bg-primary/5" : ""
+                  }
+                />
+              ))
+            ) : (
+              <div className="px-4 py-8 text-center text-text-secondary text-sm">
+                {t("notifications.empty")}
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      <DropdownDivider />
+          <DropdownDivider />
 
-      <DropdownItem
-        label={t("notifications.viewAll")}
-        onClick={onViewAllClick}
-        className="text-center justify-center font-medium text-primary hover:text-primary-hover py-3"
-      />
+          <DropdownItem
+            label={t("notifications.viewAll")}
+            onClick={() => handleViewAllClick(closeDropdown)}
+            className="text-center justify-center font-medium text-primary hover:text-primary-hover py-3"
+          />
+        </>
+      )}
     </Dropdown>
   );
 }

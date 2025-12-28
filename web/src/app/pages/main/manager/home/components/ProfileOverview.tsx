@@ -49,7 +49,7 @@ function ProfileOverview({
   };
 
   return (
-    <div className="relative mb-8 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-purple-600/10 p-6 md:p-8 shadow-sm">
+    <div className="relative mb-6 md:mb-12 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-purple-600/10 p-6 shadow-sm">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl md:text-3xl font-bold shadow-lg">

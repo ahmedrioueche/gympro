@@ -1,3 +1,4 @@
+export * from "./api/analytics";
 export * from "./api/appPayment";
 export * from "./api/appSubscription";
 export * from "./api/auth";
@@ -21,6 +22,7 @@ export * from "./dto/paddle";
 export * from "./dto/settings";
 export * from "./dto/users";
 export * from "./roles/permissions";
+export * from "./types/analytics";
 export * from "./types/api";
 export * from "./types/appPayment";
 export * from "./types/appSubscription";

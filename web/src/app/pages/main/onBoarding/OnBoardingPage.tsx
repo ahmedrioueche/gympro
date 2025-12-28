@@ -57,10 +57,7 @@ export function OnboardingPage() {
   const { updateProfile, updateUser } = useUserStore();
 
   // Use the region detection hook
-  const {
-    regionData,
-    isLoading: isDetectingRegion,
-  } = useRegionDetection({
+  const { regionData, isLoading: isDetectingRegion } = useRegionDetection({
     autoDetect: true,
     onDetected: (detected) => {
       setData((prev) => ({
@@ -128,6 +125,7 @@ export function OnboardingPage() {
               },
               theme: "auto",
               notifications: undefined,
+              viewPreference: "table",
             },
           });
           updateProfile({ isOnBoarded: true });

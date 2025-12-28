@@ -196,14 +196,14 @@ function EditUserProfileModal() {
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Email */}
+                {/* Email - Always Disabled */}
                 <InputField
                   label={t("profile.edit.email", "Email")}
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  disabled={!isEditMode}
+                  disabled={true}
                   placeholder={t(
                     "profile.edit.email_placeholder",
                     "Enter your email"
@@ -211,14 +211,14 @@ function EditUserProfileModal() {
                   leftIcon={<Mail className="w-5 h-5" />}
                 />
 
-                {/* Phone Number */}
+                {/* Phone Number - Always Disabled */}
                 <InputField
                   label={t("profile.edit.phone", "Phone Number")}
                   type="tel"
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  disabled={!isEditMode}
+                  disabled={true}
                   placeholder={t(
                     "profile.edit.phone_placeholder",
                     "Enter your phone number"

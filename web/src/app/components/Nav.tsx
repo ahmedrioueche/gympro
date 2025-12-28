@@ -54,10 +54,6 @@ export default function Nav({ children, sidebarLinks }) {
       // handle error
     }
   };
-  const handleNotificationClick = (notificationId: string) => {};
-  const handleViewAllNotifications = () => {
-    navigate({ to: "/manager/notifications" });
-  };
 
   // Sidebar menu item with light sweep effect
   const SidebarMenuItem = ({ link, isActive }) => {
@@ -159,15 +155,14 @@ export default function Nav({ children, sidebarLinks }) {
   // Top right controls
   const TopRightControls = () => (
     <div className="flex items-center gap-2 md:gap-4 px-4 py-4">
-      <NotificationsDropdown
-        onNotificationClick={handleNotificationClick}
-        onViewAllClick={handleViewAllNotifications}
-      />
+      <NotificationsDropdown />
+
       <ProfileDropdown
         onProfileClick={handleProfileClick}
         onSettingsClick={handleSettingsClick}
         onMembershipsClick={handleMembershipsClick}
         onLogoutClick={handleLogout}
+        disabled
       />
     </div>
   );
