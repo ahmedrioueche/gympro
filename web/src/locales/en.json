@@ -658,6 +658,23 @@
         "enroll": "New Enrollment",
         "report": "Report Issue"
       }
+    },
+    "gym": {
+      "title": "Gym Analytics",
+      "subtitle": "Track performance and member activity for this location",
+      "stats": {
+        "totalMembers": "Total Members",
+        "activeMembers": "Active Members",
+        "expiredMembers": "Expired Members",
+        "checkedIn": "Checked In Today",
+        "occupancy": "Occupancy Rate"
+      },
+      "charts": {
+        "attendance": "Attendance Trend",
+        "attendanceDesc": "Daily check-ins over time",
+        "genderDist": "Gender Distribution",
+        "genderDistDesc": "Member demographics breakdown"
+      }
     }
   },
   "demo": {
