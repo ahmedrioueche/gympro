@@ -140,6 +140,27 @@ export const useUpdateGym = () => {
 };
 
 /**
+ * Update gym settings
+ */
+export const useUpdateGymSettings = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const response = await gymApi.updateGymSettings(id, data);
+      return response;
+    },
+    onSuccess: (response, variables) => {
+      // Invalidate specific gym and all lists
+      queryClient.invalidateQueries({ queryKey: gymKeys.detail(variables.id) });
+      queryClient.invalidateQueries({ queryKey: gymKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: gymKeys.myGyms() });
+      queryClient.invalidateQueries({ queryKey: gymKeys.allMyGyms() });
+    },
+  });
+};
+
+/**
  * Delete a gym
  */
 export const useDeleteGym = () => {

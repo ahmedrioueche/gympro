@@ -197,6 +197,51 @@ export class GymService {
     return updatedGym;
   }
 
+  async updateSettings(id: string, updateSettingsDto: any, userId: string) {
+    // Find the gym
+    const gym = await this.gymModel.findById(id).exec();
+    if (!gym) {
+      throw new NotFoundException(`Gym with ID ${id} not found`);
+    }
+
+    // Verify the user is the gym owner
+    if (gym.owner.toString() !== userId) {
+      throw new ConflictException(
+        'You are not authorized to update this gym settings',
+      );
+    }
+
+    // Convert Mongoose document to plain object to avoid issues with merging
+    const currentSettings = gym.settings?.toObject
+      ? gym.settings.toObject()
+      : gym.settings || {};
+
+    // Deep merge settings to handle nested objects properly
+    const updatedSettings = {
+      ...currentSettings,
+      ...updateSettingsDto,
+      // Handle nested objects explicitly
+      workingHours: updateSettingsDto.workingHours
+        ? {
+            ...(currentSettings.workingHours || {}),
+            ...updateSettingsDto.workingHours,
+          }
+        : currentSettings.workingHours,
+      femaleOnlyHours:
+        updateSettingsDto.femaleOnlyHours !== undefined
+          ? updateSettingsDto.femaleOnlyHours
+          : currentSettings.femaleOnlyHours,
+    };
+
+    // Update the gym with new settings
+    const updatedGym = await this.gymModel
+      .findByIdAndUpdate(id, { settings: updatedSettings }, { new: true })
+      .populate('owner')
+      .exec();
+
+    return updatedGym;
+  }
+
   async remove(id: string) {
     const deletedGym = await this.gymModel.findByIdAndDelete(id).exec();
     if (!deletedGym) {

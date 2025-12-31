@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 
@@ -33,9 +34,9 @@ export function MembersEmptyState({
         {isNoMembers ? (
           <Link
             to={APP_PAGES.gym.createMember.link}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl hover:scale-105 transition-all duration-300"
+            className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
           >
-            <span>➕</span>
+            <Plus />
             {t("members.empty.action")}
           </Link>
         ) : (

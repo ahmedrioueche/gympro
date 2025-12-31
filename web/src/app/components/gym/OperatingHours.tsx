@@ -12,6 +12,8 @@ export default function OperatingHours({ settings }: OperatingHoursProps) {
   if (!settings?.workingHours) return null;
 
   const { start, end } = settings.workingHours;
+  const isMixed = settings.isMixed ?? false;
+  const femaleOnlyHours = settings.femaleOnlyHours || [];
 
   return (
     <div className="bg-surface border border-border rounded-3xl p-6 shadow-sm">
@@ -20,55 +22,82 @@ export default function OperatingHours({ settings }: OperatingHoursProps) {
           <Clock className="w-5 h-5" />
         </div>
         <h3 className="text-xl font-bold text-text-primary">
-          {t("gymHome.hours.title")}
+          {t("home.gym.hours.title")}
         </h3>
       </div>
 
       <div className="space-y-4">
-        {/* Mixed Session */}
-        <div className="flex items-center justify-between p-4 bg-muted/30 rounded-2xl border border-border/50">
+        {/* Total Working Hours */}
+        <div className="flex items-center justify-between p-4 bg-muted/10 rounded-2xl border border-border/50">
           <div className="flex items-center gap-3">
-            <Users className="w-5 h-5 text-indigo-500" />
+            <Clock className="w-5 h-5 text-primary" />
             <span className="font-semibold text-text-primary">
-              {t("gymHome.hours.mixed")}
+              {t("settings.gym.general.workingHours", "Working Hours")}
             </span>
           </div>
-          <span className="text-text-secondary font-mono">
+          <span className="text-text-secondary font-mono font-bold">
             {start} - {end}
           </span>
         </div>
 
-        {/* Women Only (if applicable) */}
-        {settings.femaleOnlyHours && settings.femaleOnlyHours.length > 0 && (
-          <div className="flex items-center justify-between p-4 bg-pink-500/5 rounded-2xl border border-pink-500/20">
+        {/* Gender Specific Hours */}
+        {isMixed ? (
+          <div className="flex items-center justify-between p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/20">
             <div className="flex items-center gap-3">
-              <UserCheck className="w-5 h-5 text-pink-500" />
-              <span className="font-semibold text-pink-600">
-                {t("gymHome.hours.womenOnly")}
+              <Users className="w-5 h-5 text-indigo-500" />
+              <span className="font-semibold text-indigo-600">
+                {t("home.gym.hours.mixed")}
               </span>
             </div>
-            <div className="flex flex-col items-end">
-              {settings.femaleOnlyHours.map((slot, idx) => (
-                <span key={idx} className="text-pink-700 font-mono text-sm">
-                  {slot.range.start} - {slot.range.end}
-                </span>
+            <span className="text-indigo-700 font-mono text-sm font-bold">
+              {start} - {end}
+            </span>
+          </div>
+        ) : femaleOnlyHours.length > 0 ? (
+          <div className="border border-pink-500/20 bg-pink-500/5 rounded-2xl p-4 space-y-3">
+            <div className="flex items-center gap-3 mb-2">
+              <UserCheck className="w-5 h-5 text-pink-500" />
+              <span className="font-semibold text-pink-600">
+                {t("home.gym.hours.womenOnly")}
+              </span>
+            </div>
+
+            <div className="grid gap-2 grid-cols-1 sm:grid-cols-3">
+              {femaleOnlyHours.map((slot, idx) => (
+                <div
+                  key={idx}
+                  className=" bg-surface/50 border border-border rounded-xl p-3 flex flex-col gap-1.5 shadow-sm"
+                >
+                  <span className="text-pink-700 font-mono text-sm font-bold block">
+                    {slot.range.start} - {slot.range.end}
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {slot.days.map((day) => (
+                      <span
+                        key={day}
+                        className="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded-md bg-pink-100 text-pink-600 border border-pink-200"
+                      >
+                        {t(
+                          `settings.gym.general.days.${day.toLowerCase()}`,
+                          day.slice(0, 3)
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
-        )}
-
-        {/* Men Only (Logic usually inverse of women or custom, but let's assume standard for now) */}
-        {/* In many gyms if it's not mixed and not women, it's men. But let's show mixed if isMixed is true */}
-        {!settings.isMixed && (
+        ) : (
           <div className="flex items-center justify-between p-4 bg-blue-500/5 rounded-2xl border border-blue-500/20">
             <div className="flex items-center gap-3">
               <User className="w-5 h-5 text-blue-500" />
               <span className="font-semibold text-blue-600">
-                {t("gymHome.hours.menOnly")}
+                {t("home.gym.hours.menOnly")}
               </span>
             </div>
-            <span className="text-blue-700 font-mono text-sm">
-              Custom Slots
+            <span className="text-blue-700 font-mono text-sm font-bold">
+              {start} - {end}
             </span>
           </div>
         )}

@@ -56,7 +56,7 @@ export default function HomePage() {
         <PageHeader
           icon={Dumbbell}
           title={currentGym.name}
-          subtitle={t("home.gym.subtitle")}
+          subtitle={currentGym.slogan || t("home.gym.subtitle")}
           actionButton={{
             label: t("home.gym.profile.editGym"),
             onClick: () => {

@@ -81,6 +81,22 @@ export const gymApi = {
     }
   },
 
+  /** Update gym settings */
+  updateGymSettings: async (
+    id: string,
+    updateSettingsDto: any
+  ): Promise<ApiResponse<Gym>> => {
+    try {
+      const res = await apiClient.patch<ApiResponse<Gym>>(
+        `/gyms/${id}/settings`,
+        updateSettingsDto
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** Delete a gym */
   remove: async (id: string): Promise<ApiResponse<Gym>> => {
     try {

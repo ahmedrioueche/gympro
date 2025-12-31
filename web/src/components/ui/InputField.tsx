@@ -1,6 +1,6 @@
-import { EyeOff, Eye } from "lucide-react";
-import React, { forwardRef, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import type { ReactNode } from "react";
+import React, { forwardRef, useState } from "react";
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -52,7 +52,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
     // Base classes with hover effects and password reveal button disabled
     const baseClasses =
-      "block w-full py-3 border rounded-xl bg-surface text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:border-primary/50 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden";
+      "block w-full py-3 border rounded-xl bg-surface text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:border-primary/50 [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-70 [&::-webkit-calendar-picker-indicator]:hover:opacity-100";
 
     // Dynamic padding based on icons
     const paddingLeft = leftIcon ? "pl-10" : "pl-3";

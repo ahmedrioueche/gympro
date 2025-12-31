@@ -154,6 +154,36 @@ export class GymController {
     }
   }
 
+  @Patch(':id/settings')
+  @UseGuards(JwtAuthGuard)
+  async updateSettings(
+    @Param('id') id: string,
+    @Body() updateSettingsDto: any,
+    @Req() req: any,
+  ) {
+    try {
+      const userId = req.user?.sub;
+      const gym = await this.gymService.updateSettings(
+        id,
+        updateSettingsDto,
+        userId,
+      );
+      return apiResponse(
+        true,
+        undefined,
+        gym,
+        'Gym settings updated successfully',
+      );
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPDATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

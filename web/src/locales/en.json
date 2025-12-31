@@ -606,6 +606,79 @@
       "region": "Region",
       "contactSupportTitle": "Need a change?",
       "contactSupportDesc": "Please contact our support team to update your business region or currency."
+    },
+    "gym": {
+      "pageTitle": "Gym Settings",
+      "pageSubtitle": "Configure your gym-specific preferences and policies",
+      "saveSuccess": "Gym settings updated successfully",
+      "saveError": "Failed to update gym settings",
+      "tabs": {
+        "general": "General",
+        "notifications": "Notifications",
+        "services": "Services"
+      },
+      "general": {
+        "title": "General Settings",
+        "workingHours": "Working Hours",
+        "workingHoursDesc": "Set your gym's operating hours",
+        "startTime": "Opening Time",
+        "endTime": "Closing Time",
+        "genderPolicy": "Gender Policy",
+        "genderPolicyDesc": "Configure mixed or gender-specific training sessions",
+        "isMixed": "Mixed Training",
+        "isMixedDesc": "Allow males and females to train together",
+        "femaleOnlyHours": "Female-Only Hours",
+        "femaleOnlyHoursDesc": "Specify time ranges reserved for female members",
+        "addTimeSlot": "Add Slot",
+        "slot": "Slot",
+        "newTimeSlot": "New Time Slot",
+        "editSlot": "Edit Slot",
+        "day": "Days",
+        "timeRange": "Time Range",
+        "noFemaleHours": "No female-only hours configured",
+        "selectAtLeastOneDay": "Please select at least one day",
+        "saveChanges": "Save Changes",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "days": {
+          "monday": "Mon",
+          "tuesday": "Tue",
+          "wednesday": "Wed",
+          "thursday": "Thu",
+          "friday": "Fri",
+          "saturday": "Sat",
+          "sunday": "Sun"
+        }
+      },
+      "notifications": {
+        "title": "Notification Settings",
+        "enabled": "Notifications Enabled",
+        "enabledDesc": "Enable or disable gym-wide notifications",
+        "renewalReminder": "Renewal Reminder",
+        "renewalReminderDesc": "Days before subscription expiry to notify members",
+        "reminderDays": "Reminder Days",
+        "reminderDaysPlaceholder": "e.g., 7",
+        "note": "Automated Reminders",
+        "noteDesc": "Members will receive automatic notifications before their subscriptions expire."
+      },
+      "services": {
+        "title": "Services & Payments",
+        "paymentMethods": "Accepted Payment Methods",
+        "paymentMethodsDesc": "Select which payment methods your gym accepts",
+        "cash": "Cash",
+        "card": "Card",
+        "online": "Online Payment",
+        "servicesOffered": "Services Offered",
+        "servicesOfferedDesc": "Select the types of subscriptions available at your gym",
+        "gym": "General Gym Access",
+        "cardio": "Cardio Training",
+        "crossfit": "CrossFit",
+        "swimming": "Swimming",
+        "customSubscriptions": "Custom Subscriptions",
+        "customSubscriptionsDesc": "Allow creation of custom subscription types",
+        "allowCustom": "Allow Custom Subscriptions",
+        "allowCustomDesc": "Enable gym owners to create custom subscription plans"
+      }
     }
   },
   "analytics": {
@@ -768,7 +841,7 @@
         "title": "Gym Profile",
         "branchName": "Branch Name",
         "accountStatus": "Status",
-        "editGym": "Edit Branch Settings"
+        "editGym": "Edit Gym Settings"
       },
       "stats": {
         "title": "Branch Performance",
@@ -788,6 +861,13 @@
         "title": "Gender Distribution",
         "male": "Male",
         "female": "Female"
+      },
+      "hours": {
+        "title": "Operating Hours",
+        "mixed": "Mixed Hours",
+        "womenOnly": "Women Only",
+        "menOnly": "Men Only",
+        "customSlots": "Custom slots"
       }
     }
   },

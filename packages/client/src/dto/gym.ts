@@ -19,3 +19,5 @@ export type CreateGymDto = {
   latitude?: number;
   longitude?: number;
 };
+
+export type UpdateGymSettingsDto = Partial<GymSettings>;

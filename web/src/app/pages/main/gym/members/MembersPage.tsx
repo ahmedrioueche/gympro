@@ -1,15 +1,15 @@
 import { membersApi } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import Button from "../../../../../components/ui/Button";
 import ErrorComponent from "../../../../../components/ui/Error";
 import Loading from "../../../../../components/ui/Loading";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import { useMembers } from "../../../../../hooks/queries/useMembers";
 import { useGymStore } from "../../../../../store/gym";
+import PageHeader from "../../../../components/PageHeader";
 import {
   DeleteConfirmationDialog,
   EditMemberModal,
@@ -17,7 +17,6 @@ import {
   MemberProfileModal,
   MembersControls,
   MembersEmptyState,
-  MembersStats,
   MembersTable,
   getMemberDisplay,
   type FilterStatus,
@@ -220,31 +219,18 @@ function MembersPage() {
   return (
     <div className="min-h-screen p-3 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
-        {/* Header Section */}
-        <div
-          className={`bg-gradient-to-br from-primary/5 via-secondary/5 border border-border rounded-2xl p-4 md:p-8`}
-        >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-1 md:mb-2">
-                {t("members.title")}
-              </h1>
-              <p className="text-sm md:text-base text-text-secondary">
-                {t("members.subtitle")}
-              </p>
-            </div>
-            <Button
-              onClick={() => navigate({ to: APP_PAGES.gym.createMember.link })}
-              className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              {t("members.addMember")}
-
-              <Plus className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-            </Button>
-          </div>
-
-          <MembersStats {...stats} />
-        </div>
+        <PageHeader
+          icon={Users}
+          title={t("members.title")}
+          subtitle={t("members.subtitle")}
+          actionButton={{
+            label: t("members.addMember"),
+            onClick: () => {
+              navigate({ to: APP_PAGES.gym.createMember.link });
+            },
+            icon: Plus,
+          }}
+        />
 
         {/* Controls Section */}
         <MembersControls
