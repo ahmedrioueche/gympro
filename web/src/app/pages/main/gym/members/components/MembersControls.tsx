@@ -1,6 +1,7 @@
 import { ArrowUpDown, ChevronDown, Filter } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { SearchInput } from "../../../../../../components/ui/SearchInput";
 
 type ViewMode = "cards" | "table";
 type FilterStatus = "all" | "active" | "pending" | "expired" | "banned";
@@ -28,73 +29,18 @@ export function MembersControls({
   onViewModeChange,
 }: MembersControlsProps) {
   const { t } = useTranslation();
-  const [localSearchValue, setLocalSearchValue] = useState(searchQuery);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const debounceTimerRef = useRef<number | undefined>(undefined);
-
-  // Sync local value with prop when it changes externally
-  useEffect(() => {
-    setLocalSearchValue(searchQuery);
-  }, [searchQuery]);
-
-  // Handle clearing search
-  const handleClearSearch = () => {
-    onSearchChange("");
-    setLocalSearchValue("");
-  };
-
-  // Debounced search handler
-  const handleSearchInput = (value: string) => {
-    setLocalSearchValue(value);
-
-    // Clear existing timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    // Set new timer for debounced update
-    debounceTimerRef.current = setTimeout(() => {
-      onSearchChange(value);
-    }, 500); // 500ms debounce
-  };
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
 
   return (
     <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-5 w-full max-w-full relative z-0">
       {/* Desktop Layout */}
       <div className="hidden lg:flex items-center gap-3">
         {/* Search Input */}
-        <div className="relative w-80">
-          <div className="relative">
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder={t("members.searchPlaceholder")}
-              value={localSearchValue}
-              onChange={(e) => handleSearchInput(e.target.value)}
-              className="w-full px-4 py-2.5 pl-11 pr-10 focus:ring-1 focus:ring-primary bg-background border border-border rounded-xl text-text-primary placeholder-text-secondary focus:outline-none focus:border-border focus:ring-0 transition-all"
-            />
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-lg">
-              🔍
-            </span>
-            {localSearchValue && (
-              <button
-                onClick={handleClearSearch}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-danger w-6 h-6 flex items-center justify-center rounded-full hover:bg-danger/10 transition-colors"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={onSearchChange}
+          placeholder={t("members.searchPlaceholder")}
+          className="w-80"
+        />
 
         {/* Filters */}
         <div className="flex items-center gap-3 flex-1">
@@ -151,27 +97,12 @@ export function MembersControls({
       {/* Mobile/Tablet Layout */}
       <div className="lg:hidden space-y-3">
         {/* Row 1: Search - Full Width */}
-        <div className="relative w-full">
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder={t("members.searchPlaceholder")}
-            value={localSearchValue}
-            onChange={(e) => handleSearchInput(e.target.value)}
-            className="w-full px-4 py-2.5 pl-10 pr-10 bg-background border border-border rounded-xl text-text-primary placeholder-text-secondary focus:outline-none focus:border-border focus:ring-0 transition-all text-sm"
-          />
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base">
-            🔍
-          </span>
-          {localSearchValue && (
-            <button
-              onClick={handleClearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-danger w-6 h-6 flex items-center justify-center rounded-full hover:bg-danger/10 transition-colors"
-            >
-              ✕
-            </button>
-          )}
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={onSearchChange}
+          placeholder={t("members.searchPlaceholder")}
+          className="w-full"
+        />
 
         {/* Row 2: View Toggles & Filters */}
         <div className="flex items-center justify-between gap-2">

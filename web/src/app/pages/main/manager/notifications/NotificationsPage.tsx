@@ -89,6 +89,7 @@ export default function NotificationsPage() {
             label: t("notifications.markAllRead", "Mark all as read"),
             icon: CheckCheck,
             onClick: () => markAllAsReadMutation.mutate(),
+            disabled: notifications.length === 0,
           }}
         />
 

@@ -11,6 +11,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { AppBillingModule } from './modules/appBilling/appBilling.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ChargilyModule } from './modules/chargily/chargily.module';
 import { GymModule } from './modules/gym/gym.module';
@@ -72,6 +73,7 @@ import { UsersModule } from './modules/users/users.module';
     PaddleModule,
     NotificationsModule,
     AnalyticsModule,
+    AttendanceModule,
   ],
   controllers: [AppController],
   providers: [

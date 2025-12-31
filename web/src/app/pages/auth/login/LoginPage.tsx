@@ -97,18 +97,16 @@ function LoginPage() {
 
   // Validation function
   const isFormValid = () => {
-    const { email, phoneNumber, password } = formData;
+    const { email, password } = formData;
 
     if (method === "email") {
       if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) return false;
     } else {
       // Validate phone number length (should be between 7-15 digits)
-      if (
-        !phoneNumber.trim() ||
-        phoneNumber.length < 7 ||
-        phoneNumber.length > 15
-      )
+      const phoneNum = phone.phoneNumber.trim();
+      if (!phoneNum || phoneNum.length < 7 || phoneNum.length > 15) {
         return false;
+      }
     }
 
     if (!password || password.length < 6) return false;
@@ -126,7 +124,7 @@ function LoginPage() {
       const identifier =
         method === "email"
           ? formData.email
-          : parsePhoneNumber(phone.countryCode, formData.phoneNumber);
+          : parsePhoneNumber(phone.countryCode, phone.phoneNumber);
 
       const response = await authApi.signin({
         identifier: identifier,

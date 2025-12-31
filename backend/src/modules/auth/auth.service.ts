@@ -580,6 +580,21 @@ export class AuthService {
     return { valid: true };
   }
 
+  // --- GENERATE ACCESS QR TOKEN ---
+  async generateAccessQR(memberId: string, gymId: string) {
+    const payload = {
+      memberId,
+      gymId,
+      iat: Math.floor(Date.now() / 1000),
+    };
+
+    const token = this.jwtService.sign(payload, {
+      expiresIn: '30s',
+    });
+
+    return { token };
+  }
+
   // --- HELPER: GET USER BY PHONE ---
   async getUserByPhoneNumber(phoneNumber: string) {
     return this.userModel.findOne({ 'profile.phoneNumber': phoneNumber });

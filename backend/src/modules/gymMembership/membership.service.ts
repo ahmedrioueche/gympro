@@ -187,6 +187,7 @@ export class MembershipService {
 
     // Create gym membership
     const membership = new this.membershipModel({
+      user: user._id,
       gym: new Types.ObjectId(gymId),
       roles: [UserRole.Member],
       joinedAt: new Date().toISOString(),

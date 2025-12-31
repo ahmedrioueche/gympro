@@ -1,6 +1,7 @@
 export * from "./api/analytics";
 export * from "./api/appPayment";
 export * from "./api/appSubscription";
+export * from "./api/attendance";
 export * from "./api/auth";
 export * from "./api/chargily";
 export * from "./api/config";

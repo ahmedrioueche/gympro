@@ -1,5 +1,5 @@
 import { type AppNotification } from "@ahmedrioueche/gympro-client";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
 import { Bell, CheckCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -14,16 +14,29 @@ import {
   useMyNotifications,
   useUnreadNotificationsCount,
 } from "../../hooks/queries/useNotifications";
+import { useGymStore } from "../../store/gym";
 import { useUserStore } from "../../store/user";
 import { getRoleBasedPage } from "../../utils/roles";
 
 export default function NotificationsDropdown() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const routerState = useRouterState();
   const { user } = useUserStore();
+  const { currentGym } = useGymStore();
 
-  // Data Fetching
-  const { data: notificationsData } = useMyNotifications(1, 5); // Fetch latest 5
+  // Determine if we're in gym context
+  const isOnGymDashboard = routerState.location.pathname.startsWith("/gym");
+  const gymId = isOnGymDashboard ? currentGym?._id : undefined;
+
+  // Data Fetching - pass gymId for gym-specific notifications
+  const { data: notificationsData } = useMyNotifications(
+    1,
+    5,
+    undefined,
+    undefined,
+    gymId
+  );
   const { data: unreadData } = useUnreadNotificationsCount();
   const markAsReadMutation = useMarkNotificationAsRead();
   const markAllAsReadMutation = useMarkAllNotificationsAsRead();

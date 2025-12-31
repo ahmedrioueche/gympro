@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import type {
+  AccessQrData,
   ForgotPasswordData,
   GetMeData,
   GoogleAuthUrlData,
@@ -277,6 +278,20 @@ export const authApi = {
       const res = await apiClient.post<
         ApiResponse<VerifyForgotPasswordOtpData>
       >("/auth/verify-forgot-password-otp", dto);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+  /** Generate access QR token (short-lived) */
+  generateAccessQR: async (
+    gymId: string
+  ): Promise<ApiResponse<AccessQrData>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<AccessQrData>>(
+        "/auth/access-qr",
+        { gymId }
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

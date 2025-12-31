@@ -107,3 +107,6 @@ export interface CreateMemberData {
   user: User;
   setupLink?: string;
 }
+export interface AccessQrData {
+  token: string;
+}

@@ -13,7 +13,7 @@ import {
 } from '../appBilling/appBilling.schema';
 import { AppPlansService } from '../appBilling/plan/plan.service';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
-import { AttendanceRecordSchema } from '../attendace/attendance.schema';
+import { AttendanceRecordSchema } from '../attendance/attendance.schema';
 import { GymModule } from '../gym/gym.module';
 import { GymModel, GymSchema } from '../gym/gym.schema';
 import { GymMembershipSchema } from '../gymMembership/membership.schema';

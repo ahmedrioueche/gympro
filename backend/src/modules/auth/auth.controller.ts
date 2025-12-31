@@ -413,6 +413,14 @@ export class AuthController {
     );
   }
 
+  @Post('access-qr')
+  @UseGuards(JwtAuthGuard)
+  async generateAccessQR(@Req() req: any, @Body('gymId') gymId: string) {
+    const userId = req.user?.sub;
+    const result = await this.authService.generateAccessQR(userId, gymId);
+    return apiResponse(true, undefined, result);
+  }
+
   // -----------------------------
   // Helper methods for cookie management
   // -----------------------------

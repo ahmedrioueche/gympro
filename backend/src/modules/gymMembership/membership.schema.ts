@@ -23,6 +23,9 @@ export class CustomPermissionsModel implements Partial<RolePermissions> {
 export class GymMembershipModel extends Document {
   declare _id: Types.ObjectId;
 
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true, index: true })
+  user: Types.ObjectId;
+
   @Prop({ type: Types.ObjectId, ref: 'GymModel', required: true })
   gym: Types.ObjectId;
 

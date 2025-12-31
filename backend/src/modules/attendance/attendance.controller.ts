@@ -1,0 +1,33 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AttendanceService } from './attendance.service';
+
+@Controller('attendance')
+@UseGuards(JwtAuthGuard)
+export class AttendanceController {
+  constructor(private readonly attendanceService: AttendanceService) {}
+
+  @Post('check-in')
+  async checkIn(@Body() body: { token: string; gymId: string }) {
+    return this.attendanceService.checkIn(body.token, body.gymId);
+  }
+
+  @Get('access-token/:gymId')
+  async getAccessToken(@Param('gymId') gymId: string, @Request() req: any) {
+    const memberId = req.user.sub;
+    return this.attendanceService.generateAccessToken(memberId, gymId);
+  }
+
+  @Get('logs/:gymId')
+  async getLogs(@Param('gymId') gymId: string) {
+    return this.attendanceService.getAttendanceLogs(gymId);
+  }
+}

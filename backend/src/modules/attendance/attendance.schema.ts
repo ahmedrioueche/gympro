@@ -7,7 +7,7 @@ import { ATTENDANCE_STATUSES } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'attendance_records' })
 export class AttendanceRecordModel
   extends Document
   implements AttendanceRecord
@@ -17,8 +17,8 @@ export class AttendanceRecordModel
   @Prop({ type: Types.ObjectId, ref: 'GymModel', required: true, index: true })
   gymId: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true, index: true })
-  userId: string;
+  @Prop({ type: Types.ObjectId, ref: 'User', required: false, index: true })
+  userId?: string;
 
   @Prop({ type: Date, required: true })
   checkIn: string | Date;
@@ -35,6 +35,9 @@ export class AttendanceRecordModel
 
   @Prop()
   notes?: string;
+
+  @Prop({ type: Date })
+  expiryDate?: string | Date;
 
   @Prop({ required: true })
   createdAt: Date;

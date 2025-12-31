@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../constants/navigation";
 import { useAllMyGyms } from "../../hooks/queries/useGyms";
 import useScreen from "../../hooks/useScreen";
+import { useGymStore } from "../../store/gym";
 import { useSidebarStore } from "../../store/sidebar";
 import { useUserStore } from "../../store/user";
 import { getRoleHomePage } from "../../utils/roles";
@@ -24,8 +25,17 @@ export default function Nav({ children, sidebarLinks }) {
   const sidebarRef = useRef(null);
   const { isMobile } = useScreen();
   const { user, setUser } = useUserStore();
+  const { clearGym } = useGymStore();
   const activeRoute = location.pathname;
   const { data: gyms = [] } = useAllMyGyms();
+
+  // Clear gym selection when navigating away from gym routes
+  useEffect(() => {
+    const isOnGymRoute = activeRoute.startsWith("/gym");
+    if (!isOnGymRoute) {
+      clearGym();
+    }
+  }, [activeRoute, clearGym]);
 
   // Close mobile sidebar when clicking outside
   useEffect(() => {

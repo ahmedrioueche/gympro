@@ -9,8 +9,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 export const notificationKeys = {
   all: ["notifications"] as const,
   lists: () => [...notificationKeys.all, "list"] as const,
-  list: (page: number, limit: number, status?: string, search?: string) =>
-    [...notificationKeys.lists(), { page, limit, status, search }] as const,
+  list: (
+    page: number,
+    limit: number,
+    status?: string,
+    search?: string,
+    gymId?: string
+  ) =>
+    [
+      ...notificationKeys.lists(),
+      { page, limit, status, search, gymId },
+    ] as const,
   unreadCount: () => [...notificationKeys.all, "unread"] as const,
 };
 
@@ -22,12 +31,13 @@ export function useMyNotifications(
   limit = 20,
   status?: string,
   search?: string,
+  gymId?: string,
   options: any = {}
 ) {
   return useQuery<ApiResponse<GetNotificationsResponseDto>, Error>({
-    queryKey: notificationKeys.list(page, limit, status, search),
+    queryKey: notificationKeys.list(page, limit, status, search, gymId),
     queryFn: () =>
-      notificationsApi.getMyNotifications(page, limit, status, search),
+      notificationsApi.getMyNotifications(page, limit, status, search, gymId),
     staleTime: 1000 * 30, // 30 seconds
     ...options,
   });

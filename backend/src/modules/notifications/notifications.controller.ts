@@ -31,6 +31,7 @@ export class NotificationsController {
     @Query('limit') limit = 20,
     @Query('status') status?: string,
     @Query('search') search?: string,
+    @Query('gymId') gymId?: string,
   ) {
     const userId = req.user.sub;
     const skip = (page - 1) * limit;
@@ -38,6 +39,10 @@ export class NotificationsController {
     const query: any = { userId };
     if (status) {
       query.status = status;
+    }
+
+    if (gymId) {
+      query.gymId = gymId;
     }
 
     if (search) {

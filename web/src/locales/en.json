@@ -29,7 +29,13 @@
       "showing": "Showing {{start}}-{{end}} of {{total}}"
     },
     "saveChanges": "Save Changes",
-    "contactSupport": "Contact Support"
+    "contactSupport": "Contact Support",
+    "unknown": "Unknown",
+    "member": "Member",
+    "status": "Status",
+    "date_time": "Date & Time",
+    "reason": "Reason",
+    "search": "Search..."
   },
   "confirm": {
     "default": {
@@ -279,6 +285,47 @@
     "customizeSettings": "App settings",
     "pin": "Pin ",
     "unpin": "Unpin "
+  },
+  "access": {
+    "title": "Access Control",
+    "subtitle": "Monitor gym entry and verify member access",
+    "view_access_logs": "View Access Logs",
+    "scanner": {
+      "title": "QR Scanner",
+      "instruction": "Position the member's QR code within the frame",
+      "camera_permission": "Camera permission is required to scan QR codes",
+      "no_camera": "No camera detected",
+      "scanning": "Scanning...",
+      "stop": "Stop Scanner",
+      "start": "Start Scanner",
+      "initializing": "Initializing camera...",
+      "error_camera": "Could not access camera. Please ensure it's not being used by another app.",
+      "error_title": "Camera Error",
+      "retry": "Retry Connection"
+    },
+    "status": {
+      "granted": "Access Granted",
+      "denied": "Access Denied",
+      "verifying": "Verifying...",
+      "welcome": "Welcome, {{name}}!",
+      "expiry": "Membership expires on {{date}}",
+      "expiry_label": "Valid Until",
+      "reason": "Reason: {{reason}}",
+      "invalid": "Invalid QR Code"
+    },
+    "logs": {
+      "title": "Access Logs",
+      "subtitle": "Monitor and review all gym entry attempts",
+      "search_placeholder": "Search by member name...",
+      "filter_all": "All Logs",
+      "filter_granted": "Granted Only",
+      "filter_denied": "Denied Only",
+      "name": "Member",
+      "time": "Time",
+      "status": "Status",
+      "empty": "No recent access logs",
+      "empty_desc": "Access logs will appear here after members check in"
+    }
   },
   "onboarding": {
     "welcome": {
@@ -833,6 +880,18 @@
       "noSubscription": "No active subscription"
     }
   },
+  "memberAccess": {
+    "title": "Gym Access",
+    "subtitle": "Show this QR code at the gym entrance",
+    "validFor": "Valid for {{seconds}}s",
+    "refreshing": "Refreshing...",
+    "noMemberships": "No active gym memberships",
+    "selectGym": "Select Gym",
+    "error": "Failed to generate access code",
+    "qrCode": "Your Access QR Code",
+    "instructions": "Present this code to the gym staff for entry",
+    "autoRefresh": "Code refreshes automatically"
+  },
   "gym": {
     "no_gym_selected": "Select a gym",
     "backToDashboard": "Back to Dashboard",
@@ -1338,6 +1397,26 @@
     },
     "pagination": {
       "showing": "Showing {{start}}-{{end}} of {{total}}"
+    }
+  },
+  "subscriptions": {
+    "pageTitle": "Subscriptions",
+    "pageSubtitle": "Manage member subscriptions and renewals",
+    "search": "Search members...",
+    "active": "Active",
+    "expired": "Expired",
+    "expiringSoon": "Expiring Soon",
+    "noSubscription": "No Subscription",
+    "empty": "No subscriptions found",
+    "emptyFiltered": "Try adjusting your filters",
+    "emptyDesc": "Add members to see their subscriptions",
+    "table": {
+      "member": "Member",
+      "type": "Type",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "remaining": "Remaining",
+      "status": "Status"
     }
   }
 }

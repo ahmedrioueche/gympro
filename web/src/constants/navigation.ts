@@ -51,7 +51,7 @@ export const APP_PAGES = {
       name: "pages.manager.subscriptions",
       link: "/manager/subscriptions",
     },
-   
+
     coaching: {
       name: "pages.manager.coaching",
       link: "/manager/coaching",
@@ -100,6 +100,10 @@ export const APP_PAGES = {
     access: {
       name: "pages.gym.access",
       link: "/gym/access",
+    },
+    accessLogs: {
+      name: "pages.gym.access",
+      link: "/gym/access/logs",
     },
     analytics: {
       name: "pages.gym.analytics",
