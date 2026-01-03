@@ -172,7 +172,6 @@ export default function Nav({ children, sidebarLinks }) {
         onSettingsClick={handleSettingsClick}
         onMembershipsClick={handleMembershipsClick}
         onLogoutClick={handleLogout}
-        disabled
       />
     </div>
   );

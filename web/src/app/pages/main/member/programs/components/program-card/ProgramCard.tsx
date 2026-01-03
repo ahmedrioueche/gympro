@@ -45,7 +45,7 @@ export const ProgramCard = ({
           icon: User,
           label: t("training.programs.card.source.member"),
           colors: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-          gradient: "from-gray-500 to-gray-600",
+          gradient: "from-purple-500 to-cyan-500",
         };
     }
   };

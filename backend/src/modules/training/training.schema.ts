@@ -79,6 +79,9 @@ export class TrainingProgramModel extends Document {
 export const TrainingProgramSchema =
   SchemaFactory.createForClass(TrainingProgramModel);
 
+// Add index for search performance
+TrainingProgramSchema.index({ name: 'text' });
+
 @Schema({ _id: false })
 export class ExerciseProgressModel implements ExerciseProgress {
   @Prop({ required: true }) exerciseId: string;

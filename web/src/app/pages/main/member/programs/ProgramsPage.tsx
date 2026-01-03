@@ -11,9 +11,9 @@ import {
   useStartProgram,
 } from "../../../../../hooks/queries/useTraining";
 import PageHeader from "../../../../components/PageHeader";
-import { CreateProgramModal } from "./components/CreateProgramModal";
-import { ProgramCard } from "./components/ProgramCard";
-import { ProgramDetailsModal } from "./components/ProgramDetailsModal";
+import { CreateProgramModal } from "./components/create-program-modal";
+import { ProgramCard } from "./components/program-card/ProgramCard";
+import { ProgramDetailsModal } from "./components/program-details-modal/ProgramDetailsModal";
 
 export default function ProgramsPage() {
   const { t } = useTranslation();
@@ -137,6 +137,7 @@ export default function ProgramsPage() {
           isOpen={!!selectedProgram}
           onClose={() => setSelectedProgram(null)}
           onUse={handleUseProgram}
+          onProgramUpdated={setSelectedProgram}
         />
 
         <CreateProgramModal

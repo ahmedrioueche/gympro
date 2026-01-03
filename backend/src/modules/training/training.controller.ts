@@ -24,10 +24,7 @@ export class TrainingController {
 
   @Post('programs')
   async createProgram(@Request() req, @Body() dto: CreateProgramDto) {
-    const program = await this.trainingService.createProgram(
-      dto,
-      req.user.userId,
-    );
+    const program = await this.trainingService.createProgram(dto, req.user.sub);
     return apiResponse(
       true,
       undefined,
@@ -45,7 +42,7 @@ export class TrainingController {
     // If source is 'member', implicitly filter by current user's CreatedBy
     const filters: any = { source, search };
     if (source === 'member') {
-      filters.createdBy = req.user.userId;
+      filters.createdBy = req.user.sub;
     }
 
     const programs = await this.trainingService.findAllPrograms(filters);
@@ -77,7 +74,7 @@ export class TrainingController {
     const program = await this.trainingService.updateProgram(
       id,
       dto,
-      req.user.userId,
+      req.user.sub,
     );
     return apiResponse(
       true,
@@ -89,10 +86,7 @@ export class TrainingController {
 
   @Post('programs/:id/start')
   async startProgram(@Request() req, @Param('id') id: string) {
-    const history = await this.trainingService.startProgram(
-      id,
-      req.user.userId,
-    );
+    const history = await this.trainingService.startProgram(id, req.user.sub);
     return apiResponse(
       true,
       undefined,
@@ -103,9 +97,7 @@ export class TrainingController {
 
   @Get('active')
   async getActiveProgram(@Request() req) {
-    const history = await this.trainingService.getActiveProgram(
-      req.user.userId,
-    );
+    const history = await this.trainingService.getActiveProgram(req.user.sub);
     return apiResponse(
       true,
       undefined,
@@ -116,13 +108,13 @@ export class TrainingController {
 
   @Post('sessions')
   async logSession(@Request() req, @Body() dto: LogSessionDto) {
-    const history = await this.trainingService.logSession(req.user.userId, dto);
+    const history = await this.trainingService.logSession(req.user.sub, dto);
     return apiResponse(true, undefined, history, 'Session logged successfully');
   }
 
   @Get('history')
   async getHistory(@Request() req) {
-    const history = await this.trainingService.getHistory(req.user.userId);
+    const history = await this.trainingService.getHistory(req.user.sub);
     return apiResponse(
       true,
       undefined,

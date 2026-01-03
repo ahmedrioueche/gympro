@@ -19,6 +19,8 @@
     "currentLanguage": "Current Language",
     "currentRoute": "Current Route",
     "back": "Back",
+    "save": "Save",
+    "saving": "Saving...",
     "close": "Close",
     "processing": "Processing...",
     "cancel": "Cancel",
@@ -1732,7 +1734,14 @@
           "sets": "Sets",
           "reps": "Reps",
           "addExercise": "Add Exercise",
-          "noExercises": "No exercises added yet. Click 'Add Exercise' to get started."
+          "videoUrl": "Video URL",
+          "addVideo": "Add video link",
+          "targetMuscles": "Target Muscles",
+          "noExercises": "No exercises added yet. Click 'Add Exercise' to get started.",
+          "selectMuscleForAi": "Select a target muscle to get suggestions",
+          "addNextExercise": "Add Next Exercise",
+          "addNext": "Add Next",
+          "aiSuggestions": "AI Suggestions"
         },
         "validation": {
           "nameRequired": "Program name is required"
@@ -1765,6 +1774,13 @@
       "save": "Save Workout",
       "noSessions": "No sessions logged yet.",
       "unknownExercise": "Unknown Exercise"
+    },
+    "exercise": {
+      "noVideo": "No video available",
+      "description": "Description",
+      "noDescription": "No description provided.",
+      "targetMuscles": "Target Muscles",
+      "equipment": "Equipment"
     }
   }
 }

@@ -51,7 +51,8 @@ export class TrainingService {
       query.createdBy = filters.createdBy;
     }
     if (filters.search) {
-      query.name = { $regex: filters.search, $options: 'i' };
+      // Use text search with the text index for better performance
+      query.$text = { $search: filters.search };
     }
 
     return this.programModel.find(query).sort({ createdAt: -1 }).exec();

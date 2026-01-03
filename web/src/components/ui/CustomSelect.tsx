@@ -16,6 +16,7 @@ interface CustomSelectProps<T> {
   bgColor?: string;
   error?: string;
   marginTop?: string;
+  placeholder?: string;
 }
 
 const CustomSelect = <T extends string>({
@@ -29,6 +30,7 @@ const CustomSelect = <T extends string>({
   bgColor,
   error,
   marginTop = "mt-2",
+  placeholder,
 }: CustomSelectProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -135,7 +137,13 @@ const CustomSelect = <T extends string>({
               className="w-5 h-3.5 object-cover flex-shrink-0"
             />
           )}
-          <span>{selectedOptionData?.label || label || selectedOption}</span>
+          <span>
+            {selectedOptionData?.label || label || selectedOption || (
+              <span className="text-text-secondary">
+                {placeholder || "Select..."}
+              </span>
+            )}
+          </span>
         </div>
       </div>
 

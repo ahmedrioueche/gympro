@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
+import { AiModule } from './modules/ai/ai.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { AppBillingModule } from './modules/appBilling/appBilling.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
@@ -76,6 +77,7 @@ import { UsersModule } from './modules/users/users.module';
     AnalyticsModule,
     AttendanceModule,
     TrainingModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [
