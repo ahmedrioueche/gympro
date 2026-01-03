@@ -23,7 +23,7 @@ function AlertsSection({ alerts }: AlertsSectionProps) {
             {t("home.manager.alerts.title")}
           </h2>
           <Link
-            to="#"
+            to="/manager/notifications"
             className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors"
           >
             {t("home.manager.alerts.viewAll")} →

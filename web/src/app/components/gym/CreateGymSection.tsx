@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../../../../constants/navigation";
+import { APP_PAGES } from "../../../constants/navigation";
 
 export default function CreateGymSection() {
   const { t } = useTranslation();

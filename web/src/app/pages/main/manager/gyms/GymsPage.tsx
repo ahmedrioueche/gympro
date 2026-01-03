@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import { useAllMyGyms } from "../../../../../hooks/queries/useGyms";
 import PageHeader from "../../../../components/PageHeader";
-import GymList from "./components/GymList";
+import GymList from "../../../../components/gym/GymList";
 
 export default function GymsPage() {
   const { t } = useTranslation();

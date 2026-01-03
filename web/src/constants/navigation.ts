@@ -123,13 +123,21 @@ export const APP_PAGES = {
   member: {
     name: "pages.member",
     link: "/member",
-    subscription: {
-      name: "pages.member.subscription",
-      link: "/member/subscription",
+    home: {
+      name: "pages.member.home",
+      link: "/member",
     },
-    program: {
-      name: "pages.member.program",
-      link: "/member/program",
+    gyms: {
+      name: "pages.member.gyms",
+      link: "/member/gyms",
+    },
+    subscriptions: {
+      name: "pages.member.subscriptions",
+      link: "/member/subscriptions",
+    },
+    programs: {
+      name: "pages.member.programs",
+      link: "/member/programs",
     },
     progress: {
       name: "pages.member.progress",
@@ -139,13 +147,17 @@ export const APP_PAGES = {
       name: "pages.member.attendance",
       link: "/member/attendance",
     },
-    profile: {
-      name: "pages.member.profile",
-      link: "/member/profile",
+    training: {
+      name: "pages.member.training",
+      link: "/member/training",
     },
     notifications: {
       name: "pages.member.notifications",
       link: "/member/notifications",
+    },
+    settings: {
+      name: "pages.member.settings",
+      link: "/member/settings",
     },
   },
 

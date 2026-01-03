@@ -32,6 +32,7 @@ import type { Response } from 'express';
 import { ClientPlatform } from 'src/common/decorators/platform.decorator';
 import { buildRedirectUrl, Platform } from 'src/common/utils/platform.util';
 import {
+  ChangePasswordDto,
   RefreshDto,
   ResendVerificationDto,
   SendOtpDto,
@@ -197,6 +198,17 @@ export class AuthController {
   ): Promise<ApiResponse<ResetPasswordData>> {
     await this.authService.resetPassword(token, password);
     return apiResponse(true, undefined, null, 'Password reset successful');
+  }
+
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @Req() req: any,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<ApiResponse<null>> {
+    const userId = req.user?.sub;
+    await this.authService.changePassword(userId, dto);
+    return apiResponse(true, undefined, null, 'Password changed successfully');
   }
 
   @Get('google')

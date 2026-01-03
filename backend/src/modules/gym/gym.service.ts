@@ -1,4 +1,4 @@
-import { CreateGymDto } from '@ahmedrioueche/gympro-client';
+import { CreateGymDto, GymSettings } from '@ahmedrioueche/gympro-client';
 import {
   ConflictException,
   Injectable,
@@ -212,9 +212,7 @@ export class GymService {
     }
 
     // Convert Mongoose document to plain object to avoid issues with merging
-    const currentSettings = gym.settings?.toObject
-      ? gym.settings.toObject()
-      : gym.settings || {};
+    const currentSettings: Partial<GymSettings> = gym.toObject().settings || {};
 
     // Deep merge settings to handle nested objects properly
     const updatedSettings = {

@@ -56,7 +56,9 @@
     "delete": "Delete",
     "deleting": "Deleting...",
     "save": "Save",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "edit": "Edit",
+    "close": "Close"
   },
   "auth": {
     "welcome_back": "Welcome back",
@@ -272,7 +274,11 @@
     "analytics": "Analytics",
     "notifications": "Notifications",
     "settings": "Settings",
-    "access": "Access",
+
+    "training": "Training",
+    "programs": "Programs",
+    "progress": "Progress",
+    "attendance": "Attendance",
     "manageAccount": "Account management",
     "manageGym": "Gym management",
     "manageGyms": "Gym management",
@@ -474,9 +480,7 @@
       "email_label": "Email",
       "email_placeholder": "contact@yourgym.com",
       "website_label": "Website",
-      "website_placeholder": "https://yourgym.com",
-      "creating": "Creating...",
-      "submit": "Create Gym",
+
       "using_map": "Using Map",
       "manual_entry": "Manual Entry",
       "click_map_hint": "Click on the map to set location",
@@ -656,10 +660,7 @@
         "enabledDesc": "Enable or disable gym-wide notifications",
         "renewalReminder": "Renewal Reminder",
         "renewalReminderDesc": "Days before subscription expiry to notify members",
-        "reminderDays": "Reminder Days",
-        "reminderDaysPlaceholder": "e.g., 7",
-        "note": "Automated Reminders",
-        "noteDesc": "Members will receive automatic notifications before their subscriptions expire."
+        "reminderDays": "Reminder Days"
       },
       "services": {
         "title": "Services & Payments",
@@ -868,6 +869,34 @@
         "womenOnly": "Women Only",
         "menOnly": "Men Only",
         "customSlots": "Custom slots"
+      }
+    },
+    "member": {
+      "welcome": "Welcome back, {{name}}!",
+      "subtitle": "Here's what's happening with your membership today.",
+      "profile": {
+        "title": "My Profile",
+        "memberSince": "Member Since",
+        "editProfile": "Edit Profile",
+        "email": "Email",
+        "phone": "Phone"
+      },
+      "stats": {
+        "activeSubscriptions": "Active Subscriptions",
+        "checkIns": "Total Check-ins",
+        "nextClass": "Next Class",
+        "daysStreak": "Day Streak"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "findGyms": "Find Gyms",
+        "findGymsDesc": "Browse available gym locations",
+        "mySubscriptions": "My Subscriptions",
+        "mySubscriptionsDesc": "Manage your active plans",
+        "attendance": "Attendance History",
+        "attendanceDesc": "View your check-in records",
+        "training": "Training Plan",
+        "trainingDesc": "Access your workout schedule"
       }
     }
   },
@@ -1125,7 +1154,7 @@
       "description": "When you create a member, they will automatically receive a message with their account access details via their chosen contact method (email or SMS)."
     }
   },
-  "subscriptions": {
+  "appSubscriptions": {
     "title": "Subscriptions",
     "subtitle": "Manage your app subscription and billing",
     "no_subscription": "No active subscription",
@@ -1496,7 +1525,7 @@
       "showing": "Showing {{start}}-{{end}} of {{total}}"
     }
   },
-  "subscriptions": {
+  "memberSubscriptions": {
     "pageTitle": "Subscriptions",
     "pageSubtitle": "Manage member subscriptions and renewals",
     "search": "Search members...",
@@ -1514,6 +1543,228 @@
       "endDate": "End Date",
       "remaining": "Remaining",
       "status": "Status"
+    }
+  },
+  "member": {
+    "gyms": {
+      "title": "Gyms",
+      "subtitle": "Manage your gyms"
+    },
+    "settings": {
+      "pageTitle": "My Settings",
+      "pageSubtitle": "Manage your profile and preferences",
+      "tabs": {
+        "profile": "Profile",
+        "preferences": "App Preferences",
+        "security": "Security"
+      },
+      "profile": {
+        "title": "Personal Information",
+        "subtitle": "Update your personal details",
+        "fullName": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "save": "Save Changes"
+      },
+      "preferences": {
+        "title": "App Preferences",
+        "subtitle": "Customize your app experience",
+        "language": "Language",
+        "theme": "Theme",
+        "notifications": "Enable Notifications"
+      },
+      "security": {
+        "title": "Security",
+        "subtitle": "Manage your password and security settings",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm New Password",
+        "changePassword": "Change Password",
+        "currentPasswordPlaceholder": "Enter your current password",
+        "newPasswordPlaceholder": "Enter your new password",
+        "confirmPasswordPlaceholder": "Confirm your new password"
+      },
+      "success": "Settings updated successfully",
+      "error": "Failed to update settings"
+    },
+    "training": {
+      "title": "My Training",
+      "subtitle": "Track your progress and workout history",
+      "active_program": "Active Program",
+      "no_active_program": "No Active Program",
+      "programs_title": "Training Programs",
+      "programs_subtitle": "Browse and manage your training routines",
+      "create_program": "Create Program",
+      "program_history": "Program History",
+      "recent_sessions": "Recent Sessions",
+      "browse_programs": "Browse Programs",
+      "select_program_msg": "Select a training program to start tracking your progress.",
+      "workouts_complete": "Workouts Complete",
+      "progress": "Progress",
+      "log_workout": "Log Workout",
+      "schedule": "Schedule",
+      "start_program": "Start Program",
+      "use_program": "Use",
+      "view_details": "View",
+      "days_per_week": "{{count}} days/week",
+      "source_coach": "Coach",
+      "source_app": "App",
+      "source_me": "Me",
+      "status_active": "Active",
+      "status_completed": "Completed",
+      "status_abandoned": "Abandoned",
+      "log_session_title": "Log Workout",
+      "log_session_save": "Save Workout",
+      "log_session_cancel": "Cancel",
+      "log_session_day": "Day",
+      "log_session_date": "Date",
+      "exercises": "Exercises",
+      "add_exercise": "Add Exercise",
+      "sets": "Sets",
+      "reps": "Reps",
+      "weight_kg": "KG",
+      "last_session": "Last: {{sets}}x{{reps}} @ {{weight}}kg",
+      "programs_tab_all": "All Programs",
+      "programs_tab_coach": "Coach Assigned",
+      "programs_tab_template": "App Templates",
+      "programs_tab_member": "My Programs",
+      "programs_filter_search": "Search programs...",
+      "no_programs_found": "No programs found"
+    }
+  },
+  "training": {
+    "page": {
+      "title": "My Training",
+      "subtitle": "Track your progress and workout history",
+      "recentSessions": "Recent Sessions",
+      "workoutHistory": "Workout History",
+      "noWorkouts": "No workouts logged yet",
+      "noWorkoutsDesc": "Start logging your workouts to track your progress",
+      "custom": "Custom",
+      "exercises": "exercises",
+      "volume": "total",
+      "quickLog": {
+        "title": "Quick Log Workout",
+        "subtitle": "Log a custom training session",
+        "button": "Log Custom Workout"
+      }
+    },
+    "activeProgram": {
+      "title": "Active Program",
+      "noActive": "No Active Program",
+      "noActiveDesc": "Select a training program to start tracking your progress.",
+      "browse": "Browse Programs",
+      "workoutsComplete": "Workouts Complete",
+      "progress": "Progress",
+      "logWorkout": "Log Workout",
+      "schedule": "Schedule",
+      "daysPerWeek": "{{count}} Days/Week",
+      "daysPerWeek_one": "{{count}} Day/Week"
+    },
+    "history": {
+      "title": "Program History",
+      "empty": "No workout history yet.",
+      "sessions_one": "1 Session",
+      "sessions_other": "{{count}} Sessions",
+      "status": {
+        "active": "Active",
+        "completed": "Completed",
+        "abandoned": "Abandoned"
+      }
+    },
+    "programs": {
+      "title": "Training Programs",
+      "subtitle": "Browse and manage your training routines",
+      "createProgram": "Create Program",
+      "searchPlaceholder": "Search programs...",
+      "notFound": {
+        "title": "No programs found",
+        "desc": "Try adjusting your filters or search query, or create a new program to get started."
+      },
+      "tabs": {
+        "all": "All Programs",
+        "coach": "Coach Assigned",
+        "template": "App Templates",
+        "member": "My Programs"
+      },
+      "card": {
+        "daysPerWeek": "{{count}} days/week",
+        "start": "Start Program",
+        "view": "View Details",
+        "active": "Active",
+        "days": "Days/Week",
+        "sessions": "Sessions",
+        "exercises": "Exercises",
+        "source": {
+          "coach": "Coach",
+          "template": "App",
+          "member": "Me"
+        },
+        "noDescription": "No description provided."
+      },
+      "edit": {
+        "success": "Program updated successfully",
+        "error": "Failed to update program"
+      },
+      "create": {
+        "title": "Create Program",
+        "subtitle": "Design your custom training program",
+        "schedule": "Program Schedule",
+        "scheduleSubtitle": "Define exercises for each training day",
+        "basicInfo": "Basic Information",
+        "programDetails": "Program Details",
+        "createButton": "Create Program",
+        "back": "Back",
+        "next": "Next: Schedule",
+        "submit": "Create Program",
+        "form": {
+          "name": "Program Name",
+          "namePlaceholder": "e.g. Summer Shred",
+          "description": "Description",
+          "descriptionPlaceholder": "Goals, target audience...",
+          "experience": "Experience",
+          "purpose": "Purpose",
+          "daysPerWeek": "days/week",
+          "daysPerWeekLabel": "Days Per Week",
+          "day": "Day",
+          "dayName": "Day Name",
+          "exerciseName": "Exercise Name",
+          "sets": "Sets",
+          "reps": "Reps",
+          "addExercise": "Add Exercise",
+          "noExercises": "No exercises added yet. Click 'Add Exercise' to get started."
+        },
+        "validation": {
+          "nameRequired": "Program name is required"
+        }
+      },
+      "details": {
+        "start": "Start Program",
+        "use": "Use Template",
+        "exercisesCount": "{{count}} Exercises",
+        "muscleGroups": "Target Muscles",
+        "equipment": "Equipment"
+      }
+    },
+    "logSession": {
+      "title": "Log Workout",
+      "sessionDetails": "Session Details",
+      "workoutName": "Workout Name",
+      "day": "Day",
+      "date": "Date",
+      "exercises": "Exercises",
+      "exerciseName": "Exercise Name",
+      "addExercise": "Add Exercise",
+      "noExercises": "No exercises added yet",
+      "addFirst": "Add your first exercise",
+      "last": "Last: {{sets}}x{{reps}} @ {{weight}}kg",
+      "sets": "Sets",
+      "reps": "Reps",
+      "kg": "Weight (kg)",
+      "cancel": "Cancel",
+      "save": "Save Workout",
+      "noSessions": "No sessions logged yet.",
+      "unknownExercise": "Unknown Exercise"
     }
   }
 }

@@ -19,6 +19,20 @@ export const attendanceApi = {
     }
   },
 
+  /** Generate access token for member QR code */
+  getAccessToken: async (
+    gymId: string
+  ): Promise<ApiResponse<{ token: string; expiresAt: number }>> => {
+    try {
+      const res = await apiClient.get<
+        ApiResponse<{ token: string; expiresAt: number }>
+      >(`/attendance/access-token/${gymId}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** Get recent attendance logs for a gym */
   getLogs: async (gymId: string): Promise<ApiResponse<AttendanceRecord[]>> => {
     try {

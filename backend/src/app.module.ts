@@ -20,6 +20,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { PaddleModule } from './modules/paddle/paddle.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
+import { TrainingModule } from './modules/training/training.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -74,6 +75,7 @@ import { UsersModule } from './modules/users/users.module';
     NotificationsModule,
     AnalyticsModule,
     AttendanceModule,
+    TrainingModule,
   ],
   controllers: [AppController],
   providers: [

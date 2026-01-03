@@ -1,7 +1,7 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "../../../../../../context/ThemeContext";
+import { useTheme } from "../../../context/ThemeContext";
 
 interface GymCardProps {
   gym: Gym;

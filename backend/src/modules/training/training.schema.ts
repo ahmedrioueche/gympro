@@ -6,10 +6,8 @@ import type {
   MuscleGroup,
   ProgramDay,
   ProgramDayProgress,
-  ProgramHistory,
   ProgramProgress,
   ProgramPurpose,
-  TrainingProgram,
 } from '@ahmedrioueche/gympro-client';
 import {
   CREATION_TYPES,
@@ -22,9 +20,9 @@ import {
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema({ _id: false })
+@Schema()
 export class ExerciseModel implements Exercise {
-  @Prop({ required: true }) _id: string;
+  _id: string;
   @Prop({ required: true }) name: string;
   @Prop() description?: string;
   @Prop({ type: [String], enum: MUSCLE_GROUPS }) targetMuscles?: MuscleGroup[];
@@ -32,17 +30,18 @@ export class ExerciseModel implements Exercise {
   @Prop() recommendedSets?: number;
   @Prop() recommendedReps?: number;
   @Prop() durationMinutes?: number;
+  @Prop() videoUrl?: string;
 }
 
 @Schema({ _id: false })
 export class ProgramDayModel implements ProgramDay {
   @Prop({ required: true }) name: string;
-  @Prop({ type: [ExerciseModel], required: true }) exercises: Exercise[];
+  @Prop({ type: [ExerciseModel], required: true }) exercises: ExerciseModel[];
 }
 
 @Schema({ timestamps: true })
-export class TrainingProgramModel extends Document implements TrainingProgram {
-  @Prop() declare _id: string;
+export class TrainingProgramModel extends Document {
+  declare _id: string;
   @Prop({ required: true }) name: string;
   @Prop({
     type: String, // ← Add explicit type
@@ -62,13 +61,15 @@ export class TrainingProgramModel extends Document implements TrainingProgram {
     enum: DAYS_PER_WEEK,
   })
   daysPerWeek: DaysPerWeek;
-  @Prop({ type: [ProgramDayModel], required: true }) days: ProgramDay[];
+  @Prop({ type: [ProgramDayModel], required: true }) days: ProgramDayModel[];
   @Prop({
     type: String, // ← Add explicit type
     required: true,
     enum: CREATION_TYPES,
   })
   creationType: 'member' | 'coach' | 'template';
+  @Prop() description?: string;
+  @Prop() isPublic?: boolean;
   @Prop({ required: true }) createdAt: Date;
   @Prop() createdBy?: string;
   @Prop() updatedAt?: Date;
@@ -93,7 +94,7 @@ export class ProgramDayProgressModel implements ProgramDayProgress {
   @Prop({ required: true }) dayName: string;
   @Prop({ type: Date, required: true }) date: Date | string;
   @Prop({ type: [ExerciseProgressModel], required: true })
-  exercises: ExerciseProgress[];
+  exercises: ExerciseProgressModel[];
   @Prop() notes?: string;
 }
 
@@ -105,18 +106,22 @@ export class ProgramProgressModel implements ProgramProgress {
   @Prop({ required: true }) daysCompleted: number;
   @Prop({ required: true }) totalDays: number;
   @Prop({ type: [ProgramDayProgressModel], required: true })
-  dayLogs: ProgramDayProgress[];
+  dayLogs: ProgramDayProgressModel[];
 }
 
 export const ProgramProgressSchema =
   SchemaFactory.createForClass(ProgramProgressModel);
 
 @Schema({ timestamps: true })
-export class ProgramHistoryModel extends Document implements ProgramHistory {
+export class ProgramHistoryModel extends Document {
+  declare _id: string;
+  @Prop({ required: true }) userId: string;
   @Prop({ type: TrainingProgramSchema, required: true })
-  program: TrainingProgram;
+  program: TrainingProgramModel;
   @Prop({ type: ProgramProgressSchema, required: true })
-  progress: ProgramProgress;
+  progress: ProgramProgressModel;
+  @Prop({ required: true, enum: ['active', 'completed', 'abandoned'] })
+  status: 'active' | 'completed' | 'abandoned';
 }
 
 export const ProgramHistorySchema =

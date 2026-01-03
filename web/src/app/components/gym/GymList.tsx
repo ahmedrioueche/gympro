@@ -1,7 +1,7 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useGymStore } from "../../../../../../store/gym";
+import { useGymStore } from "../../../store/gym";
 import GymCard from "./GymCard";
 
 interface GymListProps {
@@ -12,7 +12,7 @@ interface GymListProps {
 export default function GymList({ gyms, isLoading }: GymListProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { currentGym, setGym } = useGymStore();
+  const { setGym } = useGymStore();
 
   if (isLoading) {
     return (

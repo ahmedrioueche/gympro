@@ -4,6 +4,7 @@ import type {
   ForgotPasswordData,
   GetMeData,
   GoogleAuthUrlData,
+  IChangePasswordDto,
   IForgotPasswordDto,
   IResendVerificationDto,
   IResetPasswordDto,
@@ -291,6 +292,21 @@ export const authApi = {
       const res = await apiClient.post<ApiResponse<AccessQrData>>(
         "/auth/access-qr",
         { gymId }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Change Password */
+  changePassword: async (
+    data: IChangePasswordDto
+  ): Promise<ApiResponse<null>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<null>>(
+        "/auth/change-password",
+        data
       );
       return res.data;
     } catch (error) {

@@ -8,8 +8,8 @@ import {
 } from "../../../../../hooks/queries/useNotifications";
 import { useGymStore } from "../../../../../store/gym";
 import PageHeader from "../../../../components/PageHeader";
-import NotificationsControls from "./components/NotificationsControls";
-import NotificationsTable from "./components/NotificationsTable";
+import NotificationsControls from "../../../../components/notifications/NotificationsControls";
+import NotificationsTable from "../../../../components/notifications/NotificationsTable";
 
 const ITEMS_PER_PAGE = 20;
 

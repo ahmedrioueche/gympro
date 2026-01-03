@@ -1,34 +1,38 @@
-import { AuditInfo, DaysPerWeek } from './common';
+import { AuditInfo, DaysPerWeek } from "./common";
 
-export const EXPERIENCE_LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
+export const EXPERIENCE_LEVELS = [
+  "beginner",
+  "intermediate",
+  "advanced",
+] as const;
 export const PROGRAM_PURPOSES = [
-  'strength',
-  'hypertrophy',
-  'weight_loss',
-  'endurance',
-  'mobility',
-  'general_fitness',
+  "strength",
+  "hypertrophy",
+  "weight_loss",
+  "endurance",
+  "mobility",
+  "general_fitness",
 ] as const;
 export const MUSCLE_GROUPS = [
-  'chest',
-  'back',
-  'biceps',
-  'triceps',
-  'shoulders',
-  'legs',
-  'abs',
-  'glutes',
-  'calves',
+  "chest",
+  "back",
+  "biceps",
+  "triceps",
+  "shoulders",
+  "legs",
+  "abs",
+  "glutes",
+  "calves",
 ] as const;
 
-export const CREATION_TYPES = ['member', 'coach', 'template'] as const;
+export const CREATION_TYPES = ["member", "coach", "template"] as const;
 // Then derive the types from the constants
 export type ExperienceLevel = (typeof EXPERIENCE_LEVELS)[number];
 export type ProgramPurpose = (typeof PROGRAM_PURPOSES)[number];
 export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
 
 export interface Exercise {
-  _id: string;
+  _id?: string;
   name: string;
   description?: string;
   targetMuscles?: MuscleGroup[];
@@ -36,6 +40,7 @@ export interface Exercise {
   recommendedSets?: number;
   recommendedReps?: number;
   durationMinutes?: number;
+  videoUrl?: string;
 }
 
 export interface ProgramDay {
@@ -44,13 +49,15 @@ export interface ProgramDay {
 }
 
 export interface TrainingProgram extends AuditInfo {
-  _id: string;
+  _id?: string;
   name: string;
   experience: ExperienceLevel;
   purpose: ProgramPurpose;
   daysPerWeek: DaysPerWeek;
   days: ProgramDay[];
-  creationType: 'member' | 'coach' | 'template';
+  creationType: "member" | "coach" | "template";
+  description?: string;
+  isPublic?: boolean;
 }
 
 // Progress for a single exercise in a session
@@ -82,6 +89,8 @@ export interface ProgramProgress {
 }
 
 export interface ProgramHistory {
+  _id?: string;
   program: TrainingProgram;
   progress: ProgramProgress;
+  status: "active" | "completed" | "abandoned";
 }

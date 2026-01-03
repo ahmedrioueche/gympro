@@ -150,3 +150,13 @@ export class CreateMemberDto {
   @IsIn([...PAYMENT_METHODS])
   paymentMethod?: string;
 }
+
+export class ChangePasswordDto {
+  @IsString()
+  @MinLength(6)
+  currentPassword: string;
+
+  @IsString()
+  @MinLength(6)
+  newPassword: string;
+}

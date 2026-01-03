@@ -2,7 +2,7 @@ import { type AppNotification } from "@ahmedrioueche/gympro-client";
 import { formatDistanceToNow } from "date-fns";
 import { CheckCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useMarkNotificationAsRead } from "../../../../../../hooks/queries/useNotifications";
+import { useMarkNotificationAsRead } from "../../../hooks/queries/useNotifications";
 
 interface NotificationsTableProps {
   notifications: AppNotification[];

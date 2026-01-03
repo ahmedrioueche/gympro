@@ -110,3 +110,7 @@ export interface CreateMemberData {
 export interface AccessQrData {
   token: string;
 }
+export interface IChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+}

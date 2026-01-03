@@ -444,6 +444,45 @@ export class AuthService {
     return { message: 'Password reset successfully' };
   }
 
+  // --- CHANGE PASSWORD ---
+  async changePassword(
+    userId: string,
+    dto: { currentPassword: string; newPassword: string },
+  ) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new UnauthorizedException({
+        message: 'User not found',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+      });
+    }
+
+    if (!user.profile.password) {
+      throw new BadRequestException({
+        message: 'User has no password set (e.g. social login)',
+        errorCode: ErrorCode.INVALID_CREDENTIALS,
+      });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      dto.currentPassword,
+      user.profile.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new BadRequestException({
+        message: 'Invalid current password',
+        errorCode: ErrorCode.INVALID_CREDENTIALS,
+      });
+    }
+
+    user.profile.password = await bcrypt.hash(dto.newPassword, 10);
+    await user.save();
+
+    return { message: 'Password changed successfully' };
+  }
+
   // --- GOOGLE AUTH ---
   async googleAuth(dto: IGoogleAuthDto) {
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {

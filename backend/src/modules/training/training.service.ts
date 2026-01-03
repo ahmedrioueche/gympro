@@ -1,119 +1,155 @@
-import type {
-  DaysPerWeek,
-  Exercise,
-  ExerciseProgress,
-  ExperienceLevel,
-  MuscleGroup,
-  ProgramDay,
-  ProgramDayProgress,
+import {
+  CreateProgramDto,
+  LogSessionDto,
   ProgramHistory,
-  ProgramProgress,
-  ProgramPurpose,
   TrainingProgram,
 } from '@ahmedrioueche/gympro-client';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { ProgramHistoryModel, TrainingProgramModel } from './training.schema';
 
-const muscleGroups = [
-  'chest',
-  'back',
-  'biceps',
-  'triceps',
-  'shoulders',
-  'legs',
-  'abs',
-  'glutes',
-  'calves',
-] as const;
-const experienceLevels = ['beginner', 'intermediate', 'advanced'] as const;
-const programPurposes = [
-  'strength',
-  'hypertrophy',
-  'weight_loss',
-  'endurance',
-  'mobility',
-  'general_fitness',
-] as const;
-const creationTypes = ['member', 'coach', 'template'] as const;
-const daysPerWeek = [1, 2, 3, 4, 5, 6, 7] as const;
+@Injectable()
+export class TrainingService {
+  constructor(
+    @InjectModel(TrainingProgramModel.name)
+    private programModel: Model<TrainingProgramModel>,
+    @InjectModel(ProgramHistoryModel.name)
+    private historyModel: Model<ProgramHistoryModel>,
+  ) {}
 
-@Schema({ _id: false })
-export class ExerciseModel implements Exercise {
-  @Prop() declare _id: string;
-  @Prop({ required: true }) name: string;
-  @Prop() description?: string;
-  @Prop({ type: [String], enum: muscleGroups }) targetMuscles?: MuscleGroup[];
-  @Prop({ type: [String] }) equipment?: string[];
-  @Prop() recommendedSets?: number;
-  @Prop() recommendedReps?: number;
-  @Prop() durationMinutes?: number;
+  async createProgram(
+    dto: CreateProgramDto,
+    userId: string,
+  ): Promise<TrainingProgram> {
+    const program = new this.programModel({
+      ...dto,
+      creationType: 'member',
+      createdBy: userId,
+      createdAt: new Date(),
+    });
+    return program.save();
+  }
+
+  async findAllPrograms(
+    filters: {
+      source?: string;
+      createdBy?: string;
+      search?: string;
+    } = {},
+  ): Promise<TrainingProgram[]> {
+    const query: any = {};
+
+    if (filters.source) {
+      query.creationType = filters.source;
+    }
+    if (filters.createdBy) {
+      query.createdBy = filters.createdBy;
+    }
+    if (filters.search) {
+      query.name = { $regex: filters.search, $options: 'i' };
+    }
+
+    return this.programModel.find(query).sort({ createdAt: -1 }).exec();
+  }
+
+  async findProgramById(id: string): Promise<TrainingProgram> {
+    const program = await this.programModel.findById(id).exec();
+    if (!program) {
+      throw new NotFoundException('Program not found');
+    }
+    return program;
+  }
+
+  async updateProgram(
+    id: string,
+    dto: Partial<CreateProgramDto>,
+    userId: string,
+  ): Promise<TrainingProgram> {
+    const program = await this.programModel.findById(id).exec();
+    if (!program) {
+      throw new NotFoundException('Program not found');
+    }
+
+    // Only allow updating own member-created programs
+    if (program.creationType !== 'member' || program.createdBy !== userId) {
+      throw new BadRequestException('You can only edit your own programs');
+    }
+
+    Object.assign(program, dto, { updatedAt: new Date(), updatedBy: userId });
+    return program.save();
+  }
+
+  async startProgram(
+    programId: string,
+    userId: string,
+  ): Promise<ProgramHistory> {
+    const program = await this.findProgramById(programId);
+
+    // Deactivate current active program if any for this user
+    await this.historyModel.updateMany(
+      { userId, status: 'active' },
+      { $set: { status: 'abandoned', 'progress.endDate': new Date() } },
+    );
+
+    const history = new this.historyModel({
+      userId,
+      program: program,
+      status: 'active',
+      progress: {
+        programId: program._id,
+        startDate: new Date(),
+        daysCompleted: 0,
+        totalDays: program.days.length * 4, // Approx 4 weeks
+        dayLogs: [],
+      },
+    });
+
+    return history.save();
+  }
+
+  async getActiveProgram(userId: string): Promise<ProgramHistory | null> {
+    return this.historyModel.findOne({ userId, status: 'active' }).exec();
+  }
+
+  async getHistory(userId: string): Promise<ProgramHistory[]> {
+    return this.historyModel
+      .find({ userId })
+      .sort({ 'progress.endDate': -1, 'progress.startDate': -1 })
+      .exec();
+  }
+
+  async logSession(
+    userId: string,
+    dto: LogSessionDto,
+  ): Promise<ProgramHistory> {
+    const history = await this.historyModel.findOne({
+      userId,
+      'program._id': dto.programId,
+      status: 'active',
+    });
+
+    if (!history) {
+      // If no active history for this program, check if we should create one or error?
+      // For now, require active program.
+      throw new BadRequestException('No active session found for this program');
+    }
+
+    // Add day log
+    history.progress.dayLogs.push({
+      dayName: dto.dayName,
+      date: dto.date,
+      exercises: dto.exercises,
+      notes: dto.notes,
+    });
+
+    // Update days completed if unique day?
+    // Simplified logic: just increment for now or calc based on unique dates
+
+    return history.save();
+  }
 }
-@Schema({ _id: false })
-export class ProgramDayModel implements ProgramDay {
-  @Prop({ required: true }) name: string;
-  @Prop({ type: [ExerciseModel], required: true }) exercises: ExerciseModel[];
-}
-@Schema({ timestamps: true })
-export class TrainingProgramModel extends Document implements TrainingProgram {
-  @Prop() declare _id: string;
-  @Prop({ required: true }) name: string;
-  @Prop({ required: true, enum: experienceLevels }) experience: ExperienceLevel;
-  @Prop({ required: true, enum: programPurposes }) purpose: ProgramPurpose;
-  @Prop({ required: true, enum: daysPerWeek }) daysPerWeek: DaysPerWeek;
-  @Prop({ type: [ProgramDayModel], required: true }) days: ProgramDayModel[];
-  @Prop({ required: true, enum: creationTypes }) creationType:
-    | 'member'
-    | 'coach'
-    | 'template';
-  @Prop() createdBy?: string;
-  @Prop({ required: true }) createdAt: string;
-  @Prop() updatedAt?: string;
-}
-@Schema({ _id: false })
-export class ExerciseProgressModel implements ExerciseProgress {
-  @Prop({ required: true }) exerciseId: string;
-  @Prop() setsDone?: number;
-  @Prop() repsDone?: number;
-  @Prop() durationMinutes?: number;
-  @Prop() weightKg?: number;
-  @Prop() notes?: string;
-}
-@Schema({ _id: false })
-export class ProgramDayProgressModel implements ProgramDayProgress {
-  @Prop({ required: true }) dayName: string;
-  @Prop({ required: true }) date: string;
-  @Prop({ type: [ExerciseProgressModel], required: true })
-  exercises: ExerciseProgressModel[];
-  @Prop() notes?: string;
-}
-@Schema({ _id: false })
-export class ProgramProgressModel implements ProgramProgress {
-  @Prop({ required: true }) programId: string;
-  @Prop({ required: true }) startDate: string;
-  @Prop() endDate?: string;
-  @Prop({ required: true }) daysCompleted: number;
-  @Prop({ required: true }) totalDays: number;
-  @Prop({ type: [ProgramDayProgressModel], required: true })
-  dayLogs: ProgramDayProgressModel[];
-}
-@Schema({ timestamps: true })
-export class ProgramHistoryModel extends Document implements ProgramHistory {
-  @Prop({ type: TrainingProgramModel, required: true })
-  program: TrainingProgramModel;
-  @Prop({ type: ProgramProgressModel, required: true })
-  progress: ProgramProgressModel;
-}
-export const ExerciseSchema = SchemaFactory.createForClass(ExerciseModel);
-export const TrainingProgramSchema =
-  SchemaFactory.createForClass(TrainingProgramModel);
-export const ProgramDaySchema = SchemaFactory.createForClass(ProgramDayModel);
-export const ExerciseProgressSchema = SchemaFactory.createForClass(
-  ExerciseProgressModel,
-);
-export const ProgramDayProgressSchema = SchemaFactory.createForClass(
-  ProgramDayProgressModel,
-);
-export const ProgramProgressSchema =
-  SchemaFactory.createForClass(ProgramProgressModel);
-export const ProgramHistorySchema =
-  SchemaFactory.createForClass(ProgramHistoryModel);

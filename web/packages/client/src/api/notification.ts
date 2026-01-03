@@ -10,13 +10,14 @@ export const notificationsApi = {
     page = 1,
     limit = 20,
     status?: string,
-    search?: string
+    search?: string,
+    gymId?: string
   ): Promise<ApiResponse<GetNotificationsResponseDto>> => {
     try {
       const response = await apiClient.get<
         ApiResponse<GetNotificationsResponseDto>
       >("/notifications", {
-        params: { page, limit, status, search },
+        params: { page, limit, status, search, gymId },
       });
       return response.data;
     } catch (error) {

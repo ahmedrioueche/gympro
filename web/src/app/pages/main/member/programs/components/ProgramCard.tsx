@@ -1,0 +1,173 @@
+import { type TrainingProgram } from "@ahmedrioueche/gympro-client";
+import {
+  Calendar,
+  ChevronRight,
+  Dumbbell,
+  Target,
+  User,
+  Zap,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+interface ProgramCardProps {
+  program: TrainingProgram;
+  isActive?: boolean;
+  onUse: (programId: string) => void;
+  onViewDetails: (program: TrainingProgram) => void;
+}
+
+export const ProgramCard = ({
+  program,
+  isActive,
+  onUse,
+  onViewDetails,
+}: ProgramCardProps) => {
+  const { t } = useTranslation();
+
+  const getSourceConfig = () => {
+    switch (program.creationType) {
+      case "coach":
+        return {
+          icon: User,
+          label: t("training.programs.card.source.coach"),
+          colors: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+          gradient: "from-blue-500 to-cyan-500",
+        };
+      case "template":
+        return {
+          icon: Zap,
+          label: t("training.programs.card.source.template"),
+          colors: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+          gradient: "from-purple-500 to-pink-500",
+        };
+      default:
+        return {
+          icon: User,
+          label: t("training.programs.card.source.member"),
+          colors: "bg-gray-500/10 text-gray-400 border-gray-500/20",
+          gradient: "from-gray-500 to-gray-600",
+        };
+    }
+  };
+
+  const sourceConfig = getSourceConfig();
+  const SourceIcon = sourceConfig.icon;
+
+  const totalExercises = program.days.reduce(
+    (acc, day) => acc + day.exercises.length,
+    0
+  );
+
+  return (
+    <div className="group relative bg-surface border border-border hover:border-primary/40 transition-all duration-300 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl">
+      {/* Gradient accent line */}
+      <div
+        className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${sourceConfig.gradient} opacity-60 group-hover:opacity-100 transition-opacity`}
+      />
+
+      <div className="p-5 md:p-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+          <div className="flex items-start gap-4">
+            {/* Icon */}
+            <div
+              className={`w-14 h-14 rounded-xl bg-gradient-to-br ${sourceConfig.gradient} flex items-center justify-center shadow-lg flex-shrink-0`}
+            >
+              <Dumbbell className="w-7 h-7 text-white" />
+            </div>
+
+            {/* Title & Badges */}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1 mb-2">
+                {program.name}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <span
+                  className={`px-2.5 py-1 text-xs font-medium rounded-lg border flex items-center gap-1.5 ${sourceConfig.colors}`}
+                >
+                  <SourceIcon size={12} /> {sourceConfig.label}
+                </span>
+                <span className="px-2.5 py-1 text-xs font-medium bg-background-secondary text-text-secondary rounded-lg border border-border capitalize">
+                  {program.experience}
+                </span>
+                <span className="px-2.5 py-1 text-xs font-medium bg-primary/10 text-primary rounded-lg border border-primary/20 capitalize">
+                  {program.purpose.replace(/_/g, " ")}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Badge */}
+          {isActive && (
+            <span className="px-3 py-1.5 text-xs font-bold bg-green-500/15 text-green-500 rounded-full border border-green-500/30 flex items-center gap-1.5 animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-green-500" />
+              {t("training.programs.card.active")}
+            </span>
+          )}
+        </div>
+
+        {/* Description */}
+        <p className="text-sm text-text-secondary line-clamp-2 mb-5 leading-relaxed">
+          {program.description || t("training.programs.card.noDescription")}
+        </p>
+
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-4 mb-5">
+          <div className="bg-background-secondary/50 rounded-xl p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Calendar size={16} className="text-primary" />
+            </div>
+            <span className="text-lg font-bold text-text-primary">
+              {program.daysPerWeek}
+            </span>
+            <p className="text-xs text-text-secondary mt-0.5">
+              {t("training.programs.card.days")}
+            </p>
+          </div>
+          <div className="bg-background-secondary/50 rounded-xl p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Target size={16} className="text-primary" />
+            </div>
+            <span className="text-lg font-bold text-text-primary">
+              {program.days.length}
+            </span>
+            <p className="text-xs text-text-secondary mt-0.5">
+              {t("training.programs.card.sessions")}
+            </p>
+          </div>
+          <div className="bg-background-secondary/50 rounded-xl p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Dumbbell size={16} className="text-primary" />
+            </div>
+            <span className="text-lg font-bold text-text-primary">
+              {totalExercises}
+            </span>
+            <p className="text-xs text-text-secondary mt-0.5">
+              {t("training.programs.card.exercises")}
+            </p>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          <button
+            onClick={() => onViewDetails(program)}
+            className="flex-1 py-3 px-4 rounded-xl text-sm font-semibold bg-background-secondary text-text-primary hover:bg-background-tertiary transition-all border border-border hover:border-primary/30"
+          >
+            {t("training.programs.card.view")}
+          </button>
+          <button
+            onClick={() => onUse(program._id!)}
+            className="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg shadow-primary/20 hover:shadow-xl flex items-center justify-center gap-2 group/btn"
+          >
+            {t("training.programs.card.start")}
+            <ChevronRight
+              size={18}
+              className="group-hover/btn:translate-x-0.5 transition-transform"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
