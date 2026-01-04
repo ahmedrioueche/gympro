@@ -3,10 +3,11 @@ import {
   type CreateProgramDayDto,
 } from "@ahmedrioueche/gympro-client";
 import { Calendar, Plus } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import InputField from "../../../../../../../components/ui/InputField";
-import { ExerciseForm } from "../ExerciseForm";
-import { ExerciseItem } from "./ExerciseItem";
+import InputField from "../../../../../../components/ui/InputField";
+import { ExerciseForm } from "./ExerciseForm";
+import { ExerciseItem } from "./program-details-modal/ExerciseItem";
 
 interface DayCardProps {
   day: CreateProgramDayDto;
@@ -20,6 +21,7 @@ interface DayCardProps {
     value: any
   ) => void;
   onExerciseRemove: (exIndex: number) => void;
+  onExerciseReorder: (fromIndex: number, toIndex: number) => void;
   onExerciseClick: (exercise: any) => void;
 }
 
@@ -31,9 +33,38 @@ export const DayCard = ({
   onAddExercise,
   onExerciseUpdate,
   onExerciseRemove,
+  onExerciseReorder,
   onExerciseClick,
 }: DayCardProps) => {
   const { t } = useTranslation();
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [collapsedExercises, setCollapsedExercises] = useState<Set<number>>(
+    new Set()
+  );
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+    // Auto-collapse all exercises when drag starts
+    const allIndices = new Set(day.exercises.map((_, idx) => idx));
+    setCollapsedExercises(allIndices);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    // Keep exercises collapsed after drag ends for cleaner view
+  };
+
+  const toggleCollapse = (index: number) => {
+    setCollapsedExercises((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
 
   return (
     <div className="bg-background-secondary border border-border rounded-xl">
@@ -72,6 +103,9 @@ export const DayCard = ({
               <ExerciseForm
                 key={exIdx}
                 exercise={ex}
+                exerciseIndex={exIdx}
+                isDragging={draggedIndex === exIdx}
+                isCollapsed={collapsedExercises.has(exIdx)}
                 onUpdate={(field, value) =>
                   onExerciseUpdate(exIdx, field, value)
                 }
@@ -79,6 +113,15 @@ export const DayCard = ({
                 onAddNext={
                   exIdx === day.exercises.length - 1 ? onAddExercise : undefined
                 }
+                onDragStart={() => handleDragStart(exIdx)}
+                onDragEnd={handleDragEnd}
+                onDragOver={(targetIndex) => {
+                  if (draggedIndex !== null && draggedIndex !== targetIndex) {
+                    onExerciseReorder(draggedIndex, targetIndex);
+                    setDraggedIndex(targetIndex);
+                  }
+                }}
+                onToggleCollapse={() => toggleCollapse(exIdx)}
               />
             ))
           : day.exercises.map((ex: any, exIdx) => (

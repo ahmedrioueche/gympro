@@ -1,7 +1,7 @@
+import { DayCard } from "../DayCard";
 import { BasicInfoForm } from "./BasicInfoForm";
 import { CreateFooter } from "./CreateFooter";
 import { CreateHeader } from "./CreateHeader";
-import { DayScheduleCard } from "./DayScheduleCard";
 import { useProgramCreate } from "./useProgramCreate";
 
 interface CreateProgramModalProps {
@@ -23,6 +23,7 @@ export const CreateProgramModal = ({
     addExercise,
     updateExercise,
     removeExercise,
+    reorderExercise,
     updateField,
     updateDaysPerWeek,
   } = useProgramCreate(onClose);
@@ -52,10 +53,11 @@ export const CreateProgramModal = ({
             ) : (
               <div className="space-y-4">
                 {formData.days.map((day, dayIndex) => (
-                  <DayScheduleCard
+                  <DayCard
                     key={dayIndex}
                     day={day}
                     dayIndex={dayIndex}
+                    isEditMode={true}
                     onDayNameChange={(name) => updateDayName(dayIndex, name)}
                     onAddExercise={() => addExercise(dayIndex)}
                     onExerciseUpdate={(exIndex, field, value) =>
@@ -64,6 +66,10 @@ export const CreateProgramModal = ({
                     onExerciseRemove={(exIndex) =>
                       removeExercise(dayIndex, exIndex)
                     }
+                    onExerciseReorder={(fromIndex, toIndex) =>
+                      reorderExercise(dayIndex, fromIndex, toIndex)
+                    }
+                    onExerciseClick={() => {}}
                   />
                 ))}
               </div>

@@ -77,6 +77,8 @@ export const useUpdateProgram = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["programs"] });
       queryClient.invalidateQueries({ queryKey: ["program"] });
+      queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
+      queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
       toast.error(error.message || "Failed to update program");

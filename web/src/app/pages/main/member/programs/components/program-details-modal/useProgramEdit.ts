@@ -105,6 +105,24 @@ export const useProgramEdit = (
     setEditData({ ...editData, days: newDays });
   };
 
+  const reorderExercise = (
+    dayIndex: number,
+    fromIndex: number,
+    toIndex: number
+  ) => {
+    if (!editData?.days) return;
+    const newDays = [...editData.days] as CreateProgramDayDto[];
+    const exercises = [...newDays[dayIndex].exercises];
+
+    // Remove the item from the old position
+    const [movedExercise] = exercises.splice(fromIndex, 1);
+    // Insert it at the new position
+    exercises.splice(toIndex, 0, movedExercise);
+
+    newDays[dayIndex] = { ...newDays[dayIndex], exercises };
+    setEditData({ ...editData, days: newDays });
+  };
+
   return {
     editData,
     setEditData,
@@ -114,5 +132,6 @@ export const useProgramEdit = (
     addExercise,
     updateExercise,
     removeExercise,
+    reorderExercise,
   };
 };

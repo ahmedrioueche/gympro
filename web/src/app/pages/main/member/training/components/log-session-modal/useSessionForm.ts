@@ -4,7 +4,7 @@ import {
   type ProgramDayProgress,
   type ProgramHistory,
 } from "@ahmedrioueche/gympro-client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface UseSessionFormProps {
   isOpen: boolean;
@@ -28,19 +28,31 @@ export const useSessionForm = ({
       : new Date().toISOString().split("T")[0]
   );
   const [exercises, setExercises] = useState<ExerciseProgress[]>([]);
+  const prevDayNameRef = useRef<string>("");
 
-  // Sync state when initialSession changes or modal opens
+  // Reset when modal opens/closes
   useEffect(() => {
-    if (isOpen && initialSession) {
-      setSelectedDayName(initialSession.dayName);
-      setSessionDate(new Date(initialSession.date).toISOString().split("T")[0]);
-    } else if (isOpen && !initialSession) {
-      setSessionDate(new Date().toISOString().split("T")[0]);
+    if (isOpen) {
+      const dayName = initialSession?.dayName || program.days[0]?.name || "";
+      setSelectedDayName(dayName);
+      prevDayNameRef.current = dayName; // Track initial day
+      setSessionDate(
+        initialSession?.date
+          ? new Date(initialSession.date).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0]
+      );
     }
-  }, [isOpen, initialSession]);
+  }, [isOpen, initialSession, program.days]);
 
   // Initialize form when Day changes or Edit Session provided
   useEffect(() => {
+    // Skip if day hasn't actually changed AND exercises are already populated
+    if (prevDayNameRef.current === selectedDayName && exercises.length > 0) {
+      return;
+    }
+
+    prevDayNameRef.current = selectedDayName;
+
     if (!selectedDayName) return;
 
     const day = program.days.find((d) => d.name === selectedDayName);
@@ -73,14 +85,18 @@ export const useSessionForm = ({
         if (existingEx) {
           return {
             exerciseId: ex._id || ex.name || "unknown_exercise",
-            sets: existingEx.sets.map((s) => ({ ...s })), // deep copy sets
+            sets: existingEx.sets || [],
             notes: existingEx.notes || "",
           };
         }
       }
 
       const lastEx = lastSession?.exercises.find(
-        (e) => e.exerciseId === ex._id
+        (e) =>
+          e.exerciseId === ex._id ||
+          e.exerciseId === ex.name ||
+          (ex._id && e.exerciseId === ex._id) ||
+          (ex.name && e.exerciseId === ex.name)
       );
 
       // Determine initial sets configuration
@@ -88,13 +104,16 @@ export const useSessionForm = ({
 
       if (lastEx && lastEx.sets && lastEx.sets.length > 0) {
         // Option A: Pre-fill with last session's data
+        console.log(
+          `Pre-filling exercise "${ex.name}" with last session data:`,
+          lastEx.sets
+        );
         initialSets = lastEx.sets.map((s) => ({
           reps: s.reps,
           weight: s.weight,
           completed: false,
         }));
       } else {
-        // Option B: Initialize based on recommended sets
         const setRange = Array.from({ length: ex.recommendedSets || 3 });
         initialSets = setRange.map(() => ({
           reps: ex.recommendedReps || 10,
@@ -111,7 +130,7 @@ export const useSessionForm = ({
     });
 
     setExercises(initialExercises);
-  }, [selectedDayName, program, progress, initialSession]);
+  }, [selectedDayName]); // Only depend on selectedDayName
 
   const updateSet = (
     exIndex: number,

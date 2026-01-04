@@ -15,6 +15,7 @@ import { useProgramEdit } from "./useProgramEdit";
 interface ProgramDetailsModalProps {
   program: TrainingProgram | null;
   isOpen: boolean;
+  isActive?: boolean;
   onClose: () => void;
   onUse: (programId: string) => void;
   onProgramUpdated?: (program: TrainingProgram) => void;
@@ -23,6 +24,7 @@ interface ProgramDetailsModalProps {
 export const ProgramDetailsModal = ({
   program,
   isOpen,
+  isActive = false,
   onClose,
   onUse,
   onProgramUpdated,
@@ -40,6 +42,7 @@ export const ProgramDetailsModal = ({
     addExercise,
     updateExercise,
     removeExercise,
+    reorderExercise,
   } = useProgramEdit(program, isEditMode, onProgramUpdated);
 
   const handleSaveClick = () => {
@@ -121,6 +124,9 @@ export const ProgramDetailsModal = ({
                       onExerciseRemove={(exIndex) =>
                         removeExercise(index, exIndex)
                       }
+                      onExerciseReorder={(fromIndex, toIndex) =>
+                        reorderExercise(index, fromIndex, toIndex)
+                      }
                       onExerciseClick={setSelectedExercise}
                     />
                   ))}
@@ -137,6 +143,7 @@ export const ProgramDetailsModal = ({
             onCancel={handleCancel}
             onClose={onClose}
             onUse={onUse}
+            isActive={isActive}
           />
         </div>
       </div>

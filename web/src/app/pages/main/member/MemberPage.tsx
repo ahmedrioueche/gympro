@@ -1,5 +1,6 @@
 import { Outlet } from "@tanstack/react-router";
 import {
+  Activity,
   BarChart3,
   Bell,
   CreditCard,
@@ -41,6 +42,12 @@ const sidebarLinks = [
     icon: <CreditCard className="w-5 h-5" />,
     path: APP_PAGES.member.programs.link,
     matchPaths: [APP_PAGES.member.programs.link],
+  },
+  {
+    label: "exercises",
+    icon: <Activity className="w-5 h-5" />,
+    path: APP_PAGES.member.exercises.link,
+    matchPaths: [APP_PAGES.member.exercises.link],
   },
   {
     label: "attendance",

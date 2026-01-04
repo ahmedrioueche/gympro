@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
 import { SearchInput } from "../../../../../components/ui/SearchInput";
+import { APP_PAGES } from "../../../../../constants/navigation";
 import {
   useActiveProgram,
   usePrograms,
@@ -38,7 +39,7 @@ export default function ProgramsPage() {
     if (activeProgram?.status === "active") {
       if (activeProgram.program._id === id) {
         // Already on this program
-        navigate({ to: "/member/training" });
+        navigate({ to: APP_PAGES.member.training.link });
         return;
       }
       // Different program active -> Block and Alert
@@ -46,15 +47,14 @@ export default function ProgramsPage() {
         icon: "⚠️",
         duration: 4000,
       });
-      // Optional: Navigate to training page so they can pause it?
-      // navigate({ to: "/member/training" });
+      navigate({ to: APP_PAGES.member.training.link });
       return;
     }
 
     // 2. Start program
     startProgram.mutate(id, {
       onSuccess: () => {
-        navigate({ to: "/member/training" });
+        navigate({ to: APP_PAGES.member.training.link });
       },
       onError: (error: any) => {
         // Backend might also throw if we race condition, show error
@@ -165,6 +165,10 @@ export default function ProgramsPage() {
           onClose={() => setSelectedProgram(null)}
           onUse={handleUseProgram}
           onProgramUpdated={setSelectedProgram}
+          isActive={
+            activeProgram?.status === "active" &&
+            activeProgram.program._id === selectedProgram?._id
+          }
         />
 
         <CreateProgramModal

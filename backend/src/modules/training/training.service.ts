@@ -82,7 +82,21 @@ export class TrainingService {
     }
 
     Object.assign(program, dto, { updatedAt: new Date(), updatedBy: userId });
-    return program.save();
+    const updatedProgram = await program.save();
+
+    // Update the program in any active/paused history for this user
+    await this.historyModel.updateMany(
+      {
+        userId,
+        'program._id': id,
+        status: { $in: ['active', 'paused'] },
+      },
+      {
+        $set: { program: updatedProgram.toObject() },
+      },
+    );
+
+    return updatedProgram;
   }
 
   async startProgram(

@@ -75,23 +75,25 @@ export const SessionExerciseCard = ({
           </div>
         </div>
 
+        {/* Set Rows */}
         {exercise.sets.map((set, setIndex) => (
           <div
             key={setIndex}
             className={`grid grid-cols-12 gap-2 items-center p-2 rounded-lg transition-colors ${
               set.completed
-                ? "bg-green-500/10 border border-green-500/20"
-                : "bg-background-tertiary/30 border border-transparent"
+                ? "bg-green-500/10 border border-green-500/30"
+                : "bg-background-tertiary/50"
             }`}
           >
+            {/* Set Number */}
             <div className="col-span-1 text-center font-bold text-text-secondary">
               {setIndex + 1}
             </div>
+
+            {/* Weight */}
             <div className="col-span-4">
               <input
                 type="number"
-                className="w-full bg-background text-center text-text-primary font-medium p-2 rounded-lg border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-                placeholder="0"
                 value={set.weight || ""}
                 onChange={(e) =>
                   onUpdateSet(
@@ -101,25 +103,31 @@ export const SessionExerciseCard = ({
                     parseFloat(e.target.value) || 0
                   )
                 }
+                className="w-full px-3 py-2 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary"
+                placeholder="0"
               />
             </div>
+
+            {/* Reps */}
             <div className="col-span-4">
               <input
                 type="number"
-                className="w-full bg-background text-center text-text-primary font-medium p-2 rounded-lg border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-                placeholder="0"
                 value={set.reps || ""}
                 onChange={(e) =>
                   onUpdateSet(
                     exerciseIndex,
                     setIndex,
                     "reps",
-                    parseFloat(e.target.value) || 0
+                    parseInt(e.target.value) || 0
                   )
                 }
+                className="w-full px-3 py-2 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary"
+                placeholder="0"
               />
             </div>
-            <div className="col-span-3 flex justify-center items-center gap-2">
+
+            {/* Done + Delete */}
+            <div className="col-span-3 flex items-center justify-center gap-1">
               <button
                 onClick={() =>
                   onUpdateSet(
@@ -131,24 +139,23 @@ export const SessionExerciseCard = ({
                 }
                 className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
                   set.completed
-                    ? "bg-green-500 text-white shadow-lg shadow-green-500/20"
-                    : "bg-background-tertiary text-text-secondary hover:bg-background-secondary border border-border"
+                    ? "bg-green-500 text-white"
+                    : "bg-background-secondary border border-border hover:border-green-500/50"
                 }`}
               >
-                <Check size={16} strokeWidth={3} />
+                <Check size={16} />
               </button>
-              {exercise.sets.length > 1 && (
-                <button
-                  onClick={() => onRemoveSet(exerciseIndex, setIndex)}
-                  className="p-1.5 text-text-secondary hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors"
-                >
-                  <Trash2 size={14} />
-                </button>
-              )}
+              <button
+                onClick={() => onRemoveSet(exerciseIndex, setIndex)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center bg-background-secondary border border-border hover:border-red-500/50 hover:bg-red-500/10 text-text-secondary hover:text-red-500 transition-all"
+              >
+                <Trash2 size={14} />
+              </button>
             </div>
           </div>
         ))}
 
+        {/* Add Set Button */}
         <button
           onClick={() => onAddSet(exerciseIndex)}
           className="w-full py-2 mt-2 flex items-center justify-center gap-2 text-primary font-medium bg-primary/5 hover:bg-primary/10 border border-primary/20 rounded-lg transition-all"

@@ -143,6 +143,10 @@ export const APP_PAGES = {
       name: "pages.member.progress",
       link: "/member/progress",
     },
+    exercises: {
+      name: "pages.member.exercises",
+      link: "/member/exercises",
+    },
     attendance: {
       name: "pages.member.attendance",
       link: "/member/attendance",

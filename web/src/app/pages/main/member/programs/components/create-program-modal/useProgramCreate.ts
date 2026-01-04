@@ -130,6 +130,19 @@ export const useProgramCreate = (onClose: () => void) => {
     setFormData({ ...formData, days: newDays });
   };
 
+  const reorderExercise = (
+    dayIndex: number,
+    fromIndex: number,
+    toIndex: number
+  ) => {
+    const newDays = [...formData.days];
+    const exercises = [...newDays[dayIndex].exercises];
+    const [movedExercise] = exercises.splice(fromIndex, 1);
+    exercises.splice(toIndex, 0, movedExercise);
+    newDays[dayIndex].exercises = exercises;
+    setFormData({ ...formData, days: newDays });
+  };
+
   const updateField = (field: keyof CreateProgramDto, value: any) => {
     setFormData({ ...formData, [field]: value });
   };
@@ -148,6 +161,7 @@ export const useProgramCreate = (onClose: () => void) => {
     addExercise,
     updateExercise,
     removeExercise,
+    reorderExercise,
     updateField,
     updateDaysPerWeek,
   };

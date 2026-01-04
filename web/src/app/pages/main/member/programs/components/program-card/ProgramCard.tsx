@@ -60,9 +60,13 @@ export const ProgramCard = ({
   );
 
   return (
-    <div className="group relative bg-surface border border-border hover:border-primary/40 transition-all duration-300 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl">
+    <div
+      onClick={() => onViewDetails(program)}
+      className="group cursor-pointer relative bg-surface border border-border hover:border-primary/40 transition-all duration-300 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl"
+    >
       {/* Gradient accent line */}
       <div
+        onClick={(e) => e.stopPropagation()}
         className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${sourceConfig.gradient} opacity-60 group-hover:opacity-100 transition-opacity`}
       />
 
