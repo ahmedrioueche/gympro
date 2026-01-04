@@ -37,7 +37,9 @@
     "status": "Status",
     "date_time": "Date & Time",
     "reason": "Reason",
-    "search": "Search..."
+    "search": "Search...",
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "confirm": {
     "default": {
@@ -1636,6 +1638,66 @@
     }
   },
   "training": {
+    "muscles": {
+      "chest": "Chest",
+      "back": "Back",
+      "biceps": "Biceps",
+      "triceps": "Triceps",
+      "shoulders": "Shoulders",
+      "legs": "Legs",
+      "glutes": "Glutes",
+      "calves": "Calves",
+      "core": "Core",
+      "upper_chest": "Upper Chest",
+      "mid_chest": "Mid Chest",
+      "lower_chest": "Lower Chest",
+      "inner_chest": "Inner Chest",
+      "lats": "Lats",
+      "upper_back": "Upper Back",
+      "mid_back": "Mid Back",
+      "lower_back": "Lower Back",
+      "traps_upper": "Upper Traps",
+      "traps_middle": "Middle Traps",
+      "traps_lower": "Lower Traps",
+      "front_delts": "Front Delts",
+      "lateral_delts": "Lateral Delts",
+      "rear_delts": "Rear Delts",
+      "rotator_cuff": "Rotator Cuff",
+      "arms": "Arms",
+      "forearms": "Forearms",
+      "biceps_long_head": "Biceps Long Head",
+      "biceps_short_head": "Biceps Short Head",
+      "brachialis": "Brachialis",
+      "triceps_long_head": "Triceps Long Head",
+      "triceps_lateral_head": "Triceps Lateral Head",
+      "triceps_medial_head": "Triceps Medial Head",
+      "forearms_flexors": "Forearm Flexors",
+      "forearms_extensors": "Forearm Extensors",
+      "quads": "Quads",
+      "hamstrings": "Hamstrings",
+      "adductors": "Adductors",
+      "abductors": "Abductors",
+      "quads_rectus_femoris": "Rectus Femoris",
+      "quads_vastus_lateralis": "Vastus Lateralis",
+      "quads_vastus_medialis": "Vastus Medialis",
+      "quads_vastus_intermedius": "Vastus Intermedius",
+      "hamstrings_biceps_femoris": "Biceps Femoris",
+      "hamstrings_semitendinosus": "Semitendinosus",
+      "hamstrings_semimembranosus": "Semimembranosus",
+      "glute_max": "Glute Max",
+      "glute_med": "Glute Med",
+      "glute_min": "Glute Min",
+      "gastrocnemius_medial": "Medial Gastrocnemius",
+      "gastrocnemius_lateral": "Lateral Gastrocnemius",
+      "soleus": "Soleus",
+      "abs": "Abs",
+      "upper_abs": "Upper Abs",
+      "lower_abs": "Lower Abs",
+      "obliques_internal": "Internal Obliques",
+      "obliques_external": "External Obliques",
+      "transverse_abdominis": "Transverse Abdominis",
+      "erector_spinae": "Erector Spinae"
+    },
     "page": {
       "title": "My Training",
       "subtitle": "Track your progress and workout history",
@@ -1802,35 +1864,105 @@
         "equipment": "Equipment"
       }
     },
-    "logSession": {
-      "title": "Log Workout",
-      "sessionDetails": "Session Details",
-      "workoutName": "Workout Name",
-      "selectDay": "Select Day",
-      "day": "Day",
-      "date": "Date",
-      "exercises": "Exercises",
-      "exerciseName": "Exercise Name",
-      "addExercise": "Add Exercise",
-      "noExercises": "No exercises added yet",
-      "addFirst": "Add your first exercise",
-      "last": "Last: {{sets}}x{{reps}} @ {{weight}}kg",
-      "sets": "Sets",
-      "reps": "Reps",
-      "kg": "Weight (kg)",
-      "cancel": "Cancel",
-      "save": "Save Workout",
-      "noSessions": "No sessions logged yet.",
-      "unknownExercise": "Unknown Exercise",
-      "done": "Done",
-      "addSet": "Add Set"
+    "exercises": {
+      "title": "Exercise Library",
+      "subtitle": "Browse and create exercises for your workouts",
+      "create": "Create Exercise",
+      "edit": "Edit Exercise",
+      "delete": "Delete Exercise",
+      "myExercises": "My Exercises Only",
+      "search": "Search exercises...",
+      "filters": {
+        "targetMuscle": "Target Muscle",
+        "equipment": "Equipment",
+        "difficulty": "Difficulty",
+        "type": "Type",
+        "clear": "Clear Filters"
+      },
+      "form": {
+        "name": "Exercise Name",
+        "namePlaceholder": "e.g., Dumbbell Bench Press",
+        "description": "Description",
+        "descriptionPlaceholder": "Briefly describe the exercise...",
+        "instructions": "Instructions",
+        "instructionsPlaceholder": "Detailed steps on how to perform this exercise...",
+        "targetMuscles": "Target Muscles",
+        "equipment": "Equipment",
+        "equipmentPlaceholder": "Add equipment...",
+        "difficulty": "Difficulty",
+        "type": "Exercise Type",
+        "recommendedSets": "Recommended Sets",
+        "recommendedReps": "Recommended Reps",
+        "duration": "Duration (minutes)",
+        "videoUrl": "Video URL",
+        "imageUrl": "Image URL",
+        "makePublic": "Make Public",
+        "publicHelper": "Allow other users to see and use this exercise"
+      },
+      "types": {
+        "all": "All Types",
+        "cardio": "Cardio",
+        "strength": "Strength",
+        "stretching": "Stretching",
+        "powerlifting": "Powerlifting",
+        "plyometrics": "Plyometrics",
+        "olympic_weightlifting": "Olympic Weightlifting",
+        "strongman": "Strongman"
+      },
+      "difficulty": {
+        "all": "All Levels",
+
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "expert": "Expert"
+      },
+
+      "deleteConfirm": "Delete Exercise"
     },
-    "exercise": {
-      "noVideo": "No video available",
-      "description": "Description",
-      "noDescription": "No description provided.",
-      "targetMuscles": "Target Muscles",
-      "equipment": "Equipment"
-    }
+
+    "card": {
+      "createdBy": "Created by",
+      "viewDetails": "View Details",
+      "watchVideo": "Watch Video"
+    },
+    "empty": {
+      "title": "No exercises yet",
+      "description": "Create your first exercise to get started",
+      "action": "Create Exercise"
+    },
+    "noResults": "No exercises found",
+    "tryDifferent": "Try different filters or create a new exercise",
+    "deleteConfirm": "Delete Exercise",
+    "deleteWarning": "Are you sure you want to delete this exercise?  This action cannot be undone."
+  },
+  "logSession": {
+    "title": "Log Workout",
+    "sessionDetails": "Session Details",
+    "workoutName": "Workout Name",
+    "selectDay": "Select Day",
+    "day": "Day",
+    "date": "Date",
+    "exercises": "Exercises",
+    "exerciseName": "Exercise Name",
+    "addExercise": "Add Exercise",
+    "noExercises": "No exercises added yet",
+    "addFirst": "Add your first exercise",
+    "last": "Last: {{sets}}x{{reps}} @ {{weight}}kg",
+    "sets": "Sets",
+    "reps": "Reps",
+    "kg": "Weight (kg)",
+    "cancel": "Cancel",
+    "save": "Save Workout",
+    "noSessions": "No sessions logged yet.",
+    "unknownExercise": "Unknown Exercise",
+    "done": "Done",
+    "addSet": "Add Set"
+  },
+  "exercise": {
+    "noVideo": "No video available",
+    "description": "Description",
+    "noDescription": "No description provided.",
+    "targetMuscles": "Target Muscles",
+    "equipment": "Equipment"
   }
 }

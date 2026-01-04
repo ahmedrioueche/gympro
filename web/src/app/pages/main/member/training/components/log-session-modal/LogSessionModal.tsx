@@ -3,12 +3,11 @@ import {
   type ProgramHistory,
 } from "@ahmedrioueche/gympro-client";
 import { Dumbbell, Save, X } from "lucide-react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
 import { useLogSession } from "../../../../../../../hooks/queries/useTraining";
-import { ExerciseDetailModal } from "../../../../../../components/gym/ExerciseDetailModal";
+import { useModalStore } from "../../../../../../../store/modal";
 import { SessionExerciseCard } from "./SessionExerciseCard";
 import { useSessionForm } from "./useSessionForm";
 
@@ -27,7 +26,7 @@ export const LogSessionModal = ({
 }: LogSessionModalProps) => {
   const { program } = activeHistory;
   const { t } = useTranslation();
-  const [selectedExercise, setSelectedExercise] = useState<any>(null);
+  const { openModal } = useModalStore();
 
   const logSession = useLogSession();
   const form = useSessionForm({ isOpen, activeHistory, initialSession });
@@ -62,11 +61,6 @@ export const LogSessionModal = ({
       onClick={onClose}
       className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
     >
-      <ExerciseDetailModal
-        exercise={selectedExercise}
-        isOpen={!!selectedExercise}
-        onClose={() => setSelectedExercise(null)}
-      />
       <div
         onClick={(e) => e.stopPropagation()}
         className="bg-surface rounded-2xl shadow-2xl max-w-4xl max-h-[99vh] w-full border-2 border-primary/30 overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col"
@@ -146,7 +140,9 @@ export const LogSessionModal = ({
                         onUpdateSet={form.updateSet}
                         onAddSet={form.addSet}
                         onRemoveSet={form.removeSet}
-                        onViewVideo={(ex) => setSelectedExercise(ex)}
+                        onViewVideo={(ex) =>
+                          openModal("exercise_detail", { exercise: ex })
+                        }
                       />
                     );
                   })

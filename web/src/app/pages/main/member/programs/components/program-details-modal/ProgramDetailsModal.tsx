@@ -9,7 +9,7 @@ import {
   ProgramDescription,
   ProgramForm,
 } from ".";
-import { ExerciseDetailModal } from "../../../../../../components/gym/ExerciseDetailModal";
+import { useModalStore } from "../../../../../../../store/modal";
 import { useProgramEdit } from "./useProgramEdit";
 
 interface ProgramDetailsModalProps {
@@ -30,7 +30,7 @@ export const ProgramDetailsModal = ({
   onProgramUpdated,
 }: ProgramDetailsModalProps) => {
   const { t } = useTranslation();
-  const [selectedExercise, setSelectedExercise] = useState<any>(null);
+  const { openModal } = useModalStore();
   const [isEditMode, setIsEditMode] = useState(false);
 
   const {
@@ -127,7 +127,9 @@ export const ProgramDetailsModal = ({
                       onExerciseReorder={(fromIndex, toIndex) =>
                         reorderExercise(index, fromIndex, toIndex)
                       }
-                      onExerciseClick={setSelectedExercise}
+                      onExerciseClick={(ex) =>
+                        openModal("exercise_detail", { exercise: ex })
+                      }
                     />
                   ))}
                 </div>
@@ -147,12 +149,6 @@ export const ProgramDetailsModal = ({
           />
         </div>
       </div>
-
-      <ExerciseDetailModal
-        exercise={selectedExercise}
-        isOpen={!!selectedExercise}
-        onClose={() => setSelectedExercise(null)}
-      />
     </>
   );
 };

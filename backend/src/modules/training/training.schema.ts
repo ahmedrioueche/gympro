@@ -1,8 +1,10 @@
 import type {
   DaysPerWeek,
   Exercise,
+  ExerciseDifficulty,
   ExerciseProgress,
   ExerciseSet,
+  ExerciseType,
   ExperienceLevel,
   MuscleGroup,
   ProgramDay,
@@ -13,6 +15,8 @@ import type {
 import {
   CREATION_TYPES,
   DAYS_PER_WEEK,
+  EXERCISE_DIFFICULTIES,
+  EXERCISE_TYPES,
   EXPERIENCE_LEVELS,
   MUSCLE_GROUPS,
   PROGRAM_PURPOSES,
@@ -28,10 +32,20 @@ export class ExerciseModel implements Exercise {
   @Prop() description?: string;
   @Prop({ type: [String], enum: MUSCLE_GROUPS }) targetMuscles?: MuscleGroup[];
   @Prop({ type: [String] }) equipment?: string[];
+  @Prop({ type: String, enum: EXERCISE_DIFFICULTIES })
+  difficulty?: ExerciseDifficulty;
+  @Prop({ type: String, enum: EXERCISE_TYPES }) type?: ExerciseType;
   @Prop() recommendedSets?: number;
   @Prop() recommendedReps?: number;
   @Prop() durationMinutes?: number;
   @Prop() videoUrl?: string;
+  @Prop() imageUrl?: string;
+  @Prop() instructions?: string;
+  @Prop() isPublic?: boolean;
+  @Prop({ required: true }) createdAt: Date;
+  @Prop() createdBy?: string;
+  @Prop() updatedAt?: Date;
+  @Prop() updatedBy?: string;
 }
 
 @Schema({ _id: false })

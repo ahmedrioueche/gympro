@@ -3,9 +3,8 @@ import {
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
 import { Dumbbell, PlayCircle } from "lucide-react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ExerciseDetailModal } from "../../../../../../components/gym/ExerciseDetailModal";
+import { useModalStore } from "../../../../../../../store/modal";
 import { useSessionExercises } from "./useSessionExercises";
 
 interface SessionExerciseListProps {
@@ -20,16 +19,11 @@ export const SessionExerciseList = ({
   notes,
 }: SessionExerciseListProps) => {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
   const { getExerciseName, getExercise } = useSessionExercises(program);
-  const [selectedExercise, setSelectedExercise] = useState<any>(null);
 
   return (
     <>
-      <ExerciseDetailModal
-        exercise={selectedExercise}
-        isOpen={!!selectedExercise}
-        onClose={() => setSelectedExercise(null)}
-      />
       {exercises.map((ex, idx) => {
         const exerciseDef = getExercise(ex.exerciseId);
         const hasVideo = !!exerciseDef?.videoUrl;
@@ -50,7 +44,9 @@ export const SessionExerciseList = ({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedExercise(exerciseDef);
+                    if (exerciseDef) {
+                      openModal("exercise_detail", { exercise: exerciseDef });
+                    }
                   }}
                   className="text-primary hover:text-primary/80 transition-colors"
                   title={t("training.exercise.watchVideo", "Watch Video")}

@@ -134,7 +134,11 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
 
   const totalVolume = workout.exercises.reduce(
     (sum, ex) =>
-      sum + (ex.setsDone || 0) * (ex.repsDone || 0) * (ex.weightKg || 0),
+      sum +
+      (ex.sets?.reduce(
+        (s, set) => s + (set.reps || 0) * (set.weight || 0),
+        0
+      ) || 0),
     0
   );
 
@@ -231,8 +235,9 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
                 </span>
               </div>
               <div className="text-text-secondary font-mono text-xs">
-                {ex.setsDone || "-"} × {ex.repsDone || "-"} @{" "}
-                {ex.weightKg || "-"}kg
+                {ex.sets?.length || 0} sets
+                {ex.sets?.length > 0 &&
+                  ` • Max ${Math.max(...ex.sets.map((s) => s.weight || 0))}kg`}
               </div>
             </div>
           ))}

@@ -25,22 +25,45 @@ export const MUSCLE_GROUPS = [
   "calves",
 ] as const;
 
+export const EXERCISE_DIFFICULTIES = [
+  "beginner",
+  "intermediate",
+  "expert",
+] as const;
+
+export const EXERCISE_TYPES = [
+  "cardio",
+  "strength",
+  "stretching",
+  "powerlifting",
+  "plyometrics",
+  "olympic_weightlifting",
+  "strongman",
+] as const;
+
 export const CREATION_TYPES = ["member", "coach", "template"] as const;
 // Then derive the types from the constants
 export type ExperienceLevel = (typeof EXPERIENCE_LEVELS)[number];
 export type ProgramPurpose = (typeof PROGRAM_PURPOSES)[number];
 export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
+export type ExerciseDifficulty = (typeof EXERCISE_DIFFICULTIES)[number];
+export type ExerciseType = (typeof EXERCISE_TYPES)[number];
 
-export interface Exercise {
+export interface Exercise extends AuditInfo {
   _id?: string;
   name: string;
   description?: string;
+  instructions?: string;
   targetMuscles?: MuscleGroup[];
   equipment?: string[];
+  difficulty?: ExerciseDifficulty;
+  type?: ExerciseType;
   recommendedSets?: number;
   recommendedReps?: number;
   durationMinutes?: number;
   videoUrl?: string;
+  imageUrl?: string;
+  isPublic?: boolean;
 }
 
 export interface ProgramDay {
@@ -61,12 +84,15 @@ export interface TrainingProgram extends AuditInfo {
 }
 
 // Progress for a single exercise in a session
+export interface ExerciseSet {
+  reps: number;
+  weight: number;
+  completed: boolean;
+}
+
 export interface ExerciseProgress {
   exerciseId: string; // links to Exercise._id
-  setsDone?: number;
-  repsDone?: number;
-  durationMinutes?: number;
-  weightKg?: number;
+  sets: ExerciseSet[];
   notes?: string; // optional notes for that exercise
 }
 
@@ -92,5 +118,17 @@ export interface ProgramHistory {
   _id?: string;
   program: TrainingProgram;
   progress: ProgramProgress;
-  status: "active" | "completed" | "abandoned";
+  status: "active" | "paused" | "completed" | "abandoned";
+}
+
+// DTOs for Exercise Library
+
+export interface ExerciseFilters {
+  search?: string;
+  targetMuscle?: MuscleGroup;
+  equipment?: string;
+  difficulty?: ExerciseDifficulty;
+  type?: ExerciseType;
+  createdBy?: string;
+  myExercises?: boolean;
 }

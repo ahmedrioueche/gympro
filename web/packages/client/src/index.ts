@@ -1,3 +1,4 @@
+export * from "./api/ai";
 export * from "./api/analytics";
 export * from "./api/appPayment";
 export * from "./api/appSubscription";
@@ -5,6 +6,7 @@ export * from "./api/attendance";
 export * from "./api/auth";
 export * from "./api/chargily";
 export * from "./api/config";
+export * from "./api/exercises";
 export * from "./api/gym";
 export * from "./api/helper";
 export * from "./api/members";

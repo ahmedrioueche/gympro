@@ -1,6 +1,8 @@
 import { DaysPerWeek } from "../types/common";
 import {
+  ExerciseDifficulty,
   ExerciseProgress,
+  ExerciseType,
   ExperienceLevel,
   MuscleGroup,
   ProgramPurpose,
@@ -9,12 +11,17 @@ import {
 export interface CreateExerciseDto {
   name: string;
   description?: string;
+  instructions?: string;
   targetMuscles?: MuscleGroup[];
   equipment?: string[];
+  difficulty?: ExerciseDifficulty;
+  type?: ExerciseType;
   recommendedSets?: number;
   recommendedReps?: number;
   durationMinutes?: number;
   videoUrl?: string;
+  imageUrl?: string;
+  isPublic?: boolean;
 }
 
 export interface CreateProgramDayDto {

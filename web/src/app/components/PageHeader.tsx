@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import Button from "../../components/ui/Button";
 
 interface PageHeaderProps {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   title: string;
   subtitle: string;
   actionButton?: {
@@ -34,7 +34,7 @@ function PageHeader({
         {/* Left */}
         <div className="flex items-start sm:items-center gap-4">
           <div className="w-14 h-14 md:w-16 md:h-16 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md flex-shrink-0">
-            <Icon className="w-7 h-7 md:w-8 md:h-8 text-white" />
+            {Icon && <Icon className="w-7 h-7 md:w-8 md:h-8 text-white" />}
           </div>
 
           <div>

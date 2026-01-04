@@ -1,4 +1,8 @@
-import type { AppPlan, EditUserDto } from "@ahmedrioueche/gympro-client";
+import type {
+  AppPlan,
+  EditUserDto,
+  Exercise,
+} from "@ahmedrioueche/gympro-client";
 
 export interface ConfirmModalProps {
   text?: string;
@@ -48,4 +52,9 @@ export interface UpgradePreviewModalProps {
 
 export interface EditManagerModalProps {
   onConfirm: (data: EditUserDto) => void;
+}
+
+export interface ExerciseDetailModalProps {
+  exercise: Exercise;
+  currentUserId: string;
 }

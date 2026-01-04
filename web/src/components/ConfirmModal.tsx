@@ -1,8 +1,6 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../store/modal";
-import BaseModal from "./ui/BaseModal";
-import Button from "./ui/Button";
 
 export default function ConfirmModal() {
   const { t } = useTranslation();
@@ -29,30 +27,82 @@ export default function ConfirmModal() {
 
   const confirmText = confirmModalProps?.confirmText || t("common.confirm");
 
-  const buttons = (
-    <>
-      <Button variant="ghost" color="secondary" onClick={handleCancel}>
-        {t("common.cancel")}
-      </Button>
-      <Button
-        variant="filled"
-        color={confirmVariant === "danger" ? "danger" : "primary"}
-        onClick={handleConfirm}
-      >
-        {confirmText}
-      </Button>
-    </>
-  );
+  // Determine header color/icon based on variant
+  let HeaderIcon = AlertTriangle;
+  let headerGradient = "from-primary/20 to-secondary/20";
+  let iconColor = "text-primary";
+  let buttonGradient = "from-primary to-secondary";
+
+  if (confirmVariant === "danger") {
+    HeaderIcon = AlertTriangle;
+    headerGradient = "from-red-500/20 to-orange-500/20";
+    iconColor = "text-red-500";
+    buttonGradient = "from-red-500 to-orange-600";
+  } else if (confirmVariant === "success") {
+    HeaderIcon = CheckCircle;
+    headerGradient = "from-green-500/20 to-emerald-500/20";
+    iconColor = "text-green-500";
+    buttonGradient = "from-green-500 to-emerald-600";
+  } else if (confirmVariant === "primary") {
+    HeaderIcon = Info;
+    headerGradient = "from-primary/20 to-secondary/20";
+    iconColor = "text-primary";
+    buttonGradient = "from-primary to-secondary";
+  }
 
   return (
-    <BaseModal
-      isOpen={currentModal === "confirm"}
-      onClose={closeModal}
-      title={title}
-      buttons={buttons}
-      icon={AlertTriangle}
+    <div
+      onClick={handleCancel}
+      className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
     >
-      <p className="text-text-secondary">{text}</p>
-    </BaseModal>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-surface rounded-2xl shadow-2xl max-w-md w-full border-2 border-border/50 overflow-hidden animate-in zoom-in-95 duration-200"
+      >
+        {/* Header */}
+        <div
+          className={`flex items-center justify-between p-6 border-b border-border bg-gradient-to-r ${headerGradient}`}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`p-2 rounded-xl bg-surface/50 border border-white/10 shadow-sm ${iconColor}`}
+            >
+              <HeaderIcon size={24} />
+            </div>
+            <h2 className="text-xl font-bold text-text-primary">{title}</h2>
+          </div>
+
+          <button
+            onClick={closeModal}
+            className="p-2 rounded-lg hover:bg-black/10 text-text-secondary hover:text-text-primary transition-colors"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          <p className="text-text-secondary text-base leading-relaxed bg-surface-secondary/50 p-4 rounded-xl border border-border">
+            {text}
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end gap-3 p-6 pt-2">
+          <button
+            onClick={handleCancel}
+            className="px-6 py-2.5 rounded-xl font-medium text-text-secondary bg-surface hover:bg-surface-secondary border hover:border-border transition-colors"
+          >
+            {t("common.cancel")}
+          </button>
+          <button
+            onClick={handleConfirm}
+            className={`px-6 py-2.5 rounded-xl font-bold text-white shadow-lg shadow-black/20 hover:shadow-xl hover:scale-[1.02] transition-all bg-gradient-to-r ${buttonGradient}`}
+          >
+            {confirmText}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

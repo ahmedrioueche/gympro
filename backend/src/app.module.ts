@@ -15,6 +15,7 @@ import { AppBillingModule } from './modules/appBilling/appBilling.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ChargilyModule } from './modules/chargily/chargily.module';
+import { ExercisesModule } from './modules/exercises/exercises.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -77,6 +78,7 @@ import { UsersModule } from './modules/users/users.module';
     AnalyticsModule,
     AttendanceModule,
     TrainingModule,
+    ExercisesModule,
     AiModule,
   ],
   controllers: [AppController],
