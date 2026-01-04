@@ -3,8 +3,8 @@ import {
   type MuscleGroup,
 } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
-import { useAI } from "../../../../../../../hooks/useAI";
-import { parseAiResponse } from "../../../../../../../utils/helper";
+import { useAI } from "../../../../../../hooks/useAI";
+import { parseAiResponse } from "../../../../../../utils/helper";
 
 interface UseExerciseFormProps {
   exercise: CreateExerciseDto;

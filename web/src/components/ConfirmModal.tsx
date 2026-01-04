@@ -27,6 +27,8 @@ export default function ConfirmModal() {
     return null;
   }
 
+  const confirmText = confirmModalProps?.confirmText || t("common.confirm");
+
   const buttons = (
     <>
       <Button variant="ghost" color="secondary" onClick={handleCancel}>
@@ -37,7 +39,7 @@ export default function ConfirmModal() {
         color={confirmVariant === "danger" ? "danger" : "primary"}
         onClick={handleConfirm}
       >
-        {t("common.confirm")}
+        {confirmText}
       </Button>
     </>
   );

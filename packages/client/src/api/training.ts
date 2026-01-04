@@ -75,6 +75,28 @@ export const trainingApi = {
     }
   },
 
+  pauseProgram: async (): Promise<ApiResponse<ProgramHistory>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<ProgramHistory>>(
+        "/training/program/pause"
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  resumeProgram: async (): Promise<ApiResponse<ProgramHistory>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<ProgramHistory>>(
+        "/training/program/resume"
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   // Active & History
   getActiveProgram: async (): Promise<ApiResponse<ProgramHistory | null>> => {
     try {

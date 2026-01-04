@@ -1,6 +1,7 @@
 import { type TrainingProgram } from "@ahmedrioueche/gympro-client";
 import {
   Calendar,
+  Check,
   ChevronRight,
   Dumbbell,
   Target,
@@ -157,14 +158,28 @@ export const ProgramCard = ({
             {t("training.programs.card.view")}
           </button>
           <button
-            onClick={() => onUse(program._id!)}
-            className="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg shadow-primary/20 hover:shadow-xl flex items-center justify-center gap-2 group/btn"
+            onClick={() => !isActive && onUse(program._id!)}
+            disabled={isActive}
+            className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all shadow-lg flex items-center justify-center gap-2 group/btn ${
+              isActive
+                ? "bg-green-500/10 text-green-500 border border-green-500/30 cursor-not-allowed shadow-none"
+                : "text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-primary/20 hover:shadow-xl"
+            }`}
           >
-            {t("training.programs.card.start")}
-            <ChevronRight
-              size={18}
-              className="group-hover/btn:translate-x-0.5 transition-transform"
-            />
+            {isActive ? (
+              <>
+                <Check size={18} />
+                {t("training.programs.card.selected")}
+              </>
+            ) : (
+              <>
+                {t("training.programs.card.start")}
+                <ChevronRight
+                  size={18}
+                  className="group-hover/btn:translate-x-0.5 transition-transform"
+                />
+              </>
+            )}
           </button>
         </div>
       </div>

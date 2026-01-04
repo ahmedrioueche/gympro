@@ -1,7 +1,7 @@
 import { type Exercise } from "@ahmedrioueche/gympro-client";
 import { Dumbbell, PlayCircle, Target, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getEmbedUrl } from "../../../../../utils/helper";
+import { getEmbedUrl } from "../../../utils/helper";
 
 interface ExerciseDetailModalProps {
   exercise: Exercise | null;

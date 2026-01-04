@@ -61,12 +61,15 @@ export interface TrainingProgram extends AuditInfo {
 }
 
 // Progress for a single exercise in a session
+export interface ExerciseSet {
+  reps: number;
+  weight: number;
+  completed: boolean;
+}
+
 export interface ExerciseProgress {
   exerciseId: string; // links to Exercise._id
-  setsDone?: number;
-  repsDone?: number;
-  durationMinutes?: number;
-  weightKg?: number;
+  sets: ExerciseSet[];
   notes?: string; // optional notes for that exercise
 }
 
@@ -92,5 +95,5 @@ export interface ProgramHistory {
   _id?: string;
   program: TrainingProgram;
   progress: ProgramProgress;
-  status: "active" | "completed" | "abandoned";
+  status: "active" | "paused" | "completed" | "abandoned";
 }

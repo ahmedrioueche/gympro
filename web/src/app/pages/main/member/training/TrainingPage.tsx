@@ -1,20 +1,34 @@
-import { Dumbbell, Plus } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { Dumbbell, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../../../constants/navigation";
 import { useActiveProgram } from "../../../../../hooks/queries/useTraining";
 import PageHeader from "../../../../components/PageHeader";
-import { ActiveProgramHeader } from "./components/ActiveProgramHeader";
-import { LogSessionModal } from "./components/LogSessionModal";
-import { SessionList } from "./components/SessionList";
+import { ActiveProgramCard } from "./components/ActiveProgramCard";
+import { LogSessionModal } from "./components/log-session-modal/LogSessionModal";
+import { SessionList } from "./components/session-list/SessionList";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
   const { data: activeHistory, isLoading: isActiveLoading } =
     useActiveProgram();
   const [isLogSessionOpen, setIsLogSessionOpen] = useState(false);
+  const [editingSession, setEditingSession] = useState<any>(undefined); // Using any temporarily or import type if preferred
+  const navigate = useNavigate();
 
   // Recent sessions from active program
   const activeSessions = activeHistory?.progress.dayLogs || [];
+
+  const handleEditSession = (session: any) => {
+    setEditingSession(session);
+    setIsLogSessionOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsLogSessionOpen(false);
+    setTimeout(() => setEditingSession(undefined), 300); // Clear after animation
+  };
 
   return (
     <div className="min-h-screen p-3 md:p-6 lg:p-8">
@@ -26,9 +40,11 @@ export default function TrainingPage() {
           actionButton={
             activeHistory
               ? {
-                  label: t("training.activeProgram.logWorkout"),
-                  icon: Plus,
-                  onClick: () => setIsLogSessionOpen(true),
+                  label: t("training.page.yourProgress"),
+                  icon: TrendingUp,
+                  onClick: () => {
+                    navigate({ to: APP_PAGES.member.progress.link });
+                  },
                   show: true,
                 }
               : undefined
@@ -40,9 +56,12 @@ export default function TrainingPage() {
           {isActiveLoading ? (
             <div className="h-48 bg-surface border border-border rounded-2xl animate-pulse" />
           ) : (
-            <ActiveProgramHeader
+            <ActiveProgramCard
               history={activeHistory}
-              onLogSession={() => setIsLogSessionOpen(true)}
+              onLogSession={() => {
+                setEditingSession(undefined);
+                setIsLogSessionOpen(true);
+              }}
             />
           )}
         </div>
@@ -56,6 +75,7 @@ export default function TrainingPage() {
             <SessionList
               sessions={activeSessions.slice(0, 10)}
               program={activeHistory.program}
+              onEditSession={handleEditSession}
             />
           </div>
         )}
@@ -64,8 +84,9 @@ export default function TrainingPage() {
         {activeHistory && (
           <LogSessionModal
             isOpen={isLogSessionOpen}
-            onClose={() => setIsLogSessionOpen(false)}
+            onClose={handleCloseModal}
             activeHistory={activeHistory}
+            initialSession={editingSession}
           />
         )}
       </div>

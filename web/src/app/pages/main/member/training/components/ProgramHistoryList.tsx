@@ -2,7 +2,7 @@ import { type ProgramHistory } from "@ahmedrioueche/gympro-client";
 import { ChevronRight, History } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { SessionList } from "./SessionList";
+import { SessionList } from "./session-list/SessionList";
 
 interface ProgramHistoryListProps {
   history: ProgramHistory[];

@@ -2,6 +2,7 @@ import type {
   DaysPerWeek,
   Exercise,
   ExerciseProgress,
+  ExerciseSet,
   ExperienceLevel,
   MuscleGroup,
   ProgramDay,
@@ -83,12 +84,16 @@ export const TrainingProgramSchema =
 TrainingProgramSchema.index({ name: 'text' });
 
 @Schema({ _id: false })
+export class ExerciseSetModel implements ExerciseSet {
+  @Prop({ required: true }) reps: number;
+  @Prop({ required: true }) weight: number;
+  @Prop({ required: true }) completed: boolean;
+}
+
+@Schema({ _id: false })
 export class ExerciseProgressModel implements ExerciseProgress {
   @Prop({ required: true }) exerciseId: string;
-  @Prop() setsDone?: number;
-  @Prop() repsDone?: number;
-  @Prop() durationMinutes?: number;
-  @Prop() weightKg?: number;
+  @Prop({ type: [ExerciseSetModel], required: true }) sets: ExerciseSetModel[];
   @Prop() notes?: string;
 }
 
@@ -123,8 +128,17 @@ export class ProgramHistoryModel extends Document {
   program: TrainingProgramModel;
   @Prop({ type: ProgramProgressSchema, required: true })
   progress: ProgramProgressModel;
-  @Prop({ required: true, enum: ['active', 'completed', 'abandoned'] })
-  status: 'active' | 'completed' | 'abandoned';
+  @Prop({
+    required: true,
+    enum: ['active', 'paused', 'completed', 'abandoned'],
+  })
+  status: 'active' | 'paused' | 'completed' | 'abandoned';
+
+  @Prop({ default: 0 })
+  pausesToday: number;
+
+  @Prop()
+  lastPauseDate?: Date;
 }
 
 export const ProgramHistorySchema =

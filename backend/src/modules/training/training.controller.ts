@@ -112,6 +112,23 @@ export class TrainingController {
     return apiResponse(true, undefined, history, 'Session logged successfully');
   }
 
+  @Post('program/pause')
+  async pauseProgram(@Request() req) {
+    const history = await this.trainingService.pauseProgram(req.user.sub);
+    return apiResponse(true, undefined, history, 'Program paused successfully');
+  }
+
+  @Post('program/resume')
+  async resumeProgram(@Request() req) {
+    const history = await this.trainingService.resumeProgram(req.user.sub);
+    return apiResponse(
+      true,
+      undefined,
+      history,
+      'Program resumed successfully',
+    );
+  }
+
   @Get('history')
   async getHistory(@Request() req) {
     const history = await this.trainingService.getHistory(req.user.sub);

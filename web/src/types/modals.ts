@@ -3,6 +3,7 @@ import type { AppPlan, EditUserDto } from "@ahmedrioueche/gympro-client";
 export interface ConfirmModalProps {
   text?: string;
   title?: string;
+  confirmText?: string;
   confirmVariant?: "danger" | "success" | "primary";
   onConfirm?: () => void;
   onCancel?: () => void;

@@ -1645,9 +1645,48 @@
       "custom": "Custom",
       "exercises": "exercises",
       "volume": "total",
+      "yourProgress": "Your Progress",
       "quickLog": {
         "title": "Quick Log Workout",
         "subtitle": "Log a custom training session",
+        "selectProgram": "Select Program",
+        "selectDay": "Select Day",
+        "start": "Start Logging"
+      },
+      "start": {
+        "activeCheck": "You have an active program. Please pause it first."
+      },
+      "pause": {
+        "title": "Pause Program?",
+        "desc": "Access to program features will be restricted while paused. You can resume at any time.",
+        "confirm": "Pause Program"
+      },
+      "resume": {
+        "title": "Resume Program?",
+        "desc": "You are about to resume your training program.",
+        "confirm": "Resume Program",
+        "error": "You already have an active program. Please pause or complete the active one first."
+      },
+      "sessionList": {
+        "editSession": "Edit Session",
+        "set": "Set",
+        "reps": "reps",
+        "kg": "kg",
+        "noSets": "No sets logged"
+      },
+      "activeProgram": {
+        "title": "Active Program",
+        "subtitle": "Your current training plan",
+        "progress": "Progress",
+        "daysCompleted": "{{completed}} / {{total}} Days",
+        "streak": "Streak",
+        "days": "Days",
+        "logWorkout": "Log Workout",
+        "viewDetails": "View Details"
+      },
+      "programs": {
+        "title": "Training Programs",
+        "subtitle": "Browse and manage your training routines",
         "button": "Log Custom Workout"
       }
     },
@@ -1692,8 +1731,13 @@
       "card": {
         "daysPerWeek": "{{count}} days/week",
         "start": "Start Program",
+        "selected": "Selected",
         "view": "View Details",
         "active": "Active",
+        "paused": "Paused",
+        "pausedDesc": "Program paused. Resume to continue tracking.",
+        "pause": "Pause",
+        "resume": "Resume",
         "days": "Days/Week",
         "sessions": "Sessions",
         "exercises": "Exercises",
@@ -1773,7 +1817,9 @@
       "cancel": "Cancel",
       "save": "Save Workout",
       "noSessions": "No sessions logged yet.",
-      "unknownExercise": "Unknown Exercise"
+      "unknownExercise": "Unknown Exercise",
+      "done": "Done",
+      "addSet": "Add Set"
     },
     "exercise": {
       "noVideo": "No video available",

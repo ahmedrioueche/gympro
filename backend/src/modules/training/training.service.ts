@@ -89,13 +89,17 @@ export class TrainingService {
     programId: string,
     userId: string,
   ): Promise<ProgramHistory> {
-    const program = await this.findProgramById(programId);
+    const activeProgram = await this.historyModel
+      .findOne({ userId, status: 'active' })
+      .exec();
 
-    // Deactivate current active program if any for this user
-    await this.historyModel.updateMany(
-      { userId, status: 'active' },
-      { $set: { status: 'abandoned', 'progress.endDate': new Date() } },
-    );
+    if (activeProgram) {
+      throw new BadRequestException(
+        'Cannot start new program while another is active. Please pause the current program first.',
+      );
+    }
+
+    const program = await this.findProgramById(programId);
 
     const history = new this.historyModel({
       userId,
@@ -113,8 +117,72 @@ export class TrainingService {
     return history.save();
   }
 
+  async pauseProgram(userId: string): Promise<ProgramHistory> {
+    const activeProgram = await this.historyModel
+      .findOne({ userId, status: 'active' })
+      .exec();
+
+    if (!activeProgram) {
+      throw new BadRequestException('No active program to pause');
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const lastPause = activeProgram.lastPauseDate
+      ? new Date(activeProgram.lastPauseDate)
+      : null;
+    if (lastPause) lastPause.setHours(0, 0, 0, 0);
+
+    let pausesToday = activeProgram.pausesToday || 0;
+
+    // Reset counter if new day
+    if (!lastPause || lastPause.getTime() < today.getTime()) {
+      pausesToday = 0;
+    }
+
+    if (pausesToday >= 2) {
+      throw new BadRequestException(
+        'Daily pause limit reached (2 pauses per day)',
+      );
+    }
+
+    activeProgram.status = 'paused';
+    activeProgram.pausesToday = pausesToday + 1;
+    activeProgram.lastPauseDate = new Date();
+
+    return activeProgram.save();
+  }
+
+  async resumeProgram(userId: string): Promise<ProgramHistory> {
+    const pausedProgram = await this.historyModel
+      .findOne({ userId, status: 'paused' })
+      .exec();
+
+    if (!pausedProgram) {
+      throw new BadRequestException('No paused program found');
+    }
+
+    // Ensure no other program is active (though UI should prevent this)
+    const activeProgram = await this.historyModel
+      .findOne({ userId, status: 'active' })
+      .exec();
+
+    if (activeProgram) {
+      throw new BadRequestException(
+        'Cannot resume while another program is active',
+      );
+    }
+
+    pausedProgram.status = 'active';
+    return pausedProgram.save();
+  }
+
   async getActiveProgram(userId: string): Promise<ProgramHistory | null> {
-    return this.historyModel.findOne({ userId, status: 'active' }).exec();
+    // Return either active or paused so user can see state
+    return this.historyModel
+      .findOne({ userId, status: { $in: ['active', 'paused'] } })
+      .exec();
   }
 
   async getHistory(userId: string): Promise<ProgramHistory[]> {
@@ -135,21 +203,29 @@ export class TrainingService {
     });
 
     if (!history) {
-      // If no active history for this program, check if we should create one or error?
-      // For now, require active program.
       throw new BadRequestException('No active session found for this program');
     }
 
-    // Add day log
-    history.progress.dayLogs.push({
-      dayName: dto.dayName,
-      date: dto.date,
-      exercises: dto.exercises,
-      notes: dto.notes,
+    // Check for existing session on same date + dayName
+    const existingIndex = history.progress.dayLogs.findIndex((log) => {
+      const logDate = new Date(log.date).toISOString().split('T')[0];
+      const newDate = new Date(dto.date).toISOString().split('T')[0];
+      return logDate === newDate && log.dayName === dto.dayName;
     });
 
-    // Update days completed if unique day?
-    // Simplified logic: just increment for now or calc based on unique dates
+    if (existingIndex >= 0) {
+      // Update existing
+      history.progress.dayLogs[existingIndex].exercises = dto.exercises;
+      if (dto.notes) history.progress.dayLogs[existingIndex].notes = dto.notes;
+    } else {
+      // Add new day log
+      history.progress.dayLogs.push({
+        dayName: dto.dayName,
+        date: dto.date,
+        exercises: dto.exercises,
+        notes: dto.notes,
+      });
+    }
 
     return history.save();
   }

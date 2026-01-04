@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
 import { SearchInput } from "../../../../../components/ui/SearchInput";
 import {
+  useActiveProgram,
   usePrograms,
   useStartProgram,
 } from "../../../../../hooks/queries/useTraining";
@@ -29,15 +30,37 @@ export default function ProgramsPage() {
     search: searchQuery || undefined,
   });
 
+  const { data: activeProgram } = useActiveProgram();
   const startProgram = useStartProgram();
 
   const handleUseProgram = (id: string) => {
+    // 1. Check if user already has an active program
+    if (activeProgram?.status === "active") {
+      if (activeProgram.program._id === id) {
+        // Already on this program
+        navigate({ to: "/member/training" });
+        return;
+      }
+      // Different program active -> Block and Alert
+      toast(t("training.page.start.activeCheck"), {
+        icon: "⚠️",
+        duration: 4000,
+      });
+      // Optional: Navigate to training page so they can pause it?
+      // navigate({ to: "/member/training" });
+      return;
+    }
+
+    // 2. Start program
     startProgram.mutate(id, {
       onSuccess: () => {
         navigate({ to: "/member/training" });
       },
-      onError: (error) => {
-        toast.error("Failed to start program");
+      onError: (error: any) => {
+        // Backend might also throw if we race condition, show error
+        toast.error(
+          error?.response?.data?.message || "Failed to start program"
+        );
       },
     });
   };
@@ -125,6 +148,10 @@ export default function ProgramsPage() {
               <ProgramCard
                 key={program._id}
                 program={program}
+                isActive={
+                  activeProgram?.status === "active" &&
+                  activeProgram.program._id === program._id
+                }
                 onUse={handleUseProgram}
                 onViewDetails={setSelectedProgram}
               />

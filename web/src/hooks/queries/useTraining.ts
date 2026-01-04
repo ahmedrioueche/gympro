@@ -99,6 +99,36 @@ export const useStartProgram = () => {
   });
 };
 
+export const usePauseProgram = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => trainingApi.pauseProgram(),
+    onSuccess: () => {
+      toast.success("Program paused");
+      queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
+      queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to pause program");
+    },
+  });
+};
+
+export const useResumeProgram = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => trainingApi.resumeProgram(),
+    onSuccess: () => {
+      toast.success("Program resumed");
+      queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
+      queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to resume program");
+    },
+  });
+};
+
 export const useLogSession = () => {
   const queryClient = useQueryClient();
   return useMutation({

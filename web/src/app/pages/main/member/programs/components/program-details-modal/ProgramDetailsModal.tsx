@@ -9,7 +9,7 @@ import {
   ProgramDescription,
   ProgramForm,
 } from ".";
-import { ExerciseDetailModal } from "../../../components/ExerciseDetailModal";
+import { ExerciseDetailModal } from "../../../../../../components/gym/ExerciseDetailModal";
 import { useProgramEdit } from "./useProgramEdit";
 
 interface ProgramDetailsModalProps {
