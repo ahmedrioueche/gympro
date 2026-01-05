@@ -41,17 +41,16 @@ export const APP_PAGES = {
     },
     gyms: {
       name: "pages.manager.gyms",
-      link: "/gym/managers",
+      link: "/manager/gyms",
     },
     createGym: {
       name: "pages.manager.create_gym",
-      link: "/gym/managers/create",
+      link: "/manager/gyms/create",
     },
     subscriptions: {
       name: "pages.manager.subscriptions",
       link: "/manager/subscriptions",
     },
-
     coaching: {
       name: "pages.manager.coaching",
       link: "/manager/coaching",

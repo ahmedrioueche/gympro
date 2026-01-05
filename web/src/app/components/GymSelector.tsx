@@ -63,7 +63,19 @@ export default function GymSelector({
     setGym(selected);
 
     if (gymId) {
-      user.role === "manager"
+      // Find the user's membership for the selected gym
+      const membership = user?.memberships?.find((m) => m.gym._id === gymId);
+      const membershipRoles = membership?.roles || [];
+
+      // Check if user is a manager/owner - use membership roles or fallback to global role
+      const isManagerInGym =
+        membershipRoles.length > 0
+          ? membershipRoles.some(
+              (role) => role === "owner" || role === "manager"
+            )
+          : user?.role === "owner" || user?.role === "manager";
+
+      isManagerInGym
         ? navigate({ to: APP_PAGES.gym.manager.home.link })
         : navigate({ to: APP_PAGES.gym.member.home.link });
     }
