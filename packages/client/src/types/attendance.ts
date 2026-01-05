@@ -21,3 +21,16 @@ export interface AttendanceRecord extends AuditInfo {
   notes?: string; // optional, e.g., "late entry"
   expiryDate?: string | Date;
 }
+
+/** Attendance record with populated gym info for member view */
+export interface MemberAttendanceRecord
+  extends Omit<AttendanceRecord, "gymId"> {
+  gymId: {
+    _id: string;
+    name: string;
+    location?: {
+      address?: string;
+      city?: string;
+    };
+  };
+}

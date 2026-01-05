@@ -403,4 +403,24 @@ export class MembershipService {
 
     return userObj;
   }
+
+  /**
+   * Get all memberships for the current user with populated gym details
+   */
+  async getMyMemberships(userId: string) {
+    const userObjectId = new Types.ObjectId(userId);
+
+    const memberships = await this.membershipModel
+      .find({ user: userObjectId })
+      .populate('gym', 'name location slogan')
+      .sort({ createdAt: -1 })
+      .lean()
+      .exec();
+
+    this.logger.log(
+      `Fetched ${memberships.length} memberships for user ${userId}`,
+    );
+
+    return memberships;
+  }
 }

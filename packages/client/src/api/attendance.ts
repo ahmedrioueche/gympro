@@ -1,5 +1,8 @@
 import type { ApiResponse } from "../types/api";
-import type { AttendanceRecord } from "../types/attendance";
+import type {
+  AttendanceRecord,
+  MemberAttendanceRecord,
+} from "../types/attendance";
 import { apiClient, handleApiError } from "./helper";
 
 export const attendanceApi = {
@@ -38,6 +41,18 @@ export const attendanceApi = {
     try {
       const res = await apiClient.get<ApiResponse<AttendanceRecord[]>>(
         `/attendance/logs/${gymId}`
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Get current user's attendance history across all gyms */
+  getMyAttendance: async (): Promise<ApiResponse<MemberAttendanceRecord[]>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<MemberAttendanceRecord[]>>(
+        "/attendance/my"
       );
       return res.data;
     } catch (error) {

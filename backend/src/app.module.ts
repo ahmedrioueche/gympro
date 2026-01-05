@@ -20,6 +20,7 @@ import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaddleModule } from './modules/paddle/paddle.module';
+import { ProgressModule } from './modules/progress/progress.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
 import { TrainingModule } from './modules/training/training.module';
@@ -80,6 +81,7 @@ import { UsersModule } from './modules/users/users.module';
     TrainingModule,
     ExercisesModule,
     AiModule,
+    ProgressModule,
   ],
   controllers: [AppController],
   providers: [

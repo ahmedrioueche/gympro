@@ -109,6 +109,9 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.PAYMENT_NOT_FOUND]: "status.error.payment.not_found",
   [ErrorCode.PAYMENT_UPDATE_ERROR]: "status.error.payment.update_error",
   [ErrorCode.PAYMENT_CANCEL_ERROR]: "status.error.payment.cancel_error",
+
+  // Attendance errors
+  [ErrorCode.ATTENDANCE_FETCH_ERROR]: "status.error.attendance.fetch_error",
 };
 
 /**

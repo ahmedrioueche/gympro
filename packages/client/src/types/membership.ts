@@ -21,3 +21,21 @@ export enum MembershipStatus {
   Left = "canceled",
   Expired = "expired",
 }
+
+/** Subscription view for member-facing pages with populated gym info */
+export interface MemberSubscriptionView extends AuditInfo {
+  _id: string;
+  gym: {
+    _id: string;
+    name: string;
+    location?: {
+      address?: string;
+      city?: string;
+    };
+    slogan?: string;
+  };
+  roles: UserRole[];
+  joinedAt: string;
+  membershipStatus: MembershipStatus;
+  subscription?: SubscriptionInfo;
+}

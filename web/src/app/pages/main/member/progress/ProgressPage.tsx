@@ -1,5 +1,32 @@
-function ProgressPage() {
-  return <div>ProgressPage</div>;
-}
+import { TrendingUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import PageHeader from "../../../../components/PageHeader";
+import { ActivityCalendar } from "./components/ActivityCalendar";
+import { RecentWorkouts } from "./components/RecentWorkouts";
+import { StatsOverview } from "./components/StatsOverview";
+import { useProgressHistory, useProgressStats } from "./hooks/useProgress";
+
+export const ProgressPage = () => {
+  const { t } = useTranslation();
+  const { data: stats, isLoading: statsLoading } = useProgressStats();
+  const { data: history, isLoading: historyLoading } = useProgressHistory();
+
+  return (
+    <div className="max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+      <PageHeader
+        title={t("progress.title")}
+        subtitle={t("progress.subtitle")}
+        icon={TrendingUp}
+      />
+
+      <StatsOverview stats={stats} isLoading={statsLoading} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ActivityCalendar history={history} isLoading={historyLoading} />
+        <RecentWorkouts history={history} isLoading={historyLoading} />
+      </div>
+    </div>
+  );
+};
 
 export default ProgressPage;

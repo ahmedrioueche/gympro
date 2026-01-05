@@ -242,4 +242,34 @@ export class AttendanceService {
       return apiResponse(false, 'Failed to fetch attendance logs', []);
     }
   }
+
+  async getMyAttendance(
+    userId: string,
+  ): Promise<ApiResponse<AttendanceRecordModel[]>> {
+    try {
+      console.log(
+        `[AttendanceService] Fetching attendance for user: ${userId}`,
+      );
+
+      const userObjectId = new Types.ObjectId(userId);
+
+      const logs = await this.attendanceModel
+        .find({ userId: userObjectId })
+        .sort({ createdAt: -1 })
+        .populate('gymId', 'name location.address location.city')
+        .lean();
+
+      console.log(`Found ${logs.length} attendance records for user ${userId}`);
+
+      return apiResponse(
+        true,
+        undefined,
+        logs as any,
+        'Attendance history fetched',
+      );
+    } catch (error) {
+      console.error('Error fetching user attendance:', error);
+      return apiResponse(false, 'ATTENDANCE_FETCH_ERROR', []);
+    }
+  }
 }

@@ -190,4 +190,26 @@ export class MembershipController {
       );
     }
   }
+
+  @Get('my')
+  @UseGuards(JwtAuthGuard)
+  async getMyMemberships(@Req() req: any): Promise<ApiResponse<any[]>> {
+    try {
+      const userId = req.user.sub;
+      const memberships = await this.membershipService.getMyMemberships(userId);
+      return apiResponse(
+        true,
+        undefined,
+        memberships,
+        'Memberships fetched successfully',
+      );
+    } catch (error) {
+      return apiResponse<any[]>(
+        false,
+        ErrorCode.FETCH_MEMBER_FAILED,
+        [],
+        error.message,
+      );
+    }
+  }
 }

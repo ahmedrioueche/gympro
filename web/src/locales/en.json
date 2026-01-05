@@ -254,6 +254,9 @@
         "not_found": "Payment not found",
         "update_error": "Failed to update payment",
         "cancel_error": "Failed to cancel payment"
+      },
+      "attendance": {
+        "fetch_error": "Failed to fetch attendance records"
       }
     }
   },
@@ -1593,22 +1596,6 @@
       "error": "Failed to update settings"
     },
     "training": {
-      "title": "My Training",
-      "subtitle": "Track your progress and workout history",
-      "active_program": "Active Program",
-      "no_active_program": "No Active Program",
-      "programs_title": "Training Programs",
-      "programs_subtitle": "Browse and manage your training routines",
-      "create_program": "Create Program",
-      "program_history": "Program History",
-      "recent_sessions": "Recent Sessions",
-      "browse_programs": "Browse Programs",
-      "select_program_msg": "Select a training program to start tracking your progress.",
-      "workouts_complete": "Workouts Complete",
-      "progress": "Progress",
-      "log_workout": "Log Workout",
-      "schedule": "Schedule",
-      "start_program": "Start Program",
       "use_program": "Use",
       "view_details": "View",
       "days_per_week": "{{count}} days/week",
@@ -1973,5 +1960,90 @@
     "tryDifferent": "Try different filters or create a new exercise",
     "deleteConfirm": "Delete Exercise",
     "deleteWarning": "Are you sure you want to delete this exercise?  This action cannot be undone."
+  },
+  "progress": {
+    "title": "My Progress",
+    "subtitle": "Track your fitness journey and achievements",
+    "stats": {
+      "totalWorkouts": "Total Workouts",
+      "totalVolume": "Total Volume",
+      "currentStreak": "Current Streak",
+      "bestStreak": "Best Streak"
+    },
+    "calendar": {
+      "title": "Activity (Last 14 Days)"
+    },
+    "recent": {
+      "title": "Recent Workouts",
+      "viewAll": "View All",
+      "noWorkouts": "No workouts logged yet. Start training to see your progress!"
+    }
+  },
+  "attendance": {
+    "title": "Attendance History",
+    "subtitle": "View your gym check-in records",
+    "search": "Search by gym name...",
+    "empty": "No attendance records",
+    "emptyDesc": "Your check-in history will appear here once you visit a gym.",
+    "table": {
+      "status": "Status",
+      "gym": "Gym",
+      "date": "Date & Time",
+      "badge": "Badge"
+    },
+    "status": {
+      "checked_in": "Checked In",
+      "checked_out": "Checked Out",
+      "denied": "Denied",
+      "missed": "Missed"
+    },
+    "filter": {
+      "all": "All",
+      "checked_in": "Checked In",
+      "denied": "Denied"
+    }
+  },
+  "mySubscriptions": {
+    "title": "My Subscriptions",
+    "subtitle": "Manage your gym memberships and subscriptions",
+    "search": "Search by gym name...",
+    "empty": "No subscriptions yet",
+    "emptyDesc": "Join a gym to see your subscriptions here.",
+    "noResults": "No matching subscriptions",
+    "noResultsDesc": "Try adjusting your search or filter criteria.",
+    "joined": "Joined",
+    "expires": "Expires",
+    "table": {
+      "gym": "Gym",
+      "joined": "Joined",
+      "expires": "Expires",
+      "status": "Status",
+      "details": "Details"
+    },
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "banned": "Banned",
+      "canceled": "Canceled",
+      "expired": "Expired"
+    },
+    "subscriptionStatus": {
+      "active": "Active",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "filter": {
+      "all": "All",
+      "active": "Active",
+      "expired": "Expired"
+    },
+    "details": {
+      "title": "Subscription Details",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "subscriptionStatus": "Subscription Status",
+      "paymentMethod": "Payment Method",
+      "paymentsComingSoon": "Payment history will be available once gym access is implemented."
+    }
   }
 }

@@ -77,6 +77,9 @@ export enum ErrorCode {
   PAYMENT_NOT_FOUND = "PAY_013",
   PAYMENT_UPDATE_ERROR = "PAY_014",
   PAYMENT_CANCEL_ERROR = "PAY_015",
+
+  // Attendance errors
+  ATTENDANCE_FETCH_ERROR = "ATT_001",
 }
 
 export const HttpStatusToErrorCode: Record<number, ErrorCode> = {

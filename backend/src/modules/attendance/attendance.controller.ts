@@ -30,4 +30,10 @@ export class AttendanceController {
   async getLogs(@Param('gymId') gymId: string) {
     return this.attendanceService.getAttendanceLogs(gymId);
   }
+
+  @Get('my')
+  async getMyAttendance(@Request() req: any) {
+    const userId = req.user.sub;
+    return this.attendanceService.getMyAttendance(userId);
+  }
 }
