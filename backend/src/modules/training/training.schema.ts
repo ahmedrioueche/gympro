@@ -42,7 +42,7 @@ export class ExerciseModel implements Exercise {
   @Prop() imageUrl?: string;
   @Prop() instructions?: string;
   @Prop() isPublic?: boolean;
-  @Prop({ required: true }) createdAt: Date;
+  @Prop({ required: true, default: Date.now }) createdAt: Date;
   @Prop() createdBy?: string;
   @Prop() updatedAt?: Date;
   @Prop() updatedBy?: string;

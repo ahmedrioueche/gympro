@@ -211,10 +211,15 @@ export const ExerciseDetailModal = ({}) => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-surface-secondary border-t border-border flex-shrink-0 flex justify-end">
+        <div
+          className="p-4 bg-surface-s0.
+        0.
+        .
+        econdary border-t border-border flex-shrink-0 flex justify-end"
+        >
           <button
             onClick={() => closeModal()}
-            className="px-8 py-2.5 rounded-xl font-medium text-white bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity shadow-lg shadow-primary/20"
+            className="px-8 py-2.5 rounded-xl font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:opacity-90 transition-opacity shadow-lg shadow-primary/20"
           >
             {t("common.close")}
           </button>

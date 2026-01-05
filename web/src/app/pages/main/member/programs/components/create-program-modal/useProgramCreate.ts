@@ -98,15 +98,25 @@ export const useProgramCreate = (onClose: () => void) => {
     setFormData({ ...formData, days: newDays });
   };
 
-  const addExercise = (dayIndex: number) => {
+  const addExercise = (
+    dayIndex: number,
+    initialData?: Partial<CreateExerciseDto>
+  ) => {
     const newDays = [...formData.days];
-    newDays[dayIndex].exercises.push({
-      name: "",
-      recommendedSets: 3,
-      recommendedReps: 10,
-      targetMuscles: [],
-      equipment: [],
-    } as CreateExerciseDto);
+    const newExercise: CreateExerciseDto = {
+      name: initialData?.name || "",
+      description: initialData?.description || "",
+      instructions: initialData?.instructions || "",
+      recommendedSets: initialData?.recommendedSets || 3,
+      recommendedReps: initialData?.recommendedReps || 10,
+      targetMuscles: initialData?.targetMuscles || [],
+      equipment: initialData?.equipment || [],
+      videoUrl: initialData?.videoUrl || "",
+      imageUrl: initialData?.imageUrl || "",
+      difficulty: initialData?.difficulty,
+      type: initialData?.type,
+    };
+    newDays[dayIndex].exercises.push(newExercise);
     setFormData({ ...formData, days: newDays });
   };
 

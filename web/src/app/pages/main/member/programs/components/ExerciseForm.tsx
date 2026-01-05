@@ -4,11 +4,10 @@ import {
   type MuscleGroup,
 } from "@ahmedrioueche/gympro-client";
 import {
-  BrainCircuit,
   ChevronDown,
   GripVertical,
-  Loader2,
   Plus,
+  Search,
   Trash2,
   Video,
   X,
@@ -23,9 +22,11 @@ interface ExerciseFormProps {
   exerciseIndex: number;
   isDragging?: boolean;
   isCollapsed?: boolean;
+  isLibraryOpen?: boolean;
   onUpdate: (field: keyof CreateExerciseDto, value: any) => void;
   onRemove: () => void;
   onAddNext?: () => void;
+  onToggleLibrary?: () => void;
   onDragStart?: () => void;
   onDragEnd?: () => void;
   onDragOver?: (targetIndex: number) => void;
@@ -37,9 +38,11 @@ export const ExerciseForm = ({
   exerciseIndex,
   isDragging = false,
   isCollapsed = false,
+  isLibraryOpen = false,
   onUpdate,
   onRemove,
   onAddNext,
+  onToggleLibrary,
   onDragStart,
   onDragEnd,
   onDragOver,
@@ -49,11 +52,9 @@ export const ExerciseForm = ({
   const {
     selectedMuscle,
     handleMuscleChange,
-    handleGetSuggestions,
     applySuggestion,
     clearSuggestions,
     suggestions,
-    isPending,
     muscleOptions,
   } = useExerciseForm({ exercise, onUpdate });
 
@@ -120,14 +121,34 @@ export const ExerciseForm = ({
           </div>
           {/* Row 1: Name and Muscle */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1">
-              <InputField
-                placeholder={t("training.programs.create.form.exerciseName")}
-                value={exercise.name}
-                onChange={(e) => onUpdate("name", e.target.value)}
-                className="w-full"
-                label={t("training.programs.create.form.exerciseName")}
-              />
+            <div className="flex-1 flex gap-2">
+              {" "}
+              {/* Added flex-1 flex gap-2 */}
+              <div className="flex-1">
+                {" "}
+                {/* Wrapped InputField in flex-1 div */}
+                <InputField
+                  placeholder={t("training.programs.create.form.exerciseName")}
+                  value={exercise.name}
+                  onChange={(e) => onUpdate("name", e.target.value)}
+                  className="w-full"
+                  label={t("training.programs.create.form.exerciseName")}
+                />
+              </div>
+              {onToggleLibrary && (
+                <button
+                  type="button"
+                  onClick={onToggleLibrary}
+                  className={`h-[50px] w-[50px] mt-auto flex items-center justify-center rounded-xl transition-all flex-shrink-0 border ${
+                    isLibraryOpen
+                      ? "bg-primary text-white border-primary shadow-sm shadow-primary/20"
+                      : "bg-surface-secondary text-text-secondary border-border hover:border-primary/50 hover:text-primary"
+                  }`}
+                  title={t("training.programs.create.form.addFromLibrary")}
+                >
+                  <Search size={20} />
+                </button>
+              )}
             </div>
             <div className="w-full sm:w-[200px]">
               <CustomSelect
@@ -224,28 +245,7 @@ export const ExerciseForm = ({
                 </button>
               )}
 
-              {!exercise.name && (
-                <button
-                  type="button"
-                  onClick={handleGetSuggestions}
-                  disabled={isPending || !exercise.targetMuscles?.length}
-                  className="flex-1 sm:flex-none h-[42px] px-3 rounded-lg bg-gradient-to-r from-purple-500/10 to-blue-500/10 text-primary border border-primary/20 hover:border-primary/50 flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  title={
-                    !exercise.targetMuscles?.length
-                      ? t("training.programs.create.form.selectMuscleForAi")
-                      : t("common.suggestWithAI", "Suggest with AI")
-                  }
-                >
-                  {isPending ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <BrainCircuit size={16} />
-                  )}
-                  <span className="sm:hidden lg:inline">
-                    {t("common.suggest", "Suggest")}
-                  </span>
-                </button>
-              )}
+              {/* Removed the AI suggestion button */}
 
               <button
                 onClick={onRemove}

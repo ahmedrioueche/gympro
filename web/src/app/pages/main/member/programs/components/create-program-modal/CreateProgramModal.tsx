@@ -59,7 +59,7 @@ export const CreateProgramModal = ({
                     dayIndex={dayIndex}
                     isEditMode={true}
                     onDayNameChange={(name) => updateDayName(dayIndex, name)}
-                    onAddExercise={() => addExercise(dayIndex)}
+                    onAddExercise={(data) => addExercise(dayIndex, data)}
                     onExerciseUpdate={(exIndex, field, value) =>
                       updateExercise(dayIndex, exIndex, field, value)
                     }

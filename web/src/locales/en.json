@@ -1879,6 +1879,11 @@
         "type": "Type",
         "clear": "Clear Filters"
       },
+      "selector": {
+        "title": "Select Exercise",
+        "createCustom": "Custom",
+        "searchPlaceholder": "Search by name or muscle..."
+      },
       "form": {
         "name": "Exercise Name",
         "namePlaceholder": "e.g., Dumbbell Bench Press",
@@ -1911,10 +1916,13 @@
       },
       "difficulty": {
         "all": "All Levels",
-
         "beginner": "Beginner",
         "intermediate": "Intermediate",
         "expert": "Expert"
+      },
+      "empty": {
+        "title": "No exercises found",
+        "description": "No exercises found for the selected filters."
       },
 
       "deleteConfirm": "Delete Exercise"
@@ -1930,39 +1938,40 @@
       "description": "Create your first exercise to get started",
       "action": "Create Exercise"
     },
+    "exercise": {
+      "noVideo": "No video available",
+      "description": "Description",
+      "noDescription": "No description provided.",
+      "noResults": "No results found",
+      "targetMuscles": "Target Muscles",
+      "equipment": "Equipment"
+    },
+    "logSession": {
+      "title": "Log Workout",
+      "sessionDetails": "Session Details",
+      "workoutName": "Workout Name",
+      "selectDay": "Select Day",
+      "day": "Day",
+      "date": "Date",
+      "exercises": "Exercises",
+      "exerciseName": "Exercise Name",
+      "addExercise": "Add Exercise",
+      "noExercises": "No exercises added yet",
+      "addFirst": "Add your first exercise",
+      "last": "Last: {{sets}}x{{reps}} @ {{weight}}kg",
+      "sets": "Sets",
+      "reps": "Reps",
+      "kg": "Weight (kg)",
+      "cancel": "Cancel",
+      "save": "Save Workout",
+      "noSessions": "No sessions logged yet.",
+      "unknownExercise": "Unknown Exercise",
+      "done": "Done",
+      "addSet": "Add Set"
+    },
     "noResults": "No exercises found",
     "tryDifferent": "Try different filters or create a new exercise",
     "deleteConfirm": "Delete Exercise",
     "deleteWarning": "Are you sure you want to delete this exercise?  This action cannot be undone."
-  },
-  "logSession": {
-    "title": "Log Workout",
-    "sessionDetails": "Session Details",
-    "workoutName": "Workout Name",
-    "selectDay": "Select Day",
-    "day": "Day",
-    "date": "Date",
-    "exercises": "Exercises",
-    "exerciseName": "Exercise Name",
-    "addExercise": "Add Exercise",
-    "noExercises": "No exercises added yet",
-    "addFirst": "Add your first exercise",
-    "last": "Last: {{sets}}x{{reps}} @ {{weight}}kg",
-    "sets": "Sets",
-    "reps": "Reps",
-    "kg": "Weight (kg)",
-    "cancel": "Cancel",
-    "save": "Save Workout",
-    "noSessions": "No sessions logged yet.",
-    "unknownExercise": "Unknown Exercise",
-    "done": "Done",
-    "addSet": "Add Set"
-  },
-  "exercise": {
-    "noVideo": "No video available",
-    "description": "Description",
-    "noDescription": "No description provided.",
-    "targetMuscles": "Target Muscles",
-    "equipment": "Equipment"
   }
 }

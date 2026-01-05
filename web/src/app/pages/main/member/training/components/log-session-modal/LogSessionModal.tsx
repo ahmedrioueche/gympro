@@ -66,25 +66,25 @@ export const LogSessionModal = ({
         className="bg-surface rounded-2xl shadow-2xl max-w-4xl max-h-[99vh] w-full border-2 border-primary/30 overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary/30 to-purple-500/30 p-6 border-b border-border flex justify-between items-center">
+        <div className="bg-gradient-to-r from-primary to-secondary p-6 border-b border-border flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-primary/20 rounded-xl">
-              <Dumbbell size={24} className="text-primary" />
+            <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
+              <Dumbbell className="w-7 h-7 text-white" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-text-primary">
                 {t("training.logSession.title")}
               </h2>
-              <p className="text-sm text-text-secondary">
+              <p className="text-sm text-text-primary">
                 {program.name} - {form.selectedDayName}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-background-secondary rounded-lg transition-colors"
+            className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
           >
-            <X size={24} className="text-text-secondary" />
+            <X className="w-5 h-5 text-white" />
           </button>
         </div>
 

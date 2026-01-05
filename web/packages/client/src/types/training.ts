@@ -20,10 +20,75 @@ export const MUSCLE_GROUPS = [
   "triceps",
   "shoulders",
   "legs",
-  "abs",
   "glutes",
   "calves",
+  "core",
 ] as const;
+
+export const MUSCLE_SUBGROUPS = {
+  chest: ["upper_chest", "mid_chest", "lower_chest", "inner_chest"],
+
+  back: [
+    "lats",
+    "upper_back",
+    "mid_back",
+    "lower_back",
+    "traps_upper",
+    "traps_middle",
+    "traps_lower",
+  ],
+
+  shoulders: ["front_delts", "lateral_delts", "rear_delts", "rotator_cuff"],
+
+  arms: [
+    "arms",
+    "biceps",
+    "triceps",
+    "forearms",
+    "biceps_long_head",
+    "biceps_short_head",
+    "brachialis",
+    "triceps_long_head",
+    "triceps_lateral_head",
+    "triceps_medial_head",
+    "forearms_flexors",
+    "forearms_extensors",
+  ],
+
+  legs: [
+    "quads",
+    "hamstrings",
+    "glutes",
+    "calves",
+    "adductors",
+    "abductors",
+
+    // quads detail
+    "quads_rectus_femoris",
+    "quads_vastus_lateralis",
+    "quads_vastus_medialis",
+    "quads_vastus_intermedius",
+
+    // hamstrings detail
+    "hamstrings_biceps_femoris",
+    "hamstrings_semitendinosus",
+    "hamstrings_semimembranosus",
+  ],
+
+  glutes: ["glute_max", "glute_med", "glute_min"],
+
+  calves: ["gastrocnemius_medial", "gastrocnemius_lateral", "soleus"],
+
+  core: [
+    "abs",
+    "upper_abs",
+    "lower_abs",
+    "obliques_internal",
+    "obliques_external",
+    "transverse_abdominis",
+    "erector_spinae",
+  ],
+} as const;
 
 export const EXERCISE_DIFFICULTIES = [
   "beginner",
@@ -45,7 +110,11 @@ export const CREATION_TYPES = ["member", "coach", "template"] as const;
 // Then derive the types from the constants
 export type ExperienceLevel = (typeof EXPERIENCE_LEVELS)[number];
 export type ProgramPurpose = (typeof PROGRAM_PURPOSES)[number];
-export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
+
+export type MuscleSubgroups = typeof MUSCLE_SUBGROUPS;
+export type MuscleSubgroup = MuscleSubgroups[keyof MuscleSubgroups][number];
+export type MuscleGroup = (typeof MUSCLE_GROUPS)[number] | MuscleSubgroup;
+
 export type ExerciseDifficulty = (typeof EXERCISE_DIFFICULTIES)[number];
 export type ExerciseType = (typeof EXERCISE_TYPES)[number];
 

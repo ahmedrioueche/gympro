@@ -32,41 +32,51 @@ export class ExercisesService {
 
   async findAllExercises(filters: ExerciseFilters = {}): Promise<Exercise[]> {
     const query: any = {};
+    const andCriteria: any[] = [];
 
     // Filter by public exercises or user's own exercises
     if (filters.myExercises && filters.createdBy) {
-      query.createdBy = filters.createdBy;
+      andCriteria.push({ createdBy: filters.createdBy });
     } else if (!filters.myExercises) {
-      // Show public exercises OR user's own exercises
-      query.$or = [
-        { isPublic: true },
-        ...(filters.createdBy ? [{ createdBy: filters.createdBy }] : []),
-      ];
+      const visibilityOr: any[] = [{ isPublic: true }];
+      if (filters.createdBy) {
+        visibilityOr.push({ createdBy: filters.createdBy });
+      }
+      andCriteria.push({ $or: visibilityOr });
     }
 
-    // Search by name/description
+    // Search by name or muscle (partial match)
     if (filters.search) {
-      query.$text = { $search: filters.search };
+      const searchRegex = { $regex: filters.search, $options: 'i' };
+      andCriteria.push({
+        $or: [{ name: searchRegex }, { targetMuscles: searchRegex }],
+      });
     }
 
-    // Filter by target muscle
+    // Filter by target muscle (exact match)
     if (filters.targetMuscle) {
-      query.targetMuscles = filters.targetMuscle;
+      andCriteria.push({ targetMuscles: filters.targetMuscle });
     }
 
     // Filter by equipment
     if (filters.equipment) {
-      query.equipment = { $regex: filters.equipment, $options: 'i' };
+      andCriteria.push({
+        equipment: { $regex: filters.equipment, $options: 'i' },
+      });
     }
 
     // Filter by difficulty
     if (filters.difficulty) {
-      query.difficulty = filters.difficulty;
+      andCriteria.push({ difficulty: filters.difficulty });
     }
 
     // Filter by type
     if (filters.type) {
-      query.type = filters.type;
+      andCriteria.push({ type: filters.type });
+    }
+
+    if (andCriteria.length > 0) {
+      query.$and = andCriteria;
     }
 
     return this.exerciseModel.find(query).sort({ createdAt: -1 }).exec();
