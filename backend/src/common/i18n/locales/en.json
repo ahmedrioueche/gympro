@@ -16,7 +16,7 @@
       "created_subject": "Welcome to {{planName}} - Subscription Confirmed",
       "created_body": "<p>Hello {{name}},</p><p>Great news! Your subscription to <strong>{{planName}}</strong> has been successfully activated.</p><p>You now have access to all the features included in your plan. We're excited to help you manage your gym operations more efficiently.</p><p><strong>What's Next?</strong></p><ul><li>Explore your dashboard to get started</li><li>Set up your gym profile and preferences</li><li>Invite your team members to collaborate</li></ul><p>If you have any questions or need assistance, our support team is here to help.</p><p>Thank you for choosing GymPro!</p><p>Best regards,<br>The GymPro Team</p>",
       "cancelled_subject": "Subscription Cancellation Confirmed",
-      "cancelled_body": "<p>Hello {{name}},</p><p>We've processed your cancellation request. Your subscription will remain active until <strong>{{date}}</strong>, and you'll continue to have full access to all features until then.</p><p><strong>What Happens Next?</strong></p><ul><li>Your subscription will not renew automatically</li><li>You can continue using all features until {{date}}</li><li>Your data will be safely stored for 30 days after cancellation</li><li>You can reactivate your subscription anytime before {{date}}</li></ul><p>We're sorry to see you go. If there's anything we could have done better, we'd love to hear your feedback.</p><p>If you change your mind, you can easily reactivate your subscription from your account settings.</p><p>Best regards,<br>The GymPro Team</p>",
+      "cancelled_body": "<p>Hello {{name}},</p><p>We've processed your cancellation request. Your subscription will remain active until <strong>{{date}}</strong>, and you'll continue to have full access to all features until then.</p><p><strong>What Happens Next?</strong></p><ul><li>Your subscription will not renew automatically</li><li>You can continue using all features until {{date}}</li><li>Your data will be safely stored after cancellation</li><li>You can reactivate your subscription anytime before {{date}}</li></ul><p>We're sorry to see you go. If there's anything we could have done better, we'd love to hear your feedback.</p><p>If you change your mind, you can easily reactivate your subscription from your account settings.</p><p>Best regards,<br>The GymPro Team</p>",
       "upgrade_subject": "Your GymPro Subscription Has Been Upgraded 🎉",
       "upgrade_body": "<p>Hello {{name}},</p><p>Great news! Your subscription has been successfully upgraded to <strong>{{planName}}</strong>.</p><p>You now have access to all the additional features and benefits included in your new plan, helping you manage your gym even more efficiently.</p><p><strong>What’s New?</strong></p><ul><li>Access to all features of the {{planName}} plan</li><li>Improved tools to manage members and subscriptions</li><li>Enhanced performance and priority support</li></ul><p>The upgrade takes effect immediately, and any applicable charges have been processed securely.</p><p>If you have any questions or want help getting the most out of your new plan, our support team is always here for you.</p><p>Thank you for continuing to grow with GymPro!</p><p>Best regards,<br>The GymPro Team</p>",
       "reactivated_subject": "Welcome Back - Subscription Reactivated",
@@ -37,10 +37,14 @@
       "downgrade_effective_soon_subject": "Upcoming Plan Change",
       "downgrade_effective_soon_body": "<p>Hello {{name}},</p><p>This is a reminder that your subscription plan will change to <strong>{{planName}}</strong> on <strong>{{date}}</strong>.</p><p>Your current plan remains fully active until that date, with uninterrupted access to all features.</p><p>If you’d like to make changes or cancel this update, you can do so from your account settings before {{date}}.</p><p>Best regards,<br>The GymPro Team</p>",
       "renewed_subject": "Your Subscription Has Been Renewed - {{planName}}",
-      "renewed_body": "<p>Hello {{name}},</p><p>Great news! Your subscription to <strong>{{planName}}</strong> has been successfully renewed.</p><p>You now have uninterrupted access to all the features included in your plan. No action is required on your part.</p><p><strong>What’s Next?</strong></p><ul><li>Continue managing your gym with full access to all tools</li><li>Check your dashboard for updated billing and plan details</li><li>Invite or manage team members as needed</li></ul><p>If you have any questions or need assistance, our support team is always here to help.</p><p>Thank you for continuing to use GymPro!</p><p>Best regards,<br>The GymPro Team</p>"
+      "renewed_body": "<p>Hello {{name}},</p><p>Great news! Your subscription to <strong>{{planName}}</strong> has been successfully renewed.</p><p>You now have uninterrupted access to all the features included in your plan. No action is required on your part.</p><p><strong>What’s Next?</strong></p><ul><li>Continue managing your gym with full access to all tools</li><li>Check your dashboard for updated billing and plan details</li><li>Invite or manage team members as needed</li></ul><p>If you have any questions or need assistance, our support team is always here to help.</p><p>Thank you for continuing to use GymPro!</p><p>Best regards,<br>The GymPro Team</p>",
+      "gym_membership_added_subject": "Welcome to {{gymName}}",
+      "gym_membership_added_body": "<p>Hello {{name}},</p><p>We're excited to inform you that you've been added as a member to <strong>{{gymName}}</strong>!</p><p>You can now log in to your dashboard to view your membership details, tracking your progress, and stay updated with gym announcements.</p><p>Best regards,<br>The {{gymName}} Team</p>"
     }
   },
   "notification": {
+    "gym_membership_added_title": "New Gym Membership",
+    "gym_membership_added_body": "You have been added to {{gymName}}. Welcome!",
     "auth": {
       "verify_title": "Verify Your Email",
       "verify_body": "Please check your email to verify your account.",
@@ -57,7 +61,7 @@
       "upgraded_title": "Plan Upgraded",
       "upgraded_body": "Success! Your subscription has been upgraded to {{planName}}.",
       "cancelled_title": "Subscription Cancelled",
-      "cancelled_body": "Your subscription has been cancelled and will end on {{date}}. Reactivate anytime to keep your data.",
+      "cancelled_body": "Your subscription has been cancelled and will end on {{date}}. Reactivate anytime to keep using the app.",
       "reactivated_title": "Subscription Reactivated",
       "reactivated_body": "Welcome back! Your GymPro subscription has been successfully reactivated.",
       "downgrade_scheduled_title": "Change Scheduled",

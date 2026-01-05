@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useGymStore } from "../../../store/gym";
 import GymCard from "./GymCard";
+import GymCardSkeleton from "./GymCard.Skeleton";
 
 interface GymListProps {
   gyms: Gym[];
@@ -15,21 +16,7 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
   const { setGym } = useGymStore();
 
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="bg-surface border border-border rounded-xl p-6 h-64 animate-pulse"
-          >
-            <div className="w-12 h-12 rounded-lg bg-border/50 mb-4" />
-            <div className="h-6 w-3/4 bg-border/50 rounded mb-2" />
-            <div className="h-4 w-1/2 bg-border/50 rounded mb-6" />
-            <div className="h-10 w-full bg-border/50 rounded" />
-          </div>
-        ))}
-      </div>
-    );
+    return <GymCardSkeleton />;
   }
 
   if (!gyms || gyms.length === 0) {

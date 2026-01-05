@@ -35,8 +35,8 @@ function SubscriptionHeader({ mySubscription }: Props) {
   return (
     <PageHeader
       icon={Layers}
-      title={t("subscriptions.title")}
-      subtitle={t("subscriptions.subtitle")}
+      title={t("subscription.title")}
+      subtitle={t("subscription.subtitle")}
       actionButton={{
         label: buttonLabel,
         icon: ButtonIcon,

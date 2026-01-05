@@ -212,4 +212,37 @@ export class MembershipController {
       );
     }
   }
+
+  @Get('my/:gymId')
+  @UseGuards(JwtAuthGuard)
+  async getMyMembershipInGym(
+    @Req() req: any,
+    @Param('gymId') gymId: string,
+  ): Promise<ApiResponse<any>> {
+    console.log(
+      `[MembershipController] getMyMembershipInGym called with gymId: ${gymId}`,
+    );
+    try {
+      const userId = req.user.sub;
+      console.log(`[MembershipController] userId: ${userId}`);
+      const result = await this.membershipService.getMyMembershipInGym(
+        userId,
+        gymId,
+      );
+      return apiResponse(
+        true,
+        undefined,
+        result,
+        'Membership fetched successfully',
+      );
+    } catch (error) {
+      console.error(`[MembershipController] Error:`, error);
+      return apiResponse<any>(
+        false,
+        ErrorCode.FETCH_MEMBER_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
 }

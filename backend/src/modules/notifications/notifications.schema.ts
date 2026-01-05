@@ -40,6 +40,7 @@ export class BaseNotification
     ],
   })
   type: NotificationType;
+  @Prop() gymId?: string;
 }
 export const BaseNotificationSchema =
   SchemaFactory.createForClass(BaseNotification);
@@ -93,7 +94,6 @@ export class OwnerManagerNotification
     | 'reminder'
     | 'alert'
     | 'announcement';
-  @Prop() relatedGymId?: string;
 }
 export const MemberNotificationSchema =
   SchemaFactory.createForClass(MemberNotification);

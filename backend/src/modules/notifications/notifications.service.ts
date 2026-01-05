@@ -187,11 +187,25 @@ export class NotificationsService {
       this.logger.log(`Notification Data: ${JSON.stringify(notificationData)}`);
 
       if (options.relatedId) {
+        // If it looks like a member notification about a program, use relatedProgramId
+        // BUT if it's a membership addition (what we just added), optians.relatedId IS the gymId
+        // To be safe, let's check the type or context.
+        // For now, let's assume if it's a MemberNotification and type is NOT 'subscription', it might be a program.
         if (roleType === 'MemberNotification') {
-          // Could hold programId etc.
-          notificationData.relatedProgramId = options.relatedId;
+          if (options.type === 'program') {
+            notificationData.relatedProgramId = options.relatedId;
+          } else if (
+            options.type === 'subscription' ||
+            options.type === 'announcement'
+          ) {
+            // Likely a gym-related notification
+            notificationData.gymId = options.relatedId;
+          }
         } else if (roleType === 'OwnerManagerNotification') {
-          notificationData.relatedGymId = options.relatedId;
+          notificationData.gymId = options.relatedId;
+        } else {
+          // Fallback: put it in gymId if it's not role-specific
+          notificationData.gymId = options.relatedId;
         }
       }
 

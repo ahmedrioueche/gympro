@@ -32,7 +32,16 @@ export class GymService {
       );
     }
 
-    const createdGym = new this.gymModel(createGymDto);
+    const createdGym = new this.gymModel({
+      ...createGymDto,
+      settings: {
+        ...(createGymDto.settings || {}),
+        workingHours: createGymDto.settings?.workingHours || {
+          start: '08:00',
+          end: '22:00',
+        },
+      },
+    });
     await createdGym.save();
 
     // Populate the owner field before returning

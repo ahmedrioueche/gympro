@@ -182,7 +182,7 @@ export default function GymSelector({
             isMobile
               ? "top-full left-0 right-0 mt-2"
               : "top-full left-0 mt-3 w-[420px]"
-          } bg-background/80 backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden z-50 border border-white/10 dark:border-white/5`}
+          } bg-background/80  backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden z-50 border border-white/10 dark:border-white/5`}
           style={{
             animation: "dropdown-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
@@ -192,7 +192,7 @@ export default function GymSelector({
           <div
             className={`relative max-h-[70vh] ${
               isMobile ? "max-h-[50vh]" : "max-h-[600px]"
-            } overflow-y-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent`}
+            } overflow-y-auto scrollbar-thin pb-4 scrollbar-thumb-primary/20 scrollbar-track-transparent`}
           >
             {Array.isArray(gyms) && gyms.length > 0 ? (
               <div className="p-3 space-y-2">
@@ -327,7 +327,7 @@ export default function GymSelector({
             )}
           </div>
 
-          {showAllGymsOption && (
+          {showAllGymsOption && user.role !== "member" && (
             <div className="relative border-t border-white/5 p-3 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5">
               <button
                 onClick={() => {

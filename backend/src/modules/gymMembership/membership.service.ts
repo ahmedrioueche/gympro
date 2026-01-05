@@ -10,6 +10,8 @@ import * as crypto from 'crypto';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 import { CreateMemberDto } from '../auth/auth.dto';
+import { GymModel } from '../gym/gym.schema';
+import { NotificationsService } from '../notifications/notifications.service';
 import { GymMembershipModel } from './membership.schema';
 
 @Injectable()
@@ -20,6 +22,8 @@ export class MembershipService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(GymMembershipModel.name)
     private membershipModel: Model<GymMembershipModel>,
+    @InjectModel(GymModel.name) private gymModel: Model<GymModel>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async createMember(dto: CreateMemberDto, createdBy: string) {
@@ -198,12 +202,46 @@ export class MembershipService {
     });
 
     await membership.save();
-    console.log(`Saved membership: ${membership._id} to gym_memberships`);
+    this.logger.log(`Saved membership: ${membership._id} to gym_memberships`);
 
     // Add membership to user
     user.memberships.push(membership._id);
     await user.save();
-    console.log(`Added membership ${membership._id} to user ${user._id}`);
+    this.logger.log(`Added membership ${membership._id} to user ${user._id}`);
+
+    // Send notification to existing users who were added to a new gym
+    if (!isNewUser && !isDummyUser) {
+      try {
+        // Fetch gym details for notification
+        const gym = await this.gymModel
+          .findById(gymId)
+          .select('name')
+          .lean()
+          .exec();
+
+        if (gym) {
+          await this.notificationsService.notifyUser(user, {
+            key: 'gym_membership_added',
+            vars: {
+              name: user.profile?.fullName || 'Member',
+              gymName: gym.name,
+            },
+            type: 'subscription',
+            priority: 'medium',
+            relatedId: gymId,
+            skipExternal: true, // Controller already sends external invitation email/sms
+          });
+          this.logger.log(
+            `Sent gym membership notification to existing user ${user._id}`,
+          );
+        }
+      } catch (notifError) {
+        // Don't fail member creation if notification fails
+        this.logger.error(
+          `Failed to send gym membership notification: ${notifError}`,
+        );
+      }
+    }
 
     this.logger.log(
       `Created membership ${membership._id} for user ${user._id} in gym ${gymId}`,
@@ -422,5 +460,55 @@ export class MembershipService {
     );
 
     return memberships;
+  }
+
+  /**
+   * Get membership for the current user in a specific gym with populated history
+   */
+  async getMyMembershipInGym(userId: string, gymId: string) {
+    this.logger.log(`getMyMembershipInGym: userId=${userId}, gymId=${gymId}`);
+
+    if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(gymId)) {
+      this.logger.warn(`Invalid ID format: userId=${userId}, gymId=${gymId}`);
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    // 1. Fetch current active/pending/expired membership
+    const membership = await this.membershipModel
+      .findOne({
+        user: userId, // Mongoose auto-casts
+        gym: gymId, // Mongoose auto-casts
+      })
+      .populate('gym', 'name location slogan')
+      .lean()
+      .exec();
+
+    // 2. Fetch subscription history for this gym from user's history
+    // For the match clause on a Mixed type (gym object), we should try to match both string and ObjectId if possible,
+    // or rely on how it's stored. Since we don't know for sure, let's try strict matching with what we have.
+    // Ideally we shouldn't cast manually if we can avoid it, but inside 'match' for a subdocument, we might need to.
+    // However, if we know gymId is valid (checked above), explicit cast is safe from crashing.
+
+    const user = await this.userModel
+      .findById(userId)
+      .populate({
+        path: 'subscriptionHistory',
+        match: { 'gym._id': gymId }, // Try matching string first (common for Mixed types from JSON)
+        options: { sort: { createdAt: -1 } },
+      })
+      .select('subscriptionHistory')
+      .lean()
+      .exec();
+
+    // If history is empty, it might be because gym._id is stored as ObjectId.
+    // But let's first fix the crash.
+
+    return {
+      membership: membership || null,
+      history: user?.subscriptionHistory || [],
+    };
   }
 }

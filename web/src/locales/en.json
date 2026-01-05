@@ -488,7 +488,9 @@
       "email_label": "Email",
       "email_placeholder": "contact@yourgym.com",
       "website_label": "Website",
-
+      "website_placeholder": "Enter your website link",
+      "submit": "Create Gym",
+      "submiting": "Creating...",
       "using_map": "Using Map",
       "manual_entry": "Manual Entry",
       "click_map_hint": "Click on the map to set location",
@@ -879,6 +881,34 @@
         "customSlots": "Custom slots"
       }
     },
+    "gymMember": {
+      "title": "Gym Home",
+      "subtitle": "Your gym information and updates",
+      "noGym": "No gym selected",
+      "selectGym": "Please select a gym to view details",
+      "status": {
+        "open": "Open Now",
+        "closed": "Closed",
+        "womenOnly": "Women Only",
+        "menOnly": "Men Only",
+        "womenOnlyNow": "Women Only Now",
+        "menOnlyNow": "Men Only Now",
+        "womenSession": "Women's Session",
+        "menSession": "Men's Session",
+        "mixedSession": "Mixed Session",
+        "opensAt": "Opens at {{time}}",
+        "closesAt": "Closes at {{time}}"
+      },
+      "location": {
+        "title": "Location",
+        "getDirections": "Get Directions"
+      },
+      "announcements": {
+        "title": "Announcements",
+        "empty": "No announcements at the moment",
+        "urgent": "Urgent"
+      }
+    },
     "member": {
       "welcome": "Welcome back, {{name}}!",
       "subtitle": "Here's what's happening with your membership today.",
@@ -1162,17 +1192,23 @@
       "description": "When you create a member, they will automatically receive a message with their account access details via their chosen contact method (email or SMS)."
     }
   },
-  "appSubscriptions": {
-    "title": "Subscriptions",
-    "subtitle": "Manage your app subscription and billing",
-    "no_subscription": "No active subscription",
-    "current_subscription": "Current Subscription",
-    "status": "Status",
-    "renews_on": "Renews on",
-    "gyms_count": "Locations",
-    "billing_email": "Billing Email",
-    "footer_info": "Need help? \n Contact us"
+
+  "gymMember": {
+    "subscriptions": {
+      "title": "My Subscription",
+      "subtitle": "View your active plan and subscription history",
+      "currentPlan": "Current Plan",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "paymentMethod": "Payment Method",
+      "history": "Subscription History",
+      "noActive": {
+        "title": "No Active Subscription",
+        "desc": "You don't have an active subscription for this gym. Please contact the front desk to purchase one."
+      }
+    }
   },
+
   "plans": {
     "max_gyms": "Max Locations",
     "per_month": "per month",
@@ -1221,6 +1257,9 @@
     "lifetime_downgrade_error": "Cannot downgrade from your current lifetime plan."
   },
   "subscription": {
+    "title": "Subscriptions",
+    "subtitle": "Manage your app subscription and billing",
+    "footer_info": "Need help? \n Contact us",
     "current_subscription": "Current Subscription",
     "no_subscription": "No active subscription",
     "status": "Status",

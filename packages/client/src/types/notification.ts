@@ -11,6 +11,7 @@ export interface BaseNotification {
   status: NotificationStatus;
   priority?: NotificationPriority;
   type: NotificationType; // see below
+  gymId?: string;
 }
 
 // Notification type can vary per role
@@ -41,7 +42,6 @@ export interface StaffNotification extends BaseNotification {
 
 export interface OwnerManagerNotification extends BaseNotification {
   type: "subscription" | "payment" | "reminder" | "alert" | "announcement";
-  relatedGymId?: string; // gym-related updates
 }
 
 // Union type for all notifications

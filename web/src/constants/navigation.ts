@@ -153,7 +153,7 @@ export const APP_PAGES = {
     },
     gyms: {
       name: "pages.member.gyms",
-      link: "/gym/members",
+      link: "/member/gyms",
     },
     subscriptions: {
       name: "pages.member.subscriptions",

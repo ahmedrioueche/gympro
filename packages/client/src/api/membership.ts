@@ -16,6 +16,20 @@ export const membershipApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Get current user's membership for a specific gym */
+  getMyMembershipByGym: async (
+    gymId: string
+  ): Promise<ApiResponse<{ membership: any; history: any[] }>> => {
+    try {
+      const res = await apiClient.get<
+        ApiResponse<{ membership: any; history: any[] }>
+      >(`/membership/my/${gymId}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };
 
 export default membershipApi;
