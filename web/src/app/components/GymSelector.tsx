@@ -63,7 +63,9 @@ export default function GymSelector({
     setGym(selected);
 
     if (gymId) {
-      navigate({ to: `/gym` });
+      user.role === "manager"
+        ? navigate({ to: APP_PAGES.gym.manager.home.link })
+        : navigate({ to: APP_PAGES.gym.member.home.link });
     }
   };
 

@@ -41,11 +41,11 @@ export const APP_PAGES = {
     },
     gyms: {
       name: "pages.manager.gyms",
-      link: "/manager/gyms",
+      link: "/gym/managers",
     },
     createGym: {
       name: "pages.manager.create_gym",
-      link: "/manager/gyms/create",
+      link: "/gym/managers/create",
     },
     subscriptions: {
       name: "pages.manager.subscriptions",
@@ -81,41 +81,66 @@ export const APP_PAGES = {
   gym: {
     name: "pages.gym",
     link: "/gym",
-    home: {
-      name: "pages.gym.home",
-      link: "/gym",
+    manager: {
+      home: {
+        name: "pages.gym.home",
+        link: "/gym/manager",
+      },
+      members: {
+        name: "pages.gym.members",
+        link: "/gym/manager/members",
+      },
+      createMember: {
+        name: "pages.gym.create_member",
+        link: "/gym/manager/members/create",
+      },
+      subscriptions: {
+        name: "pages.gym.subscriptions",
+        link: "/gym/manager/subscriptions",
+      },
+      access: {
+        name: "pages.gym.access",
+        link: "/gym/manager/access",
+      },
+      accessLogs: {
+        name: "pages.gym.access",
+        link: "/gym/manager/access/logs",
+      },
+      analytics: {
+        name: "pages.gym.analytics",
+        link: "/gym/manager/analytics",
+      },
+      notifications: {
+        name: "pages.gym.notifications",
+        link: "/gym/manager/notifications",
+      },
+      settings: {
+        name: "pages.gym.settings",
+        link: "/gym/manager/settings",
+      },
     },
-    members: {
-      name: "pages.gym.members",
-      link: "/gym/members",
-    },
-    createMember: {
-      name: "pages.gym.create_member",
-      link: "/gym/members/create",
-    },
-    subscriptions: {
-      name: "pages.gym.subscriptions",
-      link: "/gym/subscriptions",
-    },
-    access: {
-      name: "pages.gym.access",
-      link: "/gym/access",
-    },
-    accessLogs: {
-      name: "pages.gym.access",
-      link: "/gym/access/logs",
-    },
-    analytics: {
-      name: "pages.gym.analytics",
-      link: "/gym/analytics",
-    },
-    notifications: {
-      name: "pages.gym.notifications",
-      link: "/gym/notifications",
-    },
-    settings: {
-      name: "pages.gym.settings",
-      link: "/gym/settings",
+    member: {
+      home: {
+        name: "pages.gym.home",
+        link: "/gym/member",
+      },
+
+      subscriptions: {
+        name: "pages.gym.subscriptions",
+        link: "/gym/member/subscriptions",
+      },
+      access: {
+        name: "pages.gym.access",
+        link: "/gym/member/access",
+      },
+      notifications: {
+        name: "pages.gym.notifications",
+        link: "/gym/member/notifications",
+      },
+      settings: {
+        name: "pages.gym.settings",
+        link: "/gym/member/settings",
+      },
     },
   },
 
@@ -129,7 +154,7 @@ export const APP_PAGES = {
     },
     gyms: {
       name: "pages.member.gyms",
-      link: "/member/gyms",
+      link: "/gym/members",
     },
     subscriptions: {
       name: "pages.member.subscriptions",

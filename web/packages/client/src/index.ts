@@ -10,6 +10,7 @@ export * from "./api/exercises";
 export * from "./api/gym";
 export * from "./api/helper";
 export * from "./api/members";
+export * from "./api/membership";
 export * from "./api/notification";
 export * from "./api/paddle";
 export * from "./api/progress";
