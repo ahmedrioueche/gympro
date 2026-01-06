@@ -1,7 +1,9 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../constants/navigation";
 import { useGymStore } from "../../../store/gym";
+import { useUserStore } from "../../../store/user";
 import GymCard from "./GymCard";
 import GymCardSkeleton from "./GymCard.Skeleton";
 
@@ -14,6 +16,7 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { setGym } = useGymStore();
+  const { user } = useUserStore();
 
   if (isLoading) {
     return <GymCardSkeleton />;
@@ -39,7 +42,9 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
         <GymCard
           onSelect={() => {
             setGym(gym);
-            navigate({ to: "/gym" });
+            user?.role === "manager"
+              ? navigate({ to: APP_PAGES.gym.manager.home.link })
+              : navigate({ to: APP_PAGES.gym.member.home.link });
           }}
           key={gym._id}
           gym={gym}

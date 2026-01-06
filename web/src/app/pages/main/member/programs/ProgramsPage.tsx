@@ -5,7 +5,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
-import { SearchInput } from "../../../../../components/ui/SearchInput";
+import { SearchFilterBar } from "../../../../../components/ui/SearchFilterBar";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import {
   useActiveProgram,
@@ -65,11 +65,11 @@ export default function ProgramsPage() {
     });
   };
 
-  const tabs = [
-    { id: "all", label: t("training.programs.tabs.all") },
-    { id: "coach", label: t("training.programs.tabs.coach") },
-    { id: "template", label: t("training.programs.tabs.template") },
-    { id: "member", label: t("training.programs.tabs.member") },
+  const filterOptions = [
+    { value: "all", label: t("training.programs.tabs.all") },
+    { value: "coach", label: t("training.programs.tabs.coach") },
+    { value: "template", label: t("training.programs.tabs.template") },
+    { value: "member", label: t("training.programs.tabs.member") },
   ];
 
   return (
@@ -88,35 +88,14 @@ export default function ProgramsPage() {
         />
 
         {/* Filters & Search */}
-        <div className="bg-surface border border-border rounded-2xl p-4 md:p-6 shadow-sm">
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-            {/* Filter Tabs */}
-            <div className="flex p-1 bg-background-secondary rounded-xl overflow-x-auto max-w-full no-scrollbar">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setFilterSource(tab.id)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                    filterSource === tab.id
-                      ? "bg-card shadow-sm text-text-primary"
-                      : "text-text-secondary hover:text-text-primary"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Search */}
-            <div className="w-full md:w-64">
-              <SearchInput
-                value={searchQuery}
-                onChange={setSearchQuery}
-                placeholder={t("training.programs.searchPlaceholder")}
-              />
-            </div>
-          </div>
-        </div>
+        <SearchFilterBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder={t("training.programs.searchPlaceholder")}
+          filterValue={filterSource}
+          onFilterChange={setFilterSource}
+          filterOptions={filterOptions}
+        />
 
         {/* Content */}
         {isLoading ? (

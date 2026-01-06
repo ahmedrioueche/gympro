@@ -1,5 +1,13 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Key, Logs, RefreshCw, ShieldCheck, Timer } from "lucide-react";
+import {
+  Key,
+  Logs,
+  Maximize2,
+  RefreshCw,
+  ShieldCheck,
+  Timer,
+  X,
+} from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -60,10 +68,6 @@ const AccessPage: React.FC = () => {
                 token && "cursor-zoom-in"
               )}
             >
-              <p className="absolute -top-12 left-1/2 -translate-x-1/2 text-[10px] md:text-xs font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
-                {t("gymMember.access.qr.tapToExpand", "Tap to Expand")}
-              </p>
-
               {isLoading ? (
                 <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 flex items-center justify-center bg-zinc-50 rounded-[1.5rem] md:rounded-[2rem]">
                   <RefreshCw className="w-10 h-10 md:w-12 h-12 text-zinc-300 animate-spin" />
@@ -91,6 +95,16 @@ const AccessPage: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Tap to expand hint - always visible on mobile, hover on desktop */}
+            {token && (
+              <div className="mt-4 flex items-center justify-center gap-2 text-primary opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                <Maximize2 className="w-4 h-4" />
+                <p className="text-xs font-bold uppercase tracking-widest">
+                  {t("gymMember.access.qr.tapToExpand")}
+                </p>
+              </div>
+            )}
 
             <div className="mt-8 md:mt-12 w-full space-y-6">
               <div className="flex items-center justify-between px-6 md:px-8 py-4 md:py-5 bg-zinc-800/30 rounded-2xl md:rounded-3xl border border-zinc-700/30 backdrop-blur-sm">
@@ -163,19 +177,29 @@ const AccessPage: React.FC = () => {
       {/* Fullscreen Overlay */}
       {isFullscreen && token && (
         <div
-          className="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center p-8 animate-in fade-in zoom-in duration-300"
+          className="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center p-6 md:p-12 animate-in fade-in zoom-in duration-300"
           onClick={() => setIsFullscreen(false)}
         >
-          <div className="absolute top-8 right-8 p-4 text-zinc-900 bg-zinc-100 rounded-full active:scale-90 transition-all">
-            <RefreshCw className="w-6 h-6 rotate-45" />
+          <button
+            className="absolute top-4 right-4 md:top-8 md:right-8 p-3 md:p-4 text-zinc-600 hover:text-zinc-900 bg-zinc-100 hover:bg-zinc-200 rounded-full active:scale-90 transition-all"
+            aria-label={t("common.close")}
+          >
+            <X className="w-5 h-5 md:w-6 md:h-6" />
+          </button>
+
+          <div className="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-[0_0_100px_rgba(0,0,0,0.1)]">
+            <QRCodeSVG
+              value={token}
+              size={Math.min(
+                Math.min(window.innerWidth, window.innerHeight) * 0.7,
+                500
+              )}
+              level="M"
+            />
           </div>
 
-          <div className="bg-white p-4 rounded-[2rem] shadow-[0_0_100px_rgba(0,0,0,0.1)]">
-            <QRCodeSVG value={token} size={window.innerWidth * 0.8} level="M" />
-          </div>
-
-          <p className="mt-12 text-zinc-900 font-black uppercase tracking-widest text-center">
-            {t("gymMember.access.qr.tapToClose", "Tap anywhere to close")}
+          <p className="mt-8 md:mt-12 text-zinc-500 font-bold uppercase tracking-widest text-center text-xs md:text-sm">
+            {t("gymMember.access.qr.tapToClose")}
           </p>
         </div>
       )}

@@ -49,15 +49,17 @@ function PageHeader({
 
         {/* Right CTA */}
         {showBtn && ActionIcon && (
-          <Button
-            onClick={actionButton.onClick}
-            loading={actionButton.loading}
-            disabled={actionButton.disabled}
-            className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            {actionButton.label}
-            <ActionIcon className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-          </Button>
+          <div className="w-full sm:w-auto flex justify-center sm:justify-end">
+            <Button
+              onClick={actionButton.onClick}
+              loading={actionButton.loading}
+              disabled={actionButton.disabled}
+              className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              {actionButton.label}
+              <ActionIcon className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+            </Button>
+          </div>
         )}
       </div>
     </div>

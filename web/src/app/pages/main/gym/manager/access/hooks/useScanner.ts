@@ -18,7 +18,7 @@ interface UseScannerProps {
 export const useScanner = ({ onScanSuccess }: UseScannerProps) => {
   const { t } = useTranslation();
   const [isScannerReady, setIsScannerReady] = useState(false);
-  const [isMirrored, setIsMirrored] = useState(false);
+  const [isMirrored, setIsMirrored] = useState(true);
   const [cameraError, setCameraError] = useState<string | null>(null);
 
   const scannerRef = useRef<Html5Qrcode | null>(null);
