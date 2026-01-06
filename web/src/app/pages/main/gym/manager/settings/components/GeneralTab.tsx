@@ -1,5 +1,14 @@
 import { WEEK_DAYS, type WeeklyTimeRange } from "@ahmedrioueche/gympro-client";
-import { Check, Edit2, Plus, Trash2, Users, X } from "lucide-react";
+import {
+  Check,
+  Edit2,
+  Plus,
+  ShieldCheck,
+  ShieldOff,
+  Trash2,
+  Users,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../../components/ui/Button";
@@ -14,6 +23,8 @@ interface GeneralTabProps {
   setIsMixed: (value: boolean) => void;
   femaleOnlyHours: WeeklyTimeRange[];
   setFemaleOnlyHours: (value: WeeklyTimeRange[]) => void;
+  accessControlType: string;
+  setAccessControlType: (value: string) => void;
 }
 
 export default function GeneralTab({
@@ -25,6 +36,8 @@ export default function GeneralTab({
   setIsMixed,
   femaleOnlyHours,
   setFemaleOnlyHours,
+  accessControlType,
+  setAccessControlType,
 }: GeneralTabProps) {
   const { t } = useTranslation();
   const [isAddingSlot, setIsAddingSlot] = useState(false);
@@ -158,6 +171,72 @@ export default function GeneralTab({
             </p>
           </div>
           <Users className="w-5 h-5 text-primary" />
+        </div>
+
+        <div className="mt-6">
+          <h4 className="text-sm font-medium text-text-primary mb-3">
+            {t(
+              "settings.gym.general.accessControlTitle",
+              "Access Control Mode"
+            )}
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              onClick={() => setAccessControlType("flexible")}
+              className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all ${
+                accessControlType === "flexible"
+                  ? "border-primary bg-primary/5 ring-1 ring-primary"
+                  : "border-border bg-surface-hover hover:border-primary/30"
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-sm font-semibold">
+                  {t("settings.gym.general.accessFlexible", "Flexible")}
+                </span>
+                <ShieldOff
+                  className={`w-5 h-5 ${
+                    accessControlType === "flexible"
+                      ? "text-primary"
+                      : "text-text-tertiary"
+                  }`}
+                />
+              </div>
+              <p className="text-xs text-text-secondary text-left">
+                {t(
+                  "settings.gym.general.accessFlexibleDesc",
+                  "Members are allowed in even if expired, but both they and the manager receive a warning."
+                )}
+              </p>
+            </button>
+
+            <button
+              onClick={() => setAccessControlType("strict")}
+              className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all ${
+                accessControlType === "strict"
+                  ? "border-primary bg-primary/5 ring-1 ring-primary"
+                  : "border-border bg-surface-hover hover:border-primary/30"
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-sm font-semibold">
+                  {t("settings.gym.general.accessStrict", "Strict")}
+                </span>
+                <ShieldCheck
+                  className={`w-5 h-5 ${
+                    accessControlType === "strict"
+                      ? "text-primary"
+                      : "text-text-tertiary"
+                  }`}
+                />
+              </div>
+              <p className="text-xs text-text-secondary text-left">
+                {t(
+                  "settings.gym.general.accessStrictDesc",
+                  "Expired subscriptions strictly block entry. Physical access hardware will deny passage."
+                )}
+              </p>
+            </button>
+          </div>
         </div>
 
         {/* Female-Only Hours - Only show when not mixed */}

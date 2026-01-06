@@ -1,5 +1,5 @@
 import { createRoute } from "@tanstack/react-router";
-import AccessLogsPage from "../../../../app/pages/main/gym/member/access-logs/AccessLogsPage";
+import AttendancePage from "../../../../app/pages/main/gym/member/access-logs/AttendancePage";
 import AccessPage from "../../../../app/pages/main/gym/member/access/AccessPage";
 import HomePage from "../../../../app/pages/main/gym/member/home/HomePage";
 import NotificationsPage from "../../../../app/pages/main/gym/member/notifications/NotificationsPage";
@@ -19,10 +19,10 @@ export const accessRoute = createRoute({
   component: () => <AccessPage />,
 });
 
-export const accessLogsRoute = createRoute({
+export const attendanceRoute = createRoute({
   getParentRoute: () => GymMemberRootRoute,
-  path: "/access/logs",
-  component: () => <AccessLogsPage />,
+  path: "/attendance",
+  component: () => <AttendancePage />,
 });
 
 export const subscriptionsRoute = createRoute({

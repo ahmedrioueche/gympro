@@ -1,7 +1,7 @@
 import { GymMemberRootRoute } from "./GymMemberRootRoute";
 import {
-  accessLogsRoute,
   accessRoute,
+  attendanceRoute,
   homeRoute,
   notificationsRoute,
   settingsRoute,
@@ -14,5 +14,5 @@ export const GymMemberRootTree = GymMemberRootRoute.addChildren([
   notificationsRoute,
   settingsRoute,
   accessRoute,
-  accessLogsRoute,
+  attendanceRoute,
 ]);

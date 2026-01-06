@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMyAttendanceInGym } from "../../../../../../../hooks/queries/useAttendance";
 
-export const useAccessLogs = (gymId?: string) => {
+export const useAttendance = (gymId?: string) => {
   const { data: logsRes, isLoading } = useMyAttendanceInGym(gymId);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<

@@ -1,4 +1,3 @@
-import { useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { Ban, CheckCircle2, ChevronDown, Clock, History } from "lucide-react";
 import React, { useState } from "react";
@@ -7,12 +6,12 @@ import { SearchInput } from "../../../../../../components/ui/SearchInput";
 import { useGymStore } from "../../../../../../store/gym";
 import { cn } from "../../../../../../utils/helper";
 import PageHeader from "../../../../../components/PageHeader";
-import { useAccessLogs } from "./hooks/useAccessLogs";
+import { useAttendance } from "./hooks/useAttendance";
 
-const AccessLogsPage: React.FC = () => {
+const AttendancePage: React.FC = () => {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
-  const navigate = useNavigate();
+
   const {
     logs,
     isLoading,
@@ -20,14 +19,14 @@ const AccessLogsPage: React.FC = () => {
     setSearchQuery,
     statusFilter,
     setStatusFilter,
-  } = useAccessLogs(currentGym?._id);
+  } = useAttendance(currentGym?._id);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const getStatusConfig = (status: string) => {
     if (status === "checked_in") {
       return {
         icon: CheckCircle2,
-        label: t("gymMember.logs.filter.granted"),
+        label: t("gymMember.attendance.filter.granted"),
         bgClass: "bg-emerald-500/10",
         borderClass: "border-emerald-500/20",
         textClass: "text-emerald-400",
@@ -35,7 +34,7 @@ const AccessLogsPage: React.FC = () => {
     }
     return {
       icon: Ban,
-      label: t("gymMember.logs.filter.denied"),
+      label: t("gymMember.attendance.filter.denied"),
       bgClass: "bg-rose-500/10",
       borderClass: "border-rose-500/20",
       textClass: "text-rose-400",
@@ -88,8 +87,8 @@ const AccessLogsPage: React.FC = () => {
   return (
     <div className="max-w-7xl p-4 md:p-6 lg:py-8 mx-auto animate-in fade-in duration-700">
       <PageHeader
-        title={t("gymMember.logs.title")}
-        subtitle={t("gymMember.logs.subtitle")}
+        title={t("gymMember.attendance.title")}
+        subtitle={t("gymMember.attendance.subtitle")}
         icon={History}
       />
 
@@ -99,7 +98,7 @@ const AccessLogsPage: React.FC = () => {
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
-              placeholder={t("gymMember.logs.search")}
+              placeholder={t("gymMember.attendance.search")}
             />
           </div>
 
@@ -109,10 +108,11 @@ const AccessLogsPage: React.FC = () => {
               className="flex items-center justify-between gap-3 px-4 py-2.5 bg-zinc-900/50 border border-zinc-800 rounded-xl text-sm font-bold text-zinc-300 hover:border-zinc-700 transition-all"
             >
               <span>
-                {statusFilter === "all" && t("gymMember.logs.filter.all")}
+                {statusFilter === "all" && t("gymMember.attendance.filter.all")}
                 {statusFilter === "granted" &&
-                  t("gymMember.logs.filter.granted")}
-                {statusFilter === "denied" && t("gymMember.logs.filter.denied")}
+                  t("gymMember.attendance.filter.granted")}
+                {statusFilter === "denied" &&
+                  t("gymMember.attendance.filter.denied")}
               </span>
               <ChevronDown
                 className={cn(
@@ -143,10 +143,11 @@ const AccessLogsPage: React.FC = () => {
                           : "text-zinc-400 hover:bg-zinc-800/50 hover:text-white"
                       )}
                     >
-                      {filter === "all" && t("gymMember.logs.filter.all")}
+                      {filter === "all" && t("gymMember.attendance.filter.all")}
                       {filter === "granted" &&
-                        t("gymMember.logs.filter.granted")}
-                      {filter === "denied" && t("gymMember.logs.filter.denied")}
+                        t("gymMember.attendance.filter.granted")}
+                      {filter === "denied" &&
+                        t("gymMember.attendance.filter.denied")}
                     </button>
                   ))}
                 </div>
@@ -193,10 +194,10 @@ const AccessLogsPage: React.FC = () => {
                       <History className="w-12 h-12 text-zinc-800" />
                       <div className="space-y-1">
                         <p className="text-lg font-bold text-zinc-100">
-                          {t("gymMember.logs.empty")}
+                          {t("gymMember.attandance.empty")}
                         </p>
                         <p className="text-sm text-zinc-500">
-                          {t("gymMember.logs.emptyDesc")}
+                          {t("gymMember.attandance.emptyDesc")}
                         </p>
                       </div>
                     </div>
@@ -277,10 +278,10 @@ const AccessLogsPage: React.FC = () => {
             <div className="py-20 text-center bg-zinc-900/50 border border-zinc-800 rounded-3xl">
               <History className="w-12 h-12 text-zinc-800 mx-auto mb-4" />
               <p className="font-bold text-zinc-100">
-                {t("gymMember.logs.empty")}
+                {t("gymMember.attandance.empty")}
               </p>
               <p className="text-sm text-zinc-500 mt-1">
-                {t("gymMember.logs.emptyDesc")}
+                {t("gymMember.attandance.emptyDesc")}
               </p>
             </div>
           ) : (
@@ -292,4 +293,4 @@ const AccessLogsPage: React.FC = () => {
   );
 };
 
-export default AccessLogsPage;
+export default AttendancePage;

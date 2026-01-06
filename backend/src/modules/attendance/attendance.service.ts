@@ -94,21 +94,34 @@ export class AttendanceService {
         );
       }
 
-      // 4. Check subscription expiry
-      if (
+      // 4. Fetch Gym for settings
+      const gym = await this.gymModel.findById(gymObjectId);
+      const accessControlType = gym?.settings?.accessControlType ?? 'flexible';
+
+      // 5. Check subscription expiry
+      const isExpired =
         membership.subscription?.endDate &&
-        new Date(membership.subscription.endDate) < now
-      ) {
-        throw new BadRequestException('Membership has expired');
+        new Date(membership.subscription.endDate) < now;
+
+      const accessMessage = isExpired
+        ? 'Subscription expired. Please renew.'
+        : 'Check-in successful';
+
+      // 6. Handle strict vs loose behavior for expired subscriptions
+      if (isExpired && accessControlType === 'strict') {
+        throw new BadRequestException(accessMessage);
       }
 
-      // 5. Create attendance record
+      // 7. Create attendance record
       const attendance = new this.attendanceModel({
         _id: new Types.ObjectId().toString(),
-        gymId: new Types.ObjectId(gymId),
-        userId: new Types.ObjectId(memberId),
+        gymId: gymObjectId,
+        userId: userObjectId,
         checkIn: now,
-        status: 'checked_in' as AttendanceStatus,
+        status: isExpired
+          ? ('denied' as AttendanceStatus)
+          : ('checked_in' as AttendanceStatus),
+        notes: isExpired ? accessMessage : undefined,
         expiryDate: membership.subscription?.endDate,
         createdAt: now,
       });
@@ -119,12 +132,7 @@ export class AttendanceService {
         .findById(attendance._id)
         .populate('userId', 'profile.fullName profile.profileImageUrl');
 
-      return apiResponse(
-        true,
-        undefined,
-        populated as any,
-        'Check-in successful',
-      );
+      return apiResponse(true, undefined, populated as any, accessMessage);
     } catch (error) {
       const errorMessage = error.message || 'Invalid QR Code';
       console.error(
@@ -196,16 +204,7 @@ export class AttendanceService {
         );
       }
 
-      // 3. Check subscription expiry
-      const now = new Date();
-      if (
-        membership.subscription?.endDate &&
-        new Date(membership.subscription.endDate) < now
-      ) {
-        throw new BadRequestException('Membership has expired');
-      }
-
-      // 4. Generate JWT token with 30-second expiration
+      // 3. Generate JWT token with 30-second expiration
       const payload = {
         memberId,
         gymId,

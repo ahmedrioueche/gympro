@@ -660,6 +660,11 @@
         "saveChanges": "Save Changes",
         "confirm": "Confirm",
         "cancel": "Cancel",
+        "accessControlTitle": "Access Control Mode",
+        "accessFlexible": "Flexible",
+        "accessFlexibleDesc": "Members are allowed in even if expired, but both they and the manager receive a warning.",
+        "accessStrict": "Strict",
+        "accessStrictDesc": "Expired subscriptions strictly block entry. Physical access hardware will deny passage.",
         "days": {
           "monday": "Mon",
           "tuesday": "Tue",
@@ -952,6 +957,7 @@
         "empty": "No announcements at the moment",
         "urgent": "Urgent"
       },
+
       "subscriptions": {
         "history": "Subscription History",
         "allRecords": "Subscription Records",
@@ -1292,12 +1298,13 @@
         "description": "Your access code is unique and time-limited for security. Please ensure you are at the gym entrance before generating a code."
       }
     },
-    "logs": {
-      "title": "Access History",
-      "subtitle": "Review your entry records for this gym",
-      "empty": "No access logs yet",
-      "emptyDesc": "Your check-in history for this gym will appear here.",
-      "search": "Search logs...",
+    "attendance": {
+      "title": "Attendance History",
+      "subtitle": "Review your attendance records for this gym",
+      "empty": "No attendance records yet",
+      "emptyDesc": "Your attendance history for this gym will appear here.",
+      "search": "Search attendance...",
+      "viewLogs": "View attendance History",
       "filter": {
         "all": "All Entries",
         "granted": "Successful",

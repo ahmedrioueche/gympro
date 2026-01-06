@@ -24,6 +24,8 @@ export interface Gym extends AuditInfo {
   appSubscription?: AppSubscription;
 }
 
+export type AccessControlType = "strict" | "flexible";
+
 export interface GymSettings {
   paymentMethods: PaymentMethod[];
   allowCustomSubscriptions?: boolean; // Can owner create custom subscription types?
@@ -33,6 +35,7 @@ export interface GymSettings {
   isMixed?: boolean; // Can males and females train toghether at the same time?
   femaleOnlyHours?: WeeklyTimeRange[]; // Specific time ranges reserved for female members
   servicesOffered?: BaseSubscriptionType[]; // List of services offered at the gym
+  accessControlType?: AccessControlType; // How to handle expired subscriptions during check-in
 }
 
 export interface GymStats {

@@ -24,9 +24,9 @@ const AccessPage: React.FC = () => {
         subtitle={t("gymMember.access.subtitle")}
         icon={Key}
         actionButton={{
-          label: t("gymMember.access.viewLogs"),
+          label: t("gymMember.attendance.viewLogs"),
           onClick: () => {
-            navigate({ to: APP_PAGES.gym.member.accessLogs.link });
+            navigate({ to: APP_PAGES.gym.member.attendance.link });
           },
           icon: Logs,
         }}
@@ -34,7 +34,7 @@ const AccessPage: React.FC = () => {
 
       <div className="mt-12 flex justify-center">
         {/* QR Code Card */}
-        <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-[2.5rem] overflow-hidden shadow-2xl transition-all duration-500 hover:border-zinc-700/50">
+        <div className="w-full bg-zinc-900 border border-zinc-800 rounded-[2.5rem] overflow-hidden shadow-2xl transition-all duration-500 hover:border-zinc-700/50">
           <div className="p-8 border-b border-zinc-800/50 bg-zinc-900/50 backdrop-blur-xl">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-primary/10 rounded-2xl">

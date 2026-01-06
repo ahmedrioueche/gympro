@@ -23,6 +23,12 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.gym.member.access.link],
   },
   {
+    label: "attendance",
+    icon: <Key className="w-5 h-5" />,
+    path: APP_PAGES.gym.member.attendance.link,
+    matchPaths: [APP_PAGES.gym.member.attendance.link],
+  },
+  {
     label: "notifications",
     icon: <Bell className="w-5 h-5" />,
     path: APP_PAGES.gym.member.notifications.link,

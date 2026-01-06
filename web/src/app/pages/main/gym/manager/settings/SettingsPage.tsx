@@ -29,6 +29,8 @@ export default function SettingsPage() {
   const [servicesOffered, setServicesOffered] = useState<string[]>(["gym"]);
   const [allowCustomSubscriptions, setAllowCustomSubscriptions] =
     useState(false);
+  const [accessControlType, setAccessControlType] =
+    useState<string>("flexible");
 
   // Load initial settings from current gym
   useEffect(() => {
@@ -73,6 +75,9 @@ export default function SettingsPage() {
       if (settings.allowCustomSubscriptions !== undefined) {
         setAllowCustomSubscriptions(settings.allowCustomSubscriptions);
       }
+      if (settings.accessControlType !== undefined) {
+        setAccessControlType(settings.accessControlType);
+      }
     }
   }, [currentGym]);
 
@@ -92,6 +97,7 @@ export default function SettingsPage() {
         paymentMethods,
         servicesOffered,
         allowCustomSubscriptions,
+        accessControlType,
       };
 
       const result = await updateSettings.mutateAsync({
@@ -187,6 +193,8 @@ export default function SettingsPage() {
                 setIsMixed={setIsMixed}
                 femaleOnlyHours={femaleOnlyHours}
                 setFemaleOnlyHours={setFemaleOnlyHours}
+                accessControlType={accessControlType}
+                setAccessControlType={setAccessControlType}
               />
             )}
 

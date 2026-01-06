@@ -1,4 +1,5 @@
 import type {
+  AccessControlType,
   AppSubscription,
   BaseSubscriptionType,
   GymSettings,
@@ -20,6 +21,7 @@ export class GymSettingsModel implements GymSettings {
   @Prop() isMixed?: boolean;
   @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
   @Prop({ type: [String] }) servicesOffered?: BaseSubscriptionType[];
+  @Prop({ default: 'flexible' }) accessControlType?: AccessControlType;
 }
 export const GymSettingsSchema = SchemaFactory.createForClass(GymSettingsModel);
 
