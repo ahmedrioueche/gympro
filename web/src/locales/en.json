@@ -45,7 +45,11 @@
     "date": "Date Added",
     "cancelled": "Cancelled",
     "active": "Active",
-    "expired": "Expired"
+    "expired": "Expired",
+    "location": "Location",
+    "attendance": "Attendance",
+    "notifications": "Notifications",
+    "settings": "Settings"
   },
   "confirm": {
     "default": {
@@ -740,6 +744,24 @@
           "tip": "Privacy Control",
           "tipDesc": "These settings are gym-specific. You can have different privacy settings for each gym you follow."
         }
+      }
+    },
+    "gym": {
+      "noGym": "No gym selected",
+      "selectGym": "Please select a gym to view details",
+      "noOperatingHours": "No operating hours configured",
+      "location": "Location",
+      "opensAt": "Opens at",
+      "closesAt": "Closes at",
+      "status": {
+        "open": "Open Now",
+        "closed": "Closed",
+        "womenOnly": "Women Only Now",
+        "menOnly": "Men Only Now"
+      },
+      "actions": {
+        "tapToExpand": "Tap to Expand",
+        "tapToClose": "Tap anywhere to close"
       }
     }
   },

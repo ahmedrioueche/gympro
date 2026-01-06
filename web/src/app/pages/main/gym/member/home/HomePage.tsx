@@ -1,9 +1,10 @@
 import { formatDistanceToNow } from "date-fns";
-import { Bell, Calendar, Clock, ExternalLink } from "lucide-react";
+import { Bell, Calendar, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useGymStore } from "../../../../../../store/gym";
+import GymHeroSection from "../../../../../components/gym/GymHeroSection";
 import { useGymAnnouncements } from "./hooks/useGymAnnouncements";
-import { getGoogleMapsUrl, useGymMemberHome } from "./hooks/useGymMemberHome";
+import { useGymMemberHome } from "./hooks/useGymMemberHome";
 
 function HomePage() {
   const { t } = useTranslation();
@@ -30,117 +31,10 @@ function HomePage() {
     );
   }
 
-  const hasAddress = !![
-    currentGym.address,
-    currentGym.city,
-    currentGym.country,
-  ].filter(Boolean).length;
-
-  // Status styling
-  const getStatusStyles = () => {
-    if (!status.isOpen) {
-      return {
-        gradient: "from-red-500/20 via-rose-500/20 to-pink-500/20",
-        badge: "bg-error text-white",
-        glow: "shadow-red-500/20",
-      };
-    }
-    if (status.isWomenOnly) {
-      return {
-        gradient: "from-pink-500/20 via-fuchsia-500/20 to-purple-500/20",
-        badge: "bg-pink-500 text-white",
-        glow: "shadow-pink-500/20",
-      };
-    }
-    return {
-      gradient: "from-emerald-500/20 via-teal-500/20 to-cyan-500/20",
-      badge: "bg-success text-white",
-      glow: "shadow-emerald-500/20",
-    };
-  };
-
-  const styles = getStatusStyles();
-
-  const getStatusText = () => {
-    if (!status.isOpen) return t("home.gymMember.status.closed", "Closed");
-    if (status.isWomenOnly)
-      return t("home.gymMember.status.womenOnlyNow", "Women Only Now");
-    if (status.currentSession === "menOnly")
-      return t("home.gymMember.status.menOnlyNow", "Men Only Now");
-    return t("home.gymMember.status.open", "Open Now");
-  };
-
   return (
     <div className="min-h-screen p-4 md:p-6 lg:p-8">
       <div className="max-w-[1600px] mx-auto h-[calc(100vh-4rem)] flex flex-col gap-6">
-        {/* Hero Status Section - Takes 35% height */}
-        <div
-          className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${styles.gradient} border border-border shadow-2xl ${styles.glow} flex-shrink-0`}
-          style={{ minHeight: "35vh" }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-transparent" />
-
-          <div className="relative h-full p-8 flex flex-col justify-between">
-            {/* Top: Gym Name & Status */}
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <h1 className="text-4xl md:text-5xl font-black text-text-primary mb-2 truncate">
-                  {currentGym.name}
-                </h1>
-                {currentGym.slogan && (
-                  <p className="text-lg text-text-secondary/80 line-clamp-1">
-                    {currentGym.slogan}
-                  </p>
-                )}
-              </div>
-
-              <div
-                className={`${styles.badge} px-6 py-3 rounded-2xl font-black text-xl shadow-xl flex-shrink-0`}
-              >
-                {getStatusText()}
-              </div>
-            </div>
-
-            {/* Bottom: Quick Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Hours Info */}
-              {currentGym.settings?.workingHours && (
-                <div className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50">
-                  <div className="text-sm font-bold text-text-secondary mb-2">
-                    {status.isOpen ? "Closes at" : "Opens at"}
-                  </div>
-                  <div className="text-3xl font-black text-text-primary">
-                    {status.isOpen
-                      ? currentGym.settings.workingHours.end
-                      : currentGym.settings.workingHours.start}
-                  </div>
-                </div>
-              )}
-
-              {/* Location Quick Access */}
-              {hasAddress && (
-                <a
-                  href={getGoogleMapsUrl(currentGym)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 hover:bg-surface hover:scale-[1.02] transition-all duration-200 group"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-bold text-text-secondary mb-1">
-                        Location
-                      </div>
-                      <div className="text-lg font-bold text-text-primary truncate">
-                        {currentGym.city || currentGym.address}
-                      </div>
-                    </div>
-                    <ExternalLink className="w-5 h-5 text-primary group-hover:scale-110 transition-transform flex-shrink-0" />
-                  </div>
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
+        <GymHeroSection gym={currentGym} status={status} />
 
         {/* Bottom Grid - Takes remaining 65% height with matching card styles */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0">
@@ -238,7 +132,10 @@ function HomePage() {
               ) : (
                 <div className="text-center py-12">
                   <p className="text-text-secondary">
-                    No operating hours configured
+                    {t(
+                      "home.gymMember.noHours",
+                      "No operating hours configured"
+                    )}
                   </p>
                 </div>
               )}

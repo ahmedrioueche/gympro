@@ -3,7 +3,6 @@ import {
   AlertCircle,
   BarChart3,
   Clock,
-  Dumbbell,
   PieChart,
   PlusCircle,
   Settings,
@@ -15,14 +14,16 @@ import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useGymAnalytics } from "../../../../../../hooks/queries/useAnalytics";
 import { useGymStore } from "../../../../../../store/gym";
 import StatCard from "../../../../../components/analytics/StatCard";
+import GymHeroSection from "../../../../../components/gym/GymHeroSection";
 import OperatingHours from "../../../../../components/gym/OperatingHours";
-import PageHeader from "../../../../../components/PageHeader";
+import { useGymMemberHome } from "../../member/home/hooks/useGymMemberHome";
 
 export default function HomePage() {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
   const { data: analytics, isLoading } = useGymAnalytics(currentGym?._id || "");
   const navigate = useNavigate();
+  const status = useGymMemberHome(currentGym?.settings);
 
   if (!currentGym) return null;
 
@@ -53,11 +54,10 @@ export default function HomePage() {
   return (
     <div className="min-h-screen p-4 md:p-6 lg:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="max-w-7xl mx-auto space-y-8">
-        <PageHeader
-          icon={Dumbbell}
-          title={currentGym.name}
-          subtitle={currentGym.slogan || t("home.gym.subtitle")}
-          actionButton={{
+        <GymHeroSection
+          gym={currentGym}
+          status={status}
+          action={{
             label: t("home.gym.profile.editGym"),
             onClick: () => {
               navigate({ to: APP_PAGES.gym.manager.settings.link });
