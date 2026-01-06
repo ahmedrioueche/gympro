@@ -73,8 +73,8 @@ export default function ProgramsPage() {
   ];
 
   return (
-    <div className="min-h-screen p-3 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
         <PageHeader
           title={t("training.programs.title")}
           subtitle={t("training.programs.subtitle")}

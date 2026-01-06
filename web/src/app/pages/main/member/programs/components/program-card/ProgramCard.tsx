@@ -62,7 +62,7 @@ export const ProgramCard = ({
   return (
     <div
       onClick={() => onViewDetails(program)}
-      className="group cursor-pointer relative bg-surface border border-border hover:border-primary/40 transition-all duration-300 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl"
+      className="group cursor-pointer relative bg-surface border border-border hover:border-primary/40 transition-all duration-300 rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl"
     >
       {/* Gradient accent line */}
       <div
@@ -70,20 +70,20 @@ export const ProgramCard = ({
         className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${sourceConfig.gradient} opacity-60 group-hover:opacity-100 transition-opacity`}
       />
 
-      <div className="p-5 md:p-6">
+      <div className="p-4 md:p-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
           <div className="flex items-start gap-4">
             {/* Icon */}
             <div
-              className={`w-14 h-14 rounded-xl bg-gradient-to-br ${sourceConfig.gradient} flex items-center justify-center shadow-lg flex-shrink-0`}
+              className={`w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br ${sourceConfig.gradient} flex items-center justify-center shadow-lg flex-shrink-0 transition-transform duration-300`}
             >
-              <Dumbbell className="w-7 h-7 text-white" />
+              <Dumbbell className="w-6 h-6 md:w-7 md:h-7 text-white" />
             </div>
 
             {/* Title & Badges */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1 mb-2">
+              <h3 className="text-lg md:text-xl font-bold text-text-primary group-hover:text-primary transition-colors line-clamp-1 mb-2">
                 {program.name}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -95,7 +95,7 @@ export const ProgramCard = ({
                 <span className="px-2.5 py-1 text-xs font-medium bg-background-secondary text-text-secondary rounded-lg border border-border capitalize">
                   {program.experience}
                 </span>
-                <span className="px-2.5 py-1 text-xs font-medium bg-primary/10 text-primary rounded-lg border border-primary/20 capitalize">
+                <span className="px-2.5 py-1 text-xs font-medium bg-primary/10 text-primary rounded-lg border border-primary/20 capitalize line-clamp-1">
                   {program.purpose.replace(/_/g, " ")}
                 </span>
               </div>
@@ -117,37 +117,37 @@ export const ProgramCard = ({
         </p>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-5">
-          <div className="bg-background-secondary/50 rounded-xl p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <Calendar size={16} className="text-primary" />
+        <div className="grid grid-cols-3 gap-2 md:gap-4 mb-5">
+          <div className="bg-background-secondary/40 rounded-xl p-2 md:p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
+            <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1">
+              <Calendar size={14} className="text-primary md:w-4 md:h-4" />
             </div>
-            <span className="text-lg font-bold text-text-primary">
+            <span className="text-base md:text-lg font-bold text-text-primary">
               {program.daysPerWeek}
             </span>
-            <p className="text-xs text-text-secondary mt-0.5">
+            <p className="text-[10px] md:text-xs text-text-secondary mt-0.5">
               {t("training.programs.card.days")}
             </p>
           </div>
-          <div className="bg-background-secondary/50 rounded-xl p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <Target size={16} className="text-primary" />
+          <div className="bg-background-secondary/40 rounded-xl p-2 md:p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
+            <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1">
+              <Target size={14} className="text-primary md:w-4 md:h-4" />
             </div>
-            <span className="text-lg font-bold text-text-primary">
+            <span className="text-base md:text-lg font-bold text-text-primary">
               {program.days.length}
             </span>
-            <p className="text-xs text-text-secondary mt-0.5">
+            <p className="text-[10px] md:text-xs text-text-secondary mt-0.5">
               {t("training.programs.card.sessions")}
             </p>
           </div>
-          <div className="bg-background-secondary/50 rounded-xl p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <Dumbbell size={16} className="text-primary" />
+          <div className="bg-background-secondary/40 rounded-xl p-2 md:p-3 text-center border border-border/50 hover:border-primary/20 transition-colors">
+            <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-1">
+              <Dumbbell size={14} className="text-primary md:w-4 md:h-4" />
             </div>
-            <span className="text-lg font-bold text-text-primary">
+            <span className="text-base md:text-lg font-bold text-text-primary">
               {totalExercises}
             </span>
-            <p className="text-xs text-text-secondary mt-0.5">
+            <p className="text-[10px] md:text-xs text-text-secondary mt-0.5">
               {t("training.programs.card.exercises")}
             </p>
           </div>
@@ -157,14 +157,14 @@ export const ProgramCard = ({
         <div className="flex gap-3">
           <button
             onClick={() => onViewDetails(program)}
-            className="flex-1 py-3 px-4 rounded-xl text-sm font-semibold bg-background-secondary text-text-primary hover:bg-background-tertiary transition-all border border-border hover:border-primary/30"
+            className="flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-semibold bg-background-secondary text-text-primary hover:bg-background-tertiary transition-all border border-border hover:border-primary/30"
           >
             {t("training.programs.card.view")}
           </button>
           <button
             onClick={() => !isActive && onUse(program._id!)}
             disabled={isActive}
-            className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all shadow-lg flex items-center justify-center gap-2 group/btn ${
+            className={`flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-bold transition-all shadow-lg flex items-center justify-center gap-2 group/btn ${
               isActive
                 ? "bg-green-500/10 text-green-500 border border-green-500/30 cursor-not-allowed shadow-none"
                 : "text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-primary/20 hover:shadow-xl"
