@@ -48,11 +48,24 @@ export const attendanceApi = {
     }
   },
 
-  /** Get current user's attendance history across all gyms */
   getMyAttendance: async (): Promise<ApiResponse<MemberAttendanceRecord[]>> => {
     try {
       const res = await apiClient.get<ApiResponse<MemberAttendanceRecord[]>>(
         "/attendance/my"
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Get current user's attendance history for a specific gym */
+  getMyAttendanceInGym: async (
+    gymId: string
+  ): Promise<ApiResponse<MemberAttendanceRecord[]>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<MemberAttendanceRecord[]>>(
+        `/attendance/my/${gymId}`
       );
       return res.data;
     } catch (error) {

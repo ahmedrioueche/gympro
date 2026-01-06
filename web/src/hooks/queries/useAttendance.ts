@@ -52,3 +52,11 @@ export const useAccessToken = (gymId?: string) => {
     staleTime: 25000,
   });
 };
+
+export const useMyAttendanceInGym = (gymId?: string) => {
+  return useQuery({
+    queryKey: ["my-attendance-logs", gymId],
+    queryFn: () => attendanceApi.getMyAttendanceInGym(gymId!),
+    enabled: !!gymId,
+  });
+};

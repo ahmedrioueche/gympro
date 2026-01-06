@@ -1274,6 +1274,35 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "paymentMethod": "Payment Method"
+    },
+    "access": {
+      "title": "Gym Access",
+      "subtitle": "Generate your unique access code to enter the gym",
+      "viewLogs": "View Entry History",
+      "qr": {
+        "title": "Access QR Code",
+        "instruction": "Scan this code at the gym entrance to enter",
+        "refresh": "Refresh Code",
+        "expiresIn": "Expires in {{seconds}}s",
+        "expired": "Code expired, refreshing...",
+        "generating": "Generating your access code..."
+      },
+      "tips": {
+        "title": "Access Information",
+        "description": "Your access code is unique and time-limited for security. Please ensure you are at the gym entrance before generating a code."
+      }
+    },
+    "logs": {
+      "title": "Access History",
+      "subtitle": "Review your entry records for this gym",
+      "empty": "No access logs yet",
+      "emptyDesc": "Your check-in history for this gym will appear here.",
+      "search": "Search logs...",
+      "filter": {
+        "all": "All Entries",
+        "granted": "Successful",
+        "denied": "Denied"
+      }
     }
   },
 

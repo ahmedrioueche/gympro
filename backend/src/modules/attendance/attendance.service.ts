@@ -25,6 +25,22 @@ export class AttendanceService {
     private jwtService: JwtService,
   ) {}
 
+  /**
+   * Safely convert a string to a Mongoose ObjectId
+   */
+  private toObjectId(id: any): Types.ObjectId | null {
+    if (!id || typeof id !== 'string') return null;
+    const cid = id.trim();
+    if (Types.ObjectId.isValid(cid) && cid.length === 24) {
+      try {
+        return new Types.ObjectId(cid);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
+
   async checkIn(
     token: string,
     gymId: string,
@@ -59,10 +75,17 @@ export class AttendanceService {
       }
 
       // 3. Check for active membership at this gym
+      const userObjectId = this.toObjectId(memberId);
+      const gymObjectId = this.toObjectId(gymId);
+
+      if (!userObjectId || !gymObjectId) {
+        throw new BadRequestException('Invalid member or gym ID');
+      }
+
       const membership = await this.membershipModel.findOne({
-        user: memberId,
-        gym: gymId,
-        isActive: true,
+        user: userObjectId,
+        gym: gymObjectId,
+        membershipStatus: 'active',
       });
 
       if (!membership) {
@@ -154,9 +177,16 @@ export class AttendanceService {
       }
 
       // 2. Check for active membership at this gym
+      const userObjectId = this.toObjectId(memberId);
+      const gymObjectId = this.toObjectId(gymId);
+
+      if (!userObjectId || !gymObjectId) {
+        throw new BadRequestException('Invalid member or gym ID');
+      }
+
       const membership = await this.membershipModel.findOne({
-        user: memberId,
-        gym: gymId,
+        user: userObjectId,
+        gym: gymObjectId,
         membershipStatus: 'active',
       });
 
@@ -269,6 +299,40 @@ export class AttendanceService {
       );
     } catch (error) {
       console.error('Error fetching user attendance:', error);
+      return apiResponse(false, 'ATTENDANCE_FETCH_ERROR', []);
+    }
+  }
+
+  async getMyAttendanceInGym(
+    userId: string,
+    gymId: string,
+  ): Promise<ApiResponse<AttendanceRecordModel[]>> {
+    try {
+      console.log(
+        `[AttendanceService] Fetching attendance for user: ${userId} in gym: ${gymId}`,
+      );
+
+      const userObjectId = new Types.ObjectId(userId);
+      const gymObjectId = new Types.ObjectId(gymId);
+
+      const logs = await this.attendanceModel
+        .find({ userId: userObjectId, gymId: gymObjectId })
+        .sort({ createdAt: -1 })
+        .populate('gymId', 'name location.address location.city')
+        .lean();
+
+      console.log(
+        `Found ${logs.length} attendance records for user ${userId} in gym ${gymId}`,
+      );
+
+      return apiResponse(
+        true,
+        undefined,
+        logs as any,
+        'Attendance history for gym fetched',
+      );
+    } catch (error) {
+      console.error('Error fetching user attendance in gym:', error);
       return apiResponse(false, 'ATTENDANCE_FETCH_ERROR', []);
     }
   }

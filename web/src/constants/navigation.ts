@@ -132,6 +132,10 @@ export const APP_PAGES = {
         name: "pages.gym.access",
         link: "/gym/member/access",
       },
+      accessLogs: {
+        name: "pages.gym.access",
+        link: "/gym/member/access/logs",
+      },
       notifications: {
         name: "pages.gym.notifications",
         link: "/gym/member/notifications",

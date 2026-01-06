@@ -36,4 +36,13 @@ export class AttendanceController {
     const userId = req.user.sub;
     return this.attendanceService.getMyAttendance(userId);
   }
+
+  @Get('my/:gymId')
+  async getMyAttendanceInGym(
+    @Param('gymId') gymId: string,
+    @Request() req: any,
+  ) {
+    const userId = req.user.sub;
+    return this.attendanceService.getMyAttendanceInGym(userId, gymId);
+  }
 }
