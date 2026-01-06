@@ -65,7 +65,7 @@ export default function ConfirmModal() {
         >
           <div className="flex items-center gap-3">
             <div
-              className={`p-2 rounded-xl bg-surface/50 border border-white/10 shadow-sm ${iconColor}`}
+              className={`p-2 rounded-xl border border-white/10 shadow-sm ${iconColor}`}
             >
               <HeaderIcon size={24} />
             </div>

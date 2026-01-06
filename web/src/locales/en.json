@@ -321,7 +321,9 @@
       "initializing": "Initializing camera...",
       "error_camera": "Could not access camera. Please ensure it's not being used by another app.",
       "error_title": "Camera Error",
-      "retry": "Retry Connection"
+      "retry": "Retry Connection",
+      "mirrored": "Mirrored",
+      "normal": "Normal View"
     },
     "status": {
       "granted": "Access Granted",
@@ -1291,7 +1293,8 @@
         "refresh": "Refresh Code",
         "expiresIn": "Expires in {{seconds}}s",
         "expired": "Code expired, refreshing...",
-        "generating": "Generating your access code..."
+        "generating": "Generating your access code...",
+        "tapToClose": "Tap anywhere to close"
       },
       "tips": {
         "title": "Access Information",

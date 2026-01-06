@@ -180,7 +180,7 @@ export default function GeneralTab({
               "Access Control Mode"
             )}
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid text-primary grid-cols-1 sm:grid-cols-2 gap-4">
             <button
               onClick={() => setAccessControlType("flexible")}
               className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all ${

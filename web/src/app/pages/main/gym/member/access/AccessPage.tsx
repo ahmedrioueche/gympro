@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Key, Logs, RefreshCw, ShieldCheck, Timer } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useGymStore } from "../../../../../../store/gym";
@@ -16,6 +16,7 @@ const AccessPage: React.FC = () => {
   const { token, timeLeft, isLoading, refresh } = useAccessPage(
     currentGym?._id
   );
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
     <div className="max-w-7xl p-4 md:p-6 lg:py-8 mx-auto animate-in fade-in duration-700">
@@ -52,7 +53,17 @@ const AccessPage: React.FC = () => {
           </div>
 
           <div className="p-6 md:p-10 flex flex-col items-center justify-center text-center">
-            <div className="relative bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-[0_0_60px_rgba(255,255,255,0.03)] group transition-all duration-500 hover:scale-[1.02]">
+            <div
+              onClick={() => token && setIsFullscreen(true)}
+              className={cn(
+                "relative bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-[0_0_60px_rgba(255,255,255,0.03)] group transition-all duration-500 hover:scale-[1.02]",
+                token && "cursor-zoom-in"
+              )}
+            >
+              <p className="absolute -top-12 left-1/2 -translate-x-1/2 text-[10px] md:text-xs font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+                {t("gymMember.access.qr.tapToExpand", "Tap to Expand")}
+              </p>
+
               {isLoading ? (
                 <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 flex items-center justify-center bg-zinc-50 rounded-[1.5rem] md:rounded-[2rem]">
                   <RefreshCw className="w-10 h-10 md:w-12 h-12 text-zinc-300 animate-spin" />
@@ -62,7 +73,7 @@ const AccessPage: React.FC = () => {
                   <QRCodeSVG
                     value={token}
                     size={256}
-                    level="H"
+                    level="M"
                     includeMargin={false}
                     className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64"
                   />
@@ -148,6 +159,26 @@ const AccessPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Overlay */}
+      {isFullscreen && token && (
+        <div
+          className="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center p-8 animate-in fade-in zoom-in duration-300"
+          onClick={() => setIsFullscreen(false)}
+        >
+          <div className="absolute top-8 right-8 p-4 text-zinc-900 bg-zinc-100 rounded-full active:scale-90 transition-all">
+            <RefreshCw className="w-6 h-6 rotate-45" />
+          </div>
+
+          <div className="bg-white p-4 rounded-[2rem] shadow-[0_0_100px_rgba(0,0,0,0.1)]">
+            <QRCodeSVG value={token} size={window.innerWidth * 0.8} level="M" />
+          </div>
+
+          <p className="mt-12 text-zinc-900 font-black uppercase tracking-widest text-center">
+            {t("gymMember.access.qr.tapToClose", "Tap anywhere to close")}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
