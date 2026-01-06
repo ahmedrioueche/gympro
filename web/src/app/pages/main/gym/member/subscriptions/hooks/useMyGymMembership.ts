@@ -9,14 +9,31 @@ export const useMyGymMembership = () => {
   console.log("useMyGymMembership: currentGym", currentGym);
   console.log("useMyGymMembership: gymId", gymId);
 
-  return useQuery({
+  return useQuery<{
+    membership: any;
+    memberships: any[];
+    history: any[];
+  } | null>({
     queryKey: ["myGymMembership", gymId],
     queryFn: async () => {
-      console.log("useMyGymMembership: Fetching for gymId", gymId);
       if (!gymId) return null;
-      const response = await membershipApi.getMyMembershipByGym(gymId);
-      console.log("useMyGymMembership: Response", response.data);
-      return response.data;
+      try {
+        const response = await (membershipApi.getMyMembershipByGym(
+          gymId
+        ) as any);
+        console.log("useMyGymMembership: API Response", response);
+        if (!response.success || !response.data) {
+          console.warn(
+            "useMyGymMembership: Success=false or missing data",
+            response
+          );
+          return null;
+        }
+        return response.data;
+      } catch (error) {
+        console.error("useMyGymMembership: Error fetching", error);
+        return null;
+      }
     },
     enabled: !!gymId,
   });

@@ -26,6 +26,22 @@ export class MembershipService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
+  /**
+   * Safely convert a string to a Mongoose ObjectId
+   */
+  private toObjectId(id: any): Types.ObjectId | null {
+    if (!id || typeof id !== 'string') return null;
+    const cid = id.trim();
+    if (Types.ObjectId.isValid(cid) && cid.length === 24) {
+      try {
+        return new Types.ObjectId(cid);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
+
   async createMember(dto: CreateMemberDto, createdBy: string) {
     const { email, phoneNumber, gymId, fullName, gender, age } = dto;
 
@@ -157,8 +173,16 @@ export class MembershipService {
       }
 
       // User exists - check if they already have membership to this gym
+      const gymObjectId = this.toObjectId(gymId);
+      if (!gymObjectId) {
+        throw new BadRequestException({
+          message: 'Invalid gymId format',
+          errorCode: ErrorCode.INVALID_USER_DATA,
+        });
+      }
+
       const existingMembership = await this.membershipModel.findOne({
-        gym: new Types.ObjectId(gymId),
+        gym: gymObjectId,
         _id: { $in: user.memberships },
       });
 
@@ -190,9 +214,17 @@ export class MembershipService {
     }
 
     // Create gym membership
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid gymId format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
     const membership = new this.membershipModel({
       user: user._id,
-      gym: new Types.ObjectId(gymId),
+      gym: gymObjectId,
       roles: [UserRole.Member],
       joinedAt: new Date().toISOString(),
       membershipStatus: 'active',
@@ -259,10 +291,20 @@ export class MembershipService {
    * Get a member's details by membership ID
    */
   async getMember(membershipId: string, gymId: string) {
+    const memObjectId = this.toObjectId(membershipId);
+    const gymObjectId = this.toObjectId(gymId);
+
+    if (!memObjectId || !gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
     const membership = await this.membershipModel
       .findOne({
-        _id: new Types.ObjectId(membershipId),
-        gym: new Types.ObjectId(gymId),
+        _id: memObjectId,
+        gym: gymObjectId,
       })
       .populate('gym')
       .exec();
@@ -314,10 +356,20 @@ export class MembershipService {
       membershipStatus?: string;
     },
   ) {
+    const memObjectId = this.toObjectId(membershipId);
+    const gymObjectId = this.toObjectId(gymId);
+
+    if (!memObjectId || !gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
     const membership = await this.membershipModel
       .findOne({
-        _id: new Types.ObjectId(membershipId),
-        gym: new Types.ObjectId(gymId),
+        _id: memObjectId,
+        gym: gymObjectId,
       })
       .exec();
 
@@ -391,10 +443,20 @@ export class MembershipService {
    * Delete a member from a gym (removes membership, not the user)
    */
   async deleteMember(membershipId: string, gymId: string) {
+    const memObjectId = this.toObjectId(membershipId);
+    const gymObjectId = this.toObjectId(gymId);
+
+    if (!memObjectId || !gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
     const membership = await this.membershipModel
       .findOne({
-        _id: new Types.ObjectId(membershipId),
-        gym: new Types.ObjectId(gymId),
+        _id: memObjectId,
+        gym: gymObjectId,
       })
       .exec();
 
@@ -425,6 +487,60 @@ export class MembershipService {
     return { deleted: true, membershipId };
   }
 
+  /**
+   * Update membership settings
+   */
+  async updateMembershipSettings(userId: string, gymId: string, settings: any) {
+    const uObjectId = this.toObjectId(userId);
+    const gObjectId = this.toObjectId(gymId);
+
+    if (!uObjectId || !gObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    const membership = await this.membershipModel
+      .findOne({
+        user: uObjectId,
+        gym: gObjectId,
+      })
+      .exec();
+
+    if (!membership) {
+      throw new BadRequestException({
+        message: 'Membership not found',
+        errorCode: ErrorCode.NOT_FOUND,
+      });
+    }
+
+    // Deep merge settings
+    if (settings.general) {
+      membership.settings.general = {
+        ...membership.settings.general,
+        ...settings.general,
+      };
+    }
+    if (settings.notifications) {
+      membership.settings.notifications = {
+        ...membership.settings.notifications,
+        ...settings.notifications,
+      };
+    }
+    if (settings.privacy) {
+      membership.settings.privacy = {
+        ...membership.settings.privacy,
+        ...settings.privacy,
+      };
+    }
+
+    await membership.save();
+    this.logger.log(`Updated settings for membership ${membership._id}`);
+
+    return membership.toObject();
+  }
+
   private sanitizeUser(user: any) {
     const userObj = user.toObject ? user.toObject() : user;
 
@@ -446,7 +562,13 @@ export class MembershipService {
    * Get all memberships for the current user with populated gym details
    */
   async getMyMemberships(userId: string) {
-    const userObjectId = new Types.ObjectId(userId);
+    const userObjectId = this.toObjectId(userId);
+    if (!userObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid userId format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
 
     const memberships = await this.membershipModel
       .find({ user: userObjectId })
@@ -466,49 +588,144 @@ export class MembershipService {
    * Get membership for the current user in a specific gym with populated history
    */
   async getMyMembershipInGym(userId: string, gymId: string) {
-    this.logger.log(`getMyMembershipInGym: userId=${userId}, gymId=${gymId}`);
+    const cleanUserId = typeof userId === 'string' ? userId.trim() : userId;
+    const cleanGymId = typeof gymId === 'string' ? gymId.trim() : gymId;
 
-    if (!Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(gymId)) {
-      this.logger.warn(`Invalid ID format: userId=${userId}, gymId=${gymId}`);
+    this.logger.log('=== DEBUG START ===');
+    this.logger.log(`cleanUserId: ${cleanUserId}`);
+    this.logger.log(`cleanGymId: ${cleanGymId}`);
+
+    const userObjectId = this.toObjectId(cleanUserId);
+    const gymObjectId = this.toObjectId(cleanGymId);
+
+    this.logger.log(`userObjectId: ${userObjectId}`);
+    this.logger.log(`gymObjectId: ${gymObjectId}`);
+
+    if (!userObjectId) {
+      this.logger.warn(`Invalid userId format: ${cleanUserId}`);
       throw new BadRequestException({
-        message: 'Invalid ID format',
+        message: 'Invalid userId format',
         errorCode: ErrorCode.INVALID_USER_DATA,
       });
     }
 
-    // 1. Fetch current active/pending/expired membership
-    const membership = await this.membershipModel
-      .findOne({
-        user: userId, // Mongoose auto-casts
-        gym: gymId, // Mongoose auto-casts
-      })
-      .populate('gym', 'name location slogan')
-      .lean()
-      .exec();
+    let allUserMemberships: any[] = [];
+    try {
+      // 1. Fetch all memberships for this user
+      allUserMemberships = await this.membershipModel
+        .find({
+          user: userObjectId,
+        })
+        .populate('gym', 'name location slogan slug _id')
+        .sort({ createdAt: -1 })
+        .lean()
+        .exec();
+      this.logger.log(
+        `[MembershipService] Total memberships for user: ${allUserMemberships.length}`,
+      );
+    } catch (err) {
+      this.logger.error(
+        `[MembershipService] Error fetching memberships: ${err.message}`,
+      );
+      throw err;
+    }
 
-    // 2. Fetch subscription history for this gym from user's history
-    // For the match clause on a Mixed type (gym object), we should try to match both string and ObjectId if possible,
-    // or rely on how it's stored. Since we don't know for sure, let's try strict matching with what we have.
-    // Ideally we shouldn't cast manually if we can avoid it, but inside 'match' for a subdocument, we might need to.
-    // However, if we know gymId is valid (checked above), explicit cast is safe from crashing.
+    // FIX: Better filtering logic
+    const memberships = allUserMemberships.filter((m: any) => {
+      if (!m || !m.gym) {
+        this.logger.log('Skipping membership - no gym data');
+        return false;
+      }
 
-    const user = await this.userModel
-      .findById(userId)
-      .populate({
-        path: 'subscriptionHistory',
-        match: { 'gym._id': gymId }, // Try matching string first (common for Mixed types from JSON)
-        options: { sort: { createdAt: -1 } },
-      })
-      .select('subscriptionHistory')
-      .lean()
-      .exec();
+      // Since gym is populated, it's an object with _id property
+      const gymData = m.gym as any;
 
-    // If history is empty, it might be because gym._id is stored as ObjectId.
-    // But let's first fix the crash.
+      // Safely extract gymId and slug
+      let gId = '';
+      let gSlug = '';
+
+      if (typeof gymData === 'object' && gymData._id) {
+        gId = gymData._id.toString();
+        gSlug = gymData.slug || '';
+      } else if (typeof gymData === 'string') {
+        // If gym is not populated (shouldn't happen but defensive)
+        gId = gymData;
+      } else {
+        this.logger.log(
+          `Unexpected gym data structure: ${JSON.stringify(gymData)}`,
+        );
+        return false;
+      }
+
+      const target = (cleanGymId || '').toString().toLowerCase();
+      const match =
+        gId.toLowerCase() === target || gSlug.toLowerCase() === target;
+
+      this.logger.log(
+        `[MembershipService] Testing membership ${m._id}: gymId=${gId}, slug=${gSlug} against target=${cleanGymId} -> match=${match}`,
+      );
+      return match;
+    });
+
+    this.logger.log(`Filtered to ${memberships.length} memberships`);
+
+    // The "primary" membership for the summary card
+    const membership =
+      memberships.find(
+        (m: any) =>
+          m.membershipStatus === 'active' || m.membershipStatus === 'pending',
+      ) ||
+      memberships[0] ||
+      null;
+
+    let history: any[] = [];
+    try {
+      // 2. Fetch all subscription history records
+      const user = await this.userModel
+        .findById(userObjectId)
+        .populate({
+          path: 'subscriptionHistory',
+          options: { sort: { createdAt: -1 } },
+        })
+        .select('subscriptionHistory')
+        .lean()
+        .exec();
+
+      const allHistory = (user?.subscriptionHistory as any[]) || [];
+      history = allHistory.filter((h: any) => {
+        if (!h || !h.gym) return false;
+
+        const historyGym = h.gym as any;
+        let gId = '';
+        let gSlug = '';
+
+        if (typeof historyGym === 'object' && historyGym._id) {
+          gId = historyGym._id.toString();
+          gSlug = historyGym.slug || '';
+        } else if (typeof historyGym === 'string') {
+          gId = historyGym;
+        }
+
+        const target = (cleanGymId || '').toString().toLowerCase();
+        return gId.toLowerCase() === target || gSlug.toLowerCase() === target;
+      });
+    } catch (err) {
+      this.logger.error(
+        `[MembershipService] Error fetching history: ${err.message}`,
+      );
+      // Don't crash the whole Request if history fetch fails
+      history = [];
+    }
+
+    this.logger.log('=== DEBUG END ===');
+    this.logger.log(
+      `[MembershipService] Returning ${memberships.length} memberships and ${history.length} history records`,
+    );
 
     return {
-      membership: membership || null,
-      history: user?.subscriptionHistory || [],
+      membership,
+      memberships,
+      history,
     };
   }
 }

@@ -69,7 +69,7 @@ export function SubscriptionHistoryTable({
                           : "bg-surface-hover text-text-secondary"
                       }`}
                     >
-                      {t(`common.status.${sub.status}`, sub.status)}
+                      {t(`common.${sub.status}`, sub.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">

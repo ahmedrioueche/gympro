@@ -39,7 +39,13 @@
     "reason": "Reason",
     "search": "Search...",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "plan": "Plan",
+    "duration": "Duration",
+    "date": "Date Added",
+    "cancelled": "Cancelled",
+    "active": "Active",
+    "expired": "Expired"
   },
   "confirm": {
     "default": {
@@ -689,6 +695,44 @@
         "customSubscriptionsDesc": "Allow creation of custom subscription types",
         "allowCustom": "Allow Custom Subscriptions",
         "allowCustomDesc": "Enable gym owners to create custom subscription plans"
+      },
+      "member": {
+        "pageTitle": "Gym Settings",
+        "pageSubtitle": "Manage your preferences for this gym",
+        "saveSuccess": "Settings updated successfully",
+        "saveError": "Failed to update settings",
+        "tabs": {
+          "general": "General",
+          "notifications": "Notifications",
+          "privacy": "Privacy"
+        },
+        "general": {
+          "title": "General Settings",
+          "description": "Configure your basic gym preferences",
+          "weightUnit": "Preferred Weight Unit",
+          "weightUnitLabel": "Measurement Unit",
+          "weightUnitDesc": "Choose kg or lbs for your workouts"
+        },
+        "notifications": {
+          "title": "Notifications",
+          "description": "Choose how and when you want to be notified",
+          "classReminders": "Class Reminders",
+          "classRemindersDesc": "Get notified before your scheduled classes",
+          "subscriptionRenewal": "Renewal Alerts",
+          "subscriptionRenewalDesc": "Notified when your subscription is about to expire",
+          "announcements": "Gym Announcements",
+          "announcementsDesc": "Stay updated with important gym news"
+        },
+        "privacy": {
+          "title": "Privacy Settings",
+          "description": "Control your data and visibility within the gym",
+          "publicProfile": "Public Profile (Gym)",
+          "publicProfileDesc": "Allow other gym members to see your profile",
+          "shareProgress": "Share Progress",
+          "shareProgressDesc": "Allow gym coaches to see your workout history",
+          "tip": "Privacy Control",
+          "tipDesc": "These settings are gym-specific. You can have different privacy settings for each gym you follow."
+        }
       }
     }
   },
@@ -907,6 +951,21 @@
         "title": "Announcements",
         "empty": "No announcements at the moment",
         "urgent": "Urgent"
+      },
+      "subscriptions": {
+        "history": "Subscription History",
+        "allRecords": "Subscription Records",
+        "activePlan": "Active Plan",
+        "noRecords": {
+          "title": "No Records Found",
+          "desc": "We couldn't find any membership records for you in this gym."
+        },
+        "subtitle": "Manage your memberships and subscription history for this gym",
+        "title": "My Subscriptions",
+        "paymentMethod": "Payment Method",
+        "endDate": "End Date",
+        "startDate": "Start Date",
+        "currentPlan": "Current Plan"
       }
     },
     "member": {
@@ -1058,12 +1117,15 @@
   },
   "gym": {
     "no_gym_selected": "Select a gym",
+    "no_gyms_available": "No gyms available",
+    "accessGym": "Access {{name}}",
     "backToDashboard": "Back to Dashboard",
     "yourGyms": "Your Gyms",
     "inactive": "Inactive",
     "noGyms": "No gyms yet",
     "createFirst": "Create your first gym to get started",
-    "createNew": "Create New Gym"
+    "createNew": "Create New Gym",
+    "available": "available"
   },
   "createMember": {
     "title": "Add New Member",
@@ -1195,17 +1257,23 @@
 
   "gymMember": {
     "subscriptions": {
-      "title": "My Subscription",
-      "subtitle": "View your active plan and subscription history",
-      "currentPlan": "Current Plan",
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "paymentMethod": "Payment Method",
+      "title": "My Subscriptions",
+      "subtitle": "Manage your memberships and subscription history for this gym",
+      "activePlan": "Active Plan",
+      "allRecords": "Subscription Records",
       "history": "Subscription History",
+      "noRecords": {
+        "title": "No Records Found",
+        "desc": "We couldn't find any membership records for you in this gym."
+      },
       "noActive": {
         "title": "No Active Subscription",
         "desc": "You don't have an active subscription for this gym. Please contact the front desk to purchase one."
-      }
+      },
+      "currentPlan": "Current Plan",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "paymentMethod": "Payment Method"
     }
   },
 

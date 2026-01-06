@@ -5,6 +5,7 @@ import {
 import { Calendar, CreditCard, RotateCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "../../../../../../../utils/date";
+import { capitalize } from "../../../../../../../utils/helper";
 
 interface CurrentSubscriptionCardProps {
   subscription?: SubscriptionInfo;
@@ -61,7 +62,7 @@ export function CurrentSubscriptionCard({
           <div>
             <div className="flex items-center gap-3 mb-2">
               <h2 className="text-2xl font-bold text-text-primary">
-                {subscription.typeId /* In a real app we'd resolve the name */}
+                {capitalize(subscription.typeId)}
               </h2>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(

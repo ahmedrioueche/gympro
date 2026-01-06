@@ -20,11 +20,37 @@ export const membershipApi = {
   /** Get current user's membership for a specific gym */
   getMyMembershipByGym: async (
     gymId: string
-  ): Promise<ApiResponse<{ membership: any; history: any[] }>> => {
+  ): Promise<
+    ApiResponse<{
+      membership: any;
+      memberships: MemberSubscriptionView[];
+      history: any[];
+    }>
+  > => {
     try {
       const res = await apiClient.get<
-        ApiResponse<{ membership: any; history: any[] }>
+        ApiResponse<{
+          membership: any;
+          memberships: MemberSubscriptionView[];
+          history: any[];
+        }>
       >(`/membership/my/${gymId}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Update membership settings for the current user in a specific gym */
+  updateMembershipSettings: async (
+    gymId: string,
+    settings: any
+  ): Promise<ApiResponse<any>> => {
+    try {
+      const res = await apiClient.patch<ApiResponse<any>>(
+        `/membership/my/${gymId}/settings`,
+        { settings }
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

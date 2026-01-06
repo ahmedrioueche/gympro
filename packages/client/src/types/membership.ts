@@ -4,6 +4,21 @@ import { RolePermissions } from "./role";
 import { SubscriptionInfo } from "./subscription";
 import { UserRole } from "./user";
 
+export interface MembershipSettings {
+  general: {
+    weightUnit: "kg" | "lbs";
+  };
+  notifications: {
+    classReminders: boolean;
+    subscriptionRenewal: boolean;
+    announcements: boolean;
+  };
+  privacy: {
+    publicProfile: boolean;
+    shareProgressWithCoaches: boolean;
+  };
+}
+
 export interface GymMembership extends AuditInfo {
   _id: string;
   gym: Gym;
@@ -12,6 +27,7 @@ export interface GymMembership extends AuditInfo {
   membershipStatus: MembershipStatus;
   subscription?: SubscriptionInfo;
   customPermissions?: Partial<RolePermissions>;
+  settings?: MembershipSettings;
 }
 
 export enum MembershipStatus {
@@ -38,4 +54,5 @@ export interface MemberSubscriptionView extends AuditInfo {
   joinedAt: string;
   membershipStatus: MembershipStatus;
   subscription?: SubscriptionInfo;
+  settings?: MembershipSettings;
 }

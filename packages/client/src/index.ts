@@ -24,6 +24,7 @@ export * from "./dto/appSubscription";
 export * from "./dto/auth";
 export * from "./dto/chargily";
 export * from "./dto/gym";
+export * from "./dto/membership";
 export * from "./dto/paddle";
 export * from "./dto/settings";
 export * from "./dto/training";

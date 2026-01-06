@@ -238,15 +238,6 @@ export const SubscriptionsTable = ({
                             </p>
                           </div>
                         </div>
-                        {/* Placeholder for payment history */}
-                        <div className="mt-4 pt-4 border-t border-border">
-                          <p className="text-xs text-text-secondary italic">
-                            {t(
-                              "mySubscriptions.details.paymentsComingSoon",
-                              "Payment history will be available once gym access is implemented."
-                            )}
-                          </p>
-                        </div>
                       </div>
                     </td>
                   </tr>

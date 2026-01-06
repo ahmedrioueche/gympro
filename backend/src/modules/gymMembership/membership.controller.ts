@@ -5,6 +5,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Patch,
   Post,
@@ -52,6 +53,101 @@ export class MembershipController {
     private readonly invitationService: MemberInvitationService,
     private readonly gymService: GymService,
   ) {}
+
+  @Get('my')
+  @UseGuards(JwtAuthGuard)
+  async getMyMemberships(@Req() req: any): Promise<ApiResponse<any[]>> {
+    try {
+      const userId = req.user.sub;
+      const memberships = await this.membershipService.getMyMemberships(userId);
+      return apiResponse(
+        true,
+        undefined,
+        memberships,
+        'Memberships fetched successfully',
+      );
+    } catch (error) {
+      return apiResponse<any[]>(
+        false,
+        ErrorCode.FETCH_MEMBER_FAILED,
+        [],
+        error.message,
+      );
+    }
+  }
+
+  @Get('my/:gymId')
+  @UseGuards(JwtAuthGuard)
+  @Header('Cache-Control', 'no-store')
+  @Header('Pragma', 'no-cache')
+  async getMyMembershipInGym(
+    @Req() req: any,
+    @Param('gymId') gymId: string,
+  ): Promise<ApiResponse<any>> {
+    console.log('=== CONTROLLER START ===');
+    console.log(
+      `[MembershipController] getMyMembershipInGym called with gymId: ${gymId}`,
+    );
+    console.log(`[MembershipController] gymId type: ${typeof gymId}`);
+    console.log(`[MembershipController] gymId length: ${gymId?.length}`);
+
+    try {
+      const userId = req.user.sub;
+      console.log(`[MembershipController] userId: ${userId}`);
+      console.log(`[MembershipController] userId type: ${typeof userId}`);
+
+      const result = await this.membershipService.getMyMembershipInGym(
+        userId,
+        gymId,
+      );
+      console.log('=== CONTROLLER SUCCESS ===');
+      return apiResponse(
+        true,
+        undefined,
+        result,
+        'Membership fetched successfully',
+      );
+    } catch (error) {
+      console.error(`[MembershipController] Error:`, error);
+      console.error(`[MembershipController] Error stack:`, error.stack);
+      return apiResponse<any>(
+        false,
+        ErrorCode.FETCH_MEMBER_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Patch('my/:gymId/settings')
+  @UseGuards(JwtAuthGuard)
+  async updateMembershipSettings(
+    @Req() req: any,
+    @Param('gymId') gymId: string,
+    @Body() dto: { settings: any },
+  ): Promise<ApiResponse<any>> {
+    try {
+      const userId = req.user.sub;
+      const result = await this.membershipService.updateMembershipSettings(
+        userId,
+        gymId,
+        dto.settings,
+      );
+      return apiResponse(
+        true,
+        undefined,
+        result,
+        'Settings updated successfully',
+      );
+    } catch (error) {
+      return apiResponse<any>(
+        false,
+        ErrorCode.UPDATE_MEMBER_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
 
   @Post('create')
   @UseGuards(JwtAuthGuard)
@@ -185,61 +281,6 @@ export class MembershipController {
       return apiResponse<{ deleted: boolean; membershipId: string }>(
         false,
         ErrorCode.DELETE_MEMBER_FAILED,
-        undefined,
-        error.message,
-      );
-    }
-  }
-
-  @Get('my')
-  @UseGuards(JwtAuthGuard)
-  async getMyMemberships(@Req() req: any): Promise<ApiResponse<any[]>> {
-    try {
-      const userId = req.user.sub;
-      const memberships = await this.membershipService.getMyMemberships(userId);
-      return apiResponse(
-        true,
-        undefined,
-        memberships,
-        'Memberships fetched successfully',
-      );
-    } catch (error) {
-      return apiResponse<any[]>(
-        false,
-        ErrorCode.FETCH_MEMBER_FAILED,
-        [],
-        error.message,
-      );
-    }
-  }
-
-  @Get('my/:gymId')
-  @UseGuards(JwtAuthGuard)
-  async getMyMembershipInGym(
-    @Req() req: any,
-    @Param('gymId') gymId: string,
-  ): Promise<ApiResponse<any>> {
-    console.log(
-      `[MembershipController] getMyMembershipInGym called with gymId: ${gymId}`,
-    );
-    try {
-      const userId = req.user.sub;
-      console.log(`[MembershipController] userId: ${userId}`);
-      const result = await this.membershipService.getMyMembershipInGym(
-        userId,
-        gymId,
-      );
-      return apiResponse(
-        true,
-        undefined,
-        result,
-        'Membership fetched successfully',
-      );
-    } catch (error) {
-      console.error(`[MembershipController] Error:`, error);
-      return apiResponse<any>(
-        false,
-        ErrorCode.FETCH_MEMBER_FAILED,
         undefined,
         error.message,
       );

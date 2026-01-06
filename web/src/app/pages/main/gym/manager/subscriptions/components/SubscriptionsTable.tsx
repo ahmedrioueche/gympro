@@ -2,6 +2,7 @@ import { type User } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { Calendar, Clock, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../../../../../constants/navigation";
 
 interface SubscriptionsTableProps {
   members: User[];
@@ -65,7 +66,7 @@ function SubscriptionsTable({ members }: SubscriptionsTableProps) {
 
   const handleRowClick = (member: User) => {
     // Navigate to member details
-    navigate({ to: "/gym/members" });
+    navigate({ to: APP_PAGES.gym.manager.members.link });
   };
 
   return (
