@@ -109,7 +109,7 @@ export default function GymHeroSection({
 
             <div
               className={cn(
-                "px-6 py-3 md:px-8 md:py-4 rounded-2xl font-black text-lg md:text-2xl shadow-xl flex-shrink-0 min-w-[120px] text-center",
+                "px-6 py-2 md:px-8 bg-surface/70 backdrop-blur-md rounded-2xl font-black text-lg md:text-xl shadow-xl flex-shrink-0 min-w-[120px] text-center",
                 styles.badge
               )}
             >
