@@ -21,7 +21,8 @@ export type NotificationType =
   | "program" // program assignment, suggestions
   | "reminder" // general reminders
   | "alert" // urgent alert
-  | "announcement"; // gym-wide announcements
+  | "announcement" // gym-wide announcements
+  | "membership"; // membership updates
 
 // Specialized notifications per role
 export interface MemberNotification extends BaseNotification {

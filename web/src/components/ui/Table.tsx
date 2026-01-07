@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 
 export interface TableColumn<T> {
   /** Unique key for the column */
@@ -40,6 +40,10 @@ interface TableProps<T> {
   wrapperClassName?: string;
   /** Custom header class (replaces default gradient) */
   headerClassName?: string;
+  /** IDs of expanded rows */
+  expandedRowKeys?: string[];
+  /** Render function for expanded row content */
+  renderExpandedRow?: (item: T) => ReactNode;
 }
 
 /**
@@ -59,6 +63,8 @@ export function Table<T>({
   renderMobileLoadingSkeleton,
   wrapperClassName,
   headerClassName,
+  expandedRowKeys,
+  renderExpandedRow,
 }: TableProps<T>) {
   const defaultWrapperClass =
     "bg-surface border border-border rounded-2xl overflow-hidden";
@@ -92,30 +98,43 @@ export function Table<T>({
       );
     }
 
-    return data.map((item, index) => (
-      <tr
-        key={keyExtractor(item)}
-        onClick={onRowClick ? () => onRowClick(item) : undefined}
-        className={`transition-colors duration-200 ${
-          onRowClick ? "cursor-pointer" : ""
-        } ${rowClassName ? rowClassName(item) : "hover:bg-muted/50"}`}
-      >
-        {columns.map((col) => (
-          <td
-            key={col.key}
-            className={`px-6 py-4 ${
-              col.align === "right"
-                ? "text-right"
-                : col.align === "center"
-                ? "text-center"
-                : ""
-            }`}
+    return data.map((item, index) => {
+      const key = keyExtractor(item);
+      const isExpanded = expandedRowKeys?.includes(key);
+
+      return (
+        <Fragment key={key}>
+          <tr
+            onClick={onRowClick ? () => onRowClick(item) : undefined}
+            className={`transition-colors duration-200 ${
+              onRowClick ? "cursor-pointer" : ""
+            } ${rowClassName ? rowClassName(item) : "hover:bg-muted/50"}`}
           >
-            {col.render(item, index)}
-          </td>
-        ))}
-      </tr>
-    ));
+            {columns.map((col) => (
+              <td
+                key={col.key}
+                className={`px-6 py-4 ${
+                  col.align === "right"
+                    ? "text-right"
+                    : col.align === "center"
+                    ? "text-center"
+                    : ""
+                }`}
+              >
+                {col.render(item, index)}
+              </td>
+            ))}
+          </tr>
+          {isExpanded && renderExpandedRow && (
+            <tr className="animate-in fade-in slide-in-from-top-2 duration-200">
+              <td colSpan={columns.length} className="p-0">
+                {renderExpandedRow(item)}
+              </td>
+            </tr>
+          )}
+        </Fragment>
+      );
+    });
   };
 
   const renderMobileContent = () => {

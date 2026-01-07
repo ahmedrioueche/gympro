@@ -49,7 +49,10 @@
     "location": "Location",
     "attendance": "Attendance",
     "notifications": "Notifications",
-    "settings": "Settings"
+    "settings": "Settings",
+    "goBack": "Go Back",
+    "years": "years",
+    "amount": "Amount"
   },
   "confirm": {
     "default": {
@@ -242,7 +245,8 @@
         "not_found": "Member not found",
         "fetch_failed": "Failed to fetch members",
         "update_failed": "Failed to update member",
-        "delete_failed": "Failed to delete member"
+        "delete_failed": "Failed to delete member",
+        "profile_fetch_failed": "Failed to fetch member profile"
       },
       "plan": {
         "not_found": "Plan not found"
@@ -634,6 +638,18 @@
       "contactSupportDesc": "Please contact our support team to update your business region or currency."
     },
     "gym": {
+      "noGym": "No gym selected",
+      "selectGym": "Please select a gym to view details",
+      "noOperatingHours": "No operating hours configured",
+      "location": "Location",
+      "opensAt": "Opens at",
+      "closesAt": "Closes at",
+      "status": {
+        "open": "Open Now",
+        "closed": "Closed",
+        "womenOnly": "Women Only Now",
+        "menOnly": "Men Only Now"
+      },
       "pageTitle": "Gym Settings",
       "pageSubtitle": "Configure your gym-specific preferences and policies",
       "saveSuccess": "Gym settings updated successfully",
@@ -745,24 +761,56 @@
           "tipDesc": "These settings are gym-specific. You can have different privacy settings for each gym you follow."
         }
       }
+    }
+  },
+  "memberProfile": {
+    "title": "Member Profile",
+    "subtitle": "View member subscription and payment history",
+    "unknownMember": "Unknown Member",
+    "joinedAt": "Joined",
+    "notFound": "Member Not Found",
+    "notFoundDesc": "The member you're looking for doesn't exist or has been removed.",
+    "idLabel": "Member ID",
+    "genderNotSpecified": "Not specified",
+    "noEmail": "No email provided",
+    "noPhone": "No phone provided",
+    "transactionLedger": "Transaction Ledger",
+    "subscription": {
+      "title": "Subscription Status",
+      "historyTitle": "Subscription History",
+      "historySubtitle": "Past & Current Plans",
+      "type": "Type",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "paymentMethod": "Payment Method",
+      "handledBy": "Handled By",
+      "notes": "Notes",
+      "noHistory": "No subscription history found",
+      "noSubscription": "No active subscription",
+      "noActivePlan": "No Active Plan",
+      "active": "Active",
+      "expired": "Expired",
+      "expiringSoon": "Expiring Soon",
+      "daysRemaining": "{{days}} days remaining",
+      "expiredDays": "Expired {{days}} days ago",
+      "expiredMonths": "Expired {{months}} months, {{days}} days ago",
+      "planType": "Plan Type",
+      "currentPlan": "Current Plan",
+      "until": "Until",
+      "period": "Subscription Period",
+      "price": "Price",
+      "unknownType": "Unknown Plan"
     },
-    "gym": {
-      "noGym": "No gym selected",
-      "selectGym": "Please select a gym to view details",
-      "noOperatingHours": "No operating hours configured",
-      "location": "Location",
-      "opensAt": "Opens at",
-      "closesAt": "Closes at",
-      "status": {
-        "open": "Open Now",
-        "closed": "Closed",
-        "womenOnly": "Women Only Now",
-        "menOnly": "Men Only Now"
-      },
-      "actions": {
-        "tapToExpand": "Tap to Expand",
-        "tapToClose": "Tap anywhere to close"
-      }
+    "payments": {
+      "title": "Payment History",
+      "empty": "No payment history",
+      "emptyDesc": "Payments will appear here when recorded",
+      "method": "Payment Method",
+      "reference": "Ref",
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed",
+      "refunded": "Refunded"
     }
   },
   "analytics": {
@@ -1316,7 +1364,8 @@
         "expiresIn": "Expires in {{seconds}}s",
         "expired": "Code expired, refreshing...",
         "generating": "Generating your access code...",
-        "tapToClose": "Tap anywhere to close"
+        "tapToClose": "Tap anywhere to close",
+        "tapToExpand": "Tap to Expand"
       },
       "tips": {
         "title": "Access Information",

@@ -15,7 +15,7 @@ import {
   SUBSCRIPTION_STATUSES,
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 @Schema({ _id: false })
 export class SubscriptionInfoModel implements SubscriptionInfo {
@@ -73,11 +73,12 @@ export const SubscriptionTypeSchema = SchemaFactory.createForClass(
   SubscriptionTypeModel,
 );
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'gym_subscription_history' })
 export class SubscriptionHistoryModel
   extends Document
   implements SubscriptionHistory
 {
+  declare _id: Types.ObjectId;
   @Prop({ type: SubscriptionInfoSchema, required: true })
   subscription: SubscriptionInfo;
   @Prop({ type: Object, required: true }) gym: Gym;

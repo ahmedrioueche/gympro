@@ -13,7 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.2.49",
+    "@ahmedrioueche/gympro-client": "0.2.55",
     "@headlessui/react": "^2.2.9",
     "@tanstack/react-query": "^5.84.2",
     "@tanstack/react-router": "^1.131.2",

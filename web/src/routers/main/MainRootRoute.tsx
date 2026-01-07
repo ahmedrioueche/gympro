@@ -18,5 +18,5 @@ export const MainRootRoute = createRoute({
       </OnboardingGuard>
     </ProtectedRoute>
   ),
-  notFoundComponent: () => <NotFound />,
+  notFoundComponent: () => <NotFound bgColor="bg-background" />,
 });

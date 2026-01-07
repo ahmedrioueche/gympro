@@ -1,10 +1,12 @@
 import { type GymAttendanceRecord } from "@ahmedrioueche/gympro-client";
+import { useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { Ban, CheckCircle2, Clock, Logs, User as UserIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchFilterBar } from "../../../../../../components/ui/SearchFilterBar";
 import { Table, type TableColumn } from "../../../../../../components/ui/Table";
+import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useAttendance } from "../../../../../../hooks/queries/useAttendance";
 import { useGymStore } from "../../../../../../store/gym";
 import { cn } from "../../../../../../utils/helper";
@@ -18,7 +20,7 @@ const AttendancePage: React.FC = () => {
   const { logs: logsRes, isLoadingLogs } = useAttendance(currentGym?._id);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-
+  const navigate = useNavigate();
   const logs = (logsRes?.data || []) as unknown as GymAttendanceRecord[];
 
   const filteredLogs = logs.filter((log) => {
@@ -273,6 +275,12 @@ const AttendancePage: React.FC = () => {
           isLoading={isLoadingLogs}
           skeletonRowCount={10}
           emptyState={emptyState}
+          onRowClick={(log) => {
+            if (log?.userId?._id)
+              navigate({
+                to: `${APP_PAGES.gym.manager.member_profile.link}/${log.userId._id}`,
+              });
+          }}
           rowClassName={() => "group hover:bg-border/40 cursor-pointer"}
           renderMobileCard={renderMobileCard}
           renderMobileLoadingSkeleton={renderMobileLoadingSkeleton}

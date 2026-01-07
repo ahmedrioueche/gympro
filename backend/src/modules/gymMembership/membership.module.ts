@@ -4,6 +4,11 @@ import { User, UserSchema } from '../../common/schemas/user.schema';
 import { MailerService } from '../../common/services/mailer.service';
 import { GymModule } from '../gym/gym.module';
 import { GymModel, GymSchema } from '../gym/gym.schema';
+import {
+  SubscriptionHistorySchema,
+  SubscriptionTypeModel,
+  SubscriptionTypeSchema,
+} from '../gymSubscription/gymSubscription.schema';
 import { MemberInvitationService } from '../notifications/member-invitation.service';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { SmsModule } from '../sms/sms.module';
@@ -17,6 +22,11 @@ import { MembershipService } from './membership.service';
       { name: User.name, schema: UserSchema },
       { name: GymMembershipModel.name, schema: GymMembershipSchema },
       { name: GymModel.name, schema: GymSchema },
+      { name: SubscriptionTypeModel.name, schema: SubscriptionTypeSchema },
+      {
+        name: 'SubscriptionHistory',
+        schema: SubscriptionHistorySchema,
+      },
     ]),
     SmsModule,
     GymModule,

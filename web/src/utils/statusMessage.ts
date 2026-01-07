@@ -71,6 +71,8 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.FETCH_MEMBER_FAILED]: "status.error.member.fetch_failed",
   [ErrorCode.UPDATE_MEMBER_FAILED]: "status.error.member.update_failed",
   [ErrorCode.DELETE_MEMBER_FAILED]: "status.error.member.delete_failed",
+  [ErrorCode.MEMBER_PROFILE_FETCH_ERROR]:
+    "status.error.member.profile_fetch_failed",
 
   [ErrorCode.SUBSCRIPTION_CANCEL_ERROR]:
     "status.error.subscription.cancel_failed",

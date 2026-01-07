@@ -1,18 +1,27 @@
-import { AuditInfo, PaymentMethod } from './common';
-import { Gym } from './gym';
+import { AuditInfo, PaymentMethod } from "./common";
+import { Gym } from "./gym";
 
-export const SUBSCRIPTION_STATUSES = ['active', 'expired', 'cancelled'] as const;
-export const SUBSCRIPTION_PERIOD_UNITS = ['day', 'week', 'month', 'year'] as const;
+export const SUBSCRIPTION_STATUSES = [
+  "active",
+  "expired",
+  "cancelled",
+] as const;
+export const SUBSCRIPTION_PERIOD_UNITS = [
+  "day",
+  "week",
+  "month",
+  "year",
+] as const;
 export const BASE_SUBSCRIPTION_TYPES = [
-  'regular',
-  'coached',
-  'yoga',
-  'crossfit',
-  'pilates',
-  'boxing',
-  'sauna',
-  'massage',
-  'custom',
+  "regular",
+  "coached",
+  "yoga",
+  "crossfit",
+  "pilates",
+  "boxing",
+  "sauna",
+  "massage",
+  "custom",
 ] as const;
 
 export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
@@ -39,9 +48,11 @@ export interface SubscriptionType extends AuditInfo {
   isAvailable: boolean;
 }
 
+import { User } from "./user";
+
 export interface SubscriptionHistory extends AuditInfo {
   subscription: SubscriptionInfo;
   gym: Gym;
-  handledBy?: string;
+  handledBy?: string | User;
   notes?: string;
 }

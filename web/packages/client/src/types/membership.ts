@@ -1,8 +1,9 @@
 import { AuditInfo } from "./common";
 import { Gym } from "./gym";
+import { PaymentTransaction } from "./payment";
 import { RolePermissions } from "./role";
-import { SubscriptionInfo } from "./subscription";
-import { UserRole } from "./user";
+import { SubscriptionInfo, SubscriptionType } from "./subscription";
+import { User, UserRole } from "./user";
 
 export interface MembershipSettings {
   general: {
@@ -55,4 +56,18 @@ export interface MemberSubscriptionView extends AuditInfo {
   membershipStatus: MembershipStatus;
   subscription?: SubscriptionInfo;
   settings?: MembershipSettings;
+}
+
+/** Member profile view for gym manager member profile page */
+export interface MemberProfileView {
+  membership: {
+    _id: string;
+    joinedAt: string;
+    membershipStatus: MembershipStatus;
+    roles: UserRole[];
+    subscription?: SubscriptionInfo;
+  };
+  user: User;
+  payments: PaymentTransaction[];
+  subscriptionType?: SubscriptionType;
 }

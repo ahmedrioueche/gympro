@@ -231,6 +231,28 @@ export class MembershipController {
     }
   }
 
+  @Get(':gymId/:membershipId/profile')
+  @UseGuards(JwtAuthGuard)
+  async getMemberProfile(
+    @Param('gymId') gymId: string,
+    @Param('membershipId') membershipId: string,
+  ): Promise<ApiResponse<any>> {
+    try {
+      const result = await this.membershipService.getMemberProfile(
+        membershipId,
+        gymId,
+      );
+      return apiResponse(true, undefined, result);
+    } catch (error) {
+      return apiResponse<any>(
+        false,
+        ErrorCode.MEMBER_PROFILE_FETCH_ERROR,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
   @Patch(':gymId/:membershipId')
   @UseGuards(JwtAuthGuard)
   async updateMember(
@@ -249,6 +271,44 @@ export class MembershipController {
         undefined,
         result,
         'Member updated successfully',
+      );
+    } catch (error) {
+      return apiResponse<MemberResponse>(
+        false,
+        ErrorCode.UPDATE_MEMBER_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Post(':gymId/:membershipId/reactivate')
+  @UseGuards(JwtAuthGuard)
+  async reactivateSubscription(
+    @Param('gymId') gymId: string,
+    @Param('membershipId') membershipId: string,
+    @Body()
+    dto: {
+      subscriptionTypeId: string;
+      startDate: string;
+      paymentMethod?: string;
+      notes?: string;
+    },
+    @Req() req: any,
+  ): Promise<ApiResponse<MemberResponse>> {
+    try {
+      const performedBy = req.user.sub;
+      const result = await this.membershipService.reactivateSubscription(
+        membershipId,
+        gymId,
+        dto,
+        performedBy,
+      );
+      return apiResponse(
+        true,
+        undefined,
+        result,
+        'Subscription reactivated successfully',
       );
     } catch (error) {
       return apiResponse<MemberResponse>(

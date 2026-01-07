@@ -2,6 +2,7 @@ import { UserRole } from "@ahmedrioueche/gympro-client";
 import { createRoute } from "@tanstack/react-router";
 import GymManagerPage from "../../../../app/pages/main/gym/manager/GymManagerPage";
 import { GymRoleGuard } from "../../../../components/guards/GymRoleGuard";
+import NotFound from "../../../../components/ui/NotFound";
 import { GymRootRoute } from "../GymRootRoute";
 
 export const GymManagerRootRoute = createRoute({
@@ -12,4 +13,5 @@ export const GymManagerRootRoute = createRoute({
       <GymManagerPage />
     </GymRoleGuard>
   ),
+  notFoundComponent: () => <NotFound />,
 });

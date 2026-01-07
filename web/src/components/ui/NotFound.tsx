@@ -5,9 +5,15 @@ interface NotFoundProps {
   text?: string;
   icon?: React.ReactNode;
   subtext?: string;
+  bgColor?: string;
 }
 
-const NotFound: React.FC<NotFoundProps> = ({ text, icon, subtext }) => {
+const NotFound: React.FC<NotFoundProps> = ({
+  text,
+  icon,
+  subtext,
+  bgColor,
+}) => {
   const { t } = useTranslation();
 
   // Use provided text or fallback to translation or default
@@ -15,7 +21,9 @@ const NotFound: React.FC<NotFoundProps> = ({ text, icon, subtext }) => {
   const displaySubtext = subtext || t("general.page_not_found_desc");
 
   return (
-    <div className="min-h-screen bg-background text-text-primary flex items-center justify-center px-4">
+    <div
+      className={`min-h-screen ${bgColor} text-text-primary flex items-center justify-center px-4`}
+    >
       <div className="max-w-xl w-full text-center">
         {/* Icon Section */}
         <div className="mb-8 animate-bounce">

@@ -34,3 +34,14 @@ export interface MemberAttendanceRecord
     };
   };
 }
+
+/** Attendance record with populated user info for gym manager view */
+export interface GymAttendanceRecord extends Omit<AttendanceRecord, "userId"> {
+  userId?: {
+    _id: string;
+    profile?: {
+      fullName?: string;
+      profileImageUrl?: string;
+    };
+  };
+}

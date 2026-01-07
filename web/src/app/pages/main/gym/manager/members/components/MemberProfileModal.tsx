@@ -1,6 +1,8 @@
+import { useNavigate } from "@tanstack/react-router";
 import {
   Calendar,
   CreditCard,
+  ExternalLink,
   Mail,
   Pencil,
   Phone,
@@ -10,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../../../../../constants/navigation";
 import { formatDate } from "../../../../../../../utils/date";
 import type { MemberDisplay } from "./types";
 import { getStatusColor } from "./utils";
@@ -30,6 +33,7 @@ export function MemberProfileModal({
   onDelete,
 }: MemberProfileModalProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"profile" | "subscription">(
     "profile"
   );
@@ -188,21 +192,36 @@ export function MemberProfileModal({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 p-6 border-t border-border">
+        {/* Actions */}
+        <div className="flex flex-col gap-3 p-6 border-t border-border">
           <button
-            onClick={onEdit}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary text-white font-medium rounded-xl hover:bg-primary/90 transition-colors"
+            onClick={() => {
+              onClose();
+              navigate({
+                to: `${APP_PAGES.gym.manager.member_profile.link}/${member._id}`,
+              });
+            }}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 transform hover:-translate-y-0.5"
           >
-            <Pencil className="w-4 h-4" />
-            {t("members.actions.edit", "Edit")}
+            <ExternalLink className="w-4 h-4" />
+            {t("members.actions.viewFullProfile", "View Full Profile")}
           </button>
-          <button
-            onClick={onDelete}
-            className="flex items-center justify-center gap-2 px-4 py-3 bg-danger/10 text-danger font-medium rounded-xl hover:bg-danger/20 transition-colors"
-          >
-            <Trash2 className="w-4 h-4" />
-            {t("members.actions.delete", "Delete")}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={onEdit}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-surface hover:bg-surface-hover text-text-primary font-medium rounded-xl border border-border transition-colors"
+            >
+              <Pencil className="w-4 h-4" />
+              {t("members.actions.edit", "Edit")}
+            </button>
+            <button
+              onClick={onDelete}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-danger/10 text-danger font-medium rounded-xl hover:bg-danger/20 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              {t("members.actions.delete", "Delete")}
+            </button>
+          </div>
         </div>
       </div>
     </div>

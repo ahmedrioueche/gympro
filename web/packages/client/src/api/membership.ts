@@ -1,5 +1,8 @@
 import type { ApiResponse } from "../types/api";
-import type { MemberSubscriptionView } from "../types/membership";
+import type {
+  MemberProfileView,
+  MemberSubscriptionView,
+} from "../types/membership";
 import { apiClient, handleApiError } from "./helper";
 
 export const membershipApi = {
@@ -35,6 +38,21 @@ export const membershipApi = {
           history: any[];
         }>
       >(`/membership/my/${gymId}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Get member profile with subscription and payment details (for gym managers) */
+  getMemberProfile: async (
+    gymId: string,
+    membershipId: string
+  ): Promise<ApiResponse<MemberProfileView>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<MemberProfileView>>(
+        `/membership/${gymId}/${membershipId}/profile`
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

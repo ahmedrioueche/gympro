@@ -66,7 +66,9 @@ function SubscriptionsTable({ members }: SubscriptionsTableProps) {
 
   const handleRowClick = (member: User) => {
     // Navigate to member details
-    navigate({ to: APP_PAGES.gym.manager.members.link });
+    navigate({
+      to: `${APP_PAGES.gym.manager.member_profile.link}/${member._id}`,
+    });
   };
 
   return (
