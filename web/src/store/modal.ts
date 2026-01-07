@@ -3,6 +3,7 @@ import type {
   ConfirmModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
+  ScanResultModalProps,
   UpgradePreviewModalProps,
 } from "../types/modals";
 
@@ -11,6 +12,7 @@ type ModalType =
   | "upgrade_preview"
   | "edit_user_profile"
   | "exercise_detail"
+  | "scan_result"
   | null;
 
 interface ModalState {
@@ -19,6 +21,7 @@ interface ModalState {
   upgradePreviewProps?: UpgradePreviewModalProps;
   editManagerProps?: EditManagerModalProps;
   exerciseModalProps?: ExerciseDetailModalProps;
+  scanResultProps?: ScanResultModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -42,6 +45,9 @@ export const useModalStore = create<ModalState>((set) => ({
       }
       if (modal === "exercise_detail") {
         return { currentModal: "exercise_detail", exerciseModalProps: props };
+      }
+      if (modal === "scan_result") {
+        return { currentModal: "scan_result", scanResultProps: props };
       }
       return { currentModal: null };
     }),

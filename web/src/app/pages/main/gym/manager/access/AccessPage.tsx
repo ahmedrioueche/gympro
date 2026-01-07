@@ -1,12 +1,10 @@
-import { useNavigate } from "@tanstack/react-router";
 import { Key } from "lucide-react";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useAttendance } from "../../../../../../hooks/queries/useAttendance";
 import { useGymStore } from "../../../../../../store/gym";
-import type { ScanResult } from "../../../../../../types/common";
+import { useModalStore } from "../../../../../../store/modal";
 import PageHeader from "../../../../../components/PageHeader";
-import { ScanResultModal } from "../../../../../components/ScanResultModal";
 import { ScannerView } from "./components/ScannerView";
 import { useAudioFeedback } from "./hooks/useAudioFeedback";
 import { useScanner } from "./hooks/useScanner";
@@ -15,9 +13,8 @@ const AccessPage: React.FC = () => {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
   const { checkIn, isCheckingIn } = useAttendance(currentGym?._id, true);
-  const navigate = useNavigate();
   const { playSound } = useAudioFeedback();
-  const [lastResult, setLastResult] = useState<ScanResult | null>(null);
+  const { openModal, closeModal } = useModalStore();
   const lastScanTimeRef = useRef<number>(0);
   const isCheckingInRef = useRef(false);
   const isVerifyingRef = useRef(false);
@@ -34,7 +31,6 @@ const AccessPage: React.FC = () => {
 
       lastScanTimeRef.current = now;
       isVerifyingRef.current = true;
-      setLastResult({ status: "verifying", timestamp: new Date() });
 
       try {
         const response = await checkIn({
@@ -44,33 +40,37 @@ const AccessPage: React.FC = () => {
 
         if (response.success) {
           playSound("success");
-          setLastResult({
-            status: "granted",
-            name:
-              (response.data as any).userId?.profile?.fullName ||
-              t("common.member"),
-            photo: (response.data as any).userId?.profile?.profileImageUrl,
-            expiry: (response.data as any).expiryDate,
-            timestamp: new Date(),
+          openModal("scan_result", {
+            result: {
+              status: "granted",
+              name:
+                (response.data as any).userId?.profile?.fullName ||
+                t("common.member"),
+              photo: (response.data as any).userId?.profile?.profileImageUrl,
+              expiry: (response.data as any).expiryDate,
+              timestamp: new Date(),
+            },
           });
         } else {
           throw new Error(response.message || t("access.status.denied"));
         }
       } catch (error: any) {
         playSound("error");
-        setLastResult({
-          status: "denied",
-          reason: error.message || t("access.status.invalid"),
-          timestamp: new Date(),
+        openModal("scan_result", {
+          result: {
+            status: "denied",
+            reason: error.message || t("access.status.invalid"),
+            timestamp: new Date(),
+          },
         });
       } finally {
         isVerifyingRef.current = false;
       }
 
       // Auto-clear result after 4 seconds
-      setTimeout(() => setLastResult(null), 4000);
+      setTimeout(() => closeModal(), 4000);
     },
-    [currentGym?._id, checkIn, playSound]
+    [currentGym?._id, checkIn, playSound, openModal, closeModal]
   );
 
   const {
@@ -98,11 +98,6 @@ const AccessPage: React.FC = () => {
           onRetry={startScanner}
         />
       </div>
-
-      <ScanResultModal
-        result={lastResult}
-        onClose={() => setLastResult(null)}
-      />
 
       <style>
         {`

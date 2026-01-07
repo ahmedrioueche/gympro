@@ -58,3 +58,14 @@ export interface ExerciseDetailModalProps {
   exercise: Exercise;
   currentUserId: string;
 }
+
+export interface ScanResultModalProps {
+  result: {
+    status: "granted" | "denied" | "verifying";
+    name?: string;
+    photo?: string;
+    reason?: string;
+    expiry?: string | Date;
+    timestamp: Date;
+  } | null;
+}

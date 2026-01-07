@@ -2,21 +2,20 @@ import { format } from "date-fns";
 import { Ban, ShieldCheck, X } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import type { ScanResult } from "../../types/common";
+import { useModalStore } from "../../store/modal";
 import { cn } from "../../utils/helper";
 
-interface ScanResultModalProps {
-  result: ScanResult | null;
-  onClose: () => void;
-}
-
-export const ScanResultModal: React.FC<ScanResultModalProps> = ({
-  result,
-  onClose,
-}) => {
+export const ScanResultModal: React.FC = () => {
   const { t } = useTranslation();
+  const { currentModal, scanResultProps, closeModal } = useModalStore();
+  const result = scanResultProps?.result;
 
-  if (!result || result.status === "verifying") return null;
+  if (
+    currentModal !== "scan_result" ||
+    !result ||
+    result.status === "verifying"
+  )
+    return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md animate-in fade-in duration-300">
@@ -30,7 +29,7 @@ export const ScanResultModal: React.FC<ScanResultModalProps> = ({
       >
         <div className="p-8 text-center relative">
           <button
-            onClick={onClose}
+            onClick={closeModal}
             className="absolute top-4 right-4 p-2 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-full transition-all"
           >
             <X className="w-5 h-5" />

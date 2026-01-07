@@ -3,7 +3,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { SearchFilterBar } from "../../../../../../components/ui/SearchFilterBar";
 import PageHeader from "../../../../../components/PageHeader";
-import { ScanResultModal } from "../../../../../components/ScanResultModal";
 import { AttendanceTable } from "./components/AttendanceTable";
 import {
   type StatusFilter,
@@ -14,8 +13,8 @@ import { useRealTimeAttendance } from "./hooks/useRealTimeAttendance";
 const AttendancePage: React.FC = () => {
   const { t } = useTranslation();
 
-  // Real-time access monitoring
-  const { lastResult, clearResult } = useRealTimeAttendance();
+  // Real-time access monitoring (handled via side-effects opening global modal)
+  useRealTimeAttendance();
 
   // Data and Filtering
   const {
@@ -35,8 +34,6 @@ const AttendancePage: React.FC = () => {
         icon={Logs}
       />
 
-      <ScanResultModal result={lastResult} onClose={clearResult} />
-
       <div className="mt-8 space-y-6">
         {/* Controls */}
         <SearchFilterBar<StatusFilter>
@@ -49,7 +46,10 @@ const AttendancePage: React.FC = () => {
           filterValue={statusFilter}
           onFilterChange={setStatusFilter}
           filterOptions={[
-            { value: "all", label: t("access.logs.filter_all", "All Events") },
+            {
+              value: "all",
+              label: t("access.logs.filter_all", "All Events"),
+            },
             {
               value: "granted",
               label: t("access.logs.filter_granted", "Access Granted"),

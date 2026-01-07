@@ -13,6 +13,12 @@ const EditUserProfileModal = lazy(
   () => import("./app/components/modals/EditUserProfileModal")
 );
 
+const ScanResultModal = lazy(() =>
+  import("./app/components/ScanResultModal").then((module) => ({
+    default: module.ScanResultModal,
+  }))
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -20,6 +26,7 @@ function modals() {
       <UpgradePreviewModal />
       <EditUserProfileModal />
       <ExerciseDetailModal />
+      <ScanResultModal />
     </Suspense>
   );
 }
