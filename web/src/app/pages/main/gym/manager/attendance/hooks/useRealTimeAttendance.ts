@@ -6,11 +6,11 @@ import type { ScanResult } from "../../../../../../../types/common";
 
 export const useRealTimeAttendance = () => {
   const { currentGym } = useGymStore();
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
   const { openModal, closeModal } = useModalStore();
 
   useEffect(() => {
-    if (!socket || !currentGym?._id) return;
+    if (!socket || !isConnected || !currentGym?._id) return;
 
     // Join gym room
     console.log(`🔌 Joining gym room: gym_${currentGym._id}`);
@@ -40,5 +40,5 @@ export const useRealTimeAttendance = () => {
     return () => {
       socket.off("access_attempt", handleAccessAttempt);
     };
-  }, [socket, currentGym?._id, openModal, closeModal]);
+  }, [socket, isConnected, currentGym?._id, openModal, closeModal]);
 };
