@@ -340,8 +340,8 @@
       "invalid": "Invalid QR Code"
     },
     "logs": {
-      "title": "Access Logs",
-      "subtitle": "Monitor and review all gym entry attempts",
+      "title": "Attendance History",
+      "subtitle": "Monitor and review gym attendance",
       "search_placeholder": "Search by member name...",
       "filter_all": "All Logs",
       "filter_granted": "Granted Only",

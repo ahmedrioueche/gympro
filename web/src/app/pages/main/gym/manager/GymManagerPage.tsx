@@ -5,6 +5,7 @@ import {
   CreditCard,
   Home,
   Key,
+  Logs,
   Settings,
   Users,
 } from "lucide-react";
@@ -38,6 +39,12 @@ const sidebarLinks = [
     icon: <Key className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.access.link,
     matchPaths: [APP_PAGES.gym.manager.access.link],
+  },
+  {
+    label: "attendance",
+    icon: <Logs className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.attendance.link,
+    matchPaths: [APP_PAGES.gym.manager.attendance.link],
   },
   {
     label: "analytics",

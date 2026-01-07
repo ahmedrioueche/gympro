@@ -222,7 +222,7 @@ export default function Nav({ children, sidebarLinks }) {
         </div>
 
         {/* Sidebar Content */}
-        <nav className="flex-1 px-2 py-6 space-y-2 overflow-y-auto hide-scrollbar">
+        <nav className="flex-1 px-2 py-4 md:py-6 space-y-2 overflow-y-auto hide-scrollbar">
           {sidebarLinks.map((link) => {
             const isActive = link.matchPaths.some((p) => activeRoute === p);
             return (
@@ -248,7 +248,7 @@ export default function Nav({ children, sidebarLinks }) {
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col h-screen">
         {/* Top Bar: Menu button + GymSelector left, controls right */}
-        <div className="flex items-center justify-between min-h-[80px] px-1 md:px-6">
+        <div className="flex items-center justify-between min-h-[80px] px-1 md:px-6 md:pl-10">
           <div className="flex items-center gap-3 flex-1">
             {/* Mobile menu button - relative positioning */}
             {isMobile && (

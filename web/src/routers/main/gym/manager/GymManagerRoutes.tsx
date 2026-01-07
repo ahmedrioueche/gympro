@@ -1,9 +1,9 @@
 import { createRoute } from "@tanstack/react-router";
 import AccessPage from "../../../../app/pages/main/gym/manager/access/AccessPage";
 import AnalyticsPage from "../../../../app/pages/main/gym/manager/analytics/AnalyticsPage";
+import AttendancePage from "../../../../app/pages/main/gym/manager/attendance/AttendancePage";
 import CreateMemberPage from "../../../../app/pages/main/gym/manager/createMember/CreateMemberPage";
 import HomePage from "../../../../app/pages/main/gym/manager/home/HomePage";
-import AccessLogsPage from "../../../../app/pages/main/gym/manager/logs/AccessLogsPage";
 import MembersPage from "../../../../app/pages/main/gym/manager/members/MembersPage";
 import NotificationsPage from "../../../../app/pages/main/gym/manager/notifications/NotificationsPage";
 import SettingsPage from "../../../../app/pages/main/gym/manager/settings/SettingsPage";
@@ -34,10 +34,10 @@ export const accessRoute = createRoute({
   component: () => <AccessPage />,
 });
 
-export const accessLogsRoute = createRoute({
+export const attendanceRoute = createRoute({
   getParentRoute: () => GymManagerRootRoute,
-  path: "/access/logs",
-  component: () => <AccessLogsPage />,
+  path: "/attendance",
+  component: () => <AttendancePage />,
 });
 
 export const subscriptionsRoute = createRoute({

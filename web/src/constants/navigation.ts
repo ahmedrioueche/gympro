@@ -101,9 +101,9 @@ export const APP_PAGES = {
         name: "pages.gym.access",
         link: "/gym/manager/access",
       },
-      accessLogs: {
-        name: "pages.gym.access",
-        link: "/gym/manager/access/logs",
+      attendance: {
+        name: "pages.gym.attendance",
+        link: "/gym/manager/attendance",
       },
       analytics: {
         name: "pages.gym.analytics",

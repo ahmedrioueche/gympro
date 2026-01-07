@@ -90,52 +90,55 @@ function CreateGymPage() {
   ];
 
   return (
-    <div className="lg:hidden w-full ">
-      <Header />
-      <StepsNavMobile steps={steps} step={step} />
+    <div className="min-h-screen">
+      {/* Mobile Layout */}
+      <div className="lg:hidden w-full">
+        <Header />
+        <StepsNavMobile steps={steps} step={step} />
 
-      <form onSubmit={handleSubmit}>
-        <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6 md:p-8 shadow-2xl shadow-black/50">
-          {step === 1 && (
-            <StepBasicInfo
+        <form onSubmit={handleSubmit}>
+          <div className="bg-gray-900/80 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6 md:p-8 shadow-2xl shadow-black/50">
+            {step === 1 && (
+              <StepBasicInfo
+                formData={formData}
+                handleChange={handleChange}
+                steps={steps}
+                duplicateGymName={duplicateGymName}
+              />
+            )}
+
+            {step === 2 && (
+              <StepLocation
+                formData={formData}
+                handleChange={handleChange}
+                steps={steps}
+              />
+            )}
+
+            {step === 3 && (
+              <StepContact
+                formData={formData}
+                handleChange={handleChange}
+                steps={steps}
+              />
+            )}
+
+            <NavButtons
+              step={step}
+              setStep={setStep}
+              navigate={navigate}
               formData={formData}
-              handleChange={handleChange}
-              steps={steps}
+              isPending={createGymMutation.isPending}
               duplicateGymName={duplicateGymName}
             />
-          )}
+          </div>
 
-          {step === 2 && (
-            <StepLocation
-              formData={formData}
-              handleChange={handleChange}
-              steps={steps}
-            />
-          )}
-
-          {step === 3 && (
-            <StepContact
-              formData={formData}
-              handleChange={handleChange}
-              steps={steps}
-            />
-          )}
-
-          <NavButtons
-            step={step}
-            setStep={setStep}
-            navigate={navigate}
-            formData={formData}
-            isPending={createGymMutation.isPending}
-            duplicateGymName={duplicateGymName}
+          <Tip
+            title={t("create_gym.tips.title")}
+            description={t("create_gym.tips.description")}
           />
-        </div>
-
-        <Tip
-          title={t("create_gym.tips.title")}
-          description={t("create_gym.tips.description")}
-        />
-      </form>
+        </form>
+      </div>
 
       {/* Desktop Layout */}
       <div className="hidden lg:flex lg:gap-6">

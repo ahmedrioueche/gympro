@@ -1,8 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Key, Logs } from "lucide-react";
+import { Key } from "lucide-react";
 import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useAttendance } from "../../../../../../hooks/queries/useAttendance";
 import { useGymStore } from "../../../../../../store/gym";
 import PageHeader from "../../../../../components/PageHeader";
@@ -87,13 +86,6 @@ const AccessPage: React.FC = () => {
         title={t("access.title")}
         subtitle={t("access.subtitle")}
         icon={Key}
-        actionButton={{
-          label: t("access.view_access_logs"),
-          onClick: () => {
-            navigate({ to: APP_PAGES.gym.manager.accessLogs.link });
-          },
-          icon: Logs,
-        }}
       />
 
       <div className="mt-8 space-y-6">

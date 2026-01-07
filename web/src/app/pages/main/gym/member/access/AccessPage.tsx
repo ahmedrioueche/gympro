@@ -1,17 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
-import {
-  Key,
-  Logs,
-  Maximize2,
-  RefreshCw,
-  ShieldCheck,
-  Timer,
-  X,
-} from "lucide-react";
+import { Key, Maximize2, RefreshCw, ShieldCheck, Timer, X } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useGymStore } from "../../../../../../store/gym";
 import { cn } from "../../../../../../utils/helper";
 import PageHeader from "../../../../../components/PageHeader";
@@ -32,13 +23,6 @@ const AccessPage: React.FC = () => {
         title={t("gymMember.access.title")}
         subtitle={t("gymMember.access.subtitle")}
         icon={Key}
-        actionButton={{
-          label: t("gymMember.attendance.viewLogs"),
-          onClick: () => {
-            navigate({ to: APP_PAGES.gym.member.attendance.link });
-          },
-          icon: Logs,
-        }}
       />
 
       <div className="mt-8 md:mt-12 flex justify-center">

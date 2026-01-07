@@ -23,7 +23,7 @@
     "test:chargily": "ts-node -r tsconfig-paths/register scripts/test-chargily-product.ts"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.2.46",
+    "@ahmedrioueche/gympro-client": "0.2.49",
     "@chargily/chargily-pay": "^2.1.0",
     "@google/generative-ai": "^0.24.1",
     "@nestjs/common": "^11.0.1",
