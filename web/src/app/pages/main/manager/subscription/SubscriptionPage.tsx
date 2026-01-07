@@ -48,62 +48,60 @@ function SubscriptionPage() {
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Main Header */}
-        <SubscriptionHeader mySubscription={mySubscription} />
+    <div>
+      {/* Main Header */}
+      <SubscriptionHeader mySubscription={mySubscription} />
 
-        {/* Current Subscription Card */}
-        {mySubscription && mySubscription?.planId && mySubscription?.plan && (
-          <div className="mb-12">
-            <SubscriptionCard mySubscription={mySubscription} plans={plans} />
-          </div>
-        )}
+      {/* Current Subscription Card */}
+      {mySubscription && mySubscription?.planId && mySubscription?.plan && (
+        <div className="mb-12">
+          <SubscriptionCard mySubscription={mySubscription} plans={plans} />
+        </div>
+      )}
 
-        {/* Billing Cycle Filter */}
-        <BillingCycleToggle
-          billingCycle={billingCycle}
-          setBillingCycle={setBillingCycle}
+      {/* Billing Cycle Filter */}
+      <BillingCycleToggle
+        billingCycle={billingCycle}
+        setBillingCycle={setBillingCycle}
+        isProcessing={isProcessing}
+      />
+
+      {/* Processing Overlay */}
+      {isProcessing && <ProcessingOverlay />}
+
+      {/* Plans Grid */}
+      <PlansGrid
+        plans={filteredPlans}
+        currency={currency}
+        isCurrentPlan={isCurrentPlan}
+        billingCycle={billingCycle}
+        onSelect={handleSelectPlan}
+        currentSubscription={mySubscription}
+        isProcessing={isProcessing}
+      />
+
+      {/* Cancel Subscription Button */}
+      {mySubscription && mySubscription?.planId && mySubscription?.plan && (
+        <CancelSubscriptionButton
+          subscription={mySubscription}
+          onCancel={() => setIsCancelModalOpen(true)}
           isProcessing={isProcessing}
         />
+      )}
 
-        {/* Processing Overlay */}
-        {isProcessing && <ProcessingOverlay />}
+      {/* Cancel Subscription Modal */}
+      <CancelSubscriptionModal
+        isOpen={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        subscriptionEndDate={
+          mySubscription?.currentPeriodEnd
+            ? new Date(mySubscription.currentPeriodEnd)
+            : undefined
+        }
+      />
 
-        {/* Plans Grid */}
-        <PlansGrid
-          plans={filteredPlans}
-          currency={currency}
-          isCurrentPlan={isCurrentPlan}
-          billingCycle={billingCycle}
-          onSelect={handleSelectPlan}
-          currentSubscription={mySubscription}
-          isProcessing={isProcessing}
-        />
-
-        {/* Cancel Subscription Button */}
-        {mySubscription && mySubscription?.planId && mySubscription?.plan && (
-          <CancelSubscriptionButton
-            subscription={mySubscription}
-            onCancel={() => setIsCancelModalOpen(true)}
-            isProcessing={isProcessing}
-          />
-        )}
-
-        {/* Cancel Subscription Modal */}
-        <CancelSubscriptionModal
-          isOpen={isCancelModalOpen}
-          onClose={() => setIsCancelModalOpen(false)}
-          subscriptionEndDate={
-            mySubscription?.currentPeriodEnd
-              ? new Date(mySubscription.currentPeriodEnd)
-              : undefined
-          }
-        />
-
-        {/* Footer Info */}
-        <SubscriptionFooter />
-      </div>
+      {/* Footer Info */}
+      <SubscriptionFooter />
     </div>
   );
 }

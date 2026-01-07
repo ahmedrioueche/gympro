@@ -217,129 +217,127 @@ function MembersPage() {
   };
 
   return (
-    <div className="min-h-screen p-3 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
-        <PageHeader
-          icon={Users}
-          title={t("members.title")}
-          subtitle={t("members.subtitle")}
-          actionButton={{
-            label: t("members.addMember"),
-            onClick: () => {
-              navigate({ to: APP_PAGES.gym.manager.createMember.link });
-            },
-            icon: Plus,
-          }}
+    <div className="space-y-4 md:space-y-6">
+      <PageHeader
+        icon={Users}
+        title={t("members.title")}
+        subtitle={t("members.subtitle")}
+        actionButton={{
+          label: t("members.addMember"),
+          onClick: () => {
+            navigate({ to: APP_PAGES.gym.manager.createMember.link });
+          },
+          icon: Plus,
+        }}
+      />
+
+      {/* Controls Section */}
+      <MembersControls
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        filterStatus={filterStatus}
+        onFilterChange={setFilterStatus}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+      />
+
+      {/* Members Display */}
+      {isLoading ? (
+        <Loading className="py-22" />
+      ) : error ? (
+        <ErrorComponent error={error.message} />
+      ) : filteredMembers.length === 0 ? (
+        <MembersEmptyState
+          type={
+            members.length === 0 && !searchQuery ? "no-members" : "no-results"
+          }
         />
-
-        {/* Controls Section */}
-        <MembersControls
-          searchQuery={searchQuery}
-          onSearchChange={handleSearchChange}
-          filterStatus={filterStatus}
-          onFilterChange={setFilterStatus}
-          sortBy={sortBy}
-          onSortChange={setSortBy}
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
+      ) : viewMode === "cards" ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          {filteredMembers.map((member) => (
+            <MemberCard
+              key={member._id}
+              member={member}
+              onViewProfile={handleViewProfile}
+              onEdit={handleEdit}
+              onDelete={handleDeleteClick}
+            />
+          ))}
+        </div>
+      ) : (
+        <MembersTable
+          members={filteredMembers}
+          onViewProfile={handleViewProfile}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
         />
+      )}
 
-        {/* Members Display */}
-        {isLoading ? (
-          <Loading className="py-22" />
-        ) : error ? (
-          <ErrorComponent error={error.message} />
-        ) : filteredMembers.length === 0 ? (
-          <MembersEmptyState
-            type={
-              members.length === 0 && !searchQuery ? "no-members" : "no-results"
-            }
-          />
-        ) : viewMode === "cards" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {filteredMembers.map((member) => (
-              <MemberCard
-                key={member._id}
-                member={member}
-                onViewProfile={handleViewProfile}
-                onEdit={handleEdit}
-                onDelete={handleDeleteClick}
-              />
-            ))}
+      {/* Pagination Controls */}
+      {!isLoading && !error && totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
+          {/* Results Info */}
+          <p className="text-sm text-text-secondary">
+            {t("members.pagination.showing", {
+              start: startIndex + 1,
+              end: endIndex,
+              total: totalMembers,
+              defaultValue: `Showing ${
+                startIndex + 1
+              }-${endIndex} of ${totalMembers}`,
+            })}
+          </p>
+
+          {/* Page Navigation */}
+          <div className="flex items-center gap-1">
+            {/* Previous Button */}
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="p-2 rounded-lg border border-border bg-surface text-text-primary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              aria-label="Previous page"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Page Numbers */}
+            {getPageNumbers().map((page, index) =>
+              typeof page === "string" ? (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-2 text-text-secondary"
+                >
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`min-w-[36px] h-9 rounded-lg font-medium transition-all ${
+                    currentPage === page
+                      ? "bg-primary text-white shadow-md"
+                      : "border border-border bg-surface text-text-primary hover:bg-surface-hover"
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+
+            {/* Next Button */}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="p-2 rounded-lg border border-border bg-surface text-text-primary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              aria-label="Next page"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
-        ) : (
-          <MembersTable
-            members={filteredMembers}
-            onViewProfile={handleViewProfile}
-            onEdit={handleEdit}
-            onDelete={handleDeleteClick}
-          />
-        )}
-
-        {/* Pagination Controls */}
-        {!isLoading && !error && totalPages > 1 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
-            {/* Results Info */}
-            <p className="text-sm text-text-secondary">
-              {t("members.pagination.showing", {
-                start: startIndex + 1,
-                end: endIndex,
-                total: totalMembers,
-                defaultValue: `Showing ${
-                  startIndex + 1
-                }-${endIndex} of ${totalMembers}`,
-              })}
-            </p>
-
-            {/* Page Navigation */}
-            <div className="flex items-center gap-1">
-              {/* Previous Button */}
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-border bg-surface text-text-primary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                aria-label="Previous page"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-
-              {/* Page Numbers */}
-              {getPageNumbers().map((page, index) =>
-                typeof page === "string" ? (
-                  <span
-                    key={`ellipsis-${index}`}
-                    className="px-2 text-text-secondary"
-                  >
-                    ...
-                  </span>
-                ) : (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`min-w-[36px] h-9 rounded-lg font-medium transition-all ${
-                      currentPage === page
-                        ? "bg-primary text-white shadow-md"
-                        : "border border-border bg-surface text-text-primary hover:bg-surface-hover"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                )
-              )}
-
-              {/* Next Button */}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="p-2 rounded-lg border border-border bg-surface text-text-primary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                aria-label="Next page"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Member Profile Modal */}
       {selectedMember && (

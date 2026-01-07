@@ -63,7 +63,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header Section */}
       <div className="space-y-2">
         <h1 className="text-3xl text-center md:text-left font-bold text-text-primary">

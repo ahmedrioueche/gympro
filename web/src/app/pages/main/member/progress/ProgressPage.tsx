@@ -12,7 +12,7 @@ export const ProgressPage = () => {
   const { data: history, isLoading: historyLoading } = useProgressHistory();
 
   return (
-    <div className="max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="space-y-6">
       <PageHeader
         title={t("progress.title")}
         subtitle={t("progress.subtitle")}

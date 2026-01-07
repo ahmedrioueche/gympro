@@ -27,75 +27,70 @@ function SubscriptionsPage() {
     !!membership || allMemberships.length > 0 || history.length > 0;
 
   return (
-    <div className="min-h-screen p-3 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <PageHeader
-          title={t("gymMember.subscriptions.title", "My Subscriptions")}
-          subtitle={t(
-            "gymMember.subscriptions.subtitle",
-            "Manage your memberships and subscription history for this gym"
-          )}
-          icon={CreditCard}
-        />
+    <div className="space-y-8">
+      <PageHeader
+        title={t("gymMember.subscriptions.title", "My Subscriptions")}
+        subtitle={t(
+          "gymMember.subscriptions.subtitle",
+          "Manage your memberships and subscription history for this gym"
+        )}
+        icon={CreditCard}
+      />
 
-        {!hasAnyData ? (
-          <div className="bg-surface border border-border rounded-2xl p-8 text-center space-y-4">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto text-text-secondary">
-              <CreditCard className="w-8 h-8" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-text-primary">
-                {t(
-                  "gymMember.subscriptions.noRecords.title",
-                  "No Records Found"
-                )}
-              </h3>
-              <p className="text-text-secondary max-w-sm mx-auto mt-2">
-                {t(
-                  "gymMember.subscriptions.noRecords.desc",
-                  "We couldn't find any membership records for you in this gym."
-                )}
-              </p>
-            </div>
+      {!hasAnyData ? (
+        <div className="bg-surface border border-border rounded-2xl p-8 text-center space-y-4">
+          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto text-text-secondary">
+            <CreditCard className="w-8 h-8" />
           </div>
-        ) : (
-          <>
-            {/* Active Plan Section */}
+          <div>
+            <h3 className="text-xl font-bold text-text-primary">
+              {t("gymMember.subscriptions.noRecords.title", "No Records Found")}
+            </h3>
+            <p className="text-text-secondary max-w-sm mx-auto mt-2">
+              {t(
+                "gymMember.subscriptions.noRecords.desc",
+                "We couldn't find any membership records for you in this gym."
+              )}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Active Plan Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-text-primary px-1">
+              {t("gymMember.subscriptions.activePlan", "Active Plan")}
+            </h3>
+            <CurrentSubscriptionCard
+              subscription={membership?.subscription}
+              status={membership?.membershipStatus || "expired"}
+            />
+          </div>
+
+          {/* All Records Table */}
+          {allMemberships.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-text-primary px-1">
-                {t("gymMember.subscriptions.activePlan", "Active Plan")}
+                {t(
+                  "gymMember.subscriptions.allRecords",
+                  "Subscription Records"
+                )}
               </h3>
-              <CurrentSubscriptionCard
-                subscription={membership?.subscription}
-                status={membership?.membershipStatus || "expired"}
-              />
+              <SubscriptionsTable subscriptions={allMemberships} />
             </div>
+          )}
 
-            {/* All Records Table */}
-            {allMemberships.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-text-primary px-1">
-                  {t(
-                    "gymMember.subscriptions.allRecords",
-                    "Subscription Records"
-                  )}
-                </h3>
-                <SubscriptionsTable subscriptions={allMemberships} />
-              </div>
-            )}
-
-            {/* Detailed History (Internal Snapshots) */}
-            {history.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-text-primary px-1">
-                  {t("gymMember.subscriptions.history", "Detailed History")}
-                </h3>
-                <SubscriptionHistoryTable history={history} />
-              </div>
-            )}
-          </>
-        )}
-      </div>
+          {/* Detailed History (Internal Snapshots) */}
+          {history.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-text-primary px-1">
+                {t("gymMember.subscriptions.history", "Detailed History")}
+              </h3>
+              <SubscriptionHistoryTable history={history} />
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

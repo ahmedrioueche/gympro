@@ -83,109 +83,107 @@ function PaymentsPage() {
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalPayments);
 
   return (
-    <div className="min-h-screen p-3 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
-        <PageHeader
-          icon={CreditCard}
-          title={t("payments.title")}
-          subtitle={t("payments.subtitle")}
-        />
+    <div className="space-y-4 md:space-y-6">
+      <PageHeader
+        icon={CreditCard}
+        title={t("payments.title")}
+        subtitle={t("payments.subtitle")}
+      />
 
-        {/* Controls Section */}
-        <PaymentsControls
-          searchQuery={searchQuery}
-          onSearchChange={handleSearchChange}
-          filterStatus={filterStatus}
-          onFilterStatusChange={handleFilterStatusChange}
-        />
+      {/* Controls Section */}
+      <PaymentsControls
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        filterStatus={filterStatus}
+        onFilterStatusChange={handleFilterStatusChange}
+      />
 
-        {/* Payments Display */}
-        {isLoading ? (
-          <Loading className="py-22" />
-        ) : error ? (
-          <ErrorComponent error={error.message} />
-        ) : payments.length === 0 ? (
-          <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-            <div className="text-6xl mb-4">💳</div>
-            <h3 className="text-xl font-semibold text-text-primary mb-2">
-              {totalPayments === 0
-                ? t("payments.empty.noPayments")
-                : t("payments.empty.noResults")}
-            </h3>
-            <p className="text-text-secondary">
-              {totalPayments === 0
-                ? t("payments.empty.noPaymentsDesc")
-                : t("payments.empty.noResultsDesc")}
-            </p>
+      {/* Payments Display */}
+      {isLoading ? (
+        <Loading className="py-22" />
+      ) : error ? (
+        <ErrorComponent error={error.message} />
+      ) : payments.length === 0 ? (
+        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
+          <div className="text-6xl mb-4">💳</div>
+          <h3 className="text-xl font-semibold text-text-primary mb-2">
+            {totalPayments === 0
+              ? t("payments.empty.noPayments")
+              : t("payments.empty.noResults")}
+          </h3>
+          <p className="text-text-secondary">
+            {totalPayments === 0
+              ? t("payments.empty.noPaymentsDesc")
+              : t("payments.empty.noResultsDesc")}
+          </p>
+        </div>
+      ) : (
+        <PaymentsTable payments={payments} />
+      )}
+
+      {/* Pagination Controls */}
+      {!isLoading && !error && totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
+          {/* Results Info */}
+          <p className="text-sm text-text-secondary">
+            {t("payments.pagination.showing", {
+              start: startIndex + 1,
+              end: endIndex,
+              total: totalPayments,
+              defaultValue: `Showing ${
+                startIndex + 1
+              }-${endIndex} of ${totalPayments}`,
+            })}
+          </p>
+
+          {/* Page Navigation */}
+          <div className="flex items-center gap-1">
+            {/* Previous Button */}
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="p-2 rounded-lg border border-border bg-surface text-text-primary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              aria-label="Previous page"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Page Numbers */}
+            {getPageNumbers().map((page, index) =>
+              typeof page === "string" ? (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-2 text-text-secondary"
+                >
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`min-w-[36px] h-9 rounded-lg font-medium transition-all ${
+                    currentPage === page
+                      ? "bg-primary text-white shadow-md"
+                      : "border border-border bg-surface text-text-primary hover:bg-surface-hover"
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
+
+            {/* Next Button */}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="p-2 rounded-lg border border-border bg-surface text-text-primary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              aria-label="Next page"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
-        ) : (
-          <PaymentsTable payments={payments} />
-        )}
-
-        {/* Pagination Controls */}
-        {!isLoading && !error && totalPages > 1 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-border">
-            {/* Results Info */}
-            <p className="text-sm text-text-secondary">
-              {t("payments.pagination.showing", {
-                start: startIndex + 1,
-                end: endIndex,
-                total: totalPayments,
-                defaultValue: `Showing ${
-                  startIndex + 1
-                }-${endIndex} of ${totalPayments}`,
-              })}
-            </p>
-
-            {/* Page Navigation */}
-            <div className="flex items-center gap-1">
-              {/* Previous Button */}
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-border bg-surface text-text-primary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                aria-label="Previous page"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-
-              {/* Page Numbers */}
-              {getPageNumbers().map((page, index) =>
-                typeof page === "string" ? (
-                  <span
-                    key={`ellipsis-${index}`}
-                    className="px-2 text-text-secondary"
-                  >
-                    ...
-                  </span>
-                ) : (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`min-w-[36px] h-9 rounded-lg font-medium transition-all ${
-                      currentPage === page
-                        ? "bg-primary text-white shadow-md"
-                        : "border border-border bg-surface text-text-primary hover:bg-surface-hover"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                )
-              )}
-
-              {/* Next Button */}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="p-2 rounded-lg border border-border bg-surface text-text-primary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                aria-label="Next page"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

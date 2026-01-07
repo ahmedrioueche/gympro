@@ -31,65 +31,63 @@ export default function TrainingPage() {
   };
 
   return (
-    <div className="min-h-screen p-3 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <PageHeader
-          title={t("training.page.title")}
-          subtitle={t("training.page.subtitle")}
-          icon={Dumbbell}
-          actionButton={
-            activeHistory
-              ? {
-                  label: t("training.page.yourProgress"),
-                  icon: TrendingUp,
-                  onClick: () => {
-                    navigate({ to: APP_PAGES.member.progress.link });
-                  },
-                  show: true,
-                }
-              : undefined
-          }
-        />
+    <div className="space-y-6">
+      <PageHeader
+        title={t("training.page.title")}
+        subtitle={t("training.page.subtitle")}
+        icon={Dumbbell}
+        actionButton={
+          activeHistory
+            ? {
+                label: t("training.page.yourProgress"),
+                icon: TrendingUp,
+                onClick: () => {
+                  navigate({ to: APP_PAGES.member.progress.link });
+                },
+                show: true,
+              }
+            : undefined
+        }
+      />
 
-        {/* Active Program Section - Always render to prevent flickering */}
-        <div className="space-y-6">
-          {isActiveLoading ? (
-            <div className="h-48 bg-surface border border-border rounded-2xl animate-pulse" />
-          ) : (
-            <ActiveProgramCard
-              history={activeHistory}
-              onLogSession={() => {
-                setEditingSession(undefined);
-                setIsLogSessionOpen(true);
-              }}
-            />
-          )}
-        </div>
-
-        {/* Recent Sessions Section */}
-        {!isActiveLoading && activeSessions.length > 0 && activeHistory && (
-          <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-text-primary mb-4">
-              {t("training.page.recentSessions")}
-            </h3>
-            <SessionList
-              sessions={activeSessions.slice(0, 10)}
-              program={activeHistory.program}
-              onEditSession={handleEditSession}
-            />
-          </div>
-        )}
-
-        {/* Log Session Modal - Only when there's an active program */}
-        {activeHistory && (
-          <LogSessionModal
-            isOpen={isLogSessionOpen}
-            onClose={handleCloseModal}
-            activeHistory={activeHistory}
-            initialSession={editingSession}
+      {/* Active Program Section - Always render to prevent flickering */}
+      <div className="space-y-6">
+        {isActiveLoading ? (
+          <div className="h-48 bg-surface border border-border rounded-2xl animate-pulse" />
+        ) : (
+          <ActiveProgramCard
+            history={activeHistory}
+            onLogSession={() => {
+              setEditingSession(undefined);
+              setIsLogSessionOpen(true);
+            }}
           />
         )}
       </div>
+
+      {/* Recent Sessions Section */}
+      {!isActiveLoading && activeSessions.length > 0 && activeHistory && (
+        <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-text-primary mb-4">
+            {t("training.page.recentSessions")}
+          </h3>
+          <SessionList
+            sessions={activeSessions.slice(0, 10)}
+            program={activeHistory.program}
+            onEditSession={handleEditSession}
+          />
+        </div>
+      )}
+
+      {/* Log Session Modal - Only when there's an active program */}
+      {activeHistory && (
+        <LogSessionModal
+          isOpen={isLogSessionOpen}
+          onClose={handleCloseModal}
+          activeHistory={activeHistory}
+          initialSession={editingSession}
+        />
+      )}
     </div>
   );
 }

@@ -73,88 +73,86 @@ export default function ProgramsPage() {
   ];
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
-        <PageHeader
-          title={t("training.programs.title")}
-          subtitle={t("training.programs.subtitle")}
-          icon={Dumbbell}
-          actionButton={{
-            label: t("training.programs.createProgram"),
-            icon: Plus,
-            onClick: () => setIsCreateModalOpen(true),
-            show: true,
-          }}
-        />
+    <div className="space-y-4 md:space-y-6">
+      <PageHeader
+        title={t("training.programs.title")}
+        subtitle={t("training.programs.subtitle")}
+        icon={Dumbbell}
+        actionButton={{
+          label: t("training.programs.createProgram"),
+          icon: Plus,
+          onClick: () => setIsCreateModalOpen(true),
+          show: true,
+        }}
+      />
 
-        {/* Filters & Search */}
-        <SearchFilterBar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          searchPlaceholder={t("training.programs.searchPlaceholder")}
-          filterValue={filterSource}
-          onFilterChange={setFilterSource}
-          filterOptions={filterOptions}
-        />
+      {/* Filters & Search */}
+      <SearchFilterBar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={t("training.programs.searchPlaceholder")}
+        filterValue={filterSource}
+        onFilterChange={setFilterSource}
+        filterOptions={filterOptions}
+      />
 
-        {/* Content */}
-        {isLoading ? (
-          <Loading className="py-20" />
-        ) : !programs || programs.length === 0 ? (
-          <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-            <div className="inline-flex p-4 rounded-full bg-background mb-4">
-              <Dumbbell size={48} className="text-text-secondary opacity-30" />
-            </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">
-              {t("training.programs.notFound.title")}
-            </h3>
-            <p className="text-text-secondary max-w-sm mx-auto mb-6">
-              {t("training.programs.notFound.desc")}
-            </p>
-            {searchQuery === "" && filterSource === "all" && (
-              <button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
-              >
-                <Plus size={20} />
-                {t("training.programs.createProgram")}
-              </button>
-            )}
+      {/* Content */}
+      {isLoading ? (
+        <Loading className="py-20" />
+      ) : !programs || programs.length === 0 ? (
+        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
+          <div className="inline-flex p-4 rounded-full bg-background mb-4">
+            <Dumbbell size={48} className="text-text-secondary opacity-30" />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {programs.map((program) => (
-              <ProgramCard
-                key={program._id}
-                program={program}
-                isActive={
-                  activeProgram?.status === "active" &&
-                  activeProgram.program._id === program._id
-                }
-                onUse={handleUseProgram}
-                onViewDetails={setSelectedProgram}
-              />
-            ))}
-          </div>
-        )}
+          <h3 className="text-xl font-bold text-text-primary mb-2">
+            {t("training.programs.notFound.title")}
+          </h3>
+          <p className="text-text-secondary max-w-sm mx-auto mb-6">
+            {t("training.programs.notFound.desc")}
+          </p>
+          {searchQuery === "" && filterSource === "all" && (
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              <Plus size={20} />
+              {t("training.programs.createProgram")}
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {programs.map((program) => (
+            <ProgramCard
+              key={program._id}
+              program={program}
+              isActive={
+                activeProgram?.status === "active" &&
+                activeProgram.program._id === program._id
+              }
+              onUse={handleUseProgram}
+              onViewDetails={setSelectedProgram}
+            />
+          ))}
+        </div>
+      )}
 
-        <ProgramDetailsModal
-          program={selectedProgram}
-          isOpen={!!selectedProgram}
-          onClose={() => setSelectedProgram(null)}
-          onUse={handleUseProgram}
-          onProgramUpdated={setSelectedProgram}
-          isActive={
-            activeProgram?.status === "active" &&
-            activeProgram.program._id === selectedProgram?._id
-          }
-        />
+      <ProgramDetailsModal
+        program={selectedProgram}
+        isOpen={!!selectedProgram}
+        onClose={() => setSelectedProgram(null)}
+        onUse={handleUseProgram}
+        onProgramUpdated={setSelectedProgram}
+        isActive={
+          activeProgram?.status === "active" &&
+          activeProgram.program._id === selectedProgram?._id
+        }
+      />
 
-        <CreateProgramModal
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-        />
-      </div>
+      <CreateProgramModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
     </div>
   );
 }

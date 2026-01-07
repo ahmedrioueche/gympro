@@ -9,7 +9,7 @@ export default function GymsPage() {
   const { data: gyms = [], isLoading } = useAllMyGyms();
 
   return (
-    <div className="min-h-screen p-3 md:p-6 lg:p-8 max-w-7xl ">
+    <div className="space-y-6">
       <PageHeader
         title={t("member.gyms.title")}
         subtitle={t("member.gyms.subtitle")}

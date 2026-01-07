@@ -92,120 +92,118 @@ export default function ExercisesPage() {
   ];
 
   return (
-    <div className="min-h-screen p-3 md:p-6 lg:p-8 space-y-6 animate-in fade-in duration-500">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <PageHeader
-          title={t("training.exercises.title")}
-          subtitle={t("training.exercises.subtitle")}
-          icon={Dumbbell}
-          actionButton={{
-            label: t("training.exercises.create"),
-            icon: Plus,
-            onClick: handleCreateClick,
-            show: true,
-          }}
-        />
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <PageHeader
+        title={t("training.exercises.title")}
+        subtitle={t("training.exercises.subtitle")}
+        icon={Dumbbell}
+        actionButton={{
+          label: t("training.exercises.create"),
+          icon: Plus,
+          onClick: handleCreateClick,
+          show: true,
+        }}
+      />
 
-        {/* Filters & Search */}
-        <div className="bg-surface border border-border rounded-2xl p-4 md:p-6 shadow-sm space-y-4">
-          <div className="flex flex-col lg:flex-row gap-4 justify-between">
-            {/* Search */}
-            <div className="w-full lg:w-1/3">
-              <SearchInput
-                value={searchQuery}
-                onChange={setSearchQuery}
-                placeholder={t("training.exercises.search")}
-              />
-            </div>
+      {/* Filters & Search */}
+      <div className="bg-surface border border-border rounded-2xl p-4 md:p-6 shadow-sm space-y-4">
+        <div className="flex flex-col lg:flex-row gap-4 justify-between">
+          {/* Search */}
+          <div className="w-full lg:w-1/3">
+            <SearchInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder={t("training.exercises.search")}
+            />
+          </div>
 
-            {/* Filters Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full lg:w-2/3">
-              <CustomSelect
-                title=""
-                options={muscleOptions}
-                selectedOption={filters.targetMuscle || ""}
-                onChange={(val) =>
-                  setFilters({ ...filters, targetMuscle: val as any })
-                }
-                placeholder={t("training.exercises.filters.targetMuscle")}
-                marginTop="mt-0"
-              />
-              <CustomSelect
-                title=""
-                options={difficultyOptions}
-                selectedOption={filters.difficulty || ""}
-                onChange={(val) =>
-                  setFilters({ ...filters, difficulty: val as any })
-                }
-                placeholder={t("training.exercises.filters.difficulty")}
-                marginTop="mt-0"
-              />
-              <CustomSelect
-                title=""
-                options={typeOptions}
-                selectedOption={filters.type || ""}
-                onChange={(val) => setFilters({ ...filters, type: val as any })}
-                placeholder={t("training.exercises.filters.type")}
-                marginTop="mt-0"
-              />
-            </div>
+          {/* Filters Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full lg:w-2/3">
+            <CustomSelect
+              title=""
+              options={muscleOptions}
+              selectedOption={filters.targetMuscle || ""}
+              onChange={(val) =>
+                setFilters({ ...filters, targetMuscle: val as any })
+              }
+              placeholder={t("training.exercises.filters.targetMuscle")}
+              marginTop="mt-0"
+            />
+            <CustomSelect
+              title=""
+              options={difficultyOptions}
+              selectedOption={filters.difficulty || ""}
+              onChange={(val) =>
+                setFilters({ ...filters, difficulty: val as any })
+              }
+              placeholder={t("training.exercises.filters.difficulty")}
+              marginTop="mt-0"
+            />
+            <CustomSelect
+              title=""
+              options={typeOptions}
+              selectedOption={filters.type || ""}
+              onChange={(val) => setFilters({ ...filters, type: val as any })}
+              placeholder={t("training.exercises.filters.type")}
+              marginTop="mt-0"
+            />
           </div>
         </div>
-
-        {/* Content */}
-        {isLoading ? (
-          <Loading className="py-20" />
-        ) : !exercises || exercises.length === 0 ? (
-          <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-            <div className="inline-flex p-4 rounded-full bg-background mb-4">
-              <Dumbbell size={48} className="text-text-secondary opacity-30" />
-            </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">
-              {t("training.exercises.empty.title")}
-            </h3>
-            <p className="text-text-secondary max-w-sm mx-auto mb-6">
-              {t("training.exercises.empty.description")}
-            </p>
-            {/* Only show create button when filters are empty, otherwise show clear filters option if appropriate */}
-            {(searchQuery === "" && Object.keys(filters).length === 0) ||
-            Object.values(filters).every((v) => !v) ? (
-              <button
-                onClick={handleCreateClick}
-                className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
-              >
-                <Plus size={20} />
-                {t("training.exercises.create")}
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  setFilters({});
-                  setSearchQuery("");
-                }}
-                className="text-primary hover:text-primary-hover font-medium"
-              >
-                {t("training.exercises.filters.clear")}
-              </button>
-            )}
-          </div>
-        ) : (
-          <ExercisesList
-            exercises={exercises}
-            isLoading={isLoading}
-            currentUserId={user?._id || ""}
-            onEdit={handleEditClick}
-            onDelete={handleDeleteClick}
-            onClick={handleCardClick}
-            onCreateClick={handleCreateClick}
-          />
-        )}
-
-        <CreateExerciseModal
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-          exerciseToEdit={exerciseToEdit}
-        />
       </div>
+
+      {/* Content */}
+      {isLoading ? (
+        <Loading className="py-20" />
+      ) : !exercises || exercises.length === 0 ? (
+        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
+          <div className="inline-flex p-4 rounded-full bg-background mb-4">
+            <Dumbbell size={48} className="text-text-secondary opacity-30" />
+          </div>
+          <h3 className="text-xl font-bold text-text-primary mb-2">
+            {t("training.exercises.empty.title")}
+          </h3>
+          <p className="text-text-secondary max-w-sm mx-auto mb-6">
+            {t("training.exercises.empty.description")}
+          </p>
+          {/* Only show create button when filters are empty, otherwise show clear filters option if appropriate */}
+          {(searchQuery === "" && Object.keys(filters).length === 0) ||
+          Object.values(filters).every((v) => !v) ? (
+            <button
+              onClick={handleCreateClick}
+              className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              <Plus size={20} />
+              {t("training.exercises.create")}
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setFilters({});
+                setSearchQuery("");
+              }}
+              className="text-primary hover:text-primary-hover font-medium"
+            >
+              {t("training.exercises.filters.clear")}
+            </button>
+          )}
+        </div>
+      ) : (
+        <ExercisesList
+          exercises={exercises}
+          isLoading={isLoading}
+          currentUserId={user?._id || ""}
+          onEdit={handleEditClick}
+          onDelete={handleDeleteClick}
+          onClick={handleCardClick}
+          onCreateClick={handleCreateClick}
+        />
+      )}
+
+      <CreateExerciseModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        exerciseToEdit={exerciseToEdit}
+      />
     </div>
   );
 }

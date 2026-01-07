@@ -133,7 +133,7 @@ const AccessLogsPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl p-4 md:p-6 lg:py-8 mx-auto animate-in fade-in duration-700">
+    <div className="animate-in fade-in duration-700">
       <PageHeader
         title={t("access.logs.title")}
         subtitle={t("access.logs.subtitle")}
