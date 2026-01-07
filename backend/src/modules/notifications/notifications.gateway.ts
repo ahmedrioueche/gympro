@@ -1,8 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -70,5 +73,25 @@ export class NotificationsGateway
     const room = `user_${userId}`;
     this.logger.log(`Emitting 'notification' to room: ${room}`);
     this.server.to(room).emit('notification', notification);
+  }
+
+  @SubscribeMessage('join_gym')
+  handleJoinGym(
+    @MessageBody() data: { gymId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const room = `gym_${data.gymId}`;
+    client.join(room);
+    this.logger.log(`Client ${client.id} joined gym room: ${room}`);
+    return { event: 'joined_gym', data: room };
+  }
+
+  /**
+   * Broadcast an event to a specific gym room
+   */
+  sendToGym(gymId: string, event: string, data: any) {
+    const room = `gym_${gymId}`;
+    this.logger.log(`Emitting '${event}' to room: ${room}`);
+    this.server.to(room).emit(event, data);
   }
 }

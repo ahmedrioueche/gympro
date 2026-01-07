@@ -11,6 +11,7 @@ import { Model, Types } from 'mongoose';
 import { User } from 'src/common/schemas/user.schema';
 import { GymModel } from '../gym/gym.schema';
 import { GymMembershipModel } from '../gymMembership/membership.schema';
+import { NotificationsGateway } from '../notifications/notifications.gateway';
 import { AttendanceRecordModel } from './attendance.schema';
 
 @Injectable()
@@ -23,6 +24,7 @@ export class AttendanceService {
     private membershipModel: Model<GymMembershipModel>,
     @InjectModel(User.name) private userModel: Model<User>,
     private jwtService: JwtService,
+    private notificationsGateway: NotificationsGateway,
   ) {}
 
   /**
@@ -132,6 +134,15 @@ export class AttendanceService {
         .findById(attendance._id)
         .populate('userId', 'profile.fullName profile.profileImageUrl');
 
+      // Emit real-time event
+      this.notificationsGateway.sendToGym(gymId, 'access_attempt', {
+        status: 'granted',
+        name: (populated as any).userId?.profile?.fullName || 'Active Member',
+        photo: (populated as any).userId?.profile?.profileImageUrl,
+        expiry: membership.subscription?.endDate,
+        timestamp: now,
+      });
+
       return apiResponse(true, undefined, populated as any, accessMessage);
     } catch (error) {
       const errorMessage = error.message || 'Invalid QR Code';
@@ -163,8 +174,23 @@ export class AttendanceService {
         error instanceof BadRequestException ||
         error instanceof NotFoundException
       ) {
+        // Emit real-time failure event
+        this.notificationsGateway.sendToGym(gymId, 'access_attempt', {
+          status: 'denied',
+          reason: errorMessage,
+          timestamp: now,
+        });
+
         throw error;
       }
+
+      // Emit real-time failure event for unknown errors too
+      this.notificationsGateway.sendToGym(gymId, 'access_attempt', {
+        status: 'denied',
+        reason: errorMessage,
+        timestamp: now,
+      });
+
       throw new BadRequestException(errorMessage);
     }
   }

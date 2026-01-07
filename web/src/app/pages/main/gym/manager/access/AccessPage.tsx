@@ -4,11 +4,12 @@ import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAttendance } from "../../../../../../hooks/queries/useAttendance";
 import { useGymStore } from "../../../../../../store/gym";
+import type { ScanResult } from "../../../../../../types/common";
 import PageHeader from "../../../../../components/PageHeader";
+import { ScanResultModal } from "../../../../../components/ScanResultModal";
 import { ScannerView } from "./components/ScannerView";
-import { ScanResultModal } from "./components/ScanResultModal";
 import { useAudioFeedback } from "./hooks/useAudioFeedback";
-import { type ScanResult, useScanner } from "./hooks/useScanner";
+import { useScanner } from "./hooks/useScanner";
 
 const AccessPage: React.FC = () => {
   const { t } = useTranslation();

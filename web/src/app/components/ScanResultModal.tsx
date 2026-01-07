@@ -2,8 +2,8 @@ import { format } from "date-fns";
 import { Ban, ShieldCheck, X } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { cn } from "../../../../../../../utils/helper";
-import { type ScanResult } from "../hooks/useScanner";
+import type { ScanResult } from "../../types/common";
+import { cn } from "../../utils/helper";
 
 interface ScanResultModalProps {
   result: ScanResult | null;

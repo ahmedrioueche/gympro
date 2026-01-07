@@ -2,15 +2,6 @@ import { Html5Qrcode } from "html5-qrcode";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-export interface ScanResult {
-  status: "granted" | "denied" | "verifying";
-  name?: string;
-  photo?: string;
-  reason?: string;
-  expiry?: string;
-  timestamp: Date;
-}
-
 interface UseScannerProps {
   onScanSuccess: (decodedText: string) => Promise<void>;
 }
