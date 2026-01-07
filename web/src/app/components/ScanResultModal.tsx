@@ -70,40 +70,65 @@ export const ScanResultModal: React.FC = () => {
                   ? t("access.status.granted")
                   : t("access.status.denied")}
               </h4>
-              {result.status === "granted" ? (
-                <p className="text-zinc-400 text-lg font-medium">
-                  {t("access.status.welcome", { name: result.name })}
-                </p>
-              ) : (
-                <p className="text-zinc-400 text-lg font-medium">
-                  {result.reason || t("access.status.invalid")}
-                </p>
+              <p
+                className={cn(
+                  "text-lg font-medium",
+                  result.status === "granted"
+                    ? "text-zinc-400"
+                    : "text-rose-200"
+                )}
+              >
+                {result.status === "granted"
+                  ? t("access.status.welcome", { name: result.name })
+                  : result.reason || t("access.status.invalid")}
+              </p>
+              {result.status === "denied" && result.name && (
+                <p className="text-zinc-500 text-sm mt-1">{result.name}</p>
               )}
             </div>
 
-            {result.status === "granted" && (
-              <div className="flex flex-col items-center gap-4 mt-2">
-                {result.photo && (
-                  <div className="w-32 h-32 rounded-2xl overflow-hidden ring-4 ring-emerald-500/30 shadow-2xl">
-                    <img
-                      src={result.photo}
-                      alt={result.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                {result.expiry && (
-                  <div className="px-4 py-2 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
-                    <p className="text-xs text-zinc-500 uppercase font-black tracking-widest mb-1">
-                      {t("access.status.expiry_label")}
-                    </p>
-                    <p className="text-emerald-400 font-bold">
-                      {format(new Date(result.expiry), "PPP")}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
+            <div className="flex flex-col items-center gap-4 mt-2">
+              {result.photo && (
+                <div
+                  className={cn(
+                    "w-32 h-32 rounded-2xl overflow-hidden ring-4 shadow-2xl",
+                    result.status === "granted"
+                      ? "ring-emerald-500/30"
+                      : "ring-rose-500/30 grayscale"
+                  )}
+                >
+                  <img
+                    src={result.photo}
+                    alt={result.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              {result.expiry && (
+                <div
+                  className={cn(
+                    "px-4 py-2 rounded-xl border",
+                    result.status === "granted"
+                      ? "bg-zinc-800/50 border-zinc-700/50"
+                      : "bg-rose-500/10 border-rose-500/20"
+                  )}
+                >
+                  <p className="text-xs text-zinc-500 uppercase font-black tracking-widest mb-1">
+                    {t("access.status.expiry_label")}
+                  </p>
+                  <p
+                    className={cn(
+                      "font-bold",
+                      result.status === "granted"
+                        ? "text-emerald-400"
+                        : "text-rose-400"
+                    )}
+                  >
+                    {format(new Date(result.expiry), "PPP")}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

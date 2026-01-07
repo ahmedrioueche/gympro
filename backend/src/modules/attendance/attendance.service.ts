@@ -110,9 +110,9 @@ export class AttendanceService {
         : 'Check-in successful';
 
       // 6. Handle strict vs loose behavior for expired subscriptions
-      if (isExpired && accessControlType === 'strict') {
-        throw new BadRequestException(accessMessage);
-      }
+      // 6. Handle strict vs loose behavior for expired subscriptions
+      // We don't throw here anymore, we proceed to log the denial and return it
+      const isDenied = isExpired && accessControlType === 'strict';
 
       // 7. Create attendance record
       const attendance = new this.attendanceModel({
@@ -135,15 +135,27 @@ export class AttendanceService {
         .populate('userId', 'profile.fullName profile.profileImageUrl');
 
       // Emit real-time event
+      // Emit real-time event
+      const status = attendance.status === 'checked_in' ? 'granted' : 'denied';
+      console.log(
+        `[AttendanceService] Emitting access_attempt. DB Status: ${attendance.status}, Emit Status: ${status}`,
+      );
+
       this.notificationsGateway.sendToGym(gymId, 'access_attempt', {
-        status: 'granted',
-        name: (populated as any).userId?.profile?.fullName || 'Active Member',
+        status,
+        name: (populated as any).userId?.profile?.fullName || 'Member',
         photo: (populated as any).userId?.profile?.profileImageUrl,
+        reason: attendance.status === 'denied' ? accessMessage : undefined,
         expiry: membership.subscription?.endDate,
         timestamp: now,
       });
 
-      return apiResponse(true, undefined, populated as any, accessMessage);
+      return apiResponse(
+        attendance.status === 'checked_in', // success
+        attendance.status === 'checked_in' ? undefined : 'ACCESS_DENIED', // errorCode
+        populated as any, // data
+        accessMessage, // message
+      );
     } catch (error) {
       const errorMessage = error.message || 'Invalid QR Code';
       console.error(

@@ -52,7 +52,24 @@ const AccessPage: React.FC = () => {
             },
           });
         } else {
-          throw new Error(response.message || t("access.status.denied"));
+          // Check if we have data even if denied (e.g. for expired subscription)
+          if (response.data) {
+            playSound("error");
+            openModal("scan_result", {
+              result: {
+                status: "denied",
+                name:
+                  (response.data as any).userId?.profile?.fullName ||
+                  t("common.member"),
+                photo: (response.data as any).userId?.profile?.profileImageUrl,
+                expiry: (response.data as any).expiryDate,
+                reason: response.message || t("access.status.denied"),
+                timestamp: new Date(),
+              },
+            });
+          } else {
+            throw new Error(response.message || t("access.status.denied"));
+          }
         }
       } catch (error: any) {
         playSound("error");
