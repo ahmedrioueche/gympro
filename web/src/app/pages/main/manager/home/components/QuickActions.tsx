@@ -24,7 +24,7 @@ function QuickActions() {
     {
       icon: "📊",
       label: t("home.manager.quickActions.openAnalytics"),
-      link: "#",
+      link: APP_PAGES.manager.analytics.link,
       gradient: "from-emerald-500 to-emerald-600",
       bgHover: "hover:from-emerald-600 hover:to-emerald-700",
     },
@@ -37,8 +37,8 @@ function QuickActions() {
     },
     {
       icon: "⚙️",
-      label: t("home.manager.quickActions.businessSettings"),
-      link: "#",
+      label: t("home.manager.quickActions.settings"),
+      link: APP_PAGES.manager.settings.link,
       gradient: "from-slate-500 to-slate-600",
       bgHover: "hover:from-slate-600 hover:to-slate-700",
     },

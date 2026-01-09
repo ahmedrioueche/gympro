@@ -140,16 +140,7 @@ export const MemberSubscriptionsTable = ({
             {record.subscription.paymentMethod || "—"}
           </p>
         </div>
-        <div>
-          <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">
-            {t("memberProfile.subscription.handledBy")}
-          </p>
-          <p className="text-sm font-bold text-white">
-            {typeof record.handledBy === "object"
-              ? (record.handledBy as any).profile?.fullName || "Unknown Staff"
-              : record.handledBy || "System"}
-          </p>
-        </div>
+
         <div className="col-span-2">
           <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">
             {t("memberProfile.subscription.notes")}

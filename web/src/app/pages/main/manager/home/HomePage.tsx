@@ -1,6 +1,16 @@
-import { useTranslation } from "react-i18next";
+import { CURRENCY_SYMBOLS } from "@ahmedrioueche/gympro-client";
+import { useNavigate } from "@tanstack/react-router";
+import { formatDistanceToNow } from "date-fns";
 import Loading from "../../../../../components/ui/Loading";
+import { APP_PAGES } from "../../../../../constants/navigation";
+import {
+  useGlobalAnalytics,
+  useGymAnalytics,
+} from "../../../../../hooks/queries/useAnalytics";
+import { useMyGyms } from "../../../../../hooks/queries/useGyms";
+import { useMyNotifications } from "../../../../../hooks/queries/useNotifications";
 import { useMySubscription } from "../../../../../hooks/queries/useSubscription";
+import { useGymStore } from "../../../../../store/gym";
 import { useUserStore } from "../../../../../store/user";
 import AlertsSection from "./components/AlertSection";
 import BusinessOverview from "./components/BusinessOverview";
@@ -9,40 +19,61 @@ import ProfileOverview from "./components/ProfileOverview";
 import QuickActions from "./components/QuickActions";
 
 function HomePage() {
-  const { t } = useTranslation();
   const { user } = useUserStore();
   const { data: subscription, isLoading: subLoading } = useMySubscription();
+  const { setGym } = useGymStore();
+  const navigate = useNavigate();
+  // Real Data Fetching
+  const { data: globalStats, isLoading: statsLoading } = useGlobalAnalytics();
+  const { data: myGyms, isLoading: gymsLoading } = useMyGyms();
+  const { data: notificationsRes, isLoading: notificationsLoading } =
+    useMyNotifications(1, 5);
 
-  // TODO: Replace with real API data
+  const { data: gymStats, isLoading: gymStatsLoading } = useGymAnalytics(
+    myGyms?.[0]?._id || ""
+  );
+
+  const isPageLoading =
+    subLoading ||
+    statsLoading ||
+    gymsLoading ||
+    notificationsLoading ||
+    gymStatsLoading;
+
+  const totalActiveMembers =
+    myGyms?.reduce(
+      (acc, gym) => acc + (gym.memberStats?.withActiveSubscriptions || 0),
+      0
+    ) || 0;
+
   const businessMetrics = {
-    totalGyms: 0,
-    activeMembers: 0,
-    totalStaff: 0,
-    monthlyRevenue: 0,
-    outstandingPayments: 0,
-    issues: 0,
+    totalGyms: Math.max(
+      globalStats?.metrics.totalGyms || 0,
+      myGyms?.length || 0
+    ),
+    activeMembers: Math.max(
+      globalStats?.metrics.activeMembers || 0,
+      totalActiveMembers
+    ),
+    totalRevenue: globalStats?.metrics.totalRevenue || 0,
+    monthlyRevenue: globalStats?.metrics.monthlyRevenue || 0,
+    currency: CURRENCY_SYMBOLS[user?.appSettings?.locale?.currency || "USD"],
+    totalStaff: undefined,
+    outstandingPayments: undefined,
+    issues: undefined,
   };
 
-  // TODO: Replace with real API data
-  const alerts: Array<{
-    type: string;
-    message: string;
-    time: string;
-    severity: "high" | "medium" | "low";
-  }> = [];
+  const alerts =
+    notificationsRes?.data?.data.map((n) => ({
+      type: n.type,
+      message: n.title,
+      time: formatDistanceToNow(new Date(n.createdAt), { addSuffix: true }),
+      severity: (n.priority || "low") as "high" | "medium" | "low",
+    })) || [];
 
-  // TODO: Replace with real API data
-  const lastVisitedGym: {
-    name: string;
-    activeMembers: number;
-    todayCheckIns: number;
-    revenueTrend: string;
-    trendPositive: boolean;
-  } | null = null;
-
-  if (subLoading) {
+  if (isPageLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[400px]">
         <Loading />
       </div>
     );
@@ -62,7 +93,13 @@ function HomePage() {
       {/* Alerts & Gym Overview - Side by Side on Desktop */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <AlertsSection alerts={alerts} />
-        <GymOverview lastVisitedGym={lastVisitedGym} />
+        <GymOverview
+          gyms={myGyms}
+          onGymAccessed={(gym) => {
+            setGym(gym);
+            navigate({ to: APP_PAGES.gym.manager.home.link });
+          }}
+        />
       </div>
     </div>
   );

@@ -1,9 +1,13 @@
+import { settingsApi, type AppLanguage } from "@ahmedrioueche/gympro-client";
 import { Check, ChevronDown, Globe, Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useLanguageStore } from "../../../../../../store/language";
+import { useUserStore } from "../../../../../../store/user";
 
 interface LanguageOption {
-  value: string;
+  value: AppLanguage;
   label: string;
   flag: string;
 }
@@ -18,10 +22,12 @@ function CustomSelect({
   value,
   onChange,
   options,
+  disabled,
 }: {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: AppLanguage) => void;
   options: LanguageOption[];
+  disabled?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -42,8 +48,11 @@ function CustomSelect({
     <div className="relative" ref={ref}>
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
         className={`w-full md:w-48 flex items-center justify-between px-3 py-2 bg-surface border rounded-xl transition-all ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        } ${
           isOpen
             ? "border-primary ring-1 ring-primary/20"
             : "border-border hover:border-text-secondary/50"
@@ -92,13 +101,41 @@ function CustomSelect({
 
 export default function PreferencesSettings() {
   const { t, i18n } = useTranslation();
+  const { user, updateSettings } = useUserStore();
+  const { setLanguage: setGlobalLanguage } = useLanguageStore();
+  const [isSaving, setIsSaving] = useState(false);
+
   // TODO: Use theme store when available
   const isDark = false;
 
-  const handleLanguageChange = (lang: string) => {
-    i18n.changeLanguage(lang);
-    // Persist language preference if needed
-    localStorage.setItem("i18nextLng", lang);
+  const handleLanguageChange = async (lang: AppLanguage) => {
+    setIsSaving(true);
+    try {
+      const updates = {
+        locale: {
+          ...user?.appSettings?.locale,
+          language: lang,
+        },
+      };
+
+      const res = await settingsApi.updateSettings(updates);
+      if (res.success) {
+        updateSettings(updates as any);
+        setGlobalLanguage(lang);
+        toast.success(
+          t("settings.saveSuccess", "Language updated successfully")
+        );
+      } else {
+        toast.error(
+          res.message || t("settings.saveError", "Failed to update language")
+        );
+      }
+    } catch (error) {
+      console.error("Failed to save language setting:", error);
+      toast.error(t("settings.saveError", "Failed to update language"));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -133,6 +170,7 @@ export default function PreferencesSettings() {
             value={i18n.language || "en"}
             onChange={handleLanguageChange}
             options={LANGUAGES}
+            disabled={isSaving}
           />
         </div>
 

@@ -76,12 +76,33 @@ export function useSettingsPage() {
     }
   };
 
+  const hasChanges =
+    weightUnit !==
+      (membershipData?.data?.membership?.settings?.general?.weightUnit ||
+        "kg") ||
+    classReminders !==
+      (membershipData?.data?.membership?.settings?.notifications
+        ?.classReminders ?? true) ||
+    subscriptionRenewal !==
+      (membershipData?.data?.membership?.settings?.notifications
+        ?.subscriptionRenewal ?? true) ||
+    announcements !==
+      (membershipData?.data?.membership?.settings?.notifications
+        ?.announcements ?? true) ||
+    publicProfile !==
+      (membershipData?.data?.membership?.settings?.privacy?.publicProfile ??
+        true) ||
+    shareProgress !==
+      (membershipData?.data?.membership?.settings?.privacy
+        ?.shareProgressWithCoaches ?? true);
+
   return {
     activeTab,
     setActiveTab,
     isLoading,
     isSaving: updateSettingsMutation.isPending,
     handleSave,
+    hasChanges,
     // State
     weightUnit,
     setWeightUnit,

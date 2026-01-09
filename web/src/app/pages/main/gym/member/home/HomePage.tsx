@@ -3,6 +3,8 @@ import { Bell, Calendar, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useGymStore } from "../../../../../../store/gym";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
+import { useSubscriptionTypes } from "../../manager/pricing/hooks/useSubscriptionTypes";
+import { MemberPricingCard } from "./components/MemberPricingCard";
 import { useGymAnnouncements } from "./hooks/useGymAnnouncements";
 import { useGymMemberHome } from "./hooks/useGymMemberHome";
 
@@ -12,6 +14,7 @@ function HomePage() {
   const status = useGymMemberHome(currentGym?.settings);
   const { data: announcements = [], isLoading: announcementsLoading } =
     useGymAnnouncements(currentGym?._id);
+  const { data: plans = [], isLoading: plansLoading } = useSubscriptionTypes();
 
   if (!currentGym) {
     return (
@@ -32,13 +35,13 @@ function HomePage() {
   }
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col gap-6">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col gap-6 pb-8">
       <GymHeroSection gym={currentGym} status={status} />
 
-      {/* Bottom Grid - Takes remaining 65% height with matching card styles */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0">
+      {/* Bottom Grid - Matching card styles */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 mb-4 lg:min-h-0">
         {/* Left: Operating Hours - Matching card structure */}
-        <div className="bg-surface border border-border rounded-3xl shadow-sm flex flex-col min-h-0">
+        <div className="bg-surface border border-border rounded-3xl shadow-sm flex flex-col min-h-[350px] lg:min-h-0 overflow-hidden">
           <div className="p-6 border-b border-border flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-xl text-primary">
@@ -85,7 +88,7 @@ function HomePage() {
                         {t("home.gym.hours.womenOnly", "Women Only")}
                       </span>
                     </div>
-                    <div className="grid gap-2 grid-cols-1 sm:grid-cols-2">
+                    <div className="grid gap-2 grid-cols-1 xl:grid-cols-2">
                       {currentGym.settings.femaleOnlyHours.map((slot, idx) => (
                         <div
                           key={idx}
@@ -124,8 +127,11 @@ function HomePage() {
                 )}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <p className="text-text-secondary">
+              <div className="h-full flex flex-col items-center justify-center py-12">
+                <div className="p-4 bg-muted/10 rounded-full mb-4">
+                  <Clock className="w-8 h-8 text-text-secondary/50" />
+                </div>
+                <p className="text-text-secondary font-medium">
                   {t("home.gymMember.noHours", "No operating hours configured")}
                 </p>
               </div>
@@ -134,7 +140,7 @@ function HomePage() {
         </div>
 
         {/* Right: Announcements - Matching card structure */}
-        <div className="bg-surface border border-border rounded-3xl shadow-sm flex flex-col min-h-0">
+        <div className="bg-surface border border-border rounded-3xl shadow-sm flex flex-col min-h-[350px] lg:min-h-0 overflow-hidden">
           <div className="p-6 border-b border-border flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-warning/10 rounded-xl text-warning">
@@ -152,14 +158,16 @@ function HomePage() {
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="h-20 bg-muted/50 rounded-xl animate-pulse"
+                    className="h-24 bg-muted/50 rounded-2xl animate-pulse"
                   />
                 ))}
               </div>
             ) : announcements.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">📢</div>
-                <p className="text-text-secondary">
+              <div className="h-full flex flex-col items-center justify-center py-12">
+                <div className="p-4 bg-muted/10 rounded-full mb-4">
+                  <Bell className="w-8 h-8 text-text-secondary/50" />
+                </div>
+                <p className="text-text-secondary font-medium text-center">
                   {t(
                     "home.gymMember.announcements.empty",
                     "No announcements at the moment"
@@ -199,6 +207,24 @@ function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Plans Section - Elevated Section */}
+      {plans.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 px-2">
+            <h3 className="text-xl font-bold text-text-primary">
+              {t("home.gymMember.plans.title", "Subscription Plans")}
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {plans
+              .filter((p) => p.isAvailable)
+              .map((plan) => (
+                <MemberPricingCard key={plan._id} plan={plan} />
+              ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

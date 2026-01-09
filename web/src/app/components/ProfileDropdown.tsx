@@ -14,9 +14,7 @@ interface ProfileDropdownProps {
 }
 
 export default function ProfileDropdown({
-  onProfileClick,
   onSettingsClick,
-  onMembershipsClick,
   onLogoutClick,
   disabled = false,
 }: ProfileDropdownProps) {
@@ -78,24 +76,11 @@ export default function ProfileDropdown({
         </div>
       </div>
 
-      {/* Menu Items */}
-      <DropdownItem
-        icon="👤"
-        label={t("profile.menu.profile.label")}
-        description={t("profile.menu.profile.description")}
-        onClick={onProfileClick}
-      />
       <DropdownItem
         icon="⚙️"
         label={t("profile.menu.settings.label")}
         description={t("profile.menu.settings.description")}
         onClick={onSettingsClick}
-      />
-      <DropdownItem
-        icon="🏋️"
-        label={t("profile.menu.memberships.label")}
-        description={t("profile.menu.memberships.description")}
-        onClick={onMembershipsClick}
       />
 
       <DropdownDivider />

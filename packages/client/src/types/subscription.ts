@@ -57,6 +57,8 @@ import { User } from "./user";
 export interface SubscriptionHistory extends AuditInfo {
   subscription: SubscriptionInfo;
   gym: Gym;
+  pricePaid?: number;
+  currency?: string;
   handledBy?: string | User;
   notes?: string;
 }

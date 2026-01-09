@@ -40,25 +40,25 @@ function SubscriptionsTable({ members }: SubscriptionsTableProps) {
       case "active":
         return (
           <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-success/10 text-success border-success/20">
-            {t("subscriptions.active", "Active")}
+            {t("common.active", "Active")}
           </span>
         );
       case "expired":
         return (
           <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-danger/10 text-danger border-danger/20">
-            {t("subscriptions.expired", "Expired")}
+            {t("common.expired", "Expired")}
           </span>
         );
       case "expiring":
         return (
           <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-warning/10 text-warning border-warning/20">
-            {t("subscriptions.expiringSoon", "Expiring Soon")}
+            {t("common.expiringSoon", "Expiring Soon")}
           </span>
         );
       default:
         return (
           <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-muted text-text-secondary border-border">
-            {t("subscriptions.noSubscription", "No Subscription")}
+            {t("gymSubscriptions.noSubscription", "No Subscription")}
           </span>
         );
     }
@@ -79,22 +79,22 @@ function SubscriptionsTable({ members }: SubscriptionsTableProps) {
           <thead className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border">
             <tr>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
-                {t("subscriptions.table.member", "Member")}
+                {t("gymSubscriptions.table.member", "Member")}
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
-                {t("subscriptions.table.type", "Type")}
+                {t("gymSubscriptions.table.type", "Type")}
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
-                {t("subscriptions.table.startDate", "Start Date")}
+                {t("gymSubscriptions.table.startDate", "Start Date")}
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
-                {t("subscriptions.table.endDate", "End Date")}
+                {t("gymSubscriptions.table.endDate", "End Date")}
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
-                {t("subscriptions.table.remaining", "Remaining")}
+                {t("gymSubscriptions.table.remaining", "Remaining")}
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
-                {t("subscriptions.table.status", "Status")}
+                {t("gymSubscriptions.table.status", "Status")}
               </th>
             </tr>
           </thead>

@@ -48,6 +48,7 @@
     "cancelled": "Cancelled",
     "active": "Active",
     "expired": "Expired",
+    "expiringSoon": "Expiring Soon",
     "location": "Location",
     "attendance": "Attendance",
     "notifications": "Notifications",
@@ -79,6 +80,7 @@
     "edit": "Edit",
     "close": "Close"
   },
+
   "auth": {
     "welcome_back": "Welcome back",
     "sign_in_subtitle": "Sign in to your account to continue",
@@ -316,6 +318,33 @@
     "customizeSettings": "App settings",
     "pin": "Pin ",
     "unpin": "Unpin "
+  },
+  "subscriptions": {
+    "title": "Subscriptions",
+    "subtitle": "Manage your app subscription and billing",
+    "no_subscription": "No active subscription",
+    "current_subscription": "Current Subscription",
+    "status": "Status",
+    "renews_on": "Renews on",
+    "gyms_count": "Locations",
+    "billing_email": "Billing Email",
+    "footer_info": "Need help? \n Contact us"
+  },
+  "gymSubscriptions": {
+    "pageTitle": "Subscriptions",
+    "pageSubtitle": "Manage your gym subscriptions",
+    "emptyFiltered": "Try adjusting your filters",
+    "emptyDesc": "Add members to see their subscriptions",
+    "search": "Search members...",
+    "noSubscription": "No Subscription",
+    "table": {
+      "member": "Member",
+      "type": "Type",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "remaining": "Remaining",
+      "status": "Status"
+    }
   },
   "access": {
     "title": "Access Control",
@@ -914,22 +943,45 @@
         "businessName": "Business Name",
         "accountStatus": "Account Status",
         "lastLogin": "Last Login",
+        "viewProfile": "View Profile",
         "editProfile": "Edit Profile",
+
+        "email": "Email",
+        "phone": "Phone",
+        "location": "Location",
+        "noLocation": "No location provided",
+        "memberSince": "Member since",
+        "activeMemberships": "Active memberships",
+        "gyms": "gyms",
+
+        "statusActive": "Active",
+        "statusPending": "Pending",
+
+        "roles": {
+          "owner": "Owner",
+          "manager": "Manager",
+          "staff": "Staff",
+          "member": "Member"
+        },
+
         "status": {
           "active": "Active",
           "trial": "Trial",
           "premium": "Premium",
           "basic": "Basic",
           "free": "Free",
-          "freeTrial": "Free Trial"
+          "freeTrial": "Free Trial",
+          "cancelled": "Cancelled"
         }
       },
+
       "businessOverview": {
         "title": "Business Overview",
         "subtitle": "Your business at a glance",
         "totalGyms": "Total Gyms",
         "activeMembers": "Active Members",
         "totalStaff": "Total Staff",
+        "totalRevenue": "Total Revenue",
         "monthlyRevenue": "Monthly Revenue",
         "outstandingPayments": "Outstanding Payments",
         "issues": "Issues",
@@ -943,7 +995,8 @@
         "addStaff": "Add Staff Member",
         "openAnalytics": "Open Analytics",
         "manageSubscription": "Manage Subscription",
-        "businessSettings": "Business Settings"
+        "businessSettings": "Business Settings",
+        "settings": "Settings"
       },
       "alerts": {
         "title": "Alerts & Notifications",
@@ -960,7 +1013,8 @@
         }
       },
       "gymOverview": {
-        "title": "Last Visited Gym",
+        "title": "Your Gyms",
+        "lastVisited": "Last Accessed",
         "activeMembers": "Active Members",
         "todayCheckIns": "Today's Check-ins",
         "revenueTrend": "Revenue Trend",
@@ -1412,11 +1466,39 @@
     "up_to": "Up to",
     "gym": "gym",
     "gyms": "gyms",
-    "unlimited_gyms": "Unlimited gyms",
+    "unlimited_gyms": "Unlimited gyms ",
     "subscription": "Subscription",
     "one_time_purchase": "One-Time Purchase",
     "monthly": "Monthly",
-    "yearly": "Yearly"
+    "yearly": "Yearly",
+    "upgrade": "Upgrade",
+    "switch_plan": "Switch Plan",
+    "downgrade": "Downgrade",
+    "up_to_members_each": "Up to {{number}} members each",
+    "save_percentage": "Save 20%",
+    "upgrade_now": "Upgrade Now",
+    "current_plan": "Current Plan",
+    "processing": "Processing...",
+    "members": "Members",
+    "pending_downgrade": "Downgrade to {{plan}} on {{date}}",
+    "pending_switch": "Switch to {{cycle}} on {{date}}",
+    "confirm_downgrade_title": "Confirm Downgrade",
+    "confirm_downgrade_text": "Your plan will be downgraded to {{plan}} at the end of your current billing period on {{date}}. You will lose access to higher tier features at that time.",
+    "confirm_switch_title": "Confirm Plan Switch",
+    "confirm_switch_text": "Your billing cycle will switch to {{cycle}} at the end of your current billing period on {{date}}.",
+    "change_pending": "Change Pending",
+    "confirm_upgrade_title": "Confirm Upgrade",
+    "confirm_upgrade_text": "You will be upgraded to {{plan}} immediately. You will be charged the difference (if applicable).",
+    "confirm_upgrade_free_text": "You will be upgraded to {{plan}} immediately.",
+    "confirm_switch_immediate_text": "Your billing cycle will switch to {{cycle}} immediately.",
+    "cancel_request": "Cancel Request",
+    "cancel_request_success": "Pending change cancelled",
+    "confirm_cancel_request_title": "Cancel Pending Change?",
+    "confirm_cancel_request_text": "Are you sure you want to cancel this pending change? You will remain on your current plan.",
+    "unavailable": "Unavailable",
+    "not_available": "This plan is not available",
+    "lifetime_to_subscription_error": "You have lifetime access. Cannot switch to subscription plans without refund.",
+    "lifetime_downgrade_error": "Cannot downgrade from your current lifetime plan."
   },
   "pricing": {
     "title": "Membership Pricing",

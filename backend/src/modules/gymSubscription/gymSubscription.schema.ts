@@ -90,6 +90,8 @@ export class SubscriptionHistoryModel
   @Prop({ type: SubscriptionInfoSchema, required: true })
   subscription: SubscriptionInfo;
   @Prop({ type: Object, required: true }) gym: Gym;
+  @Prop() pricePaid?: number;
+  @Prop() currency?: string;
   @Prop() handledBy?: string;
   @Prop() notes?: string;
   @Prop() createdAt: Date;

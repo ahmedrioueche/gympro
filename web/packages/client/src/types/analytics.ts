@@ -2,11 +2,13 @@ import { SupportedCurrency } from "./common";
 
 export interface GlobalStatsMetrics {
   totalRevenue: number;
+  monthlyRevenue: number;
   totalMembers: number;
   activeMembers: number;
   totalGyms: number;
   revenueTrend: number; // percentage change
   membersTrend: number; // percentage change
+  lastVisitedGymId?: string;
 }
 
 export interface RevenueByGym {
@@ -39,6 +41,8 @@ export interface GymAnalytics {
     expiredMembers: number;
     checkedIn: number;
     occupancyRate: number; // percentage based on some capacity
+    totalRevenue: number;
+    monthlyRevenue: number;
   };
   membershipDistribution: MembershipDistribution;
   genderDistribution: {

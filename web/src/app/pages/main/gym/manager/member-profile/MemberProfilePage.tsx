@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { History } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BackButton from "../../../../../../components/ui/BackButton";
 import Loading from "../../../../../../components/ui/Loading";
@@ -76,22 +75,13 @@ function MemberProfilePage() {
         {/* Payment History Section */}
         <div className="space-y-6">
           <div className="flex items-center gap-4 px-2">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <History className="w-6 h-6 text-primary" />
-            </div>
             <div>
-              <h2 className="text-2xl font-black text-white tracking-tight">
+              <h2 className="text-2xl font-black text-white">
                 {t(
                   "memberProfile.subscription.historyTitle",
                   "Subscription History"
                 )}
               </h2>
-              <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">
-                {t(
-                  "memberProfile.subscription.historySubtitle",
-                  "Past & Current Plans"
-                )}
-              </p>
             </div>
           </div>
 

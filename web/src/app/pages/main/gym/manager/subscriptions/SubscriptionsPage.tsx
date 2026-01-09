@@ -141,11 +141,8 @@ export default function SubscriptionsPage() {
   return (
     <div className="space-y-4 md:space-y-6">
       <PageHeader
-        title={t("subscriptions.pageTitle", "Subscriptions")}
-        subtitle={t(
-          "subscriptions.pageSubtitle",
-          "Manage member subscriptions and renewals"
-        )}
+        title={t("gymSubscriptions.pageTitle")}
+        subtitle={t("gymSubscriptions.pageSubtitle")}
         icon={CreditCard}
       />
 
@@ -164,15 +161,12 @@ export default function SubscriptionsPage() {
         <div className="bg-surface border border-border rounded-2xl p-12 text-center">
           <div className="text-6xl mb-4">📋</div>
           <h3 className="text-xl font-semibold text-text-primary mb-2">
-            {t("subscriptions.empty", "No subscriptions found")}
+            {t("gymSubscriptions.empty")}
           </h3>
           <p className="text-text-secondary">
             {searchQuery || filter !== "all"
-              ? t("subscriptions.emptyFiltered", "Try adjusting your filters")
-              : t(
-                  "subscriptions.emptyDesc",
-                  "Add members to see their subscriptions"
-                )}
+              ? t("gymSubscriptions.emptyFiltered")
+              : t("gymSubscriptions.emptyDesc")}
           </p>
         </div>
       ) : (

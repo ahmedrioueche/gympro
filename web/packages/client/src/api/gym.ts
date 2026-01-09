@@ -127,4 +127,16 @@ export const gymApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Update the last visited gym for the current user */
+  updateLastVisited: async (gymId: string): Promise<ApiResponse<void>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<void>>(
+        `/gyms/${gymId}/last-visited`
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };

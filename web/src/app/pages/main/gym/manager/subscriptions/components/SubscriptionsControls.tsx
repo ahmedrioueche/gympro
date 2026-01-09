@@ -20,11 +20,11 @@ function SubscriptionsControls({
 
   const filterOptions = [
     { value: "all" as const, label: t("common.all", "All") },
-    { value: "active" as const, label: t("subscriptions.active", "Active") },
-    { value: "expired" as const, label: t("subscriptions.expired", "Expired") },
+    { value: "active" as const, label: t("common.active", "Active") },
+    { value: "expired" as const, label: t("common.expired", "Expired") },
     {
       value: "expiring" as const,
-      label: t("subscriptions.expiringSoon", "Expiring Soon"),
+      label: t("common.expiringSoon", "Expiring Soon"),
     },
   ];
 
@@ -32,7 +32,7 @@ function SubscriptionsControls({
     <SearchFilterBar
       searchQuery={searchQuery}
       onSearchChange={onSearchChange}
-      searchPlaceholder={t("subscriptions.search", "Search members...")}
+      searchPlaceholder={t("gymSubscriptions.search", "Search members...")}
       filterValue={filterStatus}
       onFilterChange={onFilterStatusChange}
       filterOptions={filterOptions}

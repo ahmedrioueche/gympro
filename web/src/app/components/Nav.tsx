@@ -53,7 +53,13 @@ export default function Nav({ children, sidebarLinks }) {
 
   // Dropdown handlers
   const handleProfileClick = () => {};
-  const handleSettingsClick = () => {};
+  const handleSettingsClick = () => {
+    if (user.role === "manager" || user.role === "owner") {
+      navigate({ to: APP_PAGES.manager.settings.link });
+    } else {
+      navigate({ to: APP_PAGES.member.settings.link });
+    }
+  };
   const handleMembershipsClick = () => {};
   const handleLogout = async () => {
     try {

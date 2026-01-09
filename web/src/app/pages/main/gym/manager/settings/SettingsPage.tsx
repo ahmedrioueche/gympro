@@ -1,131 +1,46 @@
-import type { Currency, WeeklyTimeRange } from "@ahmedrioueche/gympro-client";
 import { Bell, Clock, Dumbbell, Save, Settings } from "lucide-react";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { useUpdateGymSettings } from "../../../../../../hooks/queries/useGyms";
-import { useGymStore } from "../../../../../../store/gym";
 import PageHeader from "../../../../../components/PageHeader";
 import GeneralTab from "./components/GeneralTab";
 import NotificationsTab from "./components/NotificationsTab";
 import ServicesTab from "./components/ServicesTab";
-
-type TabType = "general" | "notifications" | "services";
+import {
+  useGymManagerSettings,
+  type TabType,
+} from "./hooks/useGymManagerSettings";
 
 export default function SettingsPage() {
   const { t } = useTranslation();
-  const { currentGym, setGym } = useGymStore();
-  const [activeTab, setActiveTab] = useState<TabType>("general");
-  const updateSettings = useUpdateGymSettings();
-
-  // Form State - Initialize with proper defaults
-  const [workingHoursStart, setWorkingHoursStart] = useState("06:00");
-  const [workingHoursEnd, setWorkingHoursEnd] = useState("22:00");
-  const [isMixed, setIsMixed] = useState(false);
-  const [femaleOnlyHours, setFemaleOnlyHours] = useState<WeeklyTimeRange[]>([]);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [renewalReminderDays, setRenewalReminderDays] = useState(7);
-  const [paymentMethods, setPaymentMethods] = useState<string[]>(["cash"]);
-  const [servicesOffered, setServicesOffered] = useState<string[]>(["gym"]);
-  const [allowCustomSubscriptions, setAllowCustomSubscriptions] =
-    useState(false);
-  const [accessControlType, setAccessControlType] =
-    useState<string>("flexible");
-  const [defaultCurrency, setDefaultCurrency] = useState<Currency>("USD");
-
-  // Load initial settings from current gym
-  useEffect(() => {
-    if (currentGym?.settings) {
-      const settings = currentGym.settings;
-
-      // Working hours - only update if they exist
-      if (settings.workingHours?.start) {
-        setWorkingHoursStart(settings.workingHours.start);
-      }
-      if (settings.workingHours?.end) {
-        setWorkingHoursEnd(settings.workingHours.end);
-      }
-
-      // Gender policy
-      if (settings.isMixed !== undefined) {
-        setIsMixed(settings.isMixed);
-      }
-
-      // Female-only hours
-      if (settings.femaleOnlyHours && settings.femaleOnlyHours.length > 0) {
-        setFemaleOnlyHours(settings.femaleOnlyHours);
-      }
-
-      // Notifications
-      if (settings.notificationsEnabled !== undefined) {
-        setNotificationsEnabled(settings.notificationsEnabled);
-      }
-      if (settings.subscriptionRenewalReminderDays !== undefined) {
-        setRenewalReminderDays(settings.subscriptionRenewalReminderDays);
-      }
-
-      // Payment methods
-      if (settings.paymentMethods && settings.paymentMethods.length > 0) {
-        setPaymentMethods(settings.paymentMethods);
-      }
-
-      // Services
-      if (settings.servicesOffered && settings.servicesOffered.length > 0) {
-        setServicesOffered(settings.servicesOffered);
-      }
-      if (settings.allowCustomSubscriptions !== undefined) {
-        setAllowCustomSubscriptions(settings.allowCustomSubscriptions);
-      }
-      if (settings.accessControlType !== undefined) {
-        setAccessControlType(settings.accessControlType);
-      }
-      // Load currency from settings
-      if (settings.defaultCurrency) {
-        setDefaultCurrency(settings.defaultCurrency);
-      }
-    }
-  }, [currentGym]);
-
-  const handleSave = async () => {
-    if (!currentGym) return;
-
-    try {
-      const updates = {
-        workingHours: {
-          start: workingHoursStart,
-          end: workingHoursEnd,
-        },
-        isMixed,
-        femaleOnlyHours: !isMixed ? femaleOnlyHours : [],
-        notificationsEnabled,
-        subscriptionRenewalReminderDays: renewalReminderDays,
-        paymentMethods,
-        servicesOffered,
-        allowCustomSubscriptions,
-        accessControlType,
-        defaultCurrency,
-      };
-
-      const result = await updateSettings.mutateAsync({
-        id: currentGym._id,
-        data: updates,
-      });
-
-      if (result.success && result.data) {
-        setGym(result.data);
-        toast.success(
-          t("settings.gym.saveSuccess", "Gym settings updated successfully")
-        );
-      } else {
-        toast.error(
-          t("settings.gym.saveError", "Failed to update gym settings")
-        );
-      }
-    } catch (error) {
-      console.error("Failed to save gym settings:", error);
-      toast.error(t("settings.gym.saveError", "Failed to update gym settings"));
-    }
-  };
+  const {
+    currentGym,
+    activeTab,
+    setActiveTab,
+    isSaving,
+    handleSave,
+    hasChanges,
+    workingHoursStart,
+    setWorkingHoursStart,
+    workingHoursEnd,
+    setWorkingHoursEnd,
+    isMixed,
+    setIsMixed,
+    femaleOnlyHours,
+    setFemaleOnlyHours,
+    notificationsEnabled,
+    setNotificationsEnabled,
+    renewalReminderDays,
+    setRenewalReminderDays,
+    paymentMethods,
+    setPaymentMethods,
+    servicesOffered,
+    setServicesOffered,
+    allowCustomSubscriptions,
+    setAllowCustomSubscriptions,
+    accessControlType,
+    setAccessControlType,
+    defaultCurrency,
+    setDefaultCurrency,
+  } = useGymManagerSettings();
 
   const tabs = [
     {
@@ -160,7 +75,8 @@ export default function SettingsPage() {
           label: t("common.saveChanges", "Save Changes"),
           icon: Save,
           onClick: handleSave,
-          loading: updateSettings.isPending,
+          loading: isSaving,
+          disabled: isSaving || !hasChanges,
         }}
       />
 

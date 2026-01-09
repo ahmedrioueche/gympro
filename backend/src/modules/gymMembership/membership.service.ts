@@ -245,6 +245,9 @@ export class MembershipService {
     await membership.save();
     this.logger.log(`Saved membership: ${membership._id} to gym_memberships`);
 
+    // Update gym stats
+    await this.updateGymStats(gymId);
+
     // Add membership to user
     user.memberships.push(membership._id);
 
@@ -257,13 +260,23 @@ export class MembershipService {
       // Fetch gym details for history entry
       const gym = await this.gymModel
         .findById(gymId)
-        .select('name location slogan slug')
+        .select('name location slogan slug settings.defaultCurrency')
         .lean()
         .exec();
+
+      if (!dto?.subscriptionTypeId) {
+        throw new BadRequestException({
+          message: 'Subscription type ID is required',
+          errorCode: ErrorCode.INVALID_USER_DATA,
+        });
+      }
+      const pricePaid = await this.getSubscriptionPrice(dto.subscriptionTypeId);
 
       const history = new this.historyModel({
         subscription: subscriptionInfo,
         gym: gym || ({ _id: gymObjectId } as any),
+        pricePaid,
+        currency: gym?.settings?.defaultCurrency || 'USD',
         handledBy: createdBy,
         notes: 'Initial subscription upon registration',
       });
@@ -560,6 +573,11 @@ export class MembershipService {
 
     await membership.save();
 
+    // Update gym stats if status changed
+    if (dto.membershipStatus !== undefined) {
+      await this.updateGymStats(gymId);
+    }
+
     this.logger.log(
       `Updated member ${user._id} with membership ${membershipId}`,
     );
@@ -610,6 +628,9 @@ export class MembershipService {
 
     // Delete the membership document
     await this.membershipModel.deleteOne({ _id: membership._id });
+
+    // Update gym stats
+    await this.updateGymStats(gymId);
 
     this.logger.log(`Deleted membership ${membershipId} from gym ${gymId}`);
 
@@ -742,6 +763,9 @@ export class MembershipService {
     membership.membershipStatus = 'active' as MembershipStatus;
     await membership.save();
 
+    // Update gym stats
+    await this.updateGymStats(gymId);
+
     // Add to User History
     if (!user.subscriptionHistory) {
       user.subscriptionHistory = [];
@@ -750,13 +774,17 @@ export class MembershipService {
     // Fetch gym details for history entry
     const gym = await this.gymModel
       .findById(gymId)
-      .select('name location slogan slug')
+      .select('name location slogan slug settings.defaultCurrency')
       .lean()
       .exec();
+
+    const pricePaid = await this.getSubscriptionPrice(dto.subscriptionTypeId);
 
     const history = new this.historyModel({
       subscription: subscriptionInfo,
       gym: gym || ({ _id: gymObjectId } as any),
+      pricePaid,
+      currency: gym?.settings?.defaultCurrency || 'USD',
       handledBy: performedBy,
       notes: dto.notes || 'Subscription reactivated manually',
     });
@@ -1031,5 +1059,69 @@ export class MembershipService {
       memberships,
       history,
     };
+  }
+
+  /**
+   * Helper to recalculate and persist gym member statistics
+   */
+  private async updateGymStats(gymId: string) {
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) return;
+
+    const stats = await this.membershipModel.aggregate([
+      { $match: { gym: gymObjectId } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          withActiveSubscriptions: {
+            $sum: { $cond: [{ $eq: ['$membershipStatus', 'active'] }, 1, 0] },
+          },
+          withExpiredSubscriptions: {
+            $sum: { $cond: [{ $eq: ['$membershipStatus', 'expired'] }, 1, 0] },
+          },
+          pendingApproval: {
+            $sum: { $cond: [{ $eq: ['$membershipStatus', 'pending'] }, 1, 0] },
+          },
+        },
+      },
+    ]);
+
+    const result = stats[0] || {
+      total: 0,
+      withActiveSubscriptions: 0,
+      withExpiredSubscriptions: 0,
+      pendingApproval: 0,
+    };
+
+    await this.gymModel.findByIdAndUpdate(gymId, {
+      $set: {
+        'memberStats.total': result.total,
+        'memberStats.withActiveSubscriptions': result.withActiveSubscriptions,
+        'memberStats.withExpiredSubscriptions': result.withExpiredSubscriptions,
+        'memberStats.pendingApproval': result.pendingApproval,
+      },
+    });
+  }
+
+  /**
+   * Helper to fetch subscription price based on type and duration
+   */
+  private async getSubscriptionPrice(
+    typeId: string,
+    duration: number = 1,
+    unit: string = 'month',
+  ) {
+    if (!typeId) return 0;
+    const type = await this.subscriptionTypeModel
+      .findById(typeId)
+      .lean()
+      .exec();
+    if (!type) return 0;
+
+    const tier = type.pricingTiers.find(
+      (t) => t.duration === duration && t.durationUnit === unit,
+    );
+    return tier?.price || 0;
   }
 }

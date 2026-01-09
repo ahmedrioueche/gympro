@@ -76,7 +76,7 @@ const sidebarLinks = [
 function GymManagerPage() {
   return (
     <Nav sidebarLinks={sidebarLinks}>
-      <div className="min-h-screen max-w-7xl mx-auto p-3 md:p-6 lg:p-8">
+      <div className="min-h-screen max-w-7xl mx-auto p-5 md:p-6 lg:p-8">
         <Outlet />
       </div>
     </Nav>

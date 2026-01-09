@@ -93,7 +93,7 @@ export default function NotificationsDropdown() {
         </div>
       }
       align="right"
-      className="w-80"
+      className="w-80 max-w-[calc(100vw-2rem)] right-0"
     >
       {(closeDropdown) => (
         <>

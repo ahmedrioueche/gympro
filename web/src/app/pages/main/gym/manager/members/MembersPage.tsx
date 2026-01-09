@@ -9,6 +9,7 @@ import Loading from "../../../../../../components/ui/Loading";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useMembers } from "../../../../../../hooks/queries/useMembers";
 import { useGymStore } from "../../../../../../store/gym";
+import { useUserStore } from "../../../../../../store/user";
 import PageHeader from "../../../../../components/PageHeader";
 import {
   DeleteConfirmationDialog,
@@ -27,8 +28,11 @@ const ITEMS_PER_PAGE = 12;
 
 function MembersPage() {
   const { t } = useTranslation();
+  const { user } = useUserStore();
   const { currentGym } = useGymStore();
-  const [viewMode, setViewMode] = useState<ViewMode>("cards");
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    user?.appSettings?.viewPreference || "cards"
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [sortBy, setSortBy] = useState<SortBy>("name");

@@ -1,15 +1,23 @@
+import {
+  formatPrice,
+  type SupportedCurrency,
+} from "@ahmedrioueche/gympro-client";
 import { Link } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
+import { useLanguageStore } from "../../../../../../store/language";
+import { useUserStore } from "../../../../../../store/user";
 
 interface BusinessMetrics {
   totalGyms: number;
   activeMembers: number;
-  totalStaff: number;
+  totalStaff?: number;
+  totalRevenue: number;
   monthlyRevenue: number;
-  outstandingPayments: number;
-  issues: number;
+  outstandingPayments?: number;
+  issues?: number;
+  currency?: string;
 }
 
 interface BusinessOverviewProps {
@@ -18,11 +26,10 @@ interface BusinessOverviewProps {
 
 function BusinessOverview({ metrics }: BusinessOverviewProps) {
   const { t } = useTranslation();
-
-  const hasBusinessData =
-    metrics.totalGyms > 0 ||
-    metrics.activeMembers > 0 ||
-    metrics.totalStaff > 0;
+  const { user } = useUserStore();
+  const { language } = useLanguageStore();
+  const hasBusinessData = metrics.totalGyms > 0;
+  const currencySymbol = metrics.currency || "$";
 
   return (
     <div className="bg-surface border border-border rounded-2xl overflow-hidden">
@@ -37,7 +44,7 @@ function BusinessOverview({ metrics }: BusinessOverviewProps) {
         </div>
 
         {hasBusinessData ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {/* Total Gyms */}
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 hover:scale-105">
               <div className="flex items-center justify-between mb-3">
@@ -69,28 +76,55 @@ function BusinessOverview({ metrics }: BusinessOverviewProps) {
             </div>
 
             {/* Total Staff */}
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border border-purple-200 dark:border-purple-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-12 h-12 rounded-lg bg-purple-500/20 dark:bg-purple-500/30 flex items-center justify-center text-2xl">
-                  👔
+            {metrics.totalStaff !== undefined && (
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border border-purple-200 dark:border-purple-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 hover:scale-105">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-12 h-12 rounded-lg bg-purple-500/20 dark:bg-purple-500/30 flex items-center justify-center text-2xl">
+                    👔
+                  </div>
+                  <span className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                    {metrics.totalStaff}
+                  </span>
                 </div>
-                <span className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                  {metrics.totalStaff}
-                </span>
+                <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">
+                  {t("home.manager.businessOverview.totalStaff")}
+                </p>
               </div>
-              <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">
-                {t("home.manager.businessOverview.totalStaff")}
-              </p>
-            </div>
+            )}
 
-            {/* Monthly Revenue */}
+            {/* Total Revenue */}
             <div className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-300 hover:scale-105">
               <div className="flex items-center justify-between mb-3">
                 <div className="w-12 h-12 rounded-lg bg-amber-500/20 dark:bg-amber-500/30 flex items-center justify-center text-2xl">
                   💰
                 </div>
                 <span className="text-3xl font-bold text-amber-600 dark:text-amber-400">
-                  ${metrics.monthlyRevenue.toLocaleString()}
+                  {formatPrice(
+                    metrics.totalRevenue,
+                    (user?.appSettings?.locale
+                      ?.currency as SupportedCurrency) || "USD",
+                    user?.appSettings?.locale?.language || language || "en"
+                  )}
+                </span>
+              </div>
+              <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">
+                {t("home.manager.businessOverview.totalRevenue")}
+              </p>
+            </div>
+
+            {/* Monthly Revenue */}
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border border-orange-200 dark:border-orange-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 hover:scale-105">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-12 h-12 rounded-lg bg-orange-500/20 dark:bg-orange-500/30 flex items-center justify-center text-2xl">
+                  📈
+                </div>
+                <span className="text-3xl font-bold text-orange-600 dark:text-orange-400">
+                  {formatPrice(
+                    metrics.monthlyRevenue,
+                    (user?.appSettings?.locale
+                      ?.currency as SupportedCurrency) || "USD",
+                    user?.appSettings?.locale?.language || language || "en"
+                  )}
                 </span>
               </div>
               <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">
@@ -99,34 +133,38 @@ function BusinessOverview({ metrics }: BusinessOverviewProps) {
             </div>
 
             {/* Outstanding Payments */}
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border border-orange-200 dark:border-orange-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-12 h-12 rounded-lg bg-orange-500/20 dark:bg-orange-500/30 flex items-center justify-center text-2xl">
-                  ⚠️
+            {metrics.outstandingPayments !== undefined && (
+              <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border border-orange-200 dark:border-orange-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 hover:scale-105">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-12 h-12 rounded-lg bg-orange-500/20 dark:bg-orange-500/30 flex items-center justify-center text-2xl">
+                    ⚠️
+                  </div>
+                  <span className="text-3xl font-bold text-orange-600 dark:text-orange-400">
+                    {metrics.outstandingPayments}
+                  </span>
                 </div>
-                <span className="text-3xl font-bold text-orange-600 dark:text-orange-400">
-                  {metrics.outstandingPayments}
-                </span>
+                <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">
+                  {t("home.manager.businessOverview.outstandingPayments")}
+                </p>
               </div>
-              <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">
-                {t("home.manager.businessOverview.outstandingPayments")}
-              </p>
-            </div>
+            )}
 
             {/* Issues */}
-            <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border border-red-200 dark:border-red-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 hover:scale-105">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-12 h-12 rounded-lg bg-red-500/20 dark:bg-red-500/30 flex items-center justify-center text-2xl">
-                  🚨
+            {metrics.issues !== undefined && (
+              <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border border-red-200 dark:border-red-700/50 rounded-xl p-6 hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300 hover:scale-105">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-12 h-12 rounded-lg bg-red-500/20 dark:bg-red-500/30 flex items-center justify-center text-2xl">
+                    🚨
+                  </div>
+                  <span className="text-3xl font-bold text-red-600 dark:text-red-400">
+                    {metrics.issues}
+                  </span>
                 </div>
-                <span className="text-3xl font-bold text-red-600 dark:text-red-400">
-                  {metrics.issues}
-                </span>
+                <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">
+                  {t("home.manager.businessOverview.issues")}
+                </p>
               </div>
-              <p className="text-slate-700 dark:text-slate-300 text-sm font-medium">
-                {t("home.manager.businessOverview.issues")}
-              </p>
-            </div>
+            )}
           </div>
         ) : (
           <div className="text-center py-12">

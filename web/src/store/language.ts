@@ -12,6 +12,7 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
   language: "en",
 
   setLanguage: (lang: AppLanguage) => {
+    if (get().language === lang) return;
     i18n.changeLanguage(lang);
     set({ language: lang });
   },

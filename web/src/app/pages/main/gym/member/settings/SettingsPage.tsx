@@ -15,6 +15,7 @@ export default function SettingsPage() {
     isLoading,
     isSaving,
     handleSave,
+    hasChanges,
     weightUnit,
     setWeightUnit,
     classReminders,
@@ -64,6 +65,7 @@ export default function SettingsPage() {
           icon: Save,
           onClick: handleSave,
           loading: isSaving,
+          disabled: isSaving || !hasChanges,
         }}
       />
 

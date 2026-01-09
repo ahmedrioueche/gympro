@@ -7,6 +7,7 @@ import { AppPaymentModel } from '../appBilling/payment/appPayment.schema';
 import { GymModel } from '../gym/gym.schema';
 import { GymMembershipModel } from '../gymMembership/membership.schema';
 
+import { SubscriptionHistoryModel } from '../gymSubscription/gymSubscription.schema';
 @Injectable()
 export class AnalyticsService {
   constructor(
@@ -16,20 +17,28 @@ export class AnalyticsService {
     @InjectModel(AppPaymentModel.name)
     private paymentModel: Model<AppPaymentModel>,
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel('SubscriptionHistory')
+    private historyModel: Model<SubscriptionHistoryModel>,
   ) {}
 
   async getGlobalStats(managerId: string): Promise<GlobalAnalytics> {
     const managerObjectId = new Types.ObjectId(managerId);
 
-    // 1. Get all gyms for this manager
-    const gyms = await this.gymModel.find({ owner: managerObjectId }).lean();
-    const gymIds = gyms.map((g) => g._id);
+    // 1. Get all gyms and user data for this manager
+    const [gyms, user] = await Promise.all([
+      this.gymModel.find({ owner: managerObjectId }).lean(),
+      this.userModel
+        .findById(managerObjectId)
+        .select('lastVisitedGymId')
+        .lean(),
+    ]);
+    const gymIds = gyms.map((g) => new Types.ObjectId(g._id));
 
     // 2. Metrics Aggregation
-    // Total Revenue (only completed payments for this user)
-    const revenueStats = await this.paymentModel.aggregate([
-      { $match: { userId: managerObjectId, status: 'completed' } },
-      { $group: { _id: null, total: { $sum: '$amount' } } },
+    // Total Revenue (only completed member payments for this manager's gyms)
+    const revenueStats = await this.historyModel.aggregate([
+      { $match: { 'gym._id': { $in: gymIds } } },
+      { $group: { _id: null, total: { $sum: '$pricePaid' } } },
     ]);
 
     // ... existing code ...
@@ -54,35 +63,39 @@ export class AnalyticsService {
       else if (s._id === 'banned') dist.banned = s.count;
     });
 
-    // Revenue Trend (Mocking for now as we don't have historical snapshots easily)
-    const revenueTrendData = [
-      { date: '2023-10', amount: 1200 },
-      { date: '2023-11', amount: 1500 },
-      { date: '2023-12', amount: 1800 },
-    ];
+    // Revenue Trend (Real data from history)
+    const revenueTrendData = await this.getGranularRevenue(gymIds, 'monthly');
 
-    const memberTrendData = [
-      { date: '2023-10', count: 50 },
-      { date: '2023-11', count: 85 },
-      { date: '2023-12', count: 120 },
-    ];
+    // Monthly Revenue (Current Month)
+    const now = new Date();
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthlyRevenueStats = await this.historyModel.aggregate([
+      {
+        $match: {
+          'gym._id': { $in: gymIds },
+          createdAt: { $gte: currentMonthStart },
+        },
+      },
+      { $group: { _id: null, total: { $sum: '$pricePaid' } } },
+    ]);
 
     return {
       metrics: {
         totalRevenue: revenueStats[0]?.total || 0,
+        monthlyRevenue: monthlyRevenueStats[0]?.total || 0,
         totalMembers: membershipStats.reduce(
           (acc, curr) => acc + curr.count,
           0,
         ),
         activeMembers: dist.active,
         totalGyms: gyms.length,
-        revenueTrend: 15.5, // Mocked
-        membersTrend: 8.2, // Mocked
+        revenueTrend: 0, // TODO: Calculate actual trend
+        membersTrend: 0, // TODO: Calculate actual trend
       },
-      revenueByGym: [], // We need to add gymId to AppPayment for this to be real
+      revenueByGym: [], // TODO: Group by gym._id
       membershipDistribution: dist,
       revenueTrendData,
-      memberTrendData,
+      memberTrendData: [],
     };
   }
 
@@ -147,6 +160,24 @@ export class AnalyticsService {
         ? ((gym.memberStats?.checkedIn || 0) / (totalMembers * 0.5)) * 100
         : 0;
 
+    // 4. Revenue Aggregation for this specific gym
+    const revenueStats = await this.historyModel.aggregate([
+      { $match: { 'gym._id': gymObjectId } },
+      { $group: { _id: null, total: { $sum: '$pricePaid' } } },
+    ]);
+
+    const now = new Date();
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthlyRevenueStats = await this.historyModel.aggregate([
+      {
+        $match: {
+          'gym._id': gymObjectId,
+          createdAt: { $gte: currentMonthStart },
+        },
+      },
+      { $group: { _id: null, total: { $sum: '$pricePaid' } } },
+    ]);
+
     return {
       gymId,
       metrics: {
@@ -155,6 +186,8 @@ export class AnalyticsService {
         expiredMembers: dist.expired,
         checkedIn: gym.memberStats?.checkedIn || 0,
         occupancyRate: Math.min(100, Math.round(occupancyRate)),
+        totalRevenue: revenueStats[0]?.total || 0,
+        monthlyRevenue: monthlyRevenueStats[0]?.total || 0,
       },
       membershipDistribution: dist,
       genderDistribution: genderDist,
@@ -164,5 +197,64 @@ export class AnalyticsService {
         { date: '2 days ago', count: 15 },
       ], // Mocked trend
     };
+  }
+
+  /**
+   * Helper to calculate granular revenue buckets
+   */
+  async getGranularRevenue(
+    gymIds: Types.ObjectId[],
+    period: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly',
+  ) {
+    const now = new Date();
+    let startDate: Date;
+    let format: string;
+
+    switch (period) {
+      case 'hourly':
+        startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        format = '%Y-%m-%d %H:00';
+        break;
+      case 'daily':
+        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        format = '%Y-%m-%d';
+        break;
+      case 'weekly':
+        startDate = new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000);
+        format = '%Y-%U'; // Year-WeekNumber
+        break;
+      case 'monthly':
+        startDate = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+        format = '%Y-%m';
+        break;
+      case 'yearly':
+        startDate = new Date(now.getFullYear() - 5, 0, 1);
+        format = '%Y';
+        break;
+      default:
+        startDate = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+        format = '%Y-%m';
+    }
+
+    const stats = await this.historyModel.aggregate([
+      {
+        $match: {
+          'gym._id': { $in: gymIds },
+          createdAt: { $gte: startDate },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format, date: '$createdAt' } },
+          amount: { $sum: '$pricePaid' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    return stats.map((s) => ({
+      date: s._id,
+      amount: s.amount,
+    }));
   }
 }
