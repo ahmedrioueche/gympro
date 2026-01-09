@@ -30,7 +30,8 @@ export interface CreateMemberDto {
   gymId: string;
   // Subscription fields
   subscriptionTypeId?: string;
-  subscriptionStartDate?: string;
+  subscriptionStartDate?: string | Date;
+  subscriptionEndDate?: string | Date;
   paymentMethod?: PaymentMethod;
 }
 

@@ -97,6 +97,10 @@ export const APP_PAGES = {
         name: "pages.gym.create_member",
         link: "/gym/manager/members/create",
       },
+      pricing: {
+        name: "pages.gym.pricing",
+        link: "/gym/manager/pricing",
+      },
       subscriptions: {
         name: "pages.gym.subscriptions",
         link: "/gym/manager/subscriptions",

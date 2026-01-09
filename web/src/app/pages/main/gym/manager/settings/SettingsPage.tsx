@@ -1,4 +1,4 @@
-import type { WeeklyTimeRange } from "@ahmedrioueche/gympro-client";
+import type { Currency, WeeklyTimeRange } from "@ahmedrioueche/gympro-client";
 import { Bell, Clock, Dumbbell, Save, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -31,6 +31,7 @@ export default function SettingsPage() {
     useState(false);
   const [accessControlType, setAccessControlType] =
     useState<string>("flexible");
+  const [defaultCurrency, setDefaultCurrency] = useState<Currency>("USD");
 
   // Load initial settings from current gym
   useEffect(() => {
@@ -78,6 +79,10 @@ export default function SettingsPage() {
       if (settings.accessControlType !== undefined) {
         setAccessControlType(settings.accessControlType);
       }
+      // Load currency from settings
+      if (settings.defaultCurrency) {
+        setDefaultCurrency(settings.defaultCurrency);
+      }
     }
   }, [currentGym]);
 
@@ -98,6 +103,7 @@ export default function SettingsPage() {
         servicesOffered,
         allowCustomSubscriptions,
         accessControlType,
+        defaultCurrency,
       };
 
       const result = await updateSettings.mutateAsync({
@@ -194,6 +200,8 @@ export default function SettingsPage() {
               setFemaleOnlyHours={setFemaleOnlyHours}
               accessControlType={accessControlType}
               setAccessControlType={setAccessControlType}
+              defaultCurrency={defaultCurrency}
+              setDefaultCurrency={setDefaultCurrency}
             />
           )}
 

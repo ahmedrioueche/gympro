@@ -3,6 +3,7 @@ import type {
   ConfirmModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
+  RenewSubscriptionModalProps,
   ScanResultModalProps,
   UpgradePreviewModalProps,
 } from "../types/modals";
@@ -13,6 +14,7 @@ type ModalType =
   | "edit_user_profile"
   | "exercise_detail"
   | "scan_result"
+  | "renew_subscription"
   | null;
 
 interface ModalState {
@@ -22,6 +24,7 @@ interface ModalState {
   editManagerProps?: EditManagerModalProps;
   exerciseModalProps?: ExerciseDetailModalProps;
   scanResultProps?: ScanResultModalProps;
+  renewSubscriptionProps?: RenewSubscriptionModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -48,6 +51,12 @@ export const useModalStore = create<ModalState>((set) => ({
       }
       if (modal === "scan_result") {
         return { currentModal: "scan_result", scanResultProps: props };
+      }
+      if (modal === "renew_subscription") {
+        return {
+          currentModal: "renew_subscription",
+          renewSubscriptionProps: props,
+        };
       }
       return { currentModal: null };
     }),

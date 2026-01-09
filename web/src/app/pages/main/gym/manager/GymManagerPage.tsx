@@ -3,6 +3,7 @@ import {
   BarChart3,
   Bell,
   CreditCard,
+  DollarSign,
   Home,
   Key,
   Logs,
@@ -27,6 +28,12 @@ const sidebarLinks = [
       APP_PAGES.gym.manager.members.link,
       APP_PAGES.gym.manager.createMember.link,
     ],
+  },
+  {
+    label: "pricing",
+    icon: <DollarSign className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.pricing.link,
+    matchPaths: [APP_PAGES.gym.manager.pricing.link],
   },
   {
     label: "subscriptions",

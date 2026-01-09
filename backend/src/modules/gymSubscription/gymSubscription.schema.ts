@@ -41,12 +41,26 @@ export const SubscriptionInfoSchema = SchemaFactory.createForClass(
   SubscriptionInfoModel,
 );
 
+@Schema({ _id: false })
+export class PricingTierModel {
+  @Prop({ required: true }) duration: number;
+  @Prop({
+    type: String,
+    required: true,
+    enum: SUBSCRIPTION_PERIOD_UNITS,
+  })
+  durationUnit: SubscriptionPeriodUnit;
+  @Prop({ required: true }) price: number;
+}
+
+export const PricingTierSchema = SchemaFactory.createForClass(PricingTierModel);
+
 @Schema({ timestamps: true })
 export class SubscriptionTypeModel
   extends Document
   implements SubscriptionType
 {
-  @Prop() declare _id: string;
+  declare _id: string;
   @Prop({ required: true }) gymId: string;
   @Prop({
     type: String,
@@ -56,16 +70,10 @@ export class SubscriptionTypeModel
   baseType: BaseSubscriptionType;
   @Prop() customName?: string;
   @Prop() description?: string;
-  @Prop({ required: true }) price: number;
-  @Prop({ required: true }) duration: number;
-  @Prop({
-    type: String,
-    required: true,
-    enum: SUBSCRIPTION_PERIOD_UNITS,
-  })
-  durationUnit: SubscriptionPeriodUnit;
+  @Prop({ type: [PricingTierSchema], required: true })
+  pricingTiers: PricingTierModel[];
   @Prop({ required: true }) isAvailable: boolean;
-  @Prop({ required: true }) createdAt: Date;
+  @Prop() createdAt: Date;
   @Prop() updatedAt?: Date;
 }
 

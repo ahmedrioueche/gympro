@@ -36,15 +36,19 @@ export interface SubscriptionInfo {
   paymentMethod?: PaymentMethod;
 }
 
+export interface PricingTier {
+  duration: number;
+  durationUnit: SubscriptionPeriodUnit;
+  price: number;
+}
+
 export interface SubscriptionType extends AuditInfo {
   _id: string;
   gymId: string;
   baseType: BaseSubscriptionType;
   customName?: string;
   description?: string;
-  price: number;
-  duration: number;
-  durationUnit: SubscriptionPeriodUnit;
+  pricingTiers: PricingTier[];
   isAvailable: boolean;
 }
 

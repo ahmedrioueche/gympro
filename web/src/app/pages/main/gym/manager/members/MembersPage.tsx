@@ -12,9 +12,7 @@ import { useGymStore } from "../../../../../../store/gym";
 import PageHeader from "../../../../../components/PageHeader";
 import {
   DeleteConfirmationDialog,
-  EditMemberModal,
   MemberCard,
-  MemberProfileModal,
   MembersControls,
   MembersEmptyState,
   MembersTable,
@@ -40,8 +38,6 @@ function MembersPage() {
   const [selectedMember, setSelectedMember] = useState<MemberDisplay | null>(
     null
   );
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
@@ -139,17 +135,9 @@ function MembersPage() {
   const handleViewProfile = (memberId: string) => {
     const member = filteredMembers.find((m) => m._id === memberId);
     if (member) {
-      setSelectedMember(member);
-      setIsProfileModalOpen(true);
-    }
-  };
-
-  const handleEdit = (memberId: string) => {
-    const member = filteredMembers.find((m) => m._id === memberId);
-    if (member) {
-      setSelectedMember(member);
-      setIsEditModalOpen(true);
-      setIsProfileModalOpen(false);
+      navigate({
+        to: `${APP_PAGES.gym.manager.member_profile.link}/${member._id}`,
+      });
     }
   };
 
@@ -158,7 +146,6 @@ function MembersPage() {
     if (member) {
       setSelectedMember(member);
       setIsDeleteDialogOpen(true);
-      setIsProfileModalOpen(false);
     }
   };
 
@@ -261,7 +248,6 @@ function MembersPage() {
               key={member._id}
               member={member}
               onViewProfile={handleViewProfile}
-              onEdit={handleEdit}
               onDelete={handleDeleteClick}
             />
           ))}
@@ -270,7 +256,6 @@ function MembersPage() {
         <MembersTable
           members={filteredMembers}
           onViewProfile={handleViewProfile}
-          onEdit={handleEdit}
           onDelete={handleDeleteClick}
         />
       )}
@@ -337,37 +322,6 @@ function MembersPage() {
             </button>
           </div>
         </div>
-      )}
-
-      {/* Member Profile Modal */}
-      {selectedMember && (
-        <MemberProfileModal
-          member={selectedMember}
-          isOpen={isProfileModalOpen}
-          onClose={() => {
-            setIsProfileModalOpen(false);
-            setSelectedMember(null);
-          }}
-          onEdit={() => handleEdit(selectedMember._id)}
-          onDelete={() => handleDeleteClick(selectedMember._id)}
-        />
-      )}
-
-      {/* Edit Member Modal */}
-      {selectedMember && (
-        <EditMemberModal
-          member={selectedMember}
-          isOpen={isEditModalOpen}
-          onClose={() => {
-            setIsEditModalOpen(false);
-            setSelectedMember(null);
-          }}
-          onSave={() => {
-            setIsEditModalOpen(false);
-            setSelectedMember(null);
-            refetch();
-          }}
-        />
       )}
 
       {/* Delete Confirmation Dialog */}

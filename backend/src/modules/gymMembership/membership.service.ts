@@ -781,7 +781,7 @@ export class MembershipService {
 
       if (gym) {
         await this.notificationsService.notifyUser(user, {
-          key: 'subscription_reactivated', // You might need to add this key to your translations
+          key: 'subscription.reactivated',
           title: 'Subscription Reactivated! 🎉',
           message: `Your subscription at ${gym.name} has been reactivated. Welcome back!`,
           vars: {

@@ -68,6 +68,7 @@ function MemberProfilePage() {
         <MemberHero
           user={profile.user}
           joinedAt={profile.membership.joinedAt}
+          membershipId={profile.membership._id}
           subscription={profile.membership.subscription}
           subscriptionType={profile.subscriptionType}
         />

@@ -8,6 +8,7 @@ import {
   memberProfileRoute,
   membersRoute,
   notificationsRoute,
+  pricingRoute,
   settingsRoute,
   subscriptionsRoute,
 } from "./GymManagerRoutes";
@@ -23,4 +24,5 @@ export const GymManagerRootTree = GymManagerRootRoute.addChildren([
   settingsRoute,
   accessRoute,
   attendanceRoute,
+  pricingRoute,
 ]);

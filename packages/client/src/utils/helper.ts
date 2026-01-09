@@ -1,13 +1,9 @@
-import { SupportedCurrency, CURRENCY_SYMBOLS } from "../types/common";
+import { Currency } from "../types/common";
 import { AppLanguage, LANGUAGES } from "../types/local";
-
-export function getCurrencySymbol(currency: SupportedCurrency): string {
-  return CURRENCY_SYMBOLS[currency];
-}
 
 export const formatPrice = (
   amount: number,
-  currency: SupportedCurrency,
+  currency: Currency,
   language: AppLanguage,
   minimumFractionDigits: number = 0,
   maximumFractionDigits: number = 0

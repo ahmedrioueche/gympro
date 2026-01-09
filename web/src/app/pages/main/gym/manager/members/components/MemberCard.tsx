@@ -81,15 +81,6 @@ export function MemberCard({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onEdit?.(member._id);
-          }}
-          className="px-4 py-2 bg-background border border-border text-text-secondary rounded-lg hover:border-primary hover:text-primary transition-all duration-300"
-        >
-          ✏️
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
             onDelete?.(member._id);
           }}
           className="px-4 py-2 bg-background border border-border text-text-secondary rounded-lg hover:border-danger hover:text-danger transition-all duration-300"

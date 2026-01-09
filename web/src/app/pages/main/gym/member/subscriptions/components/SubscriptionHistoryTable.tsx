@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, History } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -103,7 +103,6 @@ export function SubscriptionHistoryTable({
   return (
     <div className="mt-8">
       <div className="flex items-center gap-2 mb-4 px-1">
-        <History className="w-5 h-5 text-text-secondary" />
         <h3 className="text-lg font-semibold text-text-primary">
           {t("gymMember.subscriptions.history", "Subscription History")}
         </h3>

@@ -69,3 +69,13 @@ export interface ScanResultModalProps {
     timestamp: Date;
   } | null;
 }
+
+export interface RenewSubscriptionModalProps {
+  memberId: string;
+  membershipId: string;
+  memberName: string;
+  currentSubscription?: {
+    typeId: string;
+    endDate: string;
+  };
+}

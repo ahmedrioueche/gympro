@@ -11,16 +11,20 @@ import {
   Clock,
   Mail,
   Phone,
+  RefreshCw,
   User as UserIcon,
   XCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useGymStore } from "../../../../../../../store/gym";
+import { useModalStore } from "../../../../../../../store/modal";
 import { openGmail, openWhatsApp } from "../../../../../../../utils/contact";
 import { cn } from "../../../../../../../utils/helper";
 
 interface MemberHeroProps {
   user: User;
   joinedAt: string;
+  membershipId: string;
   subscription?: SubscriptionInfo;
   subscriptionType?: SubscriptionType;
 }
@@ -28,10 +32,55 @@ interface MemberHeroProps {
 export function MemberHero({
   user,
   joinedAt,
+  membershipId,
   subscription,
   subscriptionType,
 }: MemberHeroProps) {
   const { t } = useTranslation();
+  const { currentGym } = useGymStore();
+  const { openModal } = useModalStore();
+
+  const currency = currentGym?.settings?.defaultCurrency || "USD";
+
+  // Find the matching tier for the current subscription to show its price
+  const getSubscriptionPrice = () => {
+    if (!subscription || !subscriptionType?.pricingTiers?.length) return null;
+
+    const subStart = new Date(subscription.startDate);
+    const subEnd = new Date(subscription.endDate);
+    const subDays = differenceInDays(subEnd, subStart);
+
+    // Try to find a tier that matches this duration
+    const matchingTier = subscriptionType.pricingTiers.find((tier) => {
+      let tierDays = tier.duration;
+      if (tier.durationUnit === "week") tierDays *= 7;
+      else if (tier.durationUnit === "month") tierDays *= 30;
+      else if (tier.durationUnit === "year") tierDays *= 365;
+
+      // Allow small difference for month length variations
+      return Math.abs(tierDays - subDays) <= 3;
+    });
+
+    return matchingTier?.price ?? subscriptionType.pricingTiers[0].price;
+  };
+
+  const currentPrice = getSubscriptionPrice();
+  const planName =
+    subscriptionType?.customName ||
+    (subscriptionType?.baseType
+      ? t(`createMember.form.subscription.${subscriptionType.baseType}`)
+      : "-");
+
+  const openRenewModal = (data: { memberId: string; memberName: string }) => {
+    openModal("renew_subscription", {
+      memberId: data.memberId,
+      membershipId,
+      memberName: data.memberName,
+      currentSubscription: subscription
+        ? { typeId: subscription.typeId, endDate: subscription.endDate }
+        : undefined,
+    });
+  };
 
   const getSubscriptionStatus = () => {
     if (!subscription) return null;
@@ -63,10 +112,9 @@ export function MemberHero({
         icon: XCircle,
         label: t("memberProfile.subscription.expired"),
         desc: expiredText,
-        color: "text-rose-500",
-        bgColor: "bg-rose-500/10",
-        borderColor: "border-rose-500/20",
-        accentColor: "rose",
+        color: "text-danger",
+        bgColor: "bg-danger/10",
+        borderColor: "border-danger/20",
       };
     }
 
@@ -78,10 +126,9 @@ export function MemberHero({
         desc: t("memberProfile.subscription.daysRemaining", {
           days: daysRemaining,
         }),
-        color: "text-amber-500",
-        bgColor: "bg-amber-500/10",
-        borderColor: "border-amber-500/20",
-        accentColor: "amber",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
+        borderColor: "border-warning/20",
       };
     }
 
@@ -92,10 +139,9 @@ export function MemberHero({
       desc: t("memberProfile.subscription.daysRemaining", {
         days: daysRemaining,
       }),
-      color: "text-emerald-500",
-      bgColor: "bg-emerald-500/10",
-      borderColor: "border-emerald-500/20",
-      accentColor: "emerald",
+      color: "text-success",
+      bgColor: "bg-success/10",
+      borderColor: "border-success/20",
     };
   };
 
@@ -115,188 +161,230 @@ export function MemberHero({
   };
 
   return (
-    <div className="relative overflow-hidden bg-surface border border-border rounded-3xl group">
+    <div className="relative overflow-hidden bg-surface border border-border rounded-3xl">
       {/* Decorative Gradients */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full -mr-20 -mt-20 opacity-50 group-hover:opacity-70 transition-opacity duration-700" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 blur-[100px] rounded-full -ml-20 -mb-20 opacity-30" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[120px] rounded-full -mr-20 -mt-20 opacity-50" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/5 blur-[100px] rounded-full -ml-20 -mb-20 opacity-30" />
 
-      <div className="relative p-8 flex flex-col lg:flex-row gap-10">
-        {/* Left Section: Profile Info */}
-        <div className="flex-1 flex flex-col sm:flex-row gap-8 items-center sm:items-start text-center sm:text-left">
-          {/* Avatar */}
-          <div className="relative flex-shrink-0">
-            {user.profile?.profileImageUrl ? (
-              <img
-                src={user.profile.profileImageUrl}
-                alt=""
-                className="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl object-cover ring-4 ring-border/50 shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]"
-              />
-            ) : (
-              <div className="w-32 h-32 sm:w-40 sm:h-40 bg-surface flex items-center justify-center rounded-2xl ring-4 ring-border/50 shadow-2xl">
-                <UserIcon className="w-16 h-16 text-zinc-600" />
-              </div>
-            )}
-            {/* Status Dot */}
-            {status && (
-              <div
-                className={cn(
-                  "absolute -bottom-2 -right-2 w-8 h-8 rounded-xl border-4 border-surface flex items-center justify-center shadow-lg",
-                  status.bgColor
-                )}
-              >
-                <status.icon className={cn("w-4 h-4", status.color)} />
-              </div>
-            )}
-          </div>
-
-          {/* User Details */}
-          <div className="flex-1 min-w-0 pt-2">
-            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-none mb-3">
-              {user.profile?.fullName || t("memberProfile.unknownMember")}
-            </h1>
-
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-6">
-              <span className="px-3 py-1 bg-border/50 text-zinc-400 text-[10px] font-black uppercase tracking-widest rounded-lg border border-border/50">
-                {user.profile?.gender || t("memberProfile.genderNotSpecified")}
-              </span>
-              <span className="px-3 py-1 bg-border/50 text-zinc-400 text-[10px] font-black uppercase tracking-widest rounded-lg border border-border/50">
-                {user.profile?.age || "?"} {t("common.years")}
-              </span>
-              <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-lg border border-primary/20">
-                {t("memberProfile.idLabel")}: {user._id.slice(-8)}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
-              <div
-                onClick={() =>
-                  user.profile.email && openGmail(user.profile.email)
-                }
-                className="flex items-center gap-3 text-zinc-400 group/link cursor-pointer hover:text-zinc-200 transition-colors"
-              >
-                <div className="w-8 h-8 rounded-lg bg-border/50 flex items-center justify-center group-hover/link:bg-primary/20 transition-colors">
-                  <Mail className="w-4 h-4 group-hover/link:text-primary transition-colors" />
+      <div className="relative p-8">
+        {/* Main Content - Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-start">
+          {/* Left Section: Profile Info */}
+          <div className="flex gap-6 items-start">
+            {/* Avatar */}
+            <div className="relative flex-shrink-0">
+              {user.profile?.profileImageUrl ? (
+                <img
+                  src={user.profile.profileImageUrl}
+                  alt=""
+                  className="w-28 h-28 rounded-2xl object-cover ring-2 ring-border shadow-lg"
+                />
+              ) : (
+                <div className="w-28 h-28 bg-surface-hover flex items-center justify-center rounded-2xl ring-2 ring-border shadow-lg">
+                  <UserIcon className="w-14 h-14 text-text-secondary" />
                 </div>
-                <span className="truncate underline font-medium">
-                  {user.profile.email || t("memberProfile.noEmail")}
-                </span>
-              </div>
-              <div
-                onClick={() =>
-                  user.profile.phoneNumber &&
-                  openWhatsApp(user.profile.phoneNumber)
-                }
-                className="flex items-center gap-3 text-zinc-400 group/link cursor-pointer hover:text-zinc-200 transition-colors"
-              >
-                <div className="w-8 h-8 rounded-lg bg-border/50 flex items-center justify-center group-hover/link:bg-primary/20 transition-colors">
-                  <Phone className="w-4 h-4 group-hover/link:text-primary transition-colors" />
-                </div>
-                <span className="font-medium">
-                  {user.profile.phoneNumber || t("memberProfile.noPhone")}
-                </span>
-              </div>
-              <div className="flex items-center gap-3 text-zinc-400">
-                <div className="w-8 h-8 rounded-lg bg-border/50 flex items-center justify-center">
-                  <Calendar className="w-4 h-4" />
-                </div>
-                <span className="font-medium whitespace-nowrap">
-                  {t("memberProfile.joinedAt")}{" "}
-                  {format(new Date(joinedAt), "MMM dd, yyyy")}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Section: Subscription Highlighting */}
-        <div className="w-full lg:w-80 flex flex-col justify-center gap-4">
-          {!subscription ? (
-            <div className="bg-surface/50 border border-dashed border-border rounded-3xl p-8 text-center backdrop-blur-sm">
-              <Clock className="w-10 h-10 text-zinc-600 mx-auto mb-3 opacity-50" />
-              <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest">
-                {t("memberProfile.subscription.noActivePlan")}
-              </p>
-            </div>
-          ) : (
-            <div
-              className={cn(
-                "relative bg-zinc-800/40 border-2 rounded-[32px] p-8 backdrop-blur-md overflow-hidden transition-all duration-500 group-hover:shadow-[0_0_40px_-15px_rgba(0,0,0,0.5)]",
-                status?.borderColor
               )}
-            >
-              {/* Status Header */}
-              <div className="flex items-center gap-3 mb-6">
+              {status && (
                 <div
                   className={cn(
-                    "w-10 h-10 rounded-2xl flex items-center justify-center",
-                    status?.bgColor
+                    "absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg border-2 border-surface flex items-center justify-center shadow-md",
+                    status.bgColor
                   )}
                 >
-                  {status && (
-                    <status.icon className={cn("w-5 h-5", status.color)} />
-                  )}
+                  <status.icon className={cn("w-3.5 h-3.5", status.color)} />
                 </div>
-                <div>
-                  <h4
-                    className={cn(
-                      "text-xs font-black uppercase tracking-[0.2em]",
-                      status?.color
-                    )}
-                  >
-                    {status?.label}
-                  </h4>
-                  <p className="text-2xl font-black text-white leading-tight">
-                    {status?.desc}
-                  </p>
+              )}
+            </div>
+
+            {/* User Details */}
+            <div className="flex-1 min-w-0 space-y-5">
+              {/* Name & Basic Info */}
+              <div>
+                <h1 className="text-3xl font-bold text-text-primary mb-3">
+                  {user.profile?.fullName || t("memberProfile.unknownMember")}
+                </h1>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-surface-hover text-text-secondary text-xs font-semibold uppercase tracking-wider rounded-lg border border-border">
+                    {user.profile?.gender ||
+                      t("memberProfile.genderNotSpecified")}
+                  </span>
+                  <span className="px-3 py-1 bg-surface-hover text-text-secondary text-xs font-semibold uppercase tracking-wider rounded-lg border border-border">
+                    {user.profile?.age || "?"} {t("common.years")}
+                  </span>
+                  <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider rounded-lg border border-primary/20">
+                    {t("memberProfile.idLabel")}: {user._id.slice(-8)}
+                  </span>
                 </div>
               </div>
 
-              {/* Plan Info */}
-              <div className="space-y-4 pt-4 border-t border-zinc-700/50">
-                <div>
-                  <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest mb-1">
-                    {t("memberProfile.subscription.currentPlan")}
-                  </p>
-                  <p className="font-black text-zinc-100 text-lg uppercase tracking-tight">
-                    {subscriptionType?.baseType || "-"}
-                  </p>
+              {/* Contact Info Grid */}
+              <div className="grid grid-cols-1 gap-3">
+                <div
+                  onClick={() =>
+                    user.profile.email && openGmail(user.profile.email)
+                  }
+                  className="flex items-center gap-3 text-text-secondary group/link cursor-pointer hover:text-primary transition-colors"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-surface-hover flex items-center justify-center group-hover/link:bg-primary/10 border border-border group-hover/link:border-primary/30 transition-colors">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <span className="text-sm font-medium truncate">
+                    {user.profile.email || t("memberProfile.noEmail")}
+                  </span>
                 </div>
-                <div className="flex justify-between items-end">
+
+                <div
+                  onClick={() =>
+                    user.profile.phoneNumber &&
+                    openWhatsApp(user.profile.phoneNumber)
+                  }
+                  className="flex items-center gap-3 text-text-secondary group/link cursor-pointer hover:text-primary transition-colors"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-surface-hover flex items-center justify-center group-hover/link:bg-primary/10 border border-border group-hover/link:border-primary/30 transition-colors">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <span className="text-sm font-medium">
+                    {user.profile.phoneNumber || t("memberProfile.noPhone")}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3 text-text-secondary">
+                  <div className="w-9 h-9 rounded-lg bg-surface-hover flex items-center justify-center border border-border">
+                    <Calendar className="w-4 h-4" />
+                  </div>
+                  <span className="text-sm font-medium">
+                    {t("memberProfile.joinedAt")}{" "}
+                    {format(new Date(joinedAt), "MMM dd, yyyy")}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Section: Subscription Card */}
+          <div className="w-full lg:w-[380px]">
+            {!subscription ? (
+              <div className="bg-surface-hover border border-dashed border-border rounded-2xl p-8 text-center">
+                <Clock className="w-12 h-12 text-text-secondary mx-auto mb-3 opacity-50" />
+                <p className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+                  {t("memberProfile.subscription.noActivePlan")}
+                </p>
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  "relative bg-surface-hover border-2 rounded-2xl p-6 space-y-5",
+                  status?.borderColor
+                )}
+              >
+                {/* Status Badge */}
+                <div className="flex items-center gap-3">
+                  <div
+                    className={cn(
+                      "w-11 h-11 rounded-xl flex items-center justify-center",
+                      status?.bgColor
+                    )}
+                  >
+                    {status && (
+                      <status.icon className={cn("w-5 h-5", status.color)} />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4
+                      className={cn(
+                        "text-xs font-bold uppercase tracking-wider",
+                        status?.color
+                      )}
+                    >
+                      {status?.label}
+                    </h4>
+                    <p className="text-xl font-bold text-text-primary leading-tight">
+                      {status?.desc}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Plan Details */}
+                <div className="space-y-4 pt-4 border-t border-border">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-xs text-text-secondary font-semibold uppercase tracking-wider mb-1">
+                        {t("memberProfile.subscription.currentPlan")}
+                      </p>
+                      <p className="font-bold text-text-primary text-lg">
+                        {planName}
+                      </p>
+                    </div>
+                    {currentPrice !== null && (
+                      <div className="text-right">
+                        <p className="text-xs text-text-secondary font-semibold uppercase tracking-wider mb-1">
+                          {t("memberProfile.subscription.price")}
+                        </p>
+                        <p className="font-bold text-primary text-lg">
+                          {currentPrice} {currency}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
                   <div>
-                    <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-widest mb-1">
+                    <p className="text-xs text-text-secondary font-semibold uppercase tracking-wider mb-1">
                       {t("memberProfile.subscription.until")}
                     </p>
-                    <p className="font-bold text-zinc-200 text-sm">
+                    <p className="font-semibold text-text-primary">
                       {format(new Date(subscription.endDate), "MMM dd, yyyy")}
                     </p>
                   </div>
-                  {subscriptionType?.price && (
-                    <div className="text-right text-primary">
-                      <p className="font-black text-xl italic tracking-tighter">
-                        {subscriptionType.price}{" "}
-                        {user?.appSettings.locale.currency}
-                      </p>
-                    </div>
-                  )}
                 </div>
-              </div>
 
-              {/* Progress Bar - Inverted to show remaining time */}
-              {status?.id !== "expired" && (
-                <div className="mt-8 h-2 w-full bg-zinc-700/50 rounded-full overflow-hidden">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all duration-1000",
-                      status?.id === "expiring"
-                        ? "bg-amber-500"
-                        : "bg-emerald-500"
-                    )}
-                    style={{ width: `${calculateRemainingProgress()}%` }}
-                  />
-                </div>
-              )}
-            </div>
-          )}
+                {/* Progress Bar */}
+                {status?.id !== "expired" && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-xs font-medium text-text-secondary">
+                      <span>
+                        {t("memberProfile.subscription.timeRemaining")}
+                      </span>
+                      <span>{Math.round(calculateRemainingProgress())}%</span>
+                    </div>
+                    <div className="h-2 w-full bg-border rounded-full overflow-hidden">
+                      <div
+                        className={cn(
+                          "h-full rounded-full transition-all duration-1000",
+                          status?.id === "expiring"
+                            ? "bg-warning"
+                            : "bg-success"
+                        )}
+                        style={{ width: `${calculateRemainingProgress()}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Button */}
+                <button
+                  onClick={() =>
+                    openRenewModal({
+                      memberId: user._id,
+                      memberName: user.profile?.fullName || "",
+                    })
+                  }
+                  className={cn(
+                    "w-full py-3 px-4 rounded-xl font-semibold text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200",
+                    status?.id === "expired"
+                      ? "bg-danger hover:bg-danger/90 text-white shadow-lg shadow-danger/20"
+                      : status?.id === "expiring"
+                      ? "bg-warning hover:bg-warning/90 text-white shadow-lg shadow-warning/20"
+                      : "bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+                  )}
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  {status?.id === "expired"
+                    ? t("memberProfile.subscription.renew")
+                    : t("memberProfile.subscription.extend")}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

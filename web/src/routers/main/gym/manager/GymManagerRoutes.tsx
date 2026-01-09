@@ -7,6 +7,7 @@ import HomePage from "../../../../app/pages/main/gym/manager/home/HomePage";
 import MemberProfilePage from "../../../../app/pages/main/gym/manager/member-profile/MemberProfilePage";
 import MembersPage from "../../../../app/pages/main/gym/manager/members/MembersPage";
 import NotificationsPage from "../../../../app/pages/main/gym/manager/notifications/NotificationsPage";
+import PricingPage from "../../../../app/pages/main/gym/manager/pricing/PricingPage";
 import SettingsPage from "../../../../app/pages/main/gym/manager/settings/SettingsPage";
 import SubscriptionsPage from "../../../../app/pages/main/gym/manager/subscriptions/SubscriptionsPage";
 import { GymManagerRootRoute } from "./GymManagerRootRoute";
@@ -45,6 +46,12 @@ export const attendanceRoute = createRoute({
   getParentRoute: () => GymManagerRootRoute,
   path: "/attendance",
   component: () => <AttendancePage />,
+});
+
+export const pricingRoute = createRoute({
+  getParentRoute: () => GymManagerRootRoute,
+  path: "/pricing",
+  component: () => <PricingPage />,
 });
 
 export const subscriptionsRoute = createRoute({

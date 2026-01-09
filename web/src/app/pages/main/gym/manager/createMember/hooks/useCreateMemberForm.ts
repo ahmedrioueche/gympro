@@ -5,9 +5,11 @@ import {
   type CreateMemberDto,
   type PaymentMethod,
 } from "@ahmedrioueche/gympro-client";
+import { addDays, addMonths, addWeeks, addYears, format } from "date-fns";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { DURATION_OPTIONS } from "../../../../../../../hooks/useSubscriptionOptions";
 
 type ContactMethod = "email" | "phone";
 
@@ -23,6 +25,7 @@ export interface FormData {
   // Step 2: Subscription Info
   subscriptionTypeId: string;
   subscriptionStartDate: string;
+  subscriptionDuration: string;
   paymentMethod: PaymentMethod | "";
 
   // Step 3: Contact Preferences
@@ -52,11 +55,30 @@ const initialFormData: FormData = {
   isContactless: false,
   subscriptionTypeId: BASE_SUBSCRIPTION_TYPES[0] || "",
   subscriptionStartDate: new Date().toISOString().split("T")[0],
+  subscriptionDuration: "1_month",
   paymentMethod: PAYMENT_METHODS[0] || "",
   contactMethod: "email",
   sendWelcomeMessage: true,
   notes: "",
 };
+
+function calculateEndDate(startDate: string, duration: string): string {
+  const start = new Date(startDate);
+  const option = DURATION_OPTIONS.find((d) => d.value === duration);
+  if (!option) return startDate;
+
+  let endDate = start;
+  if ("days" in option && option.days) {
+    endDate = addDays(start, option.days);
+  } else if ("weeks" in option && option.weeks) {
+    endDate = addWeeks(start, option.weeks);
+  } else if ("months" in option && option.months) {
+    endDate = addMonths(start, option.months);
+  } else if ("years" in option && option.years) {
+    endDate = addYears(start, option.years);
+  }
+  return format(endDate, "yyyy-MM-dd");
+}
 
 export function useCreateMemberForm(
   gymId?: string,
@@ -249,6 +271,10 @@ export function useCreateMemberForm(
         age: formData.age,
         subscriptionTypeId: formData.subscriptionTypeId,
         subscriptionStartDate: formData.subscriptionStartDate,
+        subscriptionEndDate: calculateEndDate(
+          formData.subscriptionStartDate,
+          formData.subscriptionDuration
+        ),
         paymentMethod: formData.paymentMethod as PaymentMethod,
       };
 

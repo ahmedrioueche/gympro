@@ -5,6 +5,7 @@ import InputField from "../../../../../../../components/ui/InputField";
 interface FormData {
   subscriptionTypeId: string;
   subscriptionStartDate: string;
+  subscriptionDuration: string;
   paymentMethod: string;
 }
 
@@ -12,6 +13,7 @@ interface StepSubscriptionInfoProps {
   formData: FormData;
   handleInputChange: (field: keyof FormData, value: string) => void;
   subscriptionOptions: { value: string; label: string }[];
+  durationOptions: { value: string; label: string }[];
   paymentMethodOptions: { value: string; label: string }[];
   errors: {
     subscriptionTypeId?: string;
@@ -24,6 +26,7 @@ function StepSubscriptionInfo({
   formData,
   handleInputChange,
   subscriptionOptions,
+  durationOptions,
   paymentMethodOptions,
   errors,
 }: StepSubscriptionInfoProps) {
@@ -63,6 +66,13 @@ function StepSubscriptionInfo({
         placeholder={t("createMember.form.startDate.placeholder")}
         error={errors.subscriptionStartDate}
         required
+      />
+
+      <CustomSelect
+        title={t("renewSubscription.duration.label")}
+        options={durationOptions}
+        selectedOption={formData.subscriptionDuration}
+        onChange={(value) => handleInputChange("subscriptionDuration", value)}
       />
 
       <div className="space-y-1">

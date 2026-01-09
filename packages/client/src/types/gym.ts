@@ -1,5 +1,11 @@
 import { AppSubscription } from "./appSubscription";
-import { AuditInfo, PaymentMethod, TimeRange, WeeklyTimeRange } from "./common";
+import {
+  AuditInfo,
+  Currency,
+  PaymentMethod,
+  TimeRange,
+  WeeklyTimeRange,
+} from "./common";
 import { BaseSubscriptionType } from "./subscription";
 import { User } from "./user";
 
@@ -18,7 +24,6 @@ export interface Gym extends AuditInfo {
   slogan?: string;
   isActive: boolean; // Gym is active or deactivated
   owner: User;
-  defaultCurrency?: string; // For subscription/payment display (e.g., "DZD")
   settings?: GymSettings; // Optional nested settings object
   memberStats?: GymStats;
   appSubscription?: AppSubscription;
@@ -28,6 +33,7 @@ export type AccessControlType = "strict" | "flexible";
 
 export interface GymSettings {
   paymentMethods: PaymentMethod[];
+  defaultCurrency?: Currency; // For subscription/payment display (e.g., "DZD")
   allowCustomSubscriptions?: boolean; // Can owner create custom subscription types?
   notificationsEnabled?: boolean; // Enable gym-wide notifications
   subscriptionRenewalReminderDays?: number; // Days before expiry to notify members

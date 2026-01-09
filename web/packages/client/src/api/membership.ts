@@ -74,6 +74,29 @@ export const membershipApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Reactivate/renew a member's subscription (for gym managers) */
+  reactivateSubscription: async (
+    gymId: string,
+    membershipId: string,
+    data: {
+      subscriptionTypeId: string;
+      startDate: string;
+      duration: string;
+      paymentMethod?: string;
+      notes?: string;
+    }
+  ): Promise<ApiResponse<any>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<any>>(
+        `/membership/${gymId}/${membershipId}/reactivate`,
+        data
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };
 
 export default membershipApi;

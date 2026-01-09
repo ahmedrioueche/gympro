@@ -2,6 +2,7 @@ import type {
   AccessControlType,
   AppSubscription,
   BaseSubscriptionType,
+  Currency,
   GymSettings,
   GymStats,
   PaymentMethod,
@@ -22,6 +23,7 @@ export class GymSettingsModel implements GymSettings {
   @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
   @Prop({ type: [String] }) servicesOffered?: BaseSubscriptionType[];
   @Prop({ default: 'flexible' }) accessControlType?: AccessControlType;
+  @Prop() defaultCurrency?: Currency;
 }
 export const GymSettingsSchema = SchemaFactory.createForClass(GymSettingsModel);
 
@@ -52,7 +54,7 @@ export class GymModel extends Document {
   @Prop({ default: true }) isActive: boolean;
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   owner: Types.ObjectId;
-  @Prop() defaultCurrency?: string;
+
   @Prop({ type: GymSettingsSchema }) settings?: GymSettings;
   @Prop({ type: GymStatsSchema }) memberStats?: GymStats;
   @Prop({ type: Object }) appSubscription?: AppSubscription;

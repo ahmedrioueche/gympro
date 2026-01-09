@@ -136,7 +136,7 @@ function CancelSubscriptionModal({
           : t("subscription.cancel_reason_title")
       }
       icon={AlertTriangle}
-      width="700px"
+      maxWidth="max-w-2xl"
     >
       {step === "contact" ? (
         // Step 1: Contact Support

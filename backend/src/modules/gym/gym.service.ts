@@ -214,6 +214,12 @@ export class GymService {
     }
 
     // Verify the user is the gym owner
+    console.log(
+      'UpdateSettings payload:',
+      updateSettingsDto,
+      'UserID:',
+      userId,
+    );
     if (gym.owner.toString() !== userId) {
       throw new ConflictException(
         'You are not authorized to update this gym settings',

@@ -14,7 +14,7 @@ export type CreateGymDto = {
   timezone?: string;
   logoUrl?: string;
   slogan?: string;
-  defaultCurrency?: string;
+
   settings?: GymSettings;
   latitude?: number;
   longitude?: number;

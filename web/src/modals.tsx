@@ -19,6 +19,11 @@ const ScanResultModal = lazy(() =>
   }))
 );
 
+const RenewSubscriptionModal = lazy(
+  () =>
+    import("./app/components/modals/renew-subscription/RenewSubscriptionModal")
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -27,6 +32,7 @@ function modals() {
       <EditUserProfileModal />
       <ExerciseDetailModal />
       <ScanResultModal />
+      <RenewSubscriptionModal />
     </Suspense>
   );
 }

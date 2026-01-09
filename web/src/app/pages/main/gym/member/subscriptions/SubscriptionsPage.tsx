@@ -83,9 +83,6 @@ function SubscriptionsPage() {
           {/* Detailed History (Internal Snapshots) */}
           {history.length > 0 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-text-primary px-1">
-                {t("gymMember.subscriptions.history", "Detailed History")}
-              </h3>
               <SubscriptionHistoryTable history={history} />
             </div>
           )}

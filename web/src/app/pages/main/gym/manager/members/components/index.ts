@@ -1,7 +1,5 @@
 export { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
-export { EditMemberModal } from "./EditMemberModal";
 export { MemberCard } from "./MemberCard";
-export { MemberProfileModal } from "./MemberProfileModal";
 export { MembersControls } from "./MembersControls";
 export type { FilterStatus, SortBy, ViewMode } from "./MembersControls";
 export { MembersEmptyState } from "./MembersEmptyState";

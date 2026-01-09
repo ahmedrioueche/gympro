@@ -213,13 +213,13 @@ export default function GymCard({ gym, onSelect }: GymCardProps) {
                     </p>
                   </div>
                 )}
-                {gym.defaultCurrency && (
+                {gym.settings.defaultCurrency && (
                   <div>
                     <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
                       {t("gymCard.currency", "Currency")}
                     </p>
                     <p className="text-sm font-medium text-text-primary">
-                      {gym.defaultCurrency}
+                      {gym.settings.defaultCurrency}
                     </p>
                   </div>
                 )}

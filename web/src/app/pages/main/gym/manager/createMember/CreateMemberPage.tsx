@@ -1,10 +1,7 @@
-import {
-  BASE_SUBSCRIPTION_TYPES,
-  PAYMENT_METHODS,
-} from "@ahmedrioueche/gympro-client";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
+import { useSubscriptionOptions } from "../../../../../../hooks/useSubscriptionOptions";
 import { useGymStore } from "../../../../../../store/gym";
 import { useUserStore } from "../../../../../../store/user";
 import StepsNav from "../../../../../components/ui/StepsNav";
@@ -21,6 +18,8 @@ function CreateMemberPage() {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
   const { user } = useUserStore();
+  const { subscriptionTypeOptions, durationOptions, paymentMethodOptions } =
+    useSubscriptionOptions();
 
   const {
     step,
@@ -59,22 +58,6 @@ function CreateMemberPage() {
       icon: "📱",
     },
   ];
-
-  const subscriptionOptions = BASE_SUBSCRIPTION_TYPES.map((type) => ({
-    value: type,
-    label: t(
-      `createMember.form.subscription.${type}`,
-      type.charAt(0).toUpperCase() + type.slice(1)
-    ),
-  }));
-
-  const paymentMethodOptions = PAYMENT_METHODS.map((method) => ({
-    value: method,
-    label: t(
-      `createMember.form.payment.${method}`,
-      method.charAt(0).toUpperCase() + method.slice(1)
-    ),
-  }));
 
   if (showSuccess) {
     return (
@@ -160,7 +143,8 @@ function CreateMemberPage() {
               <StepSubscriptionInfo
                 formData={formData}
                 handleInputChange={handleInputChange}
-                subscriptionOptions={subscriptionOptions}
+                subscriptionOptions={subscriptionTypeOptions}
+                durationOptions={durationOptions}
                 paymentMethodOptions={paymentMethodOptions}
                 errors={errors}
               />
@@ -169,7 +153,7 @@ function CreateMemberPage() {
               <StepContactPreferences
                 formData={formData}
                 handleInputChange={handleInputChange}
-                subscriptionOptions={subscriptionOptions}
+                subscriptionOptions={subscriptionTypeOptions}
               />
             )}
           </div>

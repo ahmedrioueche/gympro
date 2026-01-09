@@ -18,6 +18,7 @@ import { ChargilyModule } from './modules/chargily/chargily.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
+import { GymSubscriptionModule } from './modules/gymSubscription/gymSubscription.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaddleModule } from './modules/paddle/paddle.module';
 import { ProgressModule } from './modules/progress/progress.module';
@@ -82,6 +83,7 @@ import { UsersModule } from './modules/users/users.module';
     ExercisesModule,
     AiModule,
     ProgressModule,
+    GymSubscriptionModule,
   ],
   controllers: [AppController],
   providers: [

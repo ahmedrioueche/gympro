@@ -1,4 +1,9 @@
-import { WEEK_DAYS, type WeeklyTimeRange } from "@ahmedrioueche/gympro-client";
+import {
+  CURRENCIES,
+  WEEK_DAYS,
+  type Currency,
+  type WeeklyTimeRange,
+} from "@ahmedrioueche/gympro-client";
 import {
   Check,
   Edit2,
@@ -12,6 +17,7 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../../components/ui/Button";
+import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
 
 interface GeneralTabProps {
@@ -25,6 +31,8 @@ interface GeneralTabProps {
   setFemaleOnlyHours: (value: WeeklyTimeRange[]) => void;
   accessControlType: string;
   setAccessControlType: (value: string) => void;
+  defaultCurrency: Currency;
+  setDefaultCurrency: (value: Currency) => void;
 }
 
 export default function GeneralTab({
@@ -38,6 +46,8 @@ export default function GeneralTab({
   setFemaleOnlyHours,
   accessControlType,
   setAccessControlType,
+  defaultCurrency,
+  setDefaultCurrency,
 }: GeneralTabProps) {
   const { t } = useTranslation();
   const [isAddingSlot, setIsAddingSlot] = useState(false);
@@ -110,7 +120,34 @@ export default function GeneralTab({
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+      {/* Currency Section */}
       <div>
+        <h3 className="text-lg font-semibold text-text-primary mb-1">
+          {t("settings.gym.general.currency", "Currency")}
+        </h3>
+        <p className="text-sm text-text-secondary mb-4">
+          {t(
+            "settings.gym.general.currencyDesc",
+            "Select the currency for membership pricing display"
+          )}
+        </p>
+
+        <div className="max-w-xs">
+          <CustomSelect
+            title=""
+            options={CURRENCIES.map((c) => ({ label: c, value: c }))}
+            selectedOption={defaultCurrency}
+            onChange={(val) => setDefaultCurrency(val as Currency)}
+            placeholder={t(
+              "settings.gym.general.selectCurrency",
+              "Select currency"
+            )}
+            searchable
+          />
+        </div>
+      </div>
+
+      <div className="pt-6 border-t border-border">
         <h3 className="text-lg font-semibold text-text-primary mb-1">
           {t("settings.gym.general.workingHours", "Working Hours")}
         </h3>

@@ -31,10 +31,13 @@ const CustomSelect = <T extends string>({
   error,
   marginTop = "mt-2",
   placeholder,
-}: CustomSelectProps<T>) => {
+  searchable = false,
+}: CustomSelectProps<T> & { searchable?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const selectRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const scrollPositionRef = useRef<number>(0);
 
   useEffect(() => {
@@ -54,10 +57,21 @@ const CustomSelect = <T extends string>({
   }, [selectRef]);
 
   useEffect(() => {
+    if (!isOpen) {
+      setSearchTerm("");
+    } else if (searchable && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isOpen, searchable]);
+
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isOpen || disabled) return;
 
       const focusedElement = document.activeElement;
+      // If search input is focused, don't interfere with typing unless it's navigation
+      const isSearchFocused = focusedElement === searchInputRef.current;
+
       const items = Array.from(selectRef.current?.querySelectorAll("li") || []);
 
       if (event.key === "Escape") {
@@ -65,13 +79,25 @@ const CustomSelect = <T extends string>({
       } else if (event.key === "ArrowDown") {
         event.preventDefault();
         const currentIndex = items.indexOf(focusedElement as HTMLLIElement);
-        const nextIndex = (currentIndex + 1) % items.length;
-        items[nextIndex]?.focus();
+        if (isSearchFocused && items.length > 0) {
+          items[0].focus();
+        } else {
+          const nextIndex = (currentIndex + 1) % items.length;
+          items[nextIndex]?.focus();
+        }
       } else if (event.key === "ArrowUp") {
         event.preventDefault();
         const currentIndex = items.indexOf(focusedElement as HTMLLIElement);
-        const prevIndex = (currentIndex - 1 + items.length) % items.length;
-        items[prevIndex]?.focus();
+        if (currentIndex <= 0 && isSearchFocused) {
+          // Already at top or search focused, do nothing or loop to bottom
+          const prevIndex = items.length - 1;
+          items[prevIndex]?.focus();
+        } else if (currentIndex === 0 && searchable) {
+          searchInputRef.current?.focus();
+        } else {
+          const prevIndex = (currentIndex - 1 + items.length) % items.length;
+          items[prevIndex]?.focus();
+        }
       }
     };
 
@@ -79,7 +105,7 @@ const CustomSelect = <T extends string>({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, disabled]);
+  }, [isOpen, disabled, searchable]);
 
   const handleListScroll = () => {
     if (listRef.current) {
@@ -94,6 +120,10 @@ const CustomSelect = <T extends string>({
   }, [isOpen]);
 
   const selectedOptionData = options.find((o) => o.value === selectedOption);
+
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="relative" ref={selectRef}>
@@ -160,48 +190,68 @@ const CustomSelect = <T extends string>({
           `}
           onScroll={handleListScroll}
         >
-          {options.map((option) => (
-            <li
-              key={option.value}
-              role="option"
-              aria-selected={option.value === selectedOption}
-              tabIndex={0}
-              className={`
-                px-4 py-2 
-                text-text-primary
-                hover:bg-primary/30
-                hover:cursor-pointer
-                focus:bg-primary/30
-                focus:outline-none
-              `}
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+          {searchable && (
+            <div className="sticky top-0 p-2 bg-background border-b border-border z-20">
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search..."
+                className="w-full px-3 py-1.5 text-sm bg-surface rounded-md border border-border focus:outline-none focus:border-primary text-text-primary placeholder:text-text-tertiary"
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()} // Stop propagation to prevent selecting parent
+              />
+            </div>
+          )}
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((option) => (
+              <li
+                key={option.value}
+                role="option"
+                aria-selected={option.value === selectedOption}
+                tabIndex={0}
+                className={`
+                  px-4 py-2 
+                  text-text-primary
+                  hover:bg-primary/30
+                  hover:cursor-pointer
+                  focus:bg-primary/30
+                  focus:outline-none
+                `}
+                onClick={() => {
                   onChange(option.value);
                   setIsOpen(false);
-                }
-              }}
-            >
-              <div className="flex items-center gap-2">
-                {option.flag && (
-                  <img
-                    src={option.flag}
-                    alt=""
-                    className="w-5 h-3.5 object-cover flex-shrink-0"
-                  />
-                )}
-                <span>{option.label}</span>
-                {option.name && (
-                  <span className="text-xs text-text-secondary ml-auto">
-                    {option.name}
-                  </span>
-                )}
-              </div>
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    onChange(option.value);
+                    setIsOpen(false);
+                  }
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  {option.flag && (
+                    <img
+                      src={option.flag}
+                      alt=""
+                      className="w-5 h-3.5 object-cover flex-shrink-0"
+                    />
+                  )}
+                  <span>{option.label}</span>
+                  {option.name && (
+                    <span className="text-xs text-text-secondary ml-auto">
+                      {option.name}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))
+          ) : (
+            <li className="px-4 py-2 text-sm text-text-tertiary text-center">
+              No results found
             </li>
-          ))}
+          )}
         </ul>
       )}
     </div>
