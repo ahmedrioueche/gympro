@@ -1,26 +1,41 @@
-import type { EditUserDto } from "@ahmedrioueche/gympro-client";
-import { Camera, Loader2, Mail, Phone, Save, User } from "lucide-react";
-import { useRef, useState } from "react";
+import type { User } from "@ahmedrioueche/gympro-client";
+import { Camera, Loader2, Mail, Phone, User as UserIcon } from "lucide-react";
+import { useRef } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { useUpdateProfile } from "../../../../../../hooks/queries/useUsers";
-import { useUserStore } from "../../../../../../store/user";
-import { uploadToCloudinary } from "../../../../../../utils/cloudinary";
 
-export default function ProfileSettings() {
+interface ProfileSettingsProps {
+  user: User;
+  fullName: string;
+  setFullName: (value: string) => void;
+  phoneNumber: string;
+  setPhoneNumber: (value: string) => void;
+  email: string;
+  setEmail: (value: string) => void;
+  addEmailMode: boolean;
+  setAddEmailMode: (value: boolean) => void;
+  addPhoneMode: boolean;
+  setAddPhoneMode: (value: boolean) => void;
+  uploading: boolean;
+  handleAvatarUpload: (file: File) => Promise<void>;
+}
+
+export default function ProfileSettings({
+  user,
+  fullName,
+  setFullName,
+  phoneNumber,
+  setPhoneNumber,
+  email,
+  setEmail,
+  addEmailMode,
+  setAddEmailMode,
+  addPhoneMode,
+  setAddPhoneMode,
+  uploading,
+  handleAvatarUpload,
+}: ProfileSettingsProps) {
   const { t } = useTranslation();
-  const { user } = useUserStore();
-  const updateProfile = useUpdateProfile();
-
-  const [fullName, setFullName] = useState(user?.profile.fullName || "");
-  const [phoneNumber, setPhoneNumber] = useState(
-    user?.profile.phoneNumber || ""
-  );
-  const [email, setEmail] = useState(user?.profile.email || "");
-  // Local state to handle toggling inputs for missing fields
-  const [addEmailMode, setAddEmailMode] = useState(false);
-  const [addPhoneMode, setAddPhoneMode] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAvatarClick = () => {
@@ -32,48 +47,14 @@ export default function ProfileSettings() {
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB");
+      toast.error(
+        t("settings.profile.fileTooLarge", "Image size must be less than 5MB")
+      );
       return;
     }
 
-    try {
-      setUploading(true);
-      const imageUrl = await uploadToCloudinary(file);
-      await updateProfile.mutateAsync({ profileImageUrl: imageUrl });
-      toast.success(
-        t("settings.profile.avatarSuccess", "Avatar updated successfully")
-      );
-    } catch (error: any) {
-      console.error("Avatar upload failed:", error);
-      toast.error(
-        error.message ||
-          t("settings.profile.avatarError", "Failed to update avatar")
-      );
-    } finally {
-      setUploading(false);
-    }
+    await handleAvatarUpload(file);
   };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      const updates: EditUserDto = {
-        fullName,
-        phoneNumber: phoneNumber || undefined,
-        email: email || undefined,
-      };
-
-      await updateProfile.mutateAsync(updates);
-      toast.success(
-        t("settings.member.success", "Profile updated successfully")
-      );
-    } catch (error) {
-      toast.error(t("settings.member.error", "Failed to update profile"));
-    }
-  };
-
-  if (!user) return null;
 
   return (
     <div className="space-y-6">
@@ -86,7 +67,7 @@ export default function ProfileSettings() {
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6 max-w-2xl">
+      <div className="space-y-6 max-w-2xl">
         <div className="space-y-4">
           {/* Avatar Section */}
           <div className="flex items-center gap-4">
@@ -97,6 +78,8 @@ export default function ProfileSettings() {
                     <img
                       src={user.profile.profileImageUrl}
                       alt={user.profile.fullName}
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -129,7 +112,9 @@ export default function ProfileSettings() {
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-primary bg-surface border border-border rounded-lg hover:bg-surface-hover transition-colors disabled:opacity-50"
               >
                 <Camera className="w-4 h-4" />
-                {uploading ? "Uploading..." : "Change Avatar"}
+                {uploading
+                  ? t("common.uploading", "Uploading...")
+                  : t("member.settings.profile.changeAvatar", "Change Avatar")}
               </button>
             </div>
           </div>
@@ -140,7 +125,7 @@ export default function ProfileSettings() {
                 {t("member.settings.profile.fullName")}
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
+                <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
                 <input
                   type="text"
                   value={fullName}
@@ -162,8 +147,11 @@ export default function ProfileSettings() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    disabled={!!user.profile.email} // Disable if it exists (assuming email change requires different flow)
-                    placeholder="Enter your email"
+                    disabled={!!user.profile.email}
+                    placeholder={t(
+                      "member.settings.profile.emailPlaceholder",
+                      "Enter your email"
+                    )}
                     className={`w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-text-primary focus:ring-1 focus:ring-primary focus:outline-none ${
                       user.profile.email
                         ? "bg-background/50 cursor-not-allowed text-text-secondary"
@@ -205,7 +193,10 @@ export default function ProfileSettings() {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     disabled={!!user.profile.phoneNumber}
-                    placeholder="Enter phone number"
+                    placeholder={t(
+                      "member.settings.profile.phonePlaceholder",
+                      "Enter phone number"
+                    )}
                     className={`w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-text-primary focus:ring-1 focus:ring-primary focus:outline-none ${
                       user.profile.phoneNumber
                         ? "bg-background/50 cursor-not-allowed text-text-secondary"
@@ -236,24 +227,7 @@ export default function ProfileSettings() {
             )}
           </div>
         </div>
-
-        <div className="pt-4">
-          <button
-            type="submit"
-            disabled={updateProfile.isPending}
-            className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white font-medium rounded-xl hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
-            {updateProfile.isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
-            {updateProfile.isPending
-              ? "Saving..."
-              : t("member.settings.profile.save")}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }

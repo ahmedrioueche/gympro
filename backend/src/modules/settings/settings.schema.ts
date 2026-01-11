@@ -48,8 +48,8 @@ export class AppSettingsModel extends Document implements AppSettings {
   })
   viewPreference: ViewPreference;
 
-  @Prop({ type: NotificationSettingsModel, required: true })
-  notifications: NotificationSettings;
+  @Prop({ type: NotificationSettingsModel, default: {} })
+  notifications?: NotificationSettings;
 
   @Prop({ type: LocaleSettingsModel })
   locale?: LocaleSettings;

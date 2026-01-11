@@ -446,23 +446,39 @@ export class UsersService {
     user.profile.isOnBoarded = true;
     await user.save();
 
-    // Auto-subscribe to free plan
-    await this.autoSubscribeToFreePlan(user._id.toString());
+    // Only auto-subscribe to free plan for owners (trial is for owners only)
+    if (user.role === UserRole.Owner) {
+      await this.autoSubscribeToFreePlan(user._id.toString());
 
-    // Send welcome notification after onboarding completion (background task)
-    this.notificationsService
-      .notifyUser(user, {
-        key: 'onboarding.completed',
-        vars: {
-          name: user.profile?.fullName || user.profile?.email || 'User',
-          trialDays: DEFAULT_TRIAL_DAYS_NUMBER.toString(),
-        },
-      })
-      .catch((error) => {
-        this.logger.error(
-          `Failed to send onboarding completion notification to user ${userId}: ${error.message}`,
-        );
-      });
+      // Send welcome notification with trial info for owners
+      this.notificationsService
+        .notifyUser(user, {
+          key: 'onboarding.completed',
+          vars: {
+            name: user.profile?.fullName || user.profile?.email || 'User',
+            trialDays: DEFAULT_TRIAL_DAYS_NUMBER.toString(),
+          },
+        })
+        .catch((error) => {
+          this.logger.error(
+            `Failed to send onboarding completion notification to user ${userId}: ${error.message}`,
+          );
+        });
+    } else {
+      // Send simpler welcome notification for members/staff (no trial info)
+      this.notificationsService
+        .notifyUser(user, {
+          key: 'onboarding.member_completed',
+          vars: {
+            name: user.profile?.fullName || user.profile?.email || 'User',
+          },
+        })
+        .catch((error) => {
+          this.logger.error(
+            `Failed to send member onboarding notification to user ${userId}: ${error.message}`,
+          );
+        });
+    }
 
     return this.sanitizeUser(user);
   }

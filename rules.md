@@ -69,6 +69,17 @@ If they don't exist, create them before using.
 - Match UI **exactly** to existing pages and design system
 - Ensure **pixel-perfect** implementation when provided with Figma designs
 
+**Modals**
+
+- Always use BaseModal component, add the modal to the modal store with props
+- Add the modal to modals.tsx using React.Lazy
+- Do not add the modal to the components/pages, only call openModal form the modal store
+
+**Performance**
+
+- **Do NOT install unnecessary dependencies**
+- **Avoid performance killers** like Framer Motion (use CSS transitions instead)
+
 **Accessibility**
 
 - Add `tabIndex="0"` for interactive elements

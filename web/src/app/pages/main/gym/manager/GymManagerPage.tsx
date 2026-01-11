@@ -8,10 +8,11 @@ import {
   Key,
   Logs,
   Settings,
+  UserCircle,
   Users,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../../constants/navigation";
-import Nav from "../../../../components/Nav";
+import Nav from "../../../../components/nav/Nav";
 
 const sidebarLinks = [
   {
@@ -46,6 +47,12 @@ const sidebarLinks = [
     icon: <Key className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.access.link,
     matchPaths: [APP_PAGES.gym.manager.access.link],
+  },
+  {
+    label: "staff",
+    icon: <UserCircle className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.staff.link,
+    matchPaths: [APP_PAGES.gym.manager.staff.link],
   },
   {
     label: "attendance",

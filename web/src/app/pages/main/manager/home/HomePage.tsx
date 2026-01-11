@@ -34,11 +34,7 @@ function HomePage() {
   );
 
   const isPageLoading =
-    subLoading ||
-    statsLoading ||
-    gymsLoading ||
-    notificationsLoading ||
-    gymStatsLoading;
+    statsLoading || gymsLoading || notificationsLoading || gymStatsLoading;
 
   const totalActiveMembers =
     myGyms?.reduce(
@@ -71,36 +67,37 @@ function HomePage() {
       severity: (n.priority || "low") as "high" | "medium" | "low",
     })) || [];
 
-  if (isPageLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loading />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
-      {/* Manager Profile Overview */}
-      <ProfileOverview user={user} subscription={subscription} />
+      {subLoading ? (
+        <Loading />
+      ) : (
+        <ProfileOverview user={user} subscription={subscription} />
+      )}
 
-      {/* Business Overview */}
-      <BusinessOverview metrics={businessMetrics} />
+      {isPageLoading ? (
+        <Loading />
+      ) : (
+        <>
+          {/* Business Overview */}
+          <BusinessOverview metrics={businessMetrics} />
 
-      {/* Quick Actions */}
-      <QuickActions />
+          {/* Quick Actions */}
+          <QuickActions />
 
-      {/* Alerts & Gym Overview - Side by Side on Desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <AlertsSection alerts={alerts} />
-        <GymOverview
-          gyms={myGyms}
-          onGymAccessed={(gym) => {
-            setGym(gym);
-            navigate({ to: APP_PAGES.gym.manager.home.link });
-          }}
-        />
-      </div>
+          {/* Alerts & Gym Overview - Side by Side on Desktop */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <AlertsSection alerts={alerts} />
+            <GymOverview
+              gyms={myGyms}
+              onGymAccessed={(gym) => {
+                setGym(gym);
+                navigate({ to: APP_PAGES.gym.manager.home.link });
+              }}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

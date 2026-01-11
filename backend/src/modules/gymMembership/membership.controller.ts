@@ -346,4 +346,160 @@ export class MembershipController {
       );
     }
   }
+
+  // ==================== STAFF ENDPOINTS ====================
+
+  @Get('gym/:gymId/staff')
+  @UseGuards(JwtAuthGuard)
+  async getGymStaff(
+    @Param('gymId') gymId: string,
+  ): Promise<ApiResponse<any[]>> {
+    try {
+      const staff = await this.membershipService.getGymStaff(gymId);
+      return apiResponse(true, undefined, staff, 'Staff fetched successfully');
+    } catch (error) {
+      return apiResponse<any[]>(
+        false,
+        ErrorCode.FETCH_STAFF_FAILED,
+        [],
+        error.message,
+      );
+    }
+  }
+
+  @Post('gym/:gymId/staff')
+  @UseGuards(JwtAuthGuard)
+  async addStaff(
+    @Param('gymId') gymId: string,
+    @Body()
+    dto: {
+      email?: string;
+      phoneNumber?: string;
+      fullName: string;
+      role: string;
+    },
+    @Req() req: any,
+  ): Promise<ApiResponse<any>> {
+    try {
+      const createdBy = req.user?.sub;
+      const result = await this.membershipService.addStaff(
+        { ...dto, gymId },
+        createdBy,
+      );
+
+      // Fetch gym name for invitation
+      const gym = await this.gymService.findOne(gymId, false);
+      const gymName = gym.name || 'Your Gym';
+
+      // Send invitation if applicable
+      let invitationResult;
+      if (result.isNewUser && result.setupToken) {
+        invitationResult = await this.invitationService.sendStaffInvitation(
+          dto.email,
+          dto.phoneNumber,
+          result.setupToken,
+          gymName,
+          dto.fullName,
+          dto.role,
+        );
+      } else if (!result.isNewUser) {
+        invitationResult =
+          await this.invitationService.sendExistingUserStaffInvitation(
+            dto.email,
+            dto.phoneNumber,
+            gymName,
+            dto.fullName,
+            dto.role,
+          );
+      }
+
+      const message = result.isNewUser
+        ? 'Staff member created successfully. Setup invitation sent.'
+        : 'Existing user added as staff successfully. Notification sent.';
+
+      return apiResponse(
+        true,
+        undefined,
+        {
+          membership: result.membership,
+          user: result.user,
+          isNewUser: result.isNewUser,
+          invitationSent: invitationResult
+            ? {
+                email: invitationResult.emailSent,
+                sms: invitationResult.smsSent,
+              }
+            : undefined,
+        },
+        message,
+      );
+    } catch (error) {
+      // Preserve original error code if thrown by service
+      const errorCode =
+        error?.response?.errorCode || ErrorCode.ADD_STAFF_FAILED;
+      return apiResponse<any>(false, errorCode, undefined, error.message);
+    }
+  }
+
+  @Patch('gym/:gymId/staff/:membershipId')
+  @UseGuards(JwtAuthGuard)
+  async updateStaff(
+    @Param('gymId') gymId: string,
+    @Param('membershipId') membershipId: string,
+    @Body()
+    dto: {
+      fullName?: string;
+      email?: string;
+      phoneNumber?: string;
+      role?: string;
+    },
+  ): Promise<ApiResponse<any>> {
+    try {
+      const result = await this.membershipService.updateStaff(
+        membershipId,
+        gymId,
+        dto,
+      );
+      return apiResponse(
+        true,
+        undefined,
+        result,
+        'Staff member updated successfully',
+      );
+    } catch (error) {
+      return apiResponse<any>(
+        false,
+        ErrorCode.UPDATE_STAFF_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Delete('gym/:gymId/staff/:membershipId')
+  @UseGuards(JwtAuthGuard)
+  async removeStaff(
+    @Param('gymId') gymId: string,
+    @Param('membershipId') membershipId: string,
+  ): Promise<ApiResponse<{ deleted: boolean }>> {
+    try {
+      const result = await this.membershipService.removeStaff(
+        membershipId,
+        gymId,
+      );
+      return apiResponse(
+        true,
+        undefined,
+        result,
+        'Staff member removed successfully',
+      );
+    } catch (error) {
+      return apiResponse<{ deleted: boolean }>(
+        false,
+        ErrorCode.DELETE_STAFF_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
 }

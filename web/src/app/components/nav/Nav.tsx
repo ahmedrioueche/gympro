@@ -3,17 +3,17 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { LogOut, Menu, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../constants/navigation";
-import { useAllMyGyms } from "../../hooks/queries/useGyms";
-import useScreen from "../../hooks/useScreen";
-import { useGymStore } from "../../store/gym";
-import { useSidebarStore } from "../../store/sidebar";
-import { useUserStore } from "../../store/user";
-import { getRoleHomePage } from "../../utils/roles";
-import GymSelector from "./GymSelector";
-import NotificationsDropdown from "./NotificationsDropdown";
-import ProfileDropdown from "./ProfileDropdown";
-import SidebarAnimatedLogo from "./SidebarAnimatedLogo";
+import { APP_PAGES } from "../../../constants/navigation";
+import { useAllMyGyms } from "../../../hooks/queries/useGyms";
+import useScreen from "../../../hooks/useScreen";
+import { useGymStore } from "../../../store/gym";
+import { useSidebarStore } from "../../../store/sidebar";
+import { useUserStore } from "../../../store/user";
+import { getRoleHomePage } from "../../../utils/roles";
+import GymSelector from "../gym/GymSelector";
+import NotificationsDropdown from "../NotificationsDropdown";
+import ProfileDropdown from "../ProfileDropdown";
+import SidebarAnimatedLogo from "../SidebarAnimatedLogo";
 
 export default function Nav({ children, sidebarLinks }) {
   const { t } = useTranslation();

@@ -1,4 +1,9 @@
-import { authApi, type User, UserRole } from "@ahmedrioueche/gympro-client";
+import {
+  authApi,
+  UserRole,
+  type DashboardType,
+  type User,
+} from "@ahmedrioueche/gympro-client";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getCurrentUser } from "../utils";
@@ -11,6 +16,7 @@ interface UserState {
   error: string | null;
   lastFetchedAt: number | null; // timestamp in ms
   cacheTTL: number; // e.g., 5 minutes in ms
+  activeDashboard: DashboardType; // Currently active dashboard
 
   // Actions
   setUser: (user: User | null) => void;
@@ -32,6 +38,11 @@ interface UserState {
   isCoach: () => boolean;
   isStaff: () => boolean;
   fetchUser: () => Promise<User | null>;
+
+  // Dashboard methods
+  setActiveDashboard: (dashboard: DashboardType) => void;
+  canAccessDashboard: (dashboard: DashboardType) => boolean;
+  getDefaultDashboard: () => DashboardType;
 }
 
 export const useUserStore = create<UserState>()(
@@ -44,15 +55,28 @@ export const useUserStore = create<UserState>()(
       error: null,
       lastFetchedAt: null,
       cacheTTL: 5 * 60 * 1000, // 5 minutes
+      activeDashboard: "member" as DashboardType,
 
       // Actions
-      setUser: (user) =>
+      setUser: (user) => {
+        // Determine the default dashboard based on user role
+        let defaultDashboard: DashboardType = "member";
+        if (user) {
+          if (user.role === "owner" || user.role === "manager") {
+            defaultDashboard = "manager";
+          } else if (user.role === "coach") {
+            defaultDashboard = "coach";
+          }
+        }
+
         set({
           user,
           isAuthenticated: !!user,
           error: null,
           lastFetchedAt: Date.now(),
-        }),
+          activeDashboard: defaultDashboard,
+        });
+      },
 
       updateUser: (updates) =>
         set((state) => ({
@@ -198,6 +222,25 @@ export const useUserStore = create<UserState>()(
         const { user } = get();
         return user?.role === "staff";
       },
+
+      // Dashboard methods
+      setActiveDashboard: (dashboard) => set({ activeDashboard: dashboard }),
+
+      canAccessDashboard: (dashboard) => {
+        const { user } = get();
+        if (!user) return false;
+        const access = user.dashboardAccess || ["member"];
+        return access.includes(dashboard);
+      },
+
+      getDefaultDashboard: () => {
+        const { user } = get();
+        if (!user) return "member";
+        // Default based on role
+        if (user.role === "owner" || user.role === "manager") return "manager";
+        if (user.role === "coach") return "coach";
+        return "member";
+      },
     }),
     {
       name: "user-storage",
@@ -205,6 +248,7 @@ export const useUserStore = create<UserState>()(
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
+        activeDashboard: state.activeDashboard,
       }),
     }
   )

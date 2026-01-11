@@ -15,6 +15,27 @@ export enum UserRole {
   Member = "member",
 }
 
+// Dashboard types (separate from UserRole - these determine which dashboards a user can access)
+export const DASHBOARD_TYPES = ["member", "coach", "manager"] as const;
+export type DashboardType = (typeof DASHBOARD_TYPES)[number];
+
+// Coach verification status for future admin approval flow
+export const COACH_VERIFICATION_STATUSES = [
+  "pending",
+  "approved",
+  "rejected",
+] as const;
+export type CoachVerificationStatus =
+  (typeof COACH_VERIFICATION_STATUSES)[number];
+
+export interface CoachVerification {
+  status: CoachVerificationStatus;
+  submittedAt?: string;
+  certificationDetails?: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+}
+
 export interface BaseUserProfile extends AuditInfo {
   username: string;
   email?: string;
@@ -42,6 +63,12 @@ export interface BaseUser extends AuditInfo {
   subscriptionHistory: SubscriptionHistory[];
   notifications: AppNotification[];
   attendanceHistory?: AttendanceRecord[];
+
+  // Multi-dashboard access: which dashboards this user can access
+  dashboardAccess?: DashboardType[];
+
+  // Coach verification for coach dashboard access requests
+  coachVerification?: CoachVerification;
 }
 
 export interface MemberUser extends BaseUser {

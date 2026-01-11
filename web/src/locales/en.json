@@ -55,7 +55,8 @@
     "settings": "Settings",
     "goBack": "Go Back",
     "years": "years",
-    "amount": "Amount"
+    "amount": "Amount",
+    "joined": "Joined"
   },
   "confirm": {
     "default": {
@@ -191,6 +192,7 @@
       "service_unavailable": "Service temporarily unavailable",
       "gateway_timeout": "Gateway timeout. Please try again",
       "method_not_allowed": "Method not allowed",
+      "invalid_request": "Invalid request",
       "unexpected": "Unexpected error occured. Please try again",
       "not_found": "Not found error",
       "auth": {
@@ -225,7 +227,7 @@
         "already_deactivated": "User is already deactivated",
         "cannot_deactivate_self": "You cannot deactivate your own account",
         "invalid_profile_data": "Invalid profile data",
-        "profile_update_failed": "Failed to update profile"
+        "update_failed": "Failed to update user"
       },
       "gym": {
         "not_found": "Gym not found",
@@ -275,6 +277,14 @@
       },
       "attendance": {
         "fetch_error": "Failed to fetch attendance records"
+      },
+      "staff": {
+        "already_exists": "User is already a staff member of this gym",
+        "add_failed": "Failed to add staff member",
+        "update_failed": "Failed to update staff member",
+        "delete_failed": "Failed to remove staff member",
+        "fetch_failed": "Failed to fetch staff members",
+        "member_already_exists": "This user is already a member of this gym. Please remove their membership first or use a different email/phone."
       }
     }
   },
@@ -301,6 +311,7 @@
     "settings": "Settings",
     "pricing": "Pricing",
     "access": "Access",
+    "staff": "Staff",
     "training": "Training",
     "programs": "Programs",
     "exercises": "Exercises",
@@ -318,6 +329,11 @@
     "customizeSettings": "App settings",
     "pin": "Pin ",
     "unpin": "Unpin "
+  },
+  "dashboard": {
+    "member": "Member",
+    "manager": "Manager",
+    "coach": "Coach"
   },
   "subscriptions": {
     "title": "Subscriptions",
@@ -1934,6 +1950,7 @@
         "title": "App Preferences",
         "subtitle": "Customize your app experience",
         "language": "Language",
+        "languageDesc": "Choose your preferred language",
         "theme": "Theme",
         "notifications": "Enable Notifications"
       },
@@ -2422,5 +2439,44 @@
     "extendSubmit": "Extend Subscription",
     "extendingFrom": "Extending from current end date",
     "startsOn": "Starts On"
+  },
+  "staff": {
+    "title": "Staff Management",
+    "subtitle": "Manage your gym's managers, staff, and coaches",
+    "addTitle": "Add Staff Member",
+    "editTitle": "Edit Staff Member",
+    "addButton": "Add Staff",
+    "saveButton": "Save Changes",
+    "pending": "Pending Setup",
+    "removeConfirmTitle": "Remove Staff Member",
+    "removeConfirmText": "Are you sure you want to remove this staff member? They will lose access to manager/staff features.",
+    "updateSuccess": "Staff member updated successfully",
+    "removeSuccess": "Staff member removed successfully",
+    "noData": {
+      "title": "No Staff Members",
+      "description": "Add managers, staff, or coaches to help run your gym"
+    },
+    "roles": {
+      "manager": "Manager",
+      "staff": "Staff",
+      "coach": "Coach"
+    },
+    "form": {
+      "name": "Full Name",
+      "namePlaceholder": "Enter full name",
+      "email": "Email",
+      "emailPlaceholder": "Enter email address",
+      "phone": "Phone Number",
+      "phonePlaceholder": "Enter phone number",
+      "role": "Role",
+      "contactHint": "At least one contact method (email or phone) is required. If the user doesn't exist, they'll receive an invitation."
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "contactRequired": "Email or phone number is required",
+      "emailInvalid": "Please enter a valid email address",
+      "roleRequired": "Please select a role",
+      "checkForm": "Please check the form for errors"
+    }
   }
 }

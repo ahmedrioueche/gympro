@@ -79,3 +79,16 @@ export interface RenewSubscriptionModalProps {
     endDate: string;
   };
 }
+
+export interface StaffModalProps {
+  gymId: string;
+  mode: "add" | "edit";
+  staff?: {
+    membershipId: string;
+    fullName: string;
+    email?: string;
+    phoneNumber?: string;
+    role: string;
+  };
+  onSuccess?: () => void;
+}

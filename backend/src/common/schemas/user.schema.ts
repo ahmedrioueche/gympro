@@ -154,6 +154,33 @@ export class User extends Document {
   @Prop({ enum: Object.values(UserRole), required: true, index: true })
   role: UserRole;
 
+  // Multi-dashboard access: which dashboards this user can access
+  @Prop({
+    type: [String],
+    enum: ['member', 'coach', 'manager'],
+    default: ['member'],
+  })
+  dashboardAccess?: string[];
+
+  // Coach verification for coach dashboard access requests
+  @Prop({
+    type: {
+      status: { type: String, enum: ['pending', 'approved', 'rejected'] },
+      submittedAt: Date,
+      certificationDetails: String,
+      reviewedAt: Date,
+      reviewedBy: { type: Types.ObjectId, ref: 'User' },
+    },
+    _id: false,
+  })
+  coachVerification?: {
+    status: 'pending' | 'approved' | 'rejected';
+    submittedAt?: Date;
+    certificationDetails?: string;
+    reviewedAt?: Date;
+    reviewedBy?: Types.ObjectId;
+  };
+
   @Prop({ type: AppSettingsSchema })
   appSettings?: AppSettings;
 

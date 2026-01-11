@@ -10,13 +10,13 @@ import {
   Plus,
   Sparkles,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../constants/navigation";
-import useScreen from "../../hooks/useScreen";
-import { useGymStore } from "../../store/gym";
-import { useUserStore } from "../../store/user";
-import { redirectToHomePageAfterTimeout } from "../../utils/helper";
+import { APP_PAGES } from "../../../constants/navigation";
+import useScreen from "../../../hooks/useScreen";
+import { useGymStore } from "../../../store/gym";
+import { useUserStore } from "../../../store/user";
+import { redirectToHomePageAfterTimeout } from "../../../utils/helper";
 
 interface GymSelectorProps {
   gyms?: Gym[];
@@ -32,13 +32,53 @@ export default function GymSelector({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const routerState = useRouterState();
-  const { user } = useUserStore();
+  const { user, activeDashboard } = useUserStore();
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
   const { currentGym, setGym } = useGymStore();
   const { isMobile } = useScreen();
 
   const isOnGymDashboard = routerState.location.pathname.startsWith("/gym");
+
+  // Filter gyms based on active dashboard
+  const filteredGyms = useMemo(() => {
+    if (!gyms || gyms.length === 0) return [];
+    if (!user) return gyms;
+
+    switch (activeDashboard) {
+      case "manager":
+        // For manager dashboard, show gyms where user is owner OR has manager/owner role in membership
+        return gyms.filter((gym) => {
+          // Check if user is the gym owner (owner can be populated object or just ID string)
+          const ownerId =
+            typeof gym.owner === "object" ? gym.owner?._id : gym.owner;
+          const isOwner = ownerId === user._id;
+          if (isOwner) return true;
+
+          // Check membership roles
+          const membership = user.memberships?.find(
+            (m) => m.gym._id === gym._id
+          );
+          return (membership?.roles as string[])?.some((role) =>
+            ["owner", "manager"].includes(role)
+          );
+        });
+
+      case "coach":
+        // For coach dashboard, filter to gyms where user has coach role in membership
+        return gyms.filter((gym) => {
+          const membership = user.memberships?.find(
+            (m) => m.gym._id === gym._id
+          );
+          return (membership?.roles as string[])?.includes("coach");
+        });
+
+      case "member":
+      default:
+        // For member dashboard, show ALL gyms - owners/managers can also access member view
+        return gyms;
+    }
+  }, [gyms, user, activeDashboard]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,7 +99,7 @@ export default function GymSelector({
 
   const handleGymChange = (gymId: string | null) => {
     setIsOpen(false);
-    const selected = gyms.find((g) => g._id === gymId) || null;
+    const selected = filteredGyms.find((g) => g._id === gymId) || null;
     setGym(selected);
 
     if (gymId) {
@@ -81,11 +121,11 @@ export default function GymSelector({
     }
   };
 
-  const selectedGym = Array.isArray(gyms)
-    ? gyms.find((gym) => gym._id === currentGym?._id)
+  const selectedGym = Array.isArray(filteredGyms)
+    ? filteredGyms.find((gym) => gym._id === currentGym?._id)
     : undefined;
 
-  if (gyms.length === 0) {
+  if (filteredGyms.length === 0) {
     return (
       <div className={`flex items-center gap-3 px-2 py-2 ${className}`}>
         <div className="flex-shrink-0">
@@ -114,8 +154,8 @@ export default function GymSelector({
     );
   }
 
-  if (gyms.length === 1) {
-    const gym = gyms[0];
+  if (filteredGyms.length === 1) {
+    const gym = filteredGyms[0];
     const isSelected = currentGym?._id === gym._id;
 
     const handleAction = () => {

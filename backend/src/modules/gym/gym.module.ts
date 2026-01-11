@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../common/schemas/user.schema';
+import { DashboardModule } from '../dashboard/dashboard.module';
 import {
   GymMembershipModel,
   GymMembershipSchema,
@@ -16,6 +17,7 @@ import { GymService } from './gym.service';
       { name: User.name, schema: UserSchema },
       { name: GymMembershipModel.name, schema: GymMembershipSchema },
     ]),
+    forwardRef(() => DashboardModule),
   ],
   controllers: [GymController],
   providers: [GymService],

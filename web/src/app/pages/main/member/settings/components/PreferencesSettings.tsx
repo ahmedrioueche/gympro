@@ -1,5 +1,5 @@
 import { settingsApi, type AppLanguage } from "@ahmedrioueche/gympro-client";
-import { Check, ChevronDown, Globe, Moon, Sun } from "lucide-react";
+import { Check, ChevronDown, Globe } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -161,7 +161,7 @@ export default function PreferencesSettings() {
                 {t("member.settings.preferences.language")}
               </p>
               <p className="text-sm text-text-secondary">
-                Choose your preferred language
+                {t("member.settings.preferences.languageDesc")}
               </p>
             </div>
           </div>
@@ -172,30 +172,6 @@ export default function PreferencesSettings() {
             options={LANGUAGES}
             disabled={isSaving}
           />
-        </div>
-
-        {/* Theme Selection - Placeholder for now */}
-        <div className="bg-background border border-border rounded-xl p-4 flex items-center justify-between opacity-50 cursor-not-allowed">
-          <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-surface border border-border text-text-secondary">
-              {isDark ? (
-                <Moon className="w-5 h-5" />
-              ) : (
-                <Sun className="w-5 h-5" />
-              )}
-            </div>
-            <div>
-              <p className="font-medium text-text-primary">
-                {t("member.settings.preferences.theme")}
-              </p>
-              <p className="text-sm text-text-secondary">
-                Toggle dark/light mode (Coming soon)
-              </p>
-            </div>
-          </div>
-          <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-border">
-            <span className="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition" />
-          </div>
         </div>
       </div>
     </div>

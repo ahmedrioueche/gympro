@@ -12,16 +12,26 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { DashboardService } from '../dashboard/dashboard.service';
 import { GymService } from './gym.service';
 
 @Controller('gyms')
 export class GymController {
-  constructor(private readonly gymService: GymService) {}
+  constructor(
+    private readonly gymService: GymService,
+    private readonly dashboardService: DashboardService,
+  ) {}
 
   @Post()
   async create(@Body() createGymDto: any) {
     try {
       const gym = await this.gymService.create(createGymDto);
+
+      // Grant manager dashboard access to the owner
+      if (createGymDto.owner) {
+        await this.dashboardService.grantManagerAccess(createGymDto.owner);
+      }
+
       return apiResponse(true, undefined, gym, 'Gym created successfully');
     } catch (error) {
       return apiResponse(

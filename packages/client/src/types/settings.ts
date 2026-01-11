@@ -21,6 +21,6 @@ export interface LocaleSettings {
 export interface AppSettings {
   theme: ThemeOption;
   viewPreference: ViewPreference;
-  notifications: NotificationSettings;
+  notifications?: NotificationSettings;
   locale?: LocaleSettings;
 }

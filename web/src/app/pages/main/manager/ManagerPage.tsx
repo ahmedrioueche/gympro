@@ -9,7 +9,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../constants/navigation";
-import Nav from "../../../components/Nav";
+import Nav from "../../../components/nav/Nav";
 
 const sidebarLinks = [
   {

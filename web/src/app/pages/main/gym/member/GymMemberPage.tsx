@@ -1,7 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 import { Bell, CreditCard, Home, Key, Logs, Settings } from "lucide-react";
 import { APP_PAGES } from "../../../../../constants/navigation";
-import Nav from "../../../../components/Nav";
+import Nav from "../../../../components/nav/Nav";
 
 const sidebarLinks = [
   {

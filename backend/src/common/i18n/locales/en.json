@@ -10,7 +10,9 @@
     },
     "onboarding": {
       "completed_subject": "Welcome to GymPro - Let's Get Started!",
-      "completed_body": "<p>Hello {{name}},</p><p>Welcome to GymPro! 🎉 We're thrilled to have you on board.</p><p>Your account setup is complete, and you now have access to all the features you need to manage your gym operations efficiently.</p><p><strong>Your Free Trial</strong></p><p>You're starting with a <strong>{{trialDays}}-day free trial</strong> of GymPro. This gives you full access to explore all our features and see how GymPro can transform your gym management.</p><p><strong>What's Next?</strong></p><ul><li>Explore your dashboard and familiarize yourself with the tools</li><li>Add your gym members and staff</li><li>Set up your classes and schedules</li><li>Customize your gym profile and settings</li></ul><p><strong>Manage Your Subscription</strong></p><p>You can visit the subscription page in your dashboard anytime to:</p><ul><li>View your current plan and trial details</li><li>Upgrade to a premium plan</li><li>Manage billing and payment methods</li><li>Track your trial progress</li></ul><p>If you have any questions or need assistance getting started, our support team is always here to help.</p><p>Thank you for choosing GymPro!</p><p>Best regards,<br>The GymPro Team</p>"
+      "completed_body": "<p>Hello {{name}},</p><p>Welcome to GymPro! 🎉 We're thrilled to have you on board.</p><p>Your account setup is complete, and you now have access to all the features you need to manage your gym operations efficiently.</p><p><strong>Your Free Trial</strong></p><p>You're starting with a <strong>{{trialDays}}-day free trial</strong> of GymPro. This gives you full access to explore all our features and see how GymPro can transform your gym management.</p><p><strong>What's Next?</strong></p><ul><li>Explore your dashboard and familiarize yourself with the tools</li><li>Add your gym members and staff</li><li>Set up your classes and schedules</li><li>Customize your gym profile and settings</li></ul><p><strong>Manage Your Subscription</strong></p><p>You can visit the subscription page in your dashboard anytime to:</p><ul><li>View your current plan and trial details</li><li>Upgrade to a premium plan</li><li>Manage billing and payment methods</li><li>Track your trial progress</li></ul><p>If you have any questions or need assistance getting started, our support team is always here to help.</p><p>Thank you for choosing GymPro!</p><p>Best regards,<br>The GymPro Team</p>",
+      "member_completed_subject": "Welcome to GymPro!",
+      "member_completed_body": "<p>Hello {{name}},</p><p>Welcome to GymPro! 🎉 Your account setup is complete.</p><p>You can now log in to your dashboard to:</p><ul><li>Track your workouts and progress</li><li>View your gym memberships</li><li>Check class schedules and book sessions</li><li>Stay updated with gym announcements</li></ul><p>If you have any questions or need assistance, please don't hesitate to contact your gym.</p><p>See you at the gym!</p><p>Best regards,<br>The GymPro Team</p>"
     },
     "subscription": {
       "created_subject": "Welcome to {{planName}} - Subscription Confirmed",
@@ -53,7 +55,9 @@
     },
     "onboarding": {
       "completed_title": "Welcome to GymPro",
-      "completed_body": "Your account is ready with a {{trialDays}}-day free trial. Explore your dashboard to get started!"
+      "completed_body": "Your account is ready with a {{trialDays}}-day free trial. Explore your dashboard to get started!",
+      "member_completed_title": "Welcome to GymPro",
+      "member_completed_body": "Your account setup is complete. Log in to track your workouts and view your gym memberships!"
     },
     "subscription": {
       "created_title": "Subscription Activated",

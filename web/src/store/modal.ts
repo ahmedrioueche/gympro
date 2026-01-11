@@ -5,6 +5,7 @@ import type {
   ExerciseDetailModalProps,
   RenewSubscriptionModalProps,
   ScanResultModalProps,
+  StaffModalProps,
   UpgradePreviewModalProps,
 } from "../types/modals";
 
@@ -15,6 +16,7 @@ type ModalType =
   | "exercise_detail"
   | "scan_result"
   | "renew_subscription"
+  | "staff_modal"
   | null;
 
 interface ModalState {
@@ -25,6 +27,7 @@ interface ModalState {
   exerciseModalProps?: ExerciseDetailModalProps;
   scanResultProps?: ScanResultModalProps;
   renewSubscriptionProps?: RenewSubscriptionModalProps;
+  staffModalProps?: StaffModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -56,6 +59,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "renew_subscription",
           renewSubscriptionProps: props,
+        };
+      }
+      if (modal === "staff_modal") {
+        return {
+          currentModal: "staff_modal",
+          staffModalProps: props,
         };
       }
       return { currentModal: null };

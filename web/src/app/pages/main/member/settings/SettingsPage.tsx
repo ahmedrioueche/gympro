@@ -1,16 +1,36 @@
-import { Lock, Settings, User } from "lucide-react";
-import { useState } from "react";
+import { Lock, Save, Settings, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../components/PageHeader";
 import PreferencesSettings from "./components/PreferencesSettings";
 import ProfileSettings from "./components/ProfileSettings";
 import SecuritySettings from "./components/SecuritySettings";
-
-type TabType = "profile" | "preferences" | "security";
+import {
+  useMemberSettings,
+  type MemberSettingsTabType,
+} from "./hooks/useMemberSettings";
 
 export default function SettingsPage() {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<TabType>("profile");
+  const {
+    user,
+    activeTab,
+    setActiveTab,
+    fullName,
+    setFullName,
+    phoneNumber,
+    setPhoneNumber,
+    email,
+    setEmail,
+    addEmailMode,
+    setAddEmailMode,
+    addPhoneMode,
+    setAddPhoneMode,
+    uploading,
+    handleAvatarUpload,
+    handleSave,
+    isSaving,
+    hasChanges,
+  } = useMemberSettings();
 
   const tabs = [
     {
@@ -30,12 +50,26 @@ export default function SettingsPage() {
     },
   ];
 
+  // Only show save button on profile tab
+  const showSaveButton = activeTab === "profile";
+
   return (
     <div className="space-y-6">
       <PageHeader
         title={t("member.settings.pageTitle")}
         subtitle={t("member.settings.pageSubtitle")}
         icon={Settings}
+        actionButton={
+          showSaveButton
+            ? {
+                label: t("common.saveChanges", "Save Changes"),
+                icon: Save,
+                onClick: handleSave,
+                loading: isSaving,
+                disabled: isSaving || !hasChanges,
+              }
+            : undefined
+        }
       />
 
       <div className="flex flex-col md:flex-row gap-6">
@@ -46,7 +80,7 @@ export default function SettingsPage() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as TabType)}
+                onClick={() => setActiveTab(tab.id as MemberSettingsTabType)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                   activeTab === tab.id
                     ? "bg-primary text-white shadow-lg shadow-primary/20"
@@ -62,7 +96,23 @@ export default function SettingsPage() {
 
         {/* Main Content */}
         <div className="flex-1 bg-surface border border-border rounded-2xl p-6 shadow-sm min-h-[400px]">
-          {activeTab === "profile" && <ProfileSettings />}
+          {activeTab === "profile" && user && (
+            <ProfileSettings
+              user={user}
+              fullName={fullName}
+              setFullName={setFullName}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              email={email}
+              setEmail={setEmail}
+              addEmailMode={addEmailMode}
+              setAddEmailMode={setAddEmailMode}
+              addPhoneMode={addPhoneMode}
+              setAddPhoneMode={setAddPhoneMode}
+              uploading={uploading}
+              handleAvatarUpload={handleAvatarUpload}
+            />
+          )}
           {activeTab === "preferences" && <PreferencesSettings />}
           {activeTab === "security" && <SecuritySettings />}
         </div>

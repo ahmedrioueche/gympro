@@ -48,11 +48,21 @@ export const GymRoleGuard: React.FC<GymRoleGuardProps> = ({
     (m) => m.gym._id === currentGym._id
   );
 
+  // Check if user is the gym owner
+  const ownerId =
+    typeof currentGym.owner === "object"
+      ? (currentGym.owner as any)?._id
+      : currentGym.owner;
+  const isGymOwner = ownerId === user._id;
+
   // Determine the user's roles in this gym
-  // Priority: membership roles > fallback to global user role
+  // Priority: gym ownership > membership roles > fallback to global user role
   let effectiveRoles: UserRole[] = [];
 
-  if (membership?.roles && membership.roles.length > 0) {
+  if (isGymOwner) {
+    // Gym owners always have owner role access
+    effectiveRoles = [UserRole.Owner];
+  } else if (membership?.roles && membership.roles.length > 0) {
     effectiveRoles = membership.roles;
   } else {
     // Fallback to user's global role if no membership roles

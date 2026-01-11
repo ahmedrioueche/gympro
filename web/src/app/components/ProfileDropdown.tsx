@@ -1,9 +1,23 @@
+import type { DashboardType } from "@ahmedrioueche/gympro-client";
+import { useNavigate } from "@tanstack/react-router";
+import { Briefcase, Dumbbell, GraduationCap } from "lucide-react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Dropdown, {
   DropdownDivider,
   DropdownItem,
 } from "../../components/ui/Dropdown";
+import { APP_PAGES } from "../../constants/navigation";
 import { useUserStore } from "../../store/user";
+
+const DASHBOARD_CONFIG: Record<
+  DashboardType,
+  { icon: typeof Dumbbell; label: string; emoji: string }
+> = {
+  member: { icon: Dumbbell, label: "dashboard.member", emoji: "🏋️" },
+  coach: { icon: GraduationCap, label: "dashboard.coach", emoji: "🎓" },
+  manager: { icon: Briefcase, label: "dashboard.manager", emoji: "💼" },
+};
 
 interface ProfileDropdownProps {
   onProfileClick?: () => void;
@@ -19,7 +33,29 @@ export default function ProfileDropdown({
   disabled = false,
 }: ProfileDropdownProps) {
   const { t } = useTranslation();
-  const { user } = useUserStore();
+  const navigate = useNavigate();
+  const { user, activeDashboard, setActiveDashboard, canAccessDashboard } =
+    useUserStore();
+
+  // Derive available dashboards from dashboardAccess field AND user role (for backwards compatibility)
+  const availableDashboards = useMemo(() => {
+    const dashboards = new Set<DashboardType>(user?.dashboardAccess || []);
+
+    // Always include member
+    dashboards.add("member");
+
+    // Add based on role for backwards compatibility (users created before this feature)
+    if (user?.role === "owner" || user?.role === "manager") {
+      dashboards.add("manager");
+    }
+    if (user?.role === "coach") {
+      dashboards.add("coach");
+    }
+
+    return Array.from(dashboards) as DashboardType[];
+  }, [user?.dashboardAccess, user?.role]);
+
+  const hasMultipleDashboards = availableDashboards.length > 1;
 
   const initials = user?.profile?.fullName
     ?.split(" ")
@@ -27,12 +63,34 @@ export default function ProfileDropdown({
     .join("")
     .toUpperCase();
 
+  const handleDashboardSwitch = (dashboard: DashboardType) => {
+    if (!canAccessDashboard(dashboard)) return;
+
+    setActiveDashboard(dashboard);
+
+    // Navigate to dashboard home
+    switch (dashboard) {
+      case "manager":
+        navigate({ to: APP_PAGES.manager.home.link });
+        break;
+      case "coach":
+        navigate({ to: APP_PAGES.coach.link });
+        break;
+      case "member":
+      default:
+        navigate({ to: APP_PAGES.member.home.link });
+        break;
+    }
+  };
+
   const avatarElement = (
     <>
       {user?.profile?.profileImageUrl ? (
         <img
           src={user.profile.profileImageUrl}
           alt={user?.profile?.fullName || "User"}
+          referrerPolicy="no-referrer"
+          crossOrigin="anonymous"
           className="w-10 h-10 rounded-full object-cover"
         />
       ) : (
@@ -75,6 +133,30 @@ export default function ProfileDropdown({
           </div>
         </div>
       </div>
+
+      {/* Dashboard Switcher Section */}
+      {hasMultipleDashboards && (
+        <>
+          <div className="px-4 py-2 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+            {t("dashboard.switchDashboard", "Switch Dashboard")}
+          </div>
+          {availableDashboards.map((dashboard) => {
+            const config = DASHBOARD_CONFIG[dashboard];
+            const isActive = dashboard === activeDashboard;
+
+            return (
+              <DropdownItem
+                key={dashboard}
+                icon={config.emoji}
+                label={t(config.label)}
+                onClick={() => handleDashboardSwitch(dashboard)}
+                className={isActive ? "bg-primary/10" : ""}
+              />
+            );
+          })}
+          <DropdownDivider />
+        </>
+      )}
 
       <DropdownItem
         icon="⚙️"

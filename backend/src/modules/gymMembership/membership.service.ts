@@ -1,6 +1,7 @@
 import {
   ErrorCode,
   MembershipStatus,
+  NotificationType,
   type SubscriptionInfo,
   UserRole,
 } from '@ahmedrioueche/gympro-client';
@@ -1123,5 +1124,391 @@ export class MembershipService {
       (t) => t.duration === duration && t.durationUnit === unit,
     );
     return tier?.price || 0;
+  }
+
+  // ==================== STAFF METHODS ====================
+
+  /**
+   * Get all staff members for a gym (managers, staff, coaches)
+   */
+  async getGymStaff(gymId: string) {
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid gymId format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    const staffRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+
+    const memberships = await this.membershipModel
+      .find({
+        gym: gymObjectId,
+        roles: { $in: staffRoles },
+      })
+      .exec();
+
+    const staffMembers: {
+      membershipId: string;
+      userId: string;
+      fullName: string;
+      email: string | undefined;
+      phoneNumber: string | undefined;
+      profileImageUrl: string | undefined;
+      role: string;
+      joinedAt: string;
+      accountStatus: string;
+    }[] = [];
+
+    for (const membership of memberships) {
+      const user = await this.userModel
+        .findById(membership.user)
+        .select('profile role')
+        .lean()
+        .exec();
+
+      if (user) {
+        const staffRole = membership.roles.find((r: UserRole) =>
+          staffRoles.includes(r),
+        );
+
+        staffMembers.push({
+          membershipId: membership._id.toString(),
+          userId: user._id.toString(),
+          fullName: user.profile?.fullName || '',
+          email: user.profile?.email,
+          phoneNumber: user.profile?.phoneNumber,
+          profileImageUrl: user.profile?.profileImageUrl,
+          role: staffRole || 'staff',
+          joinedAt: membership.joinedAt,
+          accountStatus: user.profile?.accountStatus || 'active',
+        });
+      }
+    }
+
+    return staffMembers;
+  }
+
+  /**
+   * Add a staff member to a gym
+   */
+  async addStaff(
+    dto: {
+      gymId: string;
+      email?: string;
+      phoneNumber?: string;
+      fullName: string;
+      role: string;
+    },
+    createdBy: string,
+  ) {
+    const { email, phoneNumber, gymId, fullName, role } = dto;
+
+    // Validate role
+    const validRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+    if (!validRoles.includes(role as UserRole)) {
+      throw new BadRequestException({
+        message: 'Invalid staff role',
+        errorCode: ErrorCode.INVALID_ROLE,
+      });
+    }
+
+    // Must have contact info for staff
+    if (!email && !phoneNumber) {
+      throw new BadRequestException({
+        message: 'Email or phone number is required for staff members',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    // Check if user already exists
+    const existingUserQuery: any = {};
+    if (email) {
+      existingUserQuery['profile.email'] = email;
+    }
+    if (phoneNumber) {
+      if (Object.keys(existingUserQuery).length > 0) {
+        existingUserQuery.$or = [
+          { 'profile.email': email },
+          { 'profile.phoneNumber': phoneNumber },
+        ];
+        delete existingUserQuery['profile.email'];
+      } else {
+        existingUserQuery['profile.phoneNumber'] = phoneNumber;
+      }
+    }
+
+    let user = await this.userModel.findOne(existingUserQuery);
+    let isNewUser = false;
+    let setupToken: string | undefined;
+
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid gymId format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    if (!user) {
+      // Create new user
+      isNewUser = true;
+      setupToken = crypto.randomBytes(32).toString('hex');
+      const setupTokenExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      const tempPassword = await bcrypt.hash(
+        crypto.randomBytes(32).toString('hex'),
+        10,
+      );
+
+      user = new this.userModel({
+        profile: {
+          username: email
+            ? email.split('@')[0]
+            : `user_${phoneNumber?.slice(-4)}`,
+          email: email || undefined,
+          phoneNumber: phoneNumber || undefined,
+          fullName: fullName || undefined,
+          password: tempPassword,
+          isValidated: false,
+          phoneNumberVerified: false,
+          accountStatus: 'pending_setup',
+          isOnBoarded: false,
+          isActive: false,
+        },
+        role: role as UserRole,
+        memberships: [],
+        subscriptionHistory: [],
+        notifications: [],
+        setupToken,
+        setupTokenExpiry,
+        setupTokenUsed: false,
+      });
+
+      await user.save();
+      this.logger.log(`Created new user ${user._id} for staff creation`);
+    } else {
+      // Check if already staff at this gym
+      const existingMembership = await this.membershipModel.findOne({
+        gym: gymObjectId,
+        _id: { $in: user.memberships },
+      });
+
+      if (existingMembership) {
+        // Check if already a staff member
+        const staffRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+        const hasStaffRole = existingMembership.roles.some((r: UserRole) =>
+          staffRoles.includes(r),
+        );
+
+        if (hasStaffRole) {
+          throw new BadRequestException({
+            message: 'User is already a staff member of this gym',
+            errorCode: ErrorCode.STAFF_ALREADY_EXISTS,
+          });
+        }
+
+        // Check if they are a member - don't allow adding members as staff
+        if (existingMembership.roles.includes(UserRole.Member)) {
+          throw new BadRequestException({
+            message:
+              'This user is already a member of this gym. Please remove their membership first or use a different email/phone.',
+            errorCode: ErrorCode.MEMBER_ALREADY_EXISTS,
+          });
+        }
+      }
+    }
+
+    // Create new membership for staff (we already checked no existing membership above)
+    let membership = await this.membershipModel.findOne({
+      gym: gymObjectId,
+      _id: { $in: user.memberships },
+    });
+
+    if (membership) {
+      // This shouldn't happen due to checks above, but as safety net
+      if (!membership.roles.includes(role as UserRole)) {
+        membership.roles.push(role as UserRole);
+        await membership.save();
+      }
+    } else {
+      // Create new membership
+      membership = new this.membershipModel({
+        user: user._id,
+        gym: gymObjectId,
+        roles: [role as UserRole],
+        joinedAt: new Date().toISOString(),
+        membershipStatus: 'active',
+        createdAt: new Date(),
+        createdBy,
+      });
+
+      await membership.save();
+      user.memberships.push(membership._id);
+      await user.save();
+    }
+
+    // Send notification to existing users
+    if (!isNewUser) {
+      try {
+        const gym = await this.gymModel
+          .findById(gymId)
+          .select('name')
+          .lean()
+          .exec();
+
+        if (gym) {
+          await this.notificationsService.notifyUser(user, {
+            key: 'staff_added_to_gym',
+            vars: {
+              name: user.profile?.fullName || 'Staff',
+              gymName: gym.name,
+              role: role,
+            },
+            type: 'info' as NotificationType,
+            priority: 'medium',
+            relatedId: gymId,
+          });
+        }
+      } catch (notifError) {
+        this.logger.error(`Failed to send staff notification: ${notifError}`);
+      }
+    }
+
+    this.logger.log(
+      `Added staff ${user._id} with role ${role} to gym ${gymId}`,
+    );
+
+    return {
+      membership: membership.toObject(),
+      user: this.sanitizeUser(user),
+      setupToken: isNewUser ? setupToken : undefined,
+      isNewUser,
+    };
+  }
+
+  /**
+   * Update a staff member
+   */
+  async updateStaff(
+    membershipId: string,
+    gymId: string,
+    dto: {
+      fullName?: string;
+      email?: string;
+      phoneNumber?: string;
+      role?: string;
+    },
+  ) {
+    const memObjectId = this.toObjectId(membershipId);
+    const gymObjectId = this.toObjectId(gymId);
+
+    if (!memObjectId || !gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    const membership = await this.membershipModel
+      .findOne({
+        _id: memObjectId,
+        gym: gymObjectId,
+      })
+      .exec();
+
+    if (!membership) {
+      throw new BadRequestException({
+        message: 'Staff membership not found',
+        errorCode: ErrorCode.NOT_FOUND,
+      });
+    }
+
+    const user = await this.userModel.findById(membership.user).exec();
+
+    if (!user) {
+      throw new BadRequestException({
+        message: 'User not found',
+        errorCode: ErrorCode.NOT_FOUND,
+      });
+    }
+
+    // Update user profile
+    if (dto.fullName !== undefined) user.profile.fullName = dto.fullName;
+    if (dto.email !== undefined) user.profile.email = dto.email;
+    if (dto.phoneNumber !== undefined)
+      user.profile.phoneNumber = dto.phoneNumber;
+    await user.save();
+
+    // Update role if provided
+    if (dto.role) {
+      const staffRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+      // Remove old staff roles and add new one
+      membership.roles = membership.roles.filter(
+        (r: UserRole) => !staffRoles.includes(r),
+      );
+      membership.roles.push(dto.role as UserRole);
+      await membership.save();
+    }
+
+    return {
+      membership: membership.toObject(),
+      user: this.sanitizeUser(user),
+    };
+  }
+
+  /**
+   * Remove a staff member from gym
+   */
+  async removeStaff(membershipId: string, gymId: string) {
+    const memObjectId = this.toObjectId(membershipId);
+    const gymObjectId = this.toObjectId(gymId);
+
+    if (!memObjectId || !gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    const membership = await this.membershipModel
+      .findOne({
+        _id: memObjectId,
+        gym: gymObjectId,
+      })
+      .exec();
+
+    if (!membership) {
+      throw new BadRequestException({
+        message: 'Staff membership not found',
+        errorCode: ErrorCode.NOT_FOUND,
+      });
+    }
+
+    // Remove staff roles from membership
+    const staffRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+    membership.roles = membership.roles.filter(
+      (r: UserRole) => !staffRoles.includes(r),
+    );
+
+    // If no roles left, delete the membership entirely
+    if (membership.roles.length === 0) {
+      const user = await this.userModel.findById(membership.user).exec();
+      if (user) {
+        user.memberships = user.memberships.filter(
+          (m: any) => m.toString() !== membershipId,
+        );
+        await user.save();
+      }
+      await this.membershipModel.deleteOne({ _id: membership._id });
+    } else {
+      await membership.save();
+    }
+
+    this.logger.log(
+      `Removed staff from membership ${membershipId} in gym ${gymId}`,
+    );
+
+    return { deleted: true };
   }
 }

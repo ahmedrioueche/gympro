@@ -24,6 +24,10 @@ const RenewSubscriptionModal = lazy(
     import("./app/components/modals/renew-subscription/RenewSubscriptionModal")
 );
 
+const StaffModal = lazy(
+  () => import("./app/components/modals/staff-modal/StaffModal")
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -33,6 +37,7 @@ function modals() {
       <ExerciseDetailModal />
       <ScanResultModal />
       <RenewSubscriptionModal />
+      <StaffModal />
     </Suspense>
   );
 }

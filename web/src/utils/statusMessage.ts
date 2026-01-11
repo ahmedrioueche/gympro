@@ -16,6 +16,7 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.SERVICE_UNAVAILABLE]: "status.error.service_unavailable",
   [ErrorCode.GATEWAY_TIMEOUT]: "status.error.gateway_timeout",
   [ErrorCode.METHOD_NOT_ALLOWED]: "status.error.method_not_allowed",
+  [ErrorCode.INVALID_REQUEST]: "status.error.invalid_request",
 
   // Authentication errors
   [ErrorCode.INVALID_CREDENTIALS]: "status.error.auth.invalid_credentials",
@@ -57,7 +58,7 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.CANNOT_DEACTIVATE_SELF]:
     "status.error.user.cannot_deactivate_self",
   [ErrorCode.INVALID_PROFILE_DATA]: "status.error.user.invalid_profile_data",
-  [ErrorCode.PROFILE_UPDATE_FAILED]: "status.error.user.profile_update_failed",
+  [ErrorCode.USER_UPDATE_FAILED]: "status.error.user.update_failed",
 
   [ErrorCode.GYM_NOT_FOUND]: "status.error.gym.not_found",
   [ErrorCode.CREATE_GYM_FAILED]: "status.error.gym.create_failed",
@@ -114,6 +115,14 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
 
   // Attendance errors
   [ErrorCode.ATTENDANCE_FETCH_ERROR]: "status.error.attendance.fetch_error",
+
+  // Staff errors
+  [ErrorCode.STAFF_ALREADY_EXISTS]: "status.error.staff.already_exists",
+  [ErrorCode.ADD_STAFF_FAILED]: "status.error.staff.add_failed",
+  [ErrorCode.UPDATE_STAFF_FAILED]: "status.error.staff.update_failed",
+  [ErrorCode.DELETE_STAFF_FAILED]: "status.error.staff.delete_failed",
+  [ErrorCode.FETCH_STAFF_FAILED]: "status.error.staff.fetch_failed",
+  [ErrorCode.MEMBER_ALREADY_EXISTS]: "status.error.staff.member_already_exists",
 };
 
 /**

@@ -109,6 +109,10 @@ export const APP_PAGES = {
         name: "pages.gym.access",
         link: "/gym/manager/access",
       },
+      staff: {
+        name: "pages.gym.staff",
+        link: "/gym/manager/staff",
+      },
       attendance: {
         name: "pages.gym.attendance",
         link: "/gym/manager/attendance",

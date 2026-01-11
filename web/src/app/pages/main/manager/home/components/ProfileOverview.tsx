@@ -26,6 +26,8 @@ function ProfileOverview({
 }) {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
+  console.log({ user });
+  console.log(`${user.profile}`);
 
   const getAccountStatus = () => {
     if (!subscription?.plan) {
@@ -114,6 +116,8 @@ function ProfileOverview({
               <img
                 src={user.profile.profileImageUrl}
                 alt=""
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
                 className="w-20 h-20 rounded-2xl object-cover ring-2 ring-border shadow-md"
               />
             ) : (
