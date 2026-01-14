@@ -271,10 +271,7 @@ export function useCreateMemberForm(
         age: formData.age,
         subscriptionTypeId: formData.subscriptionTypeId,
         subscriptionStartDate: formData.subscriptionStartDate,
-        subscriptionEndDate: calculateEndDate(
-          formData.subscriptionStartDate,
-          formData.subscriptionDuration
-        ),
+        // subscriptionEndDate is calculated by backend based on subscription type
         paymentMethod: formData.paymentMethod as PaymentMethod,
       };
 

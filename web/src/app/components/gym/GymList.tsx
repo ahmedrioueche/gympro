@@ -1,9 +1,9 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../constants/navigation";
 import { useGymStore } from "../../../store/gym";
 import { useUserStore } from "../../../store/user";
+import { getGymDashboardRoute } from "../../../utils/gym-routing";
 import GymCard from "./GymCard";
 import GymCardSkeleton from "./GymCard.Skeleton";
 
@@ -42,9 +42,12 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
         <GymCard
           onSelect={() => {
             setGym(gym);
-            user?.role === "manager"
-              ? navigate({ to: APP_PAGES.gym.manager.home.link })
-              : navigate({ to: APP_PAGES.gym.member.home.link });
+
+            if (user) {
+              // Use centralized routing logic based on membership roles
+              const route = getGymDashboardRoute(user, gym);
+              navigate({ to: route });
+            }
           }}
           key={gym._id}
           gym={gym}

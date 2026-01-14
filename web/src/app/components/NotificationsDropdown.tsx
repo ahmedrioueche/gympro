@@ -77,6 +77,13 @@ export default function NotificationsDropdown() {
     markAllAsReadMutation.mutate();
   };
 
+  const handleDropdownOpen = () => {
+    // Mark all unread notifications as read when dropdown opens
+    if (unreadCount > 0 && notifications.length > 0) {
+      markAllAsReadMutation.mutate();
+    }
+  };
+
   const handleViewAllClick = (closeDropdown: () => void) => {
     closeDropdown();
     navigate({ to: getRoleBasedPage(user.role, "notifications") });
@@ -87,13 +94,14 @@ export default function NotificationsDropdown() {
       trigger={
         <div className="relative p-2 rounded-lg transition-colors hover:bg-border/50 text-text-secondary cursor-pointer">
           <Bell className="w-6 h-6" />
-          {unreadCount > 0 && (
+          {unreadCount > 0 && notifications.length > 0 && (
             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-danger rounded-full border-2 border-surface animate-pulse" />
           )}
         </div>
       }
       align="right"
       className="w-80 max-w-[calc(100vw-2rem)] right-0"
+      onOpen={handleDropdownOpen}
     >
       {(closeDropdown) => (
         <>

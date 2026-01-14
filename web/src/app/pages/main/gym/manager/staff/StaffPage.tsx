@@ -34,6 +34,7 @@ function StaffPage() {
         email: member.email,
         phoneNumber: member.phoneNumber,
         role: member.role,
+        permissions: member.permissions,
       },
     });
   };

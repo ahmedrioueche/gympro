@@ -37,6 +37,9 @@ export default function ProfileDropdown({
   const { user, activeDashboard, setActiveDashboard, canAccessDashboard } =
     useUserStore();
 
+  // NOTE: This switches between ACCOUNT-level dashboards (member, coach, manager)
+  // based on user.dashboardAccess field and global user.role.
+  // Gym-level routing (which gym dashboard to show) is handled by getGymDashboardRoute() utility.
   // Derive available dashboards from dashboardAccess field AND user role (for backwards compatibility)
   const availableDashboards = useMemo(() => {
     const dashboards = new Set<DashboardType>(user?.dashboardAccess || []);

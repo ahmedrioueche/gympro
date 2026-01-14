@@ -7,6 +7,7 @@ interface DropdownProps {
   children: React.ReactNode | ((closeDropdown: () => void) => React.ReactNode);
   align?: "left" | "right";
   className?: string;
+  onOpen?: () => void; // Callback when dropdown opens
 }
 
 export default function Dropdown({
@@ -14,6 +15,7 @@ export default function Dropdown({
   children,
   align = "right",
   className = "",
+  onOpen,
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -40,7 +42,16 @@ export default function Dropdown({
 
   return (
     <div ref={dropdownRef} className="relative">
-      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+      <div
+        onClick={() => {
+          const newState = !isOpen;
+          setIsOpen(newState);
+          if (newState && onOpen) {
+            onOpen(); // Call onOpen when dropdown opens
+          }
+        }}
+        className="cursor-pointer"
+      >
         {trigger}
       </div>
 

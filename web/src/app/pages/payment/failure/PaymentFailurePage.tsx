@@ -19,7 +19,7 @@ function PaymentFailurePage() {
   useEffect(() => {
     // If no payment identifiers, redirect to home
     if (!checkoutId && !paddleTransactionId) {
-      user.role === "owner" || "manager"
+      user.role === "owner" || user.role === "manager"
         ? navigate({ to: APP_PAGES.manager.subscription.link })
         : redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
       return;
@@ -27,7 +27,7 @@ function PaymentFailurePage() {
   }, [checkoutId, paddleTransactionId, navigate, user.role]);
 
   const handleBackToDashboard = () => {
-    user.role === "owner" || "manager"
+    user.role === "owner" || user.role === "manager"
       ? navigate({ to: APP_PAGES.manager.subscription.link })
       : redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
   };

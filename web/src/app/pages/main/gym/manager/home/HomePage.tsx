@@ -1,3 +1,4 @@
+import { GYM_PERMISSIONS } from "@ahmedrioueche/gympro-client";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   AlertCircle,
@@ -12,6 +13,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useGymAnalytics } from "../../../../../../hooks/queries/useAnalytics";
+import { usePermissions } from "../../../../../../hooks/usePermissions";
 import { useGymStore } from "../../../../../../store/gym";
 import StatCard from "../../../../../components/analytics/StatCard";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
@@ -21,7 +23,13 @@ import { useGymMemberHome } from "../../member/home/hooks/useGymMemberHome";
 export default function HomePage() {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
-  const { data: analytics, isLoading } = useGymAnalytics(currentGym?._id || "");
+  const { hasPermission } = usePermissions();
+  const canViewAnalytics = hasPermission(GYM_PERMISSIONS.analytics.view);
+  const canManageSettings = hasPermission(GYM_PERMISSIONS.settings.manage);
+
+  const { data: analytics, isLoading } = useGymAnalytics(
+    canViewAnalytics ? currentGym?._id || "" : ""
+  );
   const navigate = useNavigate();
   const status = useGymMemberHome(currentGym?.settings);
 
@@ -37,7 +45,7 @@ export default function HomePage() {
     },
     {
       icon: <Users className="w-8 h-8 md:w-10 md:h-10" />,
-      label: t("home.gym.actions.checkin"),
+      label: t("home.gym.actions.viewMembers"),
       link: APP_PAGES.gym.manager.members.link,
       gradient: "from-purple-500 to-purple-600",
       bgHover: "hover:from-purple-600 hover:to-purple-700",
@@ -57,58 +65,64 @@ export default function HomePage() {
         <GymHeroSection
           gym={currentGym}
           status={status}
-          action={{
-            label: t("home.gym.profile.editGym"),
-            onClick: () => {
-              navigate({ to: APP_PAGES.gym.manager.settings.link });
-            },
-            icon: Settings,
-          }}
+          action={
+            canManageSettings
+              ? {
+                  label: t("home.gym.profile.editGym"),
+                  onClick: () => {
+                    navigate({ to: APP_PAGES.gym.manager.settings.link });
+                  },
+                  icon: Settings,
+                }
+              : undefined
+          }
         />
 
-        {/* 2. Branch Performance Stats */}
-        <div className="bg-surface border border-border rounded-3xl overflow-hidden shadow-sm">
-          <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 border-b border-border">
-            <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-primary" />
-              {t("home.gym.stats.title")}
-            </h2>
-            <p className="text-sm text-text-secondary mt-1">
-              {t("home.gym.stats.subtitle")}
-            </p>
-          </div>
+        {/* 2. Branch Performance Stats - Only for users with analytics permission */}
+        {canViewAnalytics && (
+          <div className="bg-surface border border-border rounded-3xl overflow-hidden shadow-sm">
+            <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 border-b border-border">
+              <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-primary" />
+                {t("home.gym.stats.title")}
+              </h2>
+              <p className="text-sm text-text-secondary mt-1">
+                {t("home.gym.stats.subtitle")}
+              </p>
+            </div>
 
-          <div className="p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard
-              title={t("home.gym.stats.totalMembers")}
-              value={analytics?.metrics.totalMembers || 0}
-              icon={Users}
-              loading={isLoading}
-              color="secondary"
-            />
-            <StatCard
-              title={t("home.gym.stats.activeMembers")}
-              value={analytics?.metrics.activeMembers || 0}
-              icon={UserCheck}
-              color="success"
-              loading={isLoading}
-            />
-            <StatCard
-              title={t("home.gym.stats.occupancy")}
-              value={`${analytics?.metrics.occupancyRate || 0}%`}
-              icon={PieChart}
-              color="warning"
-              loading={isLoading}
-            />
-            <StatCard
-              title={t("home.gym.stats.checkedIn")}
-              value={analytics?.metrics.checkedIn || 0}
-              icon={Clock}
-              color="primary"
-              loading={isLoading}
-            />
+            <div className="p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCard
+                title={t("home.gym.stats.totalMembers")}
+                value={analytics?.metrics.totalMembers || 0}
+                icon={Users}
+                loading={isLoading}
+                color="secondary"
+              />
+              <StatCard
+                title={t("home.gym.stats.activeMembers")}
+                value={analytics?.metrics.activeMembers || 0}
+                icon={UserCheck}
+                color="success"
+                loading={isLoading}
+              />
+              <StatCard
+                title={t("home.gym.stats.occupancy")}
+                value={`${analytics?.metrics.occupancyRate || 0}%`}
+                icon={PieChart}
+                color="warning"
+                loading={isLoading}
+              />
+              <StatCard
+                title={t("home.gym.stats.checkedIn")}
+                value={analytics?.metrics.checkedIn || 0}
+                icon={Clock}
+                color="primary"
+                loading={isLoading}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 3. Quick Actions & Distribution */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

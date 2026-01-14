@@ -48,6 +48,7 @@ export * from "./types/local";
 export * from "./types/membership";
 export * from "./types/notification";
 export * from "./types/payment";
+export * from "./types/permissions";
 export * from "./types/progress";
 export * from "./types/role";
 export * from "./types/settings";

@@ -2,6 +2,7 @@ import { UserRole } from "@ahmedrioueche/gympro-client";
 import { Navigate, useLocation } from "@tanstack/react-router";
 import React from "react";
 import { APP_PAGES } from "../../constants/navigation";
+import { ALL_STAFF_ROLES } from "../../constants/roles";
 import { useGymStore } from "../../store/gym";
 import { useUserStore } from "../../store/user";
 import LoadingPage from "../ui/LoadingPage";
@@ -44,9 +45,11 @@ export const GymRoleGuard: React.FC<GymRoleGuardProps> = ({
   }
 
   // Find the user's membership for the current gym
-  const membership = user.memberships?.find(
-    (m) => m.gym._id === currentGym._id
-  );
+  // Handle both populated (object) and unpopulated (string) gym references
+  const membership = user.memberships?.find((m) => {
+    const membershipGymId = typeof m.gym === "object" ? m.gym._id : m.gym;
+    return membershipGymId === currentGym._id;
+  });
 
   // Check if user is the gym owner
   const ownerId =
@@ -74,17 +77,18 @@ export const GymRoleGuard: React.FC<GymRoleGuardProps> = ({
 
   if (!hasAccess) {
     // Determine where to redirect based on what roles the user has
-    const isManagerInGym = effectiveRoles.some((role) =>
-      [UserRole.Owner, UserRole.Manager].includes(role)
+    const membershipRolesAsStrings = effectiveRoles.map(String);
+    const isStaffInGym = membershipRolesAsStrings.some((role) =>
+      ALL_STAFF_ROLES.map(String).includes(role)
     );
 
-    if (isManagerInGym) {
-      // User is a manager but trying to access member routes
+    if (isStaffInGym) {
+      // User is a staff member but trying to access member routes
       if (!location.pathname.startsWith(APP_PAGES.gym.manager.home.link)) {
         return <Navigate to={APP_PAGES.gym.manager.home.link} />;
       }
     } else {
-      // User is a member but trying to access manager routes
+      // User is a member but trying to access manager/staff routes
       if (!location.pathname.startsWith(APP_PAGES.gym.member.home.link)) {
         return <Navigate to={APP_PAGES.gym.member.home.link} />;
       }

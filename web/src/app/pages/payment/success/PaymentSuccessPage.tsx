@@ -43,7 +43,7 @@ function PaymentSuccessPage() {
     }
 
     // No payment params
-    user.role === "owner" || "manager"
+    user.role === "owner" || user.role === "manager"
       ? navigate({ to: APP_PAGES.manager.subscription.link })
       : redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
   }, [
@@ -58,7 +58,7 @@ function PaymentSuccessPage() {
   const isPending = isChargilyPending || isPaddlePending;
 
   const handleBackToDashboard = () => {
-    user.role === "owner" || "manager"
+    user.role === "owner" || user.role === "manager"
       ? navigate({ to: APP_PAGES.manager.subscription.link })
       : redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
   };

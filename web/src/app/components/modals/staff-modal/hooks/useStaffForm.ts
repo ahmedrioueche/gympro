@@ -1,4 +1,8 @@
-import { useState } from "react";
+import {
+  DEFAULT_ROLE_PERMISSIONS,
+  type GymPermission,
+} from "@ahmedrioueche/gympro-client";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { parsePhoneNumber } from "../../../../../utils/phone.util";
@@ -7,7 +11,12 @@ import {
   useUpdateStaff,
 } from "../../../../pages/main/gym/manager/staff/hooks/useStaff";
 
-type StaffRole = "manager" | "staff" | "coach";
+type StaffRole =
+  | "manager"
+  | "receptionist"
+  | "coach"
+  | "cleaner"
+  | "maintenance";
 
 interface StaffFormData {
   fullName: string;
@@ -15,14 +24,20 @@ interface StaffFormData {
   countryCode: string;
   phoneNumber: string;
   role: StaffRole;
+  permissions: GymPermission[];
 }
+
+const getDefaultPermissions = (role: StaffRole): GymPermission[] => {
+  return [...(DEFAULT_ROLE_PERMISSIONS[role] || [])];
+};
 
 const initialFormData: StaffFormData = {
   fullName: "",
   email: "",
   countryCode: "+213",
   phoneNumber: "",
-  role: "staff",
+  role: "receptionist",
+  permissions: getDefaultPermissions("receptionist"),
 };
 
 interface UseStaffFormProps {
@@ -41,9 +56,16 @@ export function useStaffForm({
   onClose,
 }: UseStaffFormProps) {
   const { t } = useTranslation();
-  const [formData, setFormData] = useState<StaffFormData>({
-    ...initialFormData,
-    ...initialData,
+  const [formData, setFormData] = useState<StaffFormData>(() => {
+    const initial = {
+      ...initialFormData,
+      ...initialData,
+    };
+    // If no permissions provided outside of edit mode, use role defaults
+    if (mode === "add" && !initialData?.permissions) {
+      initial.permissions = getDefaultPermissions(initial.role);
+    }
+    return initial;
   });
   const [errors, setErrors] = useState<Partial<StaffFormData>>({});
 
@@ -53,6 +75,16 @@ export function useStaffForm({
   const isSubmitting =
     addStaffMutation.isPending || updateStaffMutation.isPending;
 
+  // Update default permissions when role changes (only in add mode)
+  useEffect(() => {
+    if (mode === "add") {
+      setFormData((prev) => ({
+        ...prev,
+        permissions: getDefaultPermissions(prev.role),
+      }));
+    }
+  }, [formData.role, mode]);
+
   const validateForm = (): boolean => {
     const newErrors: Partial<StaffFormData> = {};
 
@@ -60,7 +92,9 @@ export function useStaffForm({
       newErrors.fullName = t("staff.validation.nameRequired");
     }
 
-    if (!formData.email && !formData.phoneNumber) {
+    const isOfflineRole = ["cleaner", "maintenance"].includes(formData.role);
+
+    if (!isOfflineRole && !formData.email && !formData.phoneNumber) {
       newErrors.email = t("staff.validation.contactRequired");
     }
 
@@ -76,7 +110,10 @@ export function useStaffForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (field: keyof StaffFormData, value: string) => {
+  const handleChange = (
+    field: keyof StaffFormData,
+    value: string | GymPermission[]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -104,6 +141,7 @@ export function useStaffForm({
           email: formData.email || undefined,
           phoneNumber: fullPhoneNumber,
           role: formData.role,
+          permissions: formData.permissions,
         });
       } else if (initialData?.membershipId) {
         await updateStaffMutation.mutateAsync({
@@ -114,6 +152,7 @@ export function useStaffForm({
             email: formData.email || undefined,
             phoneNumber: fullPhoneNumber,
             role: formData.role,
+            permissions: formData.permissions,
           },
         });
       }

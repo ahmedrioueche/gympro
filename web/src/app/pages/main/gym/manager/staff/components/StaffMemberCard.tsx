@@ -31,7 +31,11 @@ export default function StaffMemberCard({
         return "bg-gradient-to-r from-primary/20 to-primary/10 text-primary border-primary/30";
       case "coach":
         return "bg-gradient-to-r from-success/20 to-success/10 text-success border-success/30";
-      case "staff":
+      case "receptionist":
+        return "bg-gradient-to-r from-secondary/20 to-secondary/10 text-secondary border-secondary/30";
+      case "cleaner":
+      case "maintenance":
+        return "bg-gradient-to-r from-warning/20 to-warning/10 text-warning border-warning/30";
       default:
         return "bg-gradient-to-r from-secondary/20 to-secondary/10 text-secondary border-secondary/30";
     }
@@ -52,7 +56,11 @@ export default function StaffMemberCard({
         return "from-primary via-primary/80 to-secondary";
       case "coach":
         return "from-success via-success/80 to-primary";
-      case "staff":
+      case "receptionist":
+        return "from-secondary via-secondary/80 to-primary";
+      case "cleaner":
+      case "maintenance":
+        return "from-warning via-warning/80 to-primary";
       default:
         return "from-secondary via-secondary/80 to-primary";
     }

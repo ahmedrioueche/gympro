@@ -28,6 +28,7 @@ export interface GymMembership extends AuditInfo {
   membershipStatus: MembershipStatus;
   subscription?: SubscriptionInfo;
   customPermissions?: Partial<RolePermissions>;
+  permissions?: string[]; // Granular permissions like 'members:view', 'attendance:checkin'
   settings?: MembershipSettings;
 }
 

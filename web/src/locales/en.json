@@ -344,7 +344,8 @@
     "renews_on": "Renews on",
     "gyms_count": "Locations",
     "billing_email": "Billing Email",
-    "footer_info": "Need help? \n Contact us"
+    "footer_info": "Need help? \n Contact us",
+    "no_plans_available": "No plans available"
   },
   "gymSubscriptions": {
     "pageTitle": "Subscriptions",
@@ -911,7 +912,8 @@
       "actions": {
         "title": "Quick Actions",
         "checkin": "Quick Check-in",
-        "enroll": "New Enrollment",
+        "enroll": "New Member",
+        "viewMembers": "View Members",
         "report": "Report Issue"
       }
     },
@@ -1061,8 +1063,8 @@
       },
       "actions": {
         "title": "Quick Actions",
-        "enroll": "New Enrollment",
-        "checkin": "Quick Check-in",
+        "enroll": "New Member",
+        "viewMembers": "View Members",
         "report": "Report Issue"
       },
       "genderSplit": {
@@ -1274,6 +1276,7 @@
     "no_gyms_available": "No gyms available",
     "accessGym": "Access {{name}}",
     "backToDashboard": "Back to Dashboard",
+    "openGymSelector": "Open gym selector",
     "yourGyms": "Your Gyms",
     "inactive": "Inactive",
     "noGyms": "No gyms yet",
@@ -2458,8 +2461,10 @@
     },
     "roles": {
       "manager": "Manager",
-      "staff": "Staff",
-      "coach": "Coach"
+      "receptionist": "Receptionist",
+      "coach": "Coach",
+      "cleaner": "Cleaner",
+      "maintenance": "Maintenance"
     },
     "form": {
       "name": "Full Name",
@@ -2469,7 +2474,8 @@
       "phone": "Phone Number",
       "phonePlaceholder": "Enter phone number",
       "role": "Role",
-      "contactHint": "At least one contact method (email or phone) is required. If the user doesn't exist, they'll receive an invitation."
+      "contactHint": "At least one contact method (email or phone) is required. If the user doesn't exist, they'll receive an invitation.",
+      "offlineRoleHint": "Contact info is optional for this role. Only enter if you want to keep a record."
     },
     "validation": {
       "nameRequired": "Name is required",
@@ -2477,6 +2483,50 @@
       "emailInvalid": "Please enter a valid email address",
       "roleRequired": "Please select a role",
       "checkForm": "Please check the form for errors"
+    },
+    "permissions": {
+      "title": "Permissions",
+      "description": "Select what this staff member can access and manage.",
+      "applyDefaults": "Apply Defaults",
+      "selected": "selected",
+      "permissionsSelected": "permissions selected",
+      "groups": {
+        "members": "Members",
+        "attendance": "Attendance",
+        "pricing": "Pricing",
+        "staff": "Staff",
+        "settings": "Settings",
+        "analytics": "Analytics",
+        "schedules": "Schedules"
+      },
+      "items": {
+        "members_view": "View Members",
+        "members_create": "Add Members",
+        "members_edit": "Edit Members",
+        "members_delete": "Delete Members",
+        "attendance_view": "View Attendance",
+        "attendance_checkin": "Check-in",
+        "attendance_manage": "Manage Records",
+        "pricing_view": "View Pricing",
+        "pricing_manage": "Manage Pricing",
+        "staff_view": "View Staff",
+        "staff_manage": "Manage Staff",
+        "settings_view": "View Settings",
+        "settings_manage": "Manage Settings",
+        "analytics_view": "View Analytics",
+        "analytics_export": "Export Data",
+        "schedules_view": "View Schedules",
+        "schedules_manage": "Manage Schedules"
+      }
     }
+  },
+  "roles": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "receptionist": "Receptionist",
+    "coach": "Coach",
+    "member": "Member",
+    "cleaner": "Cleaner",
+    "maintenance": "Maintenance"
   }
 }

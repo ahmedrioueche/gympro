@@ -10,7 +10,7 @@ import { useGymStore } from "../../../store/gym";
 import { useSidebarStore } from "../../../store/sidebar";
 import { useUserStore } from "../../../store/user";
 import { getRoleHomePage } from "../../../utils/roles";
-import GymSelector from "../gym/GymSelector";
+import GymSelector from "../gym/gym-selector/GymSelector";
 import NotificationsDropdown from "../NotificationsDropdown";
 import ProfileDropdown from "../ProfileDropdown";
 import SidebarAnimatedLogo from "../SidebarAnimatedLogo";

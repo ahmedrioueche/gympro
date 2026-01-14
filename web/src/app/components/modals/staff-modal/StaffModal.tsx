@@ -37,6 +37,7 @@ interface StaffModalContentProps {
     email?: string;
     phoneNumber?: string;
     role: string;
+    permissions?: string[];
   };
   onSuccess?: () => void;
   onClose: () => void;
@@ -68,6 +69,7 @@ function StaffModalContent({
             countryCode: parsedPhone?.countryCode || "+213",
             phoneNumber: parsedPhone?.number || "",
             role: staff.role as any,
+            permissions: staff.permissions as any,
           }
         : undefined,
       onSuccess,

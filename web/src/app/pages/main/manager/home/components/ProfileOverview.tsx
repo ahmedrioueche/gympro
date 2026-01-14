@@ -26,8 +26,6 @@ function ProfileOverview({
 }) {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
-  console.log({ user });
-  console.log(`${user.profile}`);
 
   const getAccountStatus = () => {
     if (!subscription?.plan) {
