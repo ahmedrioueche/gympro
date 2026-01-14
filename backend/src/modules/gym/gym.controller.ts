@@ -13,6 +13,10 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DashboardService } from '../dashboard/dashboard.service';
+import {
+  GymPermissionsGuard,
+  RequireGymPermission,
+} from '../users/guards/gym-permissions.guard';
 import { GymService } from './gym.service';
 
 @Controller('gyms')
@@ -165,16 +169,17 @@ export class GymController {
   }
 
   @Patch(':id/settings')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('settings:manage')
   async updateSettings(
-    @Param('id') id: string,
+    @Param('id') gymId: string,
     @Body() updateSettingsDto: any,
     @Req() req: any,
   ) {
     try {
       const userId = req.user?.sub;
       const gym = await this.gymService.updateSettings(
-        id,
+        gymId,
         updateSettingsDto,
         userId,
       );

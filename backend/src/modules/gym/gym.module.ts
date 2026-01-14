@@ -2,22 +2,21 @@ import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import { DashboardModule } from '../dashboard/dashboard.module';
-import {
-  GymMembershipModel,
-  GymMembershipSchema,
-} from '../gymMembership/membership.schema';
+import { GymMembershipSchema } from '../gymMembership/membership.schema';
+import { UsersModule } from '../users/users.module';
 import { GymController } from './gym.controller';
-import { GymModel, GymSchema } from './gym.schema';
+import { GymSchema } from './gym.schema';
 import { GymService } from './gym.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: GymModel.name, schema: GymSchema },
+      { name: 'GymModel', schema: GymSchema },
       { name: User.name, schema: UserSchema },
-      { name: GymMembershipModel.name, schema: GymMembershipSchema },
+      { name: 'GymMembership', schema: GymMembershipSchema },
     ]),
     forwardRef(() => DashboardModule),
+    forwardRef(() => UsersModule),
   ],
   controllers: [GymController],
   providers: [GymService],

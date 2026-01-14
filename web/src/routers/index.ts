@@ -1,6 +1,7 @@
 import { Router } from "@tanstack/react-router";
 import { AuthRouteTree } from "./auth";
 import { MainRootTree } from "./main";
+import { CoachRootTree } from "./main/coach";
 import { GymRootTree } from "./main/gym";
 import { ManagerRootTree } from "./main/manager";
 import { MemberRootTree } from "./main/member";
@@ -14,6 +15,7 @@ const routeTree = RootRoute.addChildren([
   ManagerRootTree,
   GymRootTree,
   PaymentRootTree,
+  CoachRootTree,
 ]);
 
 export const router = new Router({ routeTree });

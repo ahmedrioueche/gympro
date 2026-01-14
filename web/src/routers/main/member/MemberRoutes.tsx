@@ -1,9 +1,10 @@
 import { createRoute } from "@tanstack/react-router";
 import AttendancePage from "../../../app/pages/main/member/attendace/AttendancePage";
+import CoachesPage from "../../../app/pages/main/member/coaching/CoachesPage";
 import ExercisesPage from "../../../app/pages/main/member/exercises/ExercisesPage";
 import GymsPage from "../../../app/pages/main/member/gyms/GymsPage";
 import HomePage from "../../../app/pages/main/member/home/HomePage";
-import NoftificationsPage from "../../../app/pages/main/member/notifications/NoftificationsPage";
+import NotificationsPage from "../../../app/pages/main/member/notifications/NotificationsPage";
 import ProgramsPage from "../../../app/pages/main/member/programs/ProgramsPage";
 import ProgressPage from "../../../app/pages/main/member/progress/ProgressPage";
 import SettingsPage from "../../../app/pages/main/member/settings/SettingsPage";
@@ -53,6 +54,12 @@ export const progressRoute = createRoute({
   component: () => <ProgressPage />,
 });
 
+export const coachesRoute = createRoute({
+  getParentRoute: () => MemberRootRoute,
+  path: "/coaches",
+  component: () => <CoachesPage />,
+});
+
 export const attendanceRoute = createRoute({
   getParentRoute: () => MemberRootRoute,
   path: "/attendance",
@@ -68,5 +75,5 @@ export const settingsRoute = createRoute({
 export const notificationsRoute = createRoute({
   getParentRoute: () => MemberRootRoute,
   path: "/notifications",
-  component: () => <NoftificationsPage />,
+  component: () => <NotificationsPage />,
 });

@@ -26,6 +26,8 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "all": "All",
+
+    "locationFilters": "Location Filters",
     "actions": "Actions",
     "create": "Create",
     "noDescription": "No description provided.",
@@ -56,7 +58,12 @@
     "goBack": "Go Back",
     "years": "years",
     "amount": "Amount",
-    "joined": "Joined"
+    "joined": "Joined",
+    "change": "Change",
+    "characters": "characters",
+    "hide": "Hide",
+    "show": "Show",
+    "filters": "Filters"
   },
   "confirm": {
     "default": {
@@ -285,6 +292,12 @@
         "delete_failed": "Failed to remove staff member",
         "fetch_failed": "Failed to fetch staff members",
         "member_already_exists": "This user is already a member of this gym. Please remove their membership first or use a different email/phone."
+      },
+      "coach": {
+        "fetch_error": "Failed to load coaches",
+        "request_failed": "Failed to send request to coach",
+        "request_fetch_error": "Failed to load your coaching requests",
+        "not_found": "Coach not found"
       }
     }
   },
@@ -312,9 +325,12 @@
     "pricing": "Pricing",
     "access": "Access",
     "staff": "Staff",
+    "clients": "Clients",
+    "schedule": "Schedule",
     "training": "Training",
     "programs": "Programs",
     "exercises": "Exercises",
+    "coaches": "Coaches",
     "progress": "Progress",
     "attendance": "Attendance",
     "manageAccount": "Account management",
@@ -809,6 +825,37 @@
           "tip": "Privacy Control",
           "tipDesc": "These settings are gym-specific. You can have different privacy settings for each gym you follow."
         }
+      }
+    },
+    "coach": {
+      "profile": {
+        "avatar": "Profile Photo",
+        "basicInfo": "Basic Information",
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "Enter your full name",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email address",
+        "phone": "Phone Number",
+        "phonePlaceholder": "Enter your phone number"
+      },
+      "coaching": {
+        "bio": "Professional Bio",
+        "bioPlaceholder": "Share your coaching philosophy, experience, and what makes you unique...",
+        "experience": "Years of Experience",
+        "experiencePlaceholder": "Enter years of coaching experience",
+        "specializations": "Specializations",
+        "specializationsHint": "Select your areas of expertise"
+      },
+      "location": {
+        "title": "Location",
+        "description": "Help clients find you by sharing your location",
+        "detect": "Detect Location",
+        "city": "City",
+        "cityPlaceholder": "Enter city",
+        "state": "State/Province",
+        "statePlaceholder": "Enter state or province",
+        "country": "Country",
+        "countryPlaceholder": "Enter country"
       }
     }
   },
@@ -2520,6 +2567,115 @@
       }
     }
   },
+  "home": {
+    "coach": {
+      "welcome": "Welcome Back, Coach!",
+      "subtitle": "Here's what's happening with your clients today",
+      "stats": {
+        "activeClients": "Active Clients",
+        "programsCreated": "Programs Created",
+        "sessionsThisMonth": "Sessions This Month",
+        "clientRetention": "Client Retention"
+      },
+      "todaySessions": {
+        "title": "Today's Sessions",
+        "empty": "No sessions scheduled for today",
+        "viewSchedule": "View Full Schedule"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "createProgram": "New Program",
+        "addClient": "Add Client",
+        "scheduleSession": "Schedule",
+        "viewAnalytics": "Analytics"
+      },
+      "recentActivity": {
+        "title": "Recent Activity",
+        "viewAll": "View All",
+        "empty": "No recent activity"
+      },
+      "activity": {
+        "workoutCompleted": "{{client}} completed a workout",
+        "newMessage": "New message from {{client}}",
+        "milestone": "{{client}} reached a milestone",
+        "programAssigned": "{{program}} assigned to client"
+      },
+      "sessionTypes": {
+        "training": "Training Session",
+        "checkIn": "Progress Check-in",
+        "consultation": "Consultation"
+      },
+      "pendingCheckIns": {
+        "title": "Pending Check-Ins",
+        "awaiting": "Clients awaiting review",
+        "description": "Review progress updates from your clients",
+        "review": "Review Now"
+      }
+    },
+    "member": {
+      "welcome": "Welcome back, {{name}}!",
+      "subtitle": "Ready to crush your fitness goals today?",
+      "profile": {
+        "memberSince": "Member Since",
+        "editProfile": "Edit Profile"
+      },
+      "stats": {
+        "activeSubscriptions": "Active Subs",
+        "checkIns": "Check-Ins",
+        "nextClass": "Next Class",
+        "daysStreak": "Day Streak"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "findGyms": "Find Gyms",
+        "findGymsDesc": "Discover gyms near you",
+        "mySubscriptions": "My Subscriptions",
+        "mySubscriptionsDesc": "Manage your memberships",
+        "attendance": "Attendance",
+        "attendanceDesc": "View your check-in history",
+        "training": "Start Training",
+        "trainingDesc": "Begin your workout session"
+      }
+    }
+  },
+  "coaches": {
+    "title": "Find a Coach",
+    "subtitle": "Discover professional coaches in your area to help you reach your fitness goals",
+    "noData": {
+      "title": "No Coaches Found",
+      "description": "No coaches are available in your area at the moment"
+    },
+    "requestModal": {
+      "title": "Request Coaching from {{coachName}}",
+      "send": "Send Request",
+      "message": "Message (Optional)",
+      "messagePlaceholder": "Tell the coach about your fitness goals and what you're looking for...",
+      "messageHint": "The coach will receive your request and contact you if they accept",
+      "info": "The coach will receive a notification and can choose to accept or decline your request. You'll be notified of their response."
+    },
+    "filters": {
+      "search": "Search coaches by name",
+      "city": "City",
+      "cityPlaceholder": "Filter by city",
+      "state": "State/Province",
+      "statePlaceholder": "Filter by state",
+      "country": "Country",
+      "countryPlaceholder": "Filter by country",
+      "specialization": "Specialization",
+      "specializationAll": "All Specializations",
+      "clearFilters": "Clear Filters",
+      "showingResults": "Showing {{count}} coach(es)",
+      "detectLocation": "Detect My Location",
+      "detecting": "Detecting...",
+      "locationDetected": "Location detected successfully",
+      "locationError": "Could not detect location. Please enter manually."
+    }
+  },
+  "pages": {
+    "member": {
+      "coaches": "Coaches"
+    }
+  },
   "roles": {
     "owner": "Owner",
     "manager": "Manager",
@@ -2528,5 +2684,17 @@
     "member": "Member",
     "cleaner": "Cleaner",
     "maintenance": "Maintenance"
+  },
+  "coach": {
+    "settings": {
+      "pageTitle": "Settings",
+      "pageSubtitle": "Manage your coaching profile and preferences",
+      "tabs": {
+        "profile": "Profile",
+        "coaching": "Coaching",
+        "preferences": "Preferences",
+        "security": "Security"
+      }
+    }
   }
 }

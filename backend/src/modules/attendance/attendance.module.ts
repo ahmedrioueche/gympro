@@ -4,8 +4,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/common/schemas/user.schema';
 import { AuthModule } from '../auth/auth.module';
-import { GymModel, GymSchema } from '../gym/gym.schema';
+import { GymSchema } from '../gym/gym.schema';
 import { GymMembershipSchema } from '../gymMembership/membership.schema';
+import { UsersModule } from '../users/users.module';
 import { AttendanceController } from './attendance.controller';
 import { AttendanceRecordSchema } from './attendance.schema';
 import { AttendanceService } from './attendance.service';
@@ -14,7 +15,7 @@ import { AttendanceService } from './attendance.service';
   imports: [
     MongooseModule.forFeature([
       { name: 'AttendanceRecord', schema: AttendanceRecordSchema },
-      { name: GymModel.name, schema: GymSchema },
+      { name: 'GymModel', schema: GymSchema },
       { name: 'GymMembership', schema: GymMembershipSchema },
       { name: User.name, schema: UserSchema },
     ]),
@@ -26,6 +27,7 @@ import { AttendanceService } from './attendance.service';
       inject: [ConfigService],
     }),
     forwardRef(() => AuthModule),
+    UsersModule, // Import to access GymPermissionsGuard
   ],
   controllers: [AttendanceController],
   providers: [AttendanceService],

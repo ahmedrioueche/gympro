@@ -5,24 +5,23 @@ import {
   AppPaymentModel,
   AppPaymentSchema,
 } from '../appBilling/payment/appPayment.schema';
-import { GymModel, GymSchema } from '../gym/gym.schema';
-import {
-  GymMembershipModel,
-  GymMembershipSchema,
-} from '../gymMembership/membership.schema';
+import { GymSchema } from '../gym/gym.schema';
+import { GymMembershipSchema } from '../gymMembership/membership.schema';
 import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
+import { UsersModule } from '../users/users.module';
 import { AnalyticsController } from './analytics.controller';
 import { AnalyticsService } from './analytics.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: GymModel.name, schema: GymSchema },
-      { name: GymMembershipModel.name, schema: GymMembershipSchema },
+      { name: 'GymModel', schema: GymSchema },
+      { name: 'GymMembership', schema: GymMembershipSchema },
       { name: AppPaymentModel.name, schema: AppPaymentSchema },
       { name: User.name, schema: UserSchema },
       { name: 'SubscriptionHistory', schema: SubscriptionHistorySchema },
     ]),
+    UsersModule,
   ],
   controllers: [AnalyticsController],
   providers: [AnalyticsService],

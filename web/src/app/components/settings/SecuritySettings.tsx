@@ -2,8 +2,8 @@ import { Loader2, Save } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import InputField from "../../../../../../components/ui/InputField";
-import { useChangePassword } from "../../../../../../hooks/queries/useAuth";
+import InputField from "../../../components/ui/InputField";
+import { useChangePassword } from "../../../hooks/queries/useAuth";
 
 export default function SecuritySettings() {
   const { t } = useTranslation();

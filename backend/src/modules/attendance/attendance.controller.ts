@@ -8,6 +8,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import {
+  GymPermissionsGuard,
+  RequireGymPermission,
+} from '../users/guards/gym-permissions.guard';
 import { AttendanceService } from './attendance.service';
 
 @Controller('attendance')
@@ -21,12 +25,16 @@ export class AttendanceController {
   }
 
   @Get('access-token/:gymId')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('attendance:view')
   async getAccessToken(@Param('gymId') gymId: string, @Request() req: any) {
     const memberId = req.user.sub;
     return this.attendanceService.generateAccessToken(memberId, gymId);
   }
 
   @Get('logs/:gymId')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('attendance:view')
   async getLogs(@Param('gymId') gymId: string) {
     return this.attendanceService.getAttendanceLogs(gymId);
   }

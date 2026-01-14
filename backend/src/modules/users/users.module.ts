@@ -24,6 +24,7 @@ import {
   ProgramHistorySchema,
   TrainingProgramSchema,
 } from '../training/training.schema';
+import { GymPermissionsGuard } from './guards/gym-permissions.guard';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { UsersController } from './users.controller';
@@ -59,11 +60,12 @@ import { UsersService } from './users.service';
     UsersService,
     RolesGuard,
     PermissionsGuard,
+    GymPermissionsGuard, // Add new guard
     GeolocationService,
     AppSubscriptionService,
     AppPlansService,
     PaddleService,
   ],
-  exports: [UsersService],
+  exports: [UsersService, GymPermissionsGuard], // Export for use in other modules
 })
 export class UsersModule {}

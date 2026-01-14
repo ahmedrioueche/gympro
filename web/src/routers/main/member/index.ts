@@ -1,6 +1,7 @@
 import { MemberRootRoute } from "./MemberRootRoute";
 import {
   attendanceRoute,
+  coachesRoute,
   exercisesRoute,
   gymsRoute,
   homeRoute,
@@ -23,4 +24,5 @@ export const MemberRootTree = MemberRootRoute.addChildren([
   attendanceRoute,
   trainingRoute,
   exercisesRoute,
+  coachesRoute,
 ]);

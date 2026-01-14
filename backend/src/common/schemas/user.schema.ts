@@ -107,6 +107,19 @@ export class CoachingInfo {
   // For coaches
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }] })
   coachedMembers?: Types.ObjectId[];
+
+  // Coach-specific fields
+  @Prop()
+  bio?: string;
+
+  @Prop({ type: [String] })
+  specializations?: string[];
+
+  @Prop()
+  yearsOfExperience?: number;
+
+  @Prop({ type: Number, default: 0 })
+  rating?: number;
 }
 
 @Schema({ _id: false })

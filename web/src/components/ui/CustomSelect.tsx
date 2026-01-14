@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 interface CustomSelectProps<T> {
-  title: string;
+  title?: string;
   options: {
     value: T;
     label: string;

@@ -16,6 +16,10 @@ import { CreateMemberDto } from '../auth/auth.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GymService } from '../gym/gym.service';
 import { MemberInvitationService } from '../notifications/member-invitation.service';
+import {
+  GymPermissionsGuard,
+  RequireGymPermission,
+} from '../users/guards/gym-permissions.guard';
 import { MembershipService } from './membership.service';
 
 interface CreateMemberResponse {
@@ -150,7 +154,8 @@ export class MembershipController {
   }
 
   @Post('create')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('members:create')
   async createMember(
     @Body() dto: CreateMemberDto,
     @Req() req: any,
@@ -210,7 +215,8 @@ export class MembershipController {
   }
 
   @Get(':gymId/:membershipId')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('members:view')
   async getMember(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -232,7 +238,8 @@ export class MembershipController {
   }
 
   @Get(':gymId/:membershipId/profile')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('members:view')
   async getMemberProfile(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -254,7 +261,8 @@ export class MembershipController {
   }
 
   @Patch(':gymId/:membershipId')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('members:edit')
   async updateMember(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -283,7 +291,8 @@ export class MembershipController {
   }
 
   @Post(':gymId/:membershipId/reactivate')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('members:edit')
   async reactivateSubscription(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -321,7 +330,8 @@ export class MembershipController {
   }
 
   @Delete(':gymId/:membershipId')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('members:delete')
   async deleteMember(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -350,7 +360,8 @@ export class MembershipController {
   // ==================== STAFF ENDPOINTS ====================
 
   @Get('gym/:gymId/staff')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('staff:view')
   async getGymStaff(
     @Param('gymId') gymId: string,
   ): Promise<ApiResponse<any[]>> {
@@ -368,7 +379,8 @@ export class MembershipController {
   }
 
   @Post('gym/:gymId/staff')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('staff:manage')
   async addStaff(
     @Param('gymId') gymId: string,
     @Body()
@@ -377,6 +389,7 @@ export class MembershipController {
       phoneNumber?: string;
       fullName: string;
       role: string;
+      permissions?: string[];
     },
     @Req() req: any,
   ): Promise<ApiResponse<any>> {
@@ -392,25 +405,28 @@ export class MembershipController {
       const gymName = gym.name || 'Your Gym';
 
       // Send invitation if applicable
+      // Send invitation if applicable
       let invitationResult;
-      if (result.isNewUser && result.setupToken) {
-        invitationResult = await this.invitationService.sendStaffInvitation(
-          dto.email,
-          dto.phoneNumber,
-          result.setupToken,
-          gymName,
-          dto.fullName,
-          dto.role,
-        );
-      } else if (!result.isNewUser) {
-        invitationResult =
-          await this.invitationService.sendExistingUserStaffInvitation(
+      if (dto.email || dto.phoneNumber) {
+        if (result.isNewUser && result.setupToken) {
+          invitationResult = await this.invitationService.sendStaffInvitation(
             dto.email,
             dto.phoneNumber,
+            result.setupToken,
             gymName,
             dto.fullName,
             dto.role,
           );
+        } else if (!result.isNewUser) {
+          invitationResult =
+            await this.invitationService.sendExistingUserStaffInvitation(
+              dto.email,
+              dto.phoneNumber,
+              gymName,
+              dto.fullName,
+              dto.role,
+            );
+        }
       }
 
       const message = result.isNewUser
@@ -442,7 +458,8 @@ export class MembershipController {
   }
 
   @Patch('gym/:gymId/staff/:membershipId')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('staff:manage')
   async updateStaff(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -452,6 +469,7 @@ export class MembershipController {
       email?: string;
       phoneNumber?: string;
       role?: string;
+      permissions?: string[];
     },
   ): Promise<ApiResponse<any>> {
     try {
@@ -477,7 +495,8 @@ export class MembershipController {
   }
 
   @Delete('gym/:gymId/staff/:membershipId')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('staff:manage')
   async removeStaff(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,

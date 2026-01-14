@@ -12,7 +12,7 @@ import PageHeader from "../../../../components/PageHeader";
 
 const ITEMS_PER_PAGE = 20;
 
-export default function NoftificationsPage() {
+export default function NotificationsPage() {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState<"all" | "unread">("all");

@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
+import NoData from "../../../../../components/ui/NoData";
 import { useMyPayments } from "../../../../../hooks/queries/usePayments";
 import PageHeader from "../../../../components/PageHeader";
 import { PaymentsControls, PaymentsTable } from "./components";
@@ -104,19 +105,19 @@ function PaymentsPage() {
       ) : error ? (
         <ErrorComponent error={error.message} />
       ) : payments.length === 0 ? (
-        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-          <div className="text-6xl mb-4">💳</div>
-          <h3 className="text-xl font-semibold text-text-primary mb-2">
-            {totalPayments === 0
+        <NoData
+          emoji="💳"
+          title={
+            totalPayments === 0
               ? t("payments.empty.noPayments")
-              : t("payments.empty.noResults")}
-          </h3>
-          <p className="text-text-secondary">
-            {totalPayments === 0
+              : t("payments.empty.noResults")
+          }
+          description={
+            totalPayments === 0
               ? t("payments.empty.noPaymentsDesc")
-              : t("payments.empty.noResultsDesc")}
-          </p>
-        </div>
+              : t("payments.empty.noResultsDesc")
+          }
+        />
       ) : (
         <PaymentsTable payments={payments} />
       )}

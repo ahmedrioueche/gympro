@@ -123,6 +123,13 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.DELETE_STAFF_FAILED]: "status.error.staff.delete_failed",
   [ErrorCode.FETCH_STAFF_FAILED]: "status.error.staff.fetch_failed",
   [ErrorCode.MEMBER_ALREADY_EXISTS]: "status.error.staff.member_already_exists",
+
+  // Coach errors
+  [ErrorCode.COACH_FETCH_ERROR]: "status.error.coach.fetch_error",
+  [ErrorCode.COACH_REQUEST_FAILED]: "status.error.coach.request_failed",
+  [ErrorCode.COACH_REQUEST_FETCH_ERROR]:
+    "status.error.coach.request_fetch_error",
+  [ErrorCode.COACH_NOT_FOUND]: "status.error.coach.not_found",
 };
 
 /**

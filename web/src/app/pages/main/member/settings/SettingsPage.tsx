@@ -1,9 +1,9 @@
 import { Lock, Save, Settings, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../components/PageHeader";
-import PreferencesSettings from "./components/PreferencesSettings";
+import PreferencesSettings from "../../../../components/settings/PreferencesSettings";
+import SecuritySettings from "../../../../components/settings/SecuritySettings";
 import ProfileSettings from "./components/ProfileSettings";
-import SecuritySettings from "./components/SecuritySettings";
 import {
   useMemberSettings,
   type MemberSettingsTabType,

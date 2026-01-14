@@ -26,9 +26,9 @@ export class MembershipService {
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
-    @InjectModel(GymMembershipModel.name)
+    @InjectModel('GymMembership')
     private membershipModel: Model<GymMembershipModel>,
-    @InjectModel(GymModel.name) private gymModel: Model<GymModel>,
+    @InjectModel('GymModel') private gymModel: Model<GymModel>,
     @InjectModel(SubscriptionTypeModel.name)
     private subscriptionTypeModel: Model<SubscriptionTypeModel>,
     @InjectModel('SubscriptionHistory')
@@ -174,7 +174,10 @@ export class MembershipService {
       if (
         user.role === UserRole.Owner ||
         user.role === UserRole.Manager ||
-        user.role === UserRole.Staff
+        user.role === UserRole.Receptionist ||
+        user.role === UserRole.Coach ||
+        user.role === UserRole.Cleaner ||
+        user.role === UserRole.Maintenance
       ) {
         throw new BadRequestException({
           message: 'Cannot add a specific role user as a member.',
@@ -1114,10 +1117,17 @@ export class MembershipService {
     unit: string = 'month',
   ) {
     if (!typeId) return 0;
+
+    // Check if typeId is a valid ObjectId (24 hex characters) or a base type name
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(typeId);
+
     const type = await this.subscriptionTypeModel
-      .findById(typeId)
+      .findOne(
+        isObjectId ? { _id: typeId } : { name: typeId, gym: null }, // Base types have gym: null
+      )
       .lean()
       .exec();
+
     if (!type) return 0;
 
     const tier = type.pricingTiers.find(
@@ -1140,7 +1150,13 @@ export class MembershipService {
       });
     }
 
-    const staffRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+    const staffRoles = [
+      UserRole.Manager,
+      UserRole.Receptionist,
+      UserRole.Coach,
+      UserRole.Cleaner,
+      UserRole.Maintenance,
+    ];
 
     const memberships = await this.membershipModel
       .find({
@@ -1157,6 +1173,7 @@ export class MembershipService {
       phoneNumber: string | undefined;
       profileImageUrl: string | undefined;
       role: string;
+      permissions: string[];
       joinedAt: string;
       accountStatus: string;
     }[] = [];
@@ -1181,6 +1198,7 @@ export class MembershipService {
           phoneNumber: user.profile?.phoneNumber,
           profileImageUrl: user.profile?.profileImageUrl,
           role: staffRole || 'staff',
+          permissions: membership.permissions || [],
           joinedAt: membership.joinedAt,
           accountStatus: user.profile?.accountStatus || 'active',
         });
@@ -1200,13 +1218,20 @@ export class MembershipService {
       phoneNumber?: string;
       fullName: string;
       role: string;
+      permissions?: string[];
     },
     createdBy: string,
   ) {
-    const { email, phoneNumber, gymId, fullName, role } = dto;
+    const { email, phoneNumber, gymId, fullName, role, permissions } = dto;
 
     // Validate role
-    const validRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+    const validRoles = [
+      UserRole.Manager,
+      UserRole.Receptionist,
+      UserRole.Coach,
+      UserRole.Cleaner,
+      UserRole.Maintenance,
+    ];
     if (!validRoles.includes(role as UserRole)) {
       throw new BadRequestException({
         message: 'Invalid staff role',
@@ -1214,21 +1239,26 @@ export class MembershipService {
       });
     }
 
-    // Must have contact info for staff
-    if (!email && !phoneNumber) {
+    const isOfflineRole = [UserRole.Cleaner, UserRole.Maintenance].includes(
+      role as UserRole,
+    );
+
+    // Must have contact info for staff unless offline role
+    if (!isOfflineRole && !email && !phoneNumber) {
       throw new BadRequestException({
-        message: 'Email or phone number is required for staff members',
+        message: 'Email or phone number is required for login staff members',
         errorCode: ErrorCode.INVALID_USER_DATA,
       });
     }
 
     // Check if user already exists
+    // Check if user already exists (only if contact info provided)
     const existingUserQuery: any = {};
     if (email) {
       existingUserQuery['profile.email'] = email;
     }
     if (phoneNumber) {
-      if (Object.keys(existingUserQuery).length > 0) {
+      if (email) {
         existingUserQuery.$or = [
           { 'profile.email': email },
           { 'profile.phoneNumber': phoneNumber },
@@ -1239,7 +1269,10 @@ export class MembershipService {
       }
     }
 
-    let user = await this.userModel.findOne(existingUserQuery);
+    let user =
+      Object.keys(existingUserQuery).length > 0
+        ? await this.userModel.findOne(existingUserQuery)
+        : null;
     let isNewUser = false;
     let setupToken: string | undefined;
 
@@ -1255,7 +1288,7 @@ export class MembershipService {
       // Create new user
       isNewUser = true;
       setupToken = crypto.randomBytes(32).toString('hex');
-      const setupTokenExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      const setupTokenExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
       const tempPassword = await bcrypt.hash(
         crypto.randomBytes(32).toString('hex'),
         10,
@@ -1265,7 +1298,9 @@ export class MembershipService {
         profile: {
           username: email
             ? email.split('@')[0]
-            : `user_${phoneNumber?.slice(-4)}`,
+            : phoneNumber
+              ? `user_${phoneNumber.slice(-4)}`
+              : `staff_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
           email: email || undefined,
           phoneNumber: phoneNumber || undefined,
           fullName: fullName || undefined,
@@ -1287,6 +1322,31 @@ export class MembershipService {
 
       await user.save();
       this.logger.log(`Created new user ${user._id} for staff creation`);
+    } else if (
+      user.profile?.accountStatus === 'pending_setup' ||
+      user.profile?.isActive === false
+    ) {
+      // User exists but hasn't completed setup (or is inactive)
+      // Treat as new user so they get the setup link again
+      isNewUser = true;
+      this.logger.log(
+        `Found existing pending/inactive user ${user._id}, treating as new user`,
+      );
+
+      // Ensure valid setup token exists
+      if (
+        !user.setupToken ||
+        user.setupTokenUsed ||
+        (user.setupTokenExpiry && user.setupTokenExpiry < new Date())
+      ) {
+        setupToken = crypto.randomBytes(32).toString('hex');
+        user.setupToken = setupToken;
+        user.setupTokenExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        user.setupTokenUsed = false;
+        await user.save();
+      } else {
+        setupToken = user.setupToken;
+      }
     } else {
       // Check if already staff at this gym
       const existingMembership = await this.membershipModel.findOne({
@@ -1296,7 +1356,13 @@ export class MembershipService {
 
       if (existingMembership) {
         // Check if already a staff member
-        const staffRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+        const staffRoles = [
+          UserRole.Manager,
+          UserRole.Receptionist,
+          UserRole.Coach,
+          UserRole.Cleaner,
+          UserRole.Maintenance,
+        ];
         const hasStaffRole = existingMembership.roles.some((r: UserRole) =>
           staffRoles.includes(r),
         );
@@ -1337,6 +1403,7 @@ export class MembershipService {
         user: user._id,
         gym: gymObjectId,
         roles: [role as UserRole],
+        permissions: permissions || [],
         joinedAt: new Date().toISOString(),
         membershipStatus: 'active',
         createdAt: new Date(),
@@ -1398,6 +1465,7 @@ export class MembershipService {
       email?: string;
       phoneNumber?: string;
       role?: string;
+      permissions?: string[];
     },
   ) {
     const memObjectId = this.toObjectId(membershipId);
@@ -1442,14 +1510,24 @@ export class MembershipService {
 
     // Update role if provided
     if (dto.role) {
-      const staffRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+      const staffRoles = [
+        UserRole.Manager,
+        UserRole.Receptionist,
+        UserRole.Coach,
+      ];
       // Remove old staff roles and add new one
       membership.roles = membership.roles.filter(
         (r: UserRole) => !staffRoles.includes(r),
       );
       membership.roles.push(dto.role as UserRole);
-      await membership.save();
     }
+
+    // Update permissions if provided
+    if (dto.permissions !== undefined) {
+      membership.permissions = dto.permissions;
+    }
+
+    await membership.save();
 
     return {
       membership: membership.toObject(),
@@ -1486,7 +1564,13 @@ export class MembershipService {
     }
 
     // Remove staff roles from membership
-    const staffRoles = [UserRole.Manager, UserRole.Staff, UserRole.Coach];
+    const staffRoles = [
+      UserRole.Manager,
+      UserRole.Receptionist,
+      UserRole.Coach,
+      UserRole.Cleaner,
+      UserRole.Maintenance,
+    ];
     membership.roles = membership.roles.filter(
       (r: UserRole) => !staffRoles.includes(r),
     );

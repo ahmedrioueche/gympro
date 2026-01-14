@@ -1,5 +1,4 @@
 export const APP_PAGES = {
-  // Auth pages (public)
   login: {
     name: "pages.login",
     link: "/auth/login",
@@ -25,13 +24,11 @@ export const APP_PAGES = {
     link: "/auth/forgot-password",
   },
 
-  // Onboarding (authenticated)
   onBoarding: {
     name: "pages.onboarding",
     link: "/onboarding",
   },
 
-  // Owner/Manager pages
   manager: {
     name: "pages.manager",
     link: "/manager",
@@ -159,7 +156,6 @@ export const APP_PAGES = {
     },
   },
 
-  // Member pages
   member: {
     name: "pages.member",
     link: "/member",
@@ -187,6 +183,10 @@ export const APP_PAGES = {
       name: "pages.member.exercises",
       link: "/member/exercises",
     },
+    coaches: {
+      name: "pages.member.coaches",
+      link: "/member/coaches",
+    },
     attendance: {
       name: "pages.member.attendance",
       link: "/member/attendance",
@@ -205,17 +205,28 @@ export const APP_PAGES = {
     },
   },
 
-  // Coach pages
   coach: {
     name: "pages.coach",
     link: "/coach",
-    members: {
-      name: "pages.coach.members",
-      link: "/coach/members",
+    home: {
+      name: "pages.coach.home",
+      link: "/coach",
+    },
+    gyms: {
+      name: "pages.coach.gyms",
+      link: "/coach/gyms",
+    },
+    clients: {
+      name: "pages.coach.clients",
+      link: "/coach/clients",
     },
     programs: {
       name: "pages.coach.programs",
       link: "/coach/programs",
+    },
+    exercises: {
+      name: "pages.coach.exercises",
+      link: "/coach/exercises",
     },
     schedule: {
       name: "pages.coach.schedule",
@@ -233,45 +244,9 @@ export const APP_PAGES = {
       name: "pages.coach.notifications",
       link: "/coach/notifications",
     },
-  },
-
-  // Staff pages
-  staff: {
-    name: "pages.staff",
-    link: "/staff",
-    attendance: {
-      name: "pages.staff.attendance",
-      link: "/staff/attendance",
+    settings: {
+      name: "pages.coach.settings",
+      link: "/coach/settings",
     },
-    tasks: {
-      name: "pages.staff.tasks",
-      link: "/staff/tasks",
-    },
-    schedule: {
-      name: "pages.staff.schedule",
-      link: "/staff/schedule",
-    },
-    profile: {
-      name: "pages.staff.profile",
-      link: "/staff/profile",
-    },
-    notifications: {
-      name: "pages.staff.notifications",
-      link: "/staff/notifications",
-    },
-  },
-
-  // Shared pages (could be accessed by multiple roles)
-  profile: {
-    name: "pages.profile",
-    link: "/profile",
-  },
-  notifications: {
-    name: "pages.notifications",
-    link: "/notifications",
-  },
-  settings: {
-    name: "pages.settings",
-    link: "/settings",
   },
 };

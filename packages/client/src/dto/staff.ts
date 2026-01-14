@@ -1,4 +1,11 @@
-export type StaffRole = "manager" | "staff" | "coach";
+import type { GymPermission } from "../types/permissions";
+
+export type StaffRole =
+  | "manager"
+  | "receptionist"
+  | "coach"
+  | "cleaner"
+  | "maintenance";
 
 export interface AddStaffDto {
   gymId: string;
@@ -6,6 +13,7 @@ export interface AddStaffDto {
   phoneNumber?: string;
   fullName: string;
   role: StaffRole;
+  permissions?: GymPermission[];
 }
 
 export interface UpdateStaffDto {
@@ -13,6 +21,7 @@ export interface UpdateStaffDto {
   email?: string;
   phoneNumber?: string;
   role?: StaffRole;
+  permissions?: GymPermission[];
 }
 
 export interface StaffMember {
@@ -23,6 +32,7 @@ export interface StaffMember {
   phoneNumber?: string;
   profileImageUrl?: string;
   role: StaffRole;
+  permissions?: GymPermission[];
   joinedAt: string;
   accountStatus?: "active" | "pending_setup";
 }

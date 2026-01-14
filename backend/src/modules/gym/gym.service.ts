@@ -13,9 +13,9 @@ import { GymModel } from './gym.schema';
 @Injectable()
 export class GymService {
   constructor(
-    @InjectModel(GymModel.name) private gymModel: Model<GymModel>,
+    @InjectModel('GymModel') private gymModel: Model<GymModel>,
     @InjectModel(User.name) private userModel: Model<User>,
-    @InjectModel(GymMembershipModel.name)
+    @InjectModel('GymMembership')
     private membershipModel: Model<GymMembershipModel>,
   ) {}
 
@@ -43,6 +43,41 @@ export class GymService {
       },
     });
     await createdGym.save();
+
+    // Create owner membership automatically with all permissions
+    const ownerMembership = new this.membershipModel({
+      user: createGymDto.owner,
+      gym: createdGym._id,
+      roles: ['owner'],
+      membershipStatus: 'active',
+      joinedAt: new Date(),
+      permissions: [
+        // Owner gets all permissions by default
+        'members:view',
+        'members:create',
+        'members:edit',
+        'members:delete',
+        'attendance:view',
+        'attendance:checkin',
+        'attendance:manage',
+        'pricing:view',
+        'pricing:manage',
+        'staff:view',
+        'staff:manage',
+        'settings:view',
+        'settings:manage',
+        'analytics:view',
+        'analytics:export',
+        'schedules:view',
+        'schedules:manage',
+      ],
+    });
+    await ownerMembership.save();
+
+    // Add membership to user's memberships array
+    await this.userModel.findByIdAndUpdate(createGymDto.owner, {
+      $addToSet: { memberships: ownerMembership._id },
+    });
 
     // Populate the owner field before returning
     await createdGym.populate('owner');
@@ -120,11 +155,12 @@ export class GymService {
     const { search, page = 1, limit = 12 } = options;
     const skip = (page - 1) * limit;
 
-    // 1. Find all memberships for this gym
+    // 1. Find all memberships for this gym (only members, not staff)
     const memberships = await this.membershipModel
       .find({
         gym: new Types.ObjectId(gymId),
         membershipStatus: { $in: ['active', 'pending', 'expired', 'banned'] },
+        roles: 'member', // Only get memberships with 'member' role
       })
       .select('_id')
       .exec();

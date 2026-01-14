@@ -21,7 +21,6 @@
 
 import {
   ErrorCode,
-  ROLE_PERMISSIONS,
   RolePermissions,
   UserRole,
 } from '@ahmedrioueche/gympro-client';
@@ -38,6 +37,35 @@ import { Reflector } from '@nestjs/core';
  * Metadata key used to store required permissions on route handlers
  */
 export const PERMISSIONS_KEY = 'permissions';
+
+// Define default permissions for global roles (Moved from client package)
+const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
+  [UserRole.Owner]: {
+    canManageMembers: true,
+    canManageSubscriptions: true,
+    canManageStaff: true,
+    canViewFinancials: true,
+    canAssignPrograms: true,
+    canManageAppSubscriptions: true,
+    canCustomizePermissions: true,
+  },
+  [UserRole.Manager]: {
+    canManageMembers: true,
+    canManageSubscriptions: true,
+    canManageStaff: true,
+    canAssignPrograms: true,
+    canManageAppSubscriptions: true,
+    canCustomizePermissions: true,
+  },
+  [UserRole.Receptionist]: {},
+  [UserRole.Coach]: {
+    canAssignPrograms: true,
+  },
+  [UserRole.Member]: {},
+  [UserRole.Cleaner]: {},
+  [UserRole.Maintenance]: {},
+  [UserRole.Security]: {},
+};
 
 /**
  * Decorator to specify which permission is required to access an endpoint

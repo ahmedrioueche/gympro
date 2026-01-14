@@ -159,7 +159,7 @@ export interface ApiResponse<T = any> {
 
 - Store shared types in `client/types` package
 - Backend endpoints must use and return these types
-- Keep type definitions synchronized across packages
+- Keep type definitions synchronized across the codebase
 
 ### 7. Error Handling
 

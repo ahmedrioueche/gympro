@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CoachModule } from './coach/coach.module';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
@@ -86,6 +87,7 @@ import { UsersModule } from './modules/users/users.module';
     ProgressModule,
     GymSubscriptionModule,
     DashboardModule,
+    CoachModule,
   ],
   controllers: [AppController],
   providers: [

@@ -11,8 +11,8 @@ import { SubscriptionHistoryModel } from '../gymSubscription/gymSubscription.sch
 @Injectable()
 export class AnalyticsService {
   constructor(
-    @InjectModel(GymModel.name) private gymModel: Model<GymModel>,
-    @InjectModel(GymMembershipModel.name)
+    @InjectModel('GymModel') private gymModel: Model<GymModel>,
+    @InjectModel('GymMembership')
     private membershipModel: Model<GymMembershipModel>,
     @InjectModel(AppPaymentModel.name)
     private paymentModel: Model<AppPaymentModel>,

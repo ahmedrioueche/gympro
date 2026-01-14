@@ -73,4 +73,17 @@ export const usersApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Update current user's profile */
+  updateMyProfile: async (data: EditUserDto): Promise<ApiResponse<User>> => {
+    try {
+      const res = await apiClient.patch<ApiResponse<User>>(
+        "/users/me/profile",
+        data
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };

@@ -78,6 +78,10 @@ export class GymMembershipModel extends Document {
   @Prop({ type: CustomPermissionsModel })
   customPermissions?: Partial<RolePermissions>;
 
+  // New granular permissions system (e.g., ['members:view', 'attendance:checkin'])
+  @Prop({ type: [String], default: [] })
+  permissions: string[];
+
   @Prop({ type: MembershipSettingsModel, default: () => ({}) })
   settings: MembershipSettingsModel;
 

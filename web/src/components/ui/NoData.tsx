@@ -1,21 +1,38 @@
+import type { LucideIcon } from "lucide-react";
 import { MessageCircle } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-const NoData: React.FC = () => {
+interface NoDataProps {
+  icon?: LucideIcon;
+  emoji?: string;
+  title?: string;
+  description?: string;
+}
+
+const NoData: React.FC<NoDataProps> = ({
+  icon: Icon,
+  emoji,
+  title,
+  description,
+}) => {
   const { t } = useTranslation();
 
+  const IconComponent = Icon || MessageCircle;
+  const displayTitle = title || t("general.no_data");
+  const displayDescription = description || t("general.no_data_desc");
+
   return (
-    <div className="flex flex-1 w-full h-full items-center justify-center">
-      <div className="flex flex-col items-center justify-center rounded-2xl shadow-lg px-8 py-10 min-w-[320px] max-w-full ">
-        <MessageCircle className="w-14 h-14 mb-4 text-blue-500 dark:text-blue-400 drop-shadow" />
-        <div className="text-xl font-bold text-blue-600 dark:text-blue-300 mb-1">
-          {t("general.no_data")}
-        </div>
-        <div className="text-base mt-1 text-gray-500 dark:text-gray-300">
-          {t("general.no_data_desc")}
-        </div>
-      </div>
+    <div className="bg-surface border border-border rounded-2xl p-12 text-center">
+      {emoji ? (
+        <div className="text-6xl mb-4">{emoji}</div>
+      ) : (
+        <IconComponent className="w-16 h-16 mx-auto mb-4 text-primary opacity-50" />
+      )}
+      <h3 className="text-xl font-semibold text-text-primary mb-2">
+        {displayTitle}
+      </h3>
+      <p className="text-text-secondary">{displayDescription}</p>
     </div>
   );
 };

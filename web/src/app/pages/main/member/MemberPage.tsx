@@ -3,10 +3,12 @@ import {
   Activity,
   BarChart3,
   Bell,
+  Clipboard,
   CreditCard,
   Dumbbell,
   Home,
   Settings,
+  UserCheck,
   WalletCards,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../constants/navigation";
@@ -31,17 +33,25 @@ const sidebarLinks = [
     path: APP_PAGES.member.subscriptions.link,
     matchPaths: [APP_PAGES.member.subscriptions.link],
   },
+
   {
     label: "training",
     icon: <CreditCard className="w-5 h-5" />,
     path: APP_PAGES.member.training.link,
     matchPaths: [APP_PAGES.member.training.link],
   },
+
   {
     label: "programs",
-    icon: <CreditCard className="w-5 h-5" />,
+    icon: <Clipboard className="w-5 h-5" />,
     path: APP_PAGES.member.programs.link,
     matchPaths: [APP_PAGES.member.programs.link],
+  },
+  {
+    label: "coaches",
+    icon: <UserCheck className="w-5 h-5" />,
+    path: APP_PAGES.member.coaches.link,
+    matchPaths: [APP_PAGES.member.coaches.link],
   },
   {
     label: "exercises",

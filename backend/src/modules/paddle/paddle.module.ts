@@ -6,7 +6,11 @@ import { PaddleController } from './paddle.controller';
 import { PaddleService } from './paddle.service';
 
 @Module({
-  imports: [ConfigModule, forwardRef(() => AppBillingModule), UsersModule],
+  imports: [
+    ConfigModule,
+    forwardRef(() => AppBillingModule),
+    forwardRef(() => UsersModule),
+  ],
   controllers: [PaddleController],
   providers: [PaddleService],
   exports: [PaddleService],

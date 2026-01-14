@@ -1,8 +1,7 @@
 import type { User } from "@ahmedrioueche/gympro-client";
-import { Camera, Loader2, Mail, Phone, User as UserIcon } from "lucide-react";
-import { useRef } from "react";
-import toast from "react-hot-toast";
+import { Mail, Phone, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import AvatarUploader from "../../../../../components/AvatarUploader";
 
 interface ProfileSettingsProps {
   user: User;
@@ -36,25 +35,6 @@ export default function ProfileSettings({
   handleAvatarUpload,
 }: ProfileSettingsProps) {
   const { t } = useTranslation();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleAvatarClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error(
-        t("settings.profile.fileTooLarge", "Image size must be less than 5MB")
-      );
-      return;
-    }
-
-    await handleAvatarUpload(file);
-  };
 
   return (
     <div className="space-y-6">
@@ -69,56 +49,12 @@ export default function ProfileSettings({
 
       <div className="space-y-6 max-w-2xl">
         <div className="space-y-4">
-          {/* Avatar Section */}
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary p-1">
-                <div className="w-full h-full rounded-full bg-surface border-2 border-surface overflow-hidden flex items-center justify-center relative">
-                  {user.profile.profileImageUrl ? (
-                    <img
-                      src={user.profile.profileImageUrl}
-                      alt={user.profile.fullName}
-                      referrerPolicy="no-referrer"
-                      crossOrigin="anonymous"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-2xl font-bold text-white">
-                      {(user.profile.fullName || user.profile.username || "?")
-                        .charAt(0)
-                        .toUpperCase()}
-                    </span>
-                  )}
-                  {uploading && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <Loader2 className="w-6 h-6 text-white animate-spin" />
-                    </div>
-                  )}
-                </div>
-              </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                accept="image/*"
-              />
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={handleAvatarClick}
-                disabled={uploading}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-primary bg-surface border border-border rounded-lg hover:bg-surface-hover transition-colors disabled:opacity-50"
-              >
-                <Camera className="w-4 h-4" />
-                {uploading
-                  ? t("common.uploading", "Uploading...")
-                  : t("member.settings.profile.changeAvatar", "Change Avatar")}
-              </button>
-            </div>
-          </div>
-
+          <AvatarUploader
+            currentAvatar={user.profile.profileImageUrl}
+            userName={user.profile.fullName || user.profile.username}
+            uploading={uploading}
+            onUpload={handleAvatarUpload}
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-text-secondary">

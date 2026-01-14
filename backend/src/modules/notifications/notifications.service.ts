@@ -150,10 +150,10 @@ export class NotificationsService {
             this.notificationModel.discriminators?.['CoachNotification'];
           roleType = 'CoachNotification';
           break;
-        case UserRole.Staff:
+        case UserRole.Receptionist:
           NotificationClass =
-            this.notificationModel.discriminators?.['StaffNotification'];
-          roleType = 'StaffNotification';
+            this.notificationModel.discriminators?.['ReceptionistNotification'];
+          roleType = 'ReceptionistNotification';
           break;
         case UserRole.Owner:
         case UserRole.Manager:

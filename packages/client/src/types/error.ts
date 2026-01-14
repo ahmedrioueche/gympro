@@ -90,6 +90,12 @@ export enum ErrorCode {
   DELETE_STAFF_FAILED = "STAFF_004",
   FETCH_STAFF_FAILED = "STAFF_005",
   MEMBER_ALREADY_EXISTS = "STAFF_006",
+
+  // Coach errors
+  COACH_FETCH_ERROR = "COACH_001",
+  COACH_REQUEST_FAILED = "COACH_002",
+  COACH_REQUEST_FETCH_ERROR = "COACH_003",
+  COACH_NOT_FOUND = "COACH_004",
 }
 
 export const HttpStatusToErrorCode: Record<number, ErrorCode> = {
