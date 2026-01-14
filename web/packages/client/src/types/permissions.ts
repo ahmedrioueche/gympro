@@ -234,16 +234,17 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
     "schedules:view",
     "schedules:manage",
   ],
-  staff: [
+  receptionist: [
     "members:view",
+    "members:create",
+    "members:edit",
     "attendance:view",
     "attendance:checkin",
+    "attendance:manage",
     "pricing:view",
-    "analytics:view",
     "schedules:view",
   ],
   coach: [
-    "members:view",
     "attendance:view",
     "attendance:checkin",
     "schedules:view",

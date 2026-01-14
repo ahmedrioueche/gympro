@@ -10,9 +10,12 @@ import { ProgramHistory, ProgramProgress, TrainingProgram } from "./training";
 export enum UserRole {
   Owner = "owner",
   Manager = "manager",
-  Staff = "staff",
+  Receptionist = "receptionist",
   Coach = "coach",
   Member = "member",
+  Cleaner = "cleaner",
+  Maintenance = "maintenance",
+  Security = "security",
 }
 
 // Dashboard types (separate from UserRole - these determine which dashboards a user can access)
@@ -91,11 +94,11 @@ export interface CoachUser extends BaseUser {
   certifications?: string[];
 }
 
-export const STAFF_TYPES = ["reception", "cleaning", "admin"] as const;
+export const STAFF_TYPES = ["manager", "reception"] as const;
 export type StaffType = (typeof STAFF_TYPES)[number];
 
-export interface StaffUser extends BaseUser {
-  role: "staff";
+export interface ReceptionistUser extends BaseUser {
+  role: "receptionist";
   staffType?: StaffType;
   assignedTasks?: string[];
 }
@@ -109,4 +112,4 @@ export interface OwnerManagerUser extends BaseUser {
   };
 }
 
-export type User = MemberUser | CoachUser | StaffUser | OwnerManagerUser;
+export type User = MemberUser | CoachUser | ReceptionistUser | OwnerManagerUser;

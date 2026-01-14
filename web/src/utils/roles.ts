@@ -16,9 +16,6 @@ export const getRoleHomePage = (role: UserRole): string => {
     case UserRole.Member:
       return APP_PAGES.member.link;
 
-    case UserRole.Staff:
-      return APP_PAGES.staff.link;
-
     default:
       return APP_PAGES.member.link;
   }
@@ -104,14 +101,6 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
       "/profile",
       "/settings",
       "/notifications",
-    ],
-    [UserRole.Staff]: [
-      "/staff",
-      "/dashboard",
-      "/profile",
-      "/settings",
-      "/notifications",
-      "/gym",
     ],
   };
 

@@ -1,6 +1,11 @@
 import type { GymPermission } from "../types/permissions";
 
-export type StaffRole = "manager" | "staff" | "coach";
+export type StaffRole =
+  | "manager"
+  | "receptionist"
+  | "coach"
+  | "cleaner"
+  | "maintenance";
 
 export interface AddStaffDto {
   gymId: string;

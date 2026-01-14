@@ -4,6 +4,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
+import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import { PaddleProvider } from "./context/PaddleContext.tsx";
 import { SocketProvider } from "./context/SocketContext.tsx";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
@@ -27,15 +28,17 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <PaddleProvider>
-          <SocketProvider>
-            <Toaster position={"top-right"} />
-            <RouterProvider router={router} />
-          </SocketProvider>
-        </PaddleProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <PaddleProvider>
+            <SocketProvider>
+              <Toaster position={"top-right"} />
+              <RouterProvider router={router} />
+            </SocketProvider>
+          </PaddleProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   </StrictMode>
 );

@@ -34,7 +34,6 @@ export * from "./dto/staff";
 export * from "./dto/subscription";
 export * from "./dto/training";
 export * from "./dto/users";
-export * from "./roles/permissions";
 export * from "./types/analytics";
 export * from "./types/api";
 export * from "./types/appPayment";

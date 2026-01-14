@@ -114,7 +114,7 @@ export function OnboardingPage() {
           });
           // Update store with new role and onboarded status
           updateUser({
-            role: data.role as UserRole,
+            role: data.role as "member" | "coach" | "owner",
             appSettings: {
               locale: {
                 language: DEFAULT_LANGUAGE,

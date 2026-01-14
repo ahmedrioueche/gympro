@@ -220,7 +220,7 @@ export const useUserStore = create<UserState>()(
 
       isStaff: () => {
         const { user } = get();
-        return user?.role === "staff";
+        return user?.role === "receptionist" || user?.role === "manager";
       },
 
       // Dashboard methods
