@@ -6,7 +6,7 @@ import {
   type ProgramPurpose,
 } from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
-import CustomSelect from "../../../../../../components/ui/CustomSelect";
+import CustomSelect from "../../../components/ui/CustomSelect";
 
 interface ProgramFormProps {
   experience: ExperienceLevel;

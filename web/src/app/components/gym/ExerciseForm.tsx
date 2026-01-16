@@ -13,9 +13,9 @@ import {
   X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import CustomSelect from "../../../../../../components/ui/CustomSelect";
-import InputField from "../../../../../../components/ui/InputField";
-import { useExerciseForm } from "../hooks/useExerciseForm";
+import CustomSelect from "../../../components/ui/CustomSelect";
+import InputField from "../../../components/ui/InputField";
+import { useExerciseForm } from "../../hooks/useExerciseForm";
 
 interface ExerciseFormProps {
   exercise: CreateExerciseDto;

@@ -64,6 +64,21 @@ export const trainingApi = {
     }
   },
 
+  addComment: async (
+    programId: string,
+    data: { text: string; rating: number; userName: string; userImage?: string }
+  ): Promise<ApiResponse<TrainingProgram>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<TrainingProgram>>(
+        `/training/programs/${programId}/comment`,
+        data
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   startProgram: async (id: string): Promise<ApiResponse<ProgramHistory>> => {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(

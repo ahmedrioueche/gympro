@@ -243,4 +243,45 @@ export class TrainingService {
 
     return history.save();
   }
+
+  async addComment(
+    programId: string,
+    userId: string,
+    userName: string,
+    userImage: string | undefined,
+    text: string,
+    rating: number,
+  ): Promise<TrainingProgram> {
+    const program = await this.programModel.findById(programId).exec();
+    if (!program) {
+      throw new NotFoundException('Program not found');
+    }
+
+    // Initialize comments if undefined (for old records)
+    if (!program.comments) {
+      program.comments = [];
+    }
+
+    // Add new comment
+    program.comments.push({
+      userId,
+      userName,
+      userImage,
+      text,
+      rating,
+      createdAt: new Date(),
+    });
+
+    // Recalculate average rating
+    const totalRatingSum = program.comments.reduce(
+      (sum, comment) => sum + comment.rating,
+      0,
+    );
+    program.totalRatings = program.comments.length;
+    program.averageRating = Number(
+      (totalRatingSum / program.totalRatings).toFixed(1),
+    );
+
+    return program.save();
+  }
 }

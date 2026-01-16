@@ -5,10 +5,10 @@ import {
 import { Calendar, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import InputField from "../../../../../../components/ui/InputField";
-import { ExerciseSelector } from "../../../../../components/gym/ExerciseSelector";
+import InputField from "../../../components/ui/InputField";
+import { ExerciseItem } from "../modals/program-details-modal/ExerciseItem";
 import { ExerciseForm } from "./ExerciseForm";
-import { ExerciseItem } from "./program-details-modal/ExerciseItem";
+import { ExerciseSelector } from "./ExerciseSelector";
 
 interface DayCardProps {
   day: CreateProgramDayDto;

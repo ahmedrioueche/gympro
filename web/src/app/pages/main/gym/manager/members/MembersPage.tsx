@@ -9,17 +9,16 @@ import Loading from "../../../../../../components/ui/Loading";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useMembers } from "../../../../../../hooks/queries/useMembers";
 import { useGymStore } from "../../../../../../store/gym";
+import { useModalStore } from "../../../../../../store/modal";
 import { useUserStore } from "../../../../../../store/user";
 import PageHeader from "../../../../../components/PageHeader";
 import {
-  DeleteConfirmationDialog,
   MemberCard,
   MembersControls,
   MembersEmptyState,
   MembersTable,
   getMemberDisplay,
   type FilterStatus,
-  type MemberDisplay,
   type SortBy,
   type ViewMode,
 } from "./components";
@@ -37,13 +36,7 @@ function MembersPage() {
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [sortBy, setSortBy] = useState<SortBy>("name");
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Modal state
-  const [selectedMember, setSelectedMember] = useState<MemberDisplay | null>(
-    null
-  );
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { openModal } = useModalStore();
   const navigate = useNavigate();
 
   // Fetch members using the API - paginated from backend
@@ -106,27 +99,6 @@ function MembersPage() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalMembers);
 
-  // Calculate stats
-  const stats = useMemo(() => {
-    const displayMembers = members.map((m) =>
-      getMemberDisplay(m, currentGym?._id)
-    );
-    return {
-      total: totalMembers, // Use server total
-      active: displayMembers.filter((m) => m.status === "active").length,
-      expired: displayMembers.filter((m) => m.status === "expired").length || 0,
-      thisMonth: displayMembers.filter((m) => {
-        if (!m.joinDate) return false;
-        const joinDate = new Date(m.joinDate);
-        const now = new Date();
-        return (
-          joinDate.getMonth() === now.getMonth() &&
-          joinDate.getFullYear() === now.getFullYear()
-        );
-      }).length,
-    };
-  }, [members, currentGym?._id, totalMembers]);
-
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -148,18 +120,22 @@ function MembersPage() {
   const handleDeleteClick = (memberId: string) => {
     const member = filteredMembers.find((m) => m._id === memberId);
     if (member) {
-      setSelectedMember(member);
-      setIsDeleteDialogOpen(true);
+      openModal("confirm", {
+        title: t("members.delete.title"),
+        text: t("members.delete.message", { name: member.name }),
+        verificationText: member.name,
+        onConfirm: () => handleDeleteConfirm(memberId),
+        confirmVariant: "danger",
+      });
     }
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!selectedMember || !currentGym?._id) return;
+  const handleDeleteConfirm = async (memberId: string) => {
+    if (!currentGym?._id) return;
 
-    setIsDeleting(true);
     try {
       // Find the membership ID for this member
-      const memberData = members.find((m) => m._id === selectedMember._id);
+      const memberData = members.find((m) => m._id === memberId);
       const membershipId = memberData?.memberships?.find(
         (m) => m.gym?._id === currentGym._id
       )?._id;
@@ -172,15 +148,11 @@ function MembersPage() {
 
       await membersApi.deleteMember(currentGym._id, membershipId);
       toast.success(t("members.delete.success", "Member removed successfully"));
-      setIsDeleteDialogOpen(false);
-      setSelectedMember(null);
       refetch(); // Refresh the members list
     } catch (error: any) {
       toast.error(
         error?.message || t("members.delete.error", "Failed to remove member")
       );
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -326,20 +298,6 @@ function MembersPage() {
             </button>
           </div>
         </div>
-      )}
-
-      {/* Delete Confirmation Dialog */}
-      {selectedMember && (
-        <DeleteConfirmationDialog
-          isOpen={isDeleteDialogOpen}
-          memberName={selectedMember.name}
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => {
-            setIsDeleteDialogOpen(false);
-            setSelectedMember(null);
-          }}
-          isDeleting={isDeleting}
-        />
       )}
     </div>
   );

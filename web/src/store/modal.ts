@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import type {
   ConfirmModalProps,
+  CreateExerciseModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
+  ProgramDetailsModalProps,
   RenewSubscriptionModalProps,
   RequestCoachModalProps,
   ScanResultModalProps,
@@ -19,6 +21,9 @@ type ModalType =
   | "renew_subscription"
   | "staff_modal"
   | "request_coach"
+  | "create_program"
+  | "program_details"
+  | "create_exercise"
   | null;
 
 interface ModalState {
@@ -31,6 +36,8 @@ interface ModalState {
   renewSubscriptionProps?: RenewSubscriptionModalProps;
   staffModalProps?: StaffModalProps;
   requestCoachProps?: RequestCoachModalProps;
+  programDetailsProps?: ProgramDetailsModalProps;
+  createExerciseProps?: CreateExerciseModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -74,6 +81,23 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "request_coach",
           requestCoachProps: props,
+        };
+      }
+      if (modal === "create_program") {
+        return {
+          currentModal: "create_program",
+        };
+      }
+      if (modal === "program_details") {
+        return {
+          currentModal: "program_details",
+          programDetailsProps: props,
+        };
+      }
+      if (modal === "create_exercise") {
+        return {
+          currentModal: "create_exercise",
+          createExerciseProps: props,
         };
       }
       return { currentModal: null };

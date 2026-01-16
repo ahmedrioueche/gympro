@@ -5,6 +5,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
+import NoData from "../../../../../components/ui/NoData";
 import { SearchFilterBar } from "../../../../../components/ui/SearchFilterBar";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import {
@@ -12,20 +13,16 @@ import {
   usePrograms,
   useStartProgram,
 } from "../../../../../hooks/queries/useTraining";
+import { useModalStore } from "../../../../../store/modal";
+import { ProgramCard } from "../../../../components/gym/ProgramCard";
 import PageHeader from "../../../../components/PageHeader";
-import { CreateProgramModal } from "./components/create-program-modal";
-import { ProgramCard } from "./components/program-card/ProgramCard";
-import { ProgramDetailsModal } from "./components/program-details-modal/ProgramDetailsModal";
 
 export default function ProgramsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { openModal } = useModalStore();
   const [filterSource, setFilterSource] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProgram, setSelectedProgram] =
-    useState<TrainingProgram | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
   const { data: programs, isLoading } = usePrograms({
     source: filterSource === "all" ? undefined : filterSource,
     search: searchQuery || undefined,
@@ -65,6 +62,16 @@ export default function ProgramsPage() {
     });
   };
 
+  const handleViewDetails = (program: TrainingProgram) => {
+    openModal("program_details", {
+      program,
+      isActive:
+        activeProgram?.status === "active" &&
+        activeProgram.program._id === program._id,
+      onUse: handleUseProgram,
+    });
+  };
+
   const filterOptions = [
     { value: "all", label: t("training.programs.tabs.all") },
     { value: "coach", label: t("training.programs.tabs.coach") },
@@ -81,7 +88,7 @@ export default function ProgramsPage() {
         actionButton={{
           label: t("training.programs.createProgram"),
           icon: Plus,
-          onClick: () => setIsCreateModalOpen(true),
+          onClick: () => openModal("create_program"),
           show: true,
         }}
       />
@@ -100,26 +107,19 @@ export default function ProgramsPage() {
       {isLoading ? (
         <Loading className="py-20" />
       ) : !programs || programs.length === 0 ? (
-        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-          <div className="inline-flex p-4 rounded-full bg-background mb-4">
-            <Dumbbell size={48} className="text-text-secondary opacity-30" />
-          </div>
-          <h3 className="text-xl font-bold text-text-primary mb-2">
-            {t("training.programs.notFound.title")}
-          </h3>
-          <p className="text-text-secondary max-w-sm mx-auto mb-6">
-            {t("training.programs.notFound.desc")}
-          </p>
-          {searchQuery === "" && filterSource === "all" && (
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              <Plus size={20} />
-              {t("training.programs.createProgram")}
-            </button>
-          )}
-        </div>
+        <NoData
+          icon={Dumbbell}
+          title={t("coach.programs.noPrograms.title")}
+          actionButton={
+            searchQuery === "" && filterSource === "all"
+              ? {
+                  label: t("coach.programs.createProgram"),
+                  icon: Plus,
+                  onClick: () => openModal("create_program"),
+                }
+              : undefined
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {programs.map((program) => (
@@ -131,28 +131,11 @@ export default function ProgramsPage() {
                 activeProgram.program._id === program._id
               }
               onUse={handleUseProgram}
-              onViewDetails={setSelectedProgram}
+              onViewDetails={handleViewDetails}
             />
           ))}
         </div>
       )}
-
-      <ProgramDetailsModal
-        program={selectedProgram}
-        isOpen={!!selectedProgram}
-        onClose={() => setSelectedProgram(null)}
-        onUse={handleUseProgram}
-        onProgramUpdated={setSelectedProgram}
-        isActive={
-          activeProgram?.status === "active" &&
-          activeProgram.program._id === selectedProgram?._id
-        }
-      />
-
-      <CreateProgramModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
     </div>
   );
 }

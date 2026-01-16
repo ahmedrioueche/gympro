@@ -1212,6 +1212,75 @@
         "training": "Training Plan",
         "trainingDesc": "Access your workout schedule"
       }
+    },
+    "coach": {
+      "welcome": "Welcome Back, Coach!",
+      "subtitle": "Here's what's happening with your clients today",
+      "stats": {
+        "activeClients": "Active Clients",
+        "programsCreated": "Programs Created",
+        "sessionsThisMonth": "Sessions This Month",
+        "clientRetention": "Client Retention"
+      },
+      "todaySessions": {
+        "title": "Today's Sessions",
+        "empty": "No sessions scheduled for today",
+        "viewSchedule": "View Full Schedule"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "createProgram": "New Program",
+        "addClient": "Add Client",
+        "scheduleSession": "Schedule",
+        "viewAnalytics": "Analytics"
+      },
+      "recentActivity": {
+        "title": "Recent Activity",
+        "viewAll": "View All",
+        "empty": "No recent activity"
+      },
+      "activity": {
+        "workoutCompleted": "{{client}} completed a workout",
+        "newMessage": "New message from {{client}}",
+        "milestone": "{{client}} reached a milestone",
+        "programAssigned": "{{program}} assigned to client"
+      },
+      "sessionTypes": {
+        "training": "Training Session",
+        "checkIn": "Progress Check-in",
+        "consultation": "Consultation"
+      },
+      "pendingCheckIns": {
+        "title": "Pending Check-Ins",
+        "awaiting": "Clients awaiting review",
+        "description": "Review progress updates from your clients",
+        "review": "Review Now"
+      }
+    },
+    "member": {
+      "welcome": "Welcome back, {{name}}!",
+      "subtitle": "Ready to crush your fitness goals today?",
+      "profile": {
+        "memberSince": "Member Since",
+        "editProfile": "Edit Profile"
+      },
+      "stats": {
+        "activeSubscriptions": "Active Subs",
+        "checkIns": "Check-Ins",
+        "nextClass": "Next Class",
+        "daysStreak": "Day Streak"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "findGyms": "Find Gyms",
+        "findGymsDesc": "Discover gyms near you",
+        "mySubscriptions": "My Subscriptions",
+        "mySubscriptionsDesc": "Manage your memberships",
+        "attendance": "Attendance",
+        "attendanceDesc": "View your check-in history",
+        "training": "Start Training",
+        "trainingDesc": "Begin your workout session"
+      }
     }
   },
   "members": {
@@ -2273,7 +2342,12 @@
           "selectMuscleForAi": "Select a target muscle to get suggestions",
           "addNextExercise": "Add Next Exercise",
           "addNext": "Add Next",
-          "aiSuggestions": "AI Suggestions"
+          "aiSuggestions": "AI Suggestions",
+          "visibility": "Visibility",
+          "public": "Public",
+          "private": "Private",
+          "publicDesc": "Visible to everyone",
+          "privateDesc": "Only visible to you"
         },
         "validation": {
           "nameRequired": "Program name is required"
@@ -2285,7 +2359,18 @@
         "use": "Use Template",
         "exercisesCount": "{{count}} Exercises",
         "muscleGroups": "Target Muscles",
-        "equipment": "Equipment"
+        "equipment": "Equipment",
+        "reviews": {
+          "title": "Reviews",
+          "noReviews": "No reviews yet. Be the first to review!",
+          "writeReview": "Write a Review",
+          "rating": "Rating",
+          "comment": "Comment",
+          "placeholder": "Share your experience with this program...",
+          "submit": "Submit Review",
+          "cancel": "Cancel",
+          "success": "Review submitted"
+        }
       }
     },
     "exercises": {
@@ -2581,77 +2666,6 @@
       }
     }
   },
-  "home": {
-    "coach": {
-      "welcome": "Welcome Back, Coach!",
-      "subtitle": "Here's what's happening with your clients today",
-      "stats": {
-        "activeClients": "Active Clients",
-        "programsCreated": "Programs Created",
-        "sessionsThisMonth": "Sessions This Month",
-        "clientRetention": "Client Retention"
-      },
-      "todaySessions": {
-        "title": "Today's Sessions",
-        "empty": "No sessions scheduled for today",
-        "viewSchedule": "View Full Schedule"
-      },
-      "quickActions": {
-        "title": "Quick Actions",
-        "createProgram": "New Program",
-        "addClient": "Add Client",
-        "scheduleSession": "Schedule",
-        "viewAnalytics": "Analytics"
-      },
-      "recentActivity": {
-        "title": "Recent Activity",
-        "viewAll": "View All",
-        "empty": "No recent activity"
-      },
-      "activity": {
-        "workoutCompleted": "{{client}} completed a workout",
-        "newMessage": "New message from {{client}}",
-        "milestone": "{{client}} reached a milestone",
-        "programAssigned": "{{program}} assigned to client"
-      },
-      "sessionTypes": {
-        "training": "Training Session",
-        "checkIn": "Progress Check-in",
-        "consultation": "Consultation"
-      },
-      "pendingCheckIns": {
-        "title": "Pending Check-Ins",
-        "awaiting": "Clients awaiting review",
-        "description": "Review progress updates from your clients",
-        "review": "Review Now"
-      }
-    },
-    "member": {
-      "welcome": "Welcome back, {{name}}!",
-      "subtitle": "Ready to crush your fitness goals today?",
-      "profile": {
-        "memberSince": "Member Since",
-        "editProfile": "Edit Profile"
-      },
-      "stats": {
-        "activeSubscriptions": "Active Subs",
-        "checkIns": "Check-Ins",
-        "nextClass": "Next Class",
-        "daysStreak": "Day Streak"
-      },
-      "quickActions": {
-        "title": "Quick Actions",
-        "findGyms": "Find Gyms",
-        "findGymsDesc": "Discover gyms near you",
-        "mySubscriptions": "My Subscriptions",
-        "mySubscriptionsDesc": "Manage your memberships",
-        "attendance": "Attendance",
-        "attendanceDesc": "View your check-in history",
-        "training": "Start Training",
-        "trainingDesc": "Begin your workout session"
-      }
-    }
-  },
   "coaches": {
     "title": "Find a Coach",
     "subtitle": "Discover professional coaches in your area to help you reach your fitness goals",
@@ -2776,6 +2790,30 @@
           "success": "Request sent to {{memberName}}",
           "error": "Failed to send request"
         }
+      }
+    },
+    "programs": {
+      "title": "Programs",
+      "subtitle": "Create and manage training programs for your clients",
+      "tabs": {
+        "myPrograms": "My Programs",
+        "otherPrograms": "Other Programs"
+      },
+      "createProgram": "Create Program",
+      "searchPlaceholder": "Search programs...",
+      "viewDetails": "View Details",
+      "editProgram": "Edit Program",
+      "deleteProgram": "Delete Program",
+      "assignToClient": "Assign to Client",
+      "noPrograms": {
+        "title": "No programs found",
+        "description": "No programs available",
+        "action": "Create Program"
+      },
+      "card": {
+        "daysPerWeek": "{{days}} days/week",
+        "experience": "Experience",
+        "purpose": "Purpose"
       }
     },
     "settings": {

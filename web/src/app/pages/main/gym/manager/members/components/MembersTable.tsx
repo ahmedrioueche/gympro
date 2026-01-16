@@ -104,15 +104,6 @@ export function MembersTable({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        onEdit?.(member._id);
-                      }}
-                      className="px-3 py-1.5 bg-background border border-border text-text-secondary rounded-lg hover:border-primary hover:text-primary transition-all duration-300"
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
                         onDelete?.(member._id);
                       }}
                       className="px-3 py-1.5 bg-background border border-border text-text-secondary rounded-lg hover:border-danger hover:text-danger transition-all duration-300"

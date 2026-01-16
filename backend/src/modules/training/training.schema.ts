@@ -54,6 +54,16 @@ export class ProgramDayModel implements ProgramDay {
   @Prop({ type: [ExerciseModel], required: true }) exercises: ExerciseModel[];
 }
 
+@Schema({ _id: false })
+export class ProgramCommentModel {
+  @Prop({ required: true }) userId: string;
+  @Prop({ required: true }) userName: string;
+  @Prop() userImage?: string;
+  @Prop({ required: true }) text: string;
+  @Prop({ required: true, min: 1, max: 5 }) rating: number;
+  @Prop({ default: Date.now }) createdAt: Date;
+}
+
 @Schema({ timestamps: true })
 export class TrainingProgramModel extends Document {
   declare _id: string;
@@ -85,6 +95,13 @@ export class TrainingProgramModel extends Document {
   creationType: 'member' | 'coach' | 'template';
   @Prop() description?: string;
   @Prop() isPublic?: boolean;
+
+  @Prop({ type: [ProgramCommentModel], default: [] })
+  comments: ProgramCommentModel[];
+
+  @Prop({ default: 0 }) averageRating: number;
+  @Prop({ default: 0 }) totalRatings: number;
+
   @Prop({ required: true }) createdAt: Date;
   @Prop() createdBy?: string;
   @Prop() updatedAt?: Date;

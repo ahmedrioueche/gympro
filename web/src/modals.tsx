@@ -37,6 +37,22 @@ const RequestCoachModal = lazy(
   () => import("./app/components/modals/RequestCoachModal")
 );
 
+const CreateProgramModal = lazy(
+  () =>
+    import("./app/components/modals/create-program-modal/CreateProgramModal")
+);
+
+const ProgramDetailsModal = lazy(
+  () =>
+    import("./app/components/modals/program-details-modal/ProgramDetailsModal")
+);
+
+const CreateExerciseModal = lazy(() =>
+  import("./app/components/modals/CreateExerciseModal").then((module) => ({
+    default: module.CreateExerciseModal,
+  }))
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -48,6 +64,9 @@ function modals() {
       <RenewSubscriptionModal />
       <StaffModal />
       <RequestCoachModal />
+      <ProgramDetailsModal />
+      <CreateProgramModal />
+      <CreateExerciseModal />
     </Suspense>
   );
 }

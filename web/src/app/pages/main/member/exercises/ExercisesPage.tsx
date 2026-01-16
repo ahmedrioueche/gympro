@@ -17,9 +17,8 @@ import {
 } from "../../../../../hooks/queries/useExercises";
 import { useModalStore } from "../../../../../store/modal";
 import { useUserStore } from "../../../../../store/user";
+import { ExercisesList } from "../../../../components/gym/ExercisesList";
 import PageHeader from "../../../../components/PageHeader";
-import { CreateExerciseModal } from "./components/CreateExerciseModal";
-import { ExercisesList } from "./components/ExercisesList";
 
 export default function ExercisesPage() {
   const { t } = useTranslation();
@@ -29,10 +28,7 @@ export default function ExercisesPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Modals state
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | undefined>(
-    undefined
-  );
+  // Removed local state for modals as they are now managed by global store
 
   // Queries & Mutations
   const { data: response, isLoading } = useExercises({
@@ -43,13 +39,11 @@ export default function ExercisesPage() {
   const deleteExercise = useDeleteExercise();
 
   const handleCreateClick = () => {
-    setExerciseToEdit(undefined);
-    setIsCreateModalOpen(true);
+    openModal("create_exercise");
   };
 
   const handleEditClick = (exercise: Exercise) => {
-    setExerciseToEdit(exercise);
-    setIsCreateModalOpen(true);
+    openModal("create_exercise", { exerciseToEdit: exercise });
   };
 
   const handleDeleteClick = async (exercise: Exercise) => {
@@ -198,12 +192,6 @@ export default function ExercisesPage() {
           onCreateClick={handleCreateClick}
         />
       )}
-
-      <CreateExerciseModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        exerciseToEdit={exerciseToEdit}
-      />
     </div>
   );
 }

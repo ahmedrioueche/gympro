@@ -1,13 +1,23 @@
 import { AlertTriangle, CheckCircle, Info, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../store/modal";
+import InputField from "./ui/InputField";
 
 export default function ConfirmModal() {
   const { t } = useTranslation();
   const { currentModal, confirmModalProps, closeModal } = useModalStore();
+  const [inputValue, setInputValue] = useState("");
 
   const title = confirmModalProps?.title || t("confirm.default.title");
   const text = confirmModalProps?.text || t("confirm.default.text");
+  const verificationText = confirmModalProps?.verificationText;
+
+  useEffect(() => {
+    if (currentModal === "confirm") {
+      setInputValue("");
+    }
+  }, [currentModal]);
 
   const confirmVariant = confirmModalProps?.confirmVariant || "primary";
 
@@ -85,6 +95,24 @@ export default function ConfirmModal() {
           <p className="text-text-secondary text-base leading-relaxed bg-surface-secondary/50 p-4 rounded-xl border border-border">
             {text}
           </p>
+          {verificationText && (
+            <div className="mt-4 space-y-2">
+              <p className="text-sm text-text-secondary select-none">
+                {t("confirm.typeToConfirm", {
+                  text: verificationText,
+                  defaultValue: `Type "${verificationText}" to confirm`,
+                })}
+              </p>
+              <InputField
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="w-full px-4 py-3 bg-surface border border-border rounded-xl focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                placeholder={verificationText}
+                autoFocus
+              />
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -97,7 +125,10 @@ export default function ConfirmModal() {
           </button>
           <button
             onClick={handleConfirm}
-            className={`px-6 py-2.5 rounded-xl font-bold text-white shadow-lg shadow-black/20 hover:shadow-xl hover:scale-[1.02] transition-all bg-gradient-to-r ${buttonGradient}`}
+            disabled={
+              verificationText ? inputValue !== verificationText : false
+            }
+            className={`px-6 py-2.5 rounded-xl font-bold text-white shadow-lg shadow-black/20 hover:shadow-xl hover:scale-[1.02] transition-all bg-gradient-to-r ${buttonGradient} disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
           >
             {confirmText}
           </button>

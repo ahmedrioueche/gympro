@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { useCreateProgram } from "../../../../../../../hooks/queries/useTraining";
+import { useCreateProgram } from "../../hooks/queries/useTraining";
 
 export const useProgramCreate = (onClose: () => void) => {
   const { t } = useTranslation();

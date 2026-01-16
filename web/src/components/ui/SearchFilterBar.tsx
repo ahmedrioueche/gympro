@@ -14,11 +14,11 @@ interface SearchFilterBarProps<T extends string = string> {
   /** Placeholder text for search input */
   searchPlaceholder?: string;
   /** Current selected filter value */
-  filterValue: T;
+  filterValue?: T;
   /** Callback when filter changes */
-  onFilterChange: (value: T) => void;
+  onFilterChange?: (value: T) => void;
   /** List of filter options */
-  filterOptions: FilterOption<T>[];
+  filterOptions?: FilterOption<T>[];
   /** Optional debounce delay for search in ms */
   debounceMs?: number;
   /** Optional label shown next to filter on mobile */
@@ -102,11 +102,14 @@ export function SearchFilterBar<T extends string = string>({
         </div>
 
         {/* Filter Dropdown */}
-        <FilterDropdown
-          value={filterValue}
-          onChange={onFilterChange}
-          options={filterOptions}
-        />
+        {/* Filter Dropdown */}
+        {filterOptions && filterValue !== undefined && onFilterChange && (
+          <FilterDropdown
+            value={filterValue}
+            onChange={onFilterChange}
+            options={filterOptions}
+          />
+        )}
       </div>
     </div>
   );

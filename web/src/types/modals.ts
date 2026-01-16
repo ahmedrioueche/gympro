@@ -3,6 +3,7 @@ import type {
   CoachProfile,
   EditUserDto,
   Exercise,
+  TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
 
 export interface ConfirmModalProps {
@@ -12,6 +13,7 @@ export interface ConfirmModalProps {
   confirmVariant?: "danger" | "success" | "primary";
   onConfirm?: () => void;
   onCancel?: () => void;
+  verificationText?: string;
 }
 
 export interface UpgradePreviewModalProps {
@@ -96,4 +98,15 @@ export interface StaffModalProps {
 
 export interface RequestCoachModalProps {
   coach: CoachProfile;
+}
+
+export interface ProgramDetailsModalProps {
+  program: TrainingProgram | null;
+  isActive?: boolean;
+  onUse: (programId: string) => void;
+  onProgramUpdated?: (program: TrainingProgram) => void;
+}
+
+export interface CreateExerciseModalProps {
+  exerciseToEdit?: Exercise;
 }

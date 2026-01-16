@@ -139,4 +139,27 @@ export class TrainingController {
       'Training history retrieved successfully',
     );
   }
+
+  @Post('programs/:id/comment')
+  async addComment(
+    @Request() req,
+    @Param('id') id: string,
+    @Body()
+    body: {
+      text: string;
+      rating: number;
+      userName: string;
+      userImage?: string;
+    },
+  ) {
+    const program = await this.trainingService.addComment(
+      id,
+      req.user.sub,
+      body.userName || 'Anonymous', // Fallback if userName not provided
+      body.userImage,
+      body.text,
+      body.rating,
+    );
+    return apiResponse(true, undefined, program, 'Comment added successfully');
+  }
 }

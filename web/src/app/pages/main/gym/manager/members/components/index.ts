@@ -1,4 +1,3 @@
-export { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
 export { MemberCard } from "./MemberCard";
 export { MembersControls } from "./MembersControls";
 export type { FilterStatus, SortBy, ViewMode } from "./MembersControls";

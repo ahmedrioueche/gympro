@@ -6,7 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { useUpdateProgram } from "../../../../../../../hooks/queries/useTraining";
+import { useUpdateProgram } from "../../hooks/queries/useTraining";
 
 export const useProgramEdit = (
   program: TrainingProgram | null,
