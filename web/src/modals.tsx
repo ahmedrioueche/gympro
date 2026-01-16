@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import { ExerciseDetailModal } from "./app/components/gym/ExerciseDetailModal";
 
 const ConfirmModal = lazy(() => import("./components/ConfirmModal"));
 const UpgradePreviewModal = lazy(
@@ -28,6 +27,16 @@ const StaffModal = lazy(
   () => import("./app/components/modals/staff-modal/StaffModal")
 );
 
+const ExerciseDetailModal = lazy(() =>
+  import("./app/components/gym/ExerciseDetailModal").then((module) => ({
+    default: module.ExerciseDetailModal,
+  }))
+);
+
+const RequestCoachModal = lazy(
+  () => import("./app/components/modals/RequestCoachModal")
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -38,6 +47,7 @@ function modals() {
       <ScanResultModal />
       <RenewSubscriptionModal />
       <StaffModal />
+      <RequestCoachModal />
     </Suspense>
   );
 }

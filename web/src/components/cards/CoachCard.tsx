@@ -1,5 +1,14 @@
 import { type CoachProfile } from "@ahmedrioueche/gympro-client";
-import { Award, MapPin, Star, User, Users } from "lucide-react";
+import {
+  Award,
+  Briefcase,
+  MapPin,
+  Sparkles,
+  Star,
+  User,
+  Users,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface CoachCardProps {
   coach: CoachProfile;
@@ -7,103 +16,169 @@ interface CoachCardProps {
 }
 
 export default function CoachCard({ coach, onViewDetails }: CoachCardProps) {
+  const { t } = useTranslation();
   const displayName = coach.fullName || coach.username;
-  const location = [coach.location?.city, coach.location?.state]
+  const location = [
+    coach.location?.city,
+    coach.location?.state,
+    coach.location?.country,
+  ]
     .filter(Boolean)
     .join(", ");
 
   return (
     <div
-      className="bg-surface border border-border rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 group cursor-pointer"
+      className="bg-surface border border-border rounded-2xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group cursor-pointer flex flex-col"
       onClick={() => onViewDetails(coach)}
     >
-      {/* Header with Avatar and Name */}
-      <div className="flex items-start gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary p-0.5 flex-shrink-0">
-          <div className="w-full h-full rounded-full bg-surface border-2 border-surface overflow-hidden flex items-center justify-center">
-            {coach.profileImageUrl ? (
-              <img
-                src={coach.profileImageUrl}
-                alt={displayName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <User className="w-8 h-8 text-text-secondary" />
-            )}
-          </div>
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-lg font-semibold text-text-primary truncate">
-              {displayName}
-            </h3>
-            {coach.isVerified && (
-              <div className="p-1 rounded-full bg-blue-500/10">
-                <Award className="w-4 h-4 text-blue-500" />
-              </div>
-            )}
-          </div>
-
-          {coach.rating && (
-            <div className="flex items-center gap-1 text-sm">
-              <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-              <span className="font-medium text-text-primary">
-                {coach.rating.toFixed(1)}
+      {/* Header Section with Gradient Background */}
+      <div className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 p-6 pb-4">
+        {/* Verified Badge (if applicable) */}
+        {coach.isVerified && (
+          <div className="absolute top-4 right-4">
+            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500/20 backdrop-blur-sm border border-blue-500/30">
+              <Award className="w-3.5 h-3.5 text-blue-500" />
+              <span className="text-xs font-semibold text-blue-600">
+                {t("coaches.verified")}
               </span>
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Avatar and Basic Info */}
+        <div className="flex items-start gap-4">
+          <div className="relative">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-secondary p-0.5 flex-shrink-0 shadow-lg">
+              <div className="w-full h-full rounded-2xl bg-surface overflow-hidden flex items-center justify-center">
+                {coach.profileImageUrl ? (
+                  <img
+                    src={coach.profileImageUrl}
+                    alt={displayName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-10 h-10 text-text-secondary" />
+                )}
+              </div>
+            </div>
+            {/* Online/Active Status Indicator (placeholder - can be made dynamic) */}
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-success rounded-full border-2 border-surface" />
+          </div>
+
+          <div className="flex-1 min-w-0 mt-1">
+            <h3 className="text-xl font-bold text-text-primary truncate mb-2 group-hover:text-primary transition-colors">
+              {displayName}
+            </h3>
+
+            {/* Rating and Experience Row */}
+            <div className="flex items-center gap-3 flex-wrap mb-3">
+              {coach.rating && (
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                  <span className="font-semibold text-text-primary text-sm">
+                    {coach.rating.toFixed(1)}
+                  </span>
+                  <span className="text-text-secondary text-xs">/5.0</span>
+                </div>
+              )}
+
+              {coach.yearsOfExperience && (
+                <div className="flex items-center gap-1 text-sm text-text-secondary">
+                  <Briefcase className="w-3.5 h-3.5" />
+                  <span className="font-medium">
+                    {coach.yearsOfExperience} {t("coaches.yearsShort")}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Location and Clients Info */}
+            <div className="flex items-center gap-3 flex-wrap">
+              {location && (
+                <div className="flex items-center gap-1.5 text-text-secondary">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium truncate max-w-[200px]">
+                    {location}
+                  </span>
+                </div>
+              )}
+              {coach.totalClients !== undefined && coach.totalClients > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <div className="p-1 rounded-full bg-primary/10">
+                    <Users className="w-3 h-3 text-primary" />
+                  </div>
+                  <span className="text-xs font-semibold text-text-primary">
+                    {coach.totalClients}
+                  </span>
+                  <span className="text-xs text-text-secondary">
+                    {t(
+                      coach.totalClients === 1
+                        ? "coaches.client"
+                        : "coaches.clients"
+                    )}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Bio */}
-      {coach.bio && (
-        <p className="text-sm text-text-secondary line-clamp-2 mb-4">
-          {coach.bio}
-        </p>
-      )}
-
-      {/* Specializations */}
-      {coach.specializations && coach.specializations.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
-          {coach.specializations.slice(0, 3).map((spec, idx) => (
-            <span
-              key={idx}
-              className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium"
-            >
-              {spec}
-            </span>
-          ))}
-          {coach.specializations.length > 3 && (
-            <span className="text-xs px-2 py-1 rounded-full bg-surface-hover text-text-secondary font-medium">
-              +{coach.specializations.length - 3} more
-            </span>
-          )}
-        </div>
-      )}
-
-      {/* Footer Info */}
-      <div className="flex items-center justify-between text-xs text-text-secondary pt-4 border-t border-border">
-        <div className="flex items-center gap-4">
-          {location && (
-            <div className="flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5" />
-              <span>{location}</span>
-            </div>
-          )}
-          {coach.totalClients !== undefined && coach.totalClients > 0 && (
-            <div className="flex items-center gap-1">
-              <Users className="w-3.5 h-3.5" />
-              <span>{coach.totalClients} clients</span>
-            </div>
-          )}
-        </div>
-
-        {coach.yearsOfExperience && (
-          <span className="font-medium text-primary">
-            {coach.yearsOfExperience} yrs exp
-          </span>
+      {/* Content Section */}
+      <div className="p-6 pt-4 flex-1 flex flex-col">
+        {/* Bio */}
+        {coach.bio && (
+          <p className="text-sm text-text-secondary line-clamp-3 mb-4 leading-relaxed">
+            {coach.bio}
+          </p>
         )}
+
+        {/* Specializations */}
+        {coach.specializations && coach.specializations.length > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center gap-1.5 mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                {t("coaches.specializations")}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {coach.specializations.slice(0, 4).map((spec, idx) => (
+                <span
+                  key={idx}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold border border-primary/20 hover:border-primary/40 transition-colors"
+                >
+                  {spec}
+                </span>
+              ))}
+              {coach.specializations.length > 4 && (
+                <span className="text-xs px-3 py-1.5 rounded-lg bg-muted text-text-secondary font-medium">
+                  +{coach.specializations.length - 4}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* View Profile Button - Full Width */}
+        <div className="mt-auto pt-4 border-t border-border/50">
+          <div className="flex items-center justify-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+            <span>{t("coaches.viewProfile")}</span>
+            <svg
+              className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
   );

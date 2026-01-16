@@ -15,6 +15,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      // Allow public routes without authentication
+      const currentPath = window.location.pathname;
+      if (currentPath.startsWith("/public")) {
+        return; // Skip authentication for public routes
+      }
+
       const user = await fetchUser();
 
       if (!user) return router.navigate({ to: "/auth/login" });

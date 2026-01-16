@@ -130,7 +130,7 @@ export default function NotificationsDropdown() {
                   description={
                     <div className="flex flex-col gap-1">
                       <span>{notification.message}</span>
-                      <span className="text-xs text-text-tertiary">
+                      <span className="text-xs text-text-secondary">
                         {formatDistanceToNow(new Date(notification.createdAt), {
                           addSuffix: true,
                           locale:

@@ -82,7 +82,7 @@ export const SessionExerciseCard = ({
             className={`grid grid-cols-12 gap-2 items-center p-2 rounded-lg transition-colors ${
               set.completed
                 ? "bg-green-500/10 border border-green-500/30"
-                : "bg-background-tertiary/50"
+                : "bg-background-secondary/50"
             }`}
           >
             {/* Set Number */}

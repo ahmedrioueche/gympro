@@ -2,6 +2,7 @@ import {
   type CoachProfile,
   type CoachQueryDto,
 } from "@ahmedrioueche/gympro-client";
+import { useNavigate } from "@tanstack/react-router";
 import { MapPin, UserCheck, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -11,12 +12,12 @@ import InputField from "../../../../../components/ui/InputField";
 import SearchFilterBar, {
   type FilterOption,
 } from "../../../../../components/ui/SearchFilterBar";
+import { APP_PAGES } from "../../../../../constants/navigation";
 import { useNearbyCoaches } from "../../../../../hooks/queries/useCoaches";
 import { useUpdateProfile } from "../../../../../hooks/queries/useProfile";
 import { useUserStore } from "../../../../../store/user";
 import PageHeader from "../../../../components/PageHeader";
 import CoachesList from "./components/CoachesList";
-import RequestCoachModal from "./components/RequestCoachModal";
 
 const SPECIALIZATIONS: FilterOption[] = [
   { value: "all", label: "All Specializations" },
@@ -36,8 +37,7 @@ export default function CoachesPage() {
   const { t } = useTranslation();
   const { user, updateUser } = useUserStore();
   const updateProfile = useUpdateProfile(user?._id || "");
-  const [selectedCoach, setSelectedCoach] = useState<CoachProfile | null>(null);
-  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,13 +83,7 @@ export default function CoachesPage() {
   });
 
   const handleSelectCoach = (coach: CoachProfile) => {
-    setSelectedCoach(coach);
-    setIsRequestModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsRequestModalOpen(false);
-    setTimeout(() => setSelectedCoach(null), 200); // Clear after animation
+    navigate({ to: `${APP_PAGES.public.coach_profile.link}/${coach.userId}` });
   };
 
   // Detect user location
@@ -287,12 +281,6 @@ export default function CoachesPage() {
         coaches={filteredCoaches}
         isLoading={isLoading}
         onSelectCoach={handleSelectCoach}
-      />
-
-      <RequestCoachModal
-        coach={selectedCoach}
-        isOpen={isRequestModalOpen}
-        onClose={handleCloseModal}
       />
     </div>
   );

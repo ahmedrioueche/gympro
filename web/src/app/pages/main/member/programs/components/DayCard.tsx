@@ -74,7 +74,7 @@ export const DayCard = ({
 
   return (
     <div className="bg-background-secondary border border-border rounded-xl">
-      <div className="bg-background-tertiary p-3 border-b border-border flex items-center justify-between rounded-t-xl">
+      <div className="bg-background-secondary p-3 border-b border-border flex items-center justify-between rounded-t-xl">
         <div className="flex items-center gap-2">
           <Calendar size={16} className="text-primary" />
           {isEditMode ? (

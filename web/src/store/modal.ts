@@ -4,6 +4,7 @@ import type {
   EditManagerModalProps,
   ExerciseDetailModalProps,
   RenewSubscriptionModalProps,
+  RequestCoachModalProps,
   ScanResultModalProps,
   StaffModalProps,
   UpgradePreviewModalProps,
@@ -17,6 +18,7 @@ type ModalType =
   | "scan_result"
   | "renew_subscription"
   | "staff_modal"
+  | "request_coach"
   | null;
 
 interface ModalState {
@@ -28,6 +30,7 @@ interface ModalState {
   scanResultProps?: ScanResultModalProps;
   renewSubscriptionProps?: RenewSubscriptionModalProps;
   staffModalProps?: StaffModalProps;
+  requestCoachProps?: RequestCoachModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -65,6 +68,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "staff_modal",
           staffModalProps: props,
+        };
+      }
+      if (modal === "request_coach") {
+        return {
+          currentModal: "request_coach",
+          requestCoachProps: props,
         };
       }
       return { currentModal: null };

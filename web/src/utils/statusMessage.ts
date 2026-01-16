@@ -130,6 +130,15 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.COACH_REQUEST_FETCH_ERROR]:
     "status.error.coach.request_fetch_error",
   [ErrorCode.COACH_NOT_FOUND]: "status.error.coach.not_found",
+  [ErrorCode.COACH_REQUEST_NOT_FOUND]: "status.error.coach.request_not_found",
+  [ErrorCode.COACH_REQUEST_RESPOND_FAILED]:
+    "status.error.coach.request_respond_failed",
+  [ErrorCode.COACH_CLIENTS_FETCH_FAILED]:
+    "status.error.coach.clients_fetch_failed",
+  [ErrorCode.COACH_PROSPECTIVE_MEMBERS_FETCH_FAILED]:
+    "status.error.coach.prospective_members_fetch_failed",
+  [ErrorCode.COACH_REQUEST_ALREADY_EXISTS]:
+    "status.error.coach.request_already_exists",
 };
 
 /**

@@ -157,7 +157,7 @@ export const ProgramCard = ({
         <div className="flex gap-3">
           <button
             onClick={() => onViewDetails(program)}
-            className="flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-semibold bg-background-secondary text-text-primary hover:bg-background-tertiary transition-all border border-border hover:border-primary/30"
+            className="flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-semibold bg-background-secondary text-text-primary hover:bg-background-secondary transition-all border border-border hover:border-primary/30"
           >
             {t("training.programs.card.view")}
           </button>

@@ -1,5 +1,6 @@
 import type {
   AppPlan,
+  CoachProfile,
   EditUserDto,
   Exercise,
 } from "@ahmedrioueche/gympro-client";
@@ -91,4 +92,8 @@ export interface StaffModalProps {
     role: string;
   };
   onSuccess?: () => void;
+}
+
+export interface RequestCoachModalProps {
+  coach: CoachProfile;
 }

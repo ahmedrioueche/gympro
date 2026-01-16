@@ -72,7 +72,7 @@ export const SessionExerciseList = ({
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-text-tertiary italic">
+                <div className="text-xs text-text-secondary italic">
                   {t("training.page.sessionList.noSets")}
                 </div>
               )}

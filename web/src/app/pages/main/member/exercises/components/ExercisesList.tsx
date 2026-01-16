@@ -51,7 +51,7 @@ export const ExercisesList = ({
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="w-16 h-16 bg-surface-secondary rounded-full flex items-center justify-center mb-4">
-          <Dumbbell className="text-text-tertiary w-8 h-8" />
+          <Dumbbell className="text-text-secondary w-8 h-8" />
         </div>
         <h3 className="text-xl font-bold text-text-primary mb-2">
           {t("exercises.empty.title")}

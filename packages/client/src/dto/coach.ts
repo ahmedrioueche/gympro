@@ -12,3 +12,24 @@ export interface CoachQueryDto {
   limit?: number;
   offset?: number;
 }
+
+// Respond to coaching request DTO
+export interface RespondToRequestDto {
+  action: "accept" | "decline";
+  response?: string;
+}
+
+// Send coaching request to member DTO
+export interface SendCoachRequestDto {
+  message?: string;
+}
+
+// Prospective members query filters
+export interface ProspectiveMembersQueryDto {
+  gymId?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  limit?: number;
+  offset?: number;
+}

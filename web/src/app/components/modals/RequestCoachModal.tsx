@@ -1,24 +1,17 @@
-import { type CoachProfile } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import BaseModal from "../../../../../../components/ui/BaseModal";
-import TextArea from "../../../../../../components/ui/TextArea";
-import { useRequestCoach } from "../../../../../../hooks/mutations/useRequestCoach";
+import BaseModal from "../../../components/ui/BaseModal";
+import TextArea from "../../../components/ui/TextArea";
+import { useRequestCoach } from "../../../hooks/mutations/useRequestCoach";
+import { useModalStore } from "../../../store/modal";
 
-interface RequestCoachModalProps {
-  coach: CoachProfile | null;
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function RequestCoachModal({
-  coach,
-  isOpen,
-  onClose,
-}: RequestCoachModalProps) {
+export default function RequestCoachModal() {
   const { t } = useTranslation();
+  const { currentModal, closeModal, requestCoachProps } = useModalStore();
   const [message, setMessage] = useState("");
   const requestCoachMutation = useRequestCoach();
+  const isOpen = currentModal === "request_coach";
+  const coach = requestCoachProps?.coach;
 
   const handleSubmit = async () => {
     if (!coach) return;
@@ -29,12 +22,12 @@ export default function RequestCoachModal({
     });
 
     setMessage("");
-    onClose();
+    closeModal();
   };
 
   const handleClose = () => {
     setMessage("");
-    onClose();
+    closeModal();
   };
 
   if (!coach) return null;
@@ -49,7 +42,7 @@ export default function RequestCoachModal({
       subtitle={t("coaches.requestModal.send")}
       primaryButton={{
         label: t("coaches.requestModal.send"),
-        type: "submit",
+        onClick: handleSubmit,
         loading: requestCoachMutation.isPending,
       }}
     >

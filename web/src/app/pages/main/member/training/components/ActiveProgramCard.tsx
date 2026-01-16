@@ -32,7 +32,7 @@ export const ActiveProgramCard = ({
     (history.status !== "active" && history.status !== "paused")
   ) {
     return (
-      <div className="bg-gradient-to-br from-background-secondary to-background-tertiary rounded-2xl p-6 border border-border text-center space-y-4">
+      <div className="bg-gradient-to-br from-background-secondary to-background-secondary rounded-2xl p-6 border border-border text-center space-y-4">
         <div className="inline-flex p-3 bg-background rounded-full mb-2">
           <Trophy size={32} className="text-text-secondary" />
         </div>
@@ -228,7 +228,7 @@ export const ActiveProgramCard = ({
                 </span>
               </div>
             </div>
-            <div className="h-3 bg-background-tertiary rounded-full overflow-hidden">
+            <div className="h-3 bg-background-secondary rounded-full overflow-hidden">
               <div
                 className={`h-full bg-gradient-to-r ${sourceConfig.gradient} transition-all duration-500 relative`}
                 style={{ width: `${progressPercent}%` }}
@@ -253,7 +253,7 @@ export const ActiveProgramCard = ({
                     onConfirm: () => pauseProgram.mutate(),
                   })
                 }
-                className="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-background-tertiary transition-colors"
+                className="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-background-secondary transition-colors"
                 title={t("training.programs.card.pause")}
               >
                 <Pause size={20} />

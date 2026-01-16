@@ -912,6 +912,20 @@
       "refunded": "Refunded"
     }
   },
+  "coachProfile": {
+    "title": "Coach Profile",
+    "notFound": "Coach Not Found",
+    "notFoundDesc": "We couldn't find this coach. They may have been removed or the link is incorrect.",
+    "unknownCoach": "Unknown Coach",
+    "verified": "Verified",
+    "about": "About",
+    "specializations": "Specializations",
+    "certifications": "Certifications",
+    "yearsExperience": "{{years}} years of experience",
+    "totalClients": "{{count}} clients",
+    "noLocation": "Location not specified",
+    "requestCoaching": "Request Coaching"
+  },
   "analytics": {
     "title": "Business Insights",
     "subtitle": "Track performance across all your gym locations",
@@ -2669,7 +2683,13 @@
       "detecting": "Detecting...",
       "locationDetected": "Location detected successfully",
       "locationError": "Could not detect location. Please enter manually."
-    }
+    },
+    "verified": "Verified",
+    "yearsShort": "yrs",
+    "specializations": "Specializations",
+    "client": "client",
+    "clients": "clients",
+    "viewProfile": "View Profile"
   },
   "pages": {
     "member": {
@@ -2686,6 +2706,78 @@
     "maintenance": "Maintenance"
   },
   "coach": {
+    "gyms": {
+      "title": "My Gyms",
+      "subtitle": "Gyms where you provide coaching services"
+    },
+    "clients": {
+      "title": "Clients",
+      "subtitle": "Manage your coaching relationships and client requests",
+      "tabs": {
+        "pending": "Pending Requests",
+        "active": "Active Clients",
+        "prospective": "Find Clients"
+      },
+      "pendingRequests": {
+        "title": "Pending Requests",
+        "subtitle": "Members who want you as their coach",
+        "noData": "No pending requests",
+        "noDataDesc": "You're all caught up!",
+        "accept": "Accept",
+        "decline": "Decline",
+        "respondedAt": "Responded",
+        "messageLabel": "Message from member",
+        "respondLabel": "Your response (optional)"
+      },
+      "activeClients": {
+        "title": "Active Clients",
+        "subtitle": "Members you're currently coaching",
+        "noData": "No active clients yet",
+        "noDataDesc": "Accept requests to start coaching",
+        "viewProfile": "View Profile",
+        "assignProgram": "Assign Program",
+        "sendMessage": "Send Message",
+        "joinedOn": "Client since",
+        "lastWorkout": "Last workout",
+        "currentProgram": "Current program"
+      },
+      "prospectiveMembers": {
+        "title": "Find New Clients",
+        "subtitle": "Members looking for coaching",
+        "noData": "No prospective members found",
+        "noDataDesc": "Try adjusting your filters",
+        "sendRequest": "Send Request",
+        "alreadySent": "Request Sent",
+        "hasCoach": "Has Coach",
+        "search": "Search members...",
+        "filters": {
+          "city": "City",
+          "state": "State",
+          "clearAll": "Clear Filters"
+        }
+      },
+      "modals": {
+        "respond": {
+          "acceptTitle": "Accept Coaching Request",
+          "declineTitle": "Decline Coaching Request",
+          "message": "Message (optional)",
+          "messagePlaceholder": "Send a message to {{memberName}}...",
+          "acceptButton": "Accept Request",
+          "declineButton": "Decline Request",
+          "acceptSuccess": "Request accepted! {{memberName}} is now your client.",
+          "declineSuccess": "Request declined.",
+          "error": "Failed to respond to request"
+        },
+        "sendRequest": {
+          "title": "Send Coaching Request to {{memberName}}",
+          "message": "Message (optional)",
+          "messagePlaceholder": "Introduce yourself and explain how you can help...",
+          "send": "Send Request",
+          "success": "Request sent to {{memberName}}",
+          "error": "Failed to send request"
+        }
+      }
+    },
     "settings": {
       "pageTitle": "Settings",
       "pageSubtitle": "Manage your coaching profile and preferences",

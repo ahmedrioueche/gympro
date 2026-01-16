@@ -1,15 +1,22 @@
 import {
   ApiResponse,
+  CoachClient,
   CoachProfile,
   CoachQueryDto,
   CoachRequest,
+  CoachRequestWithDetails,
+  ProspectiveMember,
+  ProspectiveMembersQueryDto,
   RequestCoachDto,
+  RespondToRequestDto,
+  SendCoachRequestDto,
 } from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -23,6 +30,10 @@ import { CoachService } from './coach.service';
 export class CoachController {
   constructor(private readonly coachService: CoachService) {}
 
+  // ============================================
+  // SPECIFIC ROUTES (must come before :coachId)
+  // ============================================
+
   @Get('nearby')
   async getNearbyCoaches(
     @Req() req: any,
@@ -30,6 +41,58 @@ export class CoachController {
   ): Promise<ApiResponse<CoachProfile[]>> {
     const userId = req.user.sub;
     return this.coachService.getNearbyCoaches(userId, query);
+  }
+
+  @Get('requests/my')
+  async getMyCoachRequests(
+    @Req() req: any,
+  ): Promise<ApiResponse<CoachRequest[]>> {
+    const memberId = req.user.sub;
+    return this.coachService.getMyCoachRequests(memberId);
+  }
+
+  @Get('requests/pending')
+  async getPendingRequests(
+    @Req() req: any,
+  ): Promise<ApiResponse<CoachRequestWithDetails[]>> {
+    const coachId = req.user.sub;
+    return this.coachService.getPendingRequests(coachId);
+  }
+
+  @Patch('requests/:requestId/respond')
+  async respondToRequest(
+    @Req() req: any,
+    @Param('requestId') requestId: string,
+    @Body() data: RespondToRequestDto,
+  ): Promise<ApiResponse<CoachRequest>> {
+    const coachId = req.user.sub;
+    return this.coachService.respondToRequest(coachId, requestId, data);
+  }
+
+  @Get('clients')
+  async getActiveClients(@Req() req: any): Promise<ApiResponse<CoachClient[]>> {
+    const coachId = req.user.sub;
+    return this.coachService.getActiveClients(coachId);
+  }
+
+  @Get('prospective-members')
+  async getProspectiveMembers(
+    @Req() req: any,
+    @Query() query: ProspectiveMembersQueryDto,
+  ): Promise<ApiResponse<ProspectiveMember[]>> {
+    const coachId = req.user.sub;
+    return this.coachService.getProspectiveMembers(coachId, query);
+  }
+
+  // ============================================
+  // PARAMETERIZED ROUTES (must come after specific routes)
+  // ============================================
+
+  @Get(':coachId')
+  async getCoachProfile(
+    @Param('coachId') coachId: string,
+  ): Promise<ApiResponse<CoachProfile>> {
+    return this.coachService.getCoachProfile(coachId);
   }
 
   @Post(':coachId/request')
@@ -42,11 +105,13 @@ export class CoachController {
     return this.coachService.requestCoach(memberId, coachId, data);
   }
 
-  @Get('requests/my')
-  async getMyCoachRequests(
+  @Post('members/:memberId/request')
+  async sendRequestToMember(
     @Req() req: any,
-  ): Promise<ApiResponse<CoachRequest[]>> {
-    const memberId = req.user.sub;
-    return this.coachService.getMyCoachRequests(memberId);
+    @Param('memberId') memberId: string,
+    @Body() data: SendCoachRequestDto,
+  ): Promise<ApiResponse<CoachRequest>> {
+    const coachId = req.user.sub;
+    return this.coachService.sendRequestToMember(coachId, memberId, data);
   }
 }

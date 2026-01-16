@@ -49,8 +49,8 @@ export const RecentWorkouts = ({ history, isLoading }: RecentWorkoutsProps) => {
 
       {!recentActivities?.length ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-          <div className="w-12 h-12 rounded-full bg-background-tertiary flex items-center justify-center mb-3">
-            <Calendar size={20} className="text-text-tertiary" />
+          <div className="w-12 h-12 rounded-full bg-background-secondary flex items-center justify-center mb-3">
+            <Calendar size={20} className="text-text-secondary" />
           </div>
           <p className="text-sm text-text-secondary">
             {t("progress.recent.noWorkouts")}
@@ -61,7 +61,7 @@ export const RecentWorkouts = ({ history, isLoading }: RecentWorkoutsProps) => {
           {recentActivities.map((activity, index) => (
             <div
               key={`${activity.date}-${index}`}
-              className="flex items-center justify-between p-3 rounded-lg bg-background-tertiary/50 hover:bg-background-tertiary transition-colors border border-transparent hover:border-border"
+              className="flex items-center justify-between p-3 rounded-lg bg-background-secondary/50 hover:bg-background-secondary transition-colors border border-transparent hover:border-border"
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">

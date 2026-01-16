@@ -146,7 +146,7 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
     <div className="bg-background-secondary border border-border rounded-xl overflow-hidden transition-all hover:border-primary/30">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 flex justify-between items-center hover:bg-background-tertiary/50 transition-colors"
+        className="w-full p-4 flex justify-between items-center hover:bg-background-secondary/50 transition-colors"
       >
         <div className="flex items-center gap-4">
           <div

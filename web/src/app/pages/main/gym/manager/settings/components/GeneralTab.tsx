@@ -234,7 +234,7 @@ export default function GeneralTab({
                   className={`w-5 h-5 ${
                     accessControlType === "flexible"
                       ? "text-primary"
-                      : "text-text-tertiary"
+                      : "text-text-secondary"
                   }`}
                 />
               </div>
@@ -262,7 +262,7 @@ export default function GeneralTab({
                   className={`w-5 h-5 ${
                     accessControlType === "strict"
                       ? "text-primary"
-                      : "text-text-tertiary"
+                      : "text-text-secondary"
                   }`}
                 />
               </div>

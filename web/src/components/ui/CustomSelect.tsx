@@ -198,7 +198,7 @@ const CustomSelect = <T extends string>({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search..."
-                className="w-full px-3 py-1.5 text-sm bg-surface rounded-md border border-border focus:outline-none focus:border-primary text-text-primary placeholder:text-text-tertiary"
+                className="w-full px-3 py-1.5 text-sm bg-surface rounded-md border border-border focus:outline-none focus:border-primary text-text-primary placeholder:text-text-secondary"
                 onClick={(e) => e.stopPropagation()}
                 onKeyDown={(e) => e.stopPropagation()} // Stop propagation to prevent selecting parent
               />
@@ -248,7 +248,7 @@ const CustomSelect = <T extends string>({
               </li>
             ))
           ) : (
-            <li className="px-4 py-2 text-sm text-text-tertiary text-center">
+            <li className="px-4 py-2 text-sm text-text-secondary text-center">
               No results found
             </li>
           )}

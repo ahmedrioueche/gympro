@@ -71,7 +71,7 @@ export const ExerciseForm = ({
         e.dataTransfer.dropEffect = "move";
         onDragOver?.(exerciseIndex);
       }}
-      className={`flex flex-col gap-3 p-4 bg-background-tertiary/30 rounded-xl border border-border/50 hover:border-primary/30 transition-all ${
+      className={`flex flex-col gap-3 p-4 bg-background-secondary/30 rounded-xl border border-border/50 hover:border-primary/30 transition-all ${
         isDragging ? "opacity-50 scale-95" : ""
       } ${onDragStart ? "cursor-move" : ""}`}
     >

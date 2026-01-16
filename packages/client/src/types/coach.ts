@@ -20,6 +20,21 @@ export interface CoachRequest extends AuditInfo {
   response?: string;
 }
 
+// Coach request with member/coach details
+export interface CoachRequestWithDetails extends CoachRequest {
+  memberDetails?: {
+    username: string;
+    fullName?: string;
+    profileImageUrl?: string;
+    location?: string;
+  };
+  coachDetails?: {
+    username: string;
+    fullName?: string;
+    profileImageUrl?: string;
+  };
+}
+
 // Coach profile info for discovery
 export interface CoachProfile {
   userId: string;
@@ -42,4 +57,43 @@ export interface CoachProfile {
   rating?: number;
   totalClients?: number;
   isVerified?: boolean;
+}
+
+// Active client profile (for coaches)
+export interface CoachClient {
+  userId: string;
+  username: string;
+  fullName?: string;
+  profileImageUrl?: string;
+  email?: string;
+  age?: string;
+  gender?: string;
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
+  joinedAt?: string;
+  currentProgram?: {
+    programId: string;
+    programName: string;
+  };
+  lastWorkoutDate?: string;
+}
+
+// Prospective member (looking for coach)
+export interface ProspectiveMember {
+  userId: string;
+  username: string;
+  fullName?: string;
+  profileImageUrl?: string;
+  age?: string;
+  gender?: string;
+  location?: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
+  gymMemberships?: string[];
+  hasCoach: boolean;
 }

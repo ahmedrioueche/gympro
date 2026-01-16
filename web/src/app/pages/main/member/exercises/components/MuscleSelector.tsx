@@ -93,7 +93,7 @@ export const MuscleSelector = ({
                     className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${
                       groupSelected
                         ? "bg-primary border-primary text-white"
-                        : "border-text-tertiary hover:border-primary"
+                        : "border-text-secondary hover:border-primary"
                     }`}
                   >
                     {groupSelected && <Check size={12} />}
@@ -102,7 +102,7 @@ export const MuscleSelector = ({
                     {t(`training.muscles.${groupKey}`)}
                   </span>
                 </div>
-                <button type="button" className="text-text-tertiary">
+                <button type="button" className="text-text-secondary">
                   {isExpanded ? (
                     <ChevronDown size={18} />
                   ) : (

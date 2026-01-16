@@ -249,4 +249,17 @@ export const APP_PAGES = {
       link: "/coach/settings",
     },
   },
+
+  public: {
+    name: "pages.public",
+    link: "/public",
+    coach_profile: {
+      name: "pages.public.coach_profile",
+      link: "/public/coach/profile",
+    },
+    member_profile: {
+      name: "pages.public.member_profile",
+      link: "/public/member/profile",
+    },
+  },
 };

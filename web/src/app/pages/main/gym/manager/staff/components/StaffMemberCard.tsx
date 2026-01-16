@@ -171,13 +171,13 @@ export default function StaffMemberCard({
         <div className="mt-4 space-y-2">
           {member.email && (
             <div className="flex items-center gap-2 text-sm text-text-secondary">
-              <Mail className="w-4 h-4 text-text-tertiary flex-shrink-0" />
+              <Mail className="w-4 h-4 text-text-secondary flex-shrink-0" />
               <span className="truncate">{member.email}</span>
             </div>
           )}
           {member.phoneNumber && (
             <div className="flex items-center gap-2 text-sm text-text-secondary">
-              <Phone className="w-4 h-4 text-text-tertiary flex-shrink-0" />
+              <Phone className="w-4 h-4 text-text-secondary flex-shrink-0" />
               <span>{formatPhoneForDisplay(member.phoneNumber)}</span>
             </div>
           )}

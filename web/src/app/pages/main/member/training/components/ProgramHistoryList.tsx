@@ -85,7 +85,7 @@ const HistoryItem = ({ item }: { item: ProgramHistory }) => {
 
       {/* Expanded Content: Session List */}
       <div
-        className={`bg-background-tertiary transition-all duration-300 ease-in-out ${
+        className={`bg-background-secondary transition-all duration-300 ease-in-out ${
           isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
         } overflow-hidden`}
       >

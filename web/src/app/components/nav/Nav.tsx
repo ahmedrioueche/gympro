@@ -15,7 +15,7 @@ import NotificationsDropdown from "../NotificationsDropdown";
 import ProfileDropdown from "../ProfileDropdown";
 import SidebarAnimatedLogo from "../SidebarAnimatedLogo";
 
-export default function Nav({ children, sidebarLinks }) {
+export default function Nav({ children, sidebarLinks = null }) {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -184,67 +184,73 @@ export default function Nav({ children, sidebarLinks }) {
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      {/* SIDEBAR */}
-      <div
-        ref={sidebarRef}
-        className={`h-screen flex backdrop-blur-lg ${
-          isMobile
-            ? "bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900"
-            : ""
-        }
-          flex-col fixed md:relative z-40 transition-all duration-300 
-        shadow-[2px_0_8px_rgba(0,0,0,0.15)]
+      {/* SIDEBAR - Only render if sidebarLinks are provided */}
+      {sidebarLinks && (
+        <div
+          ref={sidebarRef}
+          className={`h-screen flex backdrop-blur-lg ${
+            isMobile
+              ? "bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900"
+              : ""
+          }
+            flex-col fixed md:relative z-40 transition-all duration-300 
+          shadow-[2px_0_8px_rgba(0,0,0,0.15)]
 
-    ${
-      isMobile
-        ? `${sidebarOpen ? "translate-x-0" : "-translate-x-64"} w-64`
-        : sidebarExpanded || isPinned
-        ? "w-56"
-        : "w-20"
-    }`}
-        onMouseEnter={() => !isMobile && !isPinned && setSidebarExpanded(true)}
-        onMouseLeave={() => !isMobile && !isPinned && setSidebarExpanded(false)}
-      >
-        {/* Sidebar Header */}
-        <div className="flex flex-col">
-          <div className="flex items-center justify-between">
-            <SidebarAnimatedLogo
-              collapsed={!sidebarExpanded && !isMobile && !isPinned}
-              onClick={() => {
-                const url = getRoleHomePage(user.role as any);
-                navigate({ to: url });
-              }}
-            />
-            {/* Close button - Mobile only */}
-            {isMobile && (
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="p-2 mr-4 rounded-lg hover:bg-surface-hover transition-colors"
-              >
-                <X className="w-5 h-5 text-text-primary" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Sidebar Content */}
-        <nav className="flex-1 px-2 py-4 md:py-6 space-y-2 overflow-y-auto hide-scrollbar">
-          {sidebarLinks.map((link) => {
-            const isActive = link.matchPaths.some((p) => activeRoute === p);
-            return (
-              <SidebarMenuItem
-                key={link.path}
-                link={link}
-                isActive={isActive}
+      ${
+        isMobile
+          ? `${sidebarOpen ? "translate-x-0" : "-translate-x-64"} w-64`
+          : sidebarExpanded || isPinned
+          ? "w-56"
+          : "w-20"
+      }`}
+          onMouseEnter={() =>
+            !isMobile && !isPinned && setSidebarExpanded(true)
+          }
+          onMouseLeave={() =>
+            !isMobile && !isPinned && setSidebarExpanded(false)
+          }
+        >
+          {/* Sidebar Header */}
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between">
+              <SidebarAnimatedLogo
+                collapsed={!sidebarExpanded && !isMobile && !isPinned}
+                onClick={() => {
+                  const url = getRoleHomePage(user.role as any);
+                  navigate({ to: url });
+                }}
               />
-            );
-          })}
-        </nav>
-        <SidebarFooter />
-      </div>
+              {/* Close button - Mobile only */}
+              {isMobile && (
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-2 mr-4 rounded-lg hover:bg-surface-hover transition-colors"
+                >
+                  <X className="w-5 h-5 text-text-primary" />
+                </button>
+              )}
+            </div>
+          </div>
 
-      {/* OVERLAY (Mobile) */}
-      {isMobile && sidebarOpen && (
+          {/* Sidebar Content */}
+          <nav className="flex-1 px-2 py-4 md:py-6 space-y-2 overflow-y-auto hide-scrollbar">
+            {sidebarLinks.map((link) => {
+              const isActive = link.matchPaths.some((p) => activeRoute === p);
+              return (
+                <SidebarMenuItem
+                  key={link.path}
+                  link={link}
+                  isActive={isActive}
+                />
+              );
+            })}
+          </nav>
+          <SidebarFooter />
+        </div>
+      )}
+
+      {/* OVERLAY (Mobile) - Only render if sidebar exists */}
+      {sidebarLinks && isMobile && sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 md:hidden"
           onClick={() => setSidebarOpen(false)}
@@ -254,10 +260,23 @@ export default function Nav({ children, sidebarLinks }) {
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col h-screen">
         {/* Top Bar: Menu button + GymSelector left, controls right */}
-        <div className="flex items-center justify-between min-h-[80px] px-1 md:px-6 md:pl-10">
+        <div className="flex items-center justify-between min-h-[80px]">
           <div className="flex items-center gap-3 flex-1">
-            {/* Mobile menu button - relative positioning */}
-            {isMobile && (
+            {/* Show logo when no sidebar */}
+            {!sidebarLinks && (
+              <div className="flex items-center mr-6 ">
+                <SidebarAnimatedLogo
+                  collapsed={false}
+                  onClick={() => {
+                    const url = getRoleHomePage(user?.role as any);
+                    navigate({ to: url });
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Mobile menu button - only show if sidebar exists */}
+            {sidebarLinks && isMobile && (
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="p-2.5 rounded-xl bg-background shadow-lg border border-border hover:bg-surface-hover transition-all duration-300 hover:scale-110"
