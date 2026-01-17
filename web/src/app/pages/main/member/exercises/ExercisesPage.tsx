@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../../../components/ui/CustomSelect";
 import Loading from "../../../../../components/ui/Loading";
+import NoData from "../../../../../components/ui/NoData";
 import { SearchInput } from "../../../../../components/ui/SearchInput";
 import {
   useDeleteExercise,
@@ -26,10 +27,6 @@ export default function ExercisesPage() {
   const { openModal } = useModalStore();
   const [filters, setFilters] = useState<ExerciseFilters>({});
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Modals state
-  // Removed local state for modals as they are now managed by global store
-
   // Queries & Mutations
   const { data: response, isLoading } = useExercises({
     ...filters,
@@ -149,38 +146,29 @@ export default function ExercisesPage() {
       {isLoading ? (
         <Loading className="py-20" />
       ) : !exercises || exercises.length === 0 ? (
-        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-          <div className="inline-flex p-4 rounded-full bg-background mb-4">
-            <Dumbbell size={48} className="text-text-secondary opacity-30" />
-          </div>
-          <h3 className="text-xl font-bold text-text-primary mb-2">
-            {t("training.exercises.empty.title")}
-          </h3>
-          <p className="text-text-secondary max-w-sm mx-auto mb-6">
-            {t("training.exercises.empty.description")}
-          </p>
-          {/* Only show create button when filters are empty, otherwise show clear filters option if appropriate */}
-          {(searchQuery === "" && Object.keys(filters).length === 0) ||
-          Object.values(filters).every((v) => !v) ? (
-            <button
-              onClick={handleCreateClick}
-              className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              <Plus size={20} />
-              {t("training.exercises.create")}
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                setFilters({});
-                setSearchQuery("");
-              }}
-              className="text-primary hover:text-primary-hover font-medium"
-            >
-              {t("training.exercises.filters.clear")}
-            </button>
-          )}
-        </div>
+        <NoData
+          icon={Dumbbell}
+          title={t("training.exercises.empty.title")}
+          description={t("training.exercises.empty.description")}
+          actionButton={
+            (searchQuery === "" && Object.keys(filters).length === 0) ||
+            Object.values(filters).every((v) => !v)
+              ? {
+                  label: t("training.exercises.create"),
+                  icon: Plus,
+                  onClick: handleCreateClick,
+                }
+              : {
+                  label: t("training.exercises.filters.clear"),
+                  onClick: () => {
+                    setFilters({});
+                    setSearchQuery("");
+                  },
+                  className:
+                    "text-primary hover:text-primary-hover font-medium underline-offset-4 hover:underline",
+                }
+          }
+        />
       ) : (
         <ExercisesList
           exercises={exercises}

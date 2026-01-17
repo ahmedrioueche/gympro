@@ -2,6 +2,7 @@ import { Bell, CheckCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
+import NoData from "../../../../../components/ui/NoData";
 import {
   useMarkAllNotificationsAsRead,
   useMyNotifications,
@@ -105,15 +106,11 @@ export default function NotificationsPage() {
       {isLoading ? (
         <Loading className="py-22" />
       ) : notifications.length === 0 ? (
-        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-          <div className="text-6xl mb-4">🔕</div>
-          <h3 className="text-xl font-semibold text-text-primary mb-2">
-            {t("notifications.empty", "No notifications found")}
-          </h3>
-          <p className="text-text-secondary">
-            {t("notifications.emptyDesc", "You're all caught up!")}
-          </p>
-        </div>
+        <NoData
+          emoji="🔕"
+          title={t("notifications.empty", "No notifications found")}
+          description={t("notifications.emptyDesc", "You're all caught up!")}
+        />
       ) : (
         <NotificationsTable notifications={notifications} />
       )}
