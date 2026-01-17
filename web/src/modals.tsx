@@ -48,7 +48,9 @@ const ProgramDetailsModal = lazy(
 );
 
 const CreateExerciseModal = lazy(() =>
-  import("./app/components/modals/CreateExerciseModal").then((module) => ({
+  import(
+    "./app/components/modals/create-exercise-modal/CreateExerciseModal"
+  ).then((module) => ({
     default: module.CreateExerciseModal,
   }))
 );

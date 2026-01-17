@@ -5,10 +5,16 @@ import { useSubscriptionBlocker } from "../../hooks/useSubscriptionBlocker";
 import LoadingPage from "../ui/LoadingPage";
 
 const SubscriptionBlockerModal = lazy(
-  () => import("../../app/components/modals/SubscriptionBlockerModal")
+  () =>
+    import(
+      "../../app/components/modals/subscription-blocker-modal/SubscriptionBlockerModal"
+    )
 );
 const SubscriptionWarningModal = lazy(
-  () => import("../../app/components/modals/SubscriptionWarningModal")
+  () =>
+    import(
+      "../../app/components/modals/subscription-warning-modal/SubscriptionWarningModal"
+    )
 );
 
 interface SubscriptionGuardProps {

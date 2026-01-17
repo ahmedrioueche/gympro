@@ -140,6 +140,15 @@ export interface ProgramDay {
   exercises: Exercise[];
 }
 
+export interface ProgramComment {
+  userId: string;
+  userName: string;
+  userImage?: string;
+  text: string;
+  rating: number; // 1-5
+  createdAt: Date | string;
+}
+
 export interface TrainingProgram extends AuditInfo {
   _id?: string;
   name: string;
@@ -150,6 +159,9 @@ export interface TrainingProgram extends AuditInfo {
   creationType: "member" | "coach" | "template";
   description?: string;
   isPublic?: boolean;
+  comments?: ProgramComment[];
+  averageRating?: number;
+  totalRatings?: number;
 }
 
 // Progress for a single exercise in a session

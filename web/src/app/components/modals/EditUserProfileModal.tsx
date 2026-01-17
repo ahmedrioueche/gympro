@@ -1,8 +1,9 @@
 import { usersApi, type EditUserDto } from "@ahmedrioueche/gympro-client";
-import { Edit2, Mail, MapPin, Phone, Save, User, X } from "lucide-react";
+import { Edit2, Mail, MapPin, Phone, Save, User } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import BaseModal from "../../../components/ui/BaseModal";
 import CustomSelect from "../../../components/ui/CustomSelect";
 import InputField from "../../../components/ui/InputField";
 import { useModalStore } from "../../../store/modal";
@@ -87,267 +88,211 @@ function EditUserProfileModal() {
   ];
 
   return (
-    <div
-      onClick={closeModal}
-      className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
+    <BaseModal
+      isOpen={currentModal === "edit_user_profile"}
+      onClose={closeModal}
+      isEditMode={isEditMode}
+      title={
+        isEditMode
+          ? t("profile.edit.title", "Edit Profile")
+          : t("profile.view.title", "View Profile")
+      }
+      subtitle={
+        isEditMode
+          ? t("profile.edit.subtitle", "Update your personal information")
+          : t("profile.view.subtitle", "Your personal information")
+      }
+      icon={User}
+      primaryButton={
+        isEditMode
+          ? {
+              label: t("profile.edit.save_changes", "Save Changes"),
+              type: "submit",
+              form: "edit-profile-form",
+              loading: isLoading,
+              icon: Save,
+            }
+          : {
+              label: t("profile.edit.edit_button", "Edit Profile"),
+              onClick: (e) => {
+                e?.preventDefault();
+                setIsEditMode(true);
+              },
+              icon: Edit2,
+              type: "button",
+            }
+      }
+      secondaryButton={
+        isEditMode
+          ? {
+              label: t("common.cancel", "Cancel"),
+              onClick: handleCancel,
+            }
+          : {
+              label: t("common.close", "Close"),
+              onClick: closeModal,
+            }
+      }
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="bg-surface rounded-2xl shadow-2xl max-w-3xl max-h-[90vh] w-full border-2 border-primary/30 overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col"
+      <form
+        id="edit-profile-form"
+        onSubmit={handleSubmit}
+        className="space-y-6"
       >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-primary to-secondary p-6 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
-                <User className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-white mb-1">
-                  {isEditMode
-                    ? t("profile.edit.title", "Edit Profile")
-                    : t("profile.view.title", "View Profile")}
-                </h2>
-                <p className="text-white/90 text-sm">
-                  {isEditMode
-                    ? t(
-                        "profile.edit.subtitle",
-                        "Update your personal information"
-                      )
-                    : t("profile.view.subtitle", "Your personal information")}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={closeModal}
-              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-            >
-              <X className="w-5 h-5 text-white" />
-            </button>
+        {/* Personal Information Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+            <User className="w-5 h-5 text-primary" />
+            {t("profile.edit.personal_info", "Personal Information")}
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Full Name */}
+            <InputField
+              label={t("profile.edit.full_name", "Full Name")}
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              placeholder={t(
+                "profile.edit.full_name_placeholder",
+                "Enter your full name"
+              )}
+            />
+
+            {/* Username */}
+            <InputField
+              label={t("profile.edit.username", "Username")}
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              placeholder={t(
+                "profile.edit.username_placeholder",
+                "Enter your username"
+              )}
+            />
+
+            {/* Age */}
+            <InputField
+              label={t("profile.edit.age", "Age")}
+              name="age"
+              value={formData.age}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              placeholder={t("profile.edit.age_placeholder", "Enter your age")}
+            />
+
+            {/* Gender */}
+            <CustomSelect
+              title={t("profile.edit.gender", "Gender")}
+              options={genderOptions}
+              selectedOption={formData.gender || ""}
+              onChange={handleGenderChange}
+              disabled={!isEditMode}
+            />
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto hide-scrollbar">
-          <div className="p-6 space-y-6">
-            {/* Personal Information Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
-                <User className="w-5 h-5 text-primary" />
-                {t("profile.edit.personal_info", "Personal Information")}
-              </h3>
+        {/* Contact Information Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+            <Mail className="w-5 h-5 text-primary" />
+            {t("profile.edit.contact_info", "Contact Information")}
+          </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Full Name */}
-                <InputField
-                  label={t("profile.edit.full_name", "Full Name")}
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  disabled={!isEditMode}
-                  placeholder={t(
-                    "profile.edit.full_name_placeholder",
-                    "Enter your full name"
-                  )}
-                />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Email - Always Disabled */}
+            <InputField
+              label={t("profile.edit.email", "Email")}
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              disabled={true}
+              placeholder={t(
+                "profile.edit.email_placeholder",
+                "Enter your email"
+              )}
+              leftIcon={<Mail className="w-5 h-5" />}
+            />
 
-                {/* Username */}
-                <InputField
-                  label={t("profile.edit.username", "Username")}
-                  name="username"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  disabled={!isEditMode}
-                  placeholder={t(
-                    "profile.edit.username_placeholder",
-                    "Enter your username"
-                  )}
-                />
-
-                {/* Age */}
-                <InputField
-                  label={t("profile.edit.age", "Age")}
-                  name="age"
-                  value={formData.age}
-                  onChange={handleInputChange}
-                  disabled={!isEditMode}
-                  placeholder={t(
-                    "profile.edit.age_placeholder",
-                    "Enter your age"
-                  )}
-                />
-
-                {/* Gender */}
-                <CustomSelect
-                  title={t("profile.edit.gender", "Gender")}
-                  options={genderOptions}
-                  selectedOption={formData.gender || ""}
-                  onChange={handleGenderChange}
-                  disabled={!isEditMode}
-                />
-              </div>
-            </div>
-
-            {/* Contact Information Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
-                <Mail className="w-5 h-5 text-primary" />
-                {t("profile.edit.contact_info", "Contact Information")}
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Email - Always Disabled */}
-                <InputField
-                  label={t("profile.edit.email", "Email")}
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  disabled={true}
-                  placeholder={t(
-                    "profile.edit.email_placeholder",
-                    "Enter your email"
-                  )}
-                  leftIcon={<Mail className="w-5 h-5" />}
-                />
-
-                {/* Phone Number - Always Disabled */}
-                <InputField
-                  label={t("profile.edit.phone", "Phone Number")}
-                  type="tel"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleInputChange}
-                  disabled={true}
-                  placeholder={t(
-                    "profile.edit.phone_placeholder",
-                    "Enter your phone number"
-                  )}
-                  leftIcon={<Phone className="w-5 h-5" />}
-                />
-              </div>
-            </div>
-
-            {/* Address Information Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-primary" />
-                {t("profile.edit.address_info", "Address Information")}
-              </h3>
-
-              <div className="space-y-4">
-                {/* Address */}
-                <InputField
-                  label={t("profile.edit.address", "Address")}
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  disabled={!isEditMode}
-                  placeholder={t(
-                    "profile.edit.address_placeholder",
-                    "Enter your address"
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* City */}
-                  <InputField
-                    label={t("profile.edit.city", "City")}
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    disabled={!isEditMode}
-                    placeholder={t(
-                      "profile.edit.city_placeholder",
-                      "Enter city"
-                    )}
-                  />
-
-                  {/* State */}
-                  <InputField
-                    label={t("profile.edit.state", "State")}
-                    name="state"
-                    value={formData.state}
-                    onChange={handleInputChange}
-                    disabled={!isEditMode}
-                    placeholder={t(
-                      "profile.edit.state_placeholder",
-                      "Enter state"
-                    )}
-                  />
-
-                  {/* Country */}
-                  <InputField
-                    label={t("profile.edit.country", "Country")}
-                    name="country"
-                    value={formData.country}
-                    onChange={handleInputChange}
-                    disabled={!isEditMode}
-                    placeholder={t(
-                      "profile.edit.country_placeholder",
-                      "Enter country"
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
+            {/* Phone Number - Always Disabled */}
+            <InputField
+              label={t("profile.edit.phone", "Phone Number")}
+              type="tel"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleInputChange}
+              disabled={true}
+              placeholder={t(
+                "profile.edit.phone_placeholder",
+                "Enter your phone number"
+              )}
+              leftIcon={<Phone className="w-5 h-5" />}
+            />
           </div>
         </div>
 
-        {/* Footer - Sticky Actions */}
-        <div className="p-6 bg-surface-secondary border-t-2 border-border flex-shrink-0">
-          {!isEditMode ? (
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={closeModal}
-                className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all"
-              >
-                {t("common.close", "Close")}
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsEditMode(true)}
-                className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
-              >
-                <Edit2 className="w-5 h-5" />
-                {t("profile.edit.edit_button", "Edit Profile")}
-              </button>
+        {/* Address Information Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-primary" />
+            {t("profile.edit.address_info", "Address Information")}
+          </h3>
+
+          <div className="space-y-4">
+            {/* Address */}
+            <InputField
+              label={t("profile.edit.address", "Address")}
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              placeholder={t(
+                "profile.edit.address_placeholder",
+                "Enter your address"
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* City */}
+              <InputField
+                label={t("profile.edit.city", "City")}
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                disabled={!isEditMode}
+                placeholder={t("profile.edit.city_placeholder", "Enter city")}
+              />
+
+              {/* State */}
+              <InputField
+                label={t("profile.edit.state", "State")}
+                name="state"
+                value={formData.state}
+                onChange={handleInputChange}
+                disabled={!isEditMode}
+                placeholder={t("profile.edit.state_placeholder", "Enter state")}
+              />
+
+              {/* Country */}
+              <InputField
+                label={t("profile.edit.country", "Country")}
+                name="country"
+                value={formData.country}
+                onChange={handleInputChange}
+                disabled={!isEditMode}
+                placeholder={t(
+                  "profile.edit.country_placeholder",
+                  "Enter country"
+                )}
+              />
             </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  disabled={isLoading}
-                  className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {t("common.cancel", "Cancel")}
-                </button>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                >
-                  {isLoading ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      {t("common.saving", "Saving...")}
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-5 h-5" />
-                      {t("profile.edit.save_changes", "Save Changes")}
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-          )}
+          </div>
         </div>
-      </div>
-    </div>
+      </form>
+    </BaseModal>
   );
 }
 

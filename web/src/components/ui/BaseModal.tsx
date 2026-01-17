@@ -6,7 +6,7 @@ import useScreen from "../../hooks/useScreen";
 
 interface FooterButton {
   label?: string;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent) => void;
   icon?: ElementType;
   loading?: boolean;
   type?: "button" | "submit";
@@ -40,7 +40,8 @@ interface BaseModalProps {
   primaryButton?: FooterButton;
 
   // Sizing
-  maxWidth?: string;
+  // Display options
+  hideCloseButton?: boolean;
 }
 
 const BaseModal: React.FC<BaseModalProps> = ({
@@ -61,6 +62,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   secondaryButton,
   primaryButton,
   maxWidth = "max-w-3xl",
+  hideCloseButton = false,
 }) => {
   const { isMobile } = useScreen();
   const { t } = useTranslation();
@@ -95,7 +97,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   return createPortal(
     <div
       className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
-      onClick={onClose}
+      onClick={hideCloseButton ? undefined : onClose}
     >
       <div
         className={`bg-surface rounded-2xl shadow-2xl ${maxWidth} max-h-[99vh] w-full border-2 border-primary/30 overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col`}
@@ -141,12 +143,14 @@ const BaseModal: React.FC<BaseModalProps> = ({
                   <Edit3 className="w-5 h-5 text-white" />
                 </button>
               )}
-              <button
-                onClick={onClose}
-                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-              >
-                <X className="w-5 h-5 text-white" />
-              </button>
+              {!hideCloseButton && (
+                <button
+                  onClick={onClose}
+                  className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-5 h-5 text-white" />
+                </button>
+              )}
             </div>
           </div>
         </div>
