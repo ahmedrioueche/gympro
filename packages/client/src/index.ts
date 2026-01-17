@@ -43,6 +43,7 @@ export * from "./types/appPayment";
 export * from "./types/appSubscription";
 export * from "./types/attendance";
 export * from "./types/coach";
+export * from "./types/coach-analytics";
 export * from "./types/common";
 export * from "./types/error";
 export * from "./types/gym";

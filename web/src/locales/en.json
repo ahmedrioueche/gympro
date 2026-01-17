@@ -2875,5 +2875,26 @@
       "no_show": "No Show",
       "pending": "Pending"
     }
+  },
+  "coachAnalytics": {
+    "title": "Analytics",
+    "subtitle": "Track your coaching performance and client metrics",
+    "noData": "No analytics data",
+    "noDataDesc": "Start coaching clients to see your analytics",
+    "noRecentActivity": "No recent activity",
+    "recentActivity": "Recent Activity",
+    "stats": {
+      "activeClients": "Active Clients",
+      "totalSessions": "Total Sessions",
+      "completionRate": "Completion Rate",
+      "totalHours": "Total Hours",
+      "vsLastMonth": "vs. last month"
+    },
+    "charts": {
+      "sessionTrend": "Session Activity",
+      "sessionTrendDesc": "Monthly sessions over time",
+      "sessionTypes": "Session Types",
+      "sessionTypesDesc": "Distribution by session type"
+    }
   }
 }

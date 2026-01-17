@@ -1,5 +1,6 @@
 import {
   ApiResponse,
+  CoachAnalytics,
   CoachClient,
   CoachProfile,
   CoachQueryDto,
@@ -33,6 +34,12 @@ export class CoachController {
   // ============================================
   // SPECIFIC ROUTES (must come before :coachId)
   // ============================================
+
+  @Get('analytics')
+  async getAnalytics(@Req() req: any): Promise<ApiResponse<CoachAnalytics>> {
+    const coachId = req.user.sub;
+    return this.coachService.getAnalytics(coachId);
+  }
 
   @Get('nearby')
   async getNearbyCoaches(

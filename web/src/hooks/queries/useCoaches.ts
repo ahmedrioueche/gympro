@@ -29,3 +29,17 @@ export const useCoachClients = () => {
     staleTime: 5 * 60 * 1000,
   });
 };
+
+export const useCoachAnalytics = () => {
+  return useQuery({
+    queryKey: ["coach", "analytics"],
+    queryFn: async () => {
+      const response = await coachApi.getAnalytics();
+      if (!response.success) {
+        throw new Error(response.message);
+      }
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};

@@ -223,6 +223,22 @@ export const coachApi = {
       };
     }
   },
+
+  /**
+   * Get coach analytics data
+   */
+  getAnalytics: async (): Promise<ApiResponse<any>> => {
+    try {
+      const response = await getApiClient().get("/coaches/analytics");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_001",
+        message: error.response?.data?.message || "Failed to fetch analytics",
+      };
+    }
+  },
 };
 
 export default coachApi;

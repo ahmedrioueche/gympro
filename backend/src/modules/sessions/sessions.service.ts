@@ -49,7 +49,7 @@ export class SessionsService {
       if (conflict) {
         return {
           success: false,
-          errorCode: ErrorCode.VALIDATION_ERROR, // Or a specific CONFLICT error
+          errorCode: ErrorCode.SESSION_TIME_CONFLICT,
           message: 'Time slot overlaps with an existing session',
         };
       }
@@ -67,7 +67,7 @@ export class SessionsService {
       console.error('Create session error:', error);
       return {
         success: false,
-        errorCode: ErrorCode.UNKNOWN_ERROR,
+        errorCode: ErrorCode.SESSION_CREATE_ERROR,
         message: 'Failed to create session',
       };
     }
@@ -131,7 +131,7 @@ export class SessionsService {
       console.error('Find sessions error:', error);
       return {
         success: false,
-        errorCode: ErrorCode.UNKNOWN_ERROR,
+        errorCode: ErrorCode.SESSION_FETCH_ERROR,
         message: 'Failed to fetch sessions',
       };
     }
@@ -202,7 +202,7 @@ export class SessionsService {
       console.error('Update session error:', error);
       return {
         success: false,
-        errorCode: ErrorCode.UNKNOWN_ERROR,
+        errorCode: ErrorCode.SESSION_UPDATE_ERROR,
         message: 'Failed to update session',
       };
     }
@@ -234,7 +234,7 @@ export class SessionsService {
       console.error('Delete session error:', error);
       return {
         success: false,
-        errorCode: ErrorCode.UNKNOWN_ERROR,
+        errorCode: ErrorCode.SESSION_DELETE_ERROR,
         message: 'Failed to delete session',
       };
     }
