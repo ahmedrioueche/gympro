@@ -110,3 +110,11 @@ export interface ProgramDetailsModalProps {
 export interface CreateExerciseModalProps {
   exerciseToEdit?: Exercise;
 }
+
+export interface CreateSessionModalProps {
+  onSuccess?: () => void;
+}
+
+export interface SessionDetailsModalProps {
+  session: import("@ahmedrioueche/gympro-client").Session;
+}

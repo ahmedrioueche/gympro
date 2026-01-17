@@ -55,6 +55,22 @@ const CreateExerciseModal = lazy(() =>
   }))
 );
 
+const CreateSessionModal = lazy(() =>
+  import("./app/pages/main/coach/schedule/components/CreateSessionModal").then(
+    (module) => ({
+      default: module.CreateSessionModal,
+    })
+  )
+);
+
+const SessionDetailsModal = lazy(() =>
+  import("./app/pages/main/coach/schedule/components/SessionDetailsModal").then(
+    (module) => ({
+      default: module.SessionDetailsModal,
+    })
+  )
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -69,6 +85,8 @@ function modals() {
       <ProgramDetailsModal />
       <CreateProgramModal />
       <CreateExerciseModal />
+      <CreateSessionModal />
+      <SessionDetailsModal />
     </Suspense>
   );
 }

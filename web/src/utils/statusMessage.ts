@@ -139,6 +139,14 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
     "status.error.coach.prospective_members_fetch_failed",
   [ErrorCode.COACH_REQUEST_ALREADY_EXISTS]:
     "status.error.coach.request_already_exists",
+  [ErrorCode.SESSION_NOT_FOUND]: "status.error.session.not_found",
+  [ErrorCode.SESSION_CREATE_FAILED]: "status.error.session.create_failed",
+  [ErrorCode.SESSION_UPDATE_FAILED]: "status.error.session.update_failed",
+  [ErrorCode.SESSION_DELETE_FAILED]: "status.error.session.delete_failed",
+  [ErrorCode.SESSION_FETCH_FAILED]: "status.error.session.fetch_failed",
+  [ErrorCode.SESSION_TIME_CONFLICT]: "status.error.session.time_conflict",
+  [ErrorCode.VALIDATION_ERROR]: "status.error.validation_error",
+  [ErrorCode.UNKNOWN_ERROR]: "status.error.unknown_error",
 };
 
 /**

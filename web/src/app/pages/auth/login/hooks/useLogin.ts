@@ -3,7 +3,6 @@ import {
   DEFAULT_COUNTRY_CODE,
   UserRole,
 } from "@ahmedrioueche/gympro-client";
-import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -42,7 +41,6 @@ interface UseLoginReturn {
 
 export function useLogin(): UseLoginReturn {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { setUser } = useUserStore();
   const phone = usePhoneNumber(DEFAULT_COUNTRY_CODE);
 
@@ -130,8 +128,10 @@ export function useLogin(): UseLoginReturn {
         rememberMe: rememberMe,
       });
 
-      const statusMessage = getMessage(response, t);
-      showStatusToast(statusMessage, toast);
+      if (!response.success) {
+        const statusMessage = getMessage(response, t);
+        showStatusToast(statusMessage, toast);
+      }
 
       if (response.success) {
         setUser(response.data.user);

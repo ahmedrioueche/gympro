@@ -24,6 +24,7 @@ import { GymSubscriptionModule } from './modules/gymSubscription/gymSubscription
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaddleModule } from './modules/paddle/paddle.module';
 import { ProgressModule } from './modules/progress/progress.module';
+import { SessionsModule } from './modules/sessions/sessions.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
 import { TrainingModule } from './modules/training/training.module';
@@ -88,6 +89,7 @@ import { UsersModule } from './modules/users/users.module';
     GymSubscriptionModule,
     DashboardModule,
     CoachModule,
+    SessionsModule,
   ],
   controllers: [AppController],
   providers: [

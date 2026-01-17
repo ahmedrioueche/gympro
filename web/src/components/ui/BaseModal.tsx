@@ -40,6 +40,7 @@ interface BaseModalProps {
   primaryButton?: FooterButton;
 
   // Sizing
+  maxWidth?: string;
   // Display options
   hideCloseButton?: boolean;
 }
