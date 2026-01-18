@@ -1,4 +1,4 @@
-import { Building2 } from "lucide-react";
+import { Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useScreen from "../../../../../hooks/useScreen";
 
@@ -14,7 +14,7 @@ export default function NoGymsView() {
             isMobile ? "w-11 h-11" : "w-14 h-14"
           } rounded-2xl bg-surface-hover/50 flex items-center justify-center`}
         >
-          <Building2
+          <Dumbbell
             className={`${
               isMobile ? "w-6 h-6" : "w-7 h-7"
             } text-text-secondary/50`}

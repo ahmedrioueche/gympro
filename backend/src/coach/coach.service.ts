@@ -12,11 +12,16 @@ import {
   RespondToRequestDto,
   SendCoachRequestDto,
 } from '@ahmedrioueche/gympro-client';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../common/schemas/user.schema';
 import { NotificationsService } from '../modules/notifications/notifications.service';
+import { TrainingService } from '../modules/training/training.service';
 import { CoachRequestModel } from './schemas/coach-request.schema';
 
 @Injectable()
@@ -26,6 +31,7 @@ export class CoachService {
     private coachRequestModel: Model<CoachRequestModel>,
     @InjectModel(User.name) private userModel: Model<User>,
     private notificationsService: NotificationsService,
+    private trainingService: TrainingService,
   ) {}
 
   /**
@@ -278,6 +284,19 @@ export class CoachService {
   }
 
   // ============================================
+  // HELPERS
+  // ============================================
+
+  private async getProgramName(programId: string): Promise<string> {
+    try {
+      const program = await this.trainingService.findProgramById(programId);
+      return program.name;
+    } catch {
+      return 'Unknown Program';
+    }
+  }
+
+  // ============================================
   // COACH-SIDE CLIENT MANAGEMENT
   // ============================================
 
@@ -447,6 +466,11 @@ export class CoachService {
         };
       }
 
+      console.log(
+        'Fetching active clients. Count:',
+        coach.coachingInfo.coachedMembers.length,
+      );
+
       const clients = await this.userModel
         .find({
           _id: { $in: coach.coachingInfo.coachedMembers },
@@ -454,49 +478,83 @@ export class CoachService {
         .lean();
 
       // Fetch accepted requests to get the coaching start date
-      const clientProfiles: CoachClient[] = await Promise.all(
+      const clientProfiles = await Promise.all(
         clients.map(async (client: any) => {
-          // Find the accepted request for this client
-          const acceptedRequest = await this.coachRequestModel
-            .findOne({
-              coachId: new Types.ObjectId(coachId),
-              memberId: client._id,
-              status: 'accepted',
-            })
-            .lean();
+          try {
+            // Find the accepted request for this client
+            const acceptedRequest = await this.coachRequestModel
+              .findOne({
+                coachId: new Types.ObjectId(coachId),
+                memberId: client._id,
+                status: 'accepted',
+              })
+              .lean();
 
-          return {
-            userId: client._id.toString(),
-            username: client.profile.username,
-            fullName: client.profile.fullName,
-            profileImageUrl: client.profile.profileImageUrl,
-            email: client.profile.email,
-            age: client.profile.age,
-            gender: client.profile.gender,
-            location: {
-              city: client.profile.city,
-              state: client.profile.state,
-              country: client.profile.country,
-            },
-            // Use respondedAt (when request was accepted) as joinedAt
-            joinedAt:
-              acceptedRequest?.respondedAt?.toISOString() ||
-              client.createdAt?.toISOString(),
-            currentProgram: client.currentProgram
-              ? {
-                  programId: client.currentProgram.toString(),
-                  programName: 'Program Name', // TODO: Fetch actual program name
-                }
-              : undefined,
-            lastWorkoutDate:
-              client.programProgress?.lastWorkoutDate?.toISOString(),
-          };
+            // Safe program name fetching
+            let programInfo;
+            if (client.currentProgram) {
+              const name = await this.getProgramName(
+                client.currentProgram.toString(),
+              );
+              programInfo = {
+                programId: client.currentProgram.toString(),
+                programName: name,
+              };
+            }
+
+            return {
+              userId: client._id.toString(),
+              username: client.profile.username,
+              fullName: client.profile.fullName,
+              profileImageUrl: client.profile.profileImageUrl,
+              email: client.profile.email,
+              age: client.profile.age,
+              gender: client.profile.gender,
+              location: {
+                city: client.profile.city,
+                state: client.profile.state,
+                country: client.profile.country,
+              },
+              // Use respondedAt (when request was accepted) as joinedAt
+              joinedAt:
+                acceptedRequest?.respondedAt?.toISOString() ||
+                client.createdAt?.toISOString(),
+              currentProgram: programInfo,
+              lastWorkoutDate:
+                client.programProgress?.lastWorkoutDate?.toISOString(),
+            };
+          } catch (err) {
+            console.error(`Error mapping client ${client?._id}:`, err);
+            // Return partial client data so it doesn't disappear from the list
+            return {
+              userId: client?._id?.toString() || 'unknown',
+              username: client?.profile?.username || 'Unknown',
+              fullName: client?.profile?.fullName || 'Unknown Client',
+              profileImageUrl: client?.profile?.profileImageUrl,
+              // Fallback fields
+              email: client?.profile?.email,
+              age: client?.profile?.age,
+              gender: client?.profile?.gender,
+              location: {
+                city: client?.profile?.city,
+                state: client?.profile?.state,
+                country: client?.profile?.country,
+              },
+              joinedAt: client?.createdAt?.toISOString(),
+              currentProgram: undefined, // Program failed to load
+              lastWorkoutDate: undefined,
+            };
+          }
         }),
       );
 
+      const validProfiles = clientProfiles.filter(
+        (p) => p !== null,
+      ) as CoachClient[];
+
       return {
         success: true,
-        data: clientProfiles,
+        data: validProfiles,
       };
     } catch (error) {
       console.error('Error fetching active clients:', error);
@@ -768,6 +826,76 @@ export class CoachService {
         success: false,
         errorCode: ErrorCode.COACH_FETCH_ERROR,
         message: 'Failed to fetch analytics',
+      };
+    }
+  }
+  /**
+   * Assign a program to a client
+   */
+  async assignProgramToClient(
+    coachId: string,
+    clientId: string,
+    programId: string,
+  ): Promise<ApiResponse<any>> {
+    try {
+      // 1. Verify client is coached by this coach
+      const coach = await this.userModel.findById(coachId);
+      if (
+        !coach?.coachingInfo?.coachedMembers?.includes(
+          new Types.ObjectId(clientId) as any,
+        )
+      ) {
+        throw new BadRequestException('Client is not coached by you');
+      }
+
+      // Check if program is already assigned
+      const client = await this.userModel.findById(clientId);
+      if (client?.currentProgram?.toString() === programId) {
+        throw new BadRequestException(
+          'This program is already assigned to the client',
+        );
+      }
+
+      // 2. Start program (force override existing active program)
+      const history = await this.trainingService.startProgram(
+        programId,
+        clientId,
+        true,
+      );
+
+      // 3. Update User currentProgram
+      const updatedUser = await this.userModel.findByIdAndUpdate(
+        clientId,
+        {
+          currentProgram: new Types.ObjectId(programId),
+          $push: { programHistory: history._id },
+        },
+        { new: true },
+      );
+
+      // 5. Notify Client
+      if (updatedUser) {
+        await this.notificationsService.notifyUser(updatedUser, {
+          key: 'program_assigned',
+          type: 'program',
+          relatedId: programId,
+          vars: {
+            coachName: coach.profile.fullName || coach.profile.username,
+          },
+        });
+      }
+
+      return {
+        success: true,
+        data: history,
+        message: 'Program assigned successfully',
+      };
+    } catch (error) {
+      console.error('Error assigning program:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.COACH_ACTION_FAILED,
+        message: error.message || 'Failed to assign program',
       };
     }
   }

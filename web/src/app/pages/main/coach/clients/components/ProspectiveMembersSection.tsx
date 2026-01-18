@@ -18,7 +18,7 @@ export function ProspectiveMembersSection() {
     return <Loading />;
   }
 
-  if (members.length === 0) {
+  if (!members || members.length === 0) {
     return (
       <NoData
         emoji="🔍"

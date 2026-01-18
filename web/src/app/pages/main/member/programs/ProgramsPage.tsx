@@ -14,7 +14,7 @@ import {
   useStartProgram,
 } from "../../../../../hooks/queries/useTraining";
 import { useModalStore } from "../../../../../store/modal";
-import { ProgramCard } from "../../../../components/gym/ProgramCard";
+import { ProgramCard } from "../../../../components/cards/ProgramCard";
 import PageHeader from "../../../../components/PageHeader";
 
 export default function ProgramsPage() {

@@ -1,6 +1,6 @@
 import { createRoute } from "@tanstack/react-router";
+import CoachingPage from "../../../app/pages/main/gym/manager/coaching/CoachingPage";
 import AnalyticsPage from "../../../app/pages/main/manager/analytics/AnalyticsPage";
-import CoachingPage from "../../../app/pages/main/manager/coaching/CoachingPage";
 import CreateGymPage from "../../../app/pages/main/manager/createGym/CreateGymPage";
 import GymsPage from "../../../app/pages/main/manager/gyms/GymsPage";
 import HomePage from "../../../app/pages/main/manager/home/HomePage";

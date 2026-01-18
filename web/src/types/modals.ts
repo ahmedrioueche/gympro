@@ -118,3 +118,22 @@ export interface CreateSessionModalProps {
 export interface SessionDetailsModalProps {
   session: import("@ahmedrioueche/gympro-client").Session;
 }
+
+export interface InviteCoachModalProps {
+  gymId: string;
+  onSuccess?: () => void;
+}
+
+export interface RequestGymModalProps {
+  gym: {
+    _id: string;
+    name: string;
+  };
+  onSuccess?: () => void;
+}
+
+export interface AssignProgramModalProps {
+  clientId: string;
+  currentProgramId?: string;
+  onSuccess?: () => void;
+}

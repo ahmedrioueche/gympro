@@ -1,12 +1,18 @@
 export default function Loading({
-  className = "items-center",
+  className = "items-start",
   size = "h-16 w-16",
+  fullScreen = true,
 }: {
   className?: string;
   size?: string;
+  fullScreen?: boolean;
 }) {
   return (
-    <div className={`min-h-screen flex justify-center   ${className} `}>
+    <div
+      className={`${
+        fullScreen ? "min-h-screen" : "w-full"
+      } flex justify-center ${className} `}
+    >
       <div
         className={`animate-spin rounded-full ${size} border-b-2 border-blue-500`}
       ></div>

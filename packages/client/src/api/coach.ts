@@ -239,6 +239,27 @@ export const coachApi = {
       };
     }
   },
+  /**
+   * Assign a program to a client
+   */
+  assignProgram: async (
+    clientId: string,
+    programId: string
+  ): Promise<ApiResponse<any>> => {
+    try {
+      const response = await getApiClient().post(
+        `/coaches/clients/${clientId}/program`,
+        { programId }
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_ACTION_FAILED",
+        message: error.response?.data?.message || "Failed to assign program",
+      };
+    }
+  },
 };
 
 export default coachApi;

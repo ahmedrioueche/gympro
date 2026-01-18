@@ -1,11 +1,12 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import NoData from "../../../components/ui/NoData";
 import { useGymStore } from "../../../store/gym";
 import { useUserStore } from "../../../store/user";
 import { getGymDashboardRoute } from "../../../utils/gym-routing";
-import GymCard from "./GymCard";
-import GymCardSkeleton from "./GymCard.Skeleton";
+import GymCard from "./gym-card/GymCard";
+import GymCardSkeleton from "./gym-card/GymCard.Skeleton";
 
 interface GymListProps {
   gyms: Gym[];
@@ -24,15 +25,11 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
 
   if (!gyms || gyms.length === 0) {
     return (
-      <div className="text-center py-12 bg-surface border border-border rounded-xl">
-        <div className="text-4xl mb-4">🏢</div>
-        <h3 className="text-lg font-semibold text-text-primary mb-2">
-          {t("gyms.no_gyms")}
-        </h3>
-        <p className="text-text-secondary max-w-md mx-auto">
-          {t("gyms.no_gyms_desc")}
-        </p>
-      </div>
+      <NoData
+        emoji="🏢"
+        title={t("gyms.no_gyms")}
+        description={t("gyms.no_gyms_desc")}
+      />
     );
   }
 
@@ -44,7 +41,6 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
             setGym(gym);
 
             if (user) {
-              // Use centralized routing logic based on membership roles
               const route = getGymDashboardRoute(user, gym);
               navigate({ to: route });
             }

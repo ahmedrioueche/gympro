@@ -102,15 +102,22 @@ export class TrainingService {
   async startProgram(
     programId: string,
     userId: string,
+    force: boolean = false,
   ): Promise<ProgramHistory> {
     const activeProgram = await this.historyModel
       .findOne({ userId, status: 'active' })
       .exec();
 
     if (activeProgram) {
-      throw new BadRequestException(
-        'Cannot start new program while another is active. Please pause the current program first.',
-      );
+      if (!force) {
+        throw new BadRequestException(
+          'Cannot start new program while another is active. Please pause the current program first.',
+        );
+      }
+      // If forced, abandon previous program
+      activeProgram.status = 'abandoned';
+      activeProgram.progress.endDate = new Date();
+      await activeProgram.save();
     }
 
     const program = await this.findProgramById(programId);

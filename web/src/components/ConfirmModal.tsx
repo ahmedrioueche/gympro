@@ -55,9 +55,10 @@ export default function ConfirmModal() {
     buttonGradient = "from-green-500 to-emerald-600";
   } else if (confirmVariant === "primary") {
     HeaderIcon = Info;
-    headerGradient = "from-primary/20 to-secondary/20";
+    headerGradient = "bg-gradient-to-r from-blue-500/60 to-purple-600/80";
     iconColor = "text-primary";
-    buttonGradient = "from-primary to-secondary";
+    buttonGradient =
+      "bg-gradient-to-r from-blue-500/60 to-purple-600/80 hover:from-blue-600/60 hover:to-purple-700/80 ";
   }
 
   return (
@@ -119,7 +120,7 @@ export default function ConfirmModal() {
         <div className="flex justify-end gap-3 p-6 pt-2">
           <button
             onClick={handleCancel}
-            className="px-6 py-2.5 rounded-xl font-medium text-text-secondary bg-surface hover:bg-surface-secondary border hover:border-border transition-colors"
+            className="px-6 py-2.5 rounded-xl font-medium text-text-secondary bg-surface-secondary/50 hover:bg-surface-secondary border border-border/50 hover:border-border hover:text-text-primary transition-all hover:scale-[1.02]"
           >
             {t("common.cancel")}
           </button>

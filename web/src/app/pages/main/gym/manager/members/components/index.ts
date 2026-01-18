@@ -1,4 +1,4 @@
-export { MemberCard } from "./MemberCard";
+export { MemberCard } from "../../../../../../components/cards/MemberCard";
 export { MembersControls } from "./MembersControls";
 export type { FilterStatus, SortBy, ViewMode } from "./MembersControls";
 export { MembersEmptyState } from "./MembersEmptyState";

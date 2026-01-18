@@ -18,6 +18,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ChargilyModule } from './modules/chargily/chargily.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
+import { GymCoachModule } from './modules/gym-coach/gym-coach.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
 import { GymSubscriptionModule } from './modules/gymSubscription/gymSubscription.module';
@@ -90,6 +91,7 @@ import { UsersModule } from './modules/users/users.module';
     DashboardModule,
     CoachModule,
     SessionsModule,
+    GymCoachModule,
   ],
   controllers: [AppController],
   providers: [

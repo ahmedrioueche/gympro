@@ -9,6 +9,7 @@ interface FooterButton {
   onClick?: (e?: React.MouseEvent) => void;
   icon?: ElementType;
   loading?: boolean;
+  disabled?: boolean;
   type?: "button" | "submit";
   form?: string;
 }
@@ -85,6 +86,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
     ? {
         label: t("common.confirm"),
         type: "button",
+        disabled: primaryButton.disabled,
         ...primaryButton,
       }
     : undefined;
@@ -187,8 +189,12 @@ const BaseModal: React.FC<BaseModalProps> = ({
                     type={primaryConfig.type}
                     form={primaryConfig.form}
                     onClick={primaryConfig.onClick}
-                    disabled={primaryConfig.loading}
-                    className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-300 shadow-sm hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
+                    disabled={primaryConfig.disabled || primaryConfig.loading}
+                    className={`flex-1 px-6 py-3 rounded-xl font-bold text-white transition-all duration-300 shadow-sm flex items-center justify-center gap-2 ${
+                      primaryConfig.disabled || primaryConfig.loading
+                        ? "bg-gray-400 cursor-auto opacity-50 shadow-none ring-0"
+                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 hover:shadow-xl"
+                    }`}
                   >
                     {primaryConfig.loading ? (
                       <>

@@ -110,6 +110,10 @@ export const APP_PAGES = {
         name: "pages.gym.staff",
         link: "/gym/manager/staff",
       },
+      coaching: {
+        name: "pages.gym.coaching",
+        link: "/gym/manager/coaching",
+      },
       attendance: {
         name: "pages.gym.attendance",
         link: "/gym/manager/attendance",

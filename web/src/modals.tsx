@@ -71,6 +71,15 @@ const SessionDetailsModal = lazy(() =>
   )
 );
 
+const InviteCoachModal = lazy(
+  () => import("./app/components/modals/InviteCoachModal")
+);
+
+const AssignProgramModal = lazy(
+  () =>
+    import("./app/components/modals/assign-program-modal/AssignProgramModal")
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -86,7 +95,10 @@ function modals() {
       <CreateProgramModal />
       <CreateExerciseModal />
       <CreateSessionModal />
+      <CreateSessionModal />
       <SessionDetailsModal />
+      <InviteCoachModal />
+      <AssignProgramModal />
     </Suspense>
   );
 }

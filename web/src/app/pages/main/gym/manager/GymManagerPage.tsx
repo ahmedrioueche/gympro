@@ -9,6 +9,7 @@ import {
   Key,
   Logs,
   Settings,
+  UserCheck,
   UserCircle,
   Users,
 } from "lucide-react";
@@ -55,6 +56,12 @@ const sidebarLinks = [
     icon: <UserCircle className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.staff.link,
     matchPaths: [APP_PAGES.gym.manager.staff.link],
+  },
+  {
+    label: "coaching",
+    icon: <UserCheck className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.coaching.link,
+    matchPaths: [APP_PAGES.gym.manager.coaching.link],
   },
   {
     label: "attendance",

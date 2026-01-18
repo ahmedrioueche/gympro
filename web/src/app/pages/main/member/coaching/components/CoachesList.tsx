@@ -1,9 +1,9 @@
 import { type CoachProfile } from "@ahmedrioueche/gympro-client";
 import { UserCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import CoachCard from "../../../../../../components/cards/CoachCard";
 import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
+import CoachCard from "../../../../../components/cards/CoachCard";
 
 interface CoachesListProps {
   coaches: CoachProfile[];

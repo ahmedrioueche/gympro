@@ -1,6 +1,7 @@
 import { Users } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import Tab from "../../../../../components/ui/Tab";
 import PageHeader from "../../../../components/PageHeader";
 import { ActiveClientsSection } from "./components/ActiveClientsSection";
 import { PendingRequestsSection } from "./components/PendingRequestsSection";
@@ -11,8 +12,8 @@ export default function ClientsPage() {
   const [activeTab, setActiveTab] = useState<number>(0);
 
   const tabs = [
-    { id: 0, label: t("coach.clients.tabs.pending") },
-    { id: 1, label: t("coach.clients.tabs.active") },
+    { id: 0, label: t("coach.clients.tabs.active") },
+    { id: 1, label: t("coach.clients.tabs.pending") },
     { id: 2, label: t("coach.clients.tabs.prospective") },
   ];
 
@@ -28,28 +29,20 @@ export default function ClientsPage() {
       <div className="border-b border-border">
         <nav className="flex space-x-8">
           {tabs.map((tab) => (
-            <button
+            <Tab
               key={tab.id}
+              label={tab.label}
+              isActive={activeTab === tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`
-                py-4 px-1 border-b-2 font-medium text-sm transition-colors
-                ${
-                  activeTab === tab.id
-                    ? "border-primary text-primary"
-                    : "border-transparent text-text-secondary hover:text-text-primary hover:border-border-hover"
-                }
-              `}
-            >
-              {tab.label}
-            </button>
+            />
           ))}
         </nav>
       </div>
 
       {/* Tab Content */}
       <div className="mt-6">
-        {activeTab === 0 && <PendingRequestsSection />}
-        {activeTab === 1 && <ActiveClientsSection />}
+        {activeTab === 0 && <ActiveClientsSection />}
+        {activeTab === 1 && <PendingRequestsSection />}
         {activeTab === 2 && <ProspectiveMembersSection />}
       </div>
     </div>

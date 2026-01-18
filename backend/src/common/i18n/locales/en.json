@@ -47,6 +47,8 @@
   "notification": {
     "gym_membership_added_title": "New Gym Membership",
     "gym_membership_added_body": "You have been added to {{gymName}}. Welcome!",
+    "program_assigned_title": "New Program Assigned",
+    "program_assigned_body": "{{coachName}} assigned you a new program",
     "auth": {
       "verify_title": "Verify Your Email",
       "verify_body": "Please check your email to verify your account.",

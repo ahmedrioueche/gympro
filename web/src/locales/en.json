@@ -26,7 +26,8 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "all": "All",
-
+    "accept": "Accept",
+    "decline": "Decline",
     "locationFilters": "Location Filters",
     "actions": "Actions",
     "create": "Create",
@@ -79,6 +80,7 @@
     "go_back": "Go back",
     "logout": "Logout",
     "cancel": "Cancel",
+    "days": "days",
     "back": "Back",
     "next": "Next",
     "delete": "Delete",
@@ -1231,6 +1233,16 @@
         "programsCreated": "Programs Created",
         "sessionsThisMonth": "Sessions This Month",
         "clientRetention": "Client Retention"
+      },
+      "assignProgram": {
+        "title": "Assign Program",
+        "selectProgram": "Select a program to assign",
+        "confirm": "Assign",
+        "success": "Program assigned successfully",
+        "error": "Failed to assign program",
+        "noPrograms": "No programs available",
+        "confirmChangeTitle": "Change Active Program?",
+        "confirmChangeDesc": "This client already has an active program. Assigning a new one will archive the current program history. This action requires confirmation."
       },
       "todaySessions": {
         "title": "Today's Sessions",
@@ -2732,7 +2744,22 @@
   "coach": {
     "gyms": {
       "title": "My Gyms",
-      "subtitle": "Gyms where you provide coaching services"
+      "subtitle": "Gyms where you provide coaching services",
+      "tabs": {
+        "myGyms": "My Gyms",
+        "invitations": "Invitations",
+        "explore": "Explore"
+      },
+      "noInvitations": "No Invitations",
+      "noInvitationsDesc": "You don't have any pending gym invitations",
+      "noGymsFound": "No Gyms Found",
+      "noGymsFoundDesc": "Try adjusting your search or check back later",
+      "searchPlaceholder": "Search gyms by name or city...",
+      "requestToJoin": "Request to Join",
+      "requestSent": "Request sent successfully",
+      "inviteAccepted": "Invitation accepted",
+      "inviteDeclined": "Invitation declined",
+      "pendingResponse": "Pending your response"
     },
     "clients": {
       "title": "Clients",
@@ -2752,6 +2779,15 @@
         "respondedAt": "Responded",
         "messageLabel": "Message from member",
         "respondLabel": "Your response (optional)"
+      },
+      "assignProgram": {
+        "title": "Assign Program",
+        "noPrograms": "You haven't created any programs yet.",
+        "confirm": "Assign Selected Program",
+        "confirmChangeTitle": "Change Program",
+        "confirmChangeDesc": "Are you sure you want to change the program?",
+        "confirmChangeConfirm": "Confirm",
+        "confirmChangeCancel": "Cancel"
       },
       "activeClients": {
         "title": "Active Clients",
@@ -2896,5 +2932,31 @@
       "sessionTypes": "Session Types",
       "sessionTypesDesc": "Distribution by session type"
     }
+  },
+  "coaching": {
+    "title": "Coaching",
+    "subtitle": "Manage coaches affiliated with your gym",
+    "inviteCoach": "Invite Coach",
+    "searchCoaches": "Search coaches...",
+    "noCoachesFound": "No coaches found",
+    "activeCoaches": "Active Coaches",
+    "pendingRequests": "Pending Requests",
+    "noActiveCoaches": "No Active Coaches",
+    "noActiveCoachesDesc": "Invite coaches to work at your gym",
+    "noPendingRequests": "No Pending Requests",
+    "noPendingRequestsDesc": "No coaches have requested to join your gym",
+    "active": "Active",
+    "awaitingApproval": "Awaiting Approval",
+    "removeCoach": "Remove Coach",
+    "removeCoachTitle": "Remove Coach",
+    "removeCoachConfirm": "Are you sure you want to remove {{name}} from your gym? This action cannot be undone.",
+    "commission": "Commission Rate",
+    "exclusive": "Exclusive Coach",
+    "inviteSent": "Invitation sent successfully",
+    "inviteError": "Failed to send invitation",
+    "alreadyInvited": "Coach has already been invited or is affiliated",
+    "alreadyAffiliated": "Already Affiliated",
+    "invitePending": "Invite Pending",
+    "sentInvites": "Sent Invites"
   }
 }

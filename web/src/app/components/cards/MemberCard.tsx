@@ -1,7 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { formatDate } from "../../../../../../../utils/date";
-import type { MemberDisplay } from "./types";
-import { getAvatarColor, getInitials, getStatusColor } from "./utils";
+import { formatDate } from "../../../utils/date";
+import type { MemberDisplay } from "../../pages/main/gym/manager/members/components/types";
+import {
+  getAvatarColor,
+  getInitials,
+  getStatusColor,
+} from "../../pages/main/gym/manager/members/components/utils";
 
 interface MemberCardProps {
   member: MemberDisplay;

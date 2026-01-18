@@ -13,8 +13,11 @@ import { useTranslation } from "react-i18next";
 interface ProgramCardProps {
   program: TrainingProgram;
   isActive?: boolean;
-  onUse: (programId: string) => void;
-  onViewDetails: (program: TrainingProgram) => void;
+  onUse?: (programId: string) => void;
+  onViewDetails?: (program: TrainingProgram) => void;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelect?: (program: TrainingProgram) => void;
 }
 
 export const ProgramCard = ({
@@ -22,6 +25,9 @@ export const ProgramCard = ({
   isActive,
   onUse,
   onViewDetails,
+  selectable,
+  selected,
+  onSelect,
 }: ProgramCardProps) => {
   const { t } = useTranslation();
 
@@ -61,8 +67,18 @@ export const ProgramCard = ({
 
   return (
     <div
-      onClick={() => onViewDetails(program)}
-      className="group cursor-pointer relative bg-surface border border-border hover:border-primary/40 transition-all duration-300 rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl"
+      onClick={() => {
+        if (selectable && onSelect) {
+          onSelect(program);
+        } else if (onViewDetails) {
+          onViewDetails(program);
+        }
+      }}
+      className={`group cursor-pointer relative bg-surface border transition-all duration-300 rounded-xl md:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl ${
+        selected
+          ? "border-primary ring-1 ring-primary"
+          : "border-border hover:border-primary/40"
+      }`}
     >
       {/* Gradient accent line */}
       <div
@@ -154,38 +170,59 @@ export const ProgramCard = ({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3">
-          <button
-            onClick={() => onViewDetails(program)}
-            className="flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-semibold bg-background-secondary text-text-primary hover:bg-background-secondary transition-all border border-border hover:border-primary/30"
-          >
-            {t("training.programs.card.view")}
-          </button>
-          <button
-            onClick={() => !isActive && onUse(program._id!)}
-            disabled={isActive}
-            className={`flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-bold transition-all shadow-lg flex items-center justify-center gap-2 group/btn ${
-              isActive
-                ? "bg-green-500/10 text-green-500 border border-green-500/30 cursor-not-allowed shadow-none"
-                : "text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-primary/20 hover:shadow-xl"
-            }`}
-          >
-            {isActive ? (
-              <>
-                <Check size={18} />
-                {t("training.programs.card.selected")}
-              </>
-            ) : (
-              <>
-                {t("training.programs.card.start")}
-                <ChevronRight
-                  size={18}
-                  className="group-hover/btn:translate-x-0.5 transition-transform"
-                />
-              </>
-            )}
-          </button>
-        </div>
+        {/* Actions */}
+        {!selectable ? (
+          <div className="flex gap-3">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewDetails?.(program);
+              }}
+              className="flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-semibold bg-background-secondary text-text-primary hover:bg-background-secondary transition-all border border-border hover:border-primary/30"
+            >
+              {t("training.programs.card.view")}
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isActive && onUse) onUse(program._id!);
+              }}
+              disabled={isActive}
+              className={`flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-bold transition-all shadow-lg flex items-center justify-center gap-2 group/btn ${
+                isActive
+                  ? "bg-green-500/10 text-green-500 border border-green-500/30 cursor-not-allowed shadow-none"
+                  : "text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-primary/20 hover:shadow-xl"
+              }`}
+            >
+              {isActive ? (
+                <>
+                  <Check size={18} />
+                  {t("training.programs.card.selected")}
+                </>
+              ) : (
+                <>
+                  {t("training.programs.card.start")}
+                  <ChevronRight
+                    size={18}
+                    className="group-hover/btn:translate-x-0.5 transition-transform"
+                  />
+                </>
+              )}
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-end">
+            <div
+              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                selected
+                  ? "bg-primary border-primary"
+                  : "border-border group-hover:border-primary"
+              }`}
+            >
+              {selected && <Check size={14} className="text-white" />}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

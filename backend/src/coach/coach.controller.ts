@@ -6,6 +6,7 @@ import {
   CoachQueryDto,
   CoachRequest,
   CoachRequestWithDetails,
+  GymCoachAffiliation,
   ProspectiveMember,
   ProspectiveMembersQueryDto,
   RequestCoachDto,
@@ -24,12 +25,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../modules/auth/jwt-auth.guard';
+import { GymCoachService } from '../modules/gym-coach/gym-coach.service';
 import { CoachService } from './coach.service';
 
 @Controller('coaches')
 @UseGuards(JwtAuthGuard)
 export class CoachController {
-  constructor(private readonly coachService: CoachService) {}
+  constructor(
+    private readonly coachService: CoachService,
+    private readonly gymCoachService: GymCoachService,
+  ) {}
 
   // ============================================
   // SPECIFIC ROUTES (must come before :coachId)
@@ -91,6 +96,16 @@ export class CoachController {
     return this.coachService.getProspectiveMembers(coachId, query);
   }
 
+  // Note: affiliations route is handled by GymCoachController at /coaches/affiliations
+
+  @Get('affiliations')
+  async getCoachAffiliations(
+    @Req() req: any,
+  ): Promise<ApiResponse<GymCoachAffiliation[]>> {
+    const coachId = req.user.sub;
+    return this.gymCoachService.getCoachAffiliations(coachId);
+  }
+
   // ============================================
   // PARAMETERIZED ROUTES (must come after specific routes)
   // ============================================
@@ -120,5 +135,18 @@ export class CoachController {
   ): Promise<ApiResponse<CoachRequest>> {
     const coachId = req.user.sub;
     return this.coachService.sendRequestToMember(coachId, memberId, data);
+  }
+  @Post('clients/:userId/program')
+  async assignProgram(
+    @Req() req: any,
+    @Param('userId') clientId: string,
+    @Body() body: { programId: string },
+  ) {
+    const coachId = req.user.sub;
+    return this.coachService.assignProgramToClient(
+      coachId,
+      clientId,
+      body.programId,
+    );
   }
 }

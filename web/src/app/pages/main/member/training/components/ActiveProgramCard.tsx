@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Calendar, ChevronRight, Pause, Trophy } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import NoData from "../../../../../../components/ui/NoData";
 import {
   useActiveProgram,
   usePauseProgram,
@@ -32,25 +33,15 @@ export const ActiveProgramCard = ({
     (history.status !== "active" && history.status !== "paused")
   ) {
     return (
-      <div className="bg-gradient-to-br from-background-secondary to-background-secondary rounded-2xl p-6 border border-border text-center space-y-4">
-        <div className="inline-flex p-3 bg-background rounded-full mb-2">
-          <Trophy size={32} className="text-text-secondary" />
-        </div>
-        <div>
-          <h3 className="text-xl font-bold text-text-primary">
-            {t("training.activeProgram.noActive")}
-          </h3>
-          <p className="text-text-secondary">
-            {t("training.activeProgram.noActiveDesc")}
-          </p>
-        </div>
-        <button
-          onClick={() => navigate({ to: "/member/programs" })}
-          className="px-6 py-2 bg-primary text-white rounded-xl font-medium shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all inline-flex items-center gap-2"
-        >
-          {t("training.activeProgram.browse")} <ChevronRight size={16} />
-        </button>
-      </div>
+      <NoData
+        emoji="🏋️"
+        title={t("training.activeProgram.noActive")}
+        description={t("training.activeProgram.noActiveDesc")}
+        actionButton={{
+          label: t("training.activeProgram.browse"),
+          onClick: () => navigate({ to: "/member/programs" }),
+        }}
+      />
     );
   }
 
