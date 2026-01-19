@@ -29,7 +29,6 @@ function BusinessOverview({ metrics }: BusinessOverviewProps) {
   const { user } = useUserStore();
   const { language } = useLanguageStore();
   const hasBusinessData = metrics.totalGyms > 0;
-  const currencySymbol = metrics.currency || "$";
 
   return (
     <div className="bg-surface border border-border rounded-2xl overflow-hidden">

@@ -4,9 +4,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from 'src/common/schemas/user.schema';
 import { AppPaymentModel } from '../appBilling/payment/appPayment.schema';
+import {
+  GymCoachAffiliation,
+  GymCoachAffiliationDocument,
+} from '../gym-coach/schemas/gym-coach-affiliation.schema';
 import { GymModel } from '../gym/gym.schema';
 import { GymMembershipModel } from '../gymMembership/membership.schema';
-
 import { SubscriptionHistoryModel } from '../gymSubscription/gymSubscription.schema';
 @Injectable()
 export class AnalyticsService {
@@ -19,6 +22,8 @@ export class AnalyticsService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel('SubscriptionHistory')
     private historyModel: Model<SubscriptionHistoryModel>,
+    @InjectModel(GymCoachAffiliation.name)
+    private affiliationModel: Model<GymCoachAffiliationDocument>,
   ) {}
 
   async getGlobalStats(managerId: string): Promise<GlobalAnalytics> {
@@ -44,7 +49,7 @@ export class AnalyticsService {
     // ... existing code ...
 
     const membershipStats = await this.membershipModel.aggregate([
-      { $match: { gym: { $in: gymIds } } },
+      { $match: { gym: { $in: gymIds }, roles: { $in: ['member'] } } },
       { $group: { _id: '$membershipStatus', count: { $sum: 1 } } },
     ]);
 
@@ -106,7 +111,7 @@ export class AnalyticsService {
 
     // 1. Membership Distribution
     const membershipStats = await this.membershipModel.aggregate([
-      { $match: { gym: gymObjectId } },
+      { $match: { gym: gymObjectId, roles: 'member' } },
       { $group: { _id: '$membershipStatus', count: { $sum: 1 } } },
     ]);
 
@@ -133,7 +138,7 @@ export class AnalyticsService {
     // 2. Gender Distribution (Populate member info)
     // This is a bit more complex since we need to join with User
     const genderStats = await this.membershipModel.aggregate([
-      { $match: { gym: gymObjectId } },
+      { $match: { gym: gymObjectId, roles: 'member' } },
       {
         $lookup: {
           from: 'users',
@@ -154,11 +159,11 @@ export class AnalyticsService {
       else genderDist.other += s.count;
     });
 
-    // 3. Occupancy Rate (Mocking for now as we don't have real-time tracking yet)
-    const occupancyRate =
-      totalMembers > 0
-        ? ((gym.memberStats?.checkedIn || 0) / (totalMembers * 0.5)) * 100
-        : 0;
+    // 3. Coaches Count (from affiliations, not memberships)
+    const coachesCount = await this.affiliationModel.countDocuments({
+      gymId: gymObjectId,
+      status: 'active',
+    });
 
     // 4. Revenue Aggregation for this specific gym
     const revenueStats = await this.historyModel.aggregate([
@@ -185,7 +190,7 @@ export class AnalyticsService {
         activeMembers: dist.active,
         expiredMembers: dist.expired,
         checkedIn: gym.memberStats?.checkedIn || 0,
-        occupancyRate: Math.min(100, Math.round(occupancyRate)),
+        coachesCount,
         totalRevenue: revenueStats[0]?.total || 0,
         monthlyRevenue: monthlyRevenueStats[0]?.total || 0,
       },

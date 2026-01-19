@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import ErrorComponent from "../../../../../../components/ui/Error";
 import Loading from "../../../../../../components/ui/Loading";
+import NoData from "../../../../../../components/ui/NoData";
 import PageHeader from "../../../../../components/PageHeader";
 import { PricingCard } from "./components/PricingCard";
 import {
@@ -49,7 +50,24 @@ function PricingPage() {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) {
+    return (
+      <div>
+        <PageHeader
+          title={t("pricing.title")}
+          subtitle={t("pricing.subtitle")}
+          icon={DollarSign}
+          actionButton={{
+            label: t("pricing.addPlan"),
+            icon: Plus,
+            onClick: () => setIsCreateModalOpen(true),
+          }}
+        />
+        <Loading />
+      </div>
+    );
+  }
+
   if (error) return <ErrorComponent error={error.message} />;
 
   return (
@@ -66,21 +84,16 @@ function PricingPage() {
       />
 
       {plans?.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-surface border border-border rounded-xl">
-          <div className="p-4 bg-primary/10 rounded-full mb-4">
-            <Plus className="w-8 h-8 text-primary" />
-          </div>
-          <h3 className="text-xl font-bold text-white mb-2">
-            {t("pricing.noPlans.title")}
-          </h3>
-          <p className="text-zinc-400 mb-6">{t("pricing.noPlans.subtitle")}</p>
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg transition-colors"
-          >
-            {t("pricing.addPlan")}
-          </button>
-        </div>
+        <NoData
+          icon={DollarSign}
+          title={t("pricing.noPlans.title")}
+          description={t("pricing.noPlans.subtitle")}
+          actionButton={{
+            label: t("pricing.addPlan"),
+            icon: Plus,
+            onClick: () => setIsCreateModalOpen(true),
+          }}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {plans?.map((plan) => (

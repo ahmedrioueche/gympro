@@ -70,9 +70,9 @@ export default function AnalyticsPage() {
               icon={TrendingUp}
             />
             <StatCard
-              title={t("analytics.gym.stats.occupancy", "Occupancy Rate")}
-              value={`${analytics.metrics.occupancyRate}%`}
-              icon={PieChartIcon}
+              title={t("analytics.gym.stats.coachesCount", "Coaches Count")}
+              value={analytics.metrics.coachesCount.toLocaleString()}
+              icon={UserCheck}
             />
           </div>
 

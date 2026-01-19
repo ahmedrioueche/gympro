@@ -1,7 +1,7 @@
 import { Plus, UserCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Button from "../../../../../../components/ui/Button";
 import Loading from "../../../../../../components/ui/Loading";
+import NoData from "../../../../../../components/ui/NoData";
 import { useGymStore } from "../../../../../../store/gym";
 import { useModalStore } from "../../../../../../store/modal";
 import PageHeader from "../../../../../components/PageHeader";
@@ -56,7 +56,21 @@ function StaffPage() {
   };
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div>
+        <PageHeader
+          title={t("staff.title")}
+          subtitle={t("staff.subtitle")}
+          icon={UserCircle}
+          actionButton={{
+            label: t("staff.addButton"),
+            icon: Plus,
+            onClick: handleAddStaff,
+          }}
+        />
+        <Loading />
+      </div>
+    );
   }
 
   return (
@@ -73,20 +87,16 @@ function StaffPage() {
       />
 
       {!staff || staff.length === 0 ? (
-        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-            <UserCircle className="w-8 h-8 text-white" />
-          </div>
-          <h3 className="text-lg font-semibold text-text-primary mb-2">
-            {t("staff.noData.title")}
-          </h3>
-          <p className="text-text-secondary mb-6 max-w-md mx-auto">
-            {t("staff.noData.description")}
-          </p>
-          <Button onClick={handleAddStaff} icon={<Plus className="w-5 h-5" />}>
-            {t("staff.addButton")}
-          </Button>
-        </div>
+        <NoData
+          icon={UserCircle}
+          title={t("staff.noData.title")}
+          description={t("staff.noData.description")}
+          actionButton={{
+            label: t("staff.addButton"),
+            icon: Plus,
+            onClick: handleAddStaff,
+          }}
+        />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {staff.map((member) => (

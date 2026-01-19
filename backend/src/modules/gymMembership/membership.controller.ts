@@ -521,4 +521,29 @@ export class MembershipController {
       );
     }
   }
+
+  // ==================== ADMIN/DEBUG ENDPOINTS ====================
+
+  @Post('admin/recalculate-gym-stats')
+  @UseGuards(JwtAuthGuard)
+  async recalculateAllGymStats(): Promise<
+    ApiResponse<{ recalculated: number }>
+  > {
+    try {
+      const count = await this.membershipService.recalculateAllGymStats();
+      return apiResponse(
+        true,
+        undefined,
+        { recalculated: count },
+        `Successfully recalculated stats for ${count} gyms`,
+      );
+    } catch (error) {
+      return apiResponse<{ recalculated: number }>(
+        false,
+        '',
+        { recalculated: 0 },
+        error.message,
+      );
+    }
+  }
 }

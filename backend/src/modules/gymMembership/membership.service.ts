@@ -1066,6 +1066,23 @@ export class MembershipService {
   }
 
   /**
+   * Recalculate stats for all gyms (Admin/Maintenance)
+   */
+  async recalculateAllGymStats() {
+    this.logger.log('Starting recalculation of stats for all gyms...');
+    const gyms = await this.gymModel.find().select('_id').exec();
+    let count = 0;
+
+    for (const gym of gyms) {
+      await this.updateGymStats(gym._id.toString());
+      count++;
+    }
+
+    this.logger.log(`Completed recalculation for ${count} gyms`);
+    return count;
+  }
+
+  /**
    * Helper to recalculate and persist gym member statistics
    */
   private async updateGymStats(gymId: string) {
@@ -1073,7 +1090,7 @@ export class MembershipService {
     if (!gymObjectId) return;
 
     const stats = await this.membershipModel.aggregate([
-      { $match: { gym: gymObjectId } },
+      { $match: { gym: gymObjectId, roles: { $in: ['member'] } } },
       {
         $group: {
           _id: null,

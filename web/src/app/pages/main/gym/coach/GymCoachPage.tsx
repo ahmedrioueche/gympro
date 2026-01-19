@@ -29,7 +29,7 @@ const sidebarLinks = [
     path: APP_PAGES.gym.manager.members.link,
     matchPaths: [
       APP_PAGES.gym.manager.members.link,
-      APP_PAGES.gym.manager.createMember.link,
+      APP_PAGES.gym.manager.create_member.link,
     ],
   },
   {

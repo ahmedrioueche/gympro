@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
 import NoData from "../../../../../components/ui/NoData";
 import SearchFilterBar from "../../../../../components/ui/SearchFilterBar";
+import Tab from "../../../../../components/ui/Tab";
 import {
   useActiveProgram,
   usePrograms,
@@ -52,20 +53,12 @@ export default function ProgramsPage() {
       <div className="border-b border-border">
         <nav className="flex space-x-8">
           {tabs.map((tab) => (
-            <button
+            <Tab
               key={tab.id}
+              label={tab.label}
+              isActive={activeTab === tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`
-                py-4 px-1 border-b-2 font-medium text-sm transition-colors
-                ${
-                  activeTab === tab.id
-                    ? "border-primary text-primary"
-                    : "border-transparent text-text-secondary hover:text-text-primary hover:border-border-hover"
-                }
-              `}
-            >
-              {tab.label}
-            </button>
+            />
           ))}
         </nav>
       </div>

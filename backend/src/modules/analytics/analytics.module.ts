@@ -5,6 +5,10 @@ import {
   AppPaymentModel,
   AppPaymentSchema,
 } from '../appBilling/payment/appPayment.schema';
+import {
+  GymCoachAffiliation,
+  GymCoachAffiliationSchema,
+} from '../gym-coach/schemas/gym-coach-affiliation.schema';
 import { GymSchema } from '../gym/gym.schema';
 import { GymMembershipSchema } from '../gymMembership/membership.schema';
 import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
@@ -20,6 +24,7 @@ import { AnalyticsService } from './analytics.service';
       { name: AppPaymentModel.name, schema: AppPaymentSchema },
       { name: User.name, schema: UserSchema },
       { name: 'SubscriptionHistory', schema: SubscriptionHistorySchema },
+      { name: GymCoachAffiliation.name, schema: GymCoachAffiliationSchema },
     ]),
     UsersModule,
   ],

@@ -94,7 +94,67 @@ export class GymService {
     if (populate) {
       query.populate('owner');
     }
-    return query.exec();
+    const gyms = await query.exec();
+
+    // Trigger stats recalculation for these gyms to ensure accurate counts
+    // This self-heals any stale data from before the bug fix
+    // We execute this asynchronously so it doesn't block the response too much
+    // but ideally we want accurate data immediately.
+    // Given the gyms count for a manager is low (usually < 5), we can await it for correctness.
+    const updatePromises = gyms.map(async (gym) => {
+      await this.updateGymStats(gym._id.toString());
+      // Re-fetch the gym to get updated stats
+      const updated = await this.gymModel.findById(gym._id);
+      if (updated) {
+        Object.assign(gym, updated.toObject());
+      }
+    });
+
+    await Promise.all(updatePromises);
+    return gyms;
+  }
+
+  /**
+   * Helper to recalculate and persist gym member statistics
+   */
+  private async updateGymStats(gymId: string) {
+    const gymObjectId = new Types.ObjectId(gymId);
+    if (!gymObjectId) return;
+
+    const stats = await this.membershipModel.aggregate([
+      { $match: { gym: gymObjectId, roles: { $in: ['member'] } } },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          withActiveSubscriptions: {
+            $sum: { $cond: [{ $eq: ['$membershipStatus', 'active'] }, 1, 0] },
+          },
+          withExpiredSubscriptions: {
+            $sum: { $cond: [{ $eq: ['$membershipStatus', 'expired'] }, 1, 0] },
+          },
+          pendingApproval: {
+            $sum: { $cond: [{ $eq: ['$membershipStatus', 'pending'] }, 1, 0] },
+          },
+        },
+      },
+    ]);
+
+    const result = stats[0] || {
+      total: 0,
+      withActiveSubscriptions: 0,
+      withExpiredSubscriptions: 0,
+      pendingApproval: 0,
+    };
+
+    await this.gymModel.findByIdAndUpdate(gymId, {
+      $set: {
+        'memberStats.total': result.total,
+        'memberStats.withActiveSubscriptions': result.withActiveSubscriptions,
+        'memberStats.withExpiredSubscriptions': result.withExpiredSubscriptions,
+        'memberStats.pendingApproval': result.pendingApproval,
+      },
+    });
   }
 
   async findByMember(userId: string) {

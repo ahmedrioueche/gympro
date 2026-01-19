@@ -41,7 +41,8 @@ function SubscriptionPage() {
 
   if (plansLoading || subLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div>
+        <SubscriptionHeader mySubscription={mySubscription} />
         <Loading />
       </div>
     );

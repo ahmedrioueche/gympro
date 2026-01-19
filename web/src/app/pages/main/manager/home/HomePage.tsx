@@ -36,21 +36,12 @@ function HomePage() {
   const isPageLoading =
     statsLoading || gymsLoading || notificationsLoading || gymStatsLoading;
 
-  const totalActiveMembers =
-    myGyms?.reduce(
-      (acc, gym) => acc + (gym.memberStats?.withActiveSubscriptions || 0),
-      0
-    ) || 0;
-
   const businessMetrics = {
     totalGyms: Math.max(
       globalStats?.metrics.totalGyms || 0,
       myGyms?.length || 0
     ),
-    activeMembers: Math.max(
-      globalStats?.metrics.activeMembers || 0,
-      totalActiveMembers
-    ),
+    activeMembers: globalStats?.metrics.activeMembers || 0,
     totalRevenue: globalStats?.metrics.totalRevenue || 0,
     monthlyRevenue: globalStats?.metrics.monthlyRevenue || 0,
     currency: CURRENCY_SYMBOLS[user?.appSettings?.locale?.currency || "USD"],

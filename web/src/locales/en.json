@@ -1132,6 +1132,7 @@
         "totalMembers": "Total Members",
         "activeMembers": "Active Members",
         "occupancy": "Occupancy Rate",
+        "coachesCount": "Coaches Count",
         "checkedIn": "Today's Check-ins"
       },
       "actions": {

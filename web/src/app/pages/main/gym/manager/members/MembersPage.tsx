@@ -188,7 +188,7 @@ function MembersPage() {
         actionButton={{
           label: t("members.addMember"),
           onClick: () => {
-            navigate({ to: APP_PAGES.gym.manager.createMember.link });
+            navigate({ to: APP_PAGES.gym.manager.create_member.link });
           },
           icon: Plus,
         }}
