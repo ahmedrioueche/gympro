@@ -17,12 +17,14 @@ import CoachCard from "../cards/CoachCard";
 
 export default function InviteCoachModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, inviteCoachProps } = useModalStore();
+  const { currentModal, closeModal, openModal, inviteCoachProps } =
+    useModalStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [invitingCoachId, setInvitingCoachId] = useState<string | null>(null);
-  const { data: coaches = [], isLoading } = useNearbyCoaches({});
+
+  const isOpen = currentModal === "invite_coach";
+  const { data: coaches = [], isLoading } = useNearbyCoaches({}, isOpen);
   const { data: affiliations = [] } = useGymCoaches(inviteCoachProps?.gymId);
-  console.log({ affiliations });
   const inviteCoach = useInviteCoach();
 
   // Map of coachId -> affiliation status
@@ -58,7 +60,7 @@ export default function InviteCoachModal() {
 
   return (
     <BaseModal
-      isOpen={currentModal === "invite_coach"}
+      isOpen={isOpen}
       onClose={closeModal}
       title={t("coaching.inviteCoach")}
       icon={UserCheck}
@@ -86,10 +88,7 @@ export default function InviteCoachModal() {
                 key={coach.userId}
                 coach={coach}
                 onViewDetails={() => {
-                  window.open(
-                    `/public/coach/profile/${coach.userId}`,
-                    "_blank"
-                  );
+                  openModal("coach_profile", { coachId: coach.userId });
                 }}
                 onInvite={() => handleInvite(coach.userId)}
                 isInviting={invitingCoachId === coach.userId}

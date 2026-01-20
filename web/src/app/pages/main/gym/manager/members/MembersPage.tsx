@@ -111,8 +111,9 @@ function MembersPage() {
   const handleViewProfile = (memberId: string) => {
     const member = filteredMembers.find((m) => m._id === memberId);
     if (member) {
-      navigate({
-        to: `${APP_PAGES.gym.manager.member_profile.link}/${member._id}`,
+      openModal("member_profile", {
+        memberId: member._id,
+        membershipId: member.membershipId,
       });
     }
   };

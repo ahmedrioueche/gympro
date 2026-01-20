@@ -2,12 +2,15 @@ import { create } from "zustand";
 import type {
   AssignProgramModalProps,
   CancelSubscriptionModalProps,
+  ClientProfileModalProps,
+  CoachProfileModalProps,
   ConfirmModalProps,
   CreateExerciseModalProps,
   CreateSessionModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
   InviteCoachModalProps,
+  MemberProfileModalProps,
   ProgramDetailsModalProps,
   RenewSubscriptionModalProps,
   RequestCoachModalProps,
@@ -36,6 +39,9 @@ type ModalType =
   | "invite_coach"
   | "request_gym_affiliation"
   | "assign_program"
+  | "member_profile"
+  | "client_profile"
+  | "coach_profile"
   | null;
 
 interface ModalState {
@@ -56,6 +62,9 @@ interface ModalState {
   inviteCoachProps?: InviteCoachModalProps;
   requestGymProps?: RequestGymModalProps;
   assignProgramProps?: AssignProgramModalProps;
+  memberProfileProps?: MemberProfileModalProps;
+  clientProfileProps?: ClientProfileModalProps;
+  coachProfileProps?: CoachProfileModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -152,6 +161,24 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "assign_program",
           assignProgramProps: props,
+        };
+      }
+      if (modal === "member_profile") {
+        return {
+          currentModal: "member_profile",
+          memberProfileProps: props,
+        };
+      }
+      if (modal === "client_profile") {
+        return {
+          currentModal: "client_profile",
+          clientProfileProps: props,
+        };
+      }
+      if (modal === "coach_profile") {
+        return {
+          currentModal: "coach_profile",
+          coachProfileProps: props,
         };
       }
       return { currentModal: null };

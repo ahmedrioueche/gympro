@@ -8,7 +8,7 @@ import {
   getMessage,
   showStatusToast,
 } from "../../../../../utils/statusMessage";
-import { memberProfileKeys } from "../../../../pages/main/gym/manager/member-profile/hooks/useMemberProfile";
+import { memberProfileKeys } from "../../profile/member-profile-modal/hooks/useProfileMember";
 
 export interface RenewFormData {
   subscriptionTypeId: string;

@@ -5,7 +5,7 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { useQuery } from "@tanstack/react-query";
 
-export const useNearbyCoaches = (query?: CoachQueryDto) => {
+export const useNearbyCoaches = (query?: CoachQueryDto, enabled = true) => {
   return useQuery({
     queryKey: ["coaches", "nearby", query],
     queryFn: async () => {
@@ -16,10 +16,11 @@ export const useNearbyCoaches = (query?: CoachQueryDto) => {
       return response.data as CoachProfile[];
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled,
   });
 };
 
-export const useCoachClients = () => {
+export const useCoachClients = (enabled = true) => {
   return useQuery({
     queryKey: ["coach", "clients"],
     queryFn: async () => {
@@ -27,6 +28,7 @@ export const useCoachClients = () => {
       return response;
     },
     staleTime: 5 * 60 * 1000,
+    enabled,
   });
 };
 

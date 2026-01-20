@@ -86,10 +86,6 @@ export const APP_PAGES = {
         name: "pages.gym.members",
         link: "/gym/manager/members",
       },
-      member_profile: {
-        name: "pages.gym.member_profile",
-        link: "/gym/manager/members/profile",
-      },
       create_member: {
         name: "pages.gym.create_member",
         link: "/gym/manager/members/create",
@@ -251,19 +247,6 @@ export const APP_PAGES = {
     settings: {
       name: "pages.coach.settings",
       link: "/coach/settings",
-    },
-  },
-
-  public: {
-    name: "pages.public",
-    link: "/public",
-    coach_profile: {
-      name: "pages.public.coach_profile",
-      link: "/public/coach/profile",
-    },
-    member_profile: {
-      name: "pages.public.member_profile",
-      link: "/public/member/profile",
     },
   },
 };

@@ -82,6 +82,27 @@ const InviteCoachModal = lazy(
   () => import("./app/components/modals/InviteCoachModal")
 );
 
+const MemberProfileModal = lazy(
+  () =>
+    import(
+      "./app/components/modals/profile/member-profile-modal/MemberProfileModal"
+    )
+);
+
+const ClientProfileModal = lazy(
+  () =>
+    import(
+      "./app/components/modals/profile/client-profile-modal/ClientProfileModal"
+    )
+);
+
+const CoachProfileModal = lazy(
+  () =>
+    import(
+      "./app/components/modals/profile/coach-profile-modal/CoachProfileModal"
+    )
+);
+
 const AssignProgramModal = lazy(
   () =>
     import("./app/components/modals/assign-program-modal/AssignProgramModal")
@@ -103,10 +124,12 @@ function modals() {
       <CreateProgramModal />
       <CreateExerciseModal />
       <CreateSessionModal />
-      <CreateSessionModal />
       <SessionDetailsModal />
       <InviteCoachModal />
       <AssignProgramModal />
+      <MemberProfileModal />
+      <ClientProfileModal />
+      <CoachProfileModal />
     </Suspense>
   );
 }

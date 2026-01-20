@@ -3,7 +3,6 @@ import AccessPage from "../../../../app/pages/main/gym/manager/access/AccessPage
 import AnalyticsPage from "../../../../app/pages/main/gym/manager/analytics/AnalyticsPage";
 import AttendancePage from "../../../../app/pages/main/gym/manager/attendance/AttendancePage";
 import HomePage from "../../../../app/pages/main/gym/manager/home/HomePage";
-import MemberProfilePage from "../../../../app/pages/main/gym/manager/member-profile/MemberProfilePage";
 import MembersPage from "../../../../app/pages/main/gym/manager/members/MembersPage";
 import NotificationsPage from "../../../../app/pages/main/gym/manager/notifications/NotificationsPage";
 import PricingPage from "../../../../app/pages/main/gym/manager/pricing/PricingPage";
@@ -22,12 +21,6 @@ export const membersRoute = createRoute({
   getParentRoute: () => GymCoachRootRoute,
   path: "/members",
   component: () => <MembersPage />,
-});
-
-export const memberProfileRoute = createRoute({
-  getParentRoute: () => GymCoachRootRoute,
-  path: "/members/profile/$membershipId",
-  component: () => <MemberProfilePage />,
 });
 
 export const staffRoute = createRoute({

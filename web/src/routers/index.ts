@@ -5,7 +5,6 @@ import { CoachRootTree } from "./main/coach";
 import { GymRootTree } from "./main/gym";
 import { ManagerRootTree } from "./main/manager";
 import { MemberRootTree } from "./main/member";
-import { publicRouteTree } from "./main/public";
 import { PaymentRootTree } from "./payment";
 import { RootRoute } from "./rootRoute";
 
@@ -17,7 +16,6 @@ const routeTree = RootRoute.addChildren([
   GymRootTree,
   PaymentRootTree,
   CoachRootTree,
-  publicRouteTree,
 ]);
 
 export const router = new Router({ routeTree });

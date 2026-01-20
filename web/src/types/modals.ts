@@ -141,3 +141,16 @@ export interface AssignProgramModalProps {
   currentProgramId?: string;
   onSuccess?: () => void;
 }
+
+export interface MemberProfileModalProps {
+  memberId: string;
+  membershipId: string;
+}
+
+export interface ClientProfileModalProps {
+  clientId: string;
+}
+
+export interface CoachProfileModalProps {
+  coachId: string;
+}

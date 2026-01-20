@@ -1,12 +1,16 @@
-import { coachApi } from "@ahmedrioueche/gympro-client";
+import { coachApi, type CoachClient } from "@ahmedrioueche/gympro-client";
 import { useQuery } from "@tanstack/react-query";
 
-export const useActiveClients = () => {
-  return useQuery({
+export const useActiveClients = (enabled = true) => {
+  return useQuery<CoachClient[]>({
     queryKey: ["coach", "clients"],
     queryFn: async () => {
       const response = await coachApi.getActiveClients();
-      return response.data;
+      if (!response.success) {
+        throw new Error(response.message);
+      }
+      return response.data ?? [];
     },
+    enabled,
   });
 };

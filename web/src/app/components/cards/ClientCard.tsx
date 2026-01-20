@@ -1,9 +1,8 @@
 import type { CoachClient } from "@ahmedrioueche/gympro-client";
-import { useNavigate } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Calendar, Dumbbell, MapPin, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../constants/navigation";
+import { useModalStore } from "../../../store/modal";
 import { formatDate } from "../../../utils/date";
 
 interface ClientCardProps {
@@ -13,7 +12,7 @@ interface ClientCardProps {
 
 export function ClientCard({ client, onAssignProgram }: ClientCardProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { openModal } = useModalStore();
 
   const getInitials = (name: string) => {
     return name
@@ -25,9 +24,7 @@ export function ClientCard({ client, onAssignProgram }: ClientCardProps) {
   };
 
   const handleClick = () => {
-    navigate({
-      to: `${APP_PAGES.public.member_profile.link}/${client.userId}`,
-    });
+    openModal("client_profile", { clientId: client.userId });
   };
 
   return (
@@ -74,7 +71,6 @@ export function ClientCard({ client, onAssignProgram }: ClientCardProps) {
             </span>
           </div>
         )}
-        ,
         {client.currentProgram && (
           <div className="flex items-center gap-2 text-sm text-text-secondary">
             <User className="w-3.5 h-3.5 text-primary" />
@@ -114,7 +110,10 @@ export function ClientCard({ client, onAssignProgram }: ClientCardProps) {
       {/* Actions */}
       <div className="flex gap-2">
         <button
-          onClick={handleClick}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick();
+          }}
           className="flex-1 px-4 py-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all duration-300 font-medium text-sm"
         >
           {t("coach.clients.activeClients.viewProfile")}
@@ -122,7 +121,7 @@ export function ClientCard({ client, onAssignProgram }: ClientCardProps) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onAssignProgram();
+            onAssignProgram?.();
           }}
           className="px-4 py-2 bg-background border border-border text-text-secondary rounded-xl hover:border-primary hover:text-primary transition-all duration-300"
         >

@@ -1,9 +1,7 @@
 import { type ProgramComment } from "@ahmedrioueche/gympro-client";
-import { Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import UserAvatar from "../../../../components/ui/UserAvatar";
-import { APP_PAGES } from "../../../../constants/navigation";
 import { useModalStore } from "../../../../store/modal";
 
 interface ReviewListProps {
@@ -12,7 +10,11 @@ interface ReviewListProps {
 
 const ReviewList = ({ comments }: ReviewListProps) => {
   const { t } = useTranslation();
-  const { closeModal } = useModalStore();
+  const { openModal } = useModalStore();
+
+  const handleOpenCoachProfile = (coachId: string) => {
+    openModal("coach_profile", { coachId });
+  };
 
   if (!comments || comments.length === 0) {
     return (
@@ -30,12 +32,8 @@ const ReviewList = ({ comments }: ReviewListProps) => {
           className="bg-background-secondary border border-border rounded-xl p-4 flex gap-3"
         >
           {/* Avatar */}
-          <Link
-            to={`${APP_PAGES.public.coach_profile.link}/${comment.userId}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              closeModal();
-            }}
+          <button
+            onClick={() => handleOpenCoachProfile(comment.userId)}
             className="flex-shrink-0"
           >
             <UserAvatar
@@ -43,21 +41,17 @@ const ReviewList = ({ comments }: ReviewListProps) => {
               alt={comment.userName}
               className="w-10 h-10"
             />
-          </Link>
+          </button>
 
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-center mb-1">
-              <Link
-                to={`${APP_PAGES.public.coach_profile.link}/${comment.userId}`}
+              <button
+                onClick={() => handleOpenCoachProfile(comment.userId)}
                 className="font-semibold text-sm text-text-primary hover:text-primary transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  closeModal();
-                }}
               >
                 {comment.userName}
-              </Link>
+              </button>
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, starI) => (
                   <Star

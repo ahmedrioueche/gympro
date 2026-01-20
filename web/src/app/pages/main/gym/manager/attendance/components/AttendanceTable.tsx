@@ -1,5 +1,4 @@
 import { type GymAttendanceRecord } from "@ahmedrioueche/gympro-client";
-import { useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { Ban, CheckCircle2, Clock, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -7,7 +6,7 @@ import {
   Table,
   type TableColumn,
 } from "../../../../../../../components/ui/Table";
-import { APP_PAGES } from "../../../../../../../constants/navigation";
+import { useModalStore } from "../../../../../../../store/modal";
 import { cn } from "../../../../../../../utils/helper";
 
 interface AttendanceTableProps {
@@ -17,7 +16,7 @@ interface AttendanceTableProps {
 
 export const AttendanceTable = ({ logs, isLoading }: AttendanceTableProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { openModal } = useModalStore();
 
   const getStatusConfig = (status: string) => {
     if (status === "checked_in") {
@@ -230,8 +229,8 @@ export const AttendanceTable = ({ logs, isLoading }: AttendanceTableProps) => {
       emptyState={emptyState}
       onRowClick={(log) => {
         if (log?.userId?._id)
-          navigate({
-            to: `${APP_PAGES.gym.manager.member_profile.link}/${log.userId._id}`,
+          openModal("member_profile", {
+            memberId: log.userId._id,
           });
       }}
       rowClassName={() => "group hover:bg-border/40 cursor-pointer"}

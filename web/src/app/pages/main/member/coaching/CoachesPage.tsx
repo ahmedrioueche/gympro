@@ -2,42 +2,26 @@ import {
   type CoachProfile,
   type CoachQueryDto,
 } from "@ahmedrioueche/gympro-client";
-import { useNavigate } from "@tanstack/react-router";
 import { MapPin, UserCheck, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../components/ui/Button";
 import InputField from "../../../../../components/ui/InputField";
-import SearchFilterBar, {
-  type FilterOption,
-} from "../../../../../components/ui/SearchFilterBar";
-import { APP_PAGES } from "../../../../../constants/navigation";
+import SearchFilterBar from "../../../../../components/ui/SearchFilterBar";
+import { COACH_SPECIALIZATIONS } from "../../../../../constants/gym";
 import { useNearbyCoaches } from "../../../../../hooks/queries/useCoaches";
 import { useUpdateProfile } from "../../../../../hooks/queries/useProfile";
+import { useModalStore } from "../../../../../store/modal";
 import { useUserStore } from "../../../../../store/user";
 import PageHeader from "../../../../components/PageHeader";
 import CoachesList from "./components/CoachesList";
 
-const SPECIALIZATIONS: FilterOption[] = [
-  { value: "all", label: "All Specializations" },
-  { value: "Strength Training", label: "Strength Training" },
-  { value: "Weight Loss", label: "Weight Loss" },
-  { value: "Muscle Building", label: "Muscle Building" },
-  { value: "CrossFit", label: "CrossFit" },
-  { value: "Yoga", label: "Yoga" },
-  { value: "Pilates", label: "Pilates" },
-  { value: "Nutrition", label: "Nutrition" },
-  { value: "Sports Performance", label: "Sports Performance" },
-  { value: "Rehabilitation", label: "Rehabilitation" },
-  { value: "Senior Fitness", label: "Senior Fitness" },
-];
-
 export default function CoachesPage() {
   const { t } = useTranslation();
   const { user, updateUser } = useUserStore();
+  const { openModal } = useModalStore();
   const updateProfile = useUpdateProfile(user?._id || "");
-  const navigate = useNavigate();
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,7 +67,7 @@ export default function CoachesPage() {
   });
 
   const handleSelectCoach = (coach: CoachProfile) => {
-    navigate({ to: `${APP_PAGES.public.coach_profile.link}/${coach.userId}` });
+    openModal("coach_profile", { coachId: coach.userId });
   };
 
   // Detect user location
@@ -192,7 +176,7 @@ export default function CoachesPage() {
         searchPlaceholder={t("coaches.filters.search")}
         filterValue={specialization}
         onFilterChange={setSpecialization}
-        filterOptions={SPECIALIZATIONS}
+        filterOptions={COACH_SPECIALIZATIONS}
       />
 
       {/* Location Filters */}

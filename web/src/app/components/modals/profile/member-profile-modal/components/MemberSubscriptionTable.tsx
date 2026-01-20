@@ -3,10 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Table,
-  type TableColumn,
-} from "../../../../../../../components/ui/Table";
+import { Table, type TableColumn } from "../../../../../../components/ui/Table";
 
 interface MemberSubscriptionsTableProps {
   history: SubscriptionHistory[];

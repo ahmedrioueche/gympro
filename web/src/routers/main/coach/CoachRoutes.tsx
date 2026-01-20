@@ -5,7 +5,6 @@ import ExercisesPage from "../../../app/pages/main/coach/exercises/ExercisesPage
 import GymsPage from "../../../app/pages/main/coach/gyms/GymsPage";
 import HomePage from "../../../app/pages/main/coach/home/HomePage";
 import NotificationsPage from "../../../app/pages/main/coach/notifications/NotificationsPage";
-import ProfilePage from "../../../app/pages/main/coach/profile/ProfilePage";
 import ProgramsPage from "../../../app/pages/main/coach/programs/ProgramsPage";
 import SchedulePage from "../../../app/pages/main/coach/schedule/SchedulePage";
 import SettingsPage from "../../../app/pages/main/coach/settings/SettingsPage";
@@ -27,12 +26,6 @@ export const clientsRoute = createRoute({
   getParentRoute: () => CoachRootRoute,
   path: "/clients",
   component: () => <ClientsPage />,
-});
-
-export const profileRoute = createRoute({
-  getParentRoute: () => CoachRootRoute,
-  path: "/profile",
-  component: () => <ProfilePage />,
 });
 
 export const programsRoute = createRoute({

@@ -26,6 +26,7 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "all": "All",
+    "days": "Days",
     "accept": "Accept",
     "decline": "Decline",
     "locationFilters": "Location Filters",
@@ -924,7 +925,10 @@
       "unknownType": "Unknown Plan",
       "renew": "Renew Subscription",
       "extend": "Extend Subscription",
-      "timeRemaining": "Time Remaining"
+      "timeRemaining": "Time Remaining",
+      "regular": "Regular Membership",
+      "premium": "Premium Membership",
+      "remaining": "Remaining"
     },
     "payments": {
       "title": "Payment History",
@@ -937,8 +941,7 @@
       "failed": "Failed",
       "refunded": "Refunded"
     },
-    "notFound": "User Not Found",
-    "notFoundDesc": "The user you are looking for does not exist or you do not have permission to view them.",
+
     "noBio": "No bio available.",
     "about": "About",
     "location": "Location",
@@ -2717,6 +2720,7 @@
       "title": "No Coaches Found",
       "description": "No coaches are available in your area at the moment"
     },
+    "requestCoaching": "Request Coaching",
     "requestModal": {
       "title": "Request Coaching from {{coachName}}",
       "send": "Send Request",
@@ -2892,6 +2896,13 @@
         "coaching": "Coaching",
         "preferences": "Preferences",
         "security": "Security"
+      }
+    },
+    "clientProfile": {
+      "stats": {
+        "workouts": "Workouts",
+        "activeStreak": "Active Streak",
+        "avgHeartRate": "Avg Heart Rate"
       }
     }
   },

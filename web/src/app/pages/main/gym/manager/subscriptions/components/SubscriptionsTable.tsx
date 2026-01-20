@@ -1,8 +1,7 @@
 import { type User } from "@ahmedrioueche/gympro-client";
-import { useNavigate } from "@tanstack/react-router";
 import { Calendar, Clock, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../../../../../constants/navigation";
+import { useModalStore } from "../../../../../../../store/modal";
 
 interface SubscriptionsTableProps {
   members: User[];
@@ -10,7 +9,7 @@ interface SubscriptionsTableProps {
 
 function SubscriptionsTable({ members }: SubscriptionsTableProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { openModal } = useModalStore();
 
   const getSubscriptionStatus = (subscription: any) => {
     if (!subscription || !subscription.endDate) return "none";
@@ -65,9 +64,10 @@ function SubscriptionsTable({ members }: SubscriptionsTableProps) {
   };
 
   const handleRowClick = (member: User) => {
-    // Navigate to member details
-    navigate({
-      to: `${APP_PAGES.gym.manager.member_profile.link}/${member._id}`,
+    const membership = member.memberships?.[0];
+    openModal("member_profile", {
+      memberId: member._id,
+      membershipId: membership?._id,
     });
   };
 

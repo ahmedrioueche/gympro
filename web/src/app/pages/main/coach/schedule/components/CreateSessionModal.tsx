@@ -20,7 +20,9 @@ export const CreateSessionModal = () => {
   const { t } = useTranslation();
   const { currentModal, createSessionProps, closeModal } = useModalStore();
   const createSession = useCreateSession();
-  const { data: clientsData } = useCoachClients();
+
+  const isOpen = currentModal === "create_session";
+  const { data: clientsData } = useCoachClients(isOpen);
   const clients = clientsData?.data || [];
 
   const [formData, setFormData] = useState<CreateSessionDto>({
@@ -31,8 +33,6 @@ export const CreateSessionModal = () => {
     notes: "",
     location: "",
   });
-
-  const isOpen = currentModal === "create_session";
 
   const handleClose = () => {
     closeModal();
