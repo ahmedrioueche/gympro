@@ -140,13 +140,21 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.COACH_REQUEST_ALREADY_EXISTS]:
     "status.error.coach.request_already_exists",
   [ErrorCode.SESSION_NOT_FOUND]: "status.error.session.not_found",
-  [ErrorCode.SESSION_CREATE_FAILED]: "status.error.session.create_failed",
-  [ErrorCode.SESSION_UPDATE_FAILED]: "status.error.session.update_failed",
-  [ErrorCode.SESSION_DELETE_FAILED]: "status.error.session.delete_failed",
-  [ErrorCode.SESSION_FETCH_FAILED]: "status.error.session.fetch_failed",
+  [ErrorCode.SESSION_CREATE_ERROR]: "status.error.session.create_failed",
+  [ErrorCode.SESSION_UPDATE_ERROR]: "status.error.session.update_failed",
+  [ErrorCode.SESSION_DELETE_ERROR]: "status.error.session.delete_failed",
+  [ErrorCode.SESSION_FETCH_ERROR]: "status.error.session.fetch_failed",
   [ErrorCode.SESSION_TIME_CONFLICT]: "status.error.session.time_conflict",
-  [ErrorCode.VALIDATION_ERROR]: "status.error.validation_error",
-  [ErrorCode.UNKNOWN_ERROR]: "status.error.unknown_error",
+  [ErrorCode.COACH_ACTION_FAILED]: "status.error.coach.action_failed",
+  [ErrorCode.AFFILIATION_NOT_FOUND]: "status.error.affiliation.not_found",
+  [ErrorCode.AFFILIATION_CREATE_ERROR]: "status.error.affiliation.create_error",
+  [ErrorCode.AFFILIATION_UPDATE_ERROR]: "status.error.affiliation.update_error",
+  [ErrorCode.AFFILIATION_DELETE_ERROR]: "status.error.affiliation.delete_error",
+  [ErrorCode.AFFILIATION_FETCH_ERROR]: "status.error.affiliation.fetch_error",
+  [ErrorCode.AFFILIATION_ALREADY_EXISTS]:
+    "status.error.affiliation.already_exists",
+  [ErrorCode.AFFILIATION_INVALID_ACTION]:
+    "status.error.affiliation.invalid_action",
 };
 
 /**

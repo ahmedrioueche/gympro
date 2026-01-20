@@ -83,6 +83,10 @@ export interface RenewSubscriptionModalProps {
   };
 }
 
+export interface CancelSubscriptionModalProps {
+  subscriptionEndDate?: string | Date;
+}
+
 export interface StaffModalProps {
   gymId: string;
   mode: "add" | "edit";

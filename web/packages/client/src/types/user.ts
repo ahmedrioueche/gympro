@@ -43,6 +43,7 @@ export interface BaseUserProfile extends AuditInfo {
   username: string;
   email?: string;
   fullName?: string;
+  bio?: string;
   age?: string;
   gender?: string;
   profileImageUrl?: string;

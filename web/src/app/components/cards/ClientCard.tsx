@@ -1,7 +1,9 @@
 import type { CoachClient } from "@ahmedrioueche/gympro-client";
+import { useNavigate } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { Calendar, Dumbbell, MapPin, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../constants/navigation";
 import { formatDate } from "../../../utils/date";
 
 interface ClientCardProps {
@@ -11,6 +13,7 @@ interface ClientCardProps {
 
 export function ClientCard({ client, onAssignProgram }: ClientCardProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const getInitials = (name: string) => {
     return name
@@ -21,8 +24,17 @@ export function ClientCard({ client, onAssignProgram }: ClientCardProps) {
       .slice(0, 2);
   };
 
+  const handleClick = () => {
+    navigate({
+      to: `${APP_PAGES.public.member_profile.link}/${client.userId}`,
+    });
+  };
+
   return (
-    <div className="bg-surface cursor-pointer border border-border rounded-2xl p-6 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:scale-105 group relative">
+    <div
+      onClick={handleClick}
+      className="bg-surface cursor-pointer border border-border rounded-2xl p-6 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:scale-105 group relative"
+    >
       {/* Avatar and Name */}
       <div className="flex items-center gap-4 mb-4">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xl font-bold shadow-lg">
@@ -101,11 +113,17 @@ export function ClientCard({ client, onAssignProgram }: ClientCardProps) {
 
       {/* Actions */}
       <div className="flex gap-2">
-        <button className="flex-1 px-4 py-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all duration-300 font-medium text-sm">
+        <button
+          onClick={handleClick}
+          className="flex-1 px-4 py-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all duration-300 font-medium text-sm"
+        >
           {t("coach.clients.activeClients.viewProfile")}
         </button>
         <button
-          onClick={onAssignProgram}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAssignProgram();
+          }}
           className="px-4 py-2 bg-background border border-border text-text-secondary rounded-xl hover:border-primary hover:text-primary transition-all duration-300"
         >
           {t("coach.clients.activeClients.assignProgram")}

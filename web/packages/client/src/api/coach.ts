@@ -223,6 +223,43 @@ export const coachApi = {
       };
     }
   },
+
+  /**
+   * Get coach analytics data
+   */
+  getAnalytics: async (): Promise<ApiResponse<any>> => {
+    try {
+      const response = await getApiClient().get("/coaches/analytics");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_001",
+        message: error.response?.data?.message || "Failed to fetch analytics",
+      };
+    }
+  },
+  /**
+   * Assign a program to a client
+   */
+  assignProgram: async (
+    clientId: string,
+    programId: string
+  ): Promise<ApiResponse<any>> => {
+    try {
+      const response = await getApiClient().post(
+        `/coaches/clients/${clientId}/program`,
+        { programId }
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_ACTION_FAILED",
+        message: error.response?.data?.message || "Failed to assign program",
+      };
+    }
+  },
 };
 
 export default coachApi;

@@ -2,6 +2,8 @@ import type { Gym } from "@ahmedrioueche/gympro-client";
 import { Check, Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useScreen from "../../../../../hooks/useScreen";
+import { getGymStatusStyles } from "../../../../../utils/gym";
+import { useGymMemberHome } from "../../../../pages/main/gym/member/home/hooks/useGymMemberHome";
 import RoleBadge from "../../RoleBadge";
 import { useGymRole } from "../hooks/useGymRole";
 
@@ -19,6 +21,8 @@ export default function GymListItem({
   const { t } = useTranslation();
   const { isMobile } = useScreen();
   const userRole = useGymRole(gym);
+  const status = useGymMemberHome(gym.settings);
+  const styles = getGymStatusStyles(status);
 
   return (
     <button
@@ -27,7 +31,7 @@ export default function GymListItem({
         isMobile ? "py-3" : "py-4"
       } rounded-2xl transition-all duration-300 group ${
         isSelected
-          ? "bg-gradient-to-r from-primary/20 via-primary/10 to-secondary/20 shadow-lg shadow-primary/10 scale-[1.02]"
+          ? `bg-gradient-to-r ${styles.gradient} shadow-lg ${styles.glow} scale-[1.02]`
           : "hover:bg-surface-hover/60 hover:scale-[1.01] active:scale-[0.99]"
       }`}
     >
@@ -37,7 +41,7 @@ export default function GymListItem({
             isMobile ? "w-12 h-12" : "w-14 h-14"
           } rounded-2xl bg-gradient-to-br ${
             isSelected
-              ? "from-primary via-primary to-secondary shadow-xl shadow-primary/30"
+              ? `${styles.gradient} ${styles.glow}`
               : "from-gray-100 to-gray-200 dark:from-gray-800/80 dark:to-gray-700/80 group-hover:scale-105"
           } flex items-center justify-center transition-all duration-300`}
         >
@@ -57,7 +61,9 @@ export default function GymListItem({
         </div>
 
         {isSelected && (
-          <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl"></div>
+          <div
+            className={`absolute inset-0 rounded-2xl blur-xl ${styles.gradient}`}
+          ></div>
         )}
       </div>
 
@@ -67,7 +73,9 @@ export default function GymListItem({
             className={`${
               isMobile ? "text-base" : "text-lg"
             } font-bold truncate ${
-              isSelected ? "text-primary" : "text-text-primary"
+              isSelected
+                ? `bg-clip-text text-transparent bg-gradient-to-r ${styles.textGradient}`
+                : "text-text-primary"
             }`}
           >
             {gym.name}
@@ -86,7 +94,9 @@ export default function GymListItem({
       </div>
 
       {isSelected ? (
-        <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/50">
+        <div
+          className={`flex-shrink-0 w-8 h-8 rounded-xl ${styles.badge} flex items-center justify-center shadow-lg`}
+        >
           <Check className="w-5 h-5 text-white" strokeWidth={3} />
         </div>
       ) : (

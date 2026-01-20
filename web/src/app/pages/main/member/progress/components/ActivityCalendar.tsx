@@ -3,13 +3,9 @@ import { useTranslation } from "react-i18next";
 
 interface ActivityCalendarProps {
   history?: ProgressHistory[];
-  isLoading: boolean;
 }
 
-export const ActivityCalendar = ({
-  history,
-  isLoading,
-}: ActivityCalendarProps) => {
+export const ActivityCalendar = ({ history }: ActivityCalendarProps) => {
   const { t } = useTranslation();
 
   // Simple visualization: Last 14 days grid
@@ -49,19 +45,6 @@ export const ActivityCalendar = ({
         return "bg-border";
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="bg-surface/90 rounded-xl border border-border p-6 h-full animate-pulse">
-        <div className="h-6 w-32 bg-background/50 rounded mb-6" />
-        <div className="flex gap-2 justify-between">
-          {[...Array(14)].map((_, i) => (
-            <div key={i} className="h-12 w-full bg-border rounded-lg" />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-surface rounded-xl border border-border p-6 h-full">

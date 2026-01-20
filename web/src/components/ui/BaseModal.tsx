@@ -179,7 +179,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
                     onClick={secondaryConfig.onClick}
                     className={`${
                       primaryConfig ? "flex-1" : ""
-                    } px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all`}
+                    } px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface/50 border-2 border-border hover:border-primary/30 transition-all`}
                   >
                     {secondaryConfig.label}
                   </button>

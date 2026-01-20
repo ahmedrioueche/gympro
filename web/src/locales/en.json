@@ -48,6 +48,7 @@
     "plan": "Plan",
     "duration": "Duration",
     "date": "Date Added",
+
     "cancelled": "Cancelled",
     "active": "Active",
     "expired": "Expired",
@@ -64,7 +65,11 @@
     "characters": "characters",
     "hide": "Hide",
     "show": "Show",
-    "filters": "Filters"
+    "filters": "Filters",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "notSpecified": "Not Specified",
+    "inactive": "Inactive"
   },
   "confirm": {
     "default": {
@@ -310,6 +315,15 @@
         "delete_failed": "Failed to delete session",
         "fetch_failed": "Failed to fetch sessions",
         "time_conflict": "Time conflict"
+      },
+      "affiliation": {
+        "not_found": "Affiliation not found",
+        "create_failed": "Failed to create affiliation",
+        "update_failed": "Failed to update affiliation",
+        "delete_failed": "Failed to delete affiliation",
+        "fetch_failed": "Failed to fetch affiliations",
+        "already_exists": "Affiliation already exists",
+        "invalid_action": "Invalid action"
       }
     }
   },
@@ -922,7 +936,14 @@
       "pending": "Pending",
       "failed": "Failed",
       "refunded": "Refunded"
-    }
+    },
+    "notFound": "User Not Found",
+    "notFoundDesc": "The user you are looking for does not exist or you do not have permission to view them.",
+    "noBio": "No bio available.",
+    "about": "About",
+    "location": "Location",
+    "memberSince": "Member Since",
+    "status": "Status"
   },
   "coachProfile": {
     "title": "Coach Profile",

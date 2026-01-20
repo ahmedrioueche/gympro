@@ -4,24 +4,10 @@ import { useTranslation } from "react-i18next";
 
 interface StatsOverviewProps {
   stats?: ProgressStats;
-  isLoading: boolean;
 }
 
-export const StatsOverview = ({ stats, isLoading }: StatsOverviewProps) => {
+export const StatsOverview = ({ stats }: StatsOverviewProps) => {
   const { t } = useTranslation();
-
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-pulse">
-        {[...Array(4)].map((_, i) => (
-          <div
-            key={i}
-            className="h-32 bg-surface/90 rounded-xl border border-border"
-          />
-        ))}
-      </div>
-    );
-  }
 
   const statItems = [
     {

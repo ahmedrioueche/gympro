@@ -5,7 +5,9 @@ import { useTranslation } from "react-i18next";
 import useScreen from "../../../../../hooks/useScreen";
 import { useGymStore } from "../../../../../store/gym";
 import { useUserStore } from "../../../../../store/user";
+import { getGymStatusStyles } from "../../../../../utils/gym";
 import { redirectToHomePageAfterTimeout } from "../../../../../utils/helper";
+import { useGymMemberHome } from "../../../../pages/main/gym/member/home/hooks/useGymMemberHome";
 import RoleBadge from "../../RoleBadge";
 import { useGymRole } from "../hooks/useGymRole";
 
@@ -27,6 +29,8 @@ export default function SingleGymView({
   const { clearGym } = useGymStore();
   const { isMobile } = useScreen();
   const userRole = useGymRole(gym);
+  const status = useGymMemberHome(gym.settings);
+  const styles = getGymStatusStyles(status);
 
   const isOnGymDashboard = routerState.location.pathname.startsWith("/gym");
 
@@ -58,9 +62,11 @@ export default function SingleGymView({
       {/* Left Icon: Changes based on location */}
       <div className="relative flex-shrink-0">
         <div
-          className={`${
-            isMobile ? "w-11 h-11" : "w-14 h-14"
-          } rounded-2xl ${"bg-gradient-to-br from-primary via-primary to-secondary"} flex items-center justify-center shadow-xl shadow-primary/20 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-primary/30 group-hover:scale-105 group-hover:-rotate-3`}
+          className={`${isMobile ? "w-11 h-11" : "w-14 h-14"} rounded-2xl ${
+            isSelected
+              ? `bg-gradient-to-br ${styles.gradient} ${styles.glow}`
+              : "bg-gradient-to-br from-primary via-primary to-secondary shadow-primary/20"
+          } flex items-center justify-center shadow-xl transition-all duration-500 group-hover:shadow-2xl group-hover:scale-105 group-hover:-rotate-3`}
         >
           {isOnGymDashboard ? (
             gym.logoUrl ? (
@@ -84,6 +90,13 @@ export default function SingleGymView({
             />
           )}
         </div>
+        <div
+          className={`absolute ${
+            isMobile ? "-top-1 -right-1 w-4 h-4" : "-top-1.5 -right-1.5 w-5 h-5"
+          } rounded-full ${
+            gym.isActive !== false ? "bg-success" : "bg-warning"
+          } ring-4 ring-background shadow-lg animate-pulse`}
+        ></div>
       </div>
 
       {/* Gym Name with truncation */}
@@ -109,21 +122,23 @@ export default function SingleGymView({
 
       {/* Right Icon: Changes based on location */}
       <div
-        className={`${
-          isMobile ? "w-8 h-8" : "w-10 h-10"
-        } rounded-xl bg-primary/10 flex items-center justify-center transition-all duration-300 group-hover:bg-primary group-hover:scale-110`}
+        className={`${isMobile ? "w-8 h-8" : "w-10 h-10"} rounded-xl ${
+          isSelected
+            ? `bg-gradient-to-br ${styles.gradient} group-hover:brightness-110`
+            : "bg-primary/10 group-hover:bg-primary"
+        } flex items-center justify-center transition-all duration-300 group-hover:scale-110`}
       >
         {isOnGymDashboard ? (
           <Home
-            className={`${
-              isMobile ? "w-4 h-4" : "w-5 h-5"
-            } text-primary group-hover:text-white transition-colors`}
+            className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} ${
+              isSelected ? "text-white" : "text-primary"
+            } group-hover:text-white transition-colors`}
           />
         ) : (
           <Dumbbell
-            className={`${
-              isMobile ? "w-4 h-4" : "w-5 h-5"
-            } text-primary group-hover:text-white transition-colors`}
+            className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} ${
+              isSelected ? "text-white" : "text-primary"
+            } group-hover:text-white transition-colors`}
           />
         )}
       </div>

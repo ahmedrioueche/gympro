@@ -59,6 +59,15 @@ export const usersApi = {
     }
   },
 
+  getUser: async (userId: string): Promise<ApiResponse<User>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<User>>(`/users/${userId}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   editUser: async (
     userId: string,
     data: EditUserDto

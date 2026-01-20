@@ -23,6 +23,13 @@ const RenewSubscriptionModal = lazy(
     import("./app/components/modals/renew-subscription/RenewSubscriptionModal")
 );
 
+const CancelSubscriptionModal = lazy(
+  () =>
+    import(
+      "./app/pages/main/manager/subscription/components/cancel-subscription-modal/CancelSubscriptionModal"
+    )
+);
+
 const StaffModal = lazy(
   () => import("./app/components/modals/staff-modal/StaffModal")
 );
@@ -89,6 +96,7 @@ function modals() {
       <ExerciseDetailModal />
       <ScanResultModal />
       <RenewSubscriptionModal />
+      <CancelSubscriptionModal />
       <StaffModal />
       <RequestCoachModal />
       <ProgramDetailsModal />

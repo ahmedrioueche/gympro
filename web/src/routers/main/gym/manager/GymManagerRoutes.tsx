@@ -3,7 +3,7 @@ import AccessPage from "../../../../app/pages/main/gym/manager/access/AccessPage
 import AnalyticsPage from "../../../../app/pages/main/gym/manager/analytics/AnalyticsPage";
 import AttendancePage from "../../../../app/pages/main/gym/manager/attendance/AttendancePage";
 import CoachingPage from "../../../../app/pages/main/gym/manager/coaching/CoachingPage";
-import CreateMemberPage from "../../../../app/pages/main/gym/manager/createMember/CreateMemberPage";
+import CreateMemberPage from "../../../../app/pages/main/gym/manager/create-member/CreateMemberPage";
 import HomePage from "../../../../app/pages/main/gym/manager/home/HomePage";
 import MemberProfilePage from "../../../../app/pages/main/gym/manager/member-profile/MemberProfilePage";
 import MembersPage from "../../../../app/pages/main/gym/manager/members/MembersPage";

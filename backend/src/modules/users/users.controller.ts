@@ -53,21 +53,30 @@ export class UsersController {
   async findById(@Param('id') id: string, @Req() req: any) {
     const currentUserId = req.user?.sub;
     const currentUserRole = req.user?.role;
+    const isOwnerOrManager =
+      currentUserRole === UserRole.Owner ||
+      currentUserRole === UserRole.Manager;
+    const isSelf = id === currentUserId;
 
-    // Users can view their own profile, or owner/manager can view any
-    if (id !== currentUserId) {
-      if (
-        currentUserRole !== UserRole.Owner &&
-        currentUserRole !== UserRole.Manager
-      ) {
-        throw new ForbiddenException({
-          message: 'Insufficient permissions to view this user',
-          errorCode: ErrorCode.INSUFFICIENT_PERMISSIONS,
-        });
+    // Allow any authenticated user to view profile, but filter sensitive data
+    const result = await this.usersService.findById(id);
+
+    // If not self and not admin, filter sensitive info
+    if (!isSelf && !isOwnerOrManager) {
+      if (result.profile) {
+        delete result.profile.email;
+        delete result.profile.phoneNumber;
+        delete result.profile.address;
+        // Keep public info: fullName, username, gender, age, profileImageUrl, bio
       }
+      // Hide internal fields
+      delete result.memberships;
+      delete result.subscriptionHistory;
+      delete result.notifications;
+      delete result.role; // Optional: maybe we want to show role? User said "any user can be a member... calling it member profile".
+      // Let's keep role as it's useful public info (e.g. Coach)
     }
 
-    const result = await this.usersService.findById(id);
     return apiResponse(true, undefined, result, 'User retrieved successfully');
   }
 

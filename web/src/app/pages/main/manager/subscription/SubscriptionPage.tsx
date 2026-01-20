@@ -9,9 +9,9 @@ import {
   useMySubscription,
 } from "../../../../../hooks/queries/useSubscription";
 import useCurrency from "../../../../../hooks/useCurrency";
+import { useModalStore } from "../../../../../store/modal";
 import BillingCycleToggle from "./components/BillingCycleToggle";
 import CancelSubscriptionButton from "./components/CancelSubscriptionButton";
-import CancelSubscriptionModal from "./components/CancelSubscriptionModal";
 import PlansGrid from "./components/PlansGrid";
 import ProcessingOverlay from "./components/ProcessingOverlay";
 import SubscriptionCard from "./components/SubscriptionCard";
@@ -28,6 +28,7 @@ function SubscriptionPage() {
   const { data: plans = [], isLoading: plansLoading } = useAllPlans();
   const { data: mySubscription, isLoading: subLoading } = useMySubscription();
   const currency = useCurrency();
+  const { openModal } = useModalStore();
 
   const { handleSelectPlan, isProcessing, isCurrentPlan, filteredPlans } =
     useSubscriptionLogic({
@@ -85,21 +86,16 @@ function SubscriptionPage() {
       {mySubscription && mySubscription?.planId && mySubscription?.plan && (
         <CancelSubscriptionButton
           subscription={mySubscription}
-          onCancel={() => setIsCancelModalOpen(true)}
+          onCancel={() =>
+            openModal("cancel_subscription", {
+              subscriptionEndDate: mySubscription?.currentPeriodEnd
+                ? new Date(mySubscription.currentPeriodEnd)
+                : undefined,
+            })
+          }
           isProcessing={isProcessing}
         />
       )}
-
-      {/* Cancel Subscription Modal */}
-      <CancelSubscriptionModal
-        isOpen={isCancelModalOpen}
-        onClose={() => setIsCancelModalOpen(false)}
-        subscriptionEndDate={
-          mySubscription?.currentPeriodEnd
-            ? new Date(mySubscription.currentPeriodEnd)
-            : undefined
-        }
-      />
 
       {/* Footer Info */}
       <SubscriptionFooter />

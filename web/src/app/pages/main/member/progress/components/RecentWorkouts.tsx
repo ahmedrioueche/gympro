@@ -6,10 +6,9 @@ import { APP_PAGES } from "../../../../../../constants/navigation";
 
 interface RecentWorkoutsProps {
   history?: ProgressHistory[];
-  isLoading: boolean;
 }
 
-export const RecentWorkouts = ({ history, isLoading }: RecentWorkoutsProps) => {
+export const RecentWorkouts = ({ history }: RecentWorkoutsProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -18,19 +17,6 @@ export const RecentWorkouts = ({ history, isLoading }: RecentWorkoutsProps) => {
     ?.map((h) => ({ ...h }))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
-
-  if (isLoading) {
-    return (
-      <div className="bg-surface/90 rounded-xl border border-border p-6 h-full animate-pulse">
-        <div className="h-6 w-32 bg-background/50 rounded mb-6" />
-        <div className="space-y-4">
-          {[...Array(2)].map((_, i) => (
-            <div key={i} className="h-16 bg-background/20 rounded-lg" />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-surface rounded-xl border border-border p-6 h-full flex flex-col">

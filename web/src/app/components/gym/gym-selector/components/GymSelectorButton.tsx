@@ -2,6 +2,8 @@ import type { Gym } from "@ahmedrioueche/gympro-client";
 import { ChevronDown, Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useScreen from "../../../../../hooks/useScreen";
+import { getGymStatusStyles } from "../../../../../utils/gym";
+import { useGymMemberHome } from "../../../../pages/main/gym/member/home/hooks/useGymMemberHome";
 import RoleBadge from "../../RoleBadge";
 import { useGymRole } from "../hooks/useGymRole";
 
@@ -21,6 +23,8 @@ export default function GymSelectorButton({
   const { t } = useTranslation();
   const { isMobile } = useScreen();
   const userRole = useGymRole(selectedGym);
+  const status = useGymMemberHome(selectedGym?.settings);
+  const styles = getGymStatusStyles(status);
 
   return (
     <button
@@ -34,7 +38,13 @@ export default function GymSelectorButton({
         <div
           className={`${
             isMobile ? "w-11 h-11" : "w-14 h-14"
-          } rounded-2xl bg-gradient-to-br from-primary via-primary to-secondary flex items-center justify-center shadow-xl shadow-primary/20 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-primary/30 group-hover:scale-105 group-hover:-rotate-3`}
+          } rounded-2xl bg-gradient-to-br ${
+            selectedGym
+              ? styles.gradient
+              : "from-primary via-primary to-secondary"
+          } flex items-center justify-center shadow-xl ${
+            selectedGym ? styles.glow : "shadow-primary/20"
+          } transition-all duration-500 group-hover:shadow-2xl group-hover:scale-105 group-hover:-rotate-3`}
         >
           {selectedGym?.logoUrl ? (
             <img

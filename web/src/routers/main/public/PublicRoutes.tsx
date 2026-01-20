@@ -11,6 +11,6 @@ export const coachProfileRoute = createRoute({
 
 export const memberProfileRoute = createRoute({
   getParentRoute: () => PublicRootRoute,
-  path: "/member/profile/$memberId",
+  path: "/member/profile/$userId",
   component: () => <MemberProfilePage />,
 });

@@ -1,5 +1,5 @@
 export default function Loading({
-  className = "items-start",
+  className = "items-start mt-24",
   size = "h-16 w-16",
   fullScreen = true,
 }: {

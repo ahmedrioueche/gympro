@@ -8,6 +8,8 @@ export enum ErrorCode {
   GATEWAY_TIMEOUT = "ERR_504",
   METHOD_NOT_ALLOWED = "ERR_405",
   INVALID_REQUEST = "ERR_400",
+  VALIDATION_ERROR = "ERR_400",
+  UNKNOWN_ERROR = "ERR_500",
 
   // Authentication errors
   INVALID_CREDENTIALS = "AUTH_001",

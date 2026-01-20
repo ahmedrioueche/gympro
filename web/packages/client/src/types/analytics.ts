@@ -40,7 +40,7 @@ export interface GymAnalytics {
     activeMembers: number;
     expiredMembers: number;
     checkedIn: number;
-    occupancyRate: number; // percentage based on some capacity
+    coachesCount: number;
     totalRevenue: number;
     monthlyRevenue: number;
   };
