@@ -139,13 +139,27 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
     "status.error.coach.prospective_members_fetch_failed",
   [ErrorCode.COACH_REQUEST_ALREADY_EXISTS]:
     "status.error.coach.request_already_exists",
+  [ErrorCode.COACH_ACTION_FAILED]: "status.error.coach.action_failed",
+
+  // Coach Pricing errors
+  [ErrorCode.COACH_PRICING_FETCH_ERROR]:
+    "status.error.coach.pricing_fetch_error",
+  [ErrorCode.COACH_PRICING_CREATE_ERROR]:
+    "status.error.coach.pricing_create_error",
+  [ErrorCode.COACH_PRICING_UPDATE_ERROR]:
+    "status.error.coach.pricing_update_error",
+  [ErrorCode.COACH_PRICING_DELETE_ERROR]:
+    "status.error.coach.pricing_delete_error",
+  [ErrorCode.COACH_PRICING_NOT_FOUND]: "status.error.coach.pricing_not_found",
+
+  // Session errors
   [ErrorCode.SESSION_NOT_FOUND]: "status.error.session.not_found",
   [ErrorCode.SESSION_CREATE_ERROR]: "status.error.session.create_failed",
   [ErrorCode.SESSION_UPDATE_ERROR]: "status.error.session.update_failed",
   [ErrorCode.SESSION_DELETE_ERROR]: "status.error.session.delete_failed",
   [ErrorCode.SESSION_FETCH_ERROR]: "status.error.session.fetch_failed",
   [ErrorCode.SESSION_TIME_CONFLICT]: "status.error.session.time_conflict",
-  [ErrorCode.COACH_ACTION_FAILED]: "status.error.coach.action_failed",
+
   [ErrorCode.AFFILIATION_NOT_FOUND]: "status.error.affiliation.not_found",
   [ErrorCode.AFFILIATION_CREATE_ERROR]: "status.error.affiliation.create_error",
   [ErrorCode.AFFILIATION_UPDATE_ERROR]: "status.error.affiliation.update_error",

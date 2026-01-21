@@ -17,15 +17,17 @@ const statusColors: Record<SessionStatus, string> = {
 
 export const SessionCard = ({ session, onClick }: SessionCardProps) => {
   const startTime =
-    typeof session.startTime === "string"
-      ? parseISO(session.startTime)
-      : session.startTime;
+    typeof session?.startTime === "string"
+      ? parseISO(session?.startTime)
+      : session?.startTime;
   const endTime =
-    typeof session.endTime === "string"
-      ? parseISO(session.endTime)
-      : session.endTime;
+    typeof session?.endTime === "string"
+      ? parseISO(session?.endTime)
+      : session?.endTime;
 
-  const statusColor = statusColors[session.status] || statusColors.scheduled;
+  const statusColor = statusColors[session?.status] || statusColors.scheduled;
+
+  console.log({ session });
 
   return (
     <div
@@ -39,12 +41,12 @@ export const SessionCard = ({ session, onClick }: SessionCardProps) => {
         </span>
       </div>
 
-      {session.member && (
+      {session?.member && (
         <div className="flex items-center gap-2">
-          {session.member.profileImageUrl ? (
+          {session?.member?.profileImageUrl ? (
             <img
-              src={session.member.profileImageUrl}
-              alt={session.member.fullName}
+              src={session?.member?.profileImageUrl}
+              alt={session?.member?.fullName}
               className="w-6 h-6 rounded-full object-cover"
             />
           ) : (
@@ -53,14 +55,14 @@ export const SessionCard = ({ session, onClick }: SessionCardProps) => {
             </div>
           )}
           <span className="text-sm font-medium truncate">
-            {session.member.fullName || session.member.username}
+            {session?.member.fullName || session?.member.username}
           </span>
         </div>
       )}
 
-      {session.type && (
+      {session?.type && (
         <span className="text-xs opacity-80 mt-1 block capitalize">
-          {session.type.replace("_", " ")}
+          {session?.type.replace("_", " ")}
         </span>
       )}
     </div>

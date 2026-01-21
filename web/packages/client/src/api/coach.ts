@@ -8,6 +8,8 @@ import type {
 import type { ApiResponse } from "../types/api";
 import type {
   CoachClient,
+  CoachPricingTier,
+  CoachPricingTierDto,
   CoachProfile,
   CoachRequest,
   CoachRequestWithDetails,
@@ -257,6 +259,88 @@ export const coachApi = {
         success: false,
         errorCode: error.response?.data?.errorCode || "COACH_ACTION_FAILED",
         message: error.response?.data?.message || "Failed to assign program",
+      };
+    }
+  },
+
+  // ============================================
+  // COACH PRICING MANAGEMENT
+  // ============================================
+
+  /**
+   * Get coach's pricing tiers
+   */
+  getMyPricing: async (): Promise<ApiResponse<CoachPricingTier[]>> => {
+    try {
+      const response = await getApiClient().get("/coaches/pricing");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_PRICING_001",
+        message:
+          error.response?.data?.message || "Failed to fetch pricing tiers",
+      };
+    }
+  },
+
+  /**
+   * Create a new pricing tier
+   */
+  createPricing: async (
+    data: CoachPricingTierDto
+  ): Promise<ApiResponse<CoachPricingTier>> => {
+    try {
+      const response = await getApiClient().post("/coaches/pricing", data);
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_PRICING_002",
+        message:
+          error.response?.data?.message || "Failed to create pricing tier",
+      };
+    }
+  },
+
+  /**
+   * Update a pricing tier
+   */
+  updatePricing: async (
+    pricingId: string,
+    data: Partial<CoachPricingTierDto>
+  ): Promise<ApiResponse<CoachPricingTier>> => {
+    try {
+      const response = await getApiClient().patch(
+        `/coaches/pricing/${pricingId}`,
+        data
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_PRICING_003",
+        message:
+          error.response?.data?.message || "Failed to update pricing tier",
+      };
+    }
+  },
+
+  /**
+   * Delete a pricing tier
+   */
+  deletePricing: async (pricingId: string): Promise<ApiResponse<void>> => {
+    try {
+      const response = await getApiClient().delete(
+        `/coaches/pricing/${pricingId}`
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_PRICING_004",
+        message:
+          error.response?.data?.message || "Failed to delete pricing tier",
       };
     }
   },

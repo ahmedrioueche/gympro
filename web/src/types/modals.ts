@@ -154,3 +154,8 @@ export interface ClientProfileModalProps {
 export interface CoachProfileModalProps {
   coachId: string;
 }
+
+export interface CoachPricingModalProps {
+  pricingId?: string; // If provided, edit mode; otherwise create mode
+  onSuccess?: () => void;
+}

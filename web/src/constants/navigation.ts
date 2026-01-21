@@ -220,6 +220,10 @@ export const APP_PAGES = {
       name: "pages.coach.clients",
       link: "/coach/clients",
     },
+    pricing: {
+      name: "pages.coach.pricing",
+      link: "/coach/pricing",
+    },
     programs: {
       name: "pages.coach.programs",
       link: "/coach/programs",

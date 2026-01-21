@@ -1,4 +1,5 @@
-import { AuditInfo } from "./common";
+import { AuditInfo, Currency } from "./common";
+import { SubscriptionPeriodUnit } from "./subscription";
 
 // Coach request status
 export const COACH_REQUEST_STATUSES = [
@@ -8,6 +9,43 @@ export const COACH_REQUEST_STATUSES = [
   "cancelled",
 ] as const;
 export type CoachRequestStatus = (typeof COACH_REQUEST_STATUSES)[number];
+
+// Coach service types for pricing
+export const COACH_SERVICE_TYPES = [
+  "training",
+  "nutrition",
+  "training_nutrition",
+  "online_coaching",
+  "group_training",
+  "consultation",
+] as const;
+export type CoachServiceType = (typeof COACH_SERVICE_TYPES)[number];
+
+// Pricing tier for coach services
+export interface CoachPricingTier extends AuditInfo {
+  _id: string;
+  coachId: string;
+  serviceType: CoachServiceType;
+  name: string;
+  description?: string;
+  duration: number;
+  durationUnit: SubscriptionPeriodUnit;
+  price: number;
+  currency: Currency;
+  isActive: boolean;
+}
+
+// DTO for creating/updating pricing
+export interface CoachPricingTierDto {
+  serviceType: CoachServiceType;
+  name: string;
+  description?: string;
+  duration: number;
+  durationUnit: SubscriptionPeriodUnit;
+  price: number;
+  currency: Currency;
+  isActive?: boolean;
+}
 
 // Coach request from a member to a coach
 export interface CoachRequest extends AuditInfo {
@@ -57,6 +95,7 @@ export interface CoachProfile {
   rating?: number;
   totalClients?: number;
   isVerified?: boolean;
+  pricing?: CoachPricingTier[];
 }
 
 // Active client profile (for coaches)

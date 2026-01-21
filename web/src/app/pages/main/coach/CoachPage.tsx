@@ -4,6 +4,7 @@ import {
   Bell,
   Calendar,
   Clipboard,
+  DollarSign,
   Dumbbell,
   Home,
   Settings,
@@ -30,6 +31,12 @@ const sidebarLinks = [
     icon: <Users className="w-5 h-5" />,
     path: APP_PAGES.coach.clients.link,
     matchPaths: [APP_PAGES.coach.clients.link],
+  },
+  {
+    label: "pricing",
+    icon: <DollarSign className="w-5 h-5" />,
+    path: APP_PAGES.coach.pricing.link,
+    matchPaths: [APP_PAGES.coach.pricing.link],
   },
   {
     label: "programs",

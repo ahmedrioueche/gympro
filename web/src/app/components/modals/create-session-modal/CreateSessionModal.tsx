@@ -6,15 +6,12 @@ import { Calendar } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import BaseModal from "../../../../../../components/ui/BaseModal";
-import CustomSelect from "../../../../../../components/ui/CustomSelect";
-import { useCoachClients } from "../../../../../../hooks/queries/useCoaches";
-import { useCreateSession } from "../../../../../../hooks/queries/useSessions";
-import { useModalStore } from "../../../../../../store/modal";
-import {
-  getMessage,
-  showStatusToast,
-} from "../../../../../../utils/statusMessage";
+import BaseModal from "../../../../components/ui/BaseModal";
+import CustomSelect from "../../../../components/ui/CustomSelect";
+import { useCoachClients } from "../../../../hooks/queries/useCoaches";
+import { useCreateSession } from "../../../../hooks/queries/useSessions";
+import { useModalStore } from "../../../../store/modal";
+import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 
 export const CreateSessionModal = () => {
   const { t } = useTranslation();

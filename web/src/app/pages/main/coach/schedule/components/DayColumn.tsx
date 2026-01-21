@@ -17,7 +17,7 @@ export const DayColumn = ({
 
   return (
     <div
-      className={`flex-1 min-w-[140px] border-r border-border last:border-r-0 ${
+      className={`flex-1 w-full md:w-auto md:min-w-[140px] border-b md:border-b-0 md:border-r border-border last:border-0 ${
         isCurrentDay ? "bg-primary/5" : ""
       }`}
     >
@@ -40,7 +40,7 @@ export const DayColumn = ({
       </div>
 
       {/* Sessions */}
-      <div className="p-2 min-h-[400px] space-y-2">
+      <div className="p-2 min-h-[150px] md:min-h-[400px] space-y-2">
         {sessions.map((session) => (
           <SessionCard
             key={session._id}

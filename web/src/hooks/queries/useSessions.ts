@@ -45,7 +45,39 @@ export const useUpdateSession = () => {
       const response = await sessionApi.update(id, data);
       return response.data;
     },
-    onSuccess: () => {
+    onMutate: async ({ id, data }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["sessions"] });
+
+      // Snapshot the previous value
+      const previousSessions = queryClient.getQueriesData({
+        queryKey: ["sessions"],
+      });
+
+      // Optimistically update to the new value
+      queryClient.setQueriesData({ queryKey: ["sessions"] }, (old: any) => {
+        if (!old || !old.data) return old;
+        return {
+          ...old,
+          data: old.data.map((session: any) =>
+            session._id === id ? { ...session, ...data } : session
+          ),
+        };
+      });
+
+      // Return a context object with the snapshotted value
+      return { previousSessions };
+    },
+    onError: (_err, _newSession, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousSessions) {
+        context.previousSessions.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success:
       queryClient.invalidateQueries({ queryKey: ["sessions"] });
     },
   });

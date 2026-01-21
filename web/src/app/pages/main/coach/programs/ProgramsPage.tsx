@@ -33,7 +33,7 @@ export default function ProgramsPage() {
     { id: 1, label: t("coach.programs.tabs.otherPrograms") },
   ];
 
-  const showSearch = (programs && programs.length > 0) || searchQuery !== "";
+  const hasPrograms = (programs && programs.length > 0) || searchQuery !== "";
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -41,12 +41,16 @@ export default function ProgramsPage() {
         title={t("coach.programs.title")}
         subtitle={t("coach.programs.subtitle")}
         icon={Dumbbell}
-        actionButton={{
-          label: t("coach.programs.createProgram"),
-          icon: Plus,
-          onClick: () => openModal("create_program"),
-          show: true,
-        }}
+        actionButton={
+          hasPrograms
+            ? {
+                label: t("coach.programs.createProgram"),
+                icon: Plus,
+                onClick: () => openModal("create_program"),
+                show: true,
+              }
+            : undefined
+        }
       />
 
       {/* Tabs */}
@@ -64,7 +68,7 @@ export default function ProgramsPage() {
       </div>
 
       {/* Search */}
-      {showSearch && (
+      {hasPrograms && (
         <SearchFilterBar
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}

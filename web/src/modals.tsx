@@ -63,19 +63,19 @@ const CreateExerciseModal = lazy(() =>
 );
 
 const CreateSessionModal = lazy(() =>
-  import("./app/pages/main/coach/schedule/components/CreateSessionModal").then(
-    (module) => ({
-      default: module.CreateSessionModal,
-    })
-  )
+  import(
+    "./app/components/modals/create-session-modal/CreateSessionModal"
+  ).then((module) => ({
+    default: module.CreateSessionModal,
+  }))
 );
 
 const SessionDetailsModal = lazy(() =>
-  import("./app/pages/main/coach/schedule/components/SessionDetailsModal").then(
-    (module) => ({
-      default: module.SessionDetailsModal,
-    })
-  )
+  import(
+    "./app/components/modals/session-details-modal/SessionDetailsModal"
+  ).then((module) => ({
+    default: module.SessionDetailsModal,
+  }))
 );
 
 const InviteCoachModal = lazy(
@@ -108,6 +108,10 @@ const AssignProgramModal = lazy(
     import("./app/components/modals/assign-program-modal/AssignProgramModal")
 );
 
+const CoachPricingModal = lazy(
+  () => import("./app/components/modals/coach-pricing-modal/CoachPricingModal")
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -130,6 +134,7 @@ function modals() {
       <MemberProfileModal />
       <ClientProfileModal />
       <CoachProfileModal />
+      <CoachPricingModal />
     </Suspense>
   );
 }

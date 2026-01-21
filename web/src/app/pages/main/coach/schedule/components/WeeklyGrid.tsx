@@ -16,7 +16,7 @@ export const WeeklyGrid = ({
 }: WeeklyGridProps) => {
   return (
     <div className="bg-surface border border-border rounded-2xl overflow-hidden">
-      <div className="flex overflow-x-auto">
+      <div className="flex flex-col md:flex-row md:overflow-x-auto">
         {weekDays.map((day) => (
           <DayColumn
             key={day.toISOString()}

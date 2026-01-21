@@ -30,6 +30,8 @@ export default function SchedulePage() {
     endDate: weekEnd.toISOString(),
   });
 
+  const hasSessions = data && data.data && data.data.length > 0;
+
   // data is ApiResponse<Session[]>, so extract the actual array from data.data
   const sessions = data?.data || [];
 
@@ -64,11 +66,15 @@ export default function SchedulePage() {
         title={t("schedule.title")}
         subtitle={t("schedule.subtitle")}
         icon={Calendar}
-        actionButton={{
-          label: t("schedule.createSession"),
-          icon: Calendar,
-          onClick: handleCreateSession,
-        }}
+        actionButton={
+          hasSessions
+            ? {
+                label: t("schedule.createSession"),
+                icon: Calendar,
+                onClick: handleCreateSession,
+              }
+            : undefined
+        }
       />
 
       <CalendarHeader
@@ -80,7 +86,7 @@ export default function SchedulePage() {
 
       {isLoading ? (
         <Loading className="py-20" />
-      ) : sessions.length === 0 ? (
+      ) : !hasSessions ? (
         <NoData
           emoji="📅"
           title={t("schedule.noSessions")}
