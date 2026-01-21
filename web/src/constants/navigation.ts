@@ -154,6 +154,36 @@ export const APP_PAGES = {
         link: "/gym/member/settings",
       },
     },
+    coach: {
+      home: {
+        name: "pages.gym.home",
+        link: "/gym/coach",
+      },
+      clients: {
+        name: "pages.gym.clients",
+        link: "/gym/coach/clients",
+      },
+      schedule: {
+        name: "pages.gym.schedule",
+        link: "/gym/coach/schedule",
+      },
+      payments: {
+        name: "pages.gym.payments",
+        link: "/gym/coach/payments",
+      },
+      analytics: {
+        name: "pages.gym.analytics",
+        link: "/gym/coach/analytics",
+      },
+      notifications: {
+        name: "pages.gym.notifications",
+        link: "/gym/coach/notifications",
+      },
+      settings: {
+        name: "pages.gym.settings",
+        link: "/gym/coach/settings",
+      },
+    },
   },
 
   member: {

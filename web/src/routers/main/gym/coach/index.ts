@@ -1,14 +1,20 @@
 import { GymCoachRootRoute } from "./GymCoachRootRoute";
 import {
+  analyticsRoute,
+  clientsRoute,
   homeRoute,
-  membersRoute,
   notificationsRoute,
+  paymentsRoute,
+  scheduleRoute,
   settingsRoute,
 } from "./GymCoachRoutes";
 
-export const GymManagerRootTree = GymCoachRootRoute.addChildren([
+export const GymCoachRootTree = GymCoachRootRoute.addChildren([
   homeRoute,
-  membersRoute,
+  clientsRoute,
+  analyticsRoute,
+  paymentsRoute,
+  scheduleRoute,
   notificationsRoute,
   settingsRoute,
 ]);

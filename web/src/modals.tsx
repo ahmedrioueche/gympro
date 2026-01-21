@@ -112,6 +112,10 @@ const CoachPricingModal = lazy(
   () => import("./app/components/modals/coach-pricing-modal/CoachPricingModal")
 );
 
+const GymInvitationModal = lazy(
+  () => import("./app/components/modals/GymInvitationModal")
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -135,6 +139,7 @@ function modals() {
       <ClientProfileModal />
       <CoachProfileModal />
       <CoachPricingModal />
+      <GymInvitationModal />
     </Suspense>
   );
 }

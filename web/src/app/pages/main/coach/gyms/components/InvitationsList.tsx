@@ -1,9 +1,8 @@
 import type { GymCoachAffiliation } from "@ahmedrioueche/gympro-client";
-import { CheckCircle, Clock, XCircle } from "lucide-react";
-import toast from "react-hot-toast";
+import { Check, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import NoData from "../../../../../../components/ui/NoData";
-import { useRespondToAffiliation } from "../../../../../../hooks/queries/useGymCoach";
+import { useModalStore } from "../../../../../../store/modal";
 
 interface InvitationsListProps {
   invitations: GymCoachAffiliation[];
@@ -15,18 +14,15 @@ export function InvitationsList({
   onRespond,
 }: InvitationsListProps) {
   const { t } = useTranslation();
-  const respondToAffiliation = useRespondToAffiliation();
+  const { openModal } = useModalStore();
 
-  const handleRespond = async (affiliationId: string, accept: boolean) => {
-    try {
-      await respondToAffiliation.mutateAsync({ affiliationId, accept });
-      toast.success(
-        accept ? t("coach.gyms.inviteAccepted") : t("coach.gyms.inviteDeclined")
-      );
-      onRespond?.();
-    } catch (error) {
-      toast.error(t("common.error"));
-    }
+  const handleOpenInvitation = (invitation: GymCoachAffiliation) => {
+    openModal("gym_invitation", {
+      invitationId: invitation._id,
+      gymName: invitation.gym?.name || t("common.unknown"),
+      gymId: invitation.gymId,
+      onSuccess: onRespond,
+    });
   };
 
   if (invitations.length === 0) {
@@ -78,22 +74,13 @@ export function InvitationsList({
             </div>
           </div>
 
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4">
             <button
-              onClick={() => handleRespond(invitation._id, true)}
-              disabled={respondToAffiliation.isPending}
-              className="flex-1 px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1"
+              onClick={() => handleOpenInvitation(invitation)}
+              className="w-full px-3 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary-hover transition-colors flex items-center justify-center gap-1"
             >
-              <CheckCircle className="w-4 h-4" />
-              {t("common.accept")}
-            </button>
-            <button
-              onClick={() => handleRespond(invitation._id, false)}
-              disabled={respondToAffiliation.isPending}
-              className="flex-1 px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1"
-            >
-              <XCircle className="w-4 h-4" />
-              {t("common.decline")}
+              <Check className="w-4 h-4" />
+              {t("common.view")}
             </button>
           </div>
         </div>

@@ -159,3 +159,9 @@ export interface CoachPricingModalProps {
   pricingId?: string; // If provided, edit mode; otherwise create mode
   onSuccess?: () => void;
 }
+
+export interface GymInvitationModalProps {
+  invitationId: string; // The affiliation ID
+  gymName: string;
+  gymId?: string;
+}

@@ -683,8 +683,13 @@
       "message": "Content",
       "date": "Date",
       "status": "Status"
-    }
+    },
+    "invitationTitle": "Gym Invitation",
+    "invitationMessage": "{{gymName}} has invited you to join as a coach. If you accept, you'll gain access to their member directory, scheduling system, and gym facilities. If you decline, the invitation will be dismissed and you can request to join again later.",
+    "invitationAccepted": "Invitation accepted successfully",
+    "invitationDeclined": "Invitation declined successfully"
   },
+
   "settings": {
     "pageTitle": "Settings",
     "pageSubtitle": "Manage your application preferences",
@@ -2990,7 +2995,9 @@
     "alreadyInvited": "Coach has already been invited or is affiliated",
     "alreadyAffiliated": "Already Affiliated",
     "invitePending": "Invite Pending",
-    "sentInvites": "Sent Invites"
+    "sentInvites": "Sent Invites",
+    "noSentInvites": "No Sent Invites",
+    "noSentInvitesDesc": "No coaches have been invited to join your gym"
   },
   "coachPricing": {
     "title": "Pricing",

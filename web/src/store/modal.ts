@@ -10,6 +10,7 @@ import type {
   CreateSessionModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
+  GymInvitationModalProps,
   InviteCoachModalProps,
   MemberProfileModalProps,
   ProgramDetailsModalProps,
@@ -43,7 +44,9 @@ type ModalType =
   | "member_profile"
   | "client_profile"
   | "coach_profile"
+  | "coach_profile"
   | "coach_pricing"
+  | "gym_invitation"
   | null;
 
 interface ModalState {
@@ -68,6 +71,7 @@ interface ModalState {
   clientProfileProps?: ClientProfileModalProps;
   coachProfileProps?: CoachProfileModalProps;
   coachPricingProps?: CoachPricingModalProps;
+  gymInvitationProps?: GymInvitationModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -188,6 +192,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "coach_pricing",
           coachPricingProps: props,
+        };
+      }
+      if (modal === "gym_invitation") {
+        return {
+          currentModal: "gym_invitation",
+          gymInvitationProps: props,
         };
       }
       return { currentModal: null };

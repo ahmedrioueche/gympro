@@ -14,6 +14,7 @@ import {
   useMyNotifications,
   useUnreadNotificationsCount,
 } from "../../hooks/queries/useNotifications";
+import { useNotificationAction } from "../../hooks/useNotificationAction";
 import { useGymStore } from "../../store/gym";
 import { useUserStore } from "../../store/user";
 import { getRoleBasedPage } from "../../utils/roles";
@@ -62,15 +63,24 @@ export default function NotificationsDropdown() {
     }
   };
 
+  const { executeAction, hasValidAction } = useNotificationAction();
+
   const handleItemClick = (
     notification: AppNotification,
     closeDropdown: () => void
   ) => {
-    if (notification.status === "unread") {
-      markAsReadMutation.mutate(notification._id);
-    }
     closeDropdown();
-    navigate({ to: getRoleBasedPage(user.role, "notifications") });
+
+    // Try to execute the action
+    const executed = executeAction(notification);
+
+    // If no action or action failed, navigate to notifications page
+    if (!executed) {
+      const notificationsPath = getRoleBasedPage(user.role, "notifications");
+      if (routerState.location.pathname !== notificationsPath) {
+        navigate({ to: notificationsPath });
+      }
+    }
   };
 
   const handleMarkAllRead = () => {

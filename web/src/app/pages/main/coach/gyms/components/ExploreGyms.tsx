@@ -53,7 +53,7 @@ export function ExploreGyms({
           description={t("coach.gyms.noGymsFoundDesc")}
         />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1">
           {gyms.map((gym) => (
             <GymCard
               key={gym._id}

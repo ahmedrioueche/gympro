@@ -4,6 +4,7 @@ import { CheckCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Table, type TableColumn } from "../../../components/ui/Table";
 import { useMarkNotificationAsRead } from "../../../hooks/queries/useNotifications";
+import { useNotificationAction } from "../../../hooks/useNotificationAction";
 
 interface NotificationsTableProps {
   notifications: AppNotification[];
@@ -12,6 +13,11 @@ interface NotificationsTableProps {
 function NotificationsTable({ notifications }: NotificationsTableProps) {
   const { t } = useTranslation();
   const markAsReadMutation = useMarkNotificationAsRead();
+  const { executeAction, hasValidAction } = useNotificationAction();
+
+  const handleRowClick = (notification: AppNotification) => {
+    executeAction(notification);
+  };
 
   const handleMarkAsRead = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -188,10 +194,13 @@ function NotificationsTable({ notifications }: NotificationsTableProps) {
       columns={columns}
       data={notifications}
       keyExtractor={(n) => n._id}
+      onRowClick={handleRowClick}
       rowClassName={(n) =>
-        n.status === "unread"
-          ? "bg-primary/5 hover:bg-primary/10"
-          : "hover:bg-muted/50"
+        `${
+          n.status === "unread"
+            ? "bg-primary/5 hover:bg-primary/10"
+            : "hover:bg-muted/50"
+        } ${hasValidAction(n) ? "cursor-pointer" : ""}`
       }
       renderMobileCard={renderMobileCard}
     />
