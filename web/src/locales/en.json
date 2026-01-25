@@ -27,8 +27,11 @@
     "confirm": "Confirm",
     "all": "All",
     "days": "Days",
+    "noData": "No Data",
     "accept": "Accept",
     "decline": "Decline",
+    "description": "Description",
+    "type": "Type",
     "locationFilters": "Location Filters",
     "actions": "Actions",
     "create": "Create",
@@ -1310,31 +1313,6 @@
         "awaiting": "Clients awaiting review",
         "description": "Review progress updates from your clients",
         "review": "Review Now"
-      }
-    },
-    "member": {
-      "welcome": "Welcome back, {{name}}!",
-      "subtitle": "Ready to crush your fitness goals today?",
-      "profile": {
-        "memberSince": "Member Since",
-        "editProfile": "Edit Profile"
-      },
-      "stats": {
-        "activeSubscriptions": "Active Subs",
-        "checkIns": "Check-Ins",
-        "nextClass": "Next Class",
-        "daysStreak": "Day Streak"
-      },
-      "quickActions": {
-        "title": "Quick Actions",
-        "findGyms": "Find Gyms",
-        "findGymsDesc": "Discover gyms near you",
-        "mySubscriptions": "My Subscriptions",
-        "mySubscriptionsDesc": "Manage your memberships",
-        "attendance": "Attendance",
-        "attendanceDesc": "View your check-in history",
-        "training": "Start Training",
-        "trainingDesc": "Begin your workout session"
       }
     }
   },
@@ -2775,7 +2753,129 @@
     "cleaner": "Cleaner",
     "maintenance": "Maintenance"
   },
+  "schedule": {
+    "title": "Schedule",
+    "subtitle": "Manage your coaching schedule",
+    "today": "Today",
+    "createSession": "Create Session",
+    "createSessionSubtitle": "Schedule a new session with a client",
+    "fetchError": "Failed to fetch sessions",
+    "noSessions": "No sessions scheduled",
+    "noSessionsDesc": "You have no sessions scheduled for this week",
+    "sessionDetails": "Session Details",
+    "deleteSession": "Delete Session",
+    "deleteSessionConfirm": "Are you sure you want to delete this session? This action cannot be undone.",
+    "sessionDeleted": "Session deleted successfully",
+    "form": {
+      "client": "Client",
+      "selectClient": "Select a client",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "time": "Time",
+      "type": "Session Type",
+      "location": "Location",
+      "locationPlaceholder": "e.g., Gym Floor, Zoom, etc.",
+      "notes": "Notes",
+      "notesPlaceholder": "Add any notes for this session..."
+    },
+    "types": {
+      "one_on_one": "One-on-One Training",
+      "consultation": "Consultation",
+      "check_in": "Check-in",
+      "assessment": "Assessment"
+    },
+    "status": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "no_show": "No Show",
+      "pending": "Pending"
+    }
+  },
+  "coachAnalytics": {
+    "title": "Analytics",
+    "subtitle": "Track your coaching performance and client metrics",
+    "noData": "No analytics data",
+    "noDataDesc": "Start coaching clients to see your analytics",
+    "noRecentActivity": "No recent activity",
+    "recentActivity": "Recent Activity",
+    "stats": {
+      "activeClients": "Active Clients",
+      "totalSessions": "Total Sessions",
+      "completionRate": "Completion Rate",
+      "totalHours": "Total Hours",
+      "vsLastMonth": "vs. last month"
+    },
+    "charts": {
+      "sessionTrend": "Session Activity",
+      "sessionTrendDesc": "Monthly sessions over time",
+      "sessionTypes": "Session Types",
+      "sessionTypesDesc": "Distribution by session type"
+    }
+  },
+  "coaching": {
+    "title": "Coaching",
+    "subtitle": "Manage coaches affiliated with your gym",
+    "inviteCoach": "Invite Coach",
+    "searchCoaches": "Search coaches...",
+    "noCoachesFound": "No coaches found",
+    "activeCoaches": "Active Coaches",
+    "pendingRequests": "Pending Requests",
+    "noActiveCoaches": "No Active Coaches",
+    "noActiveCoachesDesc": "Invite coaches to work at your gym",
+    "noPendingRequests": "No Pending Requests",
+    "noPendingRequestsDesc": "No coaches have requested to join your gym",
+    "active": "Active",
+    "awaitingApproval": "Awaiting Approval",
+    "removeCoach": "Remove Coach",
+    "removeCoachTitle": "Remove Coach",
+    "removeCoachConfirm": "Are you sure you want to remove {{name}} from your gym? This action cannot be undone.",
+    "commission": "Commission Rate",
+    "exclusive": "Exclusive Coach",
+    "inviteSent": "Invitation sent successfully",
+    "inviteError": "Failed to send invitation",
+    "alreadyInvited": "Coach has already been invited or is affiliated",
+    "alreadyAffiliated": "Already Affiliated",
+    "invitePending": "Invite Pending",
+    "sentInvites": "Sent Invites",
+    "noSentInvites": "No Sent Invites",
+    "noSentInvitesDesc": "No coaches have been invited to join your gym"
+  },
   "coach": {
+    "payments": {
+      "title": "My Earnings",
+      "description": "Track your commission and payouts from this gym.",
+      "commissionRate": "Commission Rate",
+      "pendingBalance": "Pending Balance",
+      "totalEarned": "Total Earned",
+      "history": "Payment History"
+    },
+    "settings": {
+      "tabs": {
+        "profile": "Profile",
+        "coaching": "Coaching",
+        "preferences": "Preferences",
+        "security": "Security",
+        "affiliation": "Affiliation"
+      },
+      "gym": {
+        "subtitle": "Manage your gym affiliation",
+        "noAffiliation": "No Active Affiliation",
+        "noAffiliationDesc": "You don't seem to be affiliated with this gym anymore.",
+        "leaveTitle": "Leave Gym",
+        "leaveConfirmation": "Are you sure you want to end your affiliation with this gym? You will lose access to the gym's facilities and client management.",
+        "generalInfo": "Affiliation Details",
+        "commission": "Commission Rate",
+        "permissions": "Active Permissions",
+        "permissionsDesc": "These permissions are granted by the gym manager.",
+        "dangerZoneDesc": "Irreversible actions regarding your affiliation.",
+        "leaveGym": "Leave Gym",
+        "leaveGymDesc": "Terminate your affiliation with this gym immediately.",
+        "leaveSuccess": "You have successfully left the gym."
+      },
+      "pageTitle": "Settings",
+      "pageSubtitle": "Manage your coaching profile and preferences"
+    },
     "gyms": {
       "title": "My Gyms",
       "subtitle": "Gyms where you provide coaching services",
@@ -2899,32 +2999,6 @@
         "purpose": "Purpose"
       }
     },
-    "settings": {
-      "pageTitle": "Settings",
-      "pageSubtitle": "Manage your coaching profile and preferences",
-      "tabs": {
-        "profile": "Profile",
-        "coaching": "Coaching",
-        "preferences": "Preferences",
-        "security": "Security",
-        "affiliation": "Affiliation"
-      },
-      "gym": {
-        "subtitle": "Manage your gym affiliation",
-        "noAffiliation": "No Active Affiliation",
-        "noAffiliationDesc": "You don't seem to be affiliated with this gym anymore.",
-        "leaveTitle": "Leave Gym",
-        "leaveConfirmation": "Are you sure you want to end your affiliation with this gym? You will lose access to the gym's facilities and client management.",
-        "generalInfo": "Affiliation Details",
-        "commission": "Commission Rate",
-        "permissions": "Active Permissions",
-        "permissionsDesc": "These permissions are granted by the gym manager.",
-        "dangerZoneDesc": "Irreversible actions regarding your affiliation.",
-        "leaveGym": "Leave Gym",
-        "leaveGymDesc": "Terminate your affiliation with this gym immediately.",
-        "leaveSuccess": "You have successfully left the gym."
-      }
-    },
     "permissions": {
       "canScheduleSessions": "Schedule Sessions",
       "canAccessFacilities": "Access Facilities"
@@ -2936,94 +3010,6 @@
         "avgHeartRate": "Avg Heart Rate"
       }
     }
-  },
-  "schedule": {
-    "title": "Schedule",
-    "subtitle": "Manage your coaching schedule",
-    "today": "Today",
-    "createSession": "Create Session",
-    "createSessionSubtitle": "Schedule a new session with a client",
-    "fetchError": "Failed to fetch sessions",
-    "noSessions": "No sessions scheduled",
-    "noSessionsDesc": "You have no sessions scheduled for this week",
-    "sessionDetails": "Session Details",
-    "deleteSession": "Delete Session",
-    "deleteSessionConfirm": "Are you sure you want to delete this session? This action cannot be undone.",
-    "sessionDeleted": "Session deleted successfully",
-    "form": {
-      "client": "Client",
-      "selectClient": "Select a client",
-      "startTime": "Start Time",
-      "endTime": "End Time",
-      "time": "Time",
-      "type": "Session Type",
-      "location": "Location",
-      "locationPlaceholder": "e.g., Gym Floor, Zoom, etc.",
-      "notes": "Notes",
-      "notesPlaceholder": "Add any notes for this session..."
-    },
-    "types": {
-      "one_on_one": "One-on-One Training",
-      "consultation": "Consultation",
-      "check_in": "Check-in",
-      "assessment": "Assessment"
-    },
-    "status": {
-      "scheduled": "Scheduled",
-      "completed": "Completed",
-      "cancelled": "Cancelled",
-      "no_show": "No Show",
-      "pending": "Pending"
-    }
-  },
-  "coachAnalytics": {
-    "title": "Analytics",
-    "subtitle": "Track your coaching performance and client metrics",
-    "noData": "No analytics data",
-    "noDataDesc": "Start coaching clients to see your analytics",
-    "noRecentActivity": "No recent activity",
-    "recentActivity": "Recent Activity",
-    "stats": {
-      "activeClients": "Active Clients",
-      "totalSessions": "Total Sessions",
-      "completionRate": "Completion Rate",
-      "totalHours": "Total Hours",
-      "vsLastMonth": "vs. last month"
-    },
-    "charts": {
-      "sessionTrend": "Session Activity",
-      "sessionTrendDesc": "Monthly sessions over time",
-      "sessionTypes": "Session Types",
-      "sessionTypesDesc": "Distribution by session type"
-    }
-  },
-  "coaching": {
-    "title": "Coaching",
-    "subtitle": "Manage coaches affiliated with your gym",
-    "inviteCoach": "Invite Coach",
-    "searchCoaches": "Search coaches...",
-    "noCoachesFound": "No coaches found",
-    "activeCoaches": "Active Coaches",
-    "pendingRequests": "Pending Requests",
-    "noActiveCoaches": "No Active Coaches",
-    "noActiveCoachesDesc": "Invite coaches to work at your gym",
-    "noPendingRequests": "No Pending Requests",
-    "noPendingRequestsDesc": "No coaches have requested to join your gym",
-    "active": "Active",
-    "awaitingApproval": "Awaiting Approval",
-    "removeCoach": "Remove Coach",
-    "removeCoachTitle": "Remove Coach",
-    "removeCoachConfirm": "Are you sure you want to remove {{name}} from your gym? This action cannot be undone.",
-    "commission": "Commission Rate",
-    "exclusive": "Exclusive Coach",
-    "inviteSent": "Invitation sent successfully",
-    "inviteError": "Failed to send invitation",
-    "alreadyInvited": "Coach has already been invited or is affiliated",
-    "alreadyAffiliated": "Already Affiliated",
-    "invitePending": "Invite Pending",
-    "sentInvites": "Sent Invites",
-    "noSentInvites": "No Sent Invites",
-    "noSentInvitesDesc": "No coaches have been invited to join your gym"
   },
   "coachPricing": {
     "title": "Pricing",
@@ -3064,48 +3050,6 @@
       "week": "Week",
       "month": "Month",
       "year": "Year"
-    }
-  },
-  "status": {
-    "success": {
-      "operation_completed": "Operation completed successfully"
-    },
-    "error": {
-      "unexpected": "An unexpected error occurred",
-      "internal_server_error": "Internal server error. Please try again later.",
-      "not_implemented": "This feature is not available yet",
-      "too_many_requests": "Too many requests. Please wait a moment.",
-      "bad_gateway": "Service temporarily unavailable",
-      "service_unavailable": "Service unavailable. Please try again later.",
-      "gateway_timeout": "Request timed out. Please try again.",
-      "method_not_allowed": "This action is not allowed",
-      "invalid_request": "Invalid request. Please check your input.",
-      "not_found": "The requested resource was not found",
-      "coach": {
-        "fetch_error": "Failed to fetch coach data",
-        "request_failed": "Failed to send coaching request",
-        "request_fetch_error": "Failed to fetch coaching requests",
-        "not_found": "Coach not found",
-        "request_not_found": "Coaching request not found",
-        "request_respond_failed": "Failed to respond to request",
-        "clients_fetch_failed": "Failed to fetch clients",
-        "prospective_members_fetch_failed": "Failed to fetch prospective members",
-        "request_already_exists": "A coaching request already exists",
-        "action_failed": "Action failed. Please try again.",
-        "pricing_fetch_error": "Failed to fetch pricing tiers",
-        "pricing_create_error": "Failed to create pricing tier",
-        "pricing_update_error": "Failed to update pricing tier",
-        "pricing_delete_error": "Failed to delete pricing tier",
-        "pricing_not_found": "Pricing tier not found"
-      },
-      "session": {
-        "not_found": "Session not found",
-        "create_failed": "Failed to create session",
-        "update_failed": "Failed to update session",
-        "delete_failed": "Failed to delete session",
-        "fetch_failed": "Failed to fetch sessions",
-        "time_conflict": "Session time conflicts with another session"
-      }
     }
   }
 }
