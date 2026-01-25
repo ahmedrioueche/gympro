@@ -4,22 +4,23 @@ import {
   Calendar,
   CreditCard,
   Dumbbell,
-  Mail,
   MapPin,
   Pencil,
-  Phone,
   Timer,
   WalletCards,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Button from "../../../../../components/ui/Button";
 import { APP_PAGES } from "../../../../../constants/navigation";
+import { useMySubscription } from "../../../../../hooks/queries/useSubscription";
 import { useUserStore } from "../../../../../store/user";
-import { formatDate } from "../../../../../utils/date";
+import ProfileHeader from "../../../../components/templates/profile-header/ProfileHeader";
 
 export default function HomePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserStore();
+  const { data: subscription } = useMySubscription();
 
   if (!user) return null;
 
@@ -65,82 +66,23 @@ export default function HomePage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header Section */}
-      <div className="space-y-2">
-        <h1 className="text-3xl text-center md:text-left font-bold text-text-primary">
-          {t("home.member.welcome", {
-            name: (user.profile.fullName || user.profile.username || "").split(
-              " "
-            )[0],
-          })}
-        </h1>
-        <p className="text-text-secondary text-center md:text-left">
-          {t("home.member.subtitle")}
-        </p>
-      </div>
+      <ProfileHeader
+        user={user}
+        subscription={subscription}
+        action={
+          <Button
+            onClick={() => navigate({ to: APP_PAGES.member.settings.link })}
+            className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-11 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md shrink-0"
+          >
+            {t("home.member.profile.editProfile")}
+            <Pencil className="w-4 h-4" />
+          </Button>
+        }
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column - Profile & Stats */}
+        {/* Left Column - Stats */}
         <div className="lg:col-span-1 space-y-6">
-          {/* Profile Card */}
-          <div className="bg-surface border border-border rounded-3xl p-6 shadow-sm relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-            <div className="relative flex flex-col items-center text-center space-y-4">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-secondary p-1 shadow-lg transform group-hover:scale-105 transition-transform duration-300">
-                <div className="w-full h-full rounded-full bg-surface border-2 border-surface overflow-hidden flex items-center justify-center">
-                  {user.profile.profileImageUrl ? (
-                    <img
-                      src={user.profile.profileImageUrl}
-                      alt={user.profile.fullName || user.profile.username}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-3xl font-bold bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">
-                      {(user.profile.fullName || user.profile.username || "?")
-                        .charAt(0)
-                        .toUpperCase()}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <h2 className="text-xl font-bold text-text-primary">
-                  {user.profile.fullName || user.profile.username}
-                </h2>
-                <div className="flex items-center justify-center gap-2 text-sm text-text-secondary">
-                  <Mail className="w-4 h-4" />
-                  <span>{user.profile.email}</span>
-                </div>
-                {user.profile.phoneNumber && (
-                  <div className="flex items-center justify-center gap-2 text-sm text-text-secondary">
-                    <Phone className="w-4 h-4" />
-                    <span>{user.profile.phoneNumber}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="w-full pt-4 border-t border-border mt-4">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-text-secondary">
-                    {t("home.member.profile.memberSince")}
-                  </span>
-                  <span className="font-medium text-text-primary">
-                    {formatDate(user.createdAt)}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={() => navigate({ to: APP_PAGES.member.settings.link })}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-surface-hover hover:bg-border/50 text-text-primary font-medium transition-all duration-200 border border-border hover:border-border/80"
-              >
-                <Pencil className="w-4 h-4" />
-                {t("home.member.profile.editProfile")}
-              </button>
-            </div>
-          </div>
-
           {/* Key Stats */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-surface border border-border rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 hover:border-primary/30 transition-colors">
@@ -201,6 +143,7 @@ export default function HomePage() {
         </div>
 
         {/* Right Column - Quick Actions & Content */}
+
         <div className="lg:col-span-2 space-y-6">
           {/* Quick Actions Grid */}
           <div>

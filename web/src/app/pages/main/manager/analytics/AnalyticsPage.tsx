@@ -34,7 +34,7 @@ export default function AnalyticsPage() {
         title={t("analytics.title", "Business Insights")}
         subtitle={t(
           "analytics.subtitle",
-          "Track performance across all your gym locations"
+          "Track performance across all your gym locations",
         )}
         icon={BarChart3}
       />
@@ -86,7 +86,7 @@ export default function AnalyticsPage() {
                   <p className="text-sm text-text-secondary">
                     {t(
                       "analytics.charts.revenueTrendDesc",
-                      "Monthly revenue across all locations"
+                      "Monthly revenue across all locations",
                     )}
                   </p>
                 </div>
@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
                   <p className="text-sm text-text-secondary">
                     {t(
                       "analytics.charts.distributionDesc",
-                      "Overview of current membership health"
+                      "Overview of current membership health",
                     )}
                   </p>
                 </div>

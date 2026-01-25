@@ -13,7 +13,7 @@ export const gymCoachApi = {
    * Get all coaches affiliated with a gym (for gym managers)
    */
   getGymCoaches: async (
-    gymId: string
+    gymId: string,
   ): Promise<ApiResponse<GymCoachAffiliation[]>> => {
     try {
       const response = await getApiClient().get(`/gyms/${gymId}/coaches`);
@@ -23,6 +23,45 @@ export const gymCoachApi = {
         success: false,
         errorCode: error.response?.data?.errorCode || "AFFILIATION_001",
         message: error.response?.data?.message || "Failed to fetch gym coaches",
+      };
+    }
+  },
+
+  /**
+   * Get filtered clients for a specific gym (for coaches)
+   */
+  getGymCoachClients: async (gymId: string): Promise<ApiResponse<any[]>> => {
+    try {
+      const response = await getApiClient().get(
+        `/gyms/${gymId}/coaches/clients`,
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode:
+          error.response?.data?.errorCode || "COACH_CLIENTS_FETCH_FAILED",
+        message:
+          error.response?.data?.message || "Failed to fetch active clients",
+      };
+    }
+  },
+
+  /**
+   * Get active gym members who are not clients of the coach
+   */
+  getGymMembersForCoach: async (gymId: string): Promise<ApiResponse<any[]>> => {
+    try {
+      const response = await getApiClient().get(
+        `/gyms/${gymId}/coaches/members`,
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode:
+          error.response?.data?.errorCode || "COACH_PROSPECTIVE_FETCH_FAILED",
+        message: error.response?.data?.message || "Failed to fetch gym members",
       };
     }
   },
@@ -69,12 +108,12 @@ export const gymCoachApi = {
    */
   inviteCoach: async (
     gymId: string,
-    data: InviteCoachDto
+    data: InviteCoachDto,
   ): Promise<ApiResponse<GymCoachAffiliation>> => {
     try {
       const response = await getApiClient().post(
         `/gyms/${gymId}/coaches/invite`,
-        data
+        data,
       );
       return response.data;
     } catch (error: any) {
@@ -91,12 +130,12 @@ export const gymCoachApi = {
    */
   requestGymAffiliation: async (
     gymId: string,
-    data?: RequestGymAffiliationDto
+    data?: RequestGymAffiliationDto,
   ): Promise<ApiResponse<GymCoachAffiliation>> => {
     try {
       const response = await getApiClient().post(
         `/gyms/${gymId}/coaches/request`,
-        data || {}
+        data || {},
       );
       return response.data;
     } catch (error: any) {
@@ -114,12 +153,12 @@ export const gymCoachApi = {
    */
   respondToAffiliation: async (
     affiliationId: string,
-    data: RespondToAffiliationDto
+    data: RespondToAffiliationDto,
   ): Promise<ApiResponse<GymCoachAffiliation>> => {
     try {
       const response = await getApiClient().patch(
         `/affiliations/${affiliationId}/respond`,
-        data
+        data,
       );
       return response.data;
     } catch (error: any) {
@@ -138,12 +177,12 @@ export const gymCoachApi = {
    */
   updateAffiliation: async (
     affiliationId: string,
-    data: UpdateAffiliationDto
+    data: UpdateAffiliationDto,
   ): Promise<ApiResponse<GymCoachAffiliation>> => {
     try {
       const response = await getApiClient().patch(
         `/affiliations/${affiliationId}`,
-        data
+        data,
       );
       return response.data;
     } catch (error: any) {
@@ -160,11 +199,11 @@ export const gymCoachApi = {
    * Terminate an affiliation
    */
   terminateAffiliation: async (
-    affiliationId: string
+    affiliationId: string,
   ): Promise<ApiResponse<void>> => {
     try {
       const response = await getApiClient().delete(
-        `/affiliations/${affiliationId}`
+        `/affiliations/${affiliationId}`,
       );
       return response.data;
     } catch (error: any) {

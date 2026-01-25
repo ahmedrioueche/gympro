@@ -3,6 +3,8 @@ import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 
+import GradientCard from "../../../../../../components/ui/GradientCard";
+
 function QuickActions() {
   const { t } = useTranslation();
 
@@ -45,28 +47,26 @@ function QuickActions() {
   ];
 
   return (
-    <div className="bg-surface border border-border rounded-2xl overflow-hidden ">
-      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 md:p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
-          {t("home.manager.quickActions.title")}
-        </h2>
+    <GradientCard>
+      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+        {t("home.manager.quickActions.title")}
+      </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {quickActions.map((action, index) => (
-            <Link
-              key={index}
-              to={action.link}
-              className={`bg-gradient-to-br ${action.gradient} ${action.bgHover} p-6 rounded-xl text-white font-semibold text-center hover:scale-105 hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-3 group`}
-            >
-              <span className="text-4xl group-hover:scale-110 transition-transform duration-300">
-                {action.icon}
-              </span>
-              <span className="text-sm leading-tight">{action.label}</span>
-            </Link>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        {quickActions.map((action, index) => (
+          <Link
+            key={index}
+            to={action.link}
+            className={`bg-gradient-to-br ${action.gradient} ${action.bgHover} p-6 rounded-xl text-white font-semibold text-center hover:scale-105 hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-3 group`}
+          >
+            <span className="text-4xl group-hover:scale-110 transition-transform duration-300">
+              {action.icon}
+            </span>
+            <span className="text-sm leading-tight">{action.label}</span>
+          </Link>
+        ))}
       </div>
-    </div>
+    </GradientCard>
   );
 }
 

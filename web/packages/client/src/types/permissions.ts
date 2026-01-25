@@ -45,6 +45,16 @@ export const GYM_PERMISSIONS = {
     view: "schedules:view",
     manage: "schedules:manage",
   },
+  // Clients (Coach specific)
+  clients: {
+    view: "clients:view",
+    manage: "clients:manage",
+  },
+  // Payments (Coach specific commissions/payouts)
+  payments: {
+    view: "payments:view",
+    manage: "payments:manage",
+  },
 } as const;
 
 // Extract all permission values as a union type
@@ -210,6 +220,40 @@ export const PERMISSION_GROUPS: PermissionGroupInfo[] = [
       },
     ],
   },
+  {
+    key: "clients",
+    label: "Clients",
+    description: "Manage assigned clients",
+    permissions: [
+      {
+        key: "clients:view",
+        label: "View Clients",
+        description: "View assigned clients",
+      },
+      {
+        key: "clients:manage",
+        label: "Manage Clients",
+        description: "Manage client assignments",
+      },
+    ],
+  },
+  {
+    key: "payments",
+    label: "Payments",
+    description: "View payments and earnings",
+    permissions: [
+      {
+        key: "payments:view",
+        label: "View Payments",
+        description: "View earnings and payouts",
+      },
+      {
+        key: "payments:manage",
+        label: "Manage Payments",
+        description: "Manage payment settings",
+      },
+    ],
+  },
 ];
 
 // Default permissions by role
@@ -249,6 +293,9 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
     "attendance:checkin",
     "schedules:view",
     "schedules:manage",
+    "clients:view",
+    "clients:manage",
+    "payments:view",
   ],
 };
 

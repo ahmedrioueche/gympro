@@ -30,7 +30,7 @@ function HomePage() {
     useMyNotifications(1, 5);
 
   const { data: gymStats, isLoading: gymStatsLoading } = useGymAnalytics(
-    myGyms?.[0]?._id || ""
+    myGyms?.[0]?._id || "",
   );
 
   const isPageLoading =
@@ -39,7 +39,7 @@ function HomePage() {
   const businessMetrics = {
     totalGyms: Math.max(
       globalStats?.metrics.totalGyms || 0,
-      myGyms?.length || 0
+      myGyms?.length || 0,
     ),
     activeMembers: globalStats?.metrics.activeMembers || 0,
     totalRevenue: globalStats?.metrics.totalRevenue || 0,

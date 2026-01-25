@@ -144,7 +144,7 @@ export interface AssignProgramModalProps {
 
 export interface MemberProfileModalProps {
   memberId: string;
-  membershipId: string;
+  membershipId?: string;
 }
 
 export interface ClientProfileModalProps {

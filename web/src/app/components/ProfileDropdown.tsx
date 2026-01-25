@@ -1,4 +1,4 @@
-import type { DashboardType } from "@ahmedrioueche/gympro-client";
+import type { DashboardType, UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { Briefcase, Dumbbell, GraduationCap } from "lucide-react";
 import { useMemo } from "react";
@@ -37,15 +37,28 @@ export default function ProfileDropdown({
   const { user, activeDashboard, setActiveDashboard, canAccessDashboard } =
     useUserStore();
 
-  // NOTE: This switches between ACCOUNT-level dashboards (member, coach, manager)
-  // based on user.dashboardAccess field and global user.role.
-  // Gym-level routing (which gym dashboard to show) is handled by getGymDashboardRoute() utility.
-  // Derive available dashboards from dashboardAccess field AND user role (for backwards compatibility)
+  // Derive available dashboards from membership roles + dashboardAccess + user.role
   const availableDashboards = useMemo(() => {
     const dashboards = new Set<DashboardType>(user?.dashboardAccess || []);
 
     // Always include member
     dashboards.add("member");
+
+    // Check membership roles for available dashboards
+    user?.memberships?.forEach((m) => {
+      if (typeof m === "string") return;
+      const roles = m.roles || [];
+      if (
+        roles.includes("owner" as UserRole) ||
+        roles.includes("manager" as UserRole) ||
+        roles.includes("staff" as UserRole)
+      ) {
+        dashboards.add("manager");
+      }
+      if (roles.includes("coach" as UserRole)) {
+        dashboards.add("coach");
+      }
+    });
 
     // Add based on role for backwards compatibility (users created before this feature)
     if (user?.role === "owner" || user?.role === "manager") {
@@ -56,7 +69,7 @@ export default function ProfileDropdown({
     }
 
     return Array.from(dashboards) as DashboardType[];
-  }, [user?.dashboardAccess, user?.role]);
+  }, [user?.dashboardAccess, user?.role, user?.memberships]);
 
   const hasMultipleDashboards = availableDashboards.length > 1;
 

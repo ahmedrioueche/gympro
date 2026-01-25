@@ -3,13 +3,19 @@ import {
   BarChart3,
   Calendar,
   Clipboard,
+  Edit,
   MessageSquare,
   TrendingUp,
   UserPlus,
   Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Button from "../../../../../components/ui/Button";
 import { APP_PAGES } from "../../../../../constants/navigation";
+import { useMySubscription } from "../../../../../hooks/queries/useSubscription";
+import { useModalStore } from "../../../../../store/modal";
+import { useUserStore } from "../../../../../store/user";
+import ProfileHeader from "../../../../components/templates/profile-header/ProfileHeader";
 import PendingCheckIns from "./components/PendingCheckIns";
 import QuickActions from "./components/QuickActions";
 import QuickStatsGrid from "./components/QuickStatsGrid";
@@ -19,8 +25,11 @@ import TodaySessions from "./components/TodaySessions";
 export default function HomePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useUserStore();
+  const { openModal } = useModalStore();
+  const { data: subscription } = useMySubscription();
 
-  // TODO: Replace with real data from API
+  // ... existing stats definition
   const quickStats = [
     {
       label: t("home.coach.stats.activeClients"),
@@ -150,12 +159,21 @@ export default function HomePage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-text-primary">
-          {t("home.coach.welcome")}
-        </h1>
-        <p className="text-text-secondary">{t("home.coach.subtitle")}</p>
-      </div>
+      {user && (
+        <ProfileHeader
+          user={user}
+          subscription={subscription}
+          action={
+            <Button
+              onClick={() => openModal("edit_user_profile")}
+              className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-11 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md shrink-0"
+            >
+              {t("home.manager.profile.viewProfile")}
+              <Edit className="w-4 h-4" />
+            </Button>
+          }
+        />
+      )}
 
       {/* Quick Stats Grid */}
       <QuickStatsGrid stats={quickStats} />

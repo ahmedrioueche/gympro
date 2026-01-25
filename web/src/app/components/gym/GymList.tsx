@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import NoData from "../../../components/ui/NoData";
 import { useGymStore } from "../../../store/gym";
 import { useUserStore } from "../../../store/user";
-import { getGymDashboardRoute } from "../../../utils/gym-routing";
+import { getGymRouteForDashboard } from "../../../utils/gym-routing";
 import GymCard from "./gym-card/GymCard";
 import GymCardSkeleton from "./gym-card/GymCard.Skeleton";
 
@@ -17,7 +17,7 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { setGym } = useGymStore();
-  const { user } = useUserStore();
+  const { user, activeDashboard } = useUserStore();
 
   if (isLoading) {
     return <GymCardSkeleton />;
@@ -41,7 +41,7 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
             setGym(gym);
 
             if (user) {
-              const route = getGymDashboardRoute(user, gym);
+              const route = getGymRouteForDashboard(activeDashboard);
               navigate({ to: route });
             }
           }}

@@ -12,13 +12,14 @@ interface MemberCardProps {
   onViewProfile?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
+  customActions?: React.ReactNode;
 }
 
 export function MemberCard({
   member,
   onViewProfile,
-  onEdit,
   onDelete,
+  customActions,
 }: MemberCardProps) {
   const { t } = useTranslation();
 
@@ -56,7 +57,7 @@ export function MemberCard({
       <div className="flex gap-2 mb-4">
         <span
           className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
-            member.status
+            member.status,
           )}`}
         >
           {t(`members.status.${member.status}`)}
@@ -73,24 +74,30 @@ export function MemberCard({
 
       {/* Actions */}
       <div className="flex gap-2 pt-4 border-t border-border">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onViewProfile?.(member._id);
-          }}
-          className="flex-1 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300 font-medium text-sm"
-        >
-          {t("members.card.viewProfile")}
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete?.(member._id);
-          }}
-          className="px-4 py-2 bg-background border border-border text-text-secondary rounded-lg hover:border-danger hover:text-danger transition-all duration-300"
-        >
-          🗑️
-        </button>
+        {customActions ? (
+          customActions
+        ) : (
+          <>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewProfile?.(member._id);
+              }}
+              className="flex-1 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-300 font-medium text-sm"
+            >
+              {t("members.card.viewProfile")}
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.(member._id);
+              }}
+              className="px-4 py-2 bg-background border border-border text-text-secondary rounded-lg hover:border-danger hover:text-danger transition-all duration-300"
+            >
+              🗑️
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

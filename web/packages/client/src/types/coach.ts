@@ -54,6 +54,7 @@ export interface CoachRequest extends AuditInfo {
   coachId: string;
   message?: string;
   status: CoachRequestStatus;
+  initiatedBy: "member" | "coach";
   respondedAt?: string;
   response?: string;
 }
@@ -135,4 +136,7 @@ export interface ProspectiveMember {
   };
   gymMemberships?: string[];
   hasCoach: boolean;
+  email?: string;
+  phone?: string;
+  joinedAt?: string;
 }

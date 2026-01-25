@@ -1,3 +1,4 @@
+import { UserRole } from "@ahmedrioueche/gympro-client";
 import { createRoute } from "@tanstack/react-router";
 import GymCoachPage from "../../../../app/pages/main/gym/coach/GymCoachPage";
 import { GymRoleGuard } from "../../../../components/guards/GymRoleGuard";
@@ -8,7 +9,7 @@ export const GymCoachRootRoute = createRoute({
   getParentRoute: () => GymRootRoute,
   path: "/coach",
   component: () => (
-    <GymRoleGuard allowedRoles={["coach"]}>
+    <GymRoleGuard allowedRoles={[UserRole.Coach]}>
       <GymCoachPage />
     </GymRoleGuard>
   ),

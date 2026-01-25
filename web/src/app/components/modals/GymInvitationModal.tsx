@@ -1,10 +1,10 @@
 import { gymCoachApi } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, X } from "lucide-react";
-import toast from "react-hot-toast"; // Fixed import
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
-import { useModalStore } from "../../../store/modal"; // Adjusted path
+import { useModalStore } from "../../../store/modal";
 
 export default function GymInvitationModal() {
   const { t } = useTranslation();

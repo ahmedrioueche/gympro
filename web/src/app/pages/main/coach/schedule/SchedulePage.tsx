@@ -6,8 +6,8 @@ import NoData from "../../../../../components/ui/NoData";
 import { useCoachSessions } from "../../../../../hooks/queries/useSessions";
 import { useModalStore } from "../../../../../store/modal";
 import PageHeader from "../../../../components/PageHeader";
-import { CalendarHeader } from "./components/CalendarHeader";
-import { WeeklyGrid } from "./components/WeeklyGrid";
+import { CalendarHeader } from "../../../../components/schedule/CalendarHeader";
+import { WeeklyGrid } from "../../../../components/schedule/WeeklyGrid";
 import { useSchedule } from "./hooks/useSchedule";
 
 export default function SchedulePage() {

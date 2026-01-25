@@ -23,6 +23,7 @@ export default function MemberProfileModal() {
     payments,
     handleRenewSubscription,
     handleClose,
+    hasMembership,
   } = useMemberProfileModal();
 
   if (!isOpen) return null;
@@ -34,20 +35,24 @@ export default function MemberProfileModal() {
       icon: Info,
       content: <MemberOverviewTab />,
     },
-    {
-      id: "subscriptions",
-      label: t("sidebar.subscriptions"),
-      icon: CreditCard,
-      count: subscriptionHistory.length,
-      content: <MemberSubscriptionsTable history={subscriptionHistory} />,
-    },
-    {
-      id: "history",
-      label: t("sidebar.payments"),
-      icon: History,
-      count: payments.length,
-      content: <PaymentHistoryTab />,
-    },
+    ...(hasMembership
+      ? [
+          {
+            id: "subscriptions",
+            label: t("sidebar.subscriptions"),
+            icon: CreditCard,
+            count: subscriptionHistory.length,
+            content: <MemberSubscriptionsTable history={subscriptionHistory} />,
+          },
+          {
+            id: "history",
+            label: t("sidebar.payments"),
+            icon: History,
+            count: payments.length,
+            content: <PaymentHistoryTab />,
+          },
+        ]
+      : []),
   ];
 
   const actions: ProfileModalAction[] = [];
@@ -63,7 +68,7 @@ export default function MemberProfileModal() {
         <SubscriptionStatusCard
           subscription={currentSubscription}
           subscriptionType={subscriptionType}
-          onRenew={handleRenewSubscription}
+          onRenew={hasMembership ? handleRenewSubscription : undefined}
         />
       }
       tabs={tabs}

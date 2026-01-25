@@ -15,18 +15,33 @@ export const useSendCoachRequest = () => {
     mutationFn: async ({
       memberId,
       data,
+      memberName,
     }: {
       memberId: string;
       data: SendCoachRequestDto;
+      memberName: string;
     }) => {
       const response = await coachApi.sendRequestToMember(memberId, data);
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      success(
+        t("coach.clients.modals.sendRequest.success", {
+          memberName: variables.memberName,
+          defaultValue: "Request sent successfully",
+        }),
+      );
       queryClient.invalidateQueries({
         queryKey: ["coach", "prospective-members"],
       });
-      success(t("coach.clients.modals.sendRequest.success"));
+      // Also invalidate gym-specific member lists
+      queryClient.invalidateQueries({
+        queryKey: ["gym-members-for-coach"],
+      });
+      // Invalidate sent requests list
+      queryClient.invalidateQueries({
+        queryKey: ["coach", "requests", "sent"],
+      });
     },
     onError: () => {
       error(t("coach.clients.modals.sendRequest.error"));

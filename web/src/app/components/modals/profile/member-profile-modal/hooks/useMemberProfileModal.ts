@@ -14,7 +14,8 @@ export function useMemberProfileModal() {
 
   const { data: memberProfile, isLoading } = useMemberProfile(
     gymId,
-    membershipId
+    membershipId,
+    memberId,
   );
 
   const isOpen = currentModal === "member_profile";
@@ -56,5 +57,6 @@ export function useMemberProfileModal() {
     payments,
     handleRenewSubscription,
     handleClose,
+    hasMembership: !!membershipId && !!memberProfile?.membership,
   };
 }

@@ -2,6 +2,7 @@ import type { ProspectiveMember } from "@ahmedrioueche/gympro-client";
 import { MapPin, Send, User } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useToast } from "../../../../../../hooks/useToast";
 import { useSendCoachRequest } from "../hooks/useSendCoachRequest";
 
 interface ProspectiveMemberCardProps {
@@ -12,6 +13,7 @@ export function ProspectiveMemberCard({ member }: ProspectiveMemberCardProps) {
   const { t } = useTranslation();
   const [showMessageForm, setShowMessageForm] = useState(false);
   const [message, setMessage] = useState("");
+  const { success } = useToast();
 
   const { mutate: sendRequest, isPending } = useSendCoachRequest();
 
@@ -20,13 +22,20 @@ export function ProspectiveMemberCard({ member }: ProspectiveMemberCardProps) {
       {
         memberId: member.userId,
         data: { message: message || undefined },
+        memberName: member.username || member.fullName,
       },
       {
         onSuccess: () => {
           setShowMessageForm(false);
           setMessage("");
+          const memberName = member.fullName || member.username;
+          success(
+            t("coach.clients.requestSentTo", `Request sent to ${memberName}`, {
+              memberName,
+            }),
+          );
         },
-      }
+      },
     );
   };
 
@@ -79,7 +88,7 @@ export function ProspectiveMemberCard({ member }: ProspectiveMemberCardProps) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder={t(
-              "coach.clients.modals.sendRequest.messagePlaceholder"
+              "coach.clients.modals.sendRequest.messagePlaceholder",
             )}
             className="w-full px-4 py-2 bg-surface-dark border border-border rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary resize-none"
             rows={3}
