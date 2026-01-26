@@ -45,6 +45,53 @@ interface UserState {
   getDefaultDashboard: () => DashboardType;
 }
 
+const checkDashboardAccess = (
+  user: User | null,
+  dashboard: DashboardType,
+): boolean => {
+  if (!user) return false;
+
+  // 1. Check direct dashboardAccess list
+  const access = user.dashboardAccess || [];
+  if (access.includes(dashboard)) return true;
+
+  // 2. Member dashboard is always accessible
+  if (dashboard === "member") return true;
+
+  // 3. Manager/Coach dashboard access via Global Role
+  if (
+    dashboard === "manager" &&
+    (user.role === "owner" || user.role === "manager")
+  )
+    return true;
+  if (dashboard === "coach" && user.role === "coach") return true;
+
+  // 4. Access via Memberships
+  if (user.memberships && Array.isArray(user.memberships)) {
+    return user.memberships.some((m) => {
+      // Handle if membership is just an ID (though we fixed population mostly, safety check doesn't hurt)
+      if (typeof m === "string") return false;
+
+      const roles = m.roles || [];
+      if (
+        dashboard === "manager" &&
+        (roles.includes("owner" as UserRole) ||
+          roles.includes("manager" as UserRole) ||
+          roles.includes("staff" as UserRole))
+      ) {
+        return true;
+      }
+
+      if (dashboard === "coach" && roles.includes("coach" as UserRole)) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  return false;
+};
+
 export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
@@ -69,12 +116,20 @@ export const useUserStore = create<UserState>()(
           }
         }
 
+        // Respect persisted dashboard if valid
+        const { activeDashboard } = get();
+        let targetDashboard = defaultDashboard;
+
+        if (activeDashboard && checkDashboardAccess(user, activeDashboard)) {
+          targetDashboard = activeDashboard;
+        }
+
         set({
           user,
           isAuthenticated: !!user,
           error: null,
           lastFetchedAt: Date.now(),
-          activeDashboard: defaultDashboard,
+          activeDashboard: targetDashboard,
         });
       },
 
@@ -228,9 +283,7 @@ export const useUserStore = create<UserState>()(
 
       canAccessDashboard: (dashboard) => {
         const { user } = get();
-        if (!user) return false;
-        const access = user.dashboardAccess || ["member"];
-        return access.includes(dashboard);
+        return checkDashboardAccess(user, dashboard);
       },
 
       getDefaultDashboard: () => {
@@ -250,8 +303,8 @@ export const useUserStore = create<UserState>()(
         isAuthenticated: state.isAuthenticated,
         activeDashboard: state.activeDashboard,
       }),
-    }
-  )
+    },
+  ),
 );
 
 // Selectors for optimized component rendering

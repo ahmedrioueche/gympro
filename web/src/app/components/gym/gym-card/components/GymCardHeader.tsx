@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 
 interface GymCardHeaderProps {
   gym: Gym;
+  displayRole?: string;
 }
 
-export function GymCardHeader({ gym }: GymCardHeaderProps) {
+export function GymCardHeader({ gym, displayRole }: GymCardHeaderProps) {
   const { t } = useTranslation();
 
   return (
@@ -38,17 +39,27 @@ export function GymCardHeader({ gym }: GymCardHeaderProps) {
           </div>
         </div>
 
-        {/* Status Badge */}
-        <div
-          className={`absolute top-4 right-4 md:relative md:top-auto md:right-auto px-3 py-1.5 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold shadow-md ${
-            gym.isActive
-              ? "bg-success/20 text-success border-2 border-success/30"
-              : "bg-text-secondary/20 text-text-secondary border-2 border-text-secondary/30"
-          }`}
-        >
-          {gym.isActive
-            ? t("gymCard.activeStatus", "● Active")
-            : t("gymCard.inactiveStatus", "○ Inactive")}
+        {/* Status Badges Container */}
+        <div className="absolute top-4 right-4 md:relative md:top-auto md:right-auto flex flex-col items-end md:flex-row md:items-center gap-2">
+          {/* Role Badge */}
+          {displayRole && (
+            <div className="px-3 py-1.5 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold shadow-md bg-blue-500/20 text-blue-500 border-2 border-blue-500/30">
+              {t(`roles.${displayRole.toLowerCase()}`, displayRole)}
+            </div>
+          )}
+
+          {/* Status Badge */}
+          <div
+            className={`px-3 py-1.5 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold shadow-md ${
+              gym.isActive
+                ? "bg-success/20 text-success border-2 border-success/30"
+                : "bg-text-secondary/20 text-text-secondary border-2 border-text-secondary/30"
+            }`}
+          >
+            {gym.isActive
+              ? t("gymCard.activeStatus", "● Active")
+              : t("gymCard.inactiveStatus", "○ Inactive")}
+          </div>
         </div>
       </div>
     </div>

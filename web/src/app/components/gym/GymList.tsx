@@ -1,4 +1,4 @@
-import type { Gym } from "@ahmedrioueche/gympro-client";
+import { type Gym } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import NoData from "../../../components/ui/NoData";

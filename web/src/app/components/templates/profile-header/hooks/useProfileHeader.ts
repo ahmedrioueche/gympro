@@ -5,11 +5,19 @@ import {
 import { AlertCircle, CheckCircle2, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { useUserStore } from "../../../../../store/user";
+
 export function useProfileHeader(
   user: User,
   subscription?: GetSubscriptionDto | null,
 ) {
   const { t } = useTranslation();
+  const { activeDashboard } = useUserStore();
+
+  let role = activeDashboard as string;
+  if (activeDashboard === "manager") {
+    role = user.role;
+  }
 
   const getAccountStatus = () => {
     if (!subscription) {
@@ -98,7 +106,7 @@ export function useProfileHeader(
   };
 
   const getRoleDisplay = () => {
-    const roleKey = `home.manager.profile.roles.${user.role}`;
+    const roleKey = `home.manager.profile.roles.${role}`;
     return t(roleKey);
   };
 

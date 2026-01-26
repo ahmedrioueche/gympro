@@ -1,6 +1,7 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import { useTheme } from "../../../../context/ThemeContext";
+import { useGymDisplayRole } from "../../../hooks/useGymDisplayRole";
 import { GymCardHeader } from "./components/GymCardHeader";
 import { GymInfoOverview } from "./components/GymInfoOverview";
 import { GymSettingsView } from "./components/GymSettingsView";
@@ -13,6 +14,7 @@ interface GymCardProps {
 export default function GymCard({ gym, onSelect }: GymCardProps) {
   const [showSettings, setShowSettings] = useState(false);
   const { isDark } = useTheme();
+  const displayRole = useGymDisplayRole(gym);
 
   return (
     <div
@@ -26,7 +28,7 @@ export default function GymCard({ gym, onSelect }: GymCardProps) {
           : "bg-background"
       } border border-border rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 group`}
     >
-      <GymCardHeader gym={gym} />
+      <GymCardHeader gym={gym} displayRole={displayRole} />
 
       {!showSettings ? (
         <GymInfoOverview

@@ -1,4 +1,4 @@
-import type { UserRole } from "@ahmedrioueche/gympro-client";
+import type { Gym, UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { Dumbbell, Home } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -7,12 +7,12 @@ import { useGymStore } from "../../../../../store/gym";
 import { useUserStore } from "../../../../../store/user";
 import { getGymStatusStyles } from "../../../../../utils/gym";
 import { redirectToHomePageAfterTimeout } from "../../../../../utils/helper";
+import { useGymDisplayRole } from "../../../../hooks/useGymDisplayRole";
 import { useGymMemberHome } from "../../../../pages/main/gym/member/home/hooks/useGymMemberHome";
 import RoleBadge from "../../RoleBadge";
-import { useGymRole } from "../hooks/useGymRole";
 
 interface SingleGymViewProps {
-  gym: any;
+  gym: Gym;
   isSelected: boolean;
   onGymChange: (gymId: string) => void;
 }
@@ -28,7 +28,7 @@ export default function SingleGymView({
   const { user } = useUserStore();
   const { clearGym } = useGymStore();
   const { isMobile } = useScreen();
-  const userRole = useGymRole(gym);
+  const userRole = useGymDisplayRole(gym);
   const status = useGymMemberHome(gym.settings);
   const styles = getGymStatusStyles(status);
 

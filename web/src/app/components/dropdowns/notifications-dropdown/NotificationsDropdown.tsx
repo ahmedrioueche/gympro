@@ -7,17 +7,17 @@ import Dropdown, {
   DropdownDivider,
   DropdownHeader,
   DropdownItem,
-} from "../../components/ui/Dropdown";
+} from "../../../../components/ui/Dropdown";
 import {
   useMarkAllNotificationsAsRead,
   useMarkNotificationAsRead,
   useMyNotifications,
   useUnreadNotificationsCount,
-} from "../../hooks/queries/useNotifications";
-import { useNotificationAction } from "../../hooks/useNotificationAction";
-import { useGymStore } from "../../store/gym";
-import { useUserStore } from "../../store/user";
-import { getRoleBasedPage } from "../../utils/roles";
+} from "../../../../hooks/queries/useNotifications";
+import { useNotificationAction } from "../../../../hooks/useNotificationAction";
+import { useGymStore } from "../../../../store/gym";
+import { useUserStore } from "../../../../store/user";
+import { getRoleBasedPage } from "../../../../utils/roles";
 
 export default function NotificationsDropdown() {
   const { t, i18n } = useTranslation();
@@ -36,7 +36,7 @@ export default function NotificationsDropdown() {
     5,
     undefined,
     undefined,
-    gymId
+    gymId,
   );
   const { data: unreadData } = useUnreadNotificationsCount();
   const markAsReadMutation = useMarkNotificationAsRead();
@@ -67,7 +67,7 @@ export default function NotificationsDropdown() {
 
   const handleItemClick = (
     notification: AppNotification,
-    closeDropdown: () => void
+    closeDropdown: () => void,
   ) => {
     closeDropdown();
 

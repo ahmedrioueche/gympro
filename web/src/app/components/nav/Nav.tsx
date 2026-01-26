@@ -46,8 +46,8 @@ export default function Nav({ children, sidebarLinks = null }) {
         isMobile
           ? `${sidebarOpen ? "translate-x-0" : "-translate-x-64"} w-64`
           : sidebarExpanded || isPinned
-          ? "w-56"
-          : "w-20"
+            ? "w-56"
+            : "w-20"
       }`}
           onMouseEnter={() =>
             !isMobile && !isPinned && setSidebarExpanded(true)
@@ -76,7 +76,7 @@ export default function Nav({ children, sidebarLinks = null }) {
           </div>
 
           {/* Sidebar Content */}
-          <nav className="flex-1 px-2 py-4 md:py-6 space-y-2 overflow-y-auto hide-scrollbar">
+          <nav className="flex-1 px-2 py-1 space-y-2 overflow-y-auto hide-scrollbar">
             {sidebarLinks.map((link) => {
               const isActive = link.matchPaths.some((p) => activeRoute === p);
               return (

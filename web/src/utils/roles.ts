@@ -72,6 +72,7 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
   const roleRoutePatterns = {
     [UserRole.Owner]: [
       "/manager",
+      "/member",
       "/dashboard",
       "/profile",
       "/settings",
@@ -81,6 +82,7 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
     ],
     [UserRole.Manager]: [
       "/manager",
+      "/member",
       "/dashboard",
       "/profile",
       "/settings",
@@ -89,6 +91,7 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
     ],
     [UserRole.Coach]: [
       "/coach",
+      "/member",
       "/dashboard",
       "/profile",
       "/settings",

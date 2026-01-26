@@ -3,9 +3,9 @@ import { ChevronDown, Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useScreen from "../../../../../hooks/useScreen";
 import { getGymStatusStyles } from "../../../../../utils/gym";
+import { useGymDisplayRole } from "../../../../hooks/useGymDisplayRole";
 import { useGymMemberHome } from "../../../../pages/main/gym/member/home/hooks/useGymMemberHome";
 import RoleBadge from "../../RoleBadge";
-import { useGymRole } from "../hooks/useGymRole";
 
 interface GymSelectorButtonProps {
   selectedGym?: Gym;
@@ -22,7 +22,7 @@ export default function GymSelectorButton({
 }: GymSelectorButtonProps) {
   const { t } = useTranslation();
   const { isMobile } = useScreen();
-  const userRole = useGymRole(selectedGym);
+  const userRole = useGymDisplayRole(selectedGym!);
   const status = useGymMemberHome(selectedGym?.settings);
   const styles = getGymStatusStyles(status);
 

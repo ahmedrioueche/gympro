@@ -3,9 +3,9 @@ import { Check, Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useScreen from "../../../../../hooks/useScreen";
 import { getGymStatusStyles } from "../../../../../utils/gym";
+import { useGymDisplayRole } from "../../../../hooks/useGymDisplayRole";
 import { useGymMemberHome } from "../../../../pages/main/gym/member/home/hooks/useGymMemberHome";
 import RoleBadge from "../../RoleBadge";
-import { useGymRole } from "../hooks/useGymRole";
 
 interface GymListItemProps {
   gym: Gym;
@@ -20,7 +20,7 @@ export default function GymListItem({
 }: GymListItemProps) {
   const { t } = useTranslation();
   const { isMobile } = useScreen();
-  const userRole = useGymRole(gym);
+  const userRole = useGymDisplayRole(gym);
   const status = useGymMemberHome(gym.settings);
   const styles = getGymStatusStyles(status);
 

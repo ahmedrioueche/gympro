@@ -6,9 +6,9 @@ import { useTranslation } from "react-i18next";
 import Dropdown, {
   DropdownDivider,
   DropdownItem,
-} from "../../components/ui/Dropdown";
-import { APP_PAGES } from "../../constants/navigation";
-import { useUserStore } from "../../store/user";
+} from "../../../../components/ui/Dropdown";
+import { APP_PAGES } from "../../../../constants/navigation";
+import { useUserStore } from "../../../../store/user";
 
 const DASHBOARD_CONFIG: Record<
   DashboardType,
