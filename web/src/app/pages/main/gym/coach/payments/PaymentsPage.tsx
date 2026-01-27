@@ -2,7 +2,7 @@ import { DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../../components/ui/Loading";
 import PageHeader from "../../../../../components/PageHeader";
-import { RevenueStats } from "./components/RevenueStats";
+import { RevenueStats } from "../../../../../components/cards/RevenueStats";
 import { TransactionsTable } from "./components/TransactionsTable";
 import { useGymCoachPayments } from "./hooks/useGymCoachPayments";
 
@@ -52,7 +52,7 @@ function PaymentsPage() {
 
       {/* Transactions History */}
       <div>
-        <h2 className="text-xl text-text-primary font-bold mb-4">
+        <h2 className="text-xl text-text-primary font-bold mb-4 mt-8">
           {t("coach.payments.history")}
         </h2>
         <TransactionsTable payments={payments} currency={currency} />

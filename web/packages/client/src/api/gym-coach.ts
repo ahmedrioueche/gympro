@@ -67,6 +67,24 @@ export const gymCoachApi = {
   },
 
   /**
+   * Get analytics for a specific gym context
+   */
+  getGymCoachAnalytics: async (gymId: string): Promise<ApiResponse<any>> => {
+    try {
+      const response = await getApiClient().get(
+        `/gyms/${gymId}/coaches/analytics`,
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "ANALYTICS_FETCH_FAILED",
+        message: error.response?.data?.message || "Failed to fetch analytics",
+      };
+    }
+  },
+
+  /**
    * Get all gyms a coach is affiliated with (for coaches)
    */
   getCoachGyms: async (): Promise<ApiResponse<GymCoachAffiliation[]>> => {

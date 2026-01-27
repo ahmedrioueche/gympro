@@ -363,6 +363,39 @@ export const coachApi = {
       };
     }
   },
+  /**
+   * Get coach dashboard statistics
+   */
+  getDashboardStats: async (): Promise<ApiResponse<any>> => {
+    try {
+      const response = await getApiClient().get("/coaches/dashboard/stats");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_DASHBOARD_001",
+        message:
+          error.response?.data?.message || "Failed to fetch dashboard stats",
+      };
+    }
+  },
+
+  /**
+   * Get coach dashboard recent activity
+   */
+  getDashboardActivity: async (): Promise<ApiResponse<any[]>> => {
+    try {
+      const response = await getApiClient().get("/coaches/dashboard/activity");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_DASHBOARD_002",
+        message:
+          error.response?.data?.message || "Failed to fetch dashboard activity",
+      };
+    }
+  },
 };
 
 export default coachApi;

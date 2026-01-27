@@ -6,6 +6,7 @@ import {
   gymsRoute,
   homeRoute,
   notificationsRoute,
+  paymentsRoute,
   pricingRoute,
   programsRoute,
   scheduleRoute,
@@ -23,4 +24,5 @@ export const CoachRootTree = CoachRootRoute.addChildren([
   exercisesRoute,
   analyticsRoute,
   pricingRoute,
+  paymentsRoute,
 ]);

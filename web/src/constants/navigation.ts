@@ -254,6 +254,10 @@ export const APP_PAGES = {
       name: "pages.coach.pricing",
       link: "/coach/pricing",
     },
+    payments: {
+      name: "pages.coach.payments",
+      link: "/coach/payments",
+    },
     programs: {
       name: "pages.coach.programs",
       link: "/coach/programs",

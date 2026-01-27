@@ -9,6 +9,7 @@ import {
   Home,
   Settings,
   Users,
+  Wallet,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../constants/navigation";
 import Nav from "../../../components/nav/Nav";
@@ -37,6 +38,12 @@ const sidebarLinks = [
     icon: <DollarSign className="w-5 h-5" />,
     path: APP_PAGES.coach.pricing.link,
     matchPaths: [APP_PAGES.coach.pricing.link],
+  },
+  {
+    label: "payments",
+    icon: <Wallet className="w-5 h-5" />,
+    path: APP_PAGES.coach.payments.link,
+    matchPaths: [APP_PAGES.coach.payments.link],
   },
   {
     label: "programs",

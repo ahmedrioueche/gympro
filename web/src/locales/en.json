@@ -2853,7 +2853,11 @@
       "commissionRate": "Commission Rate",
       "pendingBalance": "Pending Balance",
       "totalEarned": "Total Earned",
-      "history": "Payment History"
+      "history": "Payment History",
+      "totalPayouts": "Total Payouts",
+      "noData": "No transactions found",
+      "noDataDesc": "Your earning history will appear here.",
+      "pending": "Pending Balance"
     },
     "settings": {
       "tabs": {

@@ -21,6 +21,7 @@ import QuickActions from "./components/QuickActions";
 import QuickStatsGrid from "./components/QuickStatsGrid";
 import RecentActivity from "./components/RecentActivity";
 import TodaySessions from "./components/TodaySessions";
+import { useCoachHome } from "./hooks/useCoachHome";
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -30,94 +31,84 @@ export default function HomePage() {
   const { data: subscription } = useMySubscription();
 
   // ... existing stats definition
+  /* import { useCoachHome } from "./hooks/useCoachHome"; */
+  const { stats, activity, isLoading } = useCoachHome();
+
   const quickStats = [
     {
       label: t("home.coach.stats.activeClients"),
-      value: "24",
+      value: stats?.activeClients?.value.toString() || "0",
       icon: Users,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
-      trend: "+3",
+      trend:
+        stats?.activeClients?.trend > 0 ? `+${stats.activeClients.trend}` : "0",
     },
     {
       label: t("home.coach.stats.programsCreated"),
-      value: "12",
+      value: stats?.programsCreated?.value.toString() || "0",
       icon: Clipboard,
       color: "text-purple-500",
       bg: "bg-purple-500/10",
-      trend: "+2",
+      trend:
+        stats?.programsCreated?.trend > 0
+          ? `+${stats.programsCreated.trend}`
+          : "0",
     },
     {
       label: t("home.coach.stats.sessionsThisMonth"),
-      value: "48",
+      value: stats?.sessionsThisMonth?.value.toString() || "0",
       icon: Calendar,
       color: "text-green-500",
       bg: "bg-green-500/10",
-      trend: "+8",
+      trend:
+        stats?.sessionsThisMonth?.trend > 0
+          ? `+${stats.sessionsThisMonth.trend}`
+          : "0",
     },
     {
       label: t("home.coach.stats.clientRetention"),
-      value: "92%",
+      value: `${stats?.clientRetention?.value || 0}%`,
       icon: TrendingUp,
       color: "text-orange-500",
       bg: "bg-orange-500/10",
-      trend: "+5%",
+      trend: `${stats?.clientRetention?.trend > 0 ? "+" : ""}${stats?.clientRetention?.trend || 0}%`,
     },
   ];
 
+  // Map activity types to icons
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case "Clipboard":
+        return Clipboard;
+      case "MessageSquare":
+        return MessageSquare;
+      case "TrendingUp":
+        return TrendingUp;
+      case "UserPlus":
+        return UserPlus;
+      default:
+        return Calendar;
+    }
+  };
+
+  const recentActivity =
+    activity?.map((act: any) => ({
+      ...act,
+      icon: getIcon(act.icon),
+      // Ensure time is formatted correctly if needed, or pass as is if component handles it
+    })) || [];
+
+  // Keep mocked todaySessions for now as we didn't implement that endpoint yet in this pass
+  // or simple mock empty if preferred. User asked to "get real data".
+  // Plan didn't explicitly include todaySessions endpoint, but let's keep the mock
+  // or empty to avoid breaking UI until next step.
   const todaySessions = [
     {
       time: "09:00 AM",
       client: "John Doe",
       type: t("home.coach.sessionTypes.training"),
       status: "upcoming",
-    },
-    {
-      time: "11:00 AM",
-      client: "Jane Smith",
-      type: t("home.coach.sessionTypes.checkIn"),
-      status: "upcoming",
-    },
-    {
-      time: "02:00 PM",
-      client: "Mike Johnson",
-      type: t("home.coach.sessionTypes.consultation"),
-      status: "upcoming",
-    },
-  ];
-
-  const recentActivity = [
-    {
-      type: "workout",
-      message: t("home.coach.activity.workoutCompleted", {
-        client: "Sarah Williams",
-      }),
-      time: "2h ago",
-      icon: Clipboard,
-      color: "text-green-500",
-    },
-    {
-      type: "message",
-      message: t("home.coach.activity.newMessage", { client: "John Doe" }),
-      time: "3h ago",
-      icon: MessageSquare,
-      color: "text-blue-500",
-    },
-    {
-      type: "milestone",
-      message: t("home.coach.activity.milestone", { client: "Mike Johnson" }),
-      time: "5h ago",
-      icon: TrendingUp,
-      color: "text-purple-500",
-    },
-    {
-      type: "program",
-      message: t("home.coach.activity.programAssigned", {
-        program: "Strength Builder",
-      }),
-      time: "1d ago",
-      icon: Clipboard,
-      color: "text-orange-500",
     },
   ];
 

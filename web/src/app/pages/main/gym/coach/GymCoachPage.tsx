@@ -3,10 +3,10 @@ import {
   BarChart3,
   Bell,
   Calendar,
-  DollarSign,
   Home,
   Settings,
   Users,
+  Wallet,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import Nav from "../../../../components/nav/Nav";
@@ -32,7 +32,7 @@ const sidebarLinks = [
   },
   {
     label: "payments",
-    icon: <DollarSign className="w-5 h-5" />,
+    icon: <Wallet className="w-5 h-5" />,
     path: APP_PAGES.gym.coach.payments.link,
     matchPaths: [APP_PAGES.gym.coach.payments.link],
   },
