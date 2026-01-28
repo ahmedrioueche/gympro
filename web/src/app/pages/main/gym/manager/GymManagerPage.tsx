@@ -8,6 +8,7 @@ import {
   Home,
   Key,
   Logs,
+  Megaphone,
   Settings,
   UserCheck,
   UserCircle,
@@ -70,6 +71,12 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.gym.manager.attendance.link],
   },
   {
+    label: "announcements",
+    icon: <Megaphone className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.announcements.link,
+    matchPaths: [APP_PAGES.gym.manager.announcements.link],
+  },
+  {
     label: "analytics",
     icon: <BarChart3 className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.analytics.link,
@@ -106,6 +113,8 @@ function GymManagerPage() {
         return hasPermission(GYM_PERMISSIONS.analytics.view);
       case "settings":
         return hasPermission(GYM_PERMISSIONS.settings.view);
+      case "announcements":
+        return hasPermission(GYM_PERMISSIONS.communication.view);
       default:
         // Home, subscriptions (?), access (?), notifications are always visible for now
         // or check logic later

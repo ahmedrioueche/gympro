@@ -76,7 +76,7 @@ export default function Nav({ children, sidebarLinks = null }) {
           </div>
 
           {/* Sidebar Content */}
-          <nav className="flex-1 px-2 py-1 space-y-2 overflow-y-auto hide-scrollbar">
+          <nav className="flex-1 px-2 py-3 space-y-2 overflow-y-auto hide-scrollbar">
             {sidebarLinks.map((link) => {
               const isActive = link.matchPaths.some((p) => activeRoute === p);
               return (

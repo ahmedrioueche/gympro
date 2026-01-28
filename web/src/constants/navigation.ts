@@ -114,6 +114,11 @@ export const APP_PAGES = {
         name: "pages.gym.attendance",
         link: "/gym/manager/attendance",
       },
+      announcements: {
+        name: "pages.gym.announcements",
+        link: "/gym/manager/announcements",
+      },
+
       analytics: {
         name: "pages.gym.analytics",
         link: "/gym/manager/analytics",
@@ -145,6 +150,10 @@ export const APP_PAGES = {
         name: "pages.gym.attendance",
         link: "/gym/member/attendance",
       },
+      announcements: {
+        name: "pages.gym.announcements",
+        link: "/gym/member/announcements",
+      },
       notifications: {
         name: "pages.gym.notifications",
         link: "/gym/member/notifications",
@@ -174,6 +183,10 @@ export const APP_PAGES = {
       analytics: {
         name: "pages.gym.analytics",
         link: "/gym/coach/analytics",
+      },
+      announcements: {
+        name: "pages.gym.announcements",
+        link: "/gym/coach/announcements",
       },
       notifications: {
         name: "pages.gym.notifications",

@@ -165,3 +165,7 @@ export interface GymInvitationModalProps {
   gymName: string;
   gymId?: string;
 }
+
+export interface CreateAnnouncementModalProps {
+  gymId: string;
+}

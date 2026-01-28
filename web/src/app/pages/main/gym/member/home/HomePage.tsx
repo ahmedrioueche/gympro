@@ -1,6 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 import { Bell, Calendar, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import NotFound from "../../../../../../components/ui/NotFound";
 import { useGymStore } from "../../../../../../store/gym";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
 import { useSubscriptionTypes } from "../../manager/pricing/hooks/useSubscriptionTypes";
@@ -11,27 +12,15 @@ import { useGymMemberHome } from "./hooks/useGymMemberHome";
 function HomePage() {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
+  console.log("HomePage - currentGym:", currentGym?._id, currentGym);
   const status = useGymMemberHome(currentGym?.settings);
   const { data: announcements = [], isLoading: announcementsLoading } =
     useGymAnnouncements(currentGym?._id);
+
   const { data: plans = [], isLoading: plansLoading } = useSubscriptionTypes();
 
   if (!currentGym) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-text-primary mb-2">
-            {t("home.gymMember.noGym", "No gym selected")}
-          </h2>
-          <p className="text-text-secondary">
-            {t(
-              "home.gymMember.selectGym",
-              "Please select a gym to view details"
-            )}
-          </p>
-        </div>
-      </div>
-    );
+    return <NotFound />;
   }
 
   return (
@@ -105,7 +94,7 @@ function HomePage() {
                               >
                                 {t(
                                   `settings.gym.general.days.${day.toLowerCase()}`,
-                                  day.slice(0, 3)
+                                  day.slice(0, 3),
                                 )}
                               </span>
                             ))}
@@ -170,39 +159,41 @@ function HomePage() {
                 <p className="text-text-secondary font-medium text-center">
                   {t(
                     "home.gymMember.announcements.empty",
-                    "No announcements at the moment"
+                    "No announcements at the moment",
                   )}
                 </p>
               </div>
             ) : (
-              announcements.slice(0, 10).map((announcement) => (
-                <div
-                  key={announcement._id}
-                  className="p-4 bg-muted/30 hover:bg-muted/50 rounded-xl border border-border/50 transition-all cursor-pointer hover:scale-[1.01]"
-                >
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <h4 className="font-bold text-text-primary flex-1 line-clamp-1">
-                      {announcement.title}
-                    </h4>
-                    {announcement.priority === "high" && (
-                      <span className="px-2 py-1 rounded-lg bg-error/20 text-error text-xs font-bold flex-shrink-0 border border-error/30">
-                        {t("home.gymMember.announcements.urgent", "Urgent")}
+              (Array.isArray(announcements) ? announcements : [])
+                .slice(0, 10)
+                .map((announcement) => (
+                  <div
+                    key={announcement._id}
+                    className="p-4 bg-muted/30 hover:bg-muted/50 rounded-xl border border-border/50 transition-all cursor-pointer hover:scale-[1.01]"
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <h4 className="font-bold text-text-primary flex-1 line-clamp-1">
+                        {announcement.title}
+                      </h4>
+                      {announcement.priority === "high" && (
+                        <span className="px-2 py-1 rounded-lg bg-error/20 text-error text-xs font-bold flex-shrink-0 border border-error/30">
+                          {t("home.gymMember.announcements.urgent", "Urgent")}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-text-secondary line-clamp-2 mb-2">
+                      {announcement.content}
+                    </p>
+                    <div className="flex items-center gap-1.5 text-xs text-text-secondary/70">
+                      <Calendar className="w-3 h-3" />
+                      <span>
+                        {formatDistanceToNow(new Date(announcement.createdAt), {
+                          addSuffix: true,
+                        })}
                       </span>
-                    )}
+                    </div>
                   </div>
-                  <p className="text-sm text-text-secondary line-clamp-2 mb-2">
-                    {announcement.message}
-                  </p>
-                  <div className="flex items-center gap-1.5 text-xs text-text-secondary/70">
-                    <Calendar className="w-3 h-3" />
-                    <span>
-                      {formatDistanceToNow(new Date(announcement.createdAt), {
-                        addSuffix: true,
-                      })}
-                    </span>
-                  </div>
-                </div>
-              ))
+                ))
             )}
           </div>
         </div>

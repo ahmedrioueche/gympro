@@ -1,35 +1,29 @@
-import { notificationsApi } from "@ahmedrioueche/gympro-client";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-import { useTranslation } from "react-i18next";
 import {
-  getMessage,
-  showStatusToast,
-} from "../../../../../../../utils/statusMessage";
-export function useGymAnnouncements(gymId?: string) {
-  const { t } = useTranslation();
+  announcementApi,
+  type GymAnnouncement,
+} from "@ahmedrioueche/gympro-client";
+import { useQuery } from "@tanstack/react-query";
 
-  return useQuery({
-    queryKey: ["gym-announcements", gymId],
+export function useGymAnnouncements(gymId?: string) {
+  return useQuery<GymAnnouncement[]>({
+    queryKey: ["gym-member-announcements", gymId],
     queryFn: async () => {
       if (!gymId) return [];
 
-      const response = await notificationsApi.getMyNotifications(1, 10);
+      const response = await announcementApi.getAll(gymId);
 
-      if (!response.success || !response.data) {
-        const msg = getMessage(response, t);
-        showStatusToast(msg, toast);
-        return [];
-      }
+      // Response is PaginatedResponse<GymAnnouncement> with shape { data: [...], total, page, limit }
+      // Extract the data array
+      const announcements: GymAnnouncement[] = Array.isArray(response?.data)
+        ? response.data
+        : [];
 
-      // Filter for announcements only - ideally would filter on backend
-      const announcements = response.data.data.filter(
-        (notification) => notification.type === "announcement"
-      );
-
-      return announcements;
+      // Filter for active announcements only
+      return announcements.filter((a) => a.isActive);
     },
     enabled: !!gymId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }

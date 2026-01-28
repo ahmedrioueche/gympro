@@ -27,6 +27,7 @@
     "confirm": "Confirm",
     "all": "All",
     "days": "Days",
+    "retry": "Retry",
     "noData": "No Data",
     "accept": "Accept",
     "decline": "Decline",
@@ -76,7 +77,8 @@
     "inactive": "Inactive",
     "success": "Success",
     "leave": "Leave",
-    "errorOccurred": "An error occurred"
+    "errorOccurred": "An error occurred",
+    "postedBy": "Posted by"
   },
   "confirm": {
     "default": {
@@ -362,6 +364,7 @@
     "schedule": "Schedule",
     "training": "Training",
     "programs": "Programs",
+    "announcements": "Announcements",
     "exercises": "Exercises",
     "coaches": "Coaches",
     "progress": "Progress",
@@ -403,6 +406,7 @@
     "emptyDesc": "Add members to see their subscriptions",
     "search": "Search members...",
     "noSubscription": "No Subscription",
+    "empty": "No subscriptions found",
     "table": {
       "member": "Member",
       "type": "Type",
@@ -3059,6 +3063,46 @@
       "week": "Week",
       "month": "Month",
       "year": "Year"
+    }
+  },
+  "announcements": {
+    "title": "Announcements",
+    "subtitle": "Manage gym communications",
+    "create": "New Announcement",
+    "noData": "No announcements yet",
+    "noDataDesc": "Create your first announcement to reach your members.",
+    "deleteTitle": "Delete Announcement",
+    "deleteConfirm": "Are you sure you want to delete this announcement?",
+    "deleteSuccess": "Announcement deleted successfully",
+    "deleteError": "Failed to delete announcement",
+    "createSuccess": "Announcement created successfully",
+    "createError": "Failed to create announcement",
+    "updateSuccess": "Announcement updated successfully",
+    "updateError": "Failed to update announcement",
+    "createTitle": "Create Announcement",
+    "createDesc": "Send a message to your gym community",
+    "noDataCheckBack": "Check back later for updates from your gym.",
+    "consumer": {
+      "title": "Announcements",
+      "subtitle": "Stay updated with gym news"
+    },
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "e.g., Holiday Hours",
+      "priority": "Priority",
+      "audience": "Audience",
+      "content": "Content",
+      "contentPlaceholder": "Type your announcement here..."
+    },
+    "priority": {
+      "normal": "Normal",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "audience": {
+      "all": "Everyone",
+      "members": "Members Only",
+      "staff": "Staff Only"
     }
   }
 }

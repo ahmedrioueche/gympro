@@ -18,7 +18,12 @@ interface PageHeaderProps {
 }
 
 // PageHeader Component
-function PageHeader({ icon: Icon, title, subtitle, actionButton = null }) {
+function PageHeader({
+  icon: Icon,
+  title,
+  subtitle,
+  actionButton = null,
+}: PageHeaderProps) {
   const ActionIcon = actionButton?.icon;
   const showBtn = actionButton?.show ?? true;
 

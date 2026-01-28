@@ -11,7 +11,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       className={`rounded-lg border border-light-secondary-disabled dark:border-dark-secondary-disabled  shadow-sm ${className}`}
       {...props}
     />
-  )
+  ),
 );
 Card.displayName = "Card";
 
@@ -22,7 +22,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardProps>(
       className={`flex flex-col space-y-1.5 p-6 ${className}`}
       {...props}
     />
-  )
+  ),
 );
 CardHeader.displayName = "CardHeader";
 
@@ -41,8 +41,8 @@ CardTitle.displayName = "CardTitle";
 const CardContent = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className = "", ...props }, ref) => (
     <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
-  )
+  ),
 );
 CardContent.displayName = "CardContent";
 
-export { Card, CardHeader, CardTitle, CardContent };
+export { Card, CardContent, CardHeader, CardTitle };

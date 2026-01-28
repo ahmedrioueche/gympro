@@ -1,5 +1,6 @@
 import { createRoute } from "@tanstack/react-router";
 import AnalyticsPage from "../../../../app/pages/main/gym/coach/analytics/AnalyticsPage";
+import AnnouncementsPage from "../../../../app/pages/main/gym/coach/announcements/AnnouncementsPage";
 import ClientsPage from "../../../../app/pages/main/gym/coach/clients/ClientsPage";
 import HomePage from "../../../../app/pages/main/gym/coach/home/HomePage";
 import NotificationsPage from "../../../../app/pages/main/gym/coach/notifications/NotificationsPage";
@@ -36,6 +37,12 @@ export const paymentsRoute = createRoute({
   getParentRoute: () => GymCoachRootRoute,
   path: "/payments",
   component: () => <PaymentsPage />,
+});
+
+export const announcementsRoute = createRoute({
+  getParentRoute: () => GymCoachRootRoute,
+  path: "/announcements",
+  component: () => <AnnouncementsPage />,
 });
 
 export const notificationsRoute = createRoute({

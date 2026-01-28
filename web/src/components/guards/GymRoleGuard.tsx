@@ -36,7 +36,12 @@ export const GymRoleGuard: React.FC<GymRoleGuardProps> = ({
   }
 
   // If no gym is selected, redirect to user's role-based home
+  // BUT only if we're still on a gym route - don't redirect if we're already navigating away
   if (!currentGym) {
+    // If we're not on a gym route, don't redirect (navigation is happening away from gym)
+    if (!location.pathname.startsWith("/gym")) {
+      return <>{children}</>;
+    }
     const homeLink =
       user.role === "manager" || user.role === "owner"
         ? APP_PAGES.manager.link
@@ -75,22 +80,22 @@ export const GymRoleGuard: React.FC<GymRoleGuardProps> = ({
   // Check if the user has any of the allowed roles
   const hasAccess = effectiveRoles.some((role) => allowedRoles.includes(role));
 
-  if (!hasAccess) {
-    // Determine where to redirect based on what roles the user has
-    const membershipRolesAsStrings = effectiveRoles.map(String);
-    const isStaffInGym = membershipRolesAsStrings.some((role) =>
-      ALL_STAFF_ROLES.map(String).includes(role)
-    );
+  // Determine staff status early for logging/redirect logic
+  const membershipRolesAsStrings = effectiveRoles.map(String);
+  const isStaffInGym = membershipRolesAsStrings.some((role) =>
+    ALL_STAFF_ROLES.map(String).includes(role),
+  );
 
+  if (!hasAccess) {
     if (isStaffInGym) {
       // User is a staff member but trying to access member routes
       if (!location.pathname.startsWith(APP_PAGES.gym.manager.home.link)) {
-        return <Navigate to={APP_PAGES.gym.manager.home.link} />;
+        return <Navigate to={APP_PAGES.gym.manager.home.link} replace />;
       }
     } else {
       // User is a member but trying to access manager/staff routes
       if (!location.pathname.startsWith(APP_PAGES.gym.member.home.link)) {
-        return <Navigate to={APP_PAGES.gym.member.home.link} />;
+        return <Navigate to={APP_PAGES.gym.member.home.link} replace />;
       }
     }
   }

@@ -1,5 +1,13 @@
 import { Outlet } from "@tanstack/react-router";
-import { Bell, CreditCard, Home, Key, Logs, Settings } from "lucide-react";
+import {
+  Bell,
+  CreditCard,
+  Home,
+  Key,
+  Logs,
+  Megaphone,
+  Settings,
+} from "lucide-react";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import Nav from "../../../../components/nav/Nav";
 
@@ -27,6 +35,12 @@ const sidebarLinks = [
     icon: <Logs className="w-5 h-5" />,
     path: APP_PAGES.gym.member.attendance.link,
     matchPaths: [APP_PAGES.gym.member.attendance.link],
+  },
+  {
+    label: "announcements",
+    icon: <Megaphone className="w-5 h-5" />,
+    path: APP_PAGES.gym.member.announcements.link,
+    matchPaths: [APP_PAGES.gym.member.announcements.link],
   },
   {
     label: "notifications",

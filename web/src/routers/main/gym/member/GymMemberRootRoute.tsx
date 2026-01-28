@@ -9,7 +9,9 @@ export const GymMemberRootRoute = createRoute({
   getParentRoute: () => GymRootRoute,
   path: "/member",
   component: () => (
-    <GymRoleGuard allowedRoles={[UserRole.Member]}>
+    <GymRoleGuard
+      allowedRoles={[UserRole.Member, UserRole.Owner, UserRole.Manager]}
+    >
       <GymMemberPage />
     </GymRoleGuard>
   ),

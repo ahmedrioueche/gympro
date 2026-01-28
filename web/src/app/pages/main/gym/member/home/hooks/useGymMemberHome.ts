@@ -45,7 +45,7 @@ export function useGymMemberHome(settings?: GymSettings) {
     if (!settings.isMixed && settings.femaleOnlyHours?.length) {
       for (const slot of settings.femaleOnlyHours) {
         const dayMatches = slot.days.some(
-          (day) => day.toLowerCase() === currentDay
+          (day) => day.toLowerCase() === currentDay,
         );
         if (dayMatches) {
           const slotStart = slot.range.start;

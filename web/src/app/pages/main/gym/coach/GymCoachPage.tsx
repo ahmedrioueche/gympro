@@ -4,6 +4,7 @@ import {
   Bell,
   Calendar,
   Home,
+  Megaphone,
   Settings,
   Users,
   Wallet,
@@ -41,6 +42,12 @@ const sidebarLinks = [
     icon: <BarChart3 className="w-5 h-5" />,
     path: APP_PAGES.gym.coach.analytics.link,
     matchPaths: [APP_PAGES.gym.coach.analytics.link],
+  },
+  {
+    label: "announcements",
+    icon: <Megaphone className="w-5 h-5" />,
+    path: APP_PAGES.gym.coach.announcements.link,
+    matchPaths: [APP_PAGES.gym.coach.announcements.link],
   },
   {
     label: "notifications",

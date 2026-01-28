@@ -2,6 +2,7 @@ import { GymManagerRootRoute } from "./GymManagerRootRoute";
 import {
   accessRoute,
   analyticsRoute,
+  announcementsRoute,
   attendanceRoute,
   coachingRoute,
   createMemberRoute,
@@ -27,4 +28,5 @@ export const GymManagerRootTree = GymManagerRootRoute.addChildren([
   pricingRoute,
   staffRoute,
   coachingRoute,
+  announcementsRoute,
 ]);
