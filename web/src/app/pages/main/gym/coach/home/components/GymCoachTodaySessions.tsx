@@ -1,42 +1,18 @@
-import { useNavigate } from "@tanstack/react-router";
-import { Calendar, Clock } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Calendar, Clock, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Loading from "../../../../../../../components/ui/Loading";
 import { APP_PAGES } from "../../../../../../../constants/navigation";
+import { useGymCoachSessions } from "../hooks/useGymCoachSessions";
 
-interface Session {
-  time: string;
-  client: string;
-  type: string;
-  status: string;
-}
-
-interface GymCoachTodaySessionsProps {
-  sessions?: Session[];
-}
-
-export default function GymCoachTodaySessions({
-  sessions,
-}: GymCoachTodaySessionsProps) {
+export default function GymCoachTodaySessions() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { data: sessions, isLoading } = useGymCoachSessions();
 
-  // Mock data for specific gym sessions
-  const defaultSessions: Session[] = [
-    {
-      time: "10:00 AM",
-      client: "Alice Brown",
-      type: "PT Session",
-      status: "upcoming",
-    },
-    {
-      time: "02:00 PM",
-      client: "Bob Wilson",
-      type: "Consultation",
-      status: "upcoming",
-    },
-  ];
-
-  const displaySessions = sessions || defaultSessions;
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="bg-surface border border-border rounded-2xl p-6">
@@ -47,27 +23,44 @@ export default function GymCoachTodaySessions({
         <Calendar className="w-5 h-5 text-text-secondary" />
       </div>
 
-      {displaySessions.length > 0 ? (
+      {sessions && sessions.length > 0 ? (
         <div className="space-y-3">
-          {displaySessions.map((session, idx) => (
-            <div
-              key={idx}
-              className="p-4 rounded-xl bg-surface-hover border border-border hover:border-primary/30 transition-colors"
+          {sessions.slice(0, 3).map((session: any, idx) => (
+            <Link
+              to={`${APP_PAGES.gym.coach.schedule.link}`}
+              key={session._id || idx}
+              className="block p-4 rounded-xl bg-surface-hover border border-border hover:border-primary/30 transition-colors group"
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2 text-sm font-medium text-text-primary">
                   <Clock className="w-4 h-4 text-primary" />
-                  {session.time}
+                  {new Date(session.startTime).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </div>
-                <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                <span
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    session.status === "completed"
+                      ? "bg-green-500/10 text-green-500"
+                      : session.status === "cancelled"
+                        ? "bg-red-500/10 text-red-500"
+                        : "bg-blue-500/10 text-blue-500"
+                  }`}
+                >
                   {session.status}
                 </span>
               </div>
-              <p className="font-medium text-text-primary text-sm">
-                {session.client}
+              <div className="flex items-center gap-2 mb-1">
+                <User className="w-4 h-4 text-text-secondary" />
+                <p className="font-medium text-text-primary text-sm">
+                  {session.client?.profile?.fullName || "Client"}
+                </p>
+              </div>
+              <p className="text-xs text-text-secondary pl-6">
+                {session.type || "Session"}
               </p>
-              <p className="text-xs text-text-secondary">{session.type}</p>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (

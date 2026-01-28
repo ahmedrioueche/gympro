@@ -1,5 +1,4 @@
 import { ErrorCode, type ApiResponse } from "@ahmedrioueche/gympro-client";
-import toast from "react-hot-toast";
 import type { TranslationType } from "../types/common";
 
 export interface StatusMessage {
@@ -213,15 +212,22 @@ export const getMessage = <T = any>(
 };
 
 /**
- * Show toast notification
- * @param message - The message to show
- * @param type - The type of toast (success, error, info, warning)
+ * Show toast notification based on StatusMessage
+ * @param statusMessage - The status message object
+ * @param toast - Toast notification library instance
  */
 export const showStatusToast = (
-  message: string,
-  type: "success" | "error" | "info" | "warning" = "info",
+  statusMessage: StatusMessage,
+  toast: {
+    success: (msg: string) => void;
+    error: (msg: string) => void;
+    info?: (msg: string) => void;
+    warning?: (msg: string) => void;
+  },
 ) => {
-  switch (type) {
+  const { status, message } = statusMessage;
+
+  switch (status) {
     case "success":
       toast.success(message);
       break;
@@ -229,15 +235,10 @@ export const showStatusToast = (
       toast.error(message);
       break;
     case "info":
-      toast(message, { icon: "ℹ️" });
+      toast.info?.(message);
       break;
     case "warning":
-      toast(message, { icon: "⚠️" });
+      toast.warning?.(message);
       break;
   }
 };
-
-/**
- * Alias for backward compatibility if needed, or if some files use PascalCase
- */
-export const ShowStatusToast = showStatusToast;

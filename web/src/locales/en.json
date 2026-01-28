@@ -47,6 +47,7 @@
     "status": "Status",
     "date_time": "Date & Time",
     "reason": "Reason",
+    "add": "Add",
     "search": "Search...",
     "edit": "Edit",
     "delete": "Delete",

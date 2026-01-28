@@ -6,10 +6,11 @@ import {
   Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Loading from "../../../../../../../components/ui/Loading";
 
-interface QuickStat {
+export interface QuickStat {
   label: string;
-  value: string;
+  value: string | number;
   icon: LucideIcon;
   color: string;
   bg: string;
@@ -17,49 +18,55 @@ interface QuickStat {
 }
 
 interface GymCoachQuickStatsProps {
-  stats?: QuickStat[];
+  stats?: any; // The real stats object from API
+  isLoading?: boolean;
 }
 
-export default function GymCoachQuickStats({ stats }: GymCoachQuickStatsProps) {
+export default function GymCoachQuickStats({
+  stats,
+  isLoading,
+}: GymCoachQuickStatsProps) {
   const { t } = useTranslation();
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   // specific stats for this gym context
-  const defaultStats: QuickStat[] = [
+  const displayStats: QuickStat[] = [
     {
       label: t("home.coach.stats.activeClients", "Active Clients"),
-      value: "12",
+      value: stats?.activeClientsCount || 0,
       icon: Users,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
-      trend: "+2",
+      trend: stats?.clientsTrend, // e.g. "+2"
     },
     {
       label: t("home.coach.stats.programsCreated", "Programs"),
-      value: "5",
+      value: stats?.activeProgramsCount || 0,
       icon: Clipboard,
       color: "text-purple-500",
       bg: "bg-purple-500/10",
-      trend: "+1",
+      trend: stats?.programsTrend,
     },
     {
       label: t("home.coach.stats.sessionsThisMonth", "Sessions"),
-      value: "28",
+      value: stats?.completedSessionsCount || 0,
       icon: Calendar,
       color: "text-green-500",
       bg: "bg-green-500/10",
-      trend: "+4",
+      trend: stats?.sessionsTrend,
     },
     {
       label: t("home.coach.stats.clientRetention", "Retention"),
-      value: "95%",
+      value: `${stats?.retentionRate || 0}%`,
       icon: TrendingUp,
       color: "text-orange-500",
       bg: "bg-orange-500/10",
-      trend: "+1%",
+      trend: stats?.retentionTrend,
     },
   ];
-
-  const displayStats = stats || defaultStats;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

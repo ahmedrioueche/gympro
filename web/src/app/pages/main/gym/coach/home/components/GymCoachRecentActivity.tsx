@@ -1,62 +1,45 @@
+import { formatDistanceToNow } from "date-fns";
 import {
+  Activity,
+  Calendar,
   Clipboard,
   MessageSquare,
-  TrendingUp,
-  type LucideIcon,
+  UserPlus,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-interface Activity {
-  type: string;
-  message: string;
-  time: string;
-  icon: LucideIcon;
-  color: string;
-}
-
 interface GymCoachRecentActivityProps {
-  activities?: Activity[];
+  activities?: any[];
+  isLoading?: boolean;
 }
 
 export default function GymCoachRecentActivity({
   activities,
+  isLoading,
 }: GymCoachRecentActivityProps) {
   const { t } = useTranslation();
 
-  const defaultActivities: Activity[] = [
-    {
-      type: "workout",
-      message: t("home.coach.activity.workoutCompleted", {
-        client: "Alice Brown",
-        defaultValue: "Alice Brown completed a workout",
-      }),
-      time: "2h ago",
-      icon: Clipboard,
-      color: "text-green-500",
-    },
-    {
-      type: "message",
-      message: t("home.coach.activity.newMessage", {
-        client: "Bob Wilson",
-        defaultValue: "New message from Bob Wilson",
-      }),
-      time: "3h ago",
-      icon: MessageSquare,
-      color: "text-blue-500",
-    },
-    {
-      type: "milestone",
-      message: t("home.coach.activity.milestone", {
-        client: "Bob Wilson",
-        defaultValue: "Bob Wilson reached a milestone",
-      }),
-      time: "5h ago",
-      icon: TrendingUp,
-      color: "text-purple-500",
-    },
-  ];
+  if (isLoading) {
+    return (
+      <div className="bg-surface border border-border rounded-2xl p-6 h-full animate-pulse" />
+    );
+  }
 
-  const displayActivities = activities || defaultActivities;
+  // Helper to map activity type to icon and color
+  const getActivityStyle = (type: string) => {
+    switch (type) {
+      case "program_assigned":
+        return { icon: Clipboard, color: "text-purple-500" };
+      case "session_completed":
+        return { icon: Activity, color: "text-green-500" };
+      case "new_client":
+        return { icon: UserPlus, color: "text-blue-500" };
+      case "message":
+        return { icon: MessageSquare, color: "text-orange-500" };
+      default:
+        return { icon: Calendar, color: "text-text-secondary" };
+    }
+  };
 
   return (
     <div className="bg-surface border border-border rounded-2xl p-6 h-full">
@@ -69,23 +52,41 @@ export default function GymCoachRecentActivity({
         </span>
       </div>
 
-      <div className="space-y-6">
-        {displayActivities.map((activity, idx) => (
-          <div key={idx} className="flex gap-4 group">
-            <div
-              className={`mt-1 p-2 rounded-full bg-surface-hover ${activity.color} bg-opacity-10 group-hover:scale-110 transition-transform`}
-            >
-              <activity.icon className={`w-4 h-4 ${activity.color}`} />
-            </div>
-            <div className="flex-1 pb-6 border-b border-border last:border-0 last:pb-0">
-              <p className="text-sm font-medium text-text-primary mb-1">
-                {activity.message}
-              </p>
-              <p className="text-xs text-text-secondary">{activity.time}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {activities && activities.length > 0 ? (
+        <div className="space-y-6">
+          {activities.slice(0, 5).map((activity, idx) => {
+            const style = getActivityStyle(activity.type);
+            const Icon = style.icon;
+
+            return (
+              <div key={idx} className="flex gap-4 group">
+                <div
+                  className={`mt-1 p-2 rounded-full bg-surface-hover ${style.color} bg-opacity-10 group-hover:scale-110 transition-transform`}
+                >
+                  <Icon className={`w-4 h-4 ${style.color}`} />
+                </div>
+                <div className="flex-1 pb-6 border-b border-border last:border-0 last:pb-0">
+                  <p className="text-sm font-medium text-text-primary mb-1">
+                    {activity.message || activity.description}
+                  </p>
+                  <p className="text-xs text-text-secondary">
+                    {activity.createdAt &&
+                    !isNaN(new Date(activity.createdAt).getTime())
+                      ? formatDistanceToNow(new Date(activity.createdAt), {
+                          addSuffix: true,
+                        })
+                      : t("common.justNow", "Just now")}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-12 text-text-secondary">
+          <p>{t("home.coach.activity.empty", "No recent activity")}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 export * from "./api/ai";
 export * from "./api/analytics";
+export * from "./api/announcement";
 export * from "./api/appPayment";
 export * from "./api/appSubscription";
 export * from "./api/attendance";
@@ -40,6 +41,7 @@ export * from "./dto/subscription";
 export * from "./dto/training";
 export * from "./dto/users";
 export * from "./types/analytics";
+export * from "./types/announcement";
 export * from "./types/api";
 export * from "./types/appPayment";
 export * from "./types/appSubscription";

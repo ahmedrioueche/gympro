@@ -1,15 +1,18 @@
 import Loading from "../../../../../../components/ui/Loading";
 import NotFound from "../../../../../../components/ui/NotFound";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
-import PendingCheckIns from "../../../coach/home/components/PendingCheckIns";
+import GymCoachAnnouncementsSection from "./components/GymCoachAnnouncementsSection";
 import GymCoachQuickActions from "./components/GymCoachQuickActions";
 import GymCoachQuickStats from "./components/GymCoachQuickStats";
 import GymCoachRecentActivity from "./components/GymCoachRecentActivity";
 import GymCoachTodaySessions from "./components/GymCoachTodaySessions";
 import { useGymCoachHome } from "./hooks/useGymCoachHome";
+import { useGymCoachHomeData } from "./hooks/useGymCoachHomeData";
 
 export default function HomePage() {
   const { gym, isGymLoading, status } = useGymCoachHome();
+  const { stats, isStatsLoading, recentActivity, isRecentActivityLoading } =
+    useGymCoachHomeData();
 
   if (isGymLoading) {
     return <Loading />;
@@ -30,22 +33,26 @@ export default function HomePage() {
       <GymHeroSection gym={gym} status={status} />
 
       {/* Quick Stats Grid */}
-      <GymCoachQuickStats />
+      <GymCoachQuickStats stats={stats} isLoading={isStatsLoading} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Today's Sessions & Quick Actions */}
-        <div className="lg:col-span-1 space-y-4">
+        {/* Top Row: Sessions, Actions, Announcements */}
+        <div className="lg:col-span-1">
           <GymCoachTodaySessions />
+        </div>
+        <div className="lg:col-span-1">
           <GymCoachQuickActions />
         </div>
+        <div className="lg:col-span-1">
+          <GymCoachAnnouncementsSection gymId={gym._id} />
+        </div>
 
-        {/* Right Column - Recent Activity & Pending Check-ins */}
-        <div className="lg:col-span-2 space-y-6">
-          <GymCoachRecentActivity />
-          {/* Reuse PendingCheckIns from global coach context if applicable, or create new. 
-              The plan didn't specify creating a new one, but Reuse. 
-          */}
-          <PendingCheckIns />
+        {/* Bottom Row: Recent Activity */}
+        <div className="lg:col-span-3 space-y-6">
+          <GymCoachRecentActivity
+            activities={recentActivity}
+            isLoading={isRecentActivityLoading}
+          />
         </div>
       </div>
     </div>

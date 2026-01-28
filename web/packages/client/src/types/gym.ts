@@ -42,6 +42,7 @@ export interface GymSettings {
   femaleOnlyHours?: WeeklyTimeRange[]; // Specific time ranges reserved for female members
   servicesOffered?: BaseSubscriptionType[]; // List of services offered at the gym
   accessControlType?: AccessControlType; // How to handle expired subscriptions during check-in
+  rules?: string[]; // List of gym rules
 }
 
 export interface GymStats {

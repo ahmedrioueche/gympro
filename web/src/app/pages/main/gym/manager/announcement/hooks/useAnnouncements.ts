@@ -5,6 +5,7 @@ import {
   type PaginatedResponse,
 } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useGymStore } from "../../../../../../../store/gym";
 import { showStatusToast } from "../../../../../../../utils/statusMessage";
@@ -29,22 +30,34 @@ export const useAnnouncements = () => {
     mutationFn: (newAnnouncement: CreateAnnouncementDto) =>
       announcementApi.create(newAnnouncement),
     onSuccess: () => {
-      showStatusToast(t("announcements.createSuccess"), "success");
+      showStatusToast(
+        { status: "success", message: t("announcements.createSuccess") },
+        toast,
+      );
       queryClient.invalidateQueries({ queryKey: ["gym-announcements"] });
     },
     onError: (error: any) => {
-      showStatusToast(error.message || t("common.error"), "error");
+      showStatusToast(
+        { status: "error", message: error.message || t("common.error") },
+        toast,
+      );
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => announcementApi.delete(id),
     onSuccess: () => {
-      showStatusToast(t("announcements.deleteSuccess"), "success");
+      showStatusToast(
+        { status: "success", message: t("announcements.deleteSuccess") },
+        toast,
+      );
       queryClient.invalidateQueries({ queryKey: ["gym-announcements"] });
     },
     onError: (error: any) => {
-      showStatusToast(error.message || t("common.error"), "error");
+      showStatusToast(
+        { status: "error", message: error.message || t("common.error") },
+        toast,
+      );
     },
   });
 

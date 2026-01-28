@@ -1,8 +1,18 @@
-import { Bell, Clock, Dumbbell, Save, Settings } from "lucide-react";
+import {
+  Bell,
+  BookOpen,
+  Clock,
+  Dumbbell,
+  MapPin,
+  Save,
+  Settings,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../../components/PageHeader";
 import GeneralTab from "./components/GeneralTab";
+import LocationTab from "./components/LocationTab";
 import NotificationsTab from "./components/NotificationsTab";
+import RulesTab from "./components/RulesTab";
 import ServicesTab from "./components/ServicesTab";
 import {
   useGymManagerSettings,
@@ -40,6 +50,24 @@ export default function SettingsPage() {
     setAccessControlType,
     defaultCurrency,
     setDefaultCurrency,
+    rules,
+    addRule,
+    removeRule,
+    // Location fields
+    address,
+    setAddress,
+    city,
+    setCity,
+    state,
+    setState,
+    country,
+    setCountry,
+    phone,
+    setPhone,
+    email,
+    setEmail,
+    website,
+    setWebsite,
   } = useGymManagerSettings();
 
   const tabs = [
@@ -47,6 +75,11 @@ export default function SettingsPage() {
       id: "general",
       label: t("settings.gym.tabs.general", "General"),
       icon: Clock,
+    },
+    {
+      id: "location",
+      label: t("settings.gym.tabs.location", "Location"),
+      icon: MapPin,
     },
     {
       id: "notifications",
@@ -58,6 +91,11 @@ export default function SettingsPage() {
       label: t("settings.gym.tabs.services", "Services"),
       icon: Dumbbell,
     },
+    {
+      id: "rules",
+      label: t("settings.gym.tabs.rules", "Rules"),
+      icon: BookOpen,
+    },
   ];
 
   if (!currentGym) return null;
@@ -68,7 +106,7 @@ export default function SettingsPage() {
         title={t("settings.gym.pageTitle", "Gym Settings")}
         subtitle={t(
           "settings.gym.pageSubtitle",
-          "Configure your gym-specific preferences and policies"
+          "Configure your gym-specific preferences and policies",
         )}
         icon={Settings}
         actionButton={{
@@ -121,6 +159,25 @@ export default function SettingsPage() {
             />
           )}
 
+          {activeTab === "location" && (
+            <LocationTab
+              address={address}
+              setAddress={setAddress}
+              city={city}
+              setCity={setCity}
+              state={state}
+              setState={setState}
+              country={country}
+              setCountry={setCountry}
+              phone={phone}
+              setPhone={setPhone}
+              email={email}
+              setEmail={setEmail}
+              website={website}
+              setWebsite={setWebsite}
+            />
+          )}
+
           {activeTab === "notifications" && (
             <NotificationsTab
               notificationsEnabled={notificationsEnabled}
@@ -139,6 +196,10 @@ export default function SettingsPage() {
               allowCustomSubscriptions={allowCustomSubscriptions}
               setAllowCustomSubscriptions={setAllowCustomSubscriptions}
             />
+          )}
+
+          {activeTab === "rules" && (
+            <RulesTab rules={rules} addRule={addRule} removeRule={removeRule} />
           )}
         </div>
       </div>
