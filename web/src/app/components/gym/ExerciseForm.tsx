@@ -6,6 +6,7 @@ import {
 import {
   ChevronDown,
   GripVertical,
+  Layers,
   Plus,
   Search,
   Trash2,
@@ -23,6 +24,8 @@ interface ExerciseFormProps {
   isDragging?: boolean;
   isCollapsed?: boolean;
   isLibraryOpen?: boolean;
+  isSelectionMode?: boolean; // New prop
+  isSelected?: boolean; // New prop
   onUpdate: (field: keyof CreateExerciseDto, value: any) => void;
   onRemove: () => void;
   onAddNext?: () => void;
@@ -31,6 +34,7 @@ interface ExerciseFormProps {
   onDragEnd?: () => void;
   onDragOver?: (targetIndex: number) => void;
   onToggleCollapse?: () => void;
+  onSelect?: () => void; // New prop
 }
 
 export const ExerciseForm = ({
@@ -39,6 +43,8 @@ export const ExerciseForm = ({
   isDragging = false,
   isCollapsed = false,
   isLibraryOpen = false,
+  isSelectionMode = false,
+  isSelected = false,
   onUpdate,
   onRemove,
   onAddNext,
@@ -47,6 +53,7 @@ export const ExerciseForm = ({
   onDragEnd,
   onDragOver,
   onToggleCollapse,
+  onSelect,
 }: ExerciseFormProps) => {
   const { t } = useTranslation();
   const {
@@ -60,7 +67,7 @@ export const ExerciseForm = ({
 
   return (
     <div
-      draggable={!!onDragStart}
+      draggable={!!onDragStart && !isSelectionMode} // Disable drag in selection mode
       onDragStart={(e) => {
         e.dataTransfer.effectAllowed = "move";
         onDragStart?.();
@@ -71,14 +78,25 @@ export const ExerciseForm = ({
         e.dataTransfer.dropEffect = "move";
         onDragOver?.(exerciseIndex);
       }}
-      className={`flex flex-col gap-3 p-4 bg-background-secondary/30 rounded-xl border border-border/50 hover:border-primary/30 transition-all ${
+      onClick={(e) => {
+        // If in selection mode, handle click to select
+        if (isSelectionMode && onSelect) {
+          e.stopPropagation(); // Prevent bubbling if parent has handler, though we want to handle it here
+          onSelect();
+        }
+      }}
+      className={`flex flex-col gap-3 p-4 bg-background-secondary/30 rounded-xl border border-border/50 transition-all ${
         isDragging ? "opacity-50 scale-95" : ""
-      } ${onDragStart ? "cursor-move" : ""}`}
+      } ${onDragStart && !isSelectionMode ? "cursor-move" : ""} ${
+        isSelectionMode
+          ? "hover:border-primary/50 cursor-pointer"
+          : "hover:border-primary/30"
+      }`}
     >
       {/* Collapsed View - Just Exercise Name */}
       {isCollapsed ? (
         <div className="flex items-center gap-2">
-          {onDragStart && (
+          {onDragStart && !isSelectionMode && (
             <div className="text-text-secondary/50 hover:text-text-secondary transition-colors cursor-grab active:cursor-grabbing flex-shrink-0">
               <GripVertical size={16} />
             </div>
@@ -86,19 +104,31 @@ export const ExerciseForm = ({
           <span className="font-medium text-text-primary truncate flex-1">
             {exercise.name || t("training.programs.create.form.exerciseName")}
           </span>
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            className="p-1.5 hover:bg-background-secondary rounded-lg transition-colors flex-shrink-0"
-          >
-            <ChevronDown size={16} className="text-text-secondary" />
-          </button>
+
+          {isSelectionMode ? (
+            <div
+              className={`w-5 h-5 rounded border flex items-center justify-center transition-all flex-shrink-0 ${isSelected ? "bg-primary border-primary" : "bg-surface border-border hover:border-primary"}`}
+            >
+              {isSelected && <Layers size={12} className="text-white" />}
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleCollapse?.();
+              }}
+              className="p-1.5 hover:bg-background-secondary rounded-lg transition-colors flex-shrink-0"
+            >
+              <ChevronDown size={16} className="text-text-secondary" />
+            </button>
+          )}
         </div>
       ) : (
         <>
           {/* Expanded View - Full Form */}
           <div className="flex items-center gap-2 mb-3">
-            {onDragStart && (
+            {onDragStart && !isSelectionMode && (
               <div className="text-text-secondary/50 hover:text-text-secondary transition-colors cursor-grab active:cursor-grabbing flex-shrink-0">
                 <GripVertical size={16} />
               </div>
@@ -106,17 +136,29 @@ export const ExerciseForm = ({
             <span className="text-sm font-medium text-text-secondary flex-1">
               {t("training.programs.create.form.exercise")} #{exerciseIndex + 1}
             </span>
-            {onToggleCollapse && (
-              <button
-                type="button"
-                onClick={onToggleCollapse}
-                className="p-1 hover:bg-background-secondary rounded-lg transition-colors flex-shrink-0"
+
+            {isSelectionMode ? (
+              <div
+                className={`w-5 h-5 rounded border flex items-center justify-center transition-all flex-shrink-0 ${isSelected ? "bg-primary border-primary" : "bg-surface border-border hover:border-primary"}`}
               >
-                <ChevronDown
-                  size={18}
-                  className="text-text-secondary transform rotate-180"
-                />
-              </button>
+                {isSelected && <Layers size={12} className="text-white" />}
+              </div>
+            ) : (
+              onToggleCollapse && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleCollapse();
+                  }}
+                  className="p-1 hover:bg-background-secondary rounded-lg transition-colors flex-shrink-0"
+                >
+                  <ChevronDown
+                    size={18}
+                    className="text-text-secondary transform rotate-180"
+                  />
+                </button>
+              )
             )}
           </div>
           {/* Row 1: Name and Muscle */}
@@ -159,7 +201,7 @@ export const ExerciseForm = ({
                 marginTop="mt-1"
                 placeholder={t(
                   "training.programs.create.form.selectMuscle",
-                  "Select Muscle"
+                  "Select Muscle",
                 )}
               />
             </div>
@@ -235,7 +277,7 @@ export const ExerciseForm = ({
                   className="px-3 py-1.5 rounded-lg font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-xs flex items-center gap-1.5 transition-all"
                   title={t(
                     "training.programs.create.form.addNextExercise",
-                    "Add Next Exercise"
+                    "Add Next Exercise",
                   )}
                 >
                   <Plus size={16} />

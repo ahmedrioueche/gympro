@@ -43,11 +43,13 @@ export const LogSessionModal = ({
         onSuccess: () => {
           onClose();
         },
-      }
+      },
     );
   };
 
   const currentDay = program.days.find((d) => d.name === form.selectedDayName);
+  const flattenedExercises =
+    currentDay?.blocks.flatMap((b) => b.exercises) || [];
 
   if (!isOpen) return null;
 
@@ -129,7 +131,7 @@ export const LogSessionModal = ({
                   </p>
                 ) : (
                   form.exercises.map((ex, exIndex) => {
-                    const originalExercise = currentDay?.exercises[exIndex];
+                    const originalExercise = flattenedExercises[exIndex];
 
                     return (
                       <SessionExerciseCard
@@ -140,6 +142,9 @@ export const LogSessionModal = ({
                         onUpdateSet={form.updateSet}
                         onAddSet={form.addSet}
                         onRemoveSet={form.removeSet}
+                        onAddDropSet={form.addDropSet}
+                        onUpdateDropSet={form.updateDropSet}
+                        onRemoveDropSet={form.removeDropSet}
                         onViewVideo={(ex) =>
                           openModal("exercise_detail", { exercise: ex })
                         }

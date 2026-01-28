@@ -48,7 +48,7 @@ export const ActiveProgramCard = ({
   const { program, progress } = history;
   const isPaused = history.status === "paused";
   const progressPercent = Math.round(
-    (progress.daysCompleted / progress.totalDays) * 100
+    (progress.daysCompleted / progress.totalDays) * 100,
   );
 
   const getSourceConfig = () => {
@@ -76,8 +76,13 @@ export const ActiveProgramCard = ({
 
   const sourceConfig = getSourceConfig();
   const totalExercises = program.days.reduce(
-    (acc, day) => acc + day.exercises.length,
-    0
+    (acc, day) =>
+      acc +
+      day.blocks.reduce(
+        (blockAcc, block) => blockAcc + block.exercises.length,
+        0,
+      ),
+    0,
   );
 
   return (

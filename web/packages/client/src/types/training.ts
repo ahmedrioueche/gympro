@@ -135,9 +135,15 @@ export interface Exercise extends AuditInfo {
   isPublic?: boolean;
 }
 
+export interface ProgramBlock {
+  type: "single" | "superset" | "circuit";
+  exercises: Exercise[];
+  rounds?: number;
+}
+
 export interface ProgramDay {
   name: string;
-  exercises: Exercise[];
+  blocks: ProgramBlock[];
 }
 
 export interface ProgramComment {
@@ -169,6 +175,10 @@ export interface ExerciseSet {
   reps: number;
   weight: number;
   completed: boolean;
+  drops?: {
+    weight: number;
+    reps: number;
+  }[];
 }
 
 export interface ExerciseProgress {

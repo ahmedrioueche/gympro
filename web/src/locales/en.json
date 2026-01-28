@@ -20,6 +20,7 @@
     "currentRoute": "Current Route",
     "back": "Back",
     "save": "Save",
+    "select": "Select",
     "saving": "Saving...",
     "close": "Close",
     "processing": "Processing...",
@@ -2286,7 +2287,12 @@
       "programs": {
         "title": "Training Programs",
         "subtitle": "Browse and manage your training routines",
-        "button": "Log Custom Workout"
+        "button": "Log Custom Workout",
+        "create": {
+          "form": {
+            "createSuperset": "Create a Superset"
+          }
+        }
       }
     },
     "activeProgram": {
@@ -2390,7 +2396,8 @@
           "public": "Public",
           "private": "Private",
           "publicDesc": "Visible to everyone",
-          "privateDesc": "Only visible to you"
+          "privateDesc": "Only visible to you",
+          "createSuperset": "Create Superset"
         },
         "validation": {
           "nameRequired": "Program name is required"

@@ -19,7 +19,8 @@ export const CreateProgramModal = ({}) => {
     addExercise,
     updateExercise,
     removeExercise,
-    reorderExercise,
+    reorderBlock,
+    groupBlocks,
     updateField,
     updateDaysPerWeek,
   } = useProgramCreate(closeModal);
@@ -92,14 +93,17 @@ export const CreateProgramModal = ({}) => {
                 isEditMode={true}
                 onDayNameChange={(name) => updateDayName(dayIndex, name)}
                 onAddExercise={(data) => addExercise(dayIndex, data)}
-                onExerciseUpdate={(exIndex, field, value) =>
-                  updateExercise(dayIndex, exIndex, field, value)
+                onExerciseUpdate={(blockIndex, exIndex, field, value) =>
+                  updateExercise(dayIndex, blockIndex, exIndex, field, value)
                 }
-                onExerciseRemove={(exIndex) =>
-                  removeExercise(dayIndex, exIndex)
+                onExerciseRemove={(blockIndex, exIndex) =>
+                  removeExercise(dayIndex, blockIndex, exIndex)
                 }
-                onExerciseReorder={(fromIndex, toIndex) =>
-                  reorderExercise(dayIndex, fromIndex, toIndex)
+                onBlockReorder={(fromIndex, toIndex) =>
+                  reorderBlock(dayIndex, fromIndex, toIndex)
+                }
+                onGroupBlocks={(blockIndices) =>
+                  groupBlocks(dayIndex, blockIndices)
                 }
                 onExerciseClick={() => {}}
               />

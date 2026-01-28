@@ -61,8 +61,13 @@ export const ProgramCard = ({
   const SourceIcon = sourceConfig.icon;
 
   const totalExercises = program.days.reduce(
-    (acc, day) => acc + day.exercises.length,
-    0
+    (acc, day) =>
+      acc +
+      day.blocks.reduce(
+        (blockAcc, block) => blockAcc + block.exercises.length,
+        0,
+      ),
+    0,
   );
 
   return (

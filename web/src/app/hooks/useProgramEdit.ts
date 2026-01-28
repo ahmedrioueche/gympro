@@ -1,5 +1,6 @@
 import {
   type CreateExerciseDto,
+  type CreateProgramBlockDto,
   type CreateProgramDayDto,
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
@@ -11,7 +12,7 @@ import { useUpdateProgram } from "../../hooks/queries/useTraining";
 export const useProgramEdit = (
   program: TrainingProgram | null,
   isEditMode: boolean,
-  onProgramUpdated?: (program: TrainingProgram) => void
+  onProgramUpdated?: (program: TrainingProgram) => void,
 ) => {
   const { t } = useTranslation();
   const [editData, setEditData] = useState<any>(null);
@@ -28,7 +29,11 @@ export const useProgramEdit = (
         daysPerWeek: program.daysPerWeek,
         days: program.days.map((day) => ({
           name: day.name,
-          exercises: day.exercises.map((ex) => ({ ...ex })),
+          blocks: day.blocks.map((block) => ({
+            type: block.type,
+            exercises: block.exercises.map((ex) => ({ ...ex })),
+            rounds: block.rounds,
+          })),
         })),
         isPublic: program.isPublic,
       });
@@ -51,7 +56,7 @@ export const useProgramEdit = (
         onError: () => {
           toast.error(t("training.programs.edit.error"));
         },
-      }
+      },
     );
   };
 
@@ -65,61 +70,103 @@ export const useProgramEdit = (
   const addExercise = (dayIndex: number) => {
     if (!editData?.days) return;
     const newDays = [...editData.days] as CreateProgramDayDto[];
-    newDays[dayIndex] = {
-      ...newDays[dayIndex],
-      exercises: [
-        ...newDays[dayIndex].exercises,
-        {
-          name: "",
-          recommendedSets: 3,
-          recommendedReps: 10,
-          targetMuscles: [],
-          equipment: [],
-        } as CreateExerciseDto,
-      ],
+
+    const newExercise: CreateExerciseDto = {
+      name: "",
+      recommendedSets: 3,
+      recommendedReps: 10,
+      targetMuscles: [],
+      equipment: [],
     };
+
+    const newBlock: CreateProgramBlockDto = {
+      type: "single",
+      exercises: [newExercise],
+    };
+
+    newDays[dayIndex].blocks.push(newBlock);
     setEditData({ ...editData, days: newDays });
   };
 
   const updateExercise = (
     dayIndex: number,
+    blockIndex: number,
     exIndex: number,
     field: keyof CreateExerciseDto,
-    value: any
+    value: any,
   ) => {
     if (!editData?.days) return;
     const newDays = [...editData.days] as CreateProgramDayDto[];
-    const newExercises = [...newDays[dayIndex].exercises];
-    newExercises[exIndex] = { ...newExercises[exIndex], [field]: value };
-    newDays[dayIndex] = { ...newDays[dayIndex], exercises: newExercises };
+    const newBlock = newDays[dayIndex].blocks[blockIndex];
+    if (!newBlock) return;
+
+    newBlock.exercises[exIndex] = {
+      ...newBlock.exercises[exIndex],
+      [field]: value,
+    };
     setEditData({ ...editData, days: newDays });
   };
 
-  const removeExercise = (dayIndex: number, exIndex: number) => {
+  const removeExercise = (
+    dayIndex: number,
+    blockIndex: number,
+    exIndex: number,
+  ) => {
     if (!editData?.days) return;
     const newDays = [...editData.days] as CreateProgramDayDto[];
-    const newExercises = newDays[dayIndex].exercises.filter(
-      (_, i) => i !== exIndex
-    );
-    newDays[dayIndex] = { ...newDays[dayIndex], exercises: newExercises };
+    const block = newDays[dayIndex].blocks[blockIndex];
+
+    block.exercises.splice(exIndex, 1);
+
+    if (block.exercises.length === 0) {
+      newDays[dayIndex].blocks.splice(blockIndex, 1);
+    } else if (block.type === "superset" && block.exercises.length === 1) {
+      block.type = "single";
+    }
+
     setEditData({ ...editData, days: newDays });
   };
 
-  const reorderExercise = (
+  const reorderBlock = (
     dayIndex: number,
     fromIndex: number,
-    toIndex: number
+    toIndex: number,
   ) => {
     if (!editData?.days) return;
     const newDays = [...editData.days] as CreateProgramDayDto[];
-    const exercises = [...newDays[dayIndex].exercises];
+    const blocks = [...newDays[dayIndex].blocks];
 
-    // Remove the item from the old position
-    const [movedExercise] = exercises.splice(fromIndex, 1);
-    // Insert it at the new position
-    exercises.splice(toIndex, 0, movedExercise);
+    const [movedBlock] = blocks.splice(fromIndex, 1);
+    blocks.splice(toIndex, 0, movedBlock);
 
-    newDays[dayIndex] = { ...newDays[dayIndex], exercises };
+    newDays[dayIndex].blocks = blocks;
+    setEditData({ ...editData, days: newDays });
+  };
+
+  const groupBlocks = (dayIndex: number, blockIndices: number[]) => {
+    if (!editData?.days || blockIndices.length < 2) return;
+    const newDays = [...editData.days] as CreateProgramDayDto[];
+    const day = newDays[dayIndex];
+
+    const exercisesToGroup: CreateExerciseDto[] = [];
+    const sortedIndices = [...blockIndices].sort((a, b) => b - a);
+    const ascendingIndices = [...blockIndices].sort((a, b) => a - b);
+
+    ascendingIndices.forEach((idx) => {
+      exercisesToGroup.push(...day.blocks[idx].exercises);
+    });
+
+    sortedIndices.forEach((idx) => {
+      day.blocks.splice(idx, 1);
+    });
+
+    const newBlock: CreateProgramBlockDto = {
+      type: "superset",
+      exercises: exercisesToGroup,
+      rounds: 3,
+    };
+
+    day.blocks.splice(ascendingIndices[0], 0, newBlock);
     setEditData({ ...editData, days: newDays });
   };
 
@@ -132,6 +179,7 @@ export const useProgramEdit = (
     addExercise,
     updateExercise,
     removeExercise,
-    reorderExercise,
+    reorderBlock,
+    groupBlocks,
   };
 };

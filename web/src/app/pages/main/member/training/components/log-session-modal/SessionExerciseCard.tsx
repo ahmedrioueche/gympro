@@ -3,21 +3,36 @@ import {
   type ExerciseSet,
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
-import { Check, PlayCircle, Plus, Trash2 } from "lucide-react";
+import { Check, CornerDownRight, PlayCircle, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface SessionExerciseCardProps {
   exercise: ExerciseProgress;
   exerciseIndex: number;
-  originalExercise: TrainingProgram["days"][0]["exercises"][0] | undefined;
+  originalExercise:
+    | TrainingProgram["days"][0]["blocks"][0]["exercises"][0]
+    | undefined;
   onUpdateSet: (
     exIndex: number,
     setIndex: number,
     field: keyof ExerciseSet,
-    value: any
+    value: any,
   ) => void;
   onAddSet: (exIndex: number) => void;
   onRemoveSet: (exIndex: number, setIndex: number) => void;
+  onAddDropSet: (exIndex: number, setIndex: number) => void;
+  onUpdateDropSet: (
+    exIndex: number,
+    setIndex: number,
+    dropIndex: number,
+    field: "weight" | "reps",
+    value: number,
+  ) => void;
+  onRemoveDropSet: (
+    exIndex: number,
+    setIndex: number,
+    dropIndex: number,
+  ) => void;
   onViewVideo: (exercise: any) => void;
 }
 
@@ -28,6 +43,9 @@ export const SessionExerciseCard = ({
   onUpdateSet,
   onAddSet,
   onRemoveSet,
+  onAddDropSet,
+  onUpdateDropSet,
+  onRemoveDropSet,
   onViewVideo,
 }: SessionExerciseCardProps) => {
   const { t } = useTranslation();
@@ -77,81 +95,152 @@ export const SessionExerciseCard = ({
 
         {/* Set Rows */}
         {exercise.sets.map((set, setIndex) => (
-          <div
-            key={setIndex}
-            className={`grid grid-cols-12 gap-2 items-center p-2 rounded-lg transition-colors ${
-              set.completed
-                ? "bg-green-500/10 border border-green-500/30"
-                : "bg-background-secondary/50"
-            }`}
-          >
-            {/* Set Number */}
-            <div className="col-span-1 text-center font-bold text-text-secondary">
-              {setIndex + 1}
+          <div key={setIndex} className="space-y-2">
+            <div
+              className={`grid grid-cols-12 gap-2 items-center p-2 rounded-lg transition-colors ${
+                set.completed
+                  ? "bg-green-500/10 border border-green-500/30"
+                  : "bg-background-secondary/50"
+              }`}
+            >
+              {/* Set Number */}
+              <div className="col-span-1 text-center font-bold text-text-secondary flex flex-col items-center gap-1">
+                <span>{setIndex + 1}</span>
+              </div>
+
+              {/* Weight */}
+              <div className="col-span-4">
+                <input
+                  type="number"
+                  value={set.weight || ""}
+                  onChange={(e) =>
+                    onUpdateSet(
+                      exerciseIndex,
+                      setIndex,
+                      "weight",
+                      parseFloat(e.target.value) || 0,
+                    )
+                  }
+                  className="w-full px-3 py-2 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary"
+                  placeholder="0"
+                />
+              </div>
+
+              {/* Reps */}
+              <div className="col-span-4">
+                <input
+                  type="number"
+                  value={set.reps || ""}
+                  onChange={(e) =>
+                    onUpdateSet(
+                      exerciseIndex,
+                      setIndex,
+                      "reps",
+                      parseInt(e.target.value) || 0,
+                    )
+                  }
+                  className="w-full px-3 py-2 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary"
+                  placeholder="0"
+                />
+              </div>
+
+              {/* Done + Delete */}
+              <div className="col-span-3 flex items-center justify-center gap-1">
+                <button
+                  onClick={() =>
+                    onUpdateSet(
+                      exerciseIndex,
+                      setIndex,
+                      "completed",
+                      !set.completed,
+                    )
+                  }
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                    set.completed
+                      ? "bg-green-500 text-white"
+                      : "bg-background-secondary border border-border hover:border-green-500/50"
+                  }`}
+                >
+                  <Check size={16} />
+                </button>
+                <div className="flex flex-col gap-1">
+                  <button
+                    onClick={() => onRemoveSet(exerciseIndex, setIndex)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center bg-background-secondary border border-border hover:border-red-500/50 hover:bg-red-500/10 text-text-secondary hover:text-red-500 transition-all"
+                    title="Remove Set"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                  <button
+                    onClick={() => onAddDropSet(exerciseIndex, setIndex)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center bg-background-secondary border border-border hover:border-blue-500/50 hover:bg-blue-500/10 text-text-secondary hover:text-blue-500 transition-all"
+                    title="Add Drop Set"
+                  >
+                    <CornerDownRight size={14} />
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Weight */}
-            <div className="col-span-4">
-              <input
-                type="number"
-                value={set.weight || ""}
-                onChange={(e) =>
-                  onUpdateSet(
-                    exerciseIndex,
-                    setIndex,
-                    "weight",
-                    parseFloat(e.target.value) || 0
-                  )
-                }
-                className="w-full px-3 py-2 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary"
-                placeholder="0"
-              />
-            </div>
-
-            {/* Reps */}
-            <div className="col-span-4">
-              <input
-                type="number"
-                value={set.reps || ""}
-                onChange={(e) =>
-                  onUpdateSet(
-                    exerciseIndex,
-                    setIndex,
-                    "reps",
-                    parseInt(e.target.value) || 0
-                  )
-                }
-                className="w-full px-3 py-2 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary"
-                placeholder="0"
-              />
-            </div>
-
-            {/* Done + Delete */}
-            <div className="col-span-3 flex items-center justify-center gap-1">
-              <button
-                onClick={() =>
-                  onUpdateSet(
-                    exerciseIndex,
-                    setIndex,
-                    "completed",
-                    !set.completed
-                  )
-                }
-                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-                  set.completed
-                    ? "bg-green-500 text-white"
-                    : "bg-background-secondary border border-border hover:border-green-500/50"
-                }`}
-              >
-                <Check size={16} />
-              </button>
-              <button
-                onClick={() => onRemoveSet(exerciseIndex, setIndex)}
-                className="w-8 h-8 rounded-lg flex items-center justify-center bg-background-secondary border border-border hover:border-red-500/50 hover:bg-red-500/10 text-text-secondary hover:text-red-500 transition-all"
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
+            {/* Drop Sets */}
+            {set.drops && set.drops.length > 0 && (
+              <div className="pl-4 space-y-2 border-l-2 border-primary/20 ml-4 py-1">
+                {set.drops.map((drop, dropIndex) => (
+                  <div
+                    key={dropIndex}
+                    className="grid grid-cols-12 gap-2 items-center"
+                  >
+                    <div className="col-span-1 text-center text-xs text-text-secondary font-medium">
+                      Drop
+                    </div>
+                    <div className="col-span-4">
+                      <input
+                        type="number"
+                        value={drop.weight || ""}
+                        onChange={(e) =>
+                          onUpdateDropSet(
+                            exerciseIndex,
+                            setIndex,
+                            dropIndex,
+                            "weight",
+                            parseFloat(e.target.value) || 0,
+                          )
+                        }
+                        className="w-full px-2 py-1.5 bg-background-secondary border border-border rounded-lg text-center text-sm text-text-primary focus:outline-none focus:border-primary"
+                        placeholder="kg"
+                      />
+                    </div>
+                    <div className="col-span-4">
+                      <input
+                        type="number"
+                        value={drop.reps || ""}
+                        onChange={(e) =>
+                          onUpdateDropSet(
+                            exerciseIndex,
+                            setIndex,
+                            dropIndex,
+                            "reps",
+                            parseInt(e.target.value) || 0,
+                          )
+                        }
+                        className="w-full px-2 py-1.5 bg-background-secondary border border-border rounded-lg text-center text-sm text-text-primary focus:outline-none focus:border-primary"
+                        placeholder="reps"
+                      />
+                    </div>
+                    <div className="col-span-3 flex justify-center">
+                      <button
+                        onClick={() =>
+                          onRemoveDropSet(exerciseIndex, setIndex, dropIndex)
+                        }
+                        className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
 

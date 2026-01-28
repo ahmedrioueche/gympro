@@ -1,5 +1,6 @@
 import {
   type CreateExerciseDto,
+  type CreateProgramBlockDto,
   type CreateProgramDto,
   type DaysPerWeek,
 } from "@ahmedrioueche/gympro-client";
@@ -34,8 +35,8 @@ export const useProgramCreate = (onClose: () => void) => {
         const initialDays = Array.from({ length: formData.daysPerWeek }).map(
           (_, i) => ({
             name: `${t("training.programs.create.form.day")} ${i + 1}`,
-            exercises: [],
-          })
+            blocks: [], // Initialize blocks
+          }),
         );
         setFormData({ ...formData, days: initialDays });
       } else if (formData.days.length !== formData.daysPerWeek) {
@@ -48,7 +49,7 @@ export const useProgramCreate = (onClose: () => void) => {
               name: `${t("training.programs.create.form.day")} ${
                 currentDays.length + 1
               }`,
-              exercises: [],
+              blocks: [],
             });
           }
         } else {
@@ -64,6 +65,7 @@ export const useProgramCreate = (onClose: () => void) => {
         name:
           day.name.trim() ||
           `${t("training.programs.create.form.day")} ${index + 1}`,
+        // Ensure blocks are valid if needed
       }));
 
       // Save
@@ -73,7 +75,7 @@ export const useProgramCreate = (onClose: () => void) => {
           onSuccess: () => {
             resetForm();
           },
-        }
+        },
       );
     }
   };
@@ -100,7 +102,7 @@ export const useProgramCreate = (onClose: () => void) => {
 
   const addExercise = (
     dayIndex: number,
-    initialData?: Partial<CreateExerciseDto>
+    initialData?: Partial<CreateExerciseDto>,
   ) => {
     const newDays = [...formData.days];
     const newExercise: CreateExerciseDto = {
@@ -116,40 +118,106 @@ export const useProgramCreate = (onClose: () => void) => {
       difficulty: initialData?.difficulty,
       type: initialData?.type,
     };
-    newDays[dayIndex].exercises.push(newExercise);
+
+    // Create a new SINGLE block for the exercise
+    const newBlock: CreateProgramBlockDto = {
+      type: "single",
+      exercises: [newExercise],
+    };
+
+    newDays[dayIndex].blocks.push(newBlock);
     setFormData({ ...formData, days: newDays });
   };
 
   const updateExercise = (
     dayIndex: number,
+    blockIndex: number,
     exIndex: number,
     field: keyof CreateExerciseDto,
-    value: any
+    value: any,
   ) => {
     const newDays = [...formData.days];
-    newDays[dayIndex].exercises[exIndex] = {
-      ...newDays[dayIndex].exercises[exIndex],
+    newDays[dayIndex].blocks[blockIndex].exercises[exIndex] = {
+      ...newDays[dayIndex].blocks[blockIndex].exercises[exIndex],
       [field]: value,
     };
     setFormData({ ...formData, days: newDays });
   };
 
-  const removeExercise = (dayIndex: number, exIndex: number) => {
+  // Remove exercise from a block. If block becomes empty, remove block.
+  // If block is 'single', removing the exercise removes the block.
+  const removeExercise = (
+    dayIndex: number,
+    blockIndex: number,
+    exIndex: number,
+  ) => {
     const newDays = [...formData.days];
-    newDays[dayIndex].exercises.splice(exIndex, 1);
+    const block = newDays[dayIndex].blocks[blockIndex];
+
+    block.exercises.splice(exIndex, 1);
+
+    // If block is empty, remove it
+    if (block.exercises.length === 0) {
+      newDays[dayIndex].blocks.splice(blockIndex, 1);
+    }
+    // If block was superset and now has 1 exercise, maybe convert to single?
+    // User requirements say "make sure its clean". Automatic downgrade is clean.
+    else if (block.type === "superset" && block.exercises.length === 1) {
+      block.type = "single";
+    }
+
     setFormData({ ...formData, days: newDays });
   };
 
-  const reorderExercise = (
+  const reorderBlock = (
     dayIndex: number,
     fromIndex: number,
-    toIndex: number
+    toIndex: number,
   ) => {
     const newDays = [...formData.days];
-    const exercises = [...newDays[dayIndex].exercises];
-    const [movedExercise] = exercises.splice(fromIndex, 1);
-    exercises.splice(toIndex, 0, movedExercise);
-    newDays[dayIndex].exercises = exercises;
+    const blocks = [...newDays[dayIndex].blocks];
+    const [movedBlock] = blocks.splice(fromIndex, 1);
+    blocks.splice(toIndex, 0, movedBlock);
+    newDays[dayIndex].blocks = blocks;
+    setFormData({ ...formData, days: newDays });
+  };
+
+  // Group multiple blocks into one SuperSet
+  const groupBlocks = (dayIndex: number, blockIndices: number[]) => {
+    if (blockIndices.length < 2) return;
+
+    const newDays = [...formData.days];
+    const day = newDays[dayIndex];
+
+    // Extract exercises from selected blocks
+    const exercisesToGroup: CreateExerciseDto[] = [];
+
+    // Sort indices descending to splice correctly
+    const sortedIndices = [...blockIndices].sort((a, b) => b - a);
+
+    // Gather exercises and remove blocks
+    // We want to preserve order of blocks as they appear in the list
+    // So we iterate original indices in ascending order to collect exercises
+    const ascendingIndices = [...blockIndices].sort((a, b) => a - b);
+
+    ascendingIndices.forEach((idx) => {
+      exercisesToGroup.push(...day.blocks[idx].exercises);
+    });
+
+    // Remove old blocks
+    sortedIndices.forEach((idx) => {
+      day.blocks.splice(idx, 1);
+    });
+
+    // Create new Superset block at the position of the first block
+    const newBlock: CreateProgramBlockDto = {
+      type: "superset",
+      exercises: exercisesToGroup,
+      rounds: 3, // Default for superset
+    };
+
+    day.blocks.splice(ascendingIndices[0], 0, newBlock);
+
     setFormData({ ...formData, days: newDays });
   };
 
@@ -171,7 +239,8 @@ export const useProgramCreate = (onClose: () => void) => {
     addExercise,
     updateExercise,
     removeExercise,
-    reorderExercise,
+    reorderBlock,
+    groupBlocks,
     updateField,
     updateDaysPerWeek,
   };

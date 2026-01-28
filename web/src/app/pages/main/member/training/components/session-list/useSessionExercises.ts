@@ -7,8 +7,10 @@ export const useSessionExercises = (program: TrainingProgram) => {
   const getExercise = (id: string) => {
     // 1. Try to find by ID or exact Name match in the program
     for (const day of program.days) {
-      const ex = day.exercises.find((e) => e._id === id || e.name === id);
-      if (ex) return ex;
+      for (const block of day.blocks) {
+        const ex = block.exercises.find((e) => e._id === id || e.name === id);
+        if (ex) return ex;
+      }
     }
     return undefined;
   };

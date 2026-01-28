@@ -5,12 +5,14 @@ import { useTranslation } from "react-i18next";
 import { DayCard, ProgramDescription, ProgramForm } from ".";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useModalStore } from "../../../../store/modal";
+import { useUserStore } from "../../../../store/user";
 import { useProgramEdit } from "../../../hooks/useProgramEdit";
 import AddReviewForm from "./AddReviewForm";
 import ReviewList from "./ReviewList";
 
 const ProgramDetailsModal = ({}) => {
   const { currentModal, programDetailsProps, closeModal } = useModalStore();
+  const { user } = useUserStore();
   const { t } = useTranslation();
   const { openModal } = useModalStore();
   const [isEditMode, setIsEditMode] = useState(false);
@@ -37,7 +39,8 @@ const ProgramDetailsModal = ({}) => {
     addExercise,
     updateExercise,
     removeExercise,
-    reorderExercise,
+    reorderBlock,
+    groupBlocks,
   } = useProgramEdit(program, isEditMode, onProgramUpdated);
 
   const handleSaveClick = () => {
@@ -121,14 +124,16 @@ const ProgramDetailsModal = ({}) => {
         "training.programs.card.daysPerWeek",
         {
           count: program.daysPerWeek,
-        }
+        },
       )}`}
       icon={Dumbbell}
       isEditMode={isEditMode}
       editTitle={editData?.name}
       onTitleChange={(name) => setEditData({ ...editData, name })}
       onEditClick={() => setIsEditMode(true)}
-      showEditButton={program.creationType === "member"}
+      showEditButton={
+        program.creationType === "member" && program.createdBy === user?._id
+      }
       footer={renderFooter()}
     >
       <div className="space-y-6">
@@ -168,12 +173,17 @@ const ProgramDetailsModal = ({}) => {
                 isEditMode={isEditMode}
                 onDayNameChange={(name) => updateDayName(index, name)}
                 onAddExercise={() => addExercise(index)}
-                onExerciseUpdate={(exIndex, field, value) =>
-                  updateExercise(index, exIndex, field, value)
+                onExerciseUpdate={(blockIndex, exIndex, field, value) =>
+                  updateExercise(index, blockIndex, exIndex, field, value)
                 }
-                onExerciseRemove={(exIndex) => removeExercise(index, exIndex)}
-                onExerciseReorder={(fromIndex, toIndex) =>
-                  reorderExercise(index, fromIndex, toIndex)
+                onExerciseRemove={(blockIndex, exIndex) =>
+                  removeExercise(index, blockIndex, exIndex)
+                }
+                onBlockReorder={(fromIndex, toIndex) =>
+                  reorderBlock(index, fromIndex, toIndex)
+                }
+                onGroupBlocks={(blockIndices) =>
+                  groupBlocks(index, blockIndices)
                 }
                 onExerciseClick={(ex) =>
                   openModal("exercise_detail", { exercise: ex })

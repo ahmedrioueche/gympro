@@ -62,7 +62,7 @@ export const WorkoutHistoryList = ({
         <p className="text-sm">
           {t(
             "training.page.noWorkoutsDesc",
-            "Start logging your workouts to track your progress"
+            "Start logging your workouts to track your progress",
           )}
         </p>
       </div>
@@ -126,8 +126,10 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
     if (!activeProgram) return t("training.logSession.unknownExercise");
 
     for (const day of activeProgram.days) {
-      const ex = day.exercises.find((e) => e._id === exercise.exerciseId);
-      if (ex) return ex.name;
+      for (const block of day.blocks) {
+        const ex = block.exercises.find((e) => e._id === exercise.exerciseId);
+        if (ex) return ex.name;
+      }
     }
     return t("training.logSession.unknownExercise");
   };
@@ -137,9 +139,9 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
       sum +
       (ex.sets?.reduce(
         (s, set) => s + (set.reps || 0) * (set.weight || 0),
-        0
+        0,
       ) || 0),
-    0
+    0,
   );
 
   return (
@@ -224,21 +226,66 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
           {workout.exercises.map((ex, idx) => (
             <div
               key={idx}
-              className="flex justify-between items-center text-sm p-3 bg-surface rounded-lg"
+              className="flex flex-col gap-2 p-3 bg-surface rounded-lg"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
-                  {idx + 1}
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                    {idx + 1}
+                  </div>
+                  <span className="font-medium text-text-primary">
+                    {getExerciseName(ex)}
+                  </span>
                 </div>
-                <span className="font-medium text-text-primary">
-                  {getExerciseName(ex)}
-                </span>
+                <div className="text-text-secondary font-mono text-xs">
+                  {ex.sets?.length || 0} sets
+                  {ex.sets?.length > 0 &&
+                    ` • Volume: ${ex.sets
+                      .reduce((acc, s) => {
+                        let setVol = (s.weight || 0) * (s.reps || 0);
+                        if (s.drops && s.drops.length > 0) {
+                          setVol += s.drops.reduce(
+                            (dAcc, d) => dAcc + d.weight * d.reps,
+                            0,
+                          );
+                        }
+                        return acc + setVol;
+                      }, 0)
+                      .toFixed(0)}kg`}
+                </div>
               </div>
-              <div className="text-text-secondary font-mono text-xs">
-                {ex.sets?.length || 0} sets
-                {ex.sets?.length > 0 &&
-                  ` • Max ${Math.max(...ex.sets.map((s) => s.weight || 0))}kg`}
-              </div>
+
+              {/* Detailed Sets View */}
+              {ex.sets && ex.sets.length > 0 && (
+                <div className="pl-10 space-y-1">
+                  {ex.sets.map((set, setIdx) => (
+                    <div key={setIdx} className="text-xs">
+                      <div className="flex items-center justify-between text-text-secondary">
+                        <span className="font-medium">Set {setIdx + 1}</span>
+                        <span className="font-mono">
+                          {set.weight}kg × {set.reps}
+                        </span>
+                      </div>
+                      {/* Drop Sets */}
+                      {set.drops && set.drops.length > 0 && (
+                        <div className="mt-1 pl-3 border-l-2 border-error/30 space-y-1">
+                          {set.drops.map((drop, dropIdx) => (
+                            <div
+                              key={dropIdx}
+                              className="flex items-center gap-2 text-[10px] text-error"
+                            >
+                              <span className="font-bold">DROP</span>
+                              <span className="font-mono text-text-secondary">
+                                {drop.weight}kg × {drop.reps}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
           {workout.notes && (

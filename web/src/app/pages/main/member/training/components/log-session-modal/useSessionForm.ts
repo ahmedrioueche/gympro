@@ -20,12 +20,12 @@ export const useSessionForm = ({
   const { program, progress } = activeHistory;
 
   const [selectedDayName, setSelectedDayName] = useState<string>(
-    initialSession?.dayName || program.days[0]?.name || ""
+    initialSession?.dayName || program.days[0]?.name || "",
   );
   const [sessionDate, setSessionDate] = useState(
     initialSession
       ? new Date(initialSession.date).toISOString().split("T")[0]
-      : new Date().toISOString().split("T")[0]
+      : new Date().toISOString().split("T")[0],
   );
   const [exercises, setExercises] = useState<ExerciseProgress[]>([]);
   const prevDayNameRef = useRef<string>("");
@@ -39,7 +39,7 @@ export const useSessionForm = ({
       setSessionDate(
         initialSession?.date
           ? new Date(initialSession.date).toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0],
       );
     }
   }, [isOpen, initialSession, program.days]);
@@ -62,7 +62,7 @@ export const useSessionForm = ({
     const lastSession = progress?.dayLogs
       ? [...progress.dayLogs]
           .sort(
-            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
           )
           .find((log) => log.dayName === selectedDayName)
       : undefined;
@@ -71,63 +71,68 @@ export const useSessionForm = ({
     const isEditingTarget =
       initialSession && initialSession.dayName === selectedDayName;
 
-    // Map exercises for the selected day
-    const initialExercises: ExerciseProgress[] = day.exercises.map((ex) => {
-      // If editing, try to find the exercise in the initial session data
-      if (isEditingTarget) {
-        const existingEx = initialSession.exercises.find(
+    // Map exercises for the selected day (Flatten blocks)
+    const flattenedExercises = day.blocks.flatMap((b) => b.exercises);
+    const initialExercises: ExerciseProgress[] = flattenedExercises.map(
+      (ex) => {
+        // If editing, try to find the exercise in the initial session data
+        if (isEditingTarget) {
+          const existingEx = initialSession.exercises.find(
+            (e) =>
+              e.exerciseId === ex._id ||
+              e.exerciseId === ex.name ||
+              (ex._id && e.exerciseId === "unknown_exercise"), // Fallback matching
+          );
+
+          if (existingEx) {
+            return {
+              exerciseId: ex._id || ex.name || "unknown_exercise",
+              sets: existingEx.sets || [],
+              notes: existingEx.notes || "",
+            };
+          }
+        }
+
+        const lastEx = lastSession?.exercises.find(
           (e) =>
             e.exerciseId === ex._id ||
             e.exerciseId === ex.name ||
-            (ex._id && e.exerciseId === "unknown_exercise") // Fallback matching
+            (ex._id && e.exerciseId === ex._id) ||
+            (ex.name && e.exerciseId === ex.name),
         );
 
-        if (existingEx) {
-          return {
-            exerciseId: ex._id || ex.name || "unknown_exercise",
-            sets: existingEx.sets || [],
-            notes: existingEx.notes || "",
-          };
+        // Determine initial sets configuration
+        let initialSets: ExerciseSet[] = [];
+
+        if (lastEx && lastEx.sets && lastEx.sets.length > 0) {
+          // Option A: Pre-fill with last session's data
+          console.log(
+            `Pre-filling exercise "${ex.name}" with last session data:`,
+            lastEx.sets,
+          );
+          initialSets = lastEx.sets.map((s) => ({
+            reps: s.reps,
+            weight: s.weight,
+            completed: false,
+            drops: s.drops || [],
+          }));
+        } else {
+          const setRange = Array.from({ length: ex.recommendedSets || 3 });
+          initialSets = setRange.map(() => ({
+            reps: ex.recommendedReps || 10,
+            weight: 0,
+            completed: false,
+            drops: [],
+          }));
         }
-      }
 
-      const lastEx = lastSession?.exercises.find(
-        (e) =>
-          e.exerciseId === ex._id ||
-          e.exerciseId === ex.name ||
-          (ex._id && e.exerciseId === ex._id) ||
-          (ex.name && e.exerciseId === ex.name)
-      );
-
-      // Determine initial sets configuration
-      let initialSets: ExerciseSet[] = [];
-
-      if (lastEx && lastEx.sets && lastEx.sets.length > 0) {
-        // Option A: Pre-fill with last session's data
-        console.log(
-          `Pre-filling exercise "${ex.name}" with last session data:`,
-          lastEx.sets
-        );
-        initialSets = lastEx.sets.map((s) => ({
-          reps: s.reps,
-          weight: s.weight,
-          completed: false,
-        }));
-      } else {
-        const setRange = Array.from({ length: ex.recommendedSets || 3 });
-        initialSets = setRange.map(() => ({
-          reps: ex.recommendedReps || 10,
-          weight: 0,
-          completed: false,
-        }));
-      }
-
-      return {
-        exerciseId: ex._id || ex.name || "unknown_exercise",
-        sets: initialSets,
-        notes: "",
-      };
-    });
+        return {
+          exerciseId: ex._id || ex.name || "unknown_exercise",
+          sets: initialSets,
+          notes: "",
+        };
+      },
+    );
 
     setExercises(initialExercises);
   }, [selectedDayName]); // Only depend on selectedDayName
@@ -136,7 +141,7 @@ export const useSessionForm = ({
     exIndex: number,
     setIndex: number,
     field: keyof ExerciseSet,
-    value: any
+    value: any,
   ) => {
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
@@ -163,7 +168,9 @@ export const useSessionForm = ({
         for (let i = setIndex + 1; i < currentSets.length; i++) {
           const nextSetWeight = currentSets[i].weight || 0;
           // Update if empty OR if it matched the previous value (meaning they were likely synced)
-          if (nextSetWeight === 0 || nextSetWeight === oldWeightValue) {
+          // But careful not to overwrite user intent.
+          // For now, only propagate if next set is 0.
+          if (nextSetWeight === 0) {
             currentSets[i] = { ...currentSets[i], weight: weightValue };
           }
         }
@@ -183,6 +190,7 @@ export const useSessionForm = ({
       reps: previousSet?.reps || 10,
       weight: previousSet?.weight || 0,
       completed: false,
+      drops: [],
     });
     setExercises(newExercises);
   };
@@ -190,6 +198,69 @@ export const useSessionForm = ({
   const removeSet = (exIndex: number, setIndex: number) => {
     const newExercises = [...exercises];
     newExercises[exIndex].sets.splice(setIndex, 1);
+    setExercises(newExercises);
+  };
+
+  const addDropSet = (exIndex: number, setIndex: number) => {
+    const newExercises = [...exercises];
+    const currentSets = [...newExercises[exIndex].sets];
+    const set = currentSets[setIndex];
+
+    // Initialize drops if undefined (though we init with [])
+    const currentDrops = set.drops ? [...set.drops] : [];
+
+    // Add new drop. Default weight slightly less than main set? Or 0.
+    const lastDrop =
+      currentDrops.length > 0 ? currentDrops[currentDrops.length - 1] : null;
+    currentDrops.push({
+      weight: lastDrop
+        ? lastDrop.weight
+        : set.weight > 5
+          ? set.weight - 5
+          : set.weight,
+      reps: lastDrop ? lastDrop.reps : set.reps,
+    });
+
+    currentSets[setIndex] = { ...set, drops: currentDrops };
+    newExercises[exIndex] = { ...newExercises[exIndex], sets: currentSets };
+    setExercises(newExercises);
+  };
+
+  const updateDropSet = (
+    exIndex: number,
+    setIndex: number,
+    dropIndex: number,
+    field: "weight" | "reps",
+    value: number,
+  ) => {
+    const newExercises = [...exercises];
+    const currentSets = [...newExercises[exIndex].sets];
+    const set = currentSets[setIndex];
+    if (!set.drops) return;
+
+    const currentDrops = [...set.drops];
+    currentDrops[dropIndex] = { ...currentDrops[dropIndex], [field]: value };
+
+    currentSets[setIndex] = { ...set, drops: currentDrops };
+    newExercises[exIndex] = { ...newExercises[exIndex], sets: currentSets };
+    setExercises(newExercises);
+  };
+
+  const removeDropSet = (
+    exIndex: number,
+    setIndex: number,
+    dropIndex: number,
+  ) => {
+    const newExercises = [...exercises];
+    const currentSets = [...newExercises[exIndex].sets];
+    const set = currentSets[setIndex];
+    if (!set.drops) return;
+
+    const currentDrops = [...set.drops];
+    currentDrops.splice(dropIndex, 1);
+
+    currentSets[setIndex] = { ...set, drops: currentDrops };
+    newExercises[exIndex] = { ...newExercises[exIndex], sets: currentSets };
     setExercises(newExercises);
   };
 
@@ -202,5 +273,8 @@ export const useSessionForm = ({
     updateSet,
     addSet,
     removeSet,
+    addDropSet,
+    updateDropSet,
+    removeDropSet,
   };
 };

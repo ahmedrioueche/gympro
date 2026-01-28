@@ -58,17 +58,40 @@ export const SessionExerciseList = ({
             <div className="pl-6 space-y-1">
               {ex.sets?.length > 0 ? (
                 ex.sets.map((set, setIdx) => (
-                  <div
-                    key={setIdx}
-                    className="text-xs text-text-secondary flex justify-between max-w-xs"
-                  >
-                    <span>
-                      {t("training.page.sessionList.set")} {setIdx + 1}:{" "}
-                      {set.reps} {t("training.page.sessionList.reps")}
-                    </span>
-                    <span>
-                      {set.weight} {t("training.page.sessionList.kg")}
-                    </span>
+                  <div key={setIdx} className="flex flex-col gap-1">
+                    <div className="text-xs text-text-secondary flex justify-between max-w-xs">
+                      <span>
+                        {t("training.page.sessionList.set")} {setIdx + 1}:{" "}
+                        {set.reps} {t("training.page.sessionList.reps")}
+                      </span>
+                      <span>
+                        {set.weight} {t("training.page.sessionList.kg")}
+                      </span>
+                    </div>
+                    {/* Drop Sets */}
+                    {set.drops && set.drops.length > 0 && (
+                      <div className="pl-2 space-y-1 border-l-2 border-error/20 ml-1">
+                        {set.drops.map((drop, dropIdx) => (
+                          <div
+                            key={dropIdx}
+                            className="text-[10px] text-text-secondary/80 flex justify-between max-w-xs items-center"
+                          >
+                            <div className="flex items-center gap-1">
+                              <span className="text-error font-bold uppercase text-[9px]">
+                                Drop
+                              </span>
+                              <span>
+                                {drop.reps}{" "}
+                                {t("training.page.sessionList.reps")}
+                              </span>
+                            </div>
+                            <span>
+                              {drop.weight} {t("training.page.sessionList.kg")}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))
               ) : (

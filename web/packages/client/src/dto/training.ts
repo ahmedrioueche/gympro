@@ -24,9 +24,15 @@ export interface CreateExerciseDto {
   isPublic?: boolean;
 }
 
+export interface CreateProgramBlockDto {
+  type: "single" | "superset" | "circuit";
+  exercises: CreateExerciseDto[];
+  rounds?: number;
+}
+
 export interface CreateProgramDayDto {
   name: string;
-  exercises: CreateExerciseDto[];
+  blocks: CreateProgramBlockDto[];
 }
 
 export interface CreateProgramDto {
