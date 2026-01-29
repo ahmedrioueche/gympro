@@ -3,11 +3,10 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useModalStore } from "../../../../store/modal";
 import { extractCountryCodeAndNumber } from "../../../../utils/phone.util";
-import StaffFormFields from "./components/StaffFormFields";
-import { useStaffForm } from "./hooks/useStaffForm";
+import StaffFormFields from "./StaffFormFields";
+import { useStaffForm } from "./useStaffForm";
 
 export default function StaffModal() {
-  const { t } = useTranslation();
   const { currentModal, staffModalProps, closeModal } = useModalStore();
 
   const isOpen = currentModal === "staff_modal";

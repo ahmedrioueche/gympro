@@ -1,8 +1,8 @@
 import { Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
-import { ProgramList } from "./components/ProgramList";
-import { useAssignProgram } from "./hooks/useAssignProgram";
+import { ProgramList } from "./ProgramList";
+import { useAssignProgram } from "./useAssignProgram";
 
 export default function AssignProgramModal() {
   const { t } = useTranslation();

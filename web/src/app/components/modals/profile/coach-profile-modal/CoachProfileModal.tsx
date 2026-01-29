@@ -4,8 +4,8 @@ import {
   CustomizableProfileTemplateModal,
   type ProfileModalAction,
 } from "../CustomizableProfileTemplateModal";
-import { CoachInfoContent } from "./components/CoachInfoContent";
-import { useCoachProfileModal } from "./hooks/useCoachProfileModal";
+import { CoachInfoContent } from "./CoachInfoContent";
+import { useCoachProfileModal } from "./useCoachProfileModal";
 
 export default function CoachProfileModal() {
   const { t } = useTranslation();

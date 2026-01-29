@@ -1,9 +1,9 @@
 import { Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
-import { ExerciseFormContent } from "./components/ExerciseFormContent";
-import { ExerciseModalFooter } from "./components/ExerciseModalFooter";
-import { useCreateExerciseForm } from "./hooks/useCreateExerciseForm";
+import { ExerciseFormContent } from "./ExerciseFormContent";
+import { ExerciseModalFooter } from "./ExerciseModalFooter";
+import { useCreateExerciseForm } from "./useCreateExerciseForm";
 
 export const CreateExerciseModal = () => {
   const { t } = useTranslation();

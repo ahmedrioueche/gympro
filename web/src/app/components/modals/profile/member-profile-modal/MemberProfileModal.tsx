@@ -4,11 +4,11 @@ import {
   CustomizableProfileTemplateModal,
   type ProfileModalAction,
 } from "../CustomizableProfileTemplateModal";
-import { MemberOverviewTab } from "./components/MemberOverviewTab";
-import { MemberSubscriptionsTable } from "./components/MemberSubscriptionTable";
-import { PaymentHistoryTab } from "./components/PaymentHistoryTab";
-import { SubscriptionStatusCard } from "./components/SubscriptionStatusCard";
-import { useMemberProfileModal } from "./hooks/useMemberProfileModal";
+import { MemberOverviewTab } from "./MemberOverviewTab";
+import { MemberSubscriptionsTable } from "./MemberSubscriptionTable";
+import { PaymentHistoryTab } from "./PaymentHistoryTab";
+import { SubscriptionStatusCard } from "./SubscriptionStatusCard";
+import { useMemberProfileModal } from "./useMemberProfileModal";
 
 export default function MemberProfileModal() {
   const { t } = useTranslation();

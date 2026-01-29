@@ -1,8 +1,8 @@
 import { DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
-import { CoachPricingForm } from "./components/CoachPricingForm";
-import { useCoachPricingModal } from "./hooks/useCoachPricingModal";
+import { CoachPricingForm } from "./CoachPricingForm";
+import { useCoachPricingModal } from "./useCoachPricingModal";
 
 export default function CoachPricingModal() {
   const { t } = useTranslation();

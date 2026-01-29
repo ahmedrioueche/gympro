@@ -2,9 +2,9 @@ import { format, parseISO } from "date-fns";
 import { Calendar, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
-import { SessionClientInfo } from "./components/SessionClientInfo";
-import { SessionStatusSelector } from "./components/SessionStatusSelector";
-import { useSessionDetails } from "./hooks/useSessionDetails";
+import { SessionClientInfo } from "./SessionClientInfo";
+import { SessionStatusSelector } from "./SessionStatusSelector";
+import { useSessionDetails } from "./useSessionDetails";
 
 export const SessionDetailsModal = () => {
   const { t } = useTranslation();

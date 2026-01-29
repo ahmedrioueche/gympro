@@ -4,8 +4,8 @@ import {
   CustomizableProfileTemplateModal,
   type ProfileModalAction,
 } from "../CustomizableProfileTemplateModal";
-import { ClientInfoContent } from "./components/ClientInfoContent";
-import { useClientProfileModal } from "./hooks/useClientProfileModal";
+import { ClientInfoContent } from "./ClientInfoContent";
+import { useClientProfileModal } from "./useClientProfileModal";
 
 export default function ClientProfileModal() {
   const { t } = useTranslation();

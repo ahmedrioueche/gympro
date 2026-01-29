@@ -2,9 +2,9 @@ import { type BlockerModalConfig } from "@ahmedrioueche/gympro-client";
 import { Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
-import { BlockerContent } from "./components/BlockerContent";
-import { BlockerFooter } from "./components/BlockerFooter";
-import { useSubscriptionBlocker } from "./hooks/useSubscriptionBlocker";
+import { BlockerContent } from "./BlockerContent";
+import { BlockerFooter } from "./BlockerFooter";
+import { useSubscriptionBlocker } from "./useSubscriptionBlocker";
 
 interface Props {
   config: BlockerModalConfig;
@@ -26,7 +26,7 @@ export default function SubscriptionBlockerModal({ config, onClose }: Props) {
       title={t(config.titleKey)}
       subtitle={t(
         "subscription.blocker.access_suspended",
-        "Your access has been suspended"
+        "Your access has been suspended",
       )}
       icon={Lock}
       showFooter={true}

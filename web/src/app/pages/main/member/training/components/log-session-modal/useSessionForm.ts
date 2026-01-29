@@ -25,6 +25,7 @@ interface StoredSession {
   mode: "new" | "edit";
   serverSessionId?: string;
   submissionId?: string; // Persist session identity across page reloads
+  splitBlockIndices?: number[]; // Track which blocks user chose to split (opt-out of superset)
 }
 
 export const useSessionForm = ({
@@ -49,6 +50,9 @@ export const useSessionForm = ({
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [serverSessionId, setServerSessionId] = useState<string | undefined>(
     (initialSession as any)?._id || (initialSession as any)?.id,
+  );
+  const [splitBlockIndices, setSplitBlockIndices] = useState<Set<number>>(
+    new Set(),
   );
   const [isDirty, setIsDirty] = useState(false);
   const autoSaveTimerRef = useRef<any>(null);
@@ -163,6 +167,10 @@ export const useSessionForm = ({
           // Recover submissionId to maintain session identity
           if (parsed.submissionId) {
             setSubmissionId(parsed.submissionId);
+          }
+          // Recover split state
+          if (parsed.splitBlockIndices) {
+            setSplitBlockIndices(new Set(parsed.splitBlockIndices));
           }
           return;
         }
@@ -297,6 +305,7 @@ export const useSessionForm = ({
       mode,
       serverSessionId, // Persist ID so crash recovery works with proper UPDATE
       submissionId, // Persist session identity
+      splitBlockIndices: Array.from(splitBlockIndices),
     };
 
     try {
@@ -319,6 +328,7 @@ export const useSessionForm = ({
     if (program?._id && selectedDayName) {
       const storageKey = getStorageKey(program._id, selectedDayName);
       localStorage.removeItem(storageKey);
+      setSplitBlockIndices(new Set()); // Reset split state on clear
     }
   }, [program?._id, selectedDayName]);
 
@@ -434,6 +444,29 @@ export const useSessionForm = ({
     setExercises(newExercises);
   };
 
+  const toggleSupersetCompletion = (
+    exerciseIndices: number[],
+    setIndex: number,
+    completed: boolean,
+  ) => {
+    setIsDirty(true);
+    const newExercises = [...exercises];
+
+    exerciseIndices.forEach((exIdx) => {
+      if (newExercises[exIdx] && newExercises[exIdx].sets[setIndex]) {
+        const newSets = [...newExercises[exIdx].sets];
+        newSets[setIndex] = { ...newSets[setIndex], completed };
+
+        newExercises[exIdx] = {
+          ...newExercises[exIdx],
+          sets: newSets,
+        };
+      }
+    });
+
+    setExercises(newExercises);
+  };
+
   const removeDropSet = (
     exIndex: number,
     setIndex: number,
@@ -453,6 +486,18 @@ export const useSessionForm = ({
     setExercises(newExercises);
   };
 
+  const toggleBlockSplit = (blockIndex: number) => {
+    setSplitBlockIndices((prev) => {
+      const next = new Set(prev);
+      if (next.has(blockIndex)) {
+        next.delete(blockIndex);
+      } else {
+        next.add(blockIndex);
+      }
+      return next;
+    });
+  };
+
   return {
     selectedDayName,
     setSelectedDayName,
@@ -468,5 +513,8 @@ export const useSessionForm = ({
     lastSavedAt,
     clearStorage,
     markAsSaved,
+    splitBlockIndices, // Expose split state
+    toggleBlockSplit, // Expose toggler
+    toggleSupersetCompletion, // Expose atomic updater
   };
 };

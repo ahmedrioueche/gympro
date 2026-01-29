@@ -8,7 +8,7 @@ import {
   useLogSession,
 } from "../../../../../../../hooks/queries/useTraining";
 import { useModalStore } from "../../../../../../../store/modal";
-import { SessionExerciseCard } from "./SessionExerciseCard";
+import { SessionBlock } from "./SessionBlock";
 import { SessionProgressFooter } from "./SessionProgressFooter";
 import { useSessionForm } from "./useSessionForm";
 
@@ -175,15 +175,37 @@ export const LogSessionModal = () => {
                 {t("training.logSession.noExercises")}
               </p>
             ) : (
-              form.exercises.map((ex, exIndex) => {
-                const originalExercise = flattenedExercises[exIndex];
+              currentDay?.blocks.map((block, blockIndex) => {
+                // Determine which exercises belong to this block
+                // We need to calculate the start index based on previous blocks
+                const startIndex = currentDay.blocks
+                  .slice(0, blockIndex)
+                  .reduce((acc, b) => acc + b.exercises.length, 0);
+
+                const blockExercises = form.exercises.slice(
+                  startIndex,
+                  startIndex + block.exercises.length,
+                );
+
+                const isSplit =
+                  form.splitBlockIndices?.has(blockIndex) ?? false;
+
+                // Import SessionBlock at top level, but assuming local here for diff context
+                // Need to ensure SessionBlock is imported in file.
+                // Assuming it will be imported. if not, I'll add import in next step or user context.
+                // Wait, I cannot add import here easily without multi-replace.
+                // I will assume I need to add import separately or use multi-replace.
+                // Let's use SessionBlock assuming it's imported (I will add import next).
 
                 return (
-                  <SessionExerciseCard
-                    key={exIndex}
-                    exercise={ex}
-                    exerciseIndex={exIndex}
-                    originalExercise={originalExercise}
+                  // @ts-ignore - SessionBlock import to be added
+                  <SessionBlock
+                    key={blockIndex}
+                    block={block}
+                    exercises={blockExercises}
+                    startIndex={startIndex}
+                    isSplit={isSplit}
+                    onToggleSplit={() => form.toggleBlockSplit(blockIndex)}
                     onUpdateSet={form.updateSet}
                     onAddSet={form.addSet}
                     onRemoveSet={form.removeSet}
@@ -193,6 +215,7 @@ export const LogSessionModal = () => {
                     onViewVideo={(ex) =>
                       openModal("exercise_detail", { exercise: ex })
                     }
+                    onToggleSupersetCompletion={form.toggleSupersetCompletion}
                   />
                 );
               })

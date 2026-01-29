@@ -2,9 +2,9 @@ import { type BlockerModalConfig } from "@ahmedrioueche/gympro-client";
 import { AlertTriangle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
-import { WarningContent } from "./components/WarningContent";
-import { WarningFooter } from "./components/WarningFooter";
-import { useSubscriptionWarning } from "./hooks/useSubscriptionWarning";
+import { WarningContent } from "./WarningContent";
+import { WarningFooter } from "./WarningFooter";
+import { useSubscriptionWarning } from "./useSubscriptionWarning";
 
 interface Props {
   config: BlockerModalConfig;

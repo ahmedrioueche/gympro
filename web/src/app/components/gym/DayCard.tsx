@@ -6,6 +6,7 @@ import { Calendar, Layers, Link as LinkIcon, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import InputField from "../../../components/ui/InputField";
+import { useUserStore } from "../../../store/user";
 import { ExerciseItem } from "../modals/program-details-modal/ExerciseItem";
 import { ExerciseForm } from "./ExerciseForm";
 import { ExerciseSelector } from "./ExerciseSelector";
@@ -46,6 +47,8 @@ export const DayCard = ({
     new Set(),
   );
   const [selectedBlocks, setSelectedBlocks] = useState<Set<number>>(new Set());
+  const { user } = useUserStore();
+  const defaultRestTime = user?.appSettings?.timer?.defaultRestTime ?? 90;
 
   // Track previous block count to detect additions
   const prevBlockCountRef = useRef(day.blocks.length);
@@ -229,14 +232,65 @@ export const DayCard = ({
                         : ""
                   }`}
                 >
-                  {/* Superset Header */}
+                  {/* Superset Header with Unified Controls */}
                   {isSuperset && (
-                    <div className="flex items-center gap-2 mb-3 text-primary font-semibold text-sm">
-                      <Layers size={14} />
-                      <span>
-                        {block.type === "superset" ? "Superset" : "Circuit"}
-                      </span>
-                      <div className="flex-1" />
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-3 p-3 bg-primary/5 rounded-xl border border-primary/10">
+                      <div className="flex items-center gap-2 text-primary font-semibold text-sm mr-auto">
+                        <Layers size={16} />
+                        <span>
+                          {block.type === "superset" ? "Superset" : "Circuit"}
+                        </span>
+                      </div>
+
+                      {/* Unified Inputs */}
+                      <div className="flex gap-3 w-full sm:w-auto">
+                        <div className="flex-1 sm:w-24">
+                          <InputField
+                            type="number"
+                            label={t("training.programs.create.form.sets")}
+                            value={block.exercises[0]?.recommendedSets} // Read from first
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              // Update ALL exercises in block
+                              block.exercises.forEach((_, exIndex) => {
+                                onExerciseUpdate(
+                                  blockIndex,
+                                  exIndex,
+                                  "recommendedSets",
+                                  val,
+                                );
+                              });
+                            }}
+                            min="0"
+                            className="bg-surface border-primary/20 focus:border-primary"
+                          />
+                        </div>
+                        <div className="flex-1 sm:w-24">
+                          <InputField
+                            type="number"
+                            label={t(
+                              "training.programs.create.form.restTime",
+                              "Rest (s)",
+                            )}
+                            placeholder={defaultRestTime.toString()}
+                            value={block.exercises[0]?.restTime} // Read from first
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value) || 0;
+                              // Update ALL exercises in block
+                              block.exercises.forEach((_, exIndex) => {
+                                onExerciseUpdate(
+                                  blockIndex,
+                                  exIndex,
+                                  "restTime",
+                                  val,
+                                );
+                              });
+                            }}
+                            min="0"
+                            className="bg-surface border-primary/20 focus:border-primary"
+                          />
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -306,6 +360,7 @@ export const DayCard = ({
                               } // Auto-collapse in selection mode for cleaner view
                               isSelectionMode={isSelectionMode}
                               isSelected={isSelected}
+                              hideCommonFields={isSuperset} // Hide redundant fields
                               onSelect={() => toggleSelection(blockIndex)}
                               isLibraryOpen={
                                 showExerciseSelector &&

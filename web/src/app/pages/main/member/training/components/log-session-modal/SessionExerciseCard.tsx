@@ -181,8 +181,20 @@ export const SessionExerciseCard = ({
                 <div className="flex flex-col gap-1">
                   <button
                     onClick={() => onRemoveSet(exerciseIndex, setIndex)}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center bg-background-secondary border border-border hover:border-red-500/50 hover:bg-red-500/10 text-text-secondary hover:text-red-500 transition-all"
-                    title="Remove Set"
+                    disabled={set.completed} // Disable if checked
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center border border-border transition-all ${
+                      set.completed
+                        ? "bg-background-secondary text-text-secondary/30 cursor-not-allowed opacity-50"
+                        : "bg-background-secondary hover:border-red-500/50 hover:bg-red-500/10 text-text-secondary hover:text-red-500"
+                    }`}
+                    title={
+                      set.completed
+                        ? t(
+                            "training.logSession.uncheckToDelete",
+                            "Uncheck to delete",
+                          )
+                        : "Remove Set"
+                    }
                   >
                     <Trash2 size={14} />
                   </button>

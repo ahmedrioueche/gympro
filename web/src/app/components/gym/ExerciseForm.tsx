@@ -25,8 +25,9 @@ interface ExerciseFormProps {
   isDragging?: boolean;
   isCollapsed?: boolean;
   isLibraryOpen?: boolean;
-  isSelectionMode?: boolean; // New prop
-  isSelected?: boolean; // New prop
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  hideCommonFields?: boolean;
   onUpdate: (field: keyof CreateExerciseDto, value: any) => void;
   onRemove: () => void;
   onAddNext?: () => void;
@@ -35,7 +36,7 @@ interface ExerciseFormProps {
   onDragEnd?: () => void;
   onDragOver?: (targetIndex: number) => void;
   onToggleCollapse?: () => void;
-  onSelect?: () => void; // New prop
+  onSelect?: () => void;
 }
 
 export const ExerciseForm = ({
@@ -46,6 +47,7 @@ export const ExerciseForm = ({
   isLibraryOpen = false,
   isSelectionMode = false,
   isSelected = false,
+  hideCommonFields = false,
   onUpdate,
   onRemove,
   onAddNext,
@@ -213,19 +215,24 @@ export const ExerciseForm = ({
 
           {/* Row 2: Details & Actions */}
           <div className="flex flex-col sm:flex-row gap-3 items-end">
-            <div className="flex gap-3 w-full sm:w-auto">
-              <div className="flex-1 sm:w-24">
-                <InputField
-                  type="number"
-                  placeholder="0"
-                  value={exercise.recommendedSets}
-                  onChange={(e) =>
-                    onUpdate("recommendedSets", parseInt(e.target.value) || 0)
-                  }
-                  min="0"
-                  label={t("training.programs.create.form.sets")}
-                />
-              </div>
+            <div
+              className={`flex gap-3 w-full ${hideCommonFields ? "sm:w-[150px]" : "sm:w-auto"}`}
+            >
+              {!hideCommonFields && (
+                <div className="flex-1 sm:w-24">
+                  <InputField
+                    type="number"
+                    placeholder="0"
+                    value={exercise.recommendedSets}
+                    onChange={(e) =>
+                      onUpdate("recommendedSets", parseInt(e.target.value) || 0)
+                    }
+                    min="0"
+                    label={t("training.programs.create.form.sets")}
+                  />
+                </div>
+              )}
+
               <div className="flex-1 sm:w-24">
                 <InputField
                   type="number"
@@ -238,21 +245,24 @@ export const ExerciseForm = ({
                   label={t("training.programs.create.form.reps")}
                 />
               </div>
-              <div className="flex-1 sm:w-24">
-                <InputField
-                  type="number"
-                  placeholder={defaultRestTime.toString()}
-                  value={exercise.restTime}
-                  onChange={(e) =>
-                    onUpdate("restTime", parseInt(e.target.value) || 0)
-                  }
-                  min="0"
-                  label={t(
-                    "training.programs.create.form.restTime",
-                    "Rest (s)",
-                  )}
-                />
-              </div>
+
+              {!hideCommonFields && (
+                <div className="flex-1 sm:w-24">
+                  <InputField
+                    type="number"
+                    placeholder={defaultRestTime.toString()}
+                    value={exercise.restTime}
+                    onChange={(e) =>
+                      onUpdate("restTime", parseInt(e.target.value) || 0)
+                    }
+                    min="0"
+                    label={t(
+                      "training.programs.create.form.restTime",
+                      "Rest (s)",
+                    )}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex-1 w-full relative">

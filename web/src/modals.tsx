@@ -18,7 +18,7 @@ const ScanResultModal = lazy(() =>
 
 const RenewSubscriptionModal = lazy(
   () =>
-    import("./app/components/modals/renew-subscription/RenewSubscriptionModal"),
+    import("./app/components/modals/renew-subscription-modal/RenewSubscriptionModal"),
 );
 
 const CancelSubscriptionModal = lazy(

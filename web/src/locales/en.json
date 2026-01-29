@@ -22,6 +22,8 @@
     "save": "Save",
     "select": "Select",
     "saving": "Saving...",
+    "markAsDone": "Mark as Done",
+    "done": "Done",
     "close": "Close",
     "processing": "Processing...",
     "cancel": "Cancel",
@@ -2541,7 +2543,8 @@
       "noSessions": "No sessions logged yet.",
       "unknownExercise": "Unknown Exercise",
       "done": "Done",
-      "addSet": "Add Set"
+      "addSet": "Add Set",
+      "set": "Set"
     },
     "noResults": "No exercises found",
     "tryDifferent": "Try different filters or create a new exercise",
