@@ -5,6 +5,8 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { Check, CornerDownRight, PlayCircle, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useTimerStore } from "../../../../../../../store/timer";
+import { useUserStore } from "../../../../../../../store/user";
 
 interface SessionExerciseCardProps {
   exercise: ExerciseProgress;
@@ -147,14 +149,27 @@ export const SessionExerciseCard = ({
               {/* Done + Delete */}
               <div className="col-span-3 flex items-center justify-center gap-1">
                 <button
-                  onClick={() =>
+                  onClick={() => {
+                    const newCompleted = !set.completed;
                     onUpdateSet(
                       exerciseIndex,
                       setIndex,
                       "completed",
-                      !set.completed,
-                    )
-                  }
+                      newCompleted,
+                    );
+
+                    // Trigger Rest Timer if marking as completed
+                    if (newCompleted) {
+                      const { startTimer } = useTimerStore.getState();
+                      const { user } = useUserStore.getState();
+                      const defaultRest =
+                        user?.appSettings?.timer?.defaultRestTime || 90;
+                      const restTime =
+                        originalExercise?.restTime || defaultRest;
+
+                      startTimer(restTime, exerciseName);
+                    }
+                  }}
                   className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
                     set.completed
                       ? "bg-green-500 text-white"

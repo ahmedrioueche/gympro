@@ -16,6 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../components/ui/CustomSelect";
 import InputField from "../../../components/ui/InputField";
+import { useUserStore } from "../../../store/user";
 import { useExerciseForm } from "../../hooks/useExerciseForm";
 
 interface ExerciseFormProps {
@@ -56,6 +57,9 @@ export const ExerciseForm = ({
   onSelect,
 }: ExerciseFormProps) => {
   const { t } = useTranslation();
+  const { user } = useUserStore();
+  const defaultRestTime = user?.appSettings?.timer?.defaultRestTime ?? 90;
+
   const {
     selectedMuscle,
     handleMuscleChange,
@@ -232,6 +236,21 @@ export const ExerciseForm = ({
                   }
                   min="0"
                   label={t("training.programs.create.form.reps")}
+                />
+              </div>
+              <div className="flex-1 sm:w-24">
+                <InputField
+                  type="number"
+                  placeholder={defaultRestTime.toString()}
+                  value={exercise.restTime}
+                  onChange={(e) =>
+                    onUpdate("restTime", parseInt(e.target.value) || 0)
+                  }
+                  min="0"
+                  label={t(
+                    "training.programs.create.form.restTime",
+                    "Rest (s)",
+                  )}
                 />
               </div>
             </div>

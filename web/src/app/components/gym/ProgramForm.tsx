@@ -12,18 +12,22 @@ interface ProgramFormProps {
   experience: ExperienceLevel;
   purpose: ProgramPurpose;
   daysPerWeek?: DaysPerWeek;
+  durationWeeks?: number;
   onExperienceChange: (value: ExperienceLevel) => void;
   onPurposeChange: (value: ProgramPurpose) => void;
   onDaysPerWeekChange?: (value: DaysPerWeek) => void;
+  onDurationWeeksChange?: (value: number) => void;
 }
 
 export const ProgramForm = ({
   experience,
   purpose,
   daysPerWeek,
+  durationWeeks,
   onExperienceChange,
   onPurposeChange,
   onDaysPerWeekChange,
+  onDurationWeeksChange,
 }: ProgramFormProps) => {
   const { t } = useTranslation();
 
@@ -43,8 +47,20 @@ export const ProgramForm = ({
     label: `${num} ${t("training.programs.create.form.daysPerWeek")}`,
   }));
 
+  const weeksOptions = [4, 6, 8, 12, 16].map((num) => ({
+    value: num.toString(),
+    label: `${num} ${t("common.weeks", "weeks")}`,
+  }));
+
+  // Calculate grid columns based on what's shown
+  const extraCols =
+    (daysPerWeek !== undefined ? 1 : 0) + (durationWeeks !== undefined ? 1 : 0);
   const gridCols =
-    daysPerWeek !== undefined ? "md:grid-cols-3" : "md:grid-cols-2";
+    extraCols === 2
+      ? "md:grid-cols-4"
+      : extraCols === 1
+        ? "md:grid-cols-3"
+        : "md:grid-cols-2";
 
   return (
     <div className={`grid grid-cols-1 ${gridCols} gap-4`}>
@@ -68,6 +84,17 @@ export const ProgramForm = ({
           onChange={(value) =>
             onDaysPerWeekChange(parseInt(value) as DaysPerWeek)
           }
+        />
+      )}
+      {durationWeeks !== undefined && onDurationWeeksChange && (
+        <CustomSelect
+          title={t(
+            "training.programs.create.form.durationWeeks",
+            "Duration (weeks)",
+          )}
+          options={weeksOptions}
+          selectedOption={durationWeeks.toString()}
+          onChange={(value) => onDurationWeeksChange(parseInt(value))}
         />
       )}
     </div>

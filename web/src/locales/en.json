@@ -710,6 +710,7 @@
     "tabs": {
       "general": "General",
       "notifications": "Notifications",
+      "training": "Training",
       "locale": "Locale"
     },
     "general": {
@@ -2113,7 +2114,8 @@
       "tabs": {
         "profile": "Profile",
         "preferences": "App Preferences",
-        "security": "Security"
+        "security": "Security",
+        "training": "Training"
       },
       "profile": {
         "title": "Personal Information",
@@ -2126,10 +2128,21 @@
       "preferences": {
         "title": "App Preferences",
         "subtitle": "Customize your app experience",
+        "timer": {
+          "title": "Smart Rest Timer",
+          "subtitle": "Customize your workout res7t timer",
+          "defaultRest": "Default Rest (seconds)",
+          "alarmDuration": "Maximum Alarm Duration (seconds)",
+          "sound": "Completion Sound"
+        },
         "language": "Language",
         "languageDesc": "Choose your preferred language",
         "theme": "Theme",
         "notifications": "Enable Notifications"
+      },
+      "training": {
+        "title": "Training Settings",
+        "subtitle": "Manage your training preferences"
       },
       "security": {
         "title": "Security",
@@ -2383,11 +2396,13 @@
           "exercise": "Exercise",
           "sets": "Sets",
           "reps": "Reps",
+          "restTime": "Rest (s)",
           "addExercise": "Add Exercise",
           "videoUrl": "Video URL",
           "addVideo": "Add video link",
           "targetMuscles": "Target Muscles",
           "noExercises": "No exercises added yet. Click 'Add Exercise' to get started.",
+          "selectMuscle": "Select Muscle",
           "selectMuscleForAi": "Select a target muscle to get suggestions",
           "addNextExercise": "Add Next Exercise",
           "addNext": "Add Next",
@@ -3112,5 +3127,10 @@
       "members": "Members Only",
       "staff": "Staff Only"
     }
+  },
+  "timer": {
+    "resting": "Resting",
+    "getReady": "Get Ready!",
+    "go": "Go!"
   }
 }

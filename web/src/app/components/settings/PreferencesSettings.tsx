@@ -1,11 +1,7 @@
-import { settingsApi, type AppLanguage } from "@ahmedrioueche/gympro-client";
+import { type AppLanguage } from "@ahmedrioueche/gympro-client";
 import { Globe } from "lucide-react";
-import { useState } from "react";
-import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../components/ui/CustomSelect";
-import { useLanguageStore } from "../../../store/language";
-import { useUserStore } from "../../../store/user";
 
 interface LanguageOption {
   value: AppLanguage;
@@ -19,44 +15,16 @@ const LANGUAGES: LanguageOption[] = [
   { value: "ar", label: "العربية", flag: "🇩🇿" },
 ];
 
-export default function PreferencesSettings() {
-  const { t, i18n } = useTranslation();
-  const { user, updateSettings } = useUserStore();
-  const { setLanguage: setGlobalLanguage } = useLanguageStore();
-  const [isSaving, setIsSaving] = useState(false);
+interface PreferencesSettingsProps {
+  language: AppLanguage;
+  onUpdate: (lang: AppLanguage) => void;
+}
 
-  // TODO: Use theme store when available
-  const isDark = false;
-
-  const handleLanguageChange = async (lang: AppLanguage) => {
-    setIsSaving(true);
-    try {
-      const updates = {
-        locale: {
-          ...user?.appSettings?.locale,
-          language: lang,
-        },
-      };
-
-      const res = await settingsApi.updateSettings(updates);
-      if (res.success) {
-        updateSettings(updates as any);
-        setGlobalLanguage(lang);
-        toast.success(
-          t("settings.saveSuccess", "Language updated successfully")
-        );
-      } else {
-        toast.error(
-          res.message || t("settings.saveError", "Failed to update language")
-        );
-      }
-    } catch (error) {
-      console.error("Failed to save language setting:", error);
-      toast.error(t("settings.saveError", "Failed to update language"));
-    } finally {
-      setIsSaving(false);
-    }
-  };
+export default function PreferencesSettings({
+  language,
+  onUpdate,
+}: PreferencesSettingsProps) {
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
@@ -87,10 +55,9 @@ export default function PreferencesSettings() {
           </div>
 
           <CustomSelect
-            selectedOption={i18n.language || "en"}
-            onChange={handleLanguageChange}
+            selectedOption={language}
+            onChange={(val) => onUpdate(val as AppLanguage)}
             options={LANGUAGES}
-            disabled={isSaving}
           />
         </div>
       </div>

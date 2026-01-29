@@ -54,6 +54,16 @@ export default function SettingsPage() {
     handleSave,
     isSaving,
     hasChanges,
+    // Security
+    currentPassword,
+    setCurrentPassword,
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
+    // Preferences
+    language,
+    setLanguage,
   } = useCoachSettings();
 
   const tabs = [
@@ -79,8 +89,11 @@ export default function SettingsPage() {
     },
   ];
 
-  // Show save button on profile and coaching tabs
-  const showSaveButton = activeTab === "profile" || activeTab === "coaching";
+  // Show save button on profile, coaching, and security tabs
+  const showSaveButton =
+    activeTab === "profile" ||
+    activeTab === "coaching" ||
+    activeTab === "security";
 
   return (
     <div className="space-y-6">
@@ -160,8 +173,19 @@ export default function SettingsPage() {
               setYearsOfExperience={setYearsOfExperience}
             />
           )}
-          {activeTab === "preferences" && <PreferencesSettings />}
-          {activeTab === "security" && <SecuritySettings />}
+          {activeTab === "preferences" && (
+            <PreferencesSettings language={language} onUpdate={setLanguage} />
+          )}
+          {activeTab === "security" && (
+            <SecuritySettings
+              currentPassword={currentPassword}
+              onCurrentPasswordChange={setCurrentPassword}
+              newPassword={newPassword}
+              onNewPasswordChange={setNewPassword}
+              confirmPassword={confirmPassword}
+              onConfirmPasswordChange={setConfirmPassword}
+            />
+          )}
         </div>
       </div>
     </div>

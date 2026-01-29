@@ -1,33 +1,39 @@
+import { type ProgramDayProgress } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { Dumbbell, TrendingUp } from "lucide-react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import { useActiveProgram } from "../../../../../hooks/queries/useTraining";
+import { useModalStore } from "../../../../../store/modal";
 import PageHeader from "../../../../components/PageHeader";
-import { ActiveProgramCard } from "./components/ActiveProgramCard";
-import { LogSessionModal } from "./components/log-session-modal/LogSessionModal";
+import { ActiveProgramCard } from "./components/active-program-card/ActiveProgramCard";
 import { SessionList } from "./components/session-list/SessionList";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
   const { data: activeHistory, isLoading: isActiveLoading } =
     useActiveProgram();
-  const [isLogSessionOpen, setIsLogSessionOpen] = useState(false);
-  const [editingSession, setEditingSession] = useState<any>(undefined); // Using any temporarily or import type if preferred
+  const { openModal } = useModalStore();
   const navigate = useNavigate();
 
   // Recent sessions from active program
   const activeSessions = activeHistory?.progress.dayLogs || [];
 
-  const handleEditSession = (session: any) => {
-    setEditingSession(session);
-    setIsLogSessionOpen(true);
+  const handleEditSession = (session: ProgramDayProgress) => {
+    if (!activeHistory) return;
+    openModal("log_session", {
+      activeHistory,
+      initialSession: session,
+      mode: "edit",
+    });
   };
 
-  const handleCloseModal = () => {
-    setIsLogSessionOpen(false);
-    setTimeout(() => setEditingSession(undefined), 300); // Clear after animation
+  const handleLogNewSession = () => {
+    if (!activeHistory) return;
+    openModal("log_session", {
+      activeHistory,
+      mode: "new",
+    });
   };
 
   return (
@@ -57,10 +63,7 @@ export default function TrainingPage() {
         ) : (
           <ActiveProgramCard
             history={activeHistory}
-            onLogSession={() => {
-              setEditingSession(undefined);
-              setIsLogSessionOpen(true);
-            }}
+            onLogSession={handleLogNewSession}
           />
         )}
       </div>
@@ -77,16 +80,6 @@ export default function TrainingPage() {
             onEditSession={handleEditSession}
           />
         </div>
-      )}
-
-      {/* Log Session Modal - Only when there's an active program */}
-      {activeHistory && (
-        <LogSessionModal
-          isOpen={isLogSessionOpen}
-          onClose={handleCloseModal}
-          activeHistory={activeHistory}
-          initialSession={editingSession}
-        />
       )}
     </div>
   );

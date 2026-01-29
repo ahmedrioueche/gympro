@@ -150,10 +150,18 @@ const ProgramDetailsModal = ({}) => {
           <ProgramForm
             experience={editData?.experience || "beginner"}
             purpose={editData?.purpose || "general_fitness"}
+            daysPerWeek={editData?.daysPerWeek}
+            durationWeeks={editData?.durationWeeks || 12}
             onExperienceChange={(experience) =>
               setEditData({ ...editData, experience })
             }
             onPurposeChange={(purpose) => setEditData({ ...editData, purpose })}
+            onDaysPerWeekChange={(daysPerWeek) =>
+              setEditData({ ...editData, daysPerWeek })
+            }
+            onDurationWeeksChange={(durationWeeks) =>
+              setEditData({ ...editData, durationWeeks })
+            }
           />
         )}
 

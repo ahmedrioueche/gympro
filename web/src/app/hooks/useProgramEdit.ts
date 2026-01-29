@@ -27,6 +27,7 @@ export const useProgramEdit = (
         experience: program.experience,
         purpose: program.purpose,
         daysPerWeek: program.daysPerWeek,
+        durationWeeks: program.durationWeeks,
         days: program.days.map((day) => ({
           name: day.name,
           blocks: day.blocks.map((block) => ({

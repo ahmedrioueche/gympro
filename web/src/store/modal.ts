@@ -13,6 +13,7 @@ import type {
   ExerciseDetailModalProps,
   GymInvitationModalProps,
   InviteCoachModalProps,
+  LogSessionModalProps,
   MemberProfileModalProps,
   ProgramDetailsModalProps,
   RenewSubscriptionModalProps,
@@ -45,10 +46,10 @@ type ModalType =
   | "member_profile"
   | "client_profile"
   | "coach_profile"
-  | "coach_profile"
   | "coach_pricing"
   | "gym_invitation"
   | "create_announcement"
+  | "log_session"
   | null;
 
 interface ModalState {
@@ -75,6 +76,7 @@ interface ModalState {
   coachPricingProps?: CoachPricingModalProps;
   gymInvitationProps?: GymInvitationModalProps;
   createAnnouncementProps?: CreateAnnouncementModalProps;
+  logSessionProps?: LogSessionModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -207,6 +209,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "create_announcement",
           createAnnouncementProps: props,
+        };
+      }
+      if (modal === "log_session") {
+        return {
+          currentModal: "log_session",
+          logSessionProps: props,
         };
       }
       return { currentModal: null };

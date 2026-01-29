@@ -3,6 +3,8 @@ import type {
   CoachProfile,
   EditUserDto,
   Exercise,
+  ProgramDayProgress,
+  ProgramHistory,
   TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
 
@@ -168,4 +170,10 @@ export interface GymInvitationModalProps {
 
 export interface CreateAnnouncementModalProps {
   gymId: string;
+}
+
+export interface LogSessionModalProps {
+  activeHistory: ProgramHistory;
+  initialSession?: ProgramDayProgress;
+  mode: "new" | "edit";
 }

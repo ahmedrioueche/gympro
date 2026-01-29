@@ -1,8 +1,9 @@
-import { Lock, Save, Settings, User } from "lucide-react";
+import { Dumbbell, Lock, Save, Settings, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../components/PageHeader";
 import PreferencesSettings from "../../../../components/settings/PreferencesSettings";
 import SecuritySettings from "../../../../components/settings/SecuritySettings";
+import TrainingSettings from "../../../../components/settings/TrainingSettings";
 import ProfileSettings from "./components/ProfileSettings";
 import {
   useMemberSettings,
@@ -30,6 +31,19 @@ export default function SettingsPage() {
     handleSave,
     isSaving,
     hasChanges,
+    // Preferences
+    language,
+    setLanguage,
+    // Training
+    timerSettings,
+    setTimerSettings,
+    // Security
+    currentPassword,
+    setCurrentPassword,
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
   } = useMemberSettings();
 
   const tabs = [
@@ -48,10 +62,15 @@ export default function SettingsPage() {
       label: t("member.settings.tabs.security"),
       icon: Lock,
     },
+    {
+      id: "training",
+      label: t("member.settings.tabs.training", "Training"),
+      icon: Dumbbell,
+    },
   ];
 
-  // Only show save button on profile tab
-  const showSaveButton = activeTab === "profile";
+  // Save button logic: always show, disable if no changes or currently saving
+  const isSaveDisabled = isSaving || !hasChanges;
 
   return (
     <div className="space-y-6">
@@ -59,17 +78,13 @@ export default function SettingsPage() {
         title={t("member.settings.pageTitle")}
         subtitle={t("member.settings.pageSubtitle")}
         icon={Settings}
-        actionButton={
-          showSaveButton
-            ? {
-                label: t("common.saveChanges", "Save Changes"),
-                icon: Save,
-                onClick: handleSave,
-                loading: isSaving,
-                disabled: isSaving || !hasChanges,
-              }
-            : undefined
-        }
+        actionButton={{
+          label: t("common.saveChanges", "Save Changes"),
+          icon: Save,
+          onClick: handleSave,
+          loading: isSaving,
+          disabled: isSaveDisabled,
+        }}
       />
 
       <div className="flex flex-col md:flex-row gap-6">
@@ -113,8 +128,25 @@ export default function SettingsPage() {
               handleAvatarUpload={handleAvatarUpload}
             />
           )}
-          {activeTab === "preferences" && <PreferencesSettings />}
-          {activeTab === "security" && <SecuritySettings />}
+          {activeTab === "preferences" && (
+            <PreferencesSettings language={language} onUpdate={setLanguage} />
+          )}
+          {activeTab === "security" && (
+            <SecuritySettings
+              currentPassword={currentPassword}
+              onCurrentPasswordChange={setCurrentPassword}
+              newPassword={newPassword}
+              onNewPasswordChange={setNewPassword}
+              confirmPassword={confirmPassword}
+              onConfirmPasswordChange={setConfirmPassword}
+            />
+          )}
+          {activeTab === "training" && (
+            <TrainingSettings
+              timerSettings={timerSettings}
+              onUpdate={setTimerSettings}
+            />
+          )}
         </div>
       </div>
     </div>

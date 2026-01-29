@@ -111,6 +111,14 @@ const CreateAnnouncementModal = lazy(
     import("./app/pages/main/gym/manager/announcement/components/CreateAnnouncementModal"),
 );
 
+const LogSessionModal = lazy(() =>
+  import("./app/pages/main/member/training/components/log-session-modal/LogSessionModal").then(
+    (module) => ({
+      default: module.LogSessionModal, // Exported component is named LogSessionModal, not default
+    }),
+  ),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -136,6 +144,7 @@ function modals() {
       <CoachPricingModal />
       <GymInvitationModal />
       <CreateAnnouncementModal />
+      <LogSessionModal />
     </Suspense>
   );
 }

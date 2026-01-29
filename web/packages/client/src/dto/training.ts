@@ -22,6 +22,7 @@ export interface CreateExerciseDto {
   videoUrl?: string;
   imageUrl?: string;
   isPublic?: boolean;
+  restTime?: number;
 }
 
 export interface CreateProgramBlockDto {
@@ -40,6 +41,7 @@ export interface CreateProgramDto {
   experience: ExperienceLevel;
   purpose: ProgramPurpose;
   daysPerWeek: DaysPerWeek;
+  durationWeeks?: number;
   days: CreateProgramDayDto[];
   description?: string;
   isPublic?: boolean;

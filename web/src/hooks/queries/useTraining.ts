@@ -12,7 +12,7 @@ export const usePrograms = (filters?: { source?: string; search?: string }) => {
     queryFn: async () => {
       const { data } = await trainingApi.getPrograms(
         filters?.source,
-        filters?.search
+        filters?.search,
       );
       return data;
     },
@@ -142,6 +142,22 @@ export const useLogSession = () => {
     },
     onError: (error: any) => {
       toast.error(error.message || "Failed to log session");
+    },
+  });
+};
+
+export const useAutoSaveSession = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: LogSessionDto) => trainingApi.logSession(data),
+    onSuccess: () => {
+      // Silent success
+      queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
+      queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
+    },
+    onError: (error: any) => {
+      // Optional: show error or retry silently? Better to show error if save fails.
+      console.error("Auto-save failed", error);
     },
   });
 };

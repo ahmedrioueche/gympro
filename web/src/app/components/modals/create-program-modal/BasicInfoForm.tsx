@@ -117,6 +117,41 @@ export const BasicInfoForm = ({
           }
           onDaysPerWeekChange={onDaysPerWeekChange}
         />
+
+        {/* Duration in Weeks */}
+        <div className="bg-background-secondary p-4 rounded-xl border border-border">
+          <label className="text-sm font-medium text-text-primary mb-2 block">
+            {t(
+              "training.programs.create.form.durationWeeks",
+              "Duration (weeks)",
+            )}
+          </label>
+          <div className="flex items-center gap-3">
+            {[4, 6, 8, 12].map((weeks) => (
+              <button
+                key={weeks}
+                type="button"
+                onClick={() => onFieldChange("durationWeeks", weeks)}
+                className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                  (formData.durationWeeks ?? 12) === weeks
+                    ? "bg-primary/10 border-primary text-primary"
+                    : "bg-background border-border text-text-secondary hover:border-primary/50"
+                }`}
+              >
+                {weeks} {t("common.weeks", "weeks")}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-text-secondary mt-2">
+            {t(
+              "training.programs.create.form.durationWeeksHint",
+              "Total workouts: {{count}}",
+            ).replace(
+              "{{count}}",
+              String(formData.daysPerWeek * (formData.durationWeeks ?? 12)),
+            )}
+          </p>
+        </div>
       </div>
     </>
   );

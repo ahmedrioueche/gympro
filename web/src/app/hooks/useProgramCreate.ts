@@ -20,6 +20,7 @@ export const useProgramCreate = (onClose: () => void) => {
     experience: "beginner",
     purpose: "general_fitness",
     daysPerWeek: 3,
+    durationWeeks: 12,
     days: [],
     isPublic: false,
   });
@@ -89,6 +90,7 @@ export const useProgramCreate = (onClose: () => void) => {
       experience: "beginner",
       purpose: "general_fitness",
       daysPerWeek: 3,
+      durationWeeks: 12,
       days: [],
       isPublic: false,
     });

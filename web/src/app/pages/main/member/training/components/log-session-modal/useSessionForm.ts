@@ -4,23 +4,41 @@ import {
   type ProgramDayProgress,
   type ProgramHistory,
 } from "@ahmedrioueche/gympro-client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseSessionFormProps {
   isOpen: boolean;
   activeHistory: ProgramHistory;
   initialSession?: ProgramDayProgress;
+  mode: "new" | "edit";
+  onAutoSave?: (data: any) => Promise<string | undefined>; // Returns new sessionId
+}
+
+// LocalStorage key for session in progress
+const getStorageKey = (programId: string, dayName: string) =>
+  `session_progress_v2_${programId}_${dayName}`;
+
+interface StoredSession {
+  exercises: ExerciseProgress[];
+  sessionDate: string;
+  timestamp: number;
+  mode: "new" | "edit";
+  serverSessionId?: string;
+  submissionId?: string; // Persist session identity across page reloads
 }
 
 export const useSessionForm = ({
   isOpen,
   activeHistory,
   initialSession,
+  mode,
+  onAutoSave,
 }: UseSessionFormProps) => {
-  const { program, progress } = activeHistory;
+  const program = activeHistory?.program;
+  const progress = activeHistory?.progress;
 
   const [selectedDayName, setSelectedDayName] = useState<string>(
-    initialSession?.dayName || program.days[0]?.name || "",
+    initialSession?.dayName || program?.days?.[0]?.name || "",
   );
   const [sessionDate, setSessionDate] = useState(
     initialSession
@@ -28,11 +46,17 @@ export const useSessionForm = ({
       : new Date().toISOString().split("T")[0],
   );
   const [exercises, setExercises] = useState<ExerciseProgress[]>([]);
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [serverSessionId, setServerSessionId] = useState<string | undefined>(
+    (initialSession as any)?._id || (initialSession as any)?.id,
+  );
+  const [isDirty, setIsDirty] = useState(false);
+  const autoSaveTimerRef = useRef<any>(null);
   const prevDayNameRef = useRef<string>("");
 
   // Reset when modal opens/closes
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && program?.days) {
       const dayName = initialSession?.dayName || program.days[0]?.name || "";
       setSelectedDayName(dayName);
       prevDayNameRef.current = dayName; // Track initial day
@@ -41,23 +65,113 @@ export const useSessionForm = ({
           ? new Date(initialSession.date).toISOString().split("T")[0]
           : new Date().toISOString().split("T")[0],
       );
+      setServerSessionId(
+        (initialSession as any)?._id || (initialSession as any)?.id,
+      );
+      setIsDirty(false);
     }
-  }, [isOpen, initialSession, program.days]);
+    // Only reset when the modal OPENS. Ignore updates to program/initialSession while open to preserve state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   // Initialize form when Day changes or Edit Session provided
   useEffect(() => {
-    // Skip if day hasn't actually changed AND exercises are already populated
-    if (prevDayNameRef.current === selectedDayName && exercises.length > 0) {
-      return;
-    }
+    // We want to load data whenever:
+    // 1. The modal opens (isOpen change)
+    // 2. The day changes (selectedDayName change)
+    // We do NOT want to skip if exercises exist, because they might be stale from a previous session.
 
     prevDayNameRef.current = selectedDayName;
 
-    if (!selectedDayName) return;
+    if (!isOpen || !selectedDayName || !program) return;
 
     const day = program.days.find((d) => d.name === selectedDayName);
     if (!day) return;
 
+    // EDIT MODE LOGIC ------------------------
+    if (mode === "edit" && initialSession) {
+      // If day switched away from initial session day, treat as "new" or fallback?
+      // Assuming user stays on the edit day, or if they switch, they want to log THAT day (which is effectively new/draft).
+      // But let's strictly load initialSession if it matches selectedDayName.
+      if (initialSession.dayName === selectedDayName) {
+        const flattenedExercises = day.blocks.flatMap((b) => b.exercises);
+        const initialExercises: ExerciseProgress[] = flattenedExercises.map(
+          (ex) => {
+            const existingEx = initialSession.exercises.find(
+              (e) =>
+                e.exerciseId === ex._id ||
+                e.exerciseId === ex.name ||
+                (ex._id && e.exerciseId === "unknown_exercise"),
+            );
+
+            if (existingEx) {
+              return {
+                exerciseId: ex._id || ex.name || "unknown_exercise",
+                sets: existingEx.sets || [],
+                notes: existingEx.notes || "",
+              };
+            }
+
+            // Fallback for new exercises
+            const setRange = Array.from({ length: ex.recommendedSets || 3 });
+            return {
+              exerciseId: ex._id || ex.name || "unknown_exercise",
+              sets: setRange.map(() => ({
+                reps: ex.recommendedReps || 10,
+                weight: 0,
+                completed: false,
+                drops: [],
+              })),
+              notes: "",
+            };
+          },
+        );
+        setExercises(initialExercises);
+        return;
+      }
+    }
+
+    // NEW SESSION LOGIC ------------------------
+
+    // First, try to load from localStorage (Crash Recovery)
+    const storageKey = getStorageKey(program._id!, selectedDayName);
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed: StoredSession = JSON.parse(stored);
+
+        // Validation: Check if stored session is recent enough (24 hours)
+        const hoursSinceStored =
+          (Date.now() - parsed.timestamp) / (1000 * 60 * 60);
+        if (hoursSinceStored < 24 && parsed.exercises.length > 0) {
+          console.log("[useSessionForm] Recovering session from localStorage");
+
+          // Force uncheck sets if mode is new (User Request: "always uncheck all sets on a new log")
+          // This prevents stale drafts from showing completed sets
+          const exercises = parsed.exercises.map((ex) => ({
+            ...ex,
+            sets: ex.sets.map((s) => ({ ...s, completed: false })),
+          }));
+
+          setExercises(exercises);
+          setSessionDate(parsed.sessionDate);
+          setLastSavedAt(new Date(parsed.timestamp));
+          // Recover server session ID if available
+          if (parsed.serverSessionId) {
+            setServerSessionId(parsed.serverSessionId);
+          }
+          // Recover submissionId to maintain session identity
+          if (parsed.submissionId) {
+            setSubmissionId(parsed.submissionId);
+          }
+          return;
+        }
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+
+    // If no draft, try to pre-fill from Last Session (Progressive Overload)
     // Find the last session logged for this specific day name
     const lastSession = progress?.dayLogs
       ? [...progress.dayLogs]
@@ -67,32 +181,9 @@ export const useSessionForm = ({
           .find((log) => log.dayName === selectedDayName)
       : undefined;
 
-    // If we are editing (initialSession provided) and we are on that day, load its data directly
-    const isEditingTarget =
-      initialSession && initialSession.dayName === selectedDayName;
-
-    // Map exercises for the selected day (Flatten blocks)
     const flattenedExercises = day.blocks.flatMap((b) => b.exercises);
     const initialExercises: ExerciseProgress[] = flattenedExercises.map(
       (ex) => {
-        // If editing, try to find the exercise in the initial session data
-        if (isEditingTarget) {
-          const existingEx = initialSession.exercises.find(
-            (e) =>
-              e.exerciseId === ex._id ||
-              e.exerciseId === ex.name ||
-              (ex._id && e.exerciseId === "unknown_exercise"), // Fallback matching
-          );
-
-          if (existingEx) {
-            return {
-              exerciseId: ex._id || ex.name || "unknown_exercise",
-              sets: existingEx.sets || [],
-              notes: existingEx.notes || "",
-            };
-          }
-        }
-
         const lastEx = lastSession?.exercises.find(
           (e) =>
             e.exerciseId === ex._id ||
@@ -105,18 +196,16 @@ export const useSessionForm = ({
         let initialSets: ExerciseSet[] = [];
 
         if (lastEx && lastEx.sets && lastEx.sets.length > 0) {
-          // Option A: Pre-fill with last session's data
-          console.log(
-            `Pre-filling exercise "${ex.name}" with last session data:`,
-            lastEx.sets,
-          );
+          // Pre-fill with last session's data (weights, reps, etc)
+          // BUT force completed = false
           initialSets = lastEx.sets.map((s) => ({
             reps: s.reps,
             weight: s.weight,
-            completed: false,
+            completed: false, // Ensure sets are unchecked
             drops: s.drops || [],
           }));
         } else {
+          // Default fallbacks
           const setRange = Array.from({ length: ex.recommendedSets || 3 });
           initialSets = setRange.map(() => ({
             reps: ex.recommendedReps || 10,
@@ -135,7 +224,110 @@ export const useSessionForm = ({
     );
 
     setExercises(initialExercises);
-  }, [selectedDayName]); // Only depend on selectedDayName
+  }, [selectedDayName, isOpen]); // Rerun logic when modal opens!
+
+  // Client-side ID for robust de-duplication
+  // This starts as undefined and gets set during initialization
+  const [submissionId, setSubmissionId] = useState<string | undefined>(
+    (initialSession as any)?.submissionId ||
+      (mode === "new"
+        ? Math.random().toString(36).substring(2) + Date.now().toString(36)
+        : undefined),
+  );
+
+  // Auto-save Effect
+  useEffect(() => {
+    if (!isOpen || !onAutoSave || !program?._id || exercises.length === 0)
+      return;
+
+    // Don't auto-save if we haven't made changes (initial load)
+    if (!isDirty) return;
+
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    autoSaveTimerRef.current = setTimeout(async () => {
+      // Perform save
+      const data = {
+        programId: program._id,
+        dayName: selectedDayName,
+        date: sessionDate,
+        exercises,
+        sessionId: serverSessionId,
+        submissionId: submissionId, // Send robust ID
+      };
+
+      try {
+        const newId = await onAutoSave(data);
+        if (newId && !serverSessionId) {
+          setServerSessionId(newId);
+        }
+        setLastSavedAt(new Date());
+        setIsDirty(false);
+      } catch (err) {
+        console.error("Auto-save error", err);
+      }
+    }, 2000); // 2 second debounce
+
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [
+    exercises,
+    sessionDate,
+    selectedDayName,
+    isOpen,
+    program?._id,
+    onAutoSave,
+    serverSessionId,
+    isDirty,
+  ]);
+
+  // Save to localStorage whenever exercises change
+  useEffect(() => {
+    if (!isOpen || exercises.length === 0 || !selectedDayName || !program?._id)
+      return;
+
+    const storageKey = getStorageKey(program._id, selectedDayName);
+    const data: StoredSession = {
+      exercises,
+      sessionDate,
+      timestamp: Date.now(),
+      mode,
+      serverSessionId, // Persist ID so crash recovery works with proper UPDATE
+      submissionId, // Persist session identity
+    };
+
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [
+    exercises,
+    sessionDate,
+    isOpen,
+    selectedDayName,
+    program?._id,
+    mode,
+    serverSessionId,
+  ]);
+
+  // Clear localStorage for this session
+  const clearStorage = useCallback(() => {
+    if (program?._id && selectedDayName) {
+      const storageKey = getStorageKey(program._id, selectedDayName);
+      localStorage.removeItem(storageKey);
+    }
+  }, [program?._id, selectedDayName]);
+
+  // Mark as saved (to update lastSavedAt)
+  const markAsSaved = useCallback(() => {
+    setLastSavedAt(new Date());
+    clearStorage();
+    setIsDirty(false); // Reset dirty state on manual save/completion
+  }, [clearStorage]);
 
   const updateSet = (
     exIndex: number,
@@ -143,22 +335,19 @@ export const useSessionForm = ({
     field: keyof ExerciseSet,
     value: any,
   ) => {
+    setIsDirty(true);
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
 
     // Propagate weight changes intelligently
-    // We need to capture the old value BEFORE updating to know if subsequent sets were synced
     const oldValue = currentSets[setIndex][field];
 
     // Update the specific field
     currentSets[setIndex] = { ...currentSets[setIndex], [field]: value };
 
     // UX Improvements:
-    // 1. Auto-fill weights for subsequent sets if they are empty OR matched the old value
-    // 2. Auto-mark as completed if weight is entered
     if (field === "weight") {
       const weightValue = parseFloat(value) || 0;
-      const oldWeightValue = parseFloat(oldValue as any) || 0;
 
       if (weightValue > 0) {
         // Auto-mark as completed
@@ -167,9 +356,6 @@ export const useSessionForm = ({
         // Propagate weight to subsequent sets
         for (let i = setIndex + 1; i < currentSets.length; i++) {
           const nextSetWeight = currentSets[i].weight || 0;
-          // Update if empty OR if it matched the previous value (meaning they were likely synced)
-          // But careful not to overwrite user intent.
-          // For now, only propagate if next set is 0.
           if (nextSetWeight === 0) {
             currentSets[i] = { ...currentSets[i], weight: weightValue };
           }
@@ -182,6 +368,7 @@ export const useSessionForm = ({
   };
 
   const addSet = (exIndex: number) => {
+    setIsDirty(true);
     const newExercises = [...exercises];
     const previousSet =
       newExercises[exIndex].sets[newExercises[exIndex].sets.length - 1];
@@ -196,20 +383,20 @@ export const useSessionForm = ({
   };
 
   const removeSet = (exIndex: number, setIndex: number) => {
+    setIsDirty(true);
     const newExercises = [...exercises];
     newExercises[exIndex].sets.splice(setIndex, 1);
     setExercises(newExercises);
   };
 
   const addDropSet = (exIndex: number, setIndex: number) => {
+    setIsDirty(true);
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
     const set = currentSets[setIndex];
 
-    // Initialize drops if undefined (though we init with [])
     const currentDrops = set.drops ? [...set.drops] : [];
 
-    // Add new drop. Default weight slightly less than main set? Or 0.
     const lastDrop =
       currentDrops.length > 0 ? currentDrops[currentDrops.length - 1] : null;
     currentDrops.push({
@@ -233,6 +420,7 @@ export const useSessionForm = ({
     field: "weight" | "reps",
     value: number,
   ) => {
+    setIsDirty(true);
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
     const set = currentSets[setIndex];
@@ -251,6 +439,7 @@ export const useSessionForm = ({
     setIndex: number,
     dropIndex: number,
   ) => {
+    setIsDirty(true);
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
     const set = currentSets[setIndex];
@@ -276,5 +465,8 @@ export const useSessionForm = ({
     addDropSet,
     updateDropSet,
     removeDropSet,
+    lastSavedAt,
+    clearStorage,
+    markAsSaved,
   };
 };
