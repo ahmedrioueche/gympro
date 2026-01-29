@@ -9,12 +9,14 @@ interface SessionListProps {
   sessions: ProgramDayProgress[];
   program: TrainingProgram;
   onEditSession?: (session: ProgramDayProgress) => void;
+  onDeleteSession?: (session: ProgramDayProgress) => void;
 }
 
 export const SessionList = ({
   sessions,
   program,
   onEditSession,
+  onDeleteSession,
 }: SessionListProps) => {
   const { t } = useTranslation();
   if (!sessions?.length) {
@@ -27,7 +29,7 @@ export const SessionList = ({
 
   // Sort by date desc
   const sortedSessions = [...sessions].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
   return (
@@ -38,6 +40,9 @@ export const SessionList = ({
           session={session}
           program={program}
           onEdit={onEditSession ? () => onEditSession(session) : undefined}
+          onDelete={
+            onDeleteSession ? () => onDeleteSession(session) : undefined
+          }
         />
       ))}
     </div>

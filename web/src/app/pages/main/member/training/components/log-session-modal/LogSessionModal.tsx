@@ -1,4 +1,5 @@
 import { Dumbbell } from "lucide-react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import CustomSelect from "../../../../../../../components/ui/CustomSelect";
@@ -17,9 +18,7 @@ export const LogSessionModal = () => {
   const { currentModal, logSessionProps, closeModal, openModal } =
     useModalStore();
   const isOpen = currentModal === "log_session";
-
   const { activeHistory, initialSession, mode } = logSessionProps || {};
-
   const logSession = useLogSession();
   const autoSaveSession = useAutoSaveSession();
 
@@ -52,22 +51,6 @@ export const LogSessionModal = () => {
           );
         }
 
-        // Priority 2: Match by Day + Date (take the last one matching to be safe)
-        if (!targetLog) {
-          const targetDateStr = new Date(data.date).toISOString().split("T")[0];
-          const matches = logs.filter(
-            (l: any) =>
-              l.dayName === data.dayName &&
-              new Date(l.date).toISOString().split("T")[0] === targetDateStr,
-          );
-          targetLog = matches[matches.length - 1];
-        }
-
-        // Fallback: Last log
-        if (!targetLog) {
-          targetLog = logs[logs.length - 1];
-        }
-
         return targetLog?._id;
       }
       return data.sessionId;
@@ -90,6 +73,13 @@ export const LogSessionModal = () => {
   const { program } = activeHistory;
 
   const handleSave = () => {
+    // Validate before saving
+    const validationError = form.validateSession();
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
     // Final save / Done
     logSession.mutate(
       {
@@ -112,8 +102,6 @@ export const LogSessionModal = () => {
   };
 
   const currentDay = program.days.find((d) => d.name === form.selectedDayName);
-  const flattenedExercises =
-    currentDay?.blocks.flatMap((b) => b.exercises) || [];
 
   const dayOptions = program.days.map((d) => ({
     value: d.name,
@@ -190,15 +178,7 @@ export const LogSessionModal = () => {
                 const isSplit =
                   form.splitBlockIndices?.has(blockIndex) ?? false;
 
-                // Import SessionBlock at top level, but assuming local here for diff context
-                // Need to ensure SessionBlock is imported in file.
-                // Assuming it will be imported. if not, I'll add import in next step or user context.
-                // Wait, I cannot add import here easily without multi-replace.
-                // I will assume I need to add import separately or use multi-replace.
-                // Let's use SessionBlock assuming it's imported (I will add import next).
-
                 return (
-                  // @ts-ignore - SessionBlock import to be added
                   <SessionBlock
                     key={blockIndex}
                     block={block}

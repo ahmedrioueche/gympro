@@ -2544,7 +2544,18 @@
       "unknownExercise": "Unknown Exercise",
       "done": "Done",
       "addSet": "Add Set",
-      "set": "Set"
+      "set": "Set",
+      "uncheckToDelete": "Uncheck to delete",
+      "RemoveSet": "Remove Set",
+      "deleteTitle": "Delete Session",
+      "deleteMessage": "Are you sure you want to delete this session? This action cannot be undone.",
+      "deleteVerificationText": "Delete Session",
+      "validation": {
+        "weightPositive": "Weight must be greater than 0",
+        "repsPositive": "Reps must be greater than 0",
+        "weightIncrements": "Weight must be in 0.5 increments",
+        "autoUncheck": "Unchecked: value became invalid"
+      }
     },
     "noResults": "No exercises found",
     "tryDifferent": "Try different filters or create a new exercise",

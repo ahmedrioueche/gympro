@@ -5,6 +5,8 @@ import {
   type ProgramHistory,
 } from "@ahmedrioueche/gympro-client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 interface UseSessionFormProps {
   isOpen: boolean;
@@ -339,12 +341,34 @@ export const useSessionForm = ({
     setIsDirty(false); // Reset dirty state on manual save/completion
   }, [clearStorage]);
 
+  const { t } = useTranslation();
+
+  const validateSet = (weight: number, reps: number) => {
+    if (weight <= 0) return t("training.logSession.validation.weightPositive");
+    if (reps <= 0) return t("training.logSession.validation.repsPositive");
+    if (weight % 0.5 !== 0)
+      return t("training.logSession.validation.weightIncrements");
+    // Check for negative numbers explicitly if input allows them, though <= 0 covers it.
+    return null;
+  };
+
   const updateSet = (
     exIndex: number,
     setIndex: number,
     field: keyof ExerciseSet,
     value: any,
   ) => {
+    // Validation Logic
+    if (field === "completed" && value === true) {
+      const currentSet = exercises[exIndex].sets[setIndex];
+      // Use current values in state unless they are being updated right now (which for 'completed' toggle, they are not)
+      const error = validateSet(currentSet.weight, currentSet.reps);
+      if (error) {
+        toast.error(error);
+        return; // Block update
+      }
+    }
+
     setIsDirty(true);
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
@@ -354,6 +378,31 @@ export const useSessionForm = ({
 
     // Update the specific field
     currentSets[setIndex] = { ...currentSets[setIndex], [field]: value };
+
+    // Strict Validation: If modifying a COMPLETED set, check if new value remains valid.
+    if (
+      currentSets[setIndex].completed &&
+      (field === "weight" || field === "reps")
+    ) {
+      // Use current new values to check
+      const newWeight =
+        parseInt(field === "weight" ? value : currentSets[setIndex].weight) ||
+        0;
+      const newReps =
+        parseInt(field === "reps" ? value : currentSets[setIndex].reps) || 0;
+
+      // Note: value coming from input might be string or number, safely handle both
+      // Actually, validation expects numbers.
+      // Let's rely on set state which is updated above.
+      // But state update is async/batched? No, `currentSets` is a local mutation of the array before setExercises.
+
+      const setToCheck = currentSets[setIndex];
+      const error = validateSet(setToCheck.weight, setToCheck.reps);
+      if (error) {
+        currentSets[setIndex].completed = false;
+        toast(t("training.logSession.validation.autoUncheck"), { icon: "⚠️" });
+      }
+    }
 
     // UX Improvements:
     if (field === "weight") {
@@ -451,9 +500,26 @@ export const useSessionForm = ({
   ) => {
     setIsDirty(true);
     const newExercises = [...exercises];
+    let hasError = false;
 
     exerciseIndices.forEach((exIdx) => {
-      if (newExercises[exIdx] && newExercises[exIdx].sets[setIndex]) {
+      if (completed && !hasError) {
+        // validating only when marking as completed
+        const setToCheck = newExercises[exIdx]?.sets[setIndex];
+        if (setToCheck) {
+          const error = validateSet(setToCheck.weight, setToCheck.reps);
+          if (error) {
+            toast.error(`Exercise ${exIdx + 1}: ${error}`);
+            hasError = true;
+          }
+        }
+      }
+
+      if (
+        !hasError &&
+        newExercises[exIdx] &&
+        newExercises[exIdx].sets[setIndex]
+      ) {
         const newSets = [...newExercises[exIdx].sets];
         newSets[setIndex] = { ...newSets[setIndex], completed };
 
@@ -463,6 +529,8 @@ export const useSessionForm = ({
         };
       }
     });
+
+    if (hasError) return;
 
     setExercises(newExercises);
   };
@@ -498,6 +566,22 @@ export const useSessionForm = ({
     });
   };
 
+  const validateSession = () => {
+    for (let i = 0; i < exercises.length; i++) {
+      const ex = exercises[i];
+      for (let j = 0; j < ex.sets.length; j++) {
+        const set = ex.sets[j];
+        if (set.completed) {
+          const error = validateSet(set.weight, set.reps);
+          if (error) {
+            return `${ex.exerciseId} Set ${j + 1}: ${error}`;
+          }
+        }
+      }
+    }
+    return null;
+  };
+
   return {
     selectedDayName,
     setSelectedDayName,
@@ -516,5 +600,6 @@ export const useSessionForm = ({
     splitBlockIndices, // Expose split state
     toggleBlockSplit, // Expose toggler
     toggleSupersetCompletion, // Expose atomic updater
+    validateSession,
   };
 };

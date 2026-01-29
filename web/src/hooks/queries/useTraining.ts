@@ -146,6 +146,27 @@ export const useLogSession = () => {
   });
 };
 
+export const useDeleteSession = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      programId,
+      sessionId,
+    }: {
+      programId: string;
+      sessionId: string;
+    }) => trainingApi.deleteSession(programId, sessionId),
+    onSuccess: () => {
+      toast.success("Session deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
+      queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to delete session");
+    },
+  });
+};
+
 export const useAutoSaveSession = () => {
   const queryClient = useQueryClient();
   return useMutation({

@@ -114,6 +114,7 @@ export const SessionExerciseCard = ({
               <div className="col-span-4">
                 <input
                   type="number"
+                  min="0"
                   value={set.weight || ""}
                   onChange={(e) =>
                     onUpdateSet(
@@ -132,6 +133,7 @@ export const SessionExerciseCard = ({
               <div className="col-span-4">
                 <input
                   type="number"
+                  min="0"
                   value={set.reps || ""}
                   onChange={(e) =>
                     onUpdateSet(
@@ -193,7 +195,7 @@ export const SessionExerciseCard = ({
                             "training.logSession.uncheckToDelete",
                             "Uncheck to delete",
                           )
-                        : "Remove Set"
+                        : t("training.logSession.RemoveSet", "Remove Set")
                     }
                   >
                     <Trash2 size={14} />
@@ -223,6 +225,7 @@ export const SessionExerciseCard = ({
                     <div className="col-span-4">
                       <input
                         type="number"
+                        min="0"
                         value={drop.weight || ""}
                         onChange={(e) =>
                           onUpdateDropSet(
@@ -240,6 +243,7 @@ export const SessionExerciseCard = ({
                     <div className="col-span-4">
                       <input
                         type="number"
+                        min="0"
                         value={drop.reps || ""}
                         onChange={(e) =>
                           onUpdateDropSet(

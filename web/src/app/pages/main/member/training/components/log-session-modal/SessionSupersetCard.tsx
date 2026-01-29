@@ -181,6 +181,7 @@ export const SessionSupersetCard = ({
                         <div className="relative flex-1">
                           <input
                             type="number"
+                            min="0"
                             value={set.weight || ""}
                             onChange={(e) =>
                               onUpdateSet(
@@ -200,6 +201,7 @@ export const SessionSupersetCard = ({
                         <div className="relative flex-1">
                           <input
                             type="number"
+                            min="0"
                             value={set.reps || ""}
                             onChange={(e) =>
                               onUpdateSet(

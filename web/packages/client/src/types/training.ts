@@ -193,6 +193,8 @@ export interface ExerciseProgress {
 
 // Progress for a training day
 export interface ProgramDayProgress {
+  _id?: string;
+  submissionId?: string;
   dayName: string; // matches ProgramDay.name
   date: string | Date;
   exercises: ExerciseProgress[];
