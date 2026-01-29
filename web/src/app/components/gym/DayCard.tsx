@@ -244,103 +244,115 @@ export const DayCard = ({
 
                   <div className={`space-y-2`}>
                     {/* Disable internal interactions when in selection mode */}
-                    {block.exercises.map((ex, exIndex) => (
-                      <div key={exIndex}>
-                        {showExerciseSelector &&
-                        activeBlockIndex === blockIndex &&
-                        !ex.name ? (
-                          <div className="animate-in fade-in zoom-in duration-300">
-                            <ExerciseSelector
-                              onSelect={(exercise) => {
-                                const exerciseData = {
-                                  name: exercise.name,
-                                  description: exercise.description,
-                                  instructions: exercise.instructions,
-                                  recommendedSets:
-                                    exercise.recommendedSets || 3,
-                                  recommendedReps:
-                                    exercise.recommendedReps || 10,
-                                  targetMuscles: exercise.targetMuscles,
-                                  equipment: exercise.equipment,
-                                  videoUrl: exercise.videoUrl,
-                                  imageUrl: exercise.imageUrl,
-                                  difficulty: exercise.difficulty,
-                                  type: exercise.type,
-                                };
+                    {block.exercises.map((ex, exIndex) => {
+                      // Calculate global index for correct numbering
+                      // Sum of exercises in all previous blocks
+                      const previousExercisesCount = day.blocks
+                        .slice(0, blockIndex)
+                        .reduce((acc, b) => acc + b.exercises.length, 0);
+                      const globalIndex = previousExercisesCount + exIndex;
 
-                                Object.entries(exerciseData).forEach(
-                                  ([key, value]) => {
-                                    onExerciseUpdate(
-                                      blockIndex,
-                                      exIndex,
-                                      key as keyof CreateExerciseDto,
-                                      value,
-                                    );
-                                  },
-                                );
-                                setShowExerciseSelector(false);
-                                setActiveBlockIndex(null);
-                              }}
-                              onCancel={() => {
-                                setShowExerciseSelector(false);
-                                setActiveBlockIndex(null);
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <ExerciseForm
-                            exercise={ex}
-                            exerciseIndex={exIndex}
-                            isDragging={draggedIndex === blockIndex}
-                            isCollapsed={
-                              collapsedBlocks.has(blockIndex) || isSelectionMode
-                            } // Auto-collapse in selection mode for cleaner view
-                            isSelectionMode={isSelectionMode}
-                            isSelected={isSelected}
-                            onSelect={() => toggleSelection(blockIndex)}
-                            isLibraryOpen={
-                              showExerciseSelector &&
-                              activeBlockIndex === blockIndex
-                            }
-                            onUpdate={(field, value) =>
-                              !isSelectionMode &&
-                              onExerciseUpdate(
-                                // Prevent updates in selection mode
-                                blockIndex,
-                                exIndex,
-                                field,
-                                value,
-                              )
-                            }
-                            onRemove={() =>
-                              onExerciseRemove(blockIndex, exIndex)
-                            }
-                            onAddNext={
-                              blockIndex === day.blocks.length - 1 &&
-                              exIndex === block.exercises.length - 1
-                                ? () => onAddExercise({})
-                                : undefined
-                            }
-                            onToggleLibrary={() => {
-                              setActiveBlockIndex(blockIndex);
-                              setShowExerciseSelector(true);
-                            }}
-                            onDragStart={() => handleDragStart(blockIndex)}
-                            onDragEnd={handleDragEnd}
-                            onDragOver={(targetIndex) => {
-                              if (
-                                draggedIndex !== null &&
-                                draggedIndex !== targetIndex
-                              ) {
-                                onBlockReorder(draggedIndex, targetIndex);
-                                setDraggedIndex(targetIndex);
+                      return (
+                        <div key={exIndex}>
+                          {showExerciseSelector &&
+                          activeBlockIndex === blockIndex &&
+                          !ex.name ? (
+                            <div className="animate-in fade-in zoom-in duration-300">
+                              <ExerciseSelector
+                                onSelect={(exercise) => {
+                                  const exerciseData = {
+                                    name: exercise.name,
+                                    description: exercise.description,
+                                    instructions: exercise.instructions,
+                                    recommendedSets:
+                                      exercise.recommendedSets || 3,
+                                    recommendedReps:
+                                      exercise.recommendedReps || 10,
+                                    targetMuscles: exercise.targetMuscles,
+                                    equipment: exercise.equipment,
+                                    videoUrl: exercise.videoUrl,
+                                    imageUrl: exercise.imageUrl,
+                                    difficulty: exercise.difficulty,
+                                    type: exercise.type,
+                                  };
+
+                                  Object.entries(exerciseData).forEach(
+                                    ([key, value]) => {
+                                      onExerciseUpdate(
+                                        blockIndex,
+                                        exIndex,
+                                        key as keyof CreateExerciseDto,
+                                        value,
+                                      );
+                                    },
+                                  );
+                                  setShowExerciseSelector(false);
+                                  setActiveBlockIndex(null);
+                                }}
+                                onCancel={() => {
+                                  setShowExerciseSelector(false);
+                                  setActiveBlockIndex(null);
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <ExerciseForm
+                              exercise={ex}
+                              exerciseIndex={globalIndex}
+                              isDragging={draggedIndex === blockIndex}
+                              isCollapsed={
+                                collapsedBlocks.has(blockIndex) ||
+                                isSelectionMode
+                              } // Auto-collapse in selection mode for cleaner view
+                              isSelectionMode={isSelectionMode}
+                              isSelected={isSelected}
+                              onSelect={() => toggleSelection(blockIndex)}
+                              isLibraryOpen={
+                                showExerciseSelector &&
+                                activeBlockIndex === blockIndex
                               }
-                            }}
-                            onToggleCollapse={() => toggleCollapse(blockIndex)}
-                          />
-                        )}
-                      </div>
-                    ))}
+                              onUpdate={(field, value) =>
+                                !isSelectionMode &&
+                                onExerciseUpdate(
+                                  // Prevent updates in selection mode
+                                  blockIndex,
+                                  exIndex,
+                                  field,
+                                  value,
+                                )
+                              }
+                              onRemove={() =>
+                                onExerciseRemove(blockIndex, exIndex)
+                              }
+                              onAddNext={
+                                blockIndex === day.blocks.length - 1 &&
+                                exIndex === block.exercises.length - 1
+                                  ? () => onAddExercise({})
+                                  : undefined
+                              }
+                              onToggleLibrary={() => {
+                                setActiveBlockIndex(blockIndex);
+                                setShowExerciseSelector(true);
+                              }}
+                              onDragStart={() => handleDragStart(blockIndex)}
+                              onDragEnd={handleDragEnd}
+                              onDragOver={(targetIndex) => {
+                                if (
+                                  draggedIndex !== null &&
+                                  draggedIndex !== targetIndex
+                                ) {
+                                  onBlockReorder(draggedIndex, targetIndex);
+                                  setDraggedIndex(targetIndex);
+                                }
+                              }}
+                              onToggleCollapse={() =>
+                                toggleCollapse(blockIndex)
+                              }
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
