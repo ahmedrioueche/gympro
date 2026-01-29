@@ -8,7 +8,7 @@ import { RootRoute } from "../rootRoute";
 
 export const MainRootRoute = createRoute({
   getParentRoute: () => RootRoute,
-  path: "/",
+  id: "main-layout",
   component: () => (
     <ProtectedRoute>
       <OnboardingGuard>

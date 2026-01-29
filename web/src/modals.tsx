@@ -102,6 +102,10 @@ const CoachPricingModal = lazy(
   () => import("./app/components/modals/coach-pricing-modal/CoachPricingModal"),
 );
 
+const RequestCoachAccessModal = lazy(
+  () => import("./app/components/modals/RequestCoachAccessModal"),
+);
+
 const GymInvitationModal = lazy(
   () => import("./app/components/modals/GymInvitationModal"),
 );
@@ -142,6 +146,7 @@ function modals() {
       <ClientProfileModal />
       <CoachProfileModal />
       <CoachPricingModal />
+      <RequestCoachAccessModal />
       <GymInvitationModal />
       <CreateAnnouncementModal />
       <LogSessionModal />

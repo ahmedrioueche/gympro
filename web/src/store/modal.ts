@@ -35,6 +35,7 @@ type ModalType =
   | "cancel_subscription"
   | "staff_modal"
   | "request_coach"
+  | "request_coach_access"
   | "create_program"
   | "program_details"
   | "create_exercise"
@@ -126,6 +127,11 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "request_coach",
           requestCoachProps: props,
+        };
+      }
+      if (modal === "request_coach_access") {
+        return {
+          currentModal: "request_coach_access",
         };
       }
       if (modal === "create_program") {

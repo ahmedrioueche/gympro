@@ -4,6 +4,12 @@ import { apiClient, handleApiError } from "./helper";
 
 export interface RequestCoachAccessDto {
   certificationDetails: string;
+  socialMediaLinks?: string[];
+  documents?: {
+    url: string;
+    description: string;
+    type: string; // 'certificate' | 'other'
+  }[];
 }
 
 export interface AvailableDashboardsResponse {
@@ -17,7 +23,7 @@ export const dashboardApi = {
    * Request access to the coach dashboard (self-certification form).
    */
   requestCoachAccess: async (
-    dto: RequestCoachAccessDto
+    dto: RequestCoachAccessDto,
   ): Promise<ApiResponse<{ success: boolean; message: string }>> => {
     try {
       const res = await apiClient.post<
@@ -37,7 +43,7 @@ export const dashboardApi = {
   > => {
     try {
       const res = await apiClient.get<ApiResponse<AvailableDashboardsResponse>>(
-        "/dashboard/available"
+        "/dashboard/available",
       );
       return res.data;
     } catch (error) {

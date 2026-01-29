@@ -1,6 +1,7 @@
 import type { User } from "@ahmedrioueche/gympro-client";
 import { Mail, Phone, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useModalStore } from "../../../../../../store/modal";
 import AvatarUploader from "../../../../../components/AvatarUploader";
 
 interface ProfileSettingsProps {
@@ -35,6 +36,7 @@ export default function ProfileSettings({
   handleAvatarUpload,
 }: ProfileSettingsProps) {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
 
   return (
     <div className="space-y-6">
@@ -86,7 +88,7 @@ export default function ProfileSettings({
                     disabled={!!user.profile.email}
                     placeholder={t(
                       "member.settings.profile.emailPlaceholder",
-                      "Enter your email"
+                      "Enter your email",
                     )}
                     className={`w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-text-primary focus:ring-1 focus:ring-primary focus:outline-none ${
                       user.profile.email
@@ -131,7 +133,7 @@ export default function ProfileSettings({
                     disabled={!!user.profile.phoneNumber}
                     placeholder={t(
                       "member.settings.profile.phonePlaceholder",
-                      "Enter phone number"
+                      "Enter phone number",
                     )}
                     className={`w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-text-primary focus:ring-1 focus:ring-primary focus:outline-none ${
                       user.profile.phoneNumber
@@ -163,6 +165,28 @@ export default function ProfileSettings({
             )}
           </div>
         </div>
+
+        {/* Coach Access Section */}
+        {!user.dashboardAccess?.includes("coach") && (
+          <div className="pt-6 border-t border-border">
+            <h4 className="text-base font-medium text-text-primary mb-2">
+              {t("member.settings.profile.coachAccess", "Coach Access")}
+            </h4>
+            <p className="text-sm text-text-secondary mb-4">
+              {t(
+                "member.settings.profile.coachAccessDesc",
+                "Are you a fitness professional? Request access to the coach dashboard to start managing clients.",
+              )}
+            </p>
+            <button
+              type="button"
+              onClick={() => openModal("request_coach_access")}
+              className="px-4 py-2 bg-primary/10 text-primary rounded-xl font-medium hover:bg-primary/20 transition-all border border-primary/20"
+            >
+              {t("member.settings.profile.becomeCoach", "Become a Coach")}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

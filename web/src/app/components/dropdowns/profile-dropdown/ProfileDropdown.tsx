@@ -58,6 +58,23 @@ export default function ProfileDropdown({
         onClick={onSettingsClick}
       />
 
+      {/* Coach Request - Only if not a coach */}
+      {!user.dashboardAccess?.includes("coach") && (
+        <DropdownItem
+          icon="🎓"
+          label={t("profile.menu.becomeCoach", "Become a Coach")}
+          description={t(
+            "profile.menu.becomeCoachDesc",
+            "Request coach access",
+          )}
+          onClick={() => {
+            import("../../../../store/modal").then(({ useModalStore }) => {
+              useModalStore.getState().openModal("request_coach_access");
+            });
+          }}
+        />
+      )}
+
       <DropdownDivider />
 
       <DropdownItem

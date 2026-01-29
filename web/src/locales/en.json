@@ -57,7 +57,7 @@
     "plan": "Plan",
     "duration": "Duration",
     "date": "Date Added",
-
+    "addLink": "Add Link",
     "cancelled": "Cancelled",
     "active": "Active",
     "expired": "Expired",
@@ -82,7 +82,12 @@
     "success": "Success",
     "leave": "Leave",
     "errorOccurred": "An error occurred",
-    "postedBy": "Posted by"
+    "postedBy": "Posted by",
+    "uploading": "Uploading...",
+    "uploadFailed": "Upload failed",
+    "uploadSuccess": "Upload successful",
+    "fileTooLarge": "File size must be less than 5MB",
+    "submit": "Submit"
   },
   "confirm": {
     "default": {
@@ -389,7 +394,22 @@
   "dashboard": {
     "member": "Member",
     "manager": "Manager",
-    "coach": "Coach"
+    "coach": "Coach",
+    "coachAccessDescription": "Request access to a coach's dashboard",
+    "coachAccessTitle": "Request Access to a Coach's Dashboard",
+    "certificationFiles": "Certification Files",
+    "fileDescriptionPlaceholder": "Enter file description",
+    "uploadFile": "Upload File",
+    "socialMediaLinks": "Social Media Links",
+    "socialMediaLinksPlaceholder": "Enter social media links",
+    "requestTimeout": "Request submitted successfully",
+    "certificationDetails": "Certification Details",
+    "certificationPlaceholder": "e.g., ACE Certified Personal Trainer, NASM-CPT",
+    "requestCoachAccess": "Request Coach Access",
+    "errors": {
+      "certificationRequired": "Certification details are required",
+      "documentsRequired": "Please upload at least one certification file"
+    }
   },
   "subscriptions": {
     "title": "Subscriptions",
