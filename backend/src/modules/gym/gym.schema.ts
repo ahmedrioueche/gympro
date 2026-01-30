@@ -24,6 +24,7 @@ export class GymSettingsModel implements GymSettings {
   @Prop({ type: [String] }) servicesOffered?: BaseSubscriptionType[];
   @Prop({ default: 'flexible' }) accessControlType?: AccessControlType;
   @Prop() defaultCurrency?: Currency;
+  @Prop({ type: [String], default: [] }) rules?: string[];
 }
 export const GymSettingsSchema = SchemaFactory.createForClass(GymSettingsModel);
 

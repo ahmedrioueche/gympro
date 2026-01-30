@@ -45,20 +45,35 @@ export const GYM_PERMISSIONS = {
     view: "schedules:view",
     manage: "schedules:manage",
   },
+  // Clients (Coach specific)
+  clients: {
+    view: "clients:view",
+    manage: "clients:manage",
+  },
+  payments: {
+    view: "payments:view",
+    manage: "payments:manage",
+  },
+  // Communication (Announcements)
+  communication: {
+    view: "communication:view",
+    manage: "communication:manage",
+  },
 } as const;
 
 // Extract all permission values as a union type
-type PermissionValues<T> = T extends Record<string, infer U>
-  ? U extends Record<string, string>
-    ? U[keyof U]
-    : U
-  : never;
+type PermissionValues<T> =
+  T extends Record<string, infer U>
+    ? U extends Record<string, string>
+      ? U[keyof U]
+      : U
+    : never;
 
 export type GymPermission = PermissionValues<typeof GYM_PERMISSIONS>;
 
 // Flat array of all permissions for iteration
 export const ALL_GYM_PERMISSIONS: GymPermission[] = Object.values(
-  GYM_PERMISSIONS
+  GYM_PERMISSIONS,
 ).reduce((acc, group) => {
   return [...acc, ...Object.values(group)];
 }, [] as any[]) as GymPermission[];
@@ -210,6 +225,57 @@ export const PERMISSION_GROUPS: PermissionGroupInfo[] = [
       },
     ],
   },
+  {
+    key: "clients",
+    label: "Clients",
+    description: "Manage assigned clients",
+    permissions: [
+      {
+        key: "clients:view",
+        label: "View Clients",
+        description: "View assigned clients",
+      },
+      {
+        key: "clients:manage",
+        label: "Manage Clients",
+        description: "Manage client assignments",
+      },
+    ],
+  },
+  {
+    key: "payments",
+    label: "Payments",
+    description: "View payments and earnings",
+    permissions: [
+      {
+        key: "payments:view",
+        label: "View Payments",
+        description: "View earnings and payouts",
+      },
+      {
+        key: "payments:manage",
+        label: "Manage Payments",
+        description: "Manage payment settings",
+      },
+    ],
+  },
+  {
+    key: "communication",
+    label: "Communication",
+    description: "Manage announcements and messaging",
+    permissions: [
+      {
+        key: "communication:view",
+        label: "View Announcements",
+        description: "View gym announcements",
+      },
+      {
+        key: "communication:manage",
+        label: "Manage Announcements",
+        description: "Create, edit, and delete announcements",
+      },
+    ],
+  },
 ];
 
 // Default permissions by role
@@ -233,6 +299,8 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
     "analytics:export",
     "schedules:view",
     "schedules:manage",
+    "communication:view",
+    "communication:manage",
   ],
   receptionist: [
     "members:view",
@@ -249,6 +317,9 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
     "attendance:checkin",
     "schedules:view",
     "schedules:manage",
+    "clients:view",
+    "clients:manage",
+    "payments:view",
   ],
 };
 
@@ -257,7 +328,7 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
  */
 export function hasPermission(
   userPermissions: GymPermission[] | undefined,
-  permission: GymPermission
+  permission: GymPermission,
 ): boolean {
   if (!userPermissions) return false;
   return userPermissions.includes(permission);
@@ -268,7 +339,7 @@ export function hasPermission(
  */
 export function hasAnyPermission(
   userPermissions: GymPermission[] | undefined,
-  permissions: GymPermission[]
+  permissions: GymPermission[],
 ): boolean {
   if (!userPermissions) return false;
   return permissions.some((p) => userPermissions.includes(p));
@@ -279,7 +350,7 @@ export function hasAnyPermission(
  */
 export function hasAllPermissions(
   userPermissions: GymPermission[] | undefined,
-  permissions: GymPermission[]
+  permissions: GymPermission[],
 ): boolean {
   if (!userPermissions) return false;
   return permissions.every((p) => userPermissions.includes(p));

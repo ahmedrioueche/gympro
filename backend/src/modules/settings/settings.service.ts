@@ -44,6 +44,9 @@ export class SettingsService {
       locale: settings.locale
         ? { ...currentSettings.locale, ...settings.locale }
         : currentSettings.locale,
+      timer: settings.timer
+        ? { ...currentSettings.timer, ...settings.timer }
+        : currentSettings.timer,
     };
 
     const updatedUser = await user.save();
@@ -62,6 +65,11 @@ export class SettingsService {
       locale: {
         language: DEFAULT_LANGUAGE,
         currency: DEFAULT_CURRENCY,
+      },
+      timer: {
+        defaultRestTime: 90,
+        sound: 'beep',
+        alarmDuration: 3,
       },
     };
   }

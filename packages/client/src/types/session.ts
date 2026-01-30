@@ -24,6 +24,9 @@ export interface Session {
   notes?: string;
   meetingLink?: string;
   location?: string;
+  price?: number;
+  currency?: string;
+  gymId?: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 

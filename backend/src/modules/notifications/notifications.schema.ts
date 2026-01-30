@@ -4,6 +4,7 @@ import type {
   MemberNotification as ClientMemberNotification,
   OwnerManagerNotification as ClientOwnerManagerNotification,
   StaffNotification as ClientStaffNotification,
+  NotificationAction,
   NotificationPriority,
   NotificationStatus,
   NotificationType,
@@ -37,10 +38,13 @@ export class BaseNotification
       'reminder',
       'alert',
       'announcement',
+      'membership',
+      'invitation',
     ],
   })
   type: NotificationType;
   @Prop() gymId?: string;
+  @Prop({ type: Object }) action?: NotificationAction;
 }
 export const BaseNotificationSchema =
   SchemaFactory.createForClass(BaseNotification);

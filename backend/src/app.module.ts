@@ -6,7 +6,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CoachModule } from './coach/coach.module';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
@@ -16,8 +15,11 @@ import { AppBillingModule } from './modules/appBilling/appBilling.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ChargilyModule } from './modules/chargily/chargily.module';
+import { CoachModule } from './modules/coach/coach.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
+import { GymAnnouncementModule } from './modules/gym-announcement/gym-announcement.module';
+import { GymCoachPaymentModule } from './modules/gym-coach-payment/gym-coach-payment.module';
 import { GymCoachModule } from './modules/gym-coach/gym-coach.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
@@ -92,6 +94,8 @@ import { UsersModule } from './modules/users/users.module';
     CoachModule,
     SessionsModule,
     GymCoachModule,
+    GymCoachPaymentModule,
+    GymAnnouncementModule,
   ],
   controllers: [AppController],
   providers: [

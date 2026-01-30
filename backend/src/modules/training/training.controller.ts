@@ -6,11 +6,13 @@ import {
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
   Query,
+  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -106,10 +108,22 @@ export class TrainingController {
     );
   }
 
-  @Post('sessions')
-  async logSession(@Request() req, @Body() dto: LogSessionDto) {
-    const history = await this.trainingService.logSession(req.user.sub, dto);
-    return apiResponse(true, undefined, history, 'Session logged successfully');
+  @Post(['session', 'sessions'])
+  logSession(@Req() req, @Body() dto: LogSessionDto) {
+    return this.trainingService.logSession(req.user.sub, dto);
+  }
+
+  @Delete(':programId/sessions/:sessionId')
+  deleteSession(
+    @Req() req,
+    @Param('programId') programId: string,
+    @Param('sessionId') sessionId: string,
+  ) {
+    return this.trainingService.deleteSession(
+      req.user.sub,
+      programId,
+      sessionId,
+    );
   }
 
   @Post('program/pause')

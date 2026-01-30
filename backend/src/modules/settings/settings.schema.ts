@@ -4,6 +4,7 @@ import type {
   LocaleSettings,
   NotificationSettings,
   ThemeOption,
+  TimerSettings,
   ViewPreference,
 } from '@ahmedrioueche/gympro-client';
 import {
@@ -30,6 +31,19 @@ export class LocaleSettingsModel implements LocaleSettings {
   @Prop() regionName?: string;
 }
 
+@Schema({ _id: false })
+export class TimerSettingsModel implements TimerSettings {
+  @Prop({ required: true, default: 90 }) defaultRestTime: number;
+  @Prop({ required: true, default: 'beep' }) sound:
+    | 'beep'
+    | 'vibrate'
+    | 'silent';
+  @Prop({ default: 'beep_1' }) soundTrack?: string;
+  @Prop({ required: true, default: 3 }) alarmDuration: number;
+  @Prop({ default: 5 }) warningSeconds?: number;
+  @Prop({ default: 'beep_1' }) warningSoundTrack?: string;
+}
+
 @Schema({ timestamps: true })
 export class AppSettingsModel extends Document implements AppSettings {
   @Prop({
@@ -53,6 +67,9 @@ export class AppSettingsModel extends Document implements AppSettings {
 
   @Prop({ type: LocaleSettingsModel })
   locale?: LocaleSettings;
+
+  @Prop({ type: TimerSettingsModel, default: {} })
+  timer?: TimerSettings;
 }
 
 export const AppSettingsSchema = SchemaFactory.createForClass(AppSettingsModel);

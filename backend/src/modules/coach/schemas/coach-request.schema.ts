@@ -20,6 +20,14 @@ export class CoachRequest extends Document {
   })
   status: CoachRequestStatus;
 
+  @Prop({
+    type: String,
+    enum: ['member', 'coach'],
+    required: true,
+    default: 'member',
+  })
+  initiatedBy: 'member' | 'coach';
+
   @Prop({ type: Date })
   respondedAt?: Date;
 

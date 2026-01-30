@@ -1,6 +1,8 @@
 import {
   ApiResponse,
   CoachClient,
+  CoachPricingTier,
+  CoachPricingTierDto,
   CoachProfile,
   CoachQueryDto,
   CoachRequest as CoachRequestType,
@@ -14,14 +16,17 @@ import {
 } from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { User } from '../common/schemas/user.schema';
-import { NotificationsService } from '../modules/notifications/notifications.service';
-import { TrainingService } from '../modules/training/training.service';
+import { User } from 'src/common/schemas/user.schema';
+import { NotificationsService } from '../notifications/notifications.service';
+import { SessionsService } from '../sessions/sessions.service';
+import { TrainingService } from '../training/training.service';
 import { CoachRequestModel } from './schemas/coach-request.schema';
 
 @Injectable()
@@ -32,6 +37,8 @@ export class CoachService {
     @InjectModel(User.name) private userModel: Model<User>,
     private notificationsService: NotificationsService,
     private trainingService: TrainingService,
+    @Inject(forwardRef(() => SessionsService))
+    private sessionsService: SessionsService,
   ) {}
 
   /**
@@ -201,6 +208,7 @@ export class CoachService {
         coachId: new Types.ObjectId(coachId),
         message: data.message,
         status: 'pending',
+        initiatedBy: 'member',
       });
 
       // Get member info for notifications
@@ -227,6 +235,7 @@ export class CoachService {
         status: request.status,
         createdAt: requestObj.createdAt,
         updatedAt: requestObj.updatedAt,
+        initiatedBy: 'member',
       };
 
       return {
@@ -266,6 +275,7 @@ export class CoachService {
           response: req.response,
           createdAt: req.createdAt,
           updatedAt: req.updatedAt,
+          initiatedBy: req.initiatedBy,
         }),
       );
 
@@ -279,6 +289,298 @@ export class CoachService {
         success: false,
         errorCode: ErrorCode.COACH_REQUEST_FETCH_ERROR,
         message: 'Failed to fetch coach requests',
+      };
+    }
+  }
+
+  // ============================================
+  // PRICING MANAGEMENT
+  // ============================================
+
+  /**
+   * Get coach pricing tiers
+   */
+  async getMyPricing(
+    coachId: string,
+  ): Promise<ApiResponse<CoachPricingTier[]>> {
+    try {
+      const coach = await this.userModel.findById(coachId).lean();
+      if (!coach) {
+        throw new NotFoundException('Coach not found');
+      }
+
+      // Ensure pricing is an array
+      const pricing = coach.coachingInfo?.pricing || [];
+
+      return {
+        success: true,
+        data: pricing as any,
+      };
+    } catch (error) {
+      console.error('Error fetching pricing:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.COACH_PRICING_FETCH_ERROR,
+        message: 'Failed to fetch pricing',
+      };
+    }
+  }
+
+  /**
+   * Create a new pricing tier
+   */
+  async createPricing(
+    coachId: string,
+    data: CoachPricingTierDto,
+  ): Promise<ApiResponse<CoachPricingTier>> {
+    try {
+      const coach = await this.userModel.findById(coachId);
+      if (!coach) {
+        throw new NotFoundException('Coach not found');
+      }
+
+      if (!coach.coachingInfo) {
+        coach.coachingInfo = {};
+      }
+      if (!coach.coachingInfo.pricing) {
+        coach.coachingInfo.pricing = [];
+      }
+
+      // Add new pricing
+      coach.coachingInfo.pricing.push(data as any);
+
+      await coach.save();
+
+      // Get the last added item
+      const newPricing =
+        coach.coachingInfo.pricing[coach.coachingInfo.pricing.length - 1];
+
+      return {
+        success: true,
+        data: newPricing as any,
+      };
+    } catch (error) {
+      console.error('Error creating pricing:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.COACH_PRICING_CREATE_ERROR,
+        message: 'Failed to create pricing tier',
+      };
+    }
+  }
+
+  /**
+   * Update a pricing tier
+   */
+  async updatePricing(
+    coachId: string,
+    pricingId: string,
+    data: Partial<CoachPricingTierDto>,
+  ): Promise<ApiResponse<CoachPricingTier>> {
+    try {
+      const coach = await this.userModel.findById(coachId);
+      if (!coach) {
+        throw new NotFoundException('Coach not found');
+      }
+
+      const pricing = (coach as any).coachingInfo?.pricing?.id(pricingId);
+      if (!pricing) {
+        return {
+          success: false,
+          errorCode: ErrorCode.COACH_PRICING_NOT_FOUND,
+          message: 'Pricing not found',
+        };
+      }
+
+      // Update fields
+      if (data.name) pricing.name = data.name;
+      if (data.description !== undefined)
+        pricing.description = data.description;
+      if (data.serviceType) pricing.serviceType = data.serviceType;
+      if (data.duration) pricing.duration = data.duration;
+      if (data.durationUnit) pricing.durationUnit = data.durationUnit;
+      if (data.price !== undefined) pricing.price = data.price;
+      if (data.currency) pricing.currency = data.currency;
+      if (data.isActive !== undefined) pricing.isActive = data.isActive;
+
+      await coach.save();
+
+      return {
+        success: true,
+        data: pricing,
+      };
+    } catch (error) {
+      console.error('Error updating pricing:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.COACH_PRICING_UPDATE_ERROR,
+        message: 'Failed to update pricing tier',
+      };
+    }
+  }
+
+  /**
+   * Delete a pricing tier
+   */
+  async deletePricing(
+    coachId: string,
+    pricingId: string,
+  ): Promise<ApiResponse<void>> {
+    try {
+      const result = await this.userModel.updateOne(
+        { _id: coachId },
+        {
+          $pull: {
+            'coachingInfo.pricing': { _id: pricingId },
+          },
+        },
+      );
+
+      if (result.modifiedCount === 0) {
+        return {
+          success: false,
+          errorCode: ErrorCode.COACH_PRICING_DELETE_ERROR,
+          message: 'Failed to delete pricing tier or not found',
+        };
+      }
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      console.error('Error deleting pricing:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.COACH_PRICING_DELETE_ERROR,
+        message: 'Failed to delete pricing tier',
+      };
+    }
+  }
+
+  // ============================================
+  // DASHBOARD STATS
+  // ============================================
+
+  /**
+   * Get coach dashboard statistics
+   */
+  async getDashboardStats(coachId: string): Promise<
+    ApiResponse<{
+      activeClients: { value: number; trend: number };
+      programsCreated: { value: number; trend: number };
+      sessionsThisMonth: { value: number; trend: number };
+      clientRetention: { value: number; trend: number };
+    }>
+  > {
+    try {
+      const coach = await this.userModel.findById(coachId);
+      if (!coach) throw new NotFoundException('Coach not found');
+
+      // 1. Active Clients
+      const activeClientsCount =
+        coach.coachingInfo?.coachedMembers?.length || 0;
+      // Mock trend for clients (TODO: Track historical client counts)
+      const clientTrend = 0;
+
+      // 2. Programs Created
+      const programsCount = await this.trainingService.countPrograms(coachId);
+      // Mock trend for programs
+      const programTrend = 0;
+
+      // 3. Sessions This Month
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+
+      const endOfMonth = new Date();
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+      endOfMonth.setDate(0);
+      endOfMonth.setHours(23, 59, 59, 999);
+
+      const sessionsCount = await this.sessionsService.countSessions(
+        coachId,
+        startOfMonth,
+        endOfMonth,
+      );
+      // Mock trend for sessions (Compare with last month?)
+      const sessionTrend = 0; // Requires querying last month
+
+      // 4. Client Retention (Mocked for now)
+      const retentionRate = 95;
+      const retentionTrend = 0;
+
+      return {
+        success: true,
+        data: {
+          activeClients: { value: activeClientsCount, trend: clientTrend },
+          programsCreated: { value: programsCount, trend: programTrend },
+          sessionsThisMonth: { value: sessionsCount, trend: sessionTrend },
+          clientRetention: { value: retentionRate, trend: retentionTrend },
+        },
+      };
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.UNKNOWN_ERROR,
+        message: 'Failed to fetch dashboard stats',
+      };
+    }
+  }
+
+  /**
+   * Get coach dashboard recent activity
+   */
+  async getDashboardActivity(coachId: string): Promise<ApiResponse<any[]>> {
+    try {
+      // 1. Get finished sessions (last 5)
+      const recentSessions = await this.sessionsService.findRecent(coachId, 5);
+
+      // 2. Get recent clients (last 5 accepted requests)
+      const recentClients = await this.coachRequestModel
+        .find({
+          coachId: new Types.ObjectId(coachId),
+          status: 'accepted',
+        })
+        .sort({ updatedAt: -1 })
+        .limit(5)
+        .lean();
+
+      // Transform and merge
+      const activities = [
+        ...recentSessions.map((session) => ({
+          type: 'session',
+          message: `Session completed with ${(session as any).memberId?.profile?.fullName || 'Client'}`,
+          time: session.endTime,
+          icon: 'Clipboard',
+          color: 'text-green-500',
+        })),
+        ...recentClients.map((req) => ({
+          type: 'new_client',
+          message: 'New client accepted',
+          time: req.updatedAt,
+          icon: 'UserPlus',
+          color: 'text-blue-500',
+        })),
+      ];
+
+      // Sort by time descending
+      activities.sort(
+        (a: any, b: any) =>
+          new Date(b.time).getTime() - new Date(a.time).getTime(),
+      );
+
+      // Return top 10 combined
+      return {
+        success: true,
+        data: activities.slice(0, 10),
+      };
+    } catch (error) {
+      console.error('Error fetching dashboard activity:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.UNKNOWN_ERROR,
+        message: 'Failed to fetch dashboard activity',
       };
     }
   }
@@ -311,6 +613,7 @@ export class CoachService {
         .find({
           coachId: new Types.ObjectId(coachId),
           status: 'pending',
+          initiatedBy: 'member',
         })
         .sort({ createdAt: -1 })
         .lean();
@@ -327,6 +630,7 @@ export class CoachService {
             status: req.status,
             createdAt: req.createdAt,
             updatedAt: req.updatedAt,
+            initiatedBy: req.initiatedBy,
             memberDetails: member
               ? {
                   username: member.profile.username,
@@ -355,6 +659,73 @@ export class CoachService {
         success: false,
         errorCode: ErrorCode.COACH_REQUEST_FETCH_ERROR,
         message: 'Failed to fetch pending requests',
+      };
+    }
+  }
+
+  /**
+   * Get sent requests (initiated by coach)
+   */
+  async getSentRequests(
+    coachId: string,
+  ): Promise<ApiResponse<CoachRequestWithDetails[]>> {
+    try {
+      console.log('Fetching sent requests for coach:', coachId);
+      const query = {
+        coachId: new Types.ObjectId(coachId),
+        status: 'pending',
+        initiatedBy: 'coach',
+      };
+      console.log('Query:', JSON.stringify(query));
+
+      const requests = await this.coachRequestModel
+        .find(query)
+        .sort({ createdAt: -1 })
+        .lean();
+
+      console.log('Found sent requests:', requests.length);
+
+      // Fetch member details for each request
+      const requestsWithDetails: CoachRequestWithDetails[] = await Promise.all(
+        requests.map(async (req: any) => {
+          const member = await this.userModel.findById(req.memberId).lean();
+          return {
+            _id: req._id.toString(),
+            memberId: req.memberId.toString(),
+            coachId: req.coachId.toString(),
+            message: req.message,
+            status: req.status,
+            createdAt: req.createdAt,
+            updatedAt: req.updatedAt,
+            initiatedBy: req.initiatedBy,
+            memberDetails: member
+              ? {
+                  username: member.profile.username,
+                  fullName: member.profile.fullName,
+                  profileImageUrl: member.profile.profileImageUrl,
+                  location: [
+                    member.profile.city,
+                    member.profile.state,
+                    member.profile.country,
+                  ]
+                    .filter(Boolean)
+                    .join(', '),
+                }
+              : undefined,
+          };
+        }),
+      );
+
+      return {
+        success: true,
+        data: requestsWithDetails,
+      };
+    } catch (error) {
+      console.error('Error fetching sent requests:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.COACH_REQUEST_FETCH_ERROR,
+        message: 'Failed to fetch sent requests',
       };
     }
   }
@@ -440,6 +811,7 @@ export class CoachService {
           response: request.response,
           createdAt: requestObj.createdAt?.toISOString(),
           updatedAt: requestObj.updatedAt?.toISOString(),
+          initiatedBy: request.initiatedBy,
         },
       };
     } catch (error) {
@@ -679,6 +1051,7 @@ export class CoachService {
         coachId: new Types.ObjectId(coachId),
         message: data.message,
         status: 'pending',
+        initiatedBy: 'coach',
       });
 
       // Get coach info for notifications
@@ -706,6 +1079,7 @@ export class CoachService {
           status: request.status,
           createdAt: requestObj.createdAt,
           updatedAt: requestObj.updatedAt,
+          initiatedBy: 'coach',
         },
       };
     } catch (error) {

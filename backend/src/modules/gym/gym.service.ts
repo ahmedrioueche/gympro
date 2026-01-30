@@ -7,6 +7,10 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
+import {
+  GymCoachAffiliation,
+  GymCoachAffiliationDocument,
+} from '../gym-coach/schemas/gym-coach-affiliation.schema';
 import { GymMembershipModel } from '../gymMembership/membership.schema';
 import { GymModel } from './gym.schema';
 
@@ -17,6 +21,8 @@ export class GymService {
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel('GymMembership')
     private membershipModel: Model<GymMembershipModel>,
+    @InjectModel(GymCoachAffiliation.name)
+    private affiliationModel: Model<GymCoachAffiliationDocument>,
   ) {}
 
   async create(createGymDto: CreateGymDto) {
@@ -199,13 +205,40 @@ export class GymService {
     // Get gyms where user is a member (already populated in findByMember)
     const memberGyms = await this.findByMember(userId);
 
+    // Get gyms where user is an affiliated coach
+    const coachGyms = await this.findByCoach(userId);
+
     // Combine and deduplicate by _id
-    const allGyms = [...ownedGyms, ...memberGyms];
+    const allGyms = [...ownedGyms, ...memberGyms, ...coachGyms];
     const uniqueGyms = Array.from(
       new Map(allGyms.map((gym) => [gym._id.toString(), gym])).values(),
     );
 
     return uniqueGyms;
+  }
+
+  /**
+   * Get gyms where user is an affiliated coach (active affiliations only)
+   */
+  async findByCoach(userId: string) {
+    const affiliations = await this.affiliationModel
+      .find({
+        coachId: new Types.ObjectId(userId),
+        status: 'active',
+      })
+      .lean();
+
+    if (!affiliations || affiliations.length === 0) {
+      return [];
+    }
+
+    const gymIds = affiliations.map((a: any) => a.gymId);
+    const gyms = await this.gymModel
+      .find({ _id: { $in: gymIds } })
+      .populate('owner')
+      .exec();
+
+    return gyms;
   }
 
   async getGymMembers(

@@ -171,14 +171,7 @@ export class MembershipService {
       this.logger.log(`Created new user ${user._id} for member creation`);
     } else {
       // Prevent owner/manager from being added as member to their own gym (security/logic check)
-      if (
-        user.role === UserRole.Owner ||
-        user.role === UserRole.Manager ||
-        user.role === UserRole.Receptionist ||
-        user.role === UserRole.Coach ||
-        user.role === UserRole.Cleaner ||
-        user.role === UserRole.Maintenance
-      ) {
+      if (user.role === UserRole.Owner || user.role === UserRole.Manager) {
         throw new BadRequestException({
           message: 'Cannot add a specific role user as a member.',
           errorCode: ErrorCode.INVALID_ROLE,
@@ -200,6 +193,23 @@ export class MembershipService {
       });
 
       if (existingMembership) {
+        // If user is already a member, we check if they just lack the 'member' role (e.g. they are a coach)
+        if (!existingMembership.roles.includes(UserRole.Member)) {
+          existingMembership.roles.push(UserRole.Member);
+          await existingMembership.save();
+
+          this.logger.log(
+            `Added 'member' role to existing user ${user._id} in gym ${gymId}`,
+          );
+
+          return {
+            membership: existingMembership.toObject(),
+            user: this.sanitizeUser(user),
+            setupToken: undefined, // existing user has setup
+            isNewUser: false,
+          };
+        }
+
         throw new BadRequestException({
           message: 'User is already a member of this gym',
           errorCode: ErrorCode.USER_ALREADY_EXISTS,
@@ -1611,5 +1621,64 @@ export class MembershipService {
     );
 
     return { deleted: true };
+  }
+  /**
+   * Find all users with active/pending membership in a gym (for notifications)
+   */
+  async findAllActiveMembers(gymId: string): Promise<User[]> {
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) return [];
+
+    const memberships = await this.membershipModel
+      .find({
+        gym: gymObjectId,
+        membershipStatus: { $in: ['active', 'pending'] },
+        roles: UserRole.Member,
+      })
+      .select('user')
+      .lean();
+
+    const userIds = memberships.map((m) => m.user);
+
+    if (userIds.length === 0) return [];
+
+    return this.userModel
+      .find({ _id: { $in: userIds } })
+      .select('profile.email profile.phoneNumber profile.fullName appSettings')
+      .exec();
+  }
+
+  /**
+   * Find all staff (Owner, Manager, Coach, Receptionist) for a gym
+   */
+  async findAllStaff(gymId: string): Promise<User[]> {
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) return [];
+
+    const gym = await this.gymModel.findById(gymId).select('owner').lean();
+    if (!gym) return [];
+
+    const staffIds = new Set<string>();
+    if (gym.owner) staffIds.add(gym.owner.toString());
+
+    // 1. Managers & Receptionists (via Membership)
+    const staffMemberships = await this.membershipModel
+      .find({
+        gym: gymObjectId,
+        roles: {
+          $in: [UserRole.Manager, UserRole.Receptionist, UserRole.Coach],
+        },
+      })
+      .select('user')
+      .lean();
+
+    staffMemberships.forEach((m) => staffIds.add(m.user.toString()));
+
+    if (staffIds.size === 0) return [];
+
+    return this.userModel
+      .find({ _id: { $in: Array.from(staffIds) } })
+      .select('profile.email profile.phoneNumber profile.fullName appSettings')
+      .exec();
   }
 }

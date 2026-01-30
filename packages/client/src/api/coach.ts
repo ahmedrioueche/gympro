@@ -8,6 +8,8 @@ import type {
 import type { ApiResponse } from "../types/api";
 import type {
   CoachClient,
+  CoachPricingTier,
+  CoachPricingTierDto,
   CoachProfile,
   CoachRequest,
   CoachRequestWithDetails,
@@ -20,7 +22,7 @@ export const coachApi = {
    * Get a single coach profile by userId
    */
   getCoachProfile: async (
-    coachId: string
+    coachId: string,
   ): Promise<ApiResponse<CoachProfile>> => {
     try {
       const response = await getApiClient().get(`/coaches/${coachId}`);
@@ -39,7 +41,7 @@ export const coachApi = {
    * Get nearby coaches based on location
    */
   getNearbyCoaches: async (
-    query?: CoachQueryDto
+    query?: CoachQueryDto,
   ): Promise<ApiResponse<CoachProfile[]>> => {
     try {
       const params = new URLSearchParams();
@@ -70,12 +72,12 @@ export const coachApi = {
    */
   requestCoach: async (
     coachId: string,
-    data: RequestCoachDto
+    data: RequestCoachDto,
   ): Promise<ApiResponse<CoachRequest>> => {
     try {
       const response = await getApiClient().post(
         `/coaches/${coachId}/request`,
-        data
+        data,
       );
       return response.data;
     } catch (error: any) {
@@ -129,16 +131,35 @@ export const coachApi = {
   },
 
   /**
+   * Get sent requests (initiated by coach)
+   */
+  getSentRequests: async (): Promise<
+    ApiResponse<CoachRequestWithDetails[]>
+  > => {
+    try {
+      const response = await getApiClient().get("/coaches/requests/sent");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_009",
+        message:
+          error.response?.data?.message || "Failed to fetch sent requests",
+      };
+    }
+  },
+
+  /**
    * Respond to a coaching request (accept or decline)
    */
   respondToRequest: async (
     requestId: string,
-    data: RespondToRequestDto
+    data: RespondToRequestDto,
   ): Promise<ApiResponse<CoachRequest>> => {
     try {
       const response = await getApiClient().patch(
         `/coaches/requests/${requestId}/respond`,
-        data
+        data,
       );
       return response.data;
     } catch (error: any) {
@@ -172,7 +193,7 @@ export const coachApi = {
    * Get prospective members (members looking for a coach)
    */
   getProspectiveMembers: async (
-    query?: ProspectiveMembersQueryDto
+    query?: ProspectiveMembersQueryDto,
   ): Promise<ApiResponse<ProspectiveMember[]>> => {
     try {
       const params = new URLSearchParams();
@@ -206,12 +227,12 @@ export const coachApi = {
    */
   sendRequestToMember: async (
     memberId: string,
-    data: SendCoachRequestDto
+    data: SendCoachRequestDto,
   ): Promise<ApiResponse<CoachRequest>> => {
     try {
       const response = await getApiClient().post(
         `/coaches/members/${memberId}/request`,
-        data
+        data,
       );
       return response.data;
     } catch (error: any) {
@@ -244,12 +265,12 @@ export const coachApi = {
    */
   assignProgram: async (
     clientId: string,
-    programId: string
+    programId: string,
   ): Promise<ApiResponse<any>> => {
     try {
       const response = await getApiClient().post(
         `/coaches/clients/${clientId}/program`,
-        { programId }
+        { programId },
       );
       return response.data;
     } catch (error: any) {
@@ -257,6 +278,121 @@ export const coachApi = {
         success: false,
         errorCode: error.response?.data?.errorCode || "COACH_ACTION_FAILED",
         message: error.response?.data?.message || "Failed to assign program",
+      };
+    }
+  },
+
+  // ============================================
+  // COACH PRICING MANAGEMENT
+  // ============================================
+
+  /**
+   * Get coach's pricing tiers
+   */
+  getMyPricing: async (): Promise<ApiResponse<CoachPricingTier[]>> => {
+    try {
+      const response = await getApiClient().get("/coaches/pricing");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_PRICING_001",
+        message:
+          error.response?.data?.message || "Failed to fetch pricing tiers",
+      };
+    }
+  },
+
+  /**
+   * Create a new pricing tier
+   */
+  createPricing: async (
+    data: CoachPricingTierDto,
+  ): Promise<ApiResponse<CoachPricingTier>> => {
+    try {
+      const response = await getApiClient().post("/coaches/pricing", data);
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_PRICING_002",
+        message:
+          error.response?.data?.message || "Failed to create pricing tier",
+      };
+    }
+  },
+
+  /**
+   * Update a pricing tier
+   */
+  updatePricing: async (
+    pricingId: string,
+    data: Partial<CoachPricingTierDto>,
+  ): Promise<ApiResponse<CoachPricingTier>> => {
+    try {
+      const response = await getApiClient().patch(
+        `/coaches/pricing/${pricingId}`,
+        data,
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_PRICING_003",
+        message:
+          error.response?.data?.message || "Failed to update pricing tier",
+      };
+    }
+  },
+
+  /**
+   * Delete a pricing tier
+   */
+  deletePricing: async (pricingId: string): Promise<ApiResponse<void>> => {
+    try {
+      const response = await getApiClient().delete(
+        `/coaches/pricing/${pricingId}`,
+      );
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_PRICING_004",
+        message:
+          error.response?.data?.message || "Failed to delete pricing tier",
+      };
+    }
+  },
+  /**
+   * Get coach dashboard statistics
+   */
+  getDashboardStats: async (): Promise<ApiResponse<any>> => {
+    try {
+      const response = await getApiClient().get("/coaches/dashboard/stats");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_DASHBOARD_001",
+        message:
+          error.response?.data?.message || "Failed to fetch dashboard stats",
+      };
+    }
+  },
+
+  /**
+   * Get coach dashboard recent activity
+   */
+  getDashboardActivity: async (): Promise<ApiResponse<any[]>> => {
+    try {
+      const response = await getApiClient().get("/coaches/dashboard/activity");
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        errorCode: error.response?.data?.errorCode || "COACH_DASHBOARD_002",
+        message:
+          error.response?.data?.message || "Failed to fetch dashboard activity",
       };
     }
   },

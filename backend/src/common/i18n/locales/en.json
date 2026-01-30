@@ -42,11 +42,15 @@
       "renewed_body": "<p>Hello {{name}},</p><p>Great news! Your subscription to <strong>{{planName}}</strong> has been successfully renewed.</p><p>You now have uninterrupted access to all the features included in your plan. No action is required on your part.</p><p><strong>What’s Next?</strong></p><ul><li>Continue managing your gym with full access to all tools</li><li>Check your dashboard for updated billing and plan details</li><li>Invite or manage team members as needed</li></ul><p>If you have any questions or need assistance, our support team is always here to help.</p><p>Thank you for continuing to use GymPro!</p><p>Best regards,<br>The GymPro Team</p>",
       "gym_membership_added_subject": "Welcome to {{gymName}}",
       "gym_membership_added_body": "<p>Hello {{name}},</p><p>We're excited to inform you that you've been added as a member to <strong>{{gymName}}</strong>!</p><p>You can now log in to your dashboard to view your membership details, tracking your progress, and stay updated with gym announcements.</p><p>Best regards,<br>The {{gymName}} Team</p>"
-    }
+    },
+    "gym_announcement_subject": "Announcement: {{title}}",
+    "gym_announcement_body": "<div style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;\"><div style=\"text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; margin-bottom: 24px;\"><h1 style=\"color: #111827; font-size: 24px; margin: 0; letter-spacing: -0.025em;\">{{gymName}}</h1><p style=\"color: #6b7280; margin: 4px 0 0 0; font-size: 14px;\">Announcement</p></div><div style=\"margin-bottom: 32px;\"><p style=\"color: #374151; font-size: 16px; margin-bottom: 24px;\">Hello {{name}},</p><h2 style=\"color: #2563eb; font-size: 20px; margin: 0 0 16px 0; font-weight: 600;\">{{title}}</h2><div style=\"color: #4b5563; font-size: 16px; line-height: 1.6; background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #f3f4f6;\">{{message}}</div></div><div style=\"border-top: 1px solid #f3f4f6; padding-top: 24px; text-align: center;\"><p style=\"color: #9ca3af; font-size: 12px; margin: 0 0 8px 0;\">You are receiving this notification because you are a member of {{gymName}}.</p><p style=\"color: #6b7280; font-size: 14px; font-weight: 500; margin: 0;\">The {{gymName}} Team</p></div></div>"
   },
   "notification": {
     "gym_membership_added_title": "New Gym Membership",
     "gym_membership_added_body": "You have been added to {{gymName}}. Welcome!",
+    "gym_announcement_title": "{{title}}",
+    "gym_announcement_body": "{{message}}",
     "program_assigned_title": "New Program Assigned",
     "program_assigned_body": "{{coachName}} assigned you a new program",
     "auth": {

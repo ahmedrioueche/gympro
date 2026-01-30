@@ -13,6 +13,7 @@ export const PROGRAM_PURPOSES = [
   "mobility",
   "general_fitness",
 ] as const;
+
 export const MUSCLE_GROUPS = [
   "chest",
   "back",
@@ -20,6 +21,7 @@ export const MUSCLE_GROUPS = [
   "triceps",
   "shoulders",
   "legs",
+  "forearms",
   "glutes",
   "calves",
   "core",
@@ -133,11 +135,18 @@ export interface Exercise extends AuditInfo {
   videoUrl?: string;
   imageUrl?: string;
   isPublic?: boolean;
+  restTime?: number; // seconds
+}
+
+export interface ProgramBlock {
+  type: "single" | "superset" | "circuit";
+  exercises: Exercise[];
+  rounds?: number;
 }
 
 export interface ProgramDay {
   name: string;
-  exercises: Exercise[];
+  blocks: ProgramBlock[];
 }
 
 export interface ProgramComment {
@@ -155,6 +164,7 @@ export interface TrainingProgram extends AuditInfo {
   experience: ExperienceLevel;
   purpose: ProgramPurpose;
   daysPerWeek: DaysPerWeek;
+  durationWeeks?: number; // Program duration in weeks (default: 4)
   days: ProgramDay[];
   creationType: "member" | "coach" | "template";
   description?: string;
@@ -169,6 +179,10 @@ export interface ExerciseSet {
   reps: number;
   weight: number;
   completed: boolean;
+  drops?: {
+    weight: number;
+    reps: number;
+  }[];
 }
 
 export interface ExerciseProgress {
@@ -179,6 +193,8 @@ export interface ExerciseProgress {
 
 // Progress for a training day
 export interface ProgramDayProgress {
+  _id?: string;
+  submissionId?: string;
   dayName: string; // matches ProgramDay.name
   date: string | Date;
   exercises: ExerciseProgress[];

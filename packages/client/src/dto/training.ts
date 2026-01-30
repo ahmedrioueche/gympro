@@ -22,11 +22,18 @@ export interface CreateExerciseDto {
   videoUrl?: string;
   imageUrl?: string;
   isPublic?: boolean;
+  restTime?: number;
+}
+
+export interface CreateProgramBlockDto {
+  type: "single" | "superset" | "circuit";
+  exercises: CreateExerciseDto[];
+  rounds?: number;
 }
 
 export interface CreateProgramDayDto {
   name: string;
-  exercises: CreateExerciseDto[];
+  blocks: CreateProgramBlockDto[];
 }
 
 export interface CreateProgramDto {
@@ -34,6 +41,7 @@ export interface CreateProgramDto {
   experience: ExperienceLevel;
   purpose: ProgramPurpose;
   daysPerWeek: DaysPerWeek;
+  durationWeeks?: number;
   days: CreateProgramDayDto[];
   description?: string;
   isPublic?: boolean;

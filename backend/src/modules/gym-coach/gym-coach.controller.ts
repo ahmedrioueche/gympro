@@ -37,6 +37,42 @@ export class GymCoachController {
   // Note: getCoachAffiliations has been moved to CoachController to avoid route collision
 
   /**
+   * Get filtered clients for a specific gym (for coaches)
+   */
+  @Get('gyms/:gymId/coaches/clients')
+  async getGymCoachClients(
+    @Req() req: any,
+    @Param('gymId') gymId: string,
+  ): Promise<ApiResponse<any[]>> {
+    const coachId = req.user.sub;
+    return this.gymCoachService.getGymCoachClients(gymId, coachId);
+  }
+
+  /**
+   * Get active gym members (potential clients) for a specific gym
+   */
+  @Get('gyms/:gymId/coaches/members')
+  async getGymMembersForCoach(
+    @Req() req: any,
+    @Param('gymId') gymId: string,
+  ): Promise<ApiResponse<any[]>> {
+    const coachId = req.user.sub;
+    return this.gymCoachService.getGymMembersForCoach(gymId, coachId);
+  }
+
+  /**
+   * Get analytics for a specific gym context
+   */
+  @Get('gyms/:gymId/coaches/analytics')
+  async getGymCoachAnalytics(
+    @Req() req: any,
+    @Param('gymId') gymId: string,
+  ): Promise<ApiResponse<any>> {
+    const coachId = req.user.sub;
+    return this.gymCoachService.getGymCoachAnalytics(gymId, coachId);
+  }
+
+  /**
    * Gym invites a coach
    */
   @Post('gyms/:gymId/coaches/invite')

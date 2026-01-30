@@ -28,8 +28,9 @@ export class SessionsController {
 
   @Get()
   findAll(@Req() req: any, @Query() query: any) {
-    // For now, trust the query params passed by the client
-    return this.sessionsService.findAll(query);
+    const userId = req.user.sub;
+    const userRole = req.user.role; // Assuming role is in the JWT payload
+    return this.sessionsService.findAll(query, userId, userRole);
   }
 
   @Get(':id')

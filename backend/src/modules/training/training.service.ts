@@ -130,7 +130,7 @@ export class TrainingService {
         programId: program._id,
         startDate: new Date(),
         daysCompleted: 0,
-        totalDays: program.days.length * 4, // Approx 4 weeks
+        totalDays: program.daysPerWeek * ((program as any).durationWeeks || 12),
         dayLogs: [],
       },
     });
@@ -201,8 +201,10 @@ export class TrainingService {
 
   async getActiveProgram(userId: string): Promise<ProgramHistory | null> {
     // Return either active or paused so user can see state
+    // Prioritize 'active' status, then newest
     return this.historyModel
       .findOne({ userId, status: { $in: ['active', 'paused'] } })
+      .sort({ status: 1, createdAt: -1 }) // 'active' < 'paused', so active comes first
       .exec();
   }
 
@@ -227,25 +229,58 @@ export class TrainingService {
       throw new BadRequestException('No active session found for this program');
     }
 
-    // Check for existing session on same date + dayName
-    const existingIndex = history.progress.dayLogs.findIndex((log) => {
-      const logDate = new Date(log.date).toISOString().split('T')[0];
-      const newDate = new Date(dto.date).toISOString().split('T')[0];
-      return logDate === newDate && log.dayName === dto.dayName;
-    });
+    // Match sessions using multiple strategies to prevent duplicates
+    const sessionId = (dto as any).sessionId;
+    const submissionId = (dto as any).submissionId;
+    const targetDate = new Date(dto.date).toISOString().split('T')[0]; // Normalize date
+    let existingIndex = -1;
+
+    // Priority 1: Match by submissionId (Client-Side ID if available)
+    if (submissionId) {
+      existingIndex = history.progress.dayLogs.findIndex(
+        (log) => (log as any).submissionId === submissionId,
+      );
+    }
+
+    // Priority 2: Match by existing _id if provided
+    if (existingIndex === -1 && sessionId) {
+      existingIndex = history.progress.dayLogs.findIndex(
+        (log) => (log as any)._id?.toString() === sessionId,
+      );
+    }
+
+    console.log(
+      '[LogSession] submissionId:',
+      submissionId,
+      'existingIndex:',
+      existingIndex,
+      'dayLogs count:',
+      history.progress.dayLogs.length,
+    );
 
     if (existingIndex >= 0) {
       // Update existing
+      console.log('[LogSession] UPDATING existing log at index', existingIndex);
       history.progress.dayLogs[existingIndex].exercises = dto.exercises;
       if (dto.notes) history.progress.dayLogs[existingIndex].notes = dto.notes;
+      // Update submissionId if not set (migration)
+      if (
+        submissionId &&
+        !(history.progress.dayLogs[existingIndex] as any).submissionId
+      ) {
+        (history.progress.dayLogs[existingIndex] as any).submissionId =
+          submissionId;
+      }
     } else {
       // Add new day log
+      console.log('[LogSession] CREATING new log');
       history.progress.dayLogs.push({
         dayName: dto.dayName,
         date: dto.date,
         exercises: dto.exercises,
         notes: dto.notes,
-      });
+        submissionId: submissionId,
+      } as any);
     }
 
     return history.save();
@@ -290,5 +325,39 @@ export class TrainingService {
     );
 
     return program.save();
+  }
+  async countPrograms(userId: string): Promise<number> {
+    return this.programModel.countDocuments({ createdBy: userId });
+  }
+
+  async deleteSession(
+    userId: string,
+    programId: string,
+    sessionId: string,
+  ): Promise<ProgramHistory> {
+    const history = await this.historyModel
+      .findOne({
+        userId,
+        'program._id': programId,
+        status: { $in: ['active', 'paused'] },
+      })
+      .sort({ status: 1, createdAt: -1 });
+
+    if (!history) {
+      throw new BadRequestException('No active session found for this program');
+    }
+
+    const initialLength = history.progress.dayLogs.length;
+
+    history.progress.dayLogs = history.progress.dayLogs.filter(
+      (log: any) =>
+        log._id?.toString() !== sessionId && log.submissionId !== sessionId,
+    );
+
+    if (history.progress.dayLogs.length === initialLength) {
+      throw new NotFoundException('Session not found');
+    }
+
+    return history.save();
   }
 }

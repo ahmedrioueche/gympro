@@ -39,7 +39,7 @@ import { Reflector } from '@nestjs/core';
 export const PERMISSIONS_KEY = 'permissions';
 
 // Define default permissions for global roles (Moved from client package)
-const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
+const ROLE_PERMISSIONS: Record<UserRole, any> = {
   [UserRole.Owner]: {
     canManageMembers: true,
     canManageSubscriptions: true,
@@ -48,6 +48,8 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canAssignPrograms: true,
     canManageAppSubscriptions: true,
     canCustomizePermissions: true,
+    'communication:manage': true,
+    'communication:view': true,
   },
   [UserRole.Manager]: {
     canManageMembers: true,
@@ -56,12 +58,17 @@ const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canAssignPrograms: true,
     canManageAppSubscriptions: true,
     canCustomizePermissions: true,
+    'communication:manage': true,
+    'communication:view': true,
   },
   [UserRole.Receptionist]: {},
   [UserRole.Coach]: {
     canAssignPrograms: true,
+    'communication:view': true,
   },
-  [UserRole.Member]: {},
+  [UserRole.Member]: {
+    'communication:view': true,
+  },
   [UserRole.Cleaner]: {},
   [UserRole.Maintenance]: {},
   [UserRole.Security]: {},

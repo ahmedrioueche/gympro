@@ -1,6 +1,7 @@
 import {
   AppLanguage,
   DEFAULT_LANGUAGE,
+  NotificationAction,
   NotificationPriority,
   NotificationType,
   UserRole,
@@ -26,6 +27,10 @@ export interface SendNotificationOptions extends NotificationOptions {
   type?: NotificationType; // Make optional, default to 'alert' if not provided
   priority?: NotificationPriority;
   relatedId?: string; // Generic ID handling (gymId, memberId, etc.)
+  gymId?: string; // Explicit Gym ID if relatedId is used for other entities
+
+  // Action (for actionable notifications)
+  action?: NotificationAction;
 
   // Control Flags
   skipInApp?: boolean;
@@ -182,9 +187,14 @@ export class NotificationsService {
         status: 'unread',
         priority: options.priority || 'medium',
         createdAt: new Date().toISOString(),
+        action: options.action, // Include action if provided
       };
 
       this.logger.log(`Notification Data: ${JSON.stringify(notificationData)}`);
+
+      if (options.gymId) {
+        notificationData.gymId = options.gymId;
+      }
 
       if (options.relatedId) {
         // If it looks like a member notification about a program, use relatedProgramId
@@ -198,14 +208,20 @@ export class NotificationsService {
             options.type === 'subscription' ||
             options.type === 'announcement'
           ) {
-            // Likely a gym-related notification
-            notificationData.gymId = options.relatedId;
+            // Likely a gym-related notification, only set if not already set
+            if (!notificationData.gymId) {
+              notificationData.gymId = options.relatedId;
+            }
           }
         } else if (roleType === 'OwnerManagerNotification') {
-          notificationData.gymId = options.relatedId;
+          if (!notificationData.gymId) {
+            notificationData.gymId = options.relatedId;
+          }
         } else {
           // Fallback: put it in gymId if it's not role-specific
-          notificationData.gymId = options.relatedId;
+          if (!notificationData.gymId) {
+            notificationData.gymId = options.relatedId;
+          }
         }
       }
 

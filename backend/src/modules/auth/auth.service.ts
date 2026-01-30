@@ -583,7 +583,6 @@ export class AuthService {
     user.profile.password = await bcrypt.hash(password, 10);
     user.setupTokenUsed = true;
     user.profile.accountStatus = 'active';
-    user.profile.isActive = true;
     user.profile.isValidated = true;
 
     if (user.profile.phoneNumber) {

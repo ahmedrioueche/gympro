@@ -42,6 +42,15 @@ export class SessionModel extends Document implements Session {
   @Prop()
   location?: string;
 
+  @Prop({ type: Number })
+  price?: number;
+
+  @Prop({ type: String })
+  currency?: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'GymModel' })
+  gymId?: string;
+
   @Prop()
   createdAt: Date;
 

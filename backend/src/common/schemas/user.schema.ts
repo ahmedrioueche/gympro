@@ -1,5 +1,10 @@
 import type { AppSettings, StaffType } from '@ahmedrioueche/gympro-client';
-import { STAFF_TYPES, UserRole } from '@ahmedrioueche/gympro-client';
+import {
+  COACH_SERVICE_TYPES,
+  STAFF_TYPES,
+  SUBSCRIPTION_PERIOD_UNITS,
+  UserRole,
+} from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { AppSettingsSchema } from '../../modules/settings/settings.schema';
@@ -15,6 +20,43 @@ export class NotificationSettingsSchema {
   @Prop()
   defaultReminderMinutes?: number;
 }
+
+@Schema({ timestamps: true })
+export class CoachPricing {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop()
+  description: string;
+
+  @Prop({
+    type: String,
+    enum: COACH_SERVICE_TYPES,
+    required: true,
+  })
+  serviceType: string;
+
+  @Prop({ required: true })
+  duration: number;
+
+  @Prop({
+    type: String,
+    enum: SUBSCRIPTION_PERIOD_UNITS,
+    required: true,
+  })
+  durationUnit: string;
+
+  @Prop({ required: true })
+  price: number;
+
+  @Prop({ required: true })
+  currency: string;
+
+  @Prop({ default: true })
+  isActive: boolean;
+}
+
+export const CoachPricingSchema = SchemaFactory.createForClass(CoachPricing);
 
 @Schema({ _id: false, timestamps: false })
 export class UserProfile {
@@ -120,6 +162,9 @@ export class CoachingInfo {
 
   @Prop({ type: Number, default: 0 })
   rating?: number;
+
+  @Prop({ type: [CoachPricingSchema], default: [] })
+  pricing?: CoachPricing[];
 }
 
 @Schema({ _id: false })
@@ -183,6 +228,13 @@ export class User extends Document {
       certificationDetails: String,
       reviewedAt: Date,
       reviewedBy: { type: Types.ObjectId, ref: 'User' },
+      documents: [
+        {
+          url: String,
+          description: String,
+          type: { type: String },
+        },
+      ],
     },
     _id: false,
   })
@@ -190,6 +242,12 @@ export class User extends Document {
     status: 'pending' | 'approved' | 'rejected';
     submittedAt?: Date;
     certificationDetails?: string;
+    socialMediaLinks?: string[];
+    documents?: {
+      url: string;
+      description: string;
+      type: string;
+    }[];
     reviewedAt?: Date;
     reviewedBy?: Types.ObjectId;
   };

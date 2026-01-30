@@ -7,6 +7,7 @@ import type {
   ExerciseType,
   ExperienceLevel,
   MuscleGroup,
+  ProgramBlock,
   ProgramDay,
   ProgramDayProgress,
   ProgramProgress,
@@ -42,6 +43,7 @@ export class ExerciseModel implements Exercise {
   @Prop() imageUrl?: string;
   @Prop() instructions?: string;
   @Prop() isPublic?: boolean;
+  @Prop() restTime?: number;
   @Prop({ required: true, default: Date.now }) createdAt: Date;
   @Prop() createdBy?: string;
   @Prop() updatedAt?: Date;
@@ -49,9 +51,23 @@ export class ExerciseModel implements Exercise {
 }
 
 @Schema({ _id: false })
+export class ProgramBlockModel implements ProgramBlock {
+  @Prop({ required: true, enum: ['single', 'superset', 'circuit'] })
+  type: 'single' | 'superset' | 'circuit';
+
+  @Prop({ type: [ExerciseModel], required: true })
+  exercises: ExerciseModel[];
+
+  @Prop()
+  rounds?: number;
+}
+
+@Schema({ _id: false })
 export class ProgramDayModel implements ProgramDay {
+  exercises: Exercise[];
   @Prop({ required: true }) name: string;
-  @Prop({ type: [ExerciseModel], required: true }) exercises: ExerciseModel[];
+  @Prop({ type: [ProgramBlockModel], required: true })
+  blocks: ProgramBlockModel[];
 }
 
 @Schema({ _id: false })
@@ -86,6 +102,7 @@ export class TrainingProgramModel extends Document {
     enum: DAYS_PER_WEEK,
   })
   daysPerWeek: DaysPerWeek;
+  @Prop({ type: Number, default: 12 }) durationWeeks: number;
   @Prop({ type: [ProgramDayModel], required: true }) days: ProgramDayModel[];
   @Prop({
     type: String, // ← Add explicit type
@@ -115,10 +132,18 @@ export const TrainingProgramSchema =
 TrainingProgramSchema.index({ name: 'text' });
 
 @Schema({ _id: false })
+export class DropSetModel {
+  @Prop({ required: true }) weight: number;
+  @Prop({ required: true }) reps: number;
+}
+
+@Schema({ _id: false })
 export class ExerciseSetModel implements ExerciseSet {
   @Prop({ required: true }) reps: number;
   @Prop({ required: true }) weight: number;
   @Prop({ required: true }) completed: boolean;
+  @Prop({ type: [DropSetModel], default: [] })
+  drops?: DropSetModel[];
 }
 
 @Schema({ _id: false })
@@ -128,14 +153,20 @@ export class ExerciseProgressModel implements ExerciseProgress {
   @Prop() notes?: string;
 }
 
-@Schema({ _id: false })
+@Schema()
 export class ProgramDayProgressModel implements ProgramDayProgress {
+  _id: string;
+  @Prop() submissionId?: string;
   @Prop({ required: true }) dayName: string;
   @Prop({ type: Date, required: true }) date: Date | string;
   @Prop({ type: [ExerciseProgressModel], required: true })
   exercises: ExerciseProgressModel[];
   @Prop() notes?: string;
 }
+
+export const ProgramDayProgressSchema = SchemaFactory.createForClass(
+  ProgramDayProgressModel,
+);
 
 @Schema({ _id: false })
 export class ProgramProgressModel implements ProgramProgress {
@@ -144,7 +175,8 @@ export class ProgramProgressModel implements ProgramProgress {
   @Prop({ type: Date }) endDate?: Date | string;
   @Prop({ required: true }) daysCompleted: number;
   @Prop({ required: true }) totalDays: number;
-  @Prop({ type: [ProgramDayProgressModel], required: true })
+
+  @Prop({ type: [ProgramDayProgressSchema], required: true })
   dayLogs: ProgramDayProgressModel[];
 }
 

@@ -6,4 +6,6 @@ export interface RolePermissions {
   canAssignPrograms?: boolean;
   canManageAppSubscriptions?: boolean;
   canCustomizePermissions?: boolean;
+  "communication:view"?: boolean;
+  "communication:manage"?: boolean;
 }

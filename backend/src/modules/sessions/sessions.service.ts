@@ -3,11 +3,18 @@ import {
   ErrorCode,
   Session,
   SessionQueryDto,
+  SessionStatus,
 } from '@ahmedrioueche/gympro-client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
+import { GymCoachPaymentService } from '../gym-coach-payment/gym-coach-payment.service';
+import {
+  GymCoachPaymentCategory,
+  GymCoachPaymentType,
+} from '../gym-coach-payment/schemas/gym-coach-payment.schema';
+import { GymCoachService } from '../gym-coach/gym-coach.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { SessionModel } from './schemas/session.schema';
@@ -17,6 +24,8 @@ export class SessionsService {
   constructor(
     @InjectModel(SessionModel.name) private sessionModel: Model<SessionModel>,
     @InjectModel(User.name) private userModel: Model<User>,
+    private gymCoachService: GymCoachService,
+    private paymentService: GymCoachPaymentService,
   ) {}
 
   async create(
@@ -54,6 +63,11 @@ export class SessionsService {
         };
       }
 
+      // Fetch affiliation to determine price/gymId if applicable
+      // Note: Assuming logic to determine price exists or is passed in DTO.
+      // For now, we rely on DTO or default.
+      // If gymId is not in DTO, we might try to infer it. (Skipping for now).
+
       const session = await this.sessionModel.create({
         ...createSessionDto,
         coachId,
@@ -73,13 +87,30 @@ export class SessionsService {
     }
   }
 
-  async findAll(query: SessionQueryDto): Promise<ApiResponse<Session[]>> {
+  async findAll(
+    query: SessionQueryDto,
+    userId?: string,
+    userRole?: string,
+  ): Promise<ApiResponse<Session[]>> {
     try {
       const filter: any = {};
 
       if (query.coachId) filter.coachId = new Types.ObjectId(query.coachId);
       if (query.memberId) filter.memberId = new Types.ObjectId(query.memberId);
       if (query.status) filter.status = query.status;
+
+      // Enforce Role-Based Access Control
+      if (userId && userRole) {
+        if (userRole === 'member') {
+          // Members can ONLY see their own sessions
+          filter.memberId = new Types.ObjectId(userId);
+        } else if (userRole === 'coach') {
+          // Coaches can ONLY see their own sessions
+          filter.coachId = new Types.ObjectId(userId);
+        }
+        // Admins/Managers (if any) might see all, or handled via different logic.
+        // Assuming loose filtering for others or implicit trust if role not matched above.
+      }
 
       // Date range filter
       if (query.startDate || query.endDate) {
@@ -191,8 +222,55 @@ export class SessionsService {
         };
       }
 
-      Object.assign(session, updateSessionDto);
+      const originalStatus = session.status;
+      const newStatus = updateSessionDto.status;
+
+      // Update fields
+      Object.keys(updateSessionDto).forEach((key) => {
+        if (updateSessionDto[key] !== undefined) {
+          session[key] = updateSessionDto[key];
+        }
+      });
       await session.save();
+
+      // Trigger: If status changed to COMPLETED
+      // session.gymId needs to be present. If not, we can try to look it up if needed,
+      // but for now we assume it's set on creation or update.
+      // If we enable "free floating" sessions to be linked to a gym later, we'd need that logic.
+      if (
+        newStatus === SessionStatus.COMPLETED &&
+        originalStatus !== SessionStatus.COMPLETED &&
+        session.gymId &&
+        session.price &&
+        session.price > 0
+      ) {
+        // Calculate Commission
+        const affiliation = await this.gymCoachService.findAffiliation(
+          session.gymId,
+          session.coachId,
+        );
+
+        if (affiliation && affiliation.commissionRate) {
+          const commissionAmount =
+            session.price * (affiliation.commissionRate / 100);
+
+          await this.paymentService.create({
+            gymId: session.gymId,
+            coachId: session.coachId,
+            amount: commissionAmount,
+            currency: session.currency || 'USD',
+            type: GymCoachPaymentType.EARNING,
+            category: GymCoachPaymentCategory.SESSION_COMMISSION,
+            referenceId: session._id,
+            referenceType: 'Session',
+            description: `Commission for session with member ${session.memberId}`, // optimize later with names
+            metadata: {
+              commissionRateSnapshot: affiliation.commissionRate,
+              originalServicePrice: session.price,
+            },
+          });
+        }
+      }
 
       return {
         success: true,
@@ -238,5 +316,29 @@ export class SessionsService {
         message: 'Failed to delete session',
       };
     }
+  }
+  async countSessions(
+    coachId: string,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<number> {
+    const query: any = { coachId: new Types.ObjectId(coachId) };
+
+    if (startDate || endDate) {
+      query.startTime = {};
+      if (startDate) query.startTime.$gte = startDate;
+      if (endDate) query.startTime.$lte = endDate;
+    }
+
+    return this.sessionModel.countDocuments(query);
+  }
+
+  async findRecent(coachId: string, limit: number): Promise<Session[]> {
+    return this.sessionModel
+      .find({ coachId: new Types.ObjectId(coachId), status: 'completed' })
+      .populate('memberId', 'profile.fullName')
+      .sort({ startTime: -1 })
+      .limit(limit)
+      .lean();
   }
 }

@@ -6,12 +6,12 @@ import { apiClient, handleApiError } from "./helper";
 export const trainingApi = {
   // Programs
   createProgram: async (
-    data: CreateProgramDto
+    data: CreateProgramDto,
   ): Promise<ApiResponse<TrainingProgram>> => {
     try {
       const res = await apiClient.post<ApiResponse<TrainingProgram>>(
         "/training/programs",
-        data
+        data,
       );
       return res.data;
     } catch (error) {
@@ -21,7 +21,7 @@ export const trainingApi = {
 
   getPrograms: async (
     source?: string,
-    search?: string
+    search?: string,
   ): Promise<ApiResponse<TrainingProgram[]>> => {
     try {
       const params = new URLSearchParams();
@@ -30,7 +30,7 @@ export const trainingApi = {
 
       const res = await apiClient.get<ApiResponse<TrainingProgram[]>>(
         `/training/programs`,
-        { params }
+        { params },
       );
       return res.data;
     } catch (error) {
@@ -41,7 +41,7 @@ export const trainingApi = {
   getProgram: async (id: string): Promise<ApiResponse<TrainingProgram>> => {
     try {
       const res = await apiClient.get<ApiResponse<TrainingProgram>>(
-        `/training/programs/${id}`
+        `/training/programs/${id}`,
       );
       return res.data;
     } catch (error) {
@@ -51,12 +51,12 @@ export const trainingApi = {
 
   updateProgram: async (
     id: string,
-    data: Partial<CreateProgramDto>
+    data: Partial<CreateProgramDto>,
   ): Promise<ApiResponse<TrainingProgram>> => {
     try {
       const res = await apiClient.patch<ApiResponse<TrainingProgram>>(
         `/training/programs/${id}`,
-        data
+        data,
       );
       return res.data;
     } catch (error) {
@@ -66,12 +66,17 @@ export const trainingApi = {
 
   addComment: async (
     programId: string,
-    data: { text: string; rating: number; userName: string; userImage?: string }
+    data: {
+      text: string;
+      rating: number;
+      userName: string;
+      userImage?: string;
+    },
   ): Promise<ApiResponse<TrainingProgram>> => {
     try {
       const res = await apiClient.post<ApiResponse<TrainingProgram>>(
         `/training/programs/${programId}/comment`,
-        data
+        data,
       );
       return res.data;
     } catch (error) {
@@ -82,7 +87,7 @@ export const trainingApi = {
   startProgram: async (id: string): Promise<ApiResponse<ProgramHistory>> => {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(
-        `/training/programs/${id}/start`
+        `/training/programs/${id}/start`,
       );
       return res.data;
     } catch (error) {
@@ -93,7 +98,7 @@ export const trainingApi = {
   pauseProgram: async (): Promise<ApiResponse<ProgramHistory>> => {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(
-        "/training/program/pause"
+        "/training/program/pause",
       );
       return res.data;
     } catch (error) {
@@ -104,7 +109,7 @@ export const trainingApi = {
   resumeProgram: async (): Promise<ApiResponse<ProgramHistory>> => {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(
-        "/training/program/resume"
+        "/training/program/resume",
       );
       return res.data;
     } catch (error) {
@@ -115,9 +120,10 @@ export const trainingApi = {
   // Active & History
   getActiveProgram: async (): Promise<ApiResponse<ProgramHistory | null>> => {
     try {
-      const res = await apiClient.get<ApiResponse<ProgramHistory | null>>(
-        "/training/active"
-      );
+      const res =
+        await apiClient.get<ApiResponse<ProgramHistory | null>>(
+          "/training/active",
+        );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -125,12 +131,12 @@ export const trainingApi = {
   },
 
   logSession: async (
-    data: LogSessionDto
+    data: LogSessionDto,
   ): Promise<ApiResponse<ProgramHistory>> => {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(
         "/training/sessions",
-        data
+        data,
       );
       return res.data;
     } catch (error) {
@@ -140,8 +146,21 @@ export const trainingApi = {
 
   getHistory: async (): Promise<ApiResponse<ProgramHistory[]>> => {
     try {
-      const res = await apiClient.get<ApiResponse<ProgramHistory[]>>(
-        "/training/history"
+      const res =
+        await apiClient.get<ApiResponse<ProgramHistory[]>>("/training/history");
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  deleteSession: async (
+    programId: string,
+    sessionId: string,
+  ): Promise<ApiResponse<ProgramHistory>> => {
+    try {
+      const res = await apiClient.delete<ApiResponse<ProgramHistory>>(
+        `/training/${programId}/sessions/${sessionId}`,
       );
       return res.data;
     } catch (error) {

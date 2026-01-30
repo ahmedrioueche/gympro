@@ -31,23 +31,24 @@ export class DashboardService {
       return { success: true, message: 'Already have coach dashboard access' };
     }
 
-    // Self-certification: auto-approve for now
-    // Future: set status to 'pending' and require admin review
+    // Self-certification: now set to pending for admin review
     const coachVerification = {
-      status: 'approved' as const, // Change to 'pending' for admin approval flow
+      status: 'pending' as const,
       submittedAt: new Date(),
       certificationDetails: dto.certificationDetails,
+      socialMediaLinks: dto.socialMediaLinks,
+      documents: dto.documents,
     };
 
-    // Add 'coach' to dashboardAccess
-    const updatedAccess = [...(user.dashboardAccess || ['member']), 'coach'];
+    // Do NOT add 'coach' to dashboardAccess yet. Wait for admin approval.
+    // const updatedAccess = [...(user.dashboardAccess || ['member']), 'coach'];
 
     await this.userModel.findByIdAndUpdate(userId, {
-      dashboardAccess: updatedAccess,
+      // dashboardAccess: updatedAccess,
       coachVerification,
     });
 
-    return { success: true, message: 'Coach dashboard access granted' };
+    return { success: true, message: 'Coach request submitted for review' };
   }
 
   /**
