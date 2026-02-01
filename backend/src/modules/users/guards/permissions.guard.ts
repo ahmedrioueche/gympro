@@ -72,6 +72,8 @@ const ROLE_PERMISSIONS: Record<UserRole, any> = {
   [UserRole.Cleaner]: {},
   [UserRole.Maintenance]: {},
   [UserRole.Security]: {},
+  [UserRole.Admin]: {},
+  [UserRole.AppEditor]: {},
 };
 
 /**

@@ -1,9 +1,13 @@
 import { adminRootRoute } from "./AdminRootRoute";
 import {
+  alertsRoute,
+  analyticsRoute,
   coachingRoute,
   gymsRoute,
   homeRoute,
   notificationsRoute,
+  pricingRoute,
+  reportsRoute,
   revenueRoute,
   settingsRoute,
   staffRoute,
@@ -11,7 +15,7 @@ import {
   usersRoute,
 } from "./AdminRoutes";
 
-export const adminRootTree = adminRootRoute.addChildren([
+export const adminRouteTree = adminRootRoute.addChildren([
   homeRoute,
   subscriptionsRoute,
   revenueRoute,
@@ -21,4 +25,8 @@ export const adminRootTree = adminRootRoute.addChildren([
   staffRoute,
   notificationsRoute,
   settingsRoute,
+  alertsRoute,
+  reportsRoute,
+  analyticsRoute,
+  pricingRoute,
 ]);

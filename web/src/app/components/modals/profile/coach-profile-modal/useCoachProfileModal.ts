@@ -9,8 +9,13 @@ export function useCoachProfileModal() {
   const { activeDashboard } = useUserStore();
   const { currentGym } = useGymStore();
 
-  const { coachId } = coachProfileProps || {};
-  const { data: coach, isLoading } = useCoachProfile(coachId);
+  const { coachId, coach: coachFromProps } = coachProfileProps || {};
+  const { data: fetchedCoach, isLoading: isFetching } = useCoachProfile(
+    coachFromProps ? undefined : coachId,
+  );
+
+  const coach = coachFromProps || fetchedCoach;
+  const isLoading = coachFromProps ? false : isFetching;
 
   const isOpen = currentModal === "coach_profile";
   const isMemberDashboard = activeDashboard === "member";

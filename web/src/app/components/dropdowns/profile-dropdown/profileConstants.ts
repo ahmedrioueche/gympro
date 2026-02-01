@@ -8,4 +8,9 @@ export const DASHBOARD_CONFIG: Record<
   member: { icon: Dumbbell, label: "dashboard.member", emoji: "🏋️" },
   coach: { icon: GraduationCap, label: "dashboard.coach", emoji: "🎓" },
   manager: { icon: Briefcase, label: "dashboard.manager", emoji: "💼" },
+  admin: {
+    icon: undefined,
+    label: "",
+    emoji: "",
+  },
 };

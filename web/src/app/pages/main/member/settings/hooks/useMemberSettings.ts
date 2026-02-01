@@ -1,5 +1,6 @@
 import {
   settingsApi,
+  uploadApi,
   type AppLanguage,
   type EditUserDto,
   type TimerSettings,
@@ -11,7 +12,6 @@ import { useChangePassword } from "../../../../../../hooks/queries/useAuth";
 import { useUpdateProfile } from "../../../../../../hooks/queries/useUsers";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useUserStore } from "../../../../../../store/user";
-import { uploadToCloudinary } from "../../../../../../utils/cloudinary";
 
 export type MemberSettingsTabType =
   | "profile"
@@ -111,7 +111,13 @@ export function useMemberSettings() {
 
     try {
       setUploading(true);
-      const imageUrl = await uploadToCloudinary(file);
+      const response = await uploadApi.uploadFile(file, "image");
+
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Upload failed");
+      }
+
+      const imageUrl = response.data.url;
       await updateProfile.mutateAsync({ profileImageUrl: imageUrl });
       toast.success(
         t("settings.profile.avatarSuccess", "Avatar updated successfully"),

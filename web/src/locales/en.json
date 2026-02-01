@@ -388,6 +388,13 @@
     "viewAnalytics": "Analytics & reports",
     "viewNotifications": "Notifications & alerts",
     "customizeSettings": "App settings",
+    "revenue": "Revenue",
+    "users": "Users",
+    "alerts": "Alerts",
+    "reports": "Reports",
+    "competitions": "Competitions",
+    "inventory": "Inventory",
+    "store": "Store",
     "pin": "Pin ",
     "unpin": "Unpin "
   },
@@ -504,6 +511,11 @@
       "username": "Enter your name",
       "age": "Enter your age"
     },
+    "settings": {
+      "name": "pages.admin.settings",
+      "link": "/admin/settings"
+    },
+
     "options": {
       "male": "Male",
       "female": "Female"
@@ -2803,7 +2815,8 @@
     "specializations": "Specializations",
     "client": "client",
     "clients": "clients",
-    "viewProfile": "View Profile"
+    "viewProfile": "View Profile",
+    "rating": "Rating"
   },
   "pages": {
     "member": {
@@ -3166,5 +3179,85 @@
     "resting": "Resting",
     "getReady": "Get Ready!",
     "go": "Go!"
+  },
+  "admin": {
+    "home": {
+      "title": "Admin Dashboard",
+      "subtitle": "Overview of system status and activities",
+      "overview": {
+        "title": "System Overview",
+        "subtitle": "Key performance metrics"
+      },
+      "stats": {
+        "totalUsers": "Total Users",
+        "activeGyms": "Active Gyms",
+        "revenue": "Total Revenue",
+        "pendingApprovals": "Pending Approvals",
+        "systemHealth": "System Health"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "createEditor": "Add Editor",
+        "reviewGyms": "Review Gyms",
+        "systemSettings": "System Settings"
+      },
+      "recentActivity": {
+        "title": "Recent Activity",
+        "empty": "No recent activity found",
+        "emptyTitle": "No Activity Yet",
+        "emptyDesc": "New users and gyms will appear here"
+      }
+    },
+    "reports": "Reports",
+    "alerts": "Alerts",
+    "revenue": "Revenue",
+    "subscription": "Subscription",
+    "coaching": {
+      "title": "Coach Requests",
+      "subtitle": "Manage verification requests from coaches",
+      "pendingVerification": "Pending Verification",
+      "activeCoaches": "Active Coaches",
+      "requests": "Requests",
+      "reviewModal": {
+        "title": "Review Coach Request",
+        "subtitle": "Verify coach qualifications and certifications",
+        "approve": "Approve Request",
+        "reject": "Reject Request",
+        "close": "Close",
+        "certificationDetails": "Certification Details",
+        "noCertificationDetails": "No details provided.",
+        "documents": "Supporting Documents",
+        "noDocuments": "No documents uploaded.",
+        "clickToView": "Click to view document",
+        "document": "Document",
+        "socialMedia": "Social Media / Portfolio",
+        "noSocialMedia": "No links provided.",
+        "joined": "Joined",
+        "unknownLocation": "Unknown Location"
+      },
+      "list": {
+        "candidate": "Coach Candidate",
+        "location": "Location",
+        "submitted": "Submitted",
+        "status": "Status",
+        "actions": "Actions",
+        "review": "Review",
+        "noRequests": "No Requests Found",
+        "noRequestsDesc": "Try adjusting your search or filters.",
+        "searchPlaceholder": "Search by name or email...",
+        "filters": {
+          "all": "All Status",
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        }
+      },
+      "alerts": {
+        "approveSuccess": "Coach request approved successfully",
+        "approveError": "Failed to approve coach request",
+        "rejectSuccess": "Coach request rejected successfully",
+        "rejectError": "Failed to reject coach request"
+      }
+    }
   }
 }

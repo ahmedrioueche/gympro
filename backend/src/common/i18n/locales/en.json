@@ -53,6 +53,12 @@
     "gym_announcement_body": "{{message}}",
     "program_assigned_title": "New Program Assigned",
     "program_assigned_body": "{{coachName}} assigned you a new program",
+    "admin": {
+      "coach_approved_title": "Coach Request Approved",
+      "coach_approved_body": "Your request to become a coach has been approved! You can now access the Coach Dashboard.",
+      "coach_rejected_title": "Coach Request Rejected",
+      "coach_rejected_body": "Your request to become a coach has been rejected."
+    },
     "auth": {
       "verify_title": "Verify Your Email",
       "verify_body": "Please check your email to verify your account.",

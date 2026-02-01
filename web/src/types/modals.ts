@@ -154,7 +154,8 @@ export interface ClientProfileModalProps {
 }
 
 export interface CoachProfileModalProps {
-  coachId: string;
+  coachId?: string;
+  coach?: CoachProfile;
 }
 
 export interface CoachPricingModalProps {
@@ -176,4 +177,8 @@ export interface LogSessionModalProps {
   activeHistory: ProgramHistory;
   initialSession?: ProgramDayProgress;
   mode: "new" | "edit";
+}
+
+export interface ReviewCoachRequestModalProps {
+  request: import("@ahmedrioueche/gympro-client").User;
 }

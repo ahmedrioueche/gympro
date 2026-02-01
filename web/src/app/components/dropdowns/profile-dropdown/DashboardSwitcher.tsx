@@ -35,8 +35,8 @@ export function DashboardSwitcher({
         return (
           <DropdownItem
             key={dashboard}
-            icon={config.emoji}
-            label={t(config.label)}
+            icon={config?.emoji}
+            label={t(config?.label)}
             onClick={() => onSwitch(dashboard)}
             className={isActive ? "bg-primary/10" : ""}
           />

@@ -300,4 +300,60 @@ export const APP_PAGES = {
       link: "/coach/settings",
     },
   },
+  admin: {
+    name: "pages.admin",
+    link: "/admin",
+    home: {
+      name: "pages.admin.home",
+      link: "/admin",
+    },
+    subscriptions: {
+      name: "pages.admin.subscriptions",
+      link: "/admin/subscriptions",
+    },
+    revenue: {
+      name: "pages.admin.revenue",
+      link: "/admin/revenue",
+    },
+    pricing: {
+      name: "pages.admin.pricing",
+      link: "/admin/pricing",
+    },
+    gyms: {
+      name: "pages.admin.gyms",
+      link: "/admin/gyms",
+    },
+    users: {
+      name: "pages.admin.users",
+      link: "/admin/users",
+    },
+    coaching: {
+      name: "pages.admin.coaching",
+      link: "/admin/coaching",
+    },
+    analytics: {
+      name: "pages.admin.analytics",
+      link: "/admin/analytics",
+    },
+    staff: {
+      name: "pages.admin.staff",
+      link: "/admin/staff",
+    },
+    alerts: {
+      name: "pages.admin.alerts",
+      link: "/admin/alerts",
+    },
+    reports: {
+      name: "pages.admin.reports",
+      link: "/admin/reports",
+    },
+    notifications: {
+      name: "pages.admin.notifications",
+      link: "/admin/notifications",
+    },
+    settings: {
+      name: "pages.admin.settings",
+      link: "/admin/settings",
+    },
+  },
 };

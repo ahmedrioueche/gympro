@@ -13,6 +13,10 @@ export const getRoleHomePage = (role: UserRole): string => {
     case UserRole.Coach:
       return APP_PAGES.coach.link;
 
+    case UserRole.Admin:
+    case UserRole.AppEditor:
+      return APP_PAGES.admin.link;
+
     case UserRole.Member:
       return APP_PAGES.member.link;
 
@@ -106,6 +110,8 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
       "/notifications",
       "/gym",
     ],
+    [UserRole.Admin]: ["/admin", "/settings", "/profile", "/notifications"],
+    [UserRole.AppEditor]: ["/admin", "/settings", "/profile", "/notifications"],
   };
 
   const allowedPatterns = roleRoutePatterns[role] || [];

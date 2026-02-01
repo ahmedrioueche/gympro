@@ -115,6 +115,10 @@ const CreateAnnouncementModal = lazy(
     import("./app/pages/main/gym/manager/announcement/components/CreateAnnouncementModal"),
 );
 
+const ReviewCoachRequestModal = lazy(
+  () => import("./app/pages/admin/coaching/components/ReviewCoachRequestModal"),
+);
+
 const LogSessionModal = lazy(() =>
   import("./app/pages/main/member/training/components/log-session-modal/LogSessionModal").then(
     (module) => ({
@@ -150,6 +154,7 @@ function modals() {
       <GymInvitationModal />
       <CreateAnnouncementModal />
       <LogSessionModal />
+      <ReviewCoachRequestModal />
     </Suspense>
   );
 }

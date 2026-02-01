@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useUpdateProfile } from "../../../../../../hooks/queries/useUsers";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useUserStore } from "../../../../../../store/user";
-import { uploadToCloudinary } from "../../../../../../utils/cloudinary";
 
 export type CoachSettingsTabType =
   | "profile"
@@ -92,7 +91,13 @@ export function useCoachSettings() {
 
     try {
       setUploading(true);
-      const imageUrl = await uploadToCloudinary(file);
+      const response = await uploadApi.uploadFile(file, "image");
+
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Upload failed");
+      }
+
+      const imageUrl = response.data.url;
       await updateProfile.mutateAsync({ profileImageUrl: imageUrl });
       toast.success(
         t("settings.profile.avatarSuccess", "Avatar updated successfully"),

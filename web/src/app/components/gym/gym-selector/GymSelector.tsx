@@ -1,5 +1,6 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useRef } from "react";
+import { useUserStore } from "../../../../store/user";
 import GymSelectorButton from "./components/GymSelectorButton";
 import GymSelectorDropdown from "./components/GymSelectorDropdown";
 import NoGymsView from "./components/NoGymsView";
@@ -19,6 +20,7 @@ export default function GymSelector({
   showAllGymsOption = true,
   className = "",
 }: GymSelectorProps) {
+  const { user } = useUserStore();
   const selectRef = useRef<HTMLDivElement>(null);
 
   // Filter gyms based on active dashboard
@@ -30,6 +32,10 @@ export default function GymSelector({
 
   // Handle click outside to close dropdown
   useClickOutside(selectRef, () => setIsOpen(false), isOpen);
+
+  if (user.role === "admin" || user.role === "app_editor") {
+    return null;
+  }
 
   // No gyms available
   if (filteredGyms.length === 0) {

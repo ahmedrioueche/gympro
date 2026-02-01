@@ -31,6 +31,11 @@ const DASHBOARD_CONFIG: Record<
     color: "text-warning",
     label: "dashboard.manager",
   },
+  admin: {
+    icon: Briefcase,
+    color: "text-warning",
+    label: "dashboard.admin",
+  },
 };
 
 interface DashboardSwitcherProps {

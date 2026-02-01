@@ -16,10 +16,12 @@ export enum UserRole {
   Cleaner = "cleaner",
   Maintenance = "maintenance",
   Security = "security",
+  Admin = "admin",
+  AppEditor = "app_editor",
 }
 
 // Dashboard types (separate from UserRole - these determine which dashboards a user can access)
-export const DASHBOARD_TYPES = ["member", "coach", "manager"] as const;
+export const DASHBOARD_TYPES = ["member", "coach", "manager", "admin"] as const;
 export type DashboardType = (typeof DASHBOARD_TYPES)[number];
 
 // Coach verification status for future admin approval flow
@@ -35,6 +37,12 @@ export interface CoachVerification {
   status: CoachVerificationStatus;
   submittedAt?: string;
   certificationDetails?: string;
+  socialMediaLinks?: string[];
+  documents?: {
+    url: string;
+    description: string;
+    type: string;
+  }[];
   reviewedAt?: string;
   reviewedBy?: string;
 }
@@ -91,6 +99,10 @@ export interface CoachUser extends BaseUser {
   coachingInfo: {
     coachedMembers: string[];
     suggestedPrograms: string[];
+    bio?: string;
+    specializations?: string[];
+    yearsOfExperience?: number;
+    rating?: number;
   };
   certifications?: string[];
 }
@@ -113,4 +125,19 @@ export interface OwnerManagerUser extends BaseUser {
   };
 }
 
-export type User = MemberUser | CoachUser | ReceptionistUser | OwnerManagerUser;
+export interface AdminUser extends BaseUser {
+  role: "admin";
+}
+
+export interface AppEditorUser extends BaseUser {
+  role: "app_editor";
+  appPermissions?: string[]; // e.g., ['users', 'gyms', 'financials']
+}
+
+export type User =
+  | MemberUser
+  | CoachUser
+  | ReceptionistUser
+  | OwnerManagerUser
+  | AdminUser
+  | AppEditorUser;

@@ -16,7 +16,7 @@ const ErrorComponent: React.FC<ErrorComponentProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className="w-full text-center flex flex-col items-center justify-center">
+    <div className="w-full text-center flex flex-col items-center justify-center mt-12">
       {/* Error Icon Section */}
       {showIcon && (
         <div className={`${compact ? "mb-4" : "mb-6"} animate-bounce`}>

@@ -19,7 +19,7 @@ export function CoachInfoContent({ coach }: CoachInfoContentProps) {
             {coach.rating?.toFixed(1) || "N/A"}
           </p>
           <p className="text-xs text-text-secondary uppercase tracking-wider">
-            {t("coaches.card.rating")}
+            {t("coaches.rating")}
           </p>
         </div>
         <div className="bg-surface-hover border border-border rounded-xl p-4 text-center">

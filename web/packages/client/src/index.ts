@@ -1,3 +1,4 @@
+export * from "./api/admin";
 export * from "./api/ai";
 export * from "./api/analytics";
 export * from "./api/announcement";
@@ -63,6 +64,7 @@ export * from "./types/progress";
 export * from "./types/role";
 export * from "./types/session";
 export * from "./types/settings";
+export * from "./types/stats";
 export * from "./types/subscription";
 export * from "./types/training";
 export * from "./types/user";

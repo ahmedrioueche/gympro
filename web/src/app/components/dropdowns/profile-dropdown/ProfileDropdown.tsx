@@ -1,3 +1,4 @@
+import { UserRole } from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
 import Dropdown, {
   DropdownDivider,
@@ -43,13 +44,15 @@ export default function ProfileDropdown({
     <Dropdown trigger={avatarElement} align="right">
       <ProfileHeader user={user} initials={initials} />
 
-      {hasMultipleDashboards && (
-        <DashboardSwitcher
-          availableDashboards={availableDashboards}
-          activeDashboard={activeDashboard}
-          onSwitch={handleDashboardSwitch}
-        />
-      )}
+      {hasMultipleDashboards &&
+        user.role !== UserRole.Admin &&
+        user.role !== UserRole.AppEditor && (
+          <DashboardSwitcher
+            availableDashboards={availableDashboards}
+            activeDashboard={activeDashboard}
+            onSwitch={handleDashboardSwitch}
+          />
+        )}
 
       <DropdownItem
         icon="⚙️"
@@ -58,22 +61,23 @@ export default function ProfileDropdown({
         onClick={onSettingsClick}
       />
 
-      {/* Coach Request - Only if not a coach */}
-      {!user.dashboardAccess?.includes("coach") && (
-        <DropdownItem
-          icon="🎓"
-          label={t("profile.menu.becomeCoach", "Become a Coach")}
-          description={t(
-            "profile.menu.becomeCoachDesc",
-            "Request coach access",
-          )}
-          onClick={() => {
-            import("../../../../store/modal").then(({ useModalStore }) => {
-              useModalStore.getState().openModal("request_coach_access");
-            });
-          }}
-        />
-      )}
+      {/* Coach Request - Only if not a coach and not an admin */}
+      {!user.dashboardAccess?.includes("coach") &&
+        user.role !== UserRole.Admin && (
+          <DropdownItem
+            icon="🎓"
+            label={t("profile.menu.becomeCoach", "Become a Coach")}
+            description={t(
+              "profile.menu.becomeCoachDesc",
+              "Request coach access",
+            )}
+            onClick={() => {
+              import("../../../../store/modal").then(({ useModalStore }) => {
+                useModalStore.getState().openModal("request_coach_access");
+              });
+            }}
+          />
+        )}
 
       <DropdownDivider />
 

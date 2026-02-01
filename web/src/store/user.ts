@@ -118,7 +118,7 @@ export const useUserStore = create<UserState>()(
 
         // Respect persisted dashboard if valid
         const { activeDashboard } = get();
-        let targetDashboard = defaultDashboard;
+        let targetDashboard: DashboardType = defaultDashboard;
 
         if (activeDashboard && checkDashboardAccess(user, activeDashboard)) {
           targetDashboard = activeDashboard;

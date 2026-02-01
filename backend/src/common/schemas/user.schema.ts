@@ -215,7 +215,7 @@ export class User extends Document {
   // Multi-dashboard access: which dashboards this user can access
   @Prop({
     type: [String],
-    enum: ['member', 'coach', 'manager'],
+    enum: ['member', 'coach', 'manager', 'admin'],
     default: ['member'],
   })
   dashboardAccess?: string[];
@@ -235,6 +235,7 @@ export class User extends Document {
           type: { type: String },
         },
       ],
+      socialMediaLinks: [String],
     },
     _id: false,
   })
@@ -281,6 +282,10 @@ export class User extends Document {
   staffType?: StaffType;
   @Prop({ type: [String] })
   assignedTasks?: string[];
+
+  // App Editor-specific fields
+  @Prop({ type: [String] })
+  appPermissions?: string[];
 
   // Owner/Manager-specific fields
   @Prop({ type: GymAccess })

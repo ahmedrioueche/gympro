@@ -19,6 +19,7 @@ import type {
   RenewSubscriptionModalProps,
   RequestCoachModalProps,
   RequestGymModalProps,
+  ReviewCoachRequestModalProps,
   ScanResultModalProps,
   SessionDetailsModalProps,
   StaffModalProps,
@@ -50,6 +51,7 @@ type ModalType =
   | "coach_pricing"
   | "gym_invitation"
   | "create_announcement"
+  | "admin_review_coach_request"
   | "log_session"
   | null;
 
@@ -78,6 +80,7 @@ interface ModalState {
   gymInvitationProps?: GymInvitationModalProps;
   createAnnouncementProps?: CreateAnnouncementModalProps;
   logSessionProps?: LogSessionModalProps;
+  reviewCoachRequestProps?: ReviewCoachRequestModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -221,6 +224,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "log_session",
           logSessionProps: props,
+        };
+      }
+      if (modal === "admin_review_coach_request") {
+        return {
+          currentModal: "admin_review_coach_request",
+          reviewCoachRequestProps: props,
         };
       }
       return { currentModal: null };

@@ -1,4 +1,4 @@
-import { dashboardApi } from "@ahmedrioueche/gympro-client";
+import { dashboardApi, uploadApi } from "@ahmedrioueche/gympro-client";
 import { useMutation } from "@tanstack/react-query";
 import { FileText, Loader2, Plus, Trash2, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
@@ -8,7 +8,6 @@ import BaseModal from "../../../components/ui/BaseModal";
 import InputField from "../../../components/ui/InputField";
 import TextArea from "../../../components/ui/TextArea";
 import { useModalStore } from "../../../store/modal";
-import { uploadToCloudinary } from "../../../utils/cloudinary";
 
 interface DocumentItem {
   url: string;
@@ -74,20 +73,36 @@ export default function RequestCoachAccessModal() {
 
     try {
       setUploading(true);
-      const url = await uploadToCloudinary(file);
+
+      // Determine resource type: 'raw' for documents, 'auto' (or 'image') for images
+      // We explicitly force 'raw' for PDFs and Office docs to avoid Cloudinary treating them as images/pages
+      const isDocument =
+        /\.(pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar|txt|csv)$/i.test(file.name);
+      const resourceType = isDocument ? "raw" : "auto";
+
+      const response = await uploadApi.uploadFile(file, resourceType);
+
+      if (!response.success || !response.data) {
+        throw new Error(response.message || "Upload failed");
+      }
+
+      const url = response.data.url;
+
       setDocuments([
         ...documents,
         {
           url,
-          description: "",
+          description: file.name, // Default to filename
           type: "certificate", // Default type
           file,
         },
       ]);
       toast.success(t("common.uploadSuccess", "File uploaded successfully"));
-    } catch (error) {
+    } catch (error: any) {
       console.error("Upload failed", error);
-      toast.error(t("common.uploadError", "Failed to upload file"));
+      toast.error(
+        error.message || t("common.uploadError", "Failed to upload file"),
+      );
     } finally {
       setUploading(false);
       if (fileInputRef.current) {

@@ -1,5 +1,13 @@
-import { ErrorCode, type DashboardType } from '@ahmedrioueche/gympro-client';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  ErrorCode,
+  UserRole,
+  type DashboardType,
+} from '@ahmedrioueche/gympro-client';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/common/schemas/user.schema';
@@ -24,6 +32,10 @@ export class DashboardService {
         message: 'User not found',
         errorCode: ErrorCode.USER_NOT_FOUND,
       });
+    }
+
+    if (user.role === UserRole.Admin) {
+      throw new ForbiddenException('Admins cannot become coaches');
     }
 
     // Check if already has coach access
@@ -92,6 +104,7 @@ export class DashboardService {
       member: [],
       coach: [],
       manager: [],
+      admin: [],
     };
 
     // For manager dashboard, we need to query owned gyms separately

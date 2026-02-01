@@ -12,6 +12,8 @@ interface FooterButton {
   disabled?: boolean;
   type?: "button" | "submit";
   form?: string;
+  variant?: "default" | "primary" | "danger" | "ghost";
+  className?: string;
 }
 
 interface BaseModalProps {
@@ -36,6 +38,9 @@ interface BaseModalProps {
   // Secondary button (left)
   showSecondaryButton?: boolean;
   secondaryButton?: FooterButton;
+
+  // Tertiary button (middle/left of primary)
+  tertiaryButton?: FooterButton;
 
   // Primary button (right) - only renders if primaryButton is provided
   primaryButton?: FooterButton;
@@ -62,6 +67,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   showFooter = true,
   showSecondaryButton = true,
   secondaryButton,
+  tertiaryButton,
   primaryButton,
   maxWidth = "max-w-3xl",
   hideCloseButton = false,
@@ -74,11 +80,39 @@ const BaseModal: React.FC<BaseModalProps> = ({
   const displayTitle =
     isEditMode && editTitle !== undefined ? editTitle : title;
 
+  // Helper to get button classes based on variant
+  const getButtonClasses = (
+    variant: FooterButton["variant"] = "default",
+    disabled?: boolean,
+    loading?: boolean,
+    className?: string,
+  ) => {
+    const baseClasses =
+      "px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2";
+
+    if (disabled || loading) {
+      return `${baseClasses} bg-gray-400 cursor-auto opacity-50 shadow-none ring-0 text-white ${className || ""}`;
+    }
+
+    switch (variant) {
+      case "primary":
+        return `${baseClasses} bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white ring-1 ring-blue-500/30 hover:shadow-xl ${className || ""}`;
+      case "danger":
+        return `${baseClasses} bg-red-500 hover:bg-red-600 text-white shadow-sm hover:shadow-md ${className || ""}`;
+      case "ghost":
+        return `${baseClasses} bg-transparent hover:bg-surface-hover text-text-secondary hover:text-text-primary ${className || ""}`;
+      case "default":
+      default:
+        return `${baseClasses} text-text-secondary bg-surface hover:bg-surface/50 border-2 border-border hover:border-primary/30 ${className || ""}`;
+    }
+  };
+
   // Default button configurations
   const secondaryConfig: FooterButton = {
     label: t("common.cancel"),
     onClick: onClose,
     type: "button",
+    variant: "default",
     ...secondaryButton,
   };
 
@@ -86,16 +120,27 @@ const BaseModal: React.FC<BaseModalProps> = ({
     ? {
         label: t("common.confirm"),
         type: "button",
+        variant: "primary",
         disabled: primaryButton.disabled,
         ...primaryButton,
       }
     : undefined;
 
-  const PrimaryIcon = primaryConfig?.icon;
+  const tertiaryConfig: FooterButton | undefined = tertiaryButton
+    ? {
+        type: "button",
+        variant: "danger",
+        ...tertiaryButton,
+      }
+    : undefined;
 
-  // Footer shows if: custom footer provided, or secondary button shown, or primary button provided
+  const PrimaryIcon = primaryConfig?.icon;
+  const TertiaryIcon = tertiaryConfig?.icon;
+
+  // Footer shows if: custom footer provided, or secondary/tertiary/primary button shown
   const hasFooter =
-    showFooter && (footer || showSecondaryButton || primaryButton);
+    showFooter &&
+    (footer || showSecondaryButton || tertiaryButton || primaryButton);
 
   return createPortal(
     <div
@@ -177,24 +222,56 @@ const BaseModal: React.FC<BaseModalProps> = ({
                     type={secondaryConfig.type}
                     form={secondaryConfig.form}
                     onClick={secondaryConfig.onClick}
-                    className={`${
-                      primaryConfig ? "flex-1" : ""
-                    } px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface/50 border-2 border-border hover:border-primary/30 transition-all`}
+                    className={getButtonClasses(
+                      secondaryConfig.variant,
+                      secondaryConfig.disabled,
+                      secondaryConfig.loading,
+                      `${primaryConfig ? "flex-1" : ""} ${secondaryConfig.className}`,
+                    )}
+                    disabled={
+                      secondaryConfig.disabled || secondaryConfig.loading
+                    }
                   >
                     {secondaryConfig.label}
                   </button>
                 )}
+
+                {tertiaryConfig && (
+                  <button
+                    type={tertiaryConfig.type}
+                    form={tertiaryConfig.form}
+                    onClick={tertiaryConfig.onClick}
+                    className={getButtonClasses(
+                      tertiaryConfig.variant,
+                      tertiaryConfig.disabled,
+                      tertiaryConfig.loading,
+                      `flex-1 ${tertiaryConfig.className}`,
+                    )}
+                    disabled={tertiaryConfig.disabled || tertiaryConfig.loading}
+                  >
+                    {tertiaryConfig.loading ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        {TertiaryIcon && <TertiaryIcon className="w-5 h-5" />}
+                        {tertiaryConfig.label}
+                      </>
+                    )}
+                  </button>
+                )}
+
                 {primaryConfig && (
                   <button
                     type={primaryConfig.type}
                     form={primaryConfig.form}
                     onClick={primaryConfig.onClick}
                     disabled={primaryConfig.disabled || primaryConfig.loading}
-                    className={`flex-1 px-6 py-3 rounded-xl font-bold text-white transition-all duration-300 shadow-sm flex items-center justify-center gap-2 ${
-                      primaryConfig.disabled || primaryConfig.loading
-                        ? "bg-gray-400 cursor-auto opacity-50 shadow-none ring-0"
-                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 hover:shadow-xl"
-                    }`}
+                    className={getButtonClasses(
+                      primaryConfig.variant,
+                      primaryConfig.disabled,
+                      primaryConfig.loading,
+                      `flex-1 ${primaryConfig.className}`,
+                    )}
                   >
                     {primaryConfig.loading ? (
                       <>
@@ -215,7 +292,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

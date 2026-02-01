@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
+import { AdminModule } from './modules/admin/admin.module';
 import { AiModule } from './modules/ai/ai.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { AppBillingModule } from './modules/appBilling/appBilling.module';
@@ -31,6 +32,7 @@ import { SessionsModule } from './modules/sessions/sessions.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
 import { TrainingModule } from './modules/training/training.module';
+import { UploadModule } from './modules/upload/upload.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -96,6 +98,8 @@ import { UsersModule } from './modules/users/users.module';
     GymCoachModule,
     GymCoachPaymentModule,
     GymAnnouncementModule,
+    AdminModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [
