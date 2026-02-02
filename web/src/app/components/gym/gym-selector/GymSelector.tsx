@@ -33,10 +33,6 @@ export default function GymSelector({
   // Handle click outside to close dropdown
   useClickOutside(selectRef, () => setIsOpen(false), isOpen);
 
-  if (user.role === "admin" || user.role === "app_editor") {
-    return null;
-  }
-
   // No gyms available
   if (filteredGyms.length === 0) {
     return <NoGymsView />;

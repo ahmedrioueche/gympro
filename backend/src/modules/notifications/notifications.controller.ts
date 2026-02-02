@@ -84,12 +84,14 @@ export class NotificationsController {
   }
 
   @Get('unread-count')
-  async getUnreadCount(@Req() req: any) {
+  async getUnreadCount(@Req() req: any, @Query('gymId') gymId?: string) {
     const userId = req.user.sub;
-    const count = await this.notificationModel.countDocuments({
-      userId,
-      status: 'unread',
-    });
+    const query: any = { userId, status: 'unread' };
+    if (gymId) {
+      query.gymId = gymId;
+    }
+
+    const count = await this.notificationModel.countDocuments(query);
     return apiResponse(true, undefined, { count });
   }
 
@@ -104,12 +106,14 @@ export class NotificationsController {
   }
 
   @Patch('read-all')
-  async markAllAsRead(@Req() req: any) {
+  async markAllAsRead(@Req() req: any, @Query('gymId') gymId?: string) {
     const userId = req.user.sub;
-    await this.notificationModel.updateMany(
-      { userId, status: 'unread' },
-      { status: 'read' },
-    );
+    const query: any = { userId, status: 'unread' };
+    if (gymId) {
+      query.gymId = gymId;
+    }
+
+    await this.notificationModel.updateMany(query, { status: 'read' });
     return apiResponse(true, undefined, { success: true });
   }
 }

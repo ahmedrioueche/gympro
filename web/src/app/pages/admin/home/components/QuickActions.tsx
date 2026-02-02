@@ -10,54 +10,66 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import GradientCard from "../../../../../components/ui/GradientCard";
+import { APP_PAGES } from "../../../../../constants/navigation";
+import { useAppPermissions } from "../../../../../hooks/useAppPermissions";
 
 const QuickActions: React.FC = () => {
   const { t } = useTranslation();
+  const { hasAppPermission, APP_PERMISSIONS } = useAppPermissions();
 
-  const actions = [
+  const allActions = [
     {
       label: "admin.home.quickActions.createEditor",
       icon: <UserPlus className="w-8 h-8" />,
-      to: "/admin/staff",
+      to: APP_PAGES.admin.staff.link,
       gradient: "from-blue-500 to-blue-600",
       bgHover: "hover:from-blue-600 hover:to-blue-700",
+      permission: APP_PERMISSIONS.MANAGE_EDITORS,
     },
     {
       label: "admin.home.quickActions.reviewGyms",
       icon: <Dumbbell className="w-8 h-8" />,
-      to: "/admin/gyms",
+      to: APP_PAGES.admin.gyms.link,
       gradient: "from-green-500 to-green-600",
       bgHover: "hover:from-green-600 hover:to-green-700",
+      permission: APP_PERMISSIONS.MANAGE_GYMS,
     },
     {
       label: "admin.home.quickActions.systemSettings",
       icon: <Settings className="w-8 h-8" />,
-      to: "/admin/settings",
+      to: APP_PAGES.admin.settings.link,
       gradient: "from-slate-500 to-slate-600",
       bgHover: "hover:from-slate-600 hover:to-slate-700",
     },
     {
       label: "admin.home.stats.revenue",
       icon: <CreditCard className="w-8 h-8" />,
-      to: "/admin/revenue",
+      to: APP_PAGES.admin.revenue.link,
       gradient: "from-amber-500 to-amber-600",
       bgHover: "hover:from-amber-600 hover:to-amber-700",
+      permission: APP_PERMISSIONS.MANAGE_REVENUE,
     },
     {
-      label: "admin.reports",
+      label: "admin.home.quickActions.viewReports",
       icon: <FileText className="w-8 h-8" />,
-      to: "/admin/reports",
+      to: APP_PAGES.admin.reports.link,
       gradient: "from-purple-500 to-purple-600",
       bgHover: "hover:from-purple-600 hover:to-purple-700",
+      permission: APP_PERMISSIONS.MANAGE_REPORTS,
     },
     {
-      label: "admin.alerts",
+      label: "admin.home.quickActions.viewAlerts",
       icon: <Shield className="w-8 h-8" />,
-      to: "/admin/alerts",
+      to: APP_PAGES.admin.alerts.link,
       gradient: "from-red-500 to-red-600",
       bgHover: "hover:from-red-600 hover:to-red-700",
+      permission: APP_PERMISSIONS.MANAGE_ALERTS,
     },
   ];
+
+  const actions = allActions.filter(
+    (action) => !action.permission || hasAppPermission(action.permission),
+  );
 
   return (
     <GradientCard>

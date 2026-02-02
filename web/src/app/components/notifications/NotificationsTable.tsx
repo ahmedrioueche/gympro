@@ -2,15 +2,27 @@ import { type AppNotification } from "@ahmedrioueche/gympro-client";
 import { formatDistanceToNow } from "date-fns";
 import { CheckCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Pagination from "../../../components/ui/Pagination";
 import { Table, type TableColumn } from "../../../components/ui/Table";
 import { useMarkNotificationAsRead } from "../../../hooks/queries/useNotifications";
 import { useNotificationAction } from "../../../hooks/useNotificationAction";
 
 interface NotificationsTableProps {
   notifications: AppNotification[];
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    totalNotifications: number;
+    startIndex: number;
+    endIndex: number;
+    onPageChange: (page: number) => void;
+  };
 }
 
-function NotificationsTable({ notifications }: NotificationsTableProps) {
+function NotificationsTable({
+  notifications,
+  pagination,
+}: NotificationsTableProps) {
   const { t } = useTranslation();
   const markAsReadMutation = useMarkNotificationAsRead();
   const { executeAction, hasValidAction } = useNotificationAction();
@@ -190,20 +202,33 @@ function NotificationsTable({ notifications }: NotificationsTableProps) {
   );
 
   return (
-    <Table
-      columns={columns}
-      data={notifications}
-      keyExtractor={(n) => n._id}
-      onRowClick={handleRowClick}
-      rowClassName={(n) =>
-        `${
-          n.status === "unread"
-            ? "bg-primary/5 hover:bg-primary/10"
-            : "hover:bg-muted/50"
-        } ${hasValidAction(n) ? "cursor-pointer" : ""}`
-      }
-      renderMobileCard={renderMobileCard}
-    />
+    <div className="space-y-6">
+      <Table
+        columns={columns}
+        data={notifications}
+        keyExtractor={(n) => n._id}
+        onRowClick={handleRowClick}
+        rowClassName={(n) =>
+          `${
+            n.status === "unread"
+              ? "bg-primary/5 hover:bg-primary/10"
+              : "hover:bg-muted/50"
+          } ${hasValidAction(n) ? "cursor-pointer" : ""}`
+        }
+        renderMobileCard={renderMobileCard}
+      />
+
+      {pagination && pagination.totalPages > 1 && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          totalRecords={pagination.totalNotifications}
+          startIndex={pagination.startIndex}
+          endIndex={pagination.endIndex}
+          onPageChange={pagination.onPageChange}
+        />
+      )}
+    </div>
   );
 }
 

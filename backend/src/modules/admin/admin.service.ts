@@ -9,6 +9,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
+import {
+  AppPlanModel,
+  AppSubscriptionModel,
+} from '../appBilling/appBilling.schema';
+import { AppPaymentModel } from '../appBilling/payment/appPayment.schema';
+import { GymModel } from '../gym/gym.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { CreateEditorDto } from './dto/create-editor.dto';
 
@@ -16,6 +22,12 @@ import { CreateEditorDto } from './dto/create-editor.dto';
 export class AdminService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(AppSubscriptionModel.name)
+    private appSubscriptionModel: Model<AppSubscriptionModel>,
+    @InjectModel(AppPlanModel.name) private appPlanModel: Model<AppPlanModel>,
+    @InjectModel(AppPaymentModel.name)
+    private appPaymentModel: Model<AppPaymentModel>,
+    @InjectModel(GymModel.name) private gymModel: Model<GymModel>,
     private readonly notificationsService: NotificationsService,
   ) {}
 
@@ -52,7 +64,8 @@ export class AdminService {
     return this.userModel
       .find({ role: UserRole.AppEditor })
       .select('-profile.password')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
   }
 
   async deleteEditor(id: string) {
@@ -151,5 +164,120 @@ export class AdminService {
       .find({ role: UserRole.Coach })
       .select('-profile.password')
       .sort({ createdAt: -1 });
+  }
+
+  async getSubscriptions() {
+    const subscriptions = await this.appSubscriptionModel
+      .find()
+      .populate('userId', 'profile.fullName profile.email profile.username')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const planIds = [...new Set(subscriptions.map((s) => s.planId))];
+    const plans = await this.appPlanModel
+      .find({ planId: { $in: planIds } })
+      .select('planId name')
+      .lean();
+
+    const planMap = plans.reduce(
+      (acc, plan) => {
+        acc[plan.planId] = plan.name;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+
+    return subscriptions.map((s) => ({
+      ...s,
+      planName: planMap[s.planId] || s.planId,
+    }));
+  }
+
+  async getPayments() {
+    const payments = await this.appPaymentModel
+      .find()
+      .populate('userId', 'profile.fullName profile.email profile.username')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const planIds = [...new Set(payments.map((p) => p.planId))];
+    const plans = await this.appPlanModel
+      .find({ planId: { $in: planIds } })
+      .select('planId name')
+      .lean();
+
+    const planMap = plans.reduce(
+      (acc, plan) => {
+        acc[plan.planId] = plan.name;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+
+    return payments.map((p) => ({
+      ...p,
+      planName: planMap[p.planId] || p.planId,
+    }));
+  }
+
+  async getUsers() {
+    return this.userModel
+      .find()
+      .select('-profile.password')
+      .sort({ createdAt: -1 })
+      .lean();
+  }
+
+  async toggleUserStatus(id: string) {
+    const user = await this.userModel.findById(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Safety check: Cannot deactivate Admins or App Editors from here
+    if (user.role === UserRole.Admin || user.role === UserRole.AppEditor) {
+      throw new BadRequestException(
+        'Cannot deactivate or manage privileged roles from this dashboard.',
+      );
+    }
+
+    user.profile.isActive = !user.profile.isActive;
+    await user.save();
+
+    return {
+      success: true,
+      data: {
+        userId: user._id,
+        isActive: user.profile.isActive,
+      },
+    };
+  }
+
+  async getGyms() {
+    return this.gymModel
+      .find()
+      .populate('owner', 'profile.fullName profile.email profile.username')
+      .sort({ createdAt: -1 })
+      .lean();
+  }
+
+  async toggleGymStatus(id: string) {
+    const gym = await this.gymModel.findById(id);
+
+    if (!gym) {
+      throw new NotFoundException('Gym not found');
+    }
+
+    gym.isActive = !gym.isActive;
+    await gym.save();
+
+    return {
+      success: true,
+      data: {
+        gymId: gym._id,
+        isActive: gym.isActive,
+      },
+    };
   }
 }

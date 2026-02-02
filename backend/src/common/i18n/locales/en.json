@@ -57,7 +57,13 @@
       "coach_approved_title": "Coach Request Approved",
       "coach_approved_body": "Your request to become a coach has been approved! You can now access the Coach Dashboard.",
       "coach_rejected_title": "Coach Request Rejected",
-      "coach_rejected_body": "Your request to become a coach has been rejected."
+      "coach_rejected_body": "Your request to become a coach has been rejected.",
+      "user_signup_title": "New User Signup",
+      "user_signup_body": "{{name}} just joined the platform.",
+      "user_subscribed_title": "New Subscription",
+      "user_subscribed_body": "{{name}} subscribed to {{planName}}.",
+      "gym_created_title": "New Gym Created",
+      "gym_created_body": "{{name}} created a new gym: {{gymName}}."
     },
     "auth": {
       "verify_title": "Verify Your Email",

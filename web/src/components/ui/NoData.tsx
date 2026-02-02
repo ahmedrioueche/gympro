@@ -16,6 +16,8 @@ interface NoDataProps {
   title?: string;
   description?: string;
   actionButton?: ActionButton;
+  className?: string;
+  iconBg?: string;
 }
 
 const NoData: React.FC<NoDataProps> = ({
@@ -24,6 +26,8 @@ const NoData: React.FC<NoDataProps> = ({
   title,
   description,
   actionButton,
+  className = "bg-surface border border-border rounded-2xl p-12",
+  iconBg = "bg-background",
 }) => {
   const { t } = useTranslation();
 
@@ -33,11 +37,11 @@ const NoData: React.FC<NoDataProps> = ({
   const ActionIcon = actionButton?.icon;
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-12 text-center">
+    <div className={`text-center ${className}`}>
       {emoji ? (
         <div className="text-6xl mb-4">{emoji}</div>
       ) : (
-        <div className="inline-flex p-4 rounded-full bg-background mb-4">
+        <div className={`${iconBg} inline-flex p-4 rounded-full  mb-4`}>
           <IconComponent className="w-12 h-12 text-text-secondary opacity-30" />
         </div>
       )}

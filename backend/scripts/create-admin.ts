@@ -1,4 +1,5 @@
 import { UserRole } from '@ahmedrioueche/gympro-client';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
@@ -9,9 +10,18 @@ import { User } from '../src/common/schemas/user.schema';
 async function run() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const userModel = app.get<Model<User>>(getModelToken(User.name));
+  const configService = app.get(ConfigService);
 
-  const adminEmail = 'admin@gympro.com';
-  const adminPassword = 'adminpassword123';
+  const adminEmail = configService.get<string>('ADMIN_EMAIL');
+  const adminPassword = configService.get<string>('ADMIN_PASSWORD');
+
+  if (!adminEmail || !adminPassword) {
+    console.error(
+      '❌ Error: ADMIN_EMAIL and ADMIN_PASSWORD must be set in the .env file.',
+    );
+    await app.close();
+    process.exit(1);
+  }
 
   console.log(`🔍 Checking if admin exists...`);
 

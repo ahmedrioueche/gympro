@@ -15,7 +15,12 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AppPermission } from '../../admin/decorators/app-permission.decorator';
+import { AdminDashboardGuard } from '../../admin/guards/admin-dashboard.guard';
+import { AppPermissionGuard } from '../../admin/guards/app-permission.guard';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { AppPlansService } from './plan.service';
 
 @Controller('app-plans')
@@ -25,10 +30,10 @@ export class AppPlansController {
   /**
    * Create a new plan
    * POST /app-plans
-   * @admin-only - Add your admin guard here
    */
   @Post()
-  // @UseGuards(AdminGuard) // Uncomment and add your admin guard
+  @UseGuards(JwtAuthGuard, AdminDashboardGuard, AppPermissionGuard)
+  @AppPermission('manage_plans')
   @HttpCode(HttpStatus.CREATED)
   async createPlan(@Body() dto: CreateAppPlanDto) {
     const plan = await this.appPlansService.createPlan(dto);
@@ -41,12 +46,19 @@ export class AppPlansController {
    * @public
    */
   @Get()
-  async getAllPlans(@Query('level') level?: AppPlanLevel) {
+  async getAllPlans(
+    @Query('level') level?: AppPlanLevel,
+    @Query('includeInactive') includeInactive?: string,
+  ) {
     let result;
+    const shouldIncludeInactive = includeInactive === 'true';
 
     // Filter by level if provided
     if (level) {
-      result = await this.appPlansService.getPlansByLevel(level);
+      result = await this.appPlansService.getPlansByLevel(
+        level,
+        shouldIncludeInactive,
+      );
       return apiResponse(
         true,
         undefined,
@@ -56,7 +68,7 @@ export class AppPlansController {
     }
 
     // Get all plans
-    result = await this.appPlansService.getAllPlans();
+    result = await this.appPlansService.getAllPlans(shouldIncludeInactive);
     return apiResponse(
       true,
       undefined,
@@ -79,10 +91,10 @@ export class AppPlansController {
   /**
    * Update a plan
    * PUT /app-plans/:id
-   * @admin-only
    */
   @Put(':id')
-  // @UseGuards(AdminGuard) // Uncomment and add your admin guard
+  @UseGuards(JwtAuthGuard, AdminDashboardGuard, AppPermissionGuard)
+  @AppPermission('manage_plans')
   async updatePlan(@Param('id') id: string, @Body() dto: UpdateAppPlanDto) {
     const plan = await this.appPlansService.updatePlan(id, dto);
     return apiResponse(true, undefined, plan, 'Plan updated successfully');
@@ -91,10 +103,10 @@ export class AppPlansController {
   /**
    * Delete a plan
    * DELETE /app-plans/:id
-   * @admin-only
    */
   @Delete(':id')
-  // @UseGuards(AdminGuard) // Uncomment and add your admin guard
+  @UseGuards(JwtAuthGuard, AdminDashboardGuard, AppPermissionGuard)
+  @AppPermission('manage_plans')
   @HttpCode(HttpStatus.OK)
   async deletePlan(@Param('id') id: string) {
     const result = await this.appPlansService.deletePlan(id);

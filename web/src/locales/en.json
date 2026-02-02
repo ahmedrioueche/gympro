@@ -22,6 +22,7 @@
     "save": "Save",
     "select": "Select",
     "saving": "Saving...",
+    "trialing": "Trialing",
     "markAsDone": "Mark as Done",
     "done": "Done",
     "close": "Close",
@@ -31,9 +32,14 @@
     "all": "All",
     "days": "Days",
     "retry": "Retry",
+    "gyms": "Gyms",
+    "members": "Members",
+    "gems": "Gems",
     "noData": "No Data",
     "accept": "Accept",
     "decline": "Decline",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
     "description": "Description",
     "type": "Type",
     "locationFilters": "Location Filters",
@@ -54,6 +60,8 @@
     "search": "Search...",
     "edit": "Edit",
     "delete": "Delete",
+    "update": "Update",
+    "base": "Base",
     "plan": "Plan",
     "duration": "Duration",
     "date": "Date Added",
@@ -87,7 +95,12 @@
     "uploadFailed": "Upload failed",
     "uploadSuccess": "Upload successful",
     "fileTooLarge": "File size must be less than 5MB",
-    "submit": "Submit"
+    "submit": "Submit",
+    "free": "Free",
+    "starter": "Starter",
+    "pro": "Pro",
+    "premium": "Premium",
+    "name": "Name"
   },
   "confirm": {
     "default": {
@@ -2117,26 +2130,6 @@
       "showing": "Showing {{start}}-{{end}} of {{total}}"
     }
   },
-  "memberSubscriptions": {
-    "pageTitle": "Subscriptions",
-    "pageSubtitle": "Manage member subscriptions and renewals",
-    "search": "Search members...",
-    "active": "Active",
-    "expired": "Expired",
-    "expiringSoon": "Expiring Soon",
-    "noSubscription": "No Subscription",
-    "empty": "No subscriptions found",
-    "emptyFiltered": "Try adjusting your filters",
-    "emptyDesc": "Add members to see their subscriptions",
-    "table": {
-      "member": "Member",
-      "type": "Type",
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "remaining": "Remaining",
-      "status": "Status"
-    }
-  },
   "member": {
     "gyms": {
       "title": "Gyms",
@@ -3199,7 +3192,9 @@
         "title": "Quick Actions",
         "createEditor": "Add Editor",
         "reviewGyms": "Review Gyms",
-        "systemSettings": "System Settings"
+        "systemSettings": "System Settings",
+        "viewReports": "View Reports",
+        "viewAlerts": "View Alerts"
       },
       "recentActivity": {
         "title": "Recent Activity",
@@ -3208,10 +3203,31 @@
         "emptyDesc": "New users and gyms will appear here"
       }
     },
-    "reports": "Reports",
-    "alerts": "Alerts",
-    "revenue": "Revenue",
-    "subscription": "Subscription",
+    "analytics": {
+      "title": "Platform Analytics",
+      "subtitle": "Monitor platform-wide growth, revenue, and adoption",
+      "stats": {
+        "totalRevenue": "Total Revenue",
+        "monthlyRevenue": "Monthly Revenue",
+        "totalMembers": "Total Members",
+        "activeMembers": "Active Members",
+        "totalGyms": "Total Gyms"
+      },
+      "trends": {
+        "revenue": "vs last month",
+        "members": "vs last month"
+      },
+      "charts": {
+        "revenue": "Revenue Growth",
+        "revenueDesc": "Platform revenue over time",
+        "members": "User Adoption",
+        "membersDesc": "Total active users across all gyms",
+        "topGyms": "Top Performing Gyms",
+        "topGymsDesc": "Highest revenue contributors",
+        "distribution": "Membership Health",
+        "distributionDesc": "Status of all memberships on the platform"
+      }
+    },
     "coaching": {
       "title": "Coach Requests",
       "subtitle": "Manage verification requests from coaches",
@@ -3258,6 +3274,231 @@
         "rejectSuccess": "Coach request rejected successfully",
         "rejectError": "Failed to reject coach request"
       }
+    },
+    "pricing": {
+      "title": "Pricing Plans",
+      "description": "Manage subscription plans and pricing",
+      "createPlan": "Create Plan",
+      "editPlan": "Edit Plan",
+      "level": "Level",
+      "planId": "Plan ID",
+      "pricing": "Pricing",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "limits": "Limits",
+      "features": "Features",
+      "price": "Price",
+      "noPlans": "No plans found",
+      "updateSuccess": "Plan updated successfully",
+      "createSuccess": "Plan created successfully",
+      "deleteSuccess": "Plan deleted successfully",
+      "confirmDelete": "Are you sure you want to delete this plan?",
+      "activeDescription": "Inactive plans are hidden from users and cannot be subscribed to."
+    },
+    "subscriptions": {
+      "title": "Gym Subscriptions",
+      "subtitle": "Manage and track all gym subscriptions and billing",
+      "table": {
+        "gymOwner": "Gym Owner",
+        "plan": "Plan",
+        "billing": "Billing",
+        "status": "Status",
+        "period": "Current Period",
+        "provider": "Provider"
+      },
+      "stats": {
+        "active": "Active Subscriptions",
+        "revenue": "Monthly Revenue",
+        "expiring": "Expiring Soon"
+      }
+    },
+    "revenue": {
+      "title": "Revenue & Financials",
+      "subtitle": "Track platform income and subscription performance",
+      "stats": {
+        "total": "Total Revenue",
+        "thisMonth": "Revenue (30d)",
+        "count": "Total Payments"
+      },
+      "empty": "No payments recorded yet",
+      "table": {
+        "gymOwner": "Gym Owner",
+        "plan": "Plan",
+        "billing": "Billing",
+        "status": "Status",
+        "period": "Current Period",
+        "provider": "Provider",
+        "amount": "Amount",
+        "date": "Date"
+      }
+    },
+    "staff": {
+      "title": "Platform Staff",
+      "subtitle": "Manage platform administrators and editors",
+      "create_btn": "Add Editor",
+      "search_placeholder": "Search editors by name, email or username...",
+      "empty": "No editors found",
+      "remove_title": "Remove Editor",
+      "remove_message": "Are you sure you want to remove {{name}}? They will lose all platform access immediately.",
+      "remove_success": "Editor removed successfully",
+      "permissions_update_success": "Permissions updated successfully",
+      "no_permissions": "No restricted permissions",
+      "manage_permissions": "Manage Permissions",
+      "table": {
+        "user": "Editor",
+        "username": "Username",
+        "permissions": "Permissions",
+        "joined": "Joined"
+      },
+      "modals": {
+        "create_title": "Add New Editor",
+        "permissions_title": "Manage Editor Permissions",
+        "permissions_subtitle": "Control what {{name}} can access on the platform",
+        "fields": {
+          "username": "Username",
+          "full_name": "Full Name",
+          "email": "Email Address",
+          "password": "Password"
+        }
+      },
+      "available_permissions": {
+        "manage_users": "Users Management",
+        "manage_gyms": "Gyms Management",
+        "manage_revenue": "Financials & Revenue",
+        "manage_editors": "Staff & Editors",
+        "manage_plans": "Pricing Plans",
+        "manage_coach_requests": "Coach Approvals",
+        "manage_reports": "Reports Management",
+        "manage_alerts": "System Alerts",
+        "manage_notifications": "Notifications Center"
+      }
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "Oversee platform adoption and manage accounts",
+      "table": {
+        "user": "User",
+        "role": "Role",
+        "joined": "Joined",
+        "status": "Status"
+      },
+      "stats": {
+        "total": "Total Users",
+        "new": "New (30d)",
+        "coaches": "Active Coaches",
+        "banned": "Banned"
+      },
+      "empty": "No users found",
+      "search_placeholder": "Search users by name, email or username...",
+      "modals": {
+        "activate_title": "Activate User",
+        "activate_message": "Are you sure you want to activate this user? They will regain access to the platform.",
+        "deactivate_title": "Deactivate User",
+        "deactivate_message": "Are you sure you want to deactivate this user? They will be locked out of the platform immediately."
+      }
+    },
+    "gyms": {
+      "title": "Gym Management",
+      "subtitle": "Monitor and manage all gyms on the platform",
+      "table": {
+        "gym": "Gym",
+        "owner": "Owner",
+        "location": "Location",
+        "status": "Status",
+        "joined": "Joined"
+      },
+      "stats": {
+        "total": "Total Gyms",
+        "active": "Active Gyms",
+        "inactive": "Inactive Gyms",
+        "new": "New (30d)"
+      },
+      "empty": "No gyms found",
+      "search_placeholder": "Search gyms by name, owner, or city...",
+      "modals": {
+        "activate_title": "Activate Gym",
+        "activate_message": "Are you sure you want to activate this gym?",
+        "deactivate_title": "Deactivate Gym",
+        "deactivate_message": "Are you sure you want to deactivate this gym? Members will not be able to interact with it."
+      }
+    },
+    "reports": {
+      "title": "Reports Management",
+      "subtitle": "Monitor and resolve user reports and issues",
+      "table": {
+        "subject": "Subject",
+        "type": "Type",
+        "priority": "Priority",
+        "status": "Status",
+        "reporter": "Reporter",
+        "date": "Date"
+      },
+      "status": {
+        "open": "Open",
+        "in_progress": "In Progress",
+        "resolved": "Resolved",
+        "closed": "Closed"
+      },
+      "priority": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "type": {
+        "issue": "Issue",
+        "feedback": "Feedback",
+        "feature_request": "Feature Request"
+      },
+      "modals": {
+        "details_title": "Report Details",
+        "update_status": "Update Status",
+        "reporter_info": "Reporter Information"
+      },
+      "empty": "No reports found",
+      "search_placeholder": "Search reports by subject..."
+    },
+    "alerts": {
+      "title": "System Alerts",
+      "subtitle": "Monitor and manage system-wide alerts and errors",
+      "table": {
+        "title": "Alert",
+        "type": "Type",
+        "priority": "Priority",
+        "status": "Status",
+        "source": "Source",
+        "date": "Date"
+      },
+      "status": {
+        "unread": "Unread",
+        "read": "Read",
+        "resolved": "Resolved"
+      },
+      "type": {
+        "info": "Info",
+        "warning": "Warning",
+        "error": "Error",
+        "success": "Success"
+      },
+      "priority": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "source": {
+        "internal": "Internal",
+        "sentry": "Sentry",
+        "pino": "Pino"
+      },
+      "modals": {
+        "details_title": "Alert Details",
+        "update_status": "Update Status",
+        "technical_details": "Technical Details",
+        "stack_trace": "Stack Trace",
+        "metadata": "Metadata"
+      },
+      "empty": "No alerts found",
+      "search_placeholder": "Search alerts by title or message..."
     }
   }
 }

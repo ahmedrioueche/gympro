@@ -5,6 +5,7 @@ import {
   AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
   AutoRenewType,
+  LocalizedFeature,
   WarningEmailType,
 } from "../types/appSubscription";
 import { PaymentMethod } from "../types/common";
@@ -16,6 +17,7 @@ export interface CreateAppPlanDto {
   level: AppPlanLevel;
   name: string;
   description?: string;
+  isActive?: boolean;
   pricing: AppPlanPricing;
   paddleProductId?: string;
   paddlePriceIds?: {
@@ -29,7 +31,7 @@ export interface CreateAppPlanDto {
     maxMembers?: number;
     maxGems?: number;
   };
-  features: string[];
+  features: LocalizedFeature[];
   createdAt?: Date;
 }
 
@@ -40,6 +42,7 @@ export interface UpdateAppPlanDto {
   level?: AppPlanLevel;
   name?: string;
   description?: string;
+  isActive?: boolean;
   pricing?: AppPlanPricing;
   paddleProductId?: string;
   paddlePriceIds?: {
@@ -53,7 +56,7 @@ export interface UpdateAppPlanDto {
     maxMembers?: number;
     maxGems?: number;
   };
-  features?: string[];
+  features?: LocalizedFeature[];
 }
 
 export interface PlanPricingDto {
@@ -76,10 +79,11 @@ export interface PlanDto {
   level: AppPlanLevel;
   name: string;
   description: string;
+  isActive?: boolean;
   pricing: AppPlanPricing;
   trialDays?: number;
   limits: PlanLimitsDto;
-  features: string[];
+  features: LocalizedFeature[];
   createdAt: string;
   updatedAt: string;
   __v: number;

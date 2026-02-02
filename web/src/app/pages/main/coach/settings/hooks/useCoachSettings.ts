@@ -1,4 +1,8 @@
-import { authApi, type EditUserDto } from "@ahmedrioueche/gympro-client";
+import {
+  authApi,
+  uploadApi,
+  type EditUserDto,
+} from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";

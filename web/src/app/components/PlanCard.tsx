@@ -1,5 +1,6 @@
 import {
   formatPrice,
+  resolveLocalizedString,
   type AppPlan,
   type AppSubscriptionBillingCycle,
   type GetSubscriptionDto,
@@ -38,7 +39,7 @@ export default function PlanCard({
 
   // ✅ Use the availability checker
   const { isPlanAvailable } = useSubscriptionStatus(
-    currentSubscription || undefined
+    currentSubscription || undefined,
   );
   const availability = isPlanAvailable(plan, billingCycle);
 
@@ -133,7 +134,7 @@ export default function PlanCard({
         currentPlan.level,
         currentSubscription.billingCycle || "monthly",
         plan.level,
-        billingCycle
+        billingCycle,
       );
 
       switch (changeType) {
@@ -217,8 +218,8 @@ export default function PlanCard({
            disabled
              ? "opacity-50 pointer-events-none border-gray-300 dark:border-gray-700"
              : isCurrentPlan
-             ? "border-blue-500 shadow-2xl shadow-blue-500/20 scale-105"
-             : `${style.border} hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-500/10 hover:scale-105`
+               ? "border-blue-500 shadow-2xl shadow-blue-500/20 scale-105"
+               : `${style.border} hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-500/10 hover:scale-105`
          }`}
       >
         <div
@@ -253,16 +254,15 @@ export default function PlanCard({
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
-                {plan.name}
+                {resolveLocalizedString(plan.name, language, t)}
               </h3>
               <p
                 className={`text-sm ${
                   isDark ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                {plan.description
-                  ? t(plan.description)
-                  : "Perfect for getting started"}
+                {resolveLocalizedString(plan.description, language, t) ||
+                  "Perfect for getting started"}
               </p>
             </div>
           </div>
@@ -358,7 +358,9 @@ export default function PlanCard({
                     />
                   </svg>
                 </div>
-                <span className="leading-relaxed">{t(feature)}</span>
+                <span className="leading-relaxed">
+                  {resolveLocalizedString(feature as any, language, t)}
+                </span>
               </li>
             ))}
           </ul>
@@ -371,10 +373,10 @@ export default function PlanCard({
               isButtonDisabled
                 ? "bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed"
                 : loading
-                ? "bg-blue-500 text-white cursor-wait"
-                : isDowngradeOrSwitch
-                ? "bg-transparent border-2 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-xl hover:shadow-blue-500/50 hover:scale-105 active:scale-95"
+                  ? "bg-blue-500 text-white cursor-wait"
+                  : isDowngradeOrSwitch
+                    ? "bg-transparent border-2 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-xl hover:shadow-blue-500/50 hover:scale-105 active:scale-95"
             }`}
           >
             <span className="relative z-10 flex items-center justify-center gap-2">

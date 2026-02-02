@@ -12,6 +12,7 @@ import {
   GymCoachAffiliationDocument,
 } from '../gym-coach/schemas/gym-coach-affiliation.schema';
 import { GymMembershipModel } from '../gymMembership/membership.schema';
+import { NotificationsService } from '../notifications/notifications.service';
 import { GymModel } from './gym.schema';
 
 @Injectable()
@@ -23,6 +24,7 @@ export class GymService {
     private membershipModel: Model<GymMembershipModel>,
     @InjectModel(GymCoachAffiliation.name)
     private affiliationModel: Model<GymCoachAffiliationDocument>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(createGymDto: CreateGymDto) {
@@ -87,6 +89,22 @@ export class GymService {
 
     // Populate the owner field before returning
     await createdGym.populate('owner');
+
+    // Notify Staff (Admins & Editors)
+    this.notificationsService
+      .notifyStaff({
+        key: 'admin.gym_created',
+        vars: {
+          name:
+            (createdGym.owner as any)?.profile?.fullName ||
+            (createdGym.owner as any)?.profile?.username ||
+            'A user',
+          gymName: createdGym.name,
+        },
+      })
+      .catch((err) => {
+        console.error(`Failed to notify staff about gym creation: ${err}`);
+      });
 
     return createdGym;
   }

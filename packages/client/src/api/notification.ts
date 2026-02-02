@@ -11,7 +11,7 @@ export const notificationsApi = {
     limit = 20,
     status?: string,
     search?: string,
-    gymId?: string
+    gymId?: string,
   ): Promise<ApiResponse<GetNotificationsResponseDto>> => {
     try {
       const response = await apiClient.get<
@@ -28,10 +28,13 @@ export const notificationsApi = {
   /**
    * Get unread count
    */
-  getUnreadCount: async (): Promise<ApiResponse<{ count: number }>> => {
+  getUnreadCount: async (
+    gymId?: string,
+  ): Promise<ApiResponse<{ count: number }>> => {
     try {
       const response = await apiClient.get<ApiResponse<{ count: number }>>(
-        "/notifications/unread-count"
+        "/notifications/unread-count",
+        { params: { gymId } },
       );
       return response.data;
     } catch (error) {
@@ -45,7 +48,7 @@ export const notificationsApi = {
   markAsRead: async (id: string): Promise<ApiResponse<{ success: true }>> => {
     try {
       const response = await apiClient.patch<ApiResponse<{ success: true }>>(
-        `/notifications/${id}/read`
+        `/notifications/${id}/read`,
       );
       return response.data;
     } catch (error) {
@@ -56,10 +59,14 @@ export const notificationsApi = {
   /**
    * Mark all as read
    */
-  markAllAsRead: async (): Promise<ApiResponse<{ success: true }>> => {
+  markAllAsRead: async (
+    gymId?: string,
+  ): Promise<ApiResponse<{ success: true }>> => {
     try {
       const response = await apiClient.patch<ApiResponse<{ success: true }>>(
-        "/notifications/read-all"
+        "/notifications/read-all",
+        undefined,
+        { params: { gymId } },
       );
       return response.data;
     } catch (error) {

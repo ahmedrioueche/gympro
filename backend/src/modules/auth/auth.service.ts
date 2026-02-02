@@ -140,6 +140,22 @@ export class AuthService {
         vars: { verifyUrl: verificationUrl },
         sendSms: false,
       });
+
+      // Notify Staff (Admins & Editors)
+      this.notificationsService
+        .notifyStaff({
+          key: 'admin.user_signup',
+          vars: {
+            name:
+              newUser.profile?.fullName ||
+              newUser.profile?.username ||
+              newUser.profile?.email ||
+              'A new user',
+          },
+        })
+        .catch((err) => {
+          this.logger.error(`Failed to notify staff about signup: ${err}`);
+        });
     }
 
     // Send OTP for phone verification

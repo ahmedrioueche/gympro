@@ -5,6 +5,7 @@ import SidebarAnimatedLogo from "../SidebarAnimatedLogo";
 import { SidebarFooter } from "./components/SidebarFooter";
 import { SidebarMenuItem } from "./components/SidebarMenuItem";
 import { TopRightControls } from "./components/TopRightControls";
+import { UserRoleBadge } from "./components/UserRoleBadge";
 import { useNav } from "./hooks/useNav";
 
 export default function Nav({ children, sidebarLinks = null }) {
@@ -20,6 +21,7 @@ export default function Nav({ children, sidebarLinks = null }) {
     isMobile,
     activeRoute,
     gyms,
+    user,
     isCollapsed,
     handleProfileClick,
     handleSettingsClick,
@@ -137,7 +139,11 @@ export default function Nav({ children, sidebarLinks = null }) {
                 sidebarLinks ? " md:px-10" : " md:px-[61px] md:-mt-2"
               }`}
             >
-              <GymSelector gyms={gyms} />
+              {user?.role === "admin" || user?.role === "app_editor" ? (
+                <UserRoleBadge />
+              ) : (
+                <GymSelector gyms={gyms} />
+              )}
             </div>
           </div>
           <div className={`${sidebarLinks ? "" : "md:-mt-2"}`}>

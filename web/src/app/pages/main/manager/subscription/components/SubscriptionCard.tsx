@@ -1,4 +1,5 @@
 import {
+  resolveLocalizedString,
   type AppPlan,
   type GetSubscriptionDto,
 } from "@ahmedrioueche/gympro-client";
@@ -8,6 +9,7 @@ import {
   useReactivateSubscription,
 } from "../../../../../../hooks/queries/useSubscription";
 import { useSubscriptionStatus } from "../../../../../../hooks/useSubscriptionStatus";
+import { useLanguageStore } from "../../../../../../store/language";
 import { useModalStore } from "../../../../../../store/modal";
 
 interface SubscriptionCardProps {
@@ -17,6 +19,7 @@ interface SubscriptionCardProps {
 
 function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
   const { t } = useTranslation();
+  const { language } = useLanguageStore();
   const { openModal } = useModalStore();
 
   const {
@@ -64,8 +67,8 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
   };
 
   const getPlanNameById = (planId: string) => {
-    const plan = plans.find((plan) => plan.planId === planId);
-    return plan?.name;
+    const plan = plans.find((p) => p.planId === planId);
+    return resolveLocalizedString(plan?.name, language, t);
   };
 
   // Determine if expired
@@ -105,13 +108,13 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                         ? t("plans.pending_downgrade", {
                             plan: getPlanNameById(mySubscription.pendingPlanId),
                             date: new Date(
-                              mySubscription.pendingChangeEffectiveDate
+                              mySubscription.pendingChangeEffectiveDate,
                             ).toLocaleDateString(),
                           })
                         : t("plans.pending_switch", {
                             cycle: mySubscription.pendingBillingCycle,
                             date: new Date(
-                              mySubscription.pendingChangeEffectiveDate
+                              mySubscription.pendingChangeEffectiveDate,
                             ).toLocaleDateString(),
                           })}
                     </p>
@@ -154,7 +157,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                   <p className="text-sm text-text-secondary">
                     {t("subscription.access_ends_on")}:{" "}
                     {new Date(
-                      mySubscription.currentPeriodEnd
+                      mySubscription.currentPeriodEnd,
                     ).toLocaleDateString()}
                   </p>
                 </div>
@@ -199,7 +202,11 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                   </p>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-4">
-                  {mySubscription?.plan?.name || mySubscription?.planId}
+                  {resolveLocalizedString(
+                    mySubscription?.plan?.name,
+                    language,
+                    t,
+                  ) || mySubscription?.planId}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
                   <span
@@ -224,12 +231,12 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                       {isExpired
                         ? t("subscription.expired_on")
                         : isTrialing
-                        ? t("subscription.trial_ends_in")
-                        : isFree
-                        ? t("subscription.trial_ends_in")
-                        : isCancelled
-                        ? t("subscription.access_ends_in")
-                        : t("subscription.renews_in")}
+                          ? t("subscription.trial_ends_in")
+                          : isFree
+                            ? t("subscription.trial_ends_in")
+                            : isCancelled
+                              ? t("subscription.access_ends_in")
+                              : t("subscription.renews_in")}
                     </p>
                     <div
                       className={`text-3xl md:text-4xl font-bold ${urgencyColor} text-center mb-2`}
@@ -239,14 +246,14 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                     {isTrialing && mySubscription.trial?.endDate ? (
                       <p className="text-xs text-text-secondary text-center">
                         {new Date(
-                          mySubscription.trial.endDate
+                          mySubscription.trial.endDate,
                         ).toLocaleDateString()}
                       </p>
                     ) : (
                       mySubscription.currentPeriodEnd && (
                         <p className="text-xs text-text-secondary text-center">
                           {new Date(
-                            mySubscription.currentPeriodEnd
+                            mySubscription.currentPeriodEnd,
                           ).toLocaleDateString()}
                         </p>
                       )
@@ -358,11 +365,11 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                       {isFree
                         ? t("subscription.trial_plan")
                         : isCancelled
-                        ? mySubscription.cancelledAt &&
-                          new Date(
-                            mySubscription.cancelledAt
-                          ).toLocaleDateString()
-                        : mySubscription.billingCycle || "-"}
+                          ? mySubscription.cancelledAt &&
+                            new Date(
+                              mySubscription.cancelledAt,
+                            ).toLocaleDateString()
+                          : mySubscription.billingCycle || "-"}
                     </p>
                   </div>
                 </div>
@@ -427,7 +434,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                       </span>
                       <span className="font-semibold text-text-primary">
                         {new Date(
-                          mySubscription.currentPeriodEnd
+                          mySubscription.currentPeriodEnd,
                         ).toLocaleDateString()}
                       </span>
                     </div>
@@ -439,7 +446,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                       </span>
                       <span className="font-semibold text-text-primary">
                         {new Date(
-                          mySubscription.nextPaymentDate
+                          mySubscription.nextPaymentDate,
                         ).toLocaleDateString()}
                       </span>
                     </div>

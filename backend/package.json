@@ -24,12 +24,13 @@
     "test:chargily": "ts-node -r tsconfig-paths/register scripts/test-chargily-product.ts"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.3.62",
+    "@ahmedrioueche/gympro-client": "0.3.81",
     "@chargily/chargily-pay": "^2.1.0",
     "@google/generative-ai": "^0.24.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/event-emitter": "^3.0.1",
     "@nestjs/jwt": "^11.0.1",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/passport": "^11.0.5",

@@ -119,6 +119,31 @@ const ReviewCoachRequestModal = lazy(
   () => import("./app/pages/admin/coaching/components/ReviewCoachRequestModal"),
 );
 
+const EditPlanModal = lazy(
+  () =>
+    import("./app/pages/admin/pricing/components/edit-plan-modal/EditPlanModal"),
+);
+
+const AdminCreateEditorModal = lazy(() =>
+  import("./app/pages/admin/staff/components/AdminCreateEditorModal").then(
+    (module) => ({ default: module.AdminCreateEditorModal }),
+  ),
+);
+
+const AdminManagePermissionsModal = lazy(() =>
+  import("./app/pages/admin/staff/components/AdminManagePermissionsModal").then(
+    (module) => ({ default: module.AdminManagePermissionsModal }),
+  ),
+);
+
+const AlertDetailsModal = lazy(
+  () => import("./app/pages/admin/alerts/components/AlertDetailsModal"),
+);
+
+const ReportDetailsModal = lazy(
+  () => import("./app/pages/admin/reports/components/ReportDetailsModal"),
+);
+
 const LogSessionModal = lazy(() =>
   import("./app/pages/main/member/training/components/log-session-modal/LogSessionModal").then(
     (module) => ({
@@ -155,6 +180,11 @@ function modals() {
       <CreateAnnouncementModal />
       <LogSessionModal />
       <ReviewCoachRequestModal />
+      <EditPlanModal />
+      <AdminCreateEditorModal />
+      <AdminManagePermissionsModal />
+      <AlertDetailsModal />
+      <ReportDetailsModal />
     </Suspense>
   );
 }

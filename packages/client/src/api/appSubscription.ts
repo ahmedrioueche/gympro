@@ -11,7 +11,7 @@ export const appSubscriptionsApi = {
   getSubscriptionPlans: async (): Promise<ApiResponse<AppPlan[]>> => {
     try {
       const res = await apiClient.get<ApiResponse<AppPlan[]>>(
-        "/app-plans/subscription"
+        "/app-plans/subscription",
       );
       return res.data;
     } catch (error) {
@@ -19,9 +19,13 @@ export const appSubscriptionsApi = {
     }
   },
 
-  getAllPlans: async (): Promise<ApiResponse<AppPlan[]>> => {
+  getAllPlans: async (
+    includeInactive?: boolean,
+  ): Promise<ApiResponse<AppPlan[]>> => {
     try {
-      const res = await apiClient.get<ApiResponse<AppPlan[]>>("/app-plans");
+      const res = await apiClient.get<ApiResponse<AppPlan[]>>("/app-plans", {
+        params: { includeInactive },
+      });
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -37,7 +41,7 @@ export const appSubscriptionsApi = {
   > => {
     try {
       const res = await apiClient.get<ApiResponse<GetSubscriptionDto | null>>(
-        "/app-subscriptions/me"
+        "/app-subscriptions/me",
       );
       return res.data;
     } catch (error) {
@@ -50,12 +54,12 @@ export const appSubscriptionsApi = {
    */
   downgradeSubscription: async (
     planId: string,
-    billingCycle?: AppSubscriptionBillingCycle
+    billingCycle?: AppSubscriptionBillingCycle,
   ) => {
     try {
       const res = await apiClient.post<ApiResponse<GetSubscriptionDto>>(
         `/app-subscriptions/downgrade`,
-        { planId, billingCycle }
+        { planId, billingCycle },
       );
       return res.data;
     } catch (error) {
@@ -70,7 +74,7 @@ export const appSubscriptionsApi = {
     try {
       const res = await apiClient.delete<ApiResponse<GetSubscriptionDto>>(
         `/app-subscriptions/cancel`,
-        { data: { reason } }
+        { data: { reason } },
       );
       return res.data;
     } catch (error) {
@@ -82,7 +86,7 @@ export const appSubscriptionsApi = {
     try {
       const res = await apiClient.post<ApiResponse<"true" | "false">>(
         `/app-subscriptions/validate-cancel-reason`,
-        { reason }
+        { reason },
       );
       return res.data;
     } catch (error) {
@@ -96,7 +100,7 @@ export const appSubscriptionsApi = {
   reactivateSubscription: async () => {
     try {
       const res = await apiClient.post<ApiResponse<GetSubscriptionDto>>(
-        `/app-subscriptions/reactivate`
+        `/app-subscriptions/reactivate`,
       );
       return res.data;
     } catch (error) {
@@ -110,7 +114,7 @@ export const appSubscriptionsApi = {
   cancelPendingChange: async () => {
     try {
       const res = await apiClient.post<ApiResponse<GetSubscriptionDto>>(
-        `/app-subscriptions/cancel-pending-change`
+        `/app-subscriptions/cancel-pending-change`,
       );
       return res.data;
     } catch (error) {
@@ -121,7 +125,7 @@ export const appSubscriptionsApi = {
   getBlockConfig: async (): Promise<ApiResponse<BlockerModalConfig>> => {
     try {
       const res = await apiClient.get<ApiResponse<BlockerModalConfig>>(
-        "/app-subscriptions/blocker-config"
+        "/app-subscriptions/blocker-config",
       );
       return res.data;
     } catch (error) {

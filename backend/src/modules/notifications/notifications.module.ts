@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from '../../common/schemas/user.schema';
 import { MailerService } from '../../common/services/mailer.service';
 import { SmsModule } from '../sms/sms.module';
 import { ExternalNotificationService } from './external-notifications.service';
@@ -25,6 +26,7 @@ import { NotificationsService } from './notifications.service';
 @Module({
   imports: [
     MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
       {
         name: BaseNotification.name,
         schema: BaseNotificationSchema,

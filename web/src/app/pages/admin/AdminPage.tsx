@@ -12,6 +12,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { APP_PAGES } from "../../../constants/navigation";
+import { useAppPermissions } from "../../../hooks/useAppPermissions";
 import Nav from "../../components/nav/Nav";
 
 const sidebarLinks = [
@@ -96,8 +97,40 @@ const sidebarLinks = [
 ];
 
 function AdminPage() {
+  const { hasAppPermission, APP_PERMISSIONS } = useAppPermissions();
+
+  const filteredSidebarLinks = sidebarLinks.filter((link) => {
+    switch (link.label) {
+      case "pricing":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_PLANS);
+      case "subscriptions":
+      case "revenue":
+      case "analytics":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_REVENUE);
+      case "users":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_USERS);
+      case "gyms":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_GYMS);
+      case "coaching":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_COACH_REQUESTS);
+      case "staff":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_EDITORS);
+      case "reports":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_REPORTS);
+      case "alerts":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_ALERTS);
+      case "notifications":
+        return hasAppPermission(APP_PERMISSIONS.MANAGE_NOTIFICATIONS);
+      case "home":
+      case "settings":
+        return true;
+      default:
+        return false;
+    }
+  });
+
   return (
-    <Nav sidebarLinks={sidebarLinks}>
+    <Nav sidebarLinks={filteredSidebarLinks}>
       <div className="min-h-screen max-w-7xl mx-auto p-5 md:p-6 lg:p-8">
         <Outlet />
       </div>

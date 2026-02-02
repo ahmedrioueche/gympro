@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { useMyAttendanceInGym } from "../../../../../../../hooks/queries/useAttendance";
 
+export type StatusFilter = "all" | "granted" | "denied";
+
 export const useAttendance = (gymId?: string) => {
   const { data: logsRes, isLoading } = useMyAttendanceInGym(gymId);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "granted" | "denied"
-  >("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   const logs = logsRes?.data || [];
 

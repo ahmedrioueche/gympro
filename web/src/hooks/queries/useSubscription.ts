@@ -19,6 +19,7 @@ export const useAllPlans = () => {
     queryKey: planKeys.subscription(),
     queryFn: async () => {
       const res = await appSubscriptionsApi.getAllPlans();
+      console.log({ res });
       // Ensure we never return undefined to React Query
       return res.data ?? [];
     },
@@ -49,7 +50,7 @@ export const useDowngradeSubscription = () => {
     }) => {
       const res = await appSubscriptionsApi.downgradeSubscription(
         planId,
-        billingCycle
+        billingCycle,
       );
       const msg = getMessage(res, t);
       showStatusToast(msg, toast);

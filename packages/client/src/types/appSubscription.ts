@@ -64,6 +64,10 @@ export const APP_WARNING_EMAIL_TYPES = [
 
 export type WarningEmailType = (typeof APP_WARNING_EMAIL_TYPES)[number];
 
+import { AppLanguage } from "./local";
+
+export type LocalizedFeature = string | Partial<Record<AppLanguage, string>>;
+
 export interface AppPlan extends AuditInfo {
   _id: string;
   planId: string; //custom stable id
@@ -72,6 +76,7 @@ export interface AppPlan extends AuditInfo {
   order?: number; // for sorting plans
   name: string;
   description?: string;
+  isActive?: boolean;
   pricing: AppPlanPricing;
   paddleProductId?: string;
   paddlePriceIds?: {
@@ -87,7 +92,7 @@ export interface AppPlan extends AuditInfo {
     maxGems?: number;
   };
 
-  features: string[];
+  features: LocalizedFeature[];
 }
 
 export const APP_SUBSCRIPTION_AUTO_RENEW_TYPES = ["auto", "manual"] as const;
@@ -150,6 +155,18 @@ export interface AppSubscription extends AuditInfo {
   paddleCustomerId?: string;
   chargilyCheckoutId?: string;
   chargilyInvoiceId?: string;
+}
+
+export interface AdminSubscriptionView extends Omit<AppSubscription, "userId"> {
+  planName: string;
+  userId: {
+    _id: string;
+    profile: {
+      fullName: string;
+      email: string;
+      username: string;
+    };
+  };
 }
 
 // Separate history model for tracking all subscription changes

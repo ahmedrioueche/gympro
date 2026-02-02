@@ -64,6 +64,7 @@ export interface BaseUserProfile extends AuditInfo {
   country?: string;
   isValidated?: boolean;
   isOnBoarded?: boolean;
+  isActive?: boolean;
 }
 
 export interface BaseUser extends AuditInfo {
@@ -131,7 +132,7 @@ export interface AdminUser extends BaseUser {
 
 export interface AppEditorUser extends BaseUser {
   role: "app_editor";
-  appPermissions?: string[]; // e.g., ['users', 'gyms', 'financials']
+  appPermissions?: import("../constants/permissions").AppPermission[]; // e.g., ['manage_users', 'manage_gyms']
 }
 
 export type User =

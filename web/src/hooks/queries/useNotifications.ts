@@ -14,13 +14,14 @@ export const notificationKeys = {
     limit: number,
     status?: string,
     search?: string,
-    gymId?: string
+    gymId?: string,
   ) =>
     [
       ...notificationKeys.lists(),
       { page, limit, status, search, gymId },
     ] as const,
-  unreadCount: () => [...notificationKeys.all, "unread"] as const,
+  unreadCount: (gymId?: string) =>
+    [...notificationKeys.all, "unread", { gymId }] as const,
 };
 
 /**
@@ -32,7 +33,7 @@ export function useMyNotifications(
   status?: string,
   search?: string,
   gymId?: string,
-  options: any = {}
+  options: any = {},
 ) {
   return useQuery<ApiResponse<GetNotificationsResponseDto>, Error>({
     queryKey: notificationKeys.list(page, limit, status, search, gymId),
@@ -46,10 +47,10 @@ export function useMyNotifications(
 /**
  * Hook to fetch unread count
  */
-export function useUnreadNotificationsCount() {
+export function useUnreadNotificationsCount(gymId?: string) {
   return useQuery<ApiResponse<{ count: number }>, Error>({
-    queryKey: notificationKeys.unreadCount(),
-    queryFn: () => notificationsApi.getUnreadCount(),
+    queryKey: notificationKeys.unreadCount(gymId),
+    queryFn: () => notificationsApi.getUnreadCount(gymId),
   });
 }
 
@@ -71,11 +72,11 @@ export function useMarkNotificationAsRead() {
 /**
  * Hook to mark all notifications as read
  */
-export function useMarkAllNotificationsAsRead() {
+export function useMarkAllNotificationsAsRead(gymId?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => notificationsApi.markAllAsRead(),
+    mutationFn: () => notificationsApi.markAllAsRead(gymId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },

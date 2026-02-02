@@ -12,7 +12,7 @@ export const usersApi = {
   detectRegion: async (): Promise<ApiResponse<RegionDetectionResult>> => {
     try {
       const res = await apiClient.post<ApiResponse<RegionDetectionResult>>(
-        "/users/onboarding/detect-region"
+        "/users/onboarding/detect-region",
       );
       return res.data;
     } catch (error) {
@@ -22,12 +22,12 @@ export const usersApi = {
 
   /** Complete Onboarding */
   completeOnboarding: async (
-    data: CompleteOnboardingDto
+    data: CompleteOnboardingDto,
   ): Promise<ApiResponse<User>> => {
     try {
       const res = await apiClient.post<ApiResponse<User>>(
         "/users/onboarding/complete",
-        data
+        data,
       );
       return res.data;
     } catch (error) {
@@ -41,7 +41,7 @@ export const usersApi = {
     limit: number = 10,
     search?: string,
     role?: string,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<ApiResponse<User[]>> => {
     try {
       const params: any = { page: page.toString(), limit: limit.toString() };
@@ -70,12 +70,12 @@ export const usersApi = {
 
   editUser: async (
     userId: string,
-    data: EditUserDto
+    data: EditUserDto,
   ): Promise<ApiResponse<User>> => {
     try {
       const res = await apiClient.patch<ApiResponse<User>>(
         `/users/${userId}/profile`,
-        data
+        data,
       );
       return res.data;
     } catch (error) {
@@ -88,7 +88,7 @@ export const usersApi = {
     try {
       const res = await apiClient.patch<ApiResponse<User>>(
         "/users/me/profile",
-        data
+        data,
       );
       return res.data;
     } catch (error) {

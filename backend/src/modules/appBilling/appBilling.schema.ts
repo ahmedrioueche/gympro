@@ -84,6 +84,9 @@ export class AppPlanModel extends Document implements AppPlan {
   @Prop()
   order?: number;
 
+  @Prop({ type: Boolean, default: true })
+  isActive?: boolean;
+
   @Prop({ type: String, required: true, enum: APP_PLAN_LEVELS })
   level: AppPlanLevel;
 
@@ -108,8 +111,8 @@ export class AppPlanModel extends Document implements AppPlan {
   @Prop({ type: AppPlanLimits, required: true })
   limits: AppPlanLimits;
 
-  @Prop({ type: [String], required: true })
-  features: string[];
+  @Prop({ type: [MongooseSchema.Types.Mixed], required: true })
+  features: any[];
 
   @Prop({ required: true })
   createdAt: Date;

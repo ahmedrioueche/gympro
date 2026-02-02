@@ -77,6 +77,7 @@ export class AppSubscriptionService {
 
     const plan = await this.appPlanModel.findOne({ planId }).exec();
     if (!plan) throw new NotFoundException('Plan not found');
+    if (!plan.isActive) throw new BadRequestException('Plan is not active');
 
     return { user, plan };
   }
@@ -486,6 +487,10 @@ export class AppSubscriptionService {
     const targetPlan = await this.appPlanModel.findOne({ planId }).exec();
     if (!targetPlan) {
       throw new NotFoundException('Target plan not found');
+    }
+
+    if (!targetPlan.isActive) {
+      throw new BadRequestException('Target plan is not active');
     }
 
     // Find current plan

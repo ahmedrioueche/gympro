@@ -1,4 +1,5 @@
 import type {
+  Alert,
   AppPlan,
   CoachProfile,
   EditUserDto,
@@ -181,4 +182,24 @@ export interface LogSessionModalProps {
 
 export interface ReviewCoachRequestModalProps {
   request: import("@ahmedrioueche/gympro-client").User;
+}
+
+export interface EditAppPlanModalProps {
+  plan?: import("@ahmedrioueche/gympro-client").AppPlan | null;
+}
+
+export interface AdminManagePermissionsModalProps {
+  editor: import("@ahmedrioueche/gympro-client").AppEditorUser;
+}
+
+export interface AdminCreateEditorModalProps {
+  onSuccess?: () => void;
+}
+
+export interface ReportDetailsModalProps {
+  report: import("@ahmedrioueche/gympro-client").Report;
+}
+
+export interface AlertDetailsModalProps {
+  alert: Alert;
 }

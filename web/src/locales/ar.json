@@ -16,6 +16,8 @@
     "loading": "جاري التحميل...",
     "all": "الكل",
     "actions": "الإجراءات",
+    "base": "أساسي",
+    "update": "تحديث",
     "pagination": {
       "showing": "عرض {{start}}-{{end}} من أصل {{total}}"
     }
@@ -219,6 +221,43 @@
       "message": "المحتوى",
       "date": "التاريخ",
       "status": "الحالة"
+    }
+  },
+  "plan": {
+    "starter": {
+      "name": "أساسي",
+      "description": "مثالي للصالات الرياضية الصغيرة والمتوسطة",
+      "feature": {
+        "everything_free": "كل ما في الخطة المجانية",
+        "advanced_reports": "تقارير وتحليلات متقدمة",
+        "email_notifications": "إشعارات البريد الإلكتروني",
+        "attendance_tracking": "تتبع الحضور",
+        "payment_processing": "تكامل معالجة المدفوعات"
+      }
+    },
+    "pro": {
+      "name": "برو",
+      "description": "للصالات الرياضية الجادة المستعدة للتوسع",
+      "feature": {
+        "everything_starter": "كل ما في باقة Starter",
+        "sms_notifications": "إشعارات SMS",
+        "custom_workflows": "سير عمل مخصص وأتمتة",
+        "advanced_analytics": "تحليلات ورؤى متقدمة",
+        "priority_support": "دعم فني ذو أولوية",
+        "api_access": "وصول كامل لواجهة برمجة التطبيقات (API)"
+      }
+    },
+    "premium": {
+      "name": "بريميوم",
+      "description": "حل للمؤسسات والشركات ذات الفروع المتعددة",
+      "feature": {
+        "everything_pro": "كل ما في باقة Pro",
+        "multi_location": "حتى 10 فروع",
+        "white_label": "هوية تجارية مخصصة (White-label)",
+        "custom_integrations": "تكامل مخصص",
+        "dedicated_manager": "مدير حساب مخصص",
+        "training_onboarding": "تدريب شخصي وتوجيه"
+      }
     }
   }
 }

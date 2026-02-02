@@ -22,9 +22,8 @@ import { useSubscriptionLogic } from "./hooks/useSubscriptionLogic";
 
 function SubscriptionPage() {
   const [billingCycle, setBillingCycle] = useState<AppSubscriptionBillingCycle>(
-    APP_SUBSCRIPTION_BILLING_CYCLES[0]
+    APP_SUBSCRIPTION_BILLING_CYCLES[0],
   );
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const { data: plans = [], isLoading: plansLoading } = useAllPlans();
   const { data: mySubscription, isLoading: subLoading } = useMySubscription();
   const currency = useCurrency();

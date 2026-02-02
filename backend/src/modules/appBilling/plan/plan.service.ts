@@ -55,6 +55,7 @@ export class AppPlansService {
       ...dto,
       version: dto.version || 1,
       trialDays: dto.trialDays || DEFAULT_TRIAL_DAYS_NUMBER,
+      isActive: dto.isActive !== undefined ? dto.isActive : true,
       createdBy,
       createdAt: new Date(),
     });
@@ -65,12 +66,20 @@ export class AppPlansService {
   /**
    * Get all plans
    */
-  async getAllPlans() {
-    return this.appPlanModel.find().sort({ level: 1, type: 1 }).exec();
+  async getAllPlans(includeInactive = false) {
+    const filter: any = {};
+    if (!includeInactive) {
+      filter.isActive = { $ne: false };
+    }
+    return this.appPlanModel.find(filter).sort({ level: 1, type: 1 }).exec();
   }
 
-  async getPlansByLevel(level: AppPlanLevel) {
-    return this.appPlanModel.find({ level }).sort({ type: 1 }).exec();
+  async getPlansByLevel(level: AppPlanLevel, includeInactive = false) {
+    const filter: any = { level };
+    if (!includeInactive) {
+      filter.isActive = { $ne: false };
+    }
+    return this.appPlanModel.find(filter).sort({ type: 1 }).exec();
   }
 
   async getPlanByLevelAndType(level: AppPlanLevel) {

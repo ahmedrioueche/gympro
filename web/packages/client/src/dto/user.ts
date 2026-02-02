@@ -3,5 +3,5 @@ export interface CreateEditorDto {
   password?: string;
   username: string;
   fullName: string;
-  appPermissions?: string[];
+  appPermissions?: import("../constants/permissions").AppPermission[];
 }

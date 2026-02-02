@@ -347,6 +347,18 @@ export class UsersService {
     return { message: 'User deleted successfully' };
   }
 
+  async findStaffByPermission(permission: string) {
+    return this.userModel
+      .find({
+        $or: [
+          { role: UserRole.Admin },
+          { role: UserRole.AppEditor, appPermissions: permission },
+        ],
+        'profile.isActive': true,
+      })
+      .exec();
+  }
+
   // Helper method to remove sensitive data
   private sanitizeUser(user: any) {
     const userObj = user.toObject ? user.toObject() : user;

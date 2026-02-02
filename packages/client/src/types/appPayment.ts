@@ -32,12 +32,23 @@ export interface AppPayment {
   updatedAt?: string | Date;
 }
 
-// App Payment with populated plan data
 export interface AppPaymentWithPlan extends AppPayment {
   plan?: {
     _id: string;
     planId: string;
     name: string;
     level: string;
+  };
+}
+
+export interface AdminPaymentView extends Omit<AppPayment, "userId"> {
+  planName: string;
+  userId: {
+    _id: string;
+    profile: {
+      fullName: string;
+      email: string;
+      username: string;
+    };
   };
 }

@@ -42,6 +42,8 @@
     "search": "Rechercher...",
     "edit": "Modifier",
     "delete": "Supprimer",
+    "update": "Mettre à jour",
+    "base": "Base",
     "plan": "Plan",
     "duration": "Durée",
     "date": "Date d'ajout",
@@ -512,6 +514,43 @@
       "contact": {
         "title": "Contact",
         "description": "Comment peut-on vous joindre ?"
+      }
+    }
+  },
+  "plan": {
+    "starter": {
+      "name": "Starter",
+      "description": "Idéal pour les petites et moyennes salles",
+      "feature": {
+        "everything_free": "Tout ce qui est dans Gratuit",
+        "advanced_reports": "Rapports et analyses avancés",
+        "email_notifications": "Notifications par e-mail",
+        "attendance_tracking": "Suivi de la présence",
+        "payment_processing": "Intégration du traitement des paiements"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Pour les salles sérieuses prêtes à évoluer",
+      "feature": {
+        "everything_starter": "Tout ce qui est dans Starter",
+        "sms_notifications": "Notifications par SMS",
+        "custom_workflows": "Flux de travail personnalisés et automatisation",
+        "advanced_analytics": "Analyses avancées et insights",
+        "priority_support": "Support prioritaire",
+        "api_access": "Accès complet à l'API"
+      }
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "Solution d'entreprise pour les marques multi-sites",
+      "feature": {
+        "everything_pro": "Tout ce qui est dans Pro",
+        "multi_location": "Jusqu'à 10 emplacements",
+        "white_label": "Marquage blanc (White-label)",
+        "custom_integrations": "Intégrations personnalisées",
+        "dedicated_manager": "Gestionnaire de compte dédié",
+        "training_onboarding": "Formation personnelle et intégration"
       }
     }
   }

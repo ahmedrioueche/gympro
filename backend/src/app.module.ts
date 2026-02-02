@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -11,6 +12,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
 import { AdminModule } from './modules/admin/admin.module';
 import { AiModule } from './modules/ai/ai.module';
+import { AlertsModule } from './modules/alerts/alerts.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { AppBillingModule } from './modules/appBilling/appBilling.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
@@ -28,6 +30,7 @@ import { GymSubscriptionModule } from './modules/gymSubscription/gymSubscription
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaddleModule } from './modules/paddle/paddle.module';
 import { ProgressModule } from './modules/progress/progress.module';
+import { ReportsModule } from './modules/reports/reports.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
@@ -73,6 +76,7 @@ import { UsersModule } from './modules/users/users.module';
     }),
 
     ScheduleModule.forRoot(),
+    EventEmitterModule.forRoot(),
 
     AuthModule,
     UsersModule,
@@ -99,6 +103,8 @@ import { UsersModule } from './modules/users/users.module';
     GymCoachPaymentModule,
     GymAnnouncementModule,
     AdminModule,
+    ReportsModule,
+    AlertsModule,
     UploadModule,
   ],
   controllers: [AppController],

@@ -1,3 +1,4 @@
+import { APP_PERMISSIONS } from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -31,21 +32,22 @@ export class AdminController {
 
   @Post('editors')
   @UseGuards(AppPermissionGuard)
-  @AppPermission('manage_editors')
+  @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
   createEditor(@Body() dto: CreateEditorDto) {
     return this.adminService.createEditor(dto);
   }
 
   @Get('editors')
   @UseGuards(AppPermissionGuard)
-  @AppPermission('manage_editors')
-  getEditors() {
-    return this.adminService.getEditors();
+  @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
+  async getEditors() {
+    const editors = await this.adminService.getEditors();
+    return { success: true, data: editors };
   }
 
   @Put('editors/:id/permissions')
   @UseGuards(AppPermissionGuard)
-  @AppPermission('manage_editors')
+  @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
   updateEditorPermissions(
     @Param('id') id: string,
     @Body('permissions') permissions: string[],
@@ -55,7 +57,7 @@ export class AdminController {
 
   @Delete('editors/:id')
   @UseGuards(AppPermissionGuard)
-  @AppPermission('manage_editors')
+  @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
   deleteEditor(@Param('id') id: string) {
     return this.adminService.deleteEditor(id);
   }
@@ -92,5 +94,47 @@ export class AdminController {
   async getCoaches() {
     const coaches = await this.adminService.getCoaches();
     return { success: true, data: coaches };
+  }
+
+  @Get('subscriptions')
+  async getSubscriptions() {
+    const subscriptions = await this.adminService.getSubscriptions();
+    return { success: true, data: subscriptions };
+  }
+
+  @Get('payments')
+  async getPayments() {
+    const payments = await this.adminService.getPayments();
+    return { success: true, data: payments };
+  }
+
+  @Get('users')
+  @UseGuards(AppPermissionGuard)
+  @AppPermission(APP_PERMISSIONS.MANAGE_USERS)
+  async getUsers() {
+    const users = await this.adminService.getUsers();
+    return { success: true, data: users };
+  }
+
+  @Put('users/:id/status')
+  @UseGuards(AppPermissionGuard)
+  @AppPermission(APP_PERMISSIONS.MANAGE_USERS)
+  async toggleUserStatus(@Param('id') id: string) {
+    return this.adminService.toggleUserStatus(id);
+  }
+
+  @Get('gyms')
+  @UseGuards(AppPermissionGuard)
+  @AppPermission(APP_PERMISSIONS.MANAGE_GYMS)
+  async getGyms() {
+    const gyms = await this.adminService.getGyms();
+    return { success: true, data: gyms };
+  }
+
+  @Put('gyms/:id/status')
+  @UseGuards(AppPermissionGuard)
+  @AppPermission(APP_PERMISSIONS.MANAGE_GYMS)
+  async toggleGymStatus(@Param('id') id: string) {
+    return this.adminService.toggleGymStatus(id);
   }
 }

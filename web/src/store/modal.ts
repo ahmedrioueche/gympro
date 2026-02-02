@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import type {
+  AdminCreateEditorModalProps,
+  AdminManagePermissionsModalProps,
+  AlertDetailsModalProps,
   AssignProgramModalProps,
   CancelSubscriptionModalProps,
   ClientProfileModalProps,
@@ -9,6 +12,7 @@ import type {
   CreateAnnouncementModalProps,
   CreateExerciseModalProps,
   CreateSessionModalProps,
+  EditAppPlanModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
   GymInvitationModalProps,
@@ -17,6 +21,7 @@ import type {
   MemberProfileModalProps,
   ProgramDetailsModalProps,
   RenewSubscriptionModalProps,
+  ReportDetailsModalProps,
   RequestCoachModalProps,
   RequestGymModalProps,
   ReviewCoachRequestModalProps,
@@ -52,7 +57,12 @@ type ModalType =
   | "gym_invitation"
   | "create_announcement"
   | "admin_review_coach_request"
+  | "edit_app_plan"
   | "log_session"
+  | "admin_manage_permissions"
+  | "admin_create_editor"
+  | "report_details"
+  | "alert_details"
   | null;
 
 interface ModalState {
@@ -81,6 +91,11 @@ interface ModalState {
   createAnnouncementProps?: CreateAnnouncementModalProps;
   logSessionProps?: LogSessionModalProps;
   reviewCoachRequestProps?: ReviewCoachRequestModalProps;
+  editAppPlanProps?: EditAppPlanModalProps;
+  adminManagePermissionsProps?: AdminManagePermissionsModalProps;
+  adminCreateEditorProps?: AdminCreateEditorModalProps;
+  reportDetailsProps?: ReportDetailsModalProps;
+  alertProps?: AlertDetailsModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -230,6 +245,36 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "admin_review_coach_request",
           reviewCoachRequestProps: props,
+        };
+      }
+      if (modal === "edit_app_plan") {
+        return {
+          currentModal: "edit_app_plan",
+          editAppPlanProps: props,
+        };
+      }
+      if (modal === "admin_manage_permissions") {
+        return {
+          currentModal: "admin_manage_permissions",
+          adminManagePermissionsProps: props,
+        };
+      }
+      if (modal === "admin_create_editor") {
+        return {
+          currentModal: "admin_create_editor",
+          adminCreateEditorProps: props,
+        };
+      }
+      if (modal === "report_details") {
+        return {
+          currentModal: "report_details",
+          reportDetailsProps: props,
+        };
+      }
+      if (modal === "alert_details") {
+        return {
+          currentModal: "alert_details",
+          alertProps: props,
         };
       }
       return { currentModal: null };

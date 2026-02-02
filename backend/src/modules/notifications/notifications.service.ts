@@ -45,6 +45,8 @@ export class NotificationsService {
   constructor(
     @InjectModel(BaseNotification.name)
     private readonly notificationModel: Model<BaseNotification>,
+    @InjectModel(User.name)
+    private readonly userModel: Model<User>,
     private readonly externalService: ExternalNotificationService,
     private readonly i18nService: I18nService,
     private readonly gateway: NotificationsGateway,
@@ -110,6 +112,37 @@ export class NotificationsService {
     }
   }
 
+  /**
+   * Send notification to all admins and privileged editors
+   */
+  async notifyStaff(options: SendNotificationOptions): Promise<void> {
+    try {
+      // Find all admins
+      const admins = await this.userModel.find({
+        role: UserRole.Admin,
+        'profile.isActive': true,
+      });
+
+      // Find all editors with notifications permission
+      const privilegedEditors = await this.userModel.find({
+        role: UserRole.AppEditor,
+        'profile.isActive': true,
+        appPermissions: 'manage_notifications',
+      });
+
+      const staff = [...admins, ...privilegedEditors];
+
+      this.logger.log(
+        `Notifying ${staff.length} staff members (Admins: ${admins.length}, Editors: ${privilegedEditors.length})`,
+      );
+
+      // Send to each staff member
+      await Promise.all(staff.map((user) => this.send(user, options)));
+    } catch (error) {
+      this.logger.error('Failed to notify staff members', error.stack);
+    }
+  }
+
   private async resolveContent(
     lang: AppLanguage,
     key: string,
@@ -162,6 +195,8 @@ export class NotificationsService {
           break;
         case UserRole.Owner:
         case UserRole.Manager:
+        case UserRole.Admin:
+        case UserRole.AppEditor:
           NotificationClass =
             this.notificationModel.discriminators?.['OwnerManagerNotification'];
           roleType = 'OwnerManagerNotification';
