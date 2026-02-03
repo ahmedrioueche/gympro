@@ -144,6 +144,11 @@ const ReportDetailsModal = lazy(
   () => import("./app/pages/admin/reports/components/ReportDetailsModal"),
 );
 
+const InventoryItemModal = lazy(
+  () =>
+    import("./app/pages/main/gym/manager/inventory/components/InventoryItemModal"),
+);
+
 const LogSessionModal = lazy(() =>
   import("./app/pages/main/member/training/components/log-session-modal/LogSessionModal").then(
     (module) => ({
@@ -185,6 +190,7 @@ function modals() {
       <AdminManagePermissionsModal />
       <AlertDetailsModal />
       <ReportDetailsModal />
+      <InventoryItemModal />
     </Suspense>
   );
 }

@@ -40,11 +40,13 @@
     "decline": "Decline",
     "deactivate": "Deactivate",
     "activate": "Activate",
+
     "description": "Description",
     "type": "Type",
     "locationFilters": "Location Filters",
     "actions": "Actions",
     "create": "Create",
+    "create_success": "Creation successful",
     "noDescription": "No description provided.",
     "pagination": {
       "showing": "Showing {{start}}-{{end}} of {{total}}"
@@ -82,7 +84,10 @@
     "characters": "characters",
     "hide": "Hide",
     "show": "Show",
-    "filters": "Filters",
+    "filters": {
+      "label": "Filters",
+      "all": "All"
+    },
     "email": "Email",
     "phoneNumber": "Phone Number",
     "notSpecified": "Not Specified",
@@ -93,6 +98,7 @@
     "postedBy": "Posted by",
     "uploading": "Uploading...",
     "uploadFailed": "Upload failed",
+    "uploadError": "Upload failed",
     "uploadSuccess": "Upload successful",
     "fileTooLarge": "File size must be less than 5MB",
     "submit": "Submit",
@@ -100,7 +106,14 @@
     "starter": "Starter",
     "pro": "Pro",
     "premium": "Premium",
-    "name": "Name"
+    "name": "Name",
+    "noBrand": "No Brand",
+    "notSet": "Not set",
+    "viewMode": {
+      "cards": "Cards",
+      "table": "Table"
+    },
+    "sort": "Sort"
   },
   "confirm": {
     "default": {
@@ -665,6 +678,7 @@
       "loading_address": "Loading address...",
       "use_current_location": "Use My Current Location",
       "auto_populated": "Auto-populated from map:",
+      "creating": "Creating...",
       "duplicate_name_error": "You already created a gym with this name. Please choose a different name."
     },
     "tips": {
@@ -3173,6 +3187,86 @@
     "getReady": "Get Ready!",
     "go": "Go!"
   },
+  "inventory": {
+    "title": "Gym Inventory",
+    "subtitle": "Manage your gym equipment, stock, and maintenance schedules.",
+    "addEquipment": "Add Equipment",
+    "fetchError": "Failed to fetch inventory items",
+    "createSuccess": "Equipment added successfully",
+    "updateSuccess": "Equipment updated successfully",
+    "searchPlaceholder": "Search equipment...",
+    "addFirstItem": "Add Your First Item",
+    "delete": {
+      "title": "Delete Equipment",
+      "confirmMessage": "Are you sure you want to delete {{name}}? This action cannot be undone.",
+      "success": "Equipment deleted successfully"
+    },
+    "noResults": {
+      "title": "No matches found",
+      "message": "Try adjusting your search or filters to find what you're looking for."
+    },
+    "empty": {
+      "title": "Your inventory is empty",
+      "message": "Start adding equipment items to track your gym assets and maintenance.",
+      "action": "Add Your First Item"
+    },
+    "card": {
+      "nextService": "Next Service"
+    },
+    "table": {
+      "name": "Equipment",
+      "category": "Category",
+      "quantity": "Qty",
+      "condition": "Condition",
+      "nextService": "Next Service"
+    },
+    "categories": {
+      "cardio": "Cardio",
+      "strength": "Strength",
+      "free_weights": "Free Weights",
+      "functional": "Functional",
+      "recovery": "Recovery",
+      "other": "Other"
+    },
+    "conditions": {
+      "good": "Good",
+      "needs_maintenance": "Needs Maintenance",
+      "broken": "Broken",
+      "out_of_service": "Out of Service"
+    },
+    "sort": {
+      "name": "Name",
+      "quantity": "Quantity",
+      "condition": "Condition",
+      "createdAt": "Newest"
+    },
+    "modal": {
+      "editTitle": "Edit Equipment",
+      "createTitle": "Add New Equipment"
+    },
+    "form": {
+      "images": "Equipment Images",
+      "name": "Equipment Name",
+      "category": "Category",
+      "quantity": "Quantity",
+      "condition": "Condition",
+      "brand": "Brand",
+      "description": "Description",
+      "specsHeader": "Technical Specs & IDs",
+      "modelNumber": "Model Number",
+      "serialNumber": "Serial Number",
+      "managementHeader": "Purchase & Warranty",
+      "purchasePrice": "Purchase Price",
+      "purchaseDate": "Purchase Date",
+      "vendor": "Vendor",
+      "warrantyExpiry": "Warranty Expiry",
+      "maintenanceHeader": "Maintenance Schedule",
+      "lastServiceDate": "Last Service Date",
+      "nextServiceDueDate": "Next Service Due",
+      "additionalNotes": "Internal Notes",
+      "addEquipment": "Add Equipment"
+    }
+  },
   "admin": {
     "home": {
       "title": "Admin Dashboard",
@@ -3370,7 +3464,9 @@
         "manage_coach_requests": "Coach Approvals",
         "manage_reports": "Reports Management",
         "manage_alerts": "System Alerts",
-        "manage_notifications": "Notifications Center"
+        "manage_notifications": "Notifications Center",
+        "view_dashboard": "Admin Dashboard View",
+        "manage_coaches": "Coaches Management"
       }
     },
     "users": {

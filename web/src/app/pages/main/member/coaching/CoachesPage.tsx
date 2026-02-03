@@ -82,14 +82,14 @@ export default function CoachesPage() {
       const position = await new Promise<GeolocationPosition>(
         (resolve, reject) => {
           navigator.geolocation.getCurrentPosition(resolve, reject);
-        }
+        },
       );
 
       const { latitude, longitude } = position.coords;
 
       // Use reverse geocoding API (Nominatim - free and open source)
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
       );
 
       if (!response.ok) throw new Error("Geocoding failed");
@@ -135,7 +135,7 @@ export default function CoachesPage() {
             console.error("Failed to save location to profile:", error);
             // Don't show error to user - location is still set locally
           },
-        }
+        },
       );
 
       toast.success(t("coaches.filters.locationDetected"));
@@ -210,7 +210,7 @@ export default function CoachesPage() {
               onClick={() => setShowFilters(!showFilters)}
             >
               {showFilters ? t("common.hide") : t("common.show")}{" "}
-              {t("common.filters")}
+              {t("common.filters.label")}
             </Button>
           </div>
         </div>

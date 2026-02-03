@@ -18,6 +18,7 @@ const HomePage: React.FC = () => {
         <PageHeader
           title={t("admin.home.title")}
           subtitle={t("admin.home.subtitle")}
+          icon={Home}
         />
         <Loading />;
       </>

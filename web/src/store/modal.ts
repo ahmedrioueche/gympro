@@ -16,6 +16,7 @@ import type {
   EditManagerModalProps,
   ExerciseDetailModalProps,
   GymInvitationModalProps,
+  InventoryItemModalProps,
   InviteCoachModalProps,
   LogSessionModalProps,
   MemberProfileModalProps,
@@ -63,6 +64,7 @@ type ModalType =
   | "admin_create_editor"
   | "report_details"
   | "alert_details"
+  | "inventory_item"
   | null;
 
 interface ModalState {
@@ -96,6 +98,7 @@ interface ModalState {
   adminCreateEditorProps?: AdminCreateEditorModalProps;
   reportDetailsProps?: ReportDetailsModalProps;
   alertProps?: AlertDetailsModalProps;
+  inventoryItemProps?: InventoryItemModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -275,6 +278,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "alert_details",
           alertProps: props,
+        };
+      }
+      if (modal === "inventory_item") {
+        return {
+          currentModal: "inventory_item",
+          inventoryItemProps: props,
         };
       }
       return { currentModal: null };

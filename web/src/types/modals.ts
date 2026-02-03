@@ -3,11 +3,18 @@ import type {
   AppPlan,
   CoachProfile,
   EditUserDto,
+  EquipmentItem,
   Exercise,
   ProgramDayProgress,
   ProgramHistory,
   TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
+
+export interface InventoryItemModalProps {
+  gymId: string;
+  item?: EquipmentItem;
+  onSuccess?: () => void;
+}
 
 export interface ConfirmModalProps {
   text?: string;

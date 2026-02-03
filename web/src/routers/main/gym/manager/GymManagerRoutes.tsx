@@ -4,13 +4,16 @@ import AnalyticsPage from "../../../../app/pages/main/gym/manager/analytics/Anal
 import AnnouncementsPage from "../../../../app/pages/main/gym/manager/announcement/AnnouncementsPage";
 import AttendancePage from "../../../../app/pages/main/gym/manager/attendance/AttendancePage";
 import CoachingPage from "../../../../app/pages/main/gym/manager/coaching/CoachingPage";
+import CompetitionsPage from "../../../../app/pages/main/gym/manager/competitions/CompetitionsPage";
 import CreateMemberPage from "../../../../app/pages/main/gym/manager/create-member/CreateMemberPage";
 import HomePage from "../../../../app/pages/main/gym/manager/home/HomePage";
+import InventoryPage from "../../../../app/pages/main/gym/manager/inventory/InventoryPage";
 import MembersPage from "../../../../app/pages/main/gym/manager/members/MembersPage";
 import NotificationsPage from "../../../../app/pages/main/gym/manager/notifications/NotificationsPage";
 import PricingPage from "../../../../app/pages/main/gym/manager/pricing/PricingPage";
 import SettingsPage from "../../../../app/pages/main/gym/manager/settings/SettingsPage";
 import StaffPage from "../../../../app/pages/main/gym/manager/staff/StaffPage";
+import StorePage from "../../../../app/pages/main/gym/manager/store/StorePage";
 import SubscriptionsPage from "../../../../app/pages/main/gym/manager/subscriptions/SubscriptionsPage";
 import { GymManagerRootRoute } from "./GymManagerRootRoute";
 
@@ -72,6 +75,24 @@ export const announcementsRoute = createRoute({
   getParentRoute: () => GymManagerRootRoute,
   path: "/announcements",
   component: () => <AnnouncementsPage />,
+});
+
+export const inventoryRoute = createRoute({
+  getParentRoute: () => GymManagerRootRoute,
+  path: "/inventory",
+  component: () => <InventoryPage />,
+});
+
+export const storeRoute = createRoute({
+  getParentRoute: () => GymManagerRootRoute,
+  path: "/store",
+  component: () => <StorePage />,
+});
+
+export const competitionsRoute = createRoute({
+  getParentRoute: () => GymManagerRootRoute,
+  path: "/competitions",
+  component: () => <CompetitionsPage />,
 });
 
 export const analyticsRoute = createRoute({

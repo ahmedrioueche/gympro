@@ -8,6 +8,8 @@ export const APP_PERMISSIONS = {
   MANAGE_REPORTS: "manage_reports",
   MANAGE_ALERTS: "manage_alerts",
   MANAGE_NOTIFICATIONS: "manage_notifications",
+  VIEW_DASHBOARD: "view_dashboard",
+  MANAGE_COACHES: "manage_coaches",
 } as const;
 
 export type AppPermission =

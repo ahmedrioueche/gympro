@@ -59,6 +59,11 @@ export const GYM_PERMISSIONS = {
     view: "communication:view",
     manage: "communication:manage",
   },
+  // Inventory & Equipment
+  inventory: {
+    view: "inventory:view",
+    manage: "inventory:manage",
+  },
 } as const;
 
 // Extract all permission values as a union type
@@ -276,6 +281,23 @@ export const PERMISSION_GROUPS: PermissionGroupInfo[] = [
       },
     ],
   },
+  {
+    key: "inventory",
+    label: "Inventory",
+    description: "Manage gym equipment and assets",
+    permissions: [
+      {
+        key: "inventory:view",
+        label: "View Inventory",
+        description: "View equipment list and status",
+      },
+      {
+        key: "inventory:manage",
+        label: "Manage Inventory",
+        description: "Add, edit, or remove equipment",
+      },
+    ],
+  },
 ];
 
 // Default permissions by role
@@ -301,6 +323,8 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
     "schedules:manage",
     "communication:view",
     "communication:manage",
+    "inventory:view",
+    "inventory:manage",
   ],
   receptionist: [
     "members:view",

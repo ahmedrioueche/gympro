@@ -9,7 +9,10 @@ import {
   Key,
   Logs,
   Megaphone,
+  Package,
   Settings,
+  Store,
+  Trophy,
   UserCheck,
   UserCircle,
   Users,
@@ -71,6 +74,24 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.gym.manager.attendance.link],
   },
   {
+    label: "inventory",
+    icon: <Package className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.inventory.link,
+    matchPaths: [APP_PAGES.gym.manager.inventory.link],
+  },
+  {
+    label: "store",
+    icon: <Store className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.store.link,
+    matchPaths: [APP_PAGES.gym.manager.store.link],
+  },
+  {
+    label: "competitions",
+    icon: <Trophy className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.competitions.link,
+    matchPaths: [APP_PAGES.gym.manager.competitions.link],
+  },
+  {
     label: "announcements",
     icon: <Megaphone className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.announcements.link,
@@ -115,6 +136,12 @@ function GymManagerPage() {
         return hasPermission(GYM_PERMISSIONS.settings.view);
       case "announcements":
         return hasPermission(GYM_PERMISSIONS.communication.view);
+      case "inventory":
+        return hasPermission(GYM_PERMISSIONS.inventory.view);
+      case "store":
+        return hasPermission(GYM_PERMISSIONS.store.view);
+      case "competitions":
+        return hasPermission(GYM_PERMISSIONS.competitions.view);
       default:
         // Home, subscriptions (?), access (?), notifications are always visible for now
         // or check logic later

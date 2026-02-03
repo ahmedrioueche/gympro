@@ -114,11 +114,23 @@ export const APP_PAGES = {
         name: "pages.gym.attendance",
         link: "/gym/manager/attendance",
       },
+      inventory: {
+        name: "pages.gym.inventory",
+        link: "/gym/manager/inventory",
+      },
+      store: {
+        name: "pages.gym.store",
+        link: "/gym/manager/store",
+      },
+      competitions: {
+        name: "pages.gym.competitions",
+        link: "/gym/manager/competitions",
+      },
+
       announcements: {
         name: "pages.gym.announcements",
         link: "/gym/manager/announcements",
       },
-
       analytics: {
         name: "pages.gym.analytics",
         link: "/gym/manager/analytics",

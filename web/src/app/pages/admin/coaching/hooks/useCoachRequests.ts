@@ -1,7 +1,7 @@
 import { adminApi, type User } from "@ahmedrioueche/gympro-client";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCoachRequests = () => {
+export const useCoachRequests = (options?: { enabled?: boolean }) => {
   return useQuery<User[], Error>({
     queryKey: ["coachRequests"],
     queryFn: async () => {
@@ -11,5 +11,6 @@ export const useCoachRequests = () => {
       }
       return response.data;
     },
+    ...options,
   });
 };

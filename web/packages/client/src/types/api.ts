@@ -19,4 +19,5 @@ export interface JwtPayload {
   sub: string;
   email: string;
   role: UserRole;
+  appPermissions?: string[];
 }

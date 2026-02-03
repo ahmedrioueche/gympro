@@ -33,6 +33,11 @@ const checkPermission = (permission?: string) => {
 export const homeRoute = createRoute({
   getParentRoute: () => adminRootRoute,
   path: "/",
+  beforeLoad: () => {
+    if (!checkPermission(APP_PERMISSIONS.VIEW_DASHBOARD)) {
+      throw redirect({ to: "/admin/settings" }); // Redirect to settings or a safe place if they have access to something
+    }
+  },
   component: () => <HomePage />,
 });
 
@@ -95,7 +100,10 @@ export const coachingRoute = createRoute({
   getParentRoute: () => adminRootRoute,
   path: "/coaching",
   beforeLoad: () => {
-    if (!checkPermission(APP_PERMISSIONS.MANAGE_COACH_REQUESTS)) {
+    if (
+      !checkPermission(APP_PERMISSIONS.MANAGE_COACH_REQUESTS) &&
+      !checkPermission(APP_PERMISSIONS.MANAGE_COACHES)
+    ) {
       throw redirect({ to: "/admin" });
     }
   },

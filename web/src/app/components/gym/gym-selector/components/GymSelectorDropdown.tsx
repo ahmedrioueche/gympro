@@ -47,8 +47,8 @@ export default function GymSelectorDropdown({
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none"></div>
 
       <div
-        className={`relative max-h-[70vh] ${
-          isMobile ? "max-h-[50vh]" : "max-h-[600px]"
+        className={`relative ${
+          isMobile ? "max-h-[50vh]" : "max-h-[400px]"
         } overflow-y-auto scrollbar-thin pb-4 scrollbar-thumb-primary/20 scrollbar-track-transparent`}
       >
         {gyms.length > 0 ? (
@@ -72,7 +72,7 @@ export default function GymSelectorDropdown({
                     redirectToHomePageAfterTimeout(
                       user.role as UserRole,
                       0,
-                      navigate
+                      navigate,
                     );
                   }}
                   className="group flex flex-row space-x-2 cursor-pointer"
