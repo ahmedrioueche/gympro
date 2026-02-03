@@ -57,11 +57,7 @@ export default function Dropdown({
 
       {isOpen && (
         <div
-          className={`fixed w-72 rounded-lg border border-border ${
-            isDark
-              ? "dark:bg-gradient-to-br dark:from-gray-900 dark:via-indigo-950 dark:to-gray-900"
-              : "bg-background"
-          }  shadow-xl z-50 ${
+          className={`fixed w-72 rounded-lg border border-border bg-background  shadow-xl z-50 ${
             align === "right" ? "right-auto" : "left-auto"
           } ${className}`}
           style={{
@@ -72,7 +68,7 @@ export default function Dropdown({
               align === "right"
                 ? window.innerWidth -
                   (dropdownRef.current?.getBoundingClientRect().right ?? 0)
-                : dropdownRef.current?.getBoundingClientRect().left ?? 0
+                : (dropdownRef.current?.getBoundingClientRect().left ?? 0)
             }px`,
           }}
         >

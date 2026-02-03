@@ -64,6 +64,16 @@ export const GYM_PERMISSIONS = {
     view: "inventory:view",
     manage: "inventory:manage",
   },
+  // Store
+  store: {
+    view: "store:view",
+    manage: "store:manage",
+  },
+  // Competitions
+  competitions: {
+    view: "competitions:view",
+    manage: "competitions:manage",
+  },
 } as const;
 
 // Extract all permission values as a union type
@@ -298,6 +308,40 @@ export const PERMISSION_GROUPS: PermissionGroupInfo[] = [
       },
     ],
   },
+  {
+    key: "store",
+    label: "Store",
+    description: "Manage gym store and products",
+    permissions: [
+      {
+        key: "store:view",
+        label: "View Store",
+        description: "View store products and orders",
+      },
+      {
+        key: "store:manage",
+        label: "Manage Store",
+        description: "Manage products and orders",
+      },
+    ],
+  },
+  {
+    key: "competitions",
+    label: "Competitions",
+    description: "Manage gym competitions",
+    permissions: [
+      {
+        key: "competitions:view",
+        label: "View Competitions",
+        description: "View competitions and leaderboards",
+      },
+      {
+        key: "competitions:manage",
+        label: "Manage Competitions",
+        description: "Create and manage competitions",
+      },
+    ],
+  },
 ];
 
 // Default permissions by role
@@ -325,6 +369,10 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
     "communication:manage",
     "inventory:view",
     "inventory:manage",
+    "store:view",
+    "store:manage",
+    "competitions:view",
+    "competitions:manage",
   ],
   receptionist: [
     "members:view",

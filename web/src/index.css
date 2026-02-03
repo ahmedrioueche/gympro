@@ -43,7 +43,7 @@
   --color-danger: #f87171;
 
   /* Surface colors */
-  --color-background: rgba(20, 20, 20);
+  --color-background: rgb(9, 17, 26);
   --color-surface: rgba(20, 20, 20, 0.7);
   --color-border: #374151;
   --color-border-secondary: #4b5563;

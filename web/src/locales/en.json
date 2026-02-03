@@ -113,7 +113,9 @@
       "cards": "Cards",
       "table": "Table"
     },
-    "sort": "Sort"
+    "sort": "Sort",
+    "startDate": "Start Date",
+    "endDate": "End Date"
   },
   "confirm": {
     "default": {
@@ -3265,6 +3267,69 @@
       "nextServiceDueDate": "Next Service Due",
       "additionalNotes": "Internal Notes",
       "addEquipment": "Add Equipment"
+    }
+  },
+  "competitions": {
+    "title": "Gym Competitions",
+    "subtitle": "Create and manage challenges for your members.",
+    "addCompetition": "Create Competition",
+    "searchPlaceholder": "Search competitions...",
+    "empty": {
+      "title": "No competitions yet",
+      "message": "Start engaging your members with fun challenges and competitions.",
+      "action": "Create Your First Competition"
+    },
+    "noResults": {
+      "title": "No matches found",
+      "message": "Try adjusting your search or filters."
+    },
+    "delete": {
+      "title": "Delete Competition",
+      "confirmMessage": "Are you sure you want to delete {{title}}? This will remove all participant data.",
+      "success": "Competition deleted successfully"
+    },
+    "create": {
+      "success": "Competition created successfully",
+      "error": "Failed to create competition"
+    },
+    "update": {
+      "success": "Competition updated successfully",
+      "error": "Failed to update competition"
+    },
+    "fetchError": "Failed to fetch competitions",
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "types": {
+      "weightlifting": "Weightlifting",
+      "cardio": "Cardio",
+      "attendance": "Attendance",
+      "steps": "Steps",
+      "weight_loss": "Weight Loss",
+      "custom": "Custom"
+    },
+    "card": {
+      "starts": "Starts: {{date}}",
+      "ends": "Ends: {{date}}",
+      "participants": "{{count}} participants"
+    },
+    "form": {
+      "title": "Competition Title",
+      "titlePlaceholder": "e.g., Summer Body Challenge",
+      "type": "Competition Type",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the goals and rules of the competition...",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "prize": "Prize",
+      "prizePlaceholder": "e.g., 1 Month Free Membership",
+      "maxParticipants": "Max Participants",
+      "rules": "Rules",
+      "rulesPlaceholder": "List the rules and requirements...",
+      "banner": "Banner Image"
     }
   },
   "admin": {

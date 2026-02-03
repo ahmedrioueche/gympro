@@ -2,6 +2,7 @@ import type {
   Alert,
   AppPlan,
   CoachProfile,
+  Competition,
   EditUserDto,
   EquipmentItem,
   Exercise,
@@ -209,4 +210,10 @@ export interface ReportDetailsModalProps {
 
 export interface AlertDetailsModalProps {
   alert: Alert;
+}
+
+export interface CompetitionModalProps {
+  gymId: string;
+  competition?: Competition;
+  onSuccess?: () => void;
 }
