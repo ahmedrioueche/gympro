@@ -3,9 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchInput } from "../../../../../../../components/ui/SearchInput";
 
-type ViewMode = "cards" | "table";
-type FilterStatus = "all" | "active" | "pending" | "expired" | "banned";
-type SortBy = "name" | "joinDate" | "status";
+import {
+  ListActionRow,
+  ViewModeToggle,
+  type ViewMode,
+} from "../../../../../../../components/ui/ListViewControls";
+
+export type { ViewMode };
+export type FilterStatus = "all" | "active" | "pending" | "expired" | "banned";
+export type SortBy = "name" | "joinDate" | "status";
 
 interface MembersControlsProps {
   searchQuery: string;
@@ -59,7 +65,7 @@ export function MembersControls({
                 >
                   {t(`members.filters.${status}`)}
                 </button>
-              )
+              ),
             )}
           </div>
 
@@ -68,30 +74,12 @@ export function MembersControls({
         </div>
 
         {/* View Toggle - Always visible, far right */}
-        <div className="flex gap-1.5 bg-background border border-border rounded-xl p-1 flex-shrink-0 ml-auto">
-          <button
-            onClick={() => onViewModeChange("cards")}
-            className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-1.5 text-sm ${
-              viewMode === "cards"
-                ? "bg-primary text-white shadow-md"
-                : "text-text-secondary hover:text-primary"
-            }`}
-          >
-            <span>📇</span>
-            <span>{t("members.viewMode.cards")}</span>
-          </button>
-          <button
-            onClick={() => onViewModeChange("table")}
-            className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-1.5 text-sm ${
-              viewMode === "table"
-                ? "bg-primary text-white shadow-md"
-                : "text-text-secondary hover:text-primary"
-            }`}
-          >
-            <span>📊</span>
-            <span>{t("members.viewMode.table")}</span>
-          </button>
-        </div>
+        <ViewModeToggle
+          viewMode={viewMode}
+          onViewModeChange={onViewModeChange}
+          showText
+          className="ml-auto"
+        />
       </div>
 
       {/* Mobile/Tablet Layout */}
@@ -105,48 +93,17 @@ export function MembersControls({
         />
 
         {/* Row 2: View Toggles & Filters */}
-        <div className="flex items-center justify-between gap-2">
-          {/* View Toggles (Left) */}
-          <div className="flex gap-1 bg-background border border-border rounded-xl p-1 flex-shrink-0">
-            <button
-              onClick={() => onViewModeChange("cards")}
-              className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center text-sm ${
-                viewMode === "cards"
-                  ? "bg-primary text-white shadow-md"
-                  : "text-text-secondary hover:text-primary"
-              }`}
-            >
-              <span className="text-lg">📇</span>
-            </button>
-            <button
-              onClick={() => onViewModeChange("table")}
-              className={`px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center text-sm ${
-                viewMode === "table"
-                  ? "bg-primary text-white shadow-md"
-                  : "text-text-secondary hover:text-primary"
-              }`}
-            >
-              <span className="text-lg">📊</span>
-            </button>
-          </div>
+        <ListActionRow viewMode={viewMode} onViewModeChange={onViewModeChange}>
+          {/* Filter Dropdown */}
+          <FilterDropdown
+            current={filterStatus}
+            onChange={onFilterChange}
+            t={t}
+          />
 
-          {/* Filters & Sort (Right) */}
-          <div className="flex items-center gap-2">
-            {/* Filter Dropdown */}
-            <div className="relative">
-              <FilterDropdown
-                current={filterStatus}
-                onChange={onFilterChange}
-                t={t}
-              />
-            </div>
-
-            {/* Sort Dropdown */}
-            <div className="relative">
-              <SortDropdown current={sortBy} onChange={onSortChange} t={t} />
-            </div>
-          </div>
-        </div>
+          {/* Sort Dropdown */}
+          <SortDropdown current={sortBy} onChange={onSortChange} t={t} />
+        </ListActionRow>
       </div>
     </div>
   );
@@ -225,7 +182,7 @@ function FilterDropdown({
                     <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                   )}
                 </button>
-              )
+              ),
             )}
           </div>
         </div>
@@ -313,5 +270,3 @@ function SortDropdown({
     </div>
   );
 }
-
-export type { FilterStatus, SortBy, ViewMode };

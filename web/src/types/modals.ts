@@ -10,6 +10,7 @@ import type {
   ProgramHistory,
   TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
+import type { Product } from "@ahmedrioueche/gympro-client/dist/types/product";
 
 export interface InventoryItemModalProps {
   gymId: string;
@@ -215,5 +216,11 @@ export interface AlertDetailsModalProps {
 export interface CompetitionModalProps {
   gymId: string;
   competition?: Competition;
+  onSuccess?: () => void;
+}
+
+export interface ProductModalProps {
+  gymId: string;
+  product?: Product;
   onSuccess?: () => void;
 }

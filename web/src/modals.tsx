@@ -154,6 +154,10 @@ const CompetitionModal = lazy(
     import("./app/pages/main/gym/manager/competitions/components/CompetitionModal"),
 );
 
+const ProductModal = lazy(
+  () => import("./app/pages/main/gym/manager/store/components/ProductModal"),
+);
+
 const LogSessionModal = lazy(() =>
   import("./app/pages/main/member/training/components/log-session-modal/LogSessionModal").then(
     (module) => ({
@@ -197,6 +201,7 @@ function modals() {
       <ReportDetailsModal />
       <InventoryItemModal />
       <CompetitionModal />
+      <ProductModal />
     </Suspense>
   );
 }

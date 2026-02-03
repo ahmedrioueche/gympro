@@ -21,6 +21,7 @@ import type {
   InviteCoachModalProps,
   LogSessionModalProps,
   MemberProfileModalProps,
+  ProductModalProps,
   ProgramDetailsModalProps,
   RenewSubscriptionModalProps,
   ReportDetailsModalProps,
@@ -67,6 +68,8 @@ type ModalType =
   | "alert_details"
   | "inventory_item"
   | "competition"
+  | "create-product"
+  | "edit-product"
   | null;
 
 interface ModalState {
@@ -102,6 +105,7 @@ interface ModalState {
   alertProps?: AlertDetailsModalProps;
   inventoryItemProps?: InventoryItemModalProps;
   competitionProps?: CompetitionModalProps;
+  productProps?: ProductModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -293,6 +297,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "competition",
           competitionProps: props,
+        };
+      }
+      if (modal === "create-product" || modal === "edit-product") {
+        return {
+          currentModal: modal,
+          productProps: props,
         };
       }
       return { currentModal: null };

@@ -3332,6 +3332,73 @@
       "banner": "Banner Image"
     }
   },
+  "store": {
+    "title": "Gym Store",
+    "subtitle": "Manage products for sale at your gym.",
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "deleteProduct": "Delete Product",
+    "searchPlaceholder": "Search products...",
+    "fetchError": "Failed to fetch products",
+    "empty": {
+      "title": "No products yet",
+      "message": "Start adding products to your gym store.",
+      "action": "Add Your First Product"
+    },
+    "noResults": {
+      "title": "No matches found",
+      "message": "Try adjusting your search or filters."
+    },
+    "delete": {
+      "title": "Delete Product",
+      "confirmMessage": "Are you sure you want to delete {{name}}? This action cannot be undone.",
+      "success": "Product deleted successfully"
+    },
+    "form": {
+      "name": "Product Name",
+      "namePlaceholder": "e.g., Whey Protein 2kg",
+      "category": "Category",
+      "description": "Description",
+      "descriptionPlaceholder": "Product details, benefits...",
+      "price": "Price",
+      "currency": "Currency",
+      "quantity": "Quantity",
+      "sku": "SKU",
+      "skuPlaceholder": "Stock keeping unit",
+      "status": "Status",
+      "notes": "Internal Notes",
+      "notesPlaceholder": "Internal notes for the product",
+      "images": "Product Images"
+    },
+    "categories": {
+      "supplements": "Supplements",
+      "gear": "Gear",
+      "clothing": "Clothing",
+      "drinks": "Drinks",
+      "food": "Food",
+      "accessories": "Accessories",
+      "other": "Other"
+    },
+    "status": {
+      "active": "Active",
+      "out_of_stock": "Out of Stock",
+      "hidden": "Hidden"
+    },
+    "create": {
+      "success": "Product created successfully",
+      "error": "Failed to create product"
+    },
+    "update": {
+      "success": "Product updated successfully",
+      "error": "Failed to update product"
+    },
+    "table": {
+      "product": "Product",
+      "price": "Price",
+      "quantity": "Qty",
+      "status": "Status"
+    }
+  },
   "admin": {
     "home": {
       "title": "Admin Dashboard",

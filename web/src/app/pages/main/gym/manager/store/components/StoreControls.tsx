@@ -1,6 +1,6 @@
 import {
-  EQUIPMENT_CATEGORIES,
-  type EquipmentCategory,
+  PRODUCT_CATEGORIES,
+  type ProductCategory,
 } from "@ahmedrioueche/gympro-client";
 import { ArrowUpDown, ChevronDown, Filter } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -14,20 +14,20 @@ import {
 } from "../../../../../../../components/ui/ListViewControls";
 
 export type { ViewMode };
-export type SortBy = "name" | "quantity" | "condition" | "createdAt";
+export type SortBy = "name" | "price" | "quantity" | "createdAt";
 
-interface InventoryControlsProps {
+interface StoreControlsProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
-  selectedCategory: EquipmentCategory | "all";
-  onCategoryChange: (category: EquipmentCategory | "all") => void;
+  selectedCategory: ProductCategory | "all";
+  onCategoryChange: (category: ProductCategory | "all") => void;
   sortBy: SortBy;
   onSortChange: (sort: SortBy) => void;
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
 }
 
-export function InventoryControls({
+export function StoreControls({
   searchQuery,
   onSearchChange,
   selectedCategory,
@@ -36,7 +36,7 @@ export function InventoryControls({
   onSortChange,
   viewMode,
   onViewModeChange,
-}: InventoryControlsProps) {
+}: StoreControlsProps) {
   const { t } = useTranslation();
 
   return (
@@ -47,9 +47,7 @@ export function InventoryControls({
         <SearchInput
           value={searchQuery}
           onChange={onSearchChange}
-          placeholder={t("inventory.searchPlaceholder", {
-            defaultValue: "Search equipment...",
-          })}
+          placeholder={t("store.searchPlaceholder")}
           className="w-80"
         />
 
@@ -77,9 +75,7 @@ export function InventoryControls({
         <SearchInput
           value={searchQuery}
           onChange={onSearchChange}
-          placeholder={t("inventory.searchPlaceholder", {
-            defaultValue: "Search equipment...",
-          })}
+          placeholder={t("store.searchPlaceholder")}
           className="w-full"
         />
 
@@ -101,8 +97,8 @@ function CategoryDropdown({
   onChange,
   t,
 }: {
-  current: EquipmentCategory | "all";
-  onChange: (cat: EquipmentCategory | "all") => void;
+  current: ProductCategory | "all";
+  onChange: (cat: ProductCategory | "all") => void;
   t: any;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -132,11 +128,11 @@ function CategoryDropdown({
         />
         <span className="capitalize font-medium text-text-primary hidden sm:inline-block">
           {current === "all"
-            ? t("common.filters.all", { defaultValue: "All" })
-            : t(`inventory.categories.${current}`, { defaultValue: current })}
+            ? t("common.filters.all")
+            : t(`store.categories.${current}`)}
         </span>
         <span className="capitalize font-medium text-text-primary sm:hidden">
-          {t("common.filters.label", { defaultValue: "Filter" })}
+          {t("common.filters.label")}
         </span>
         <ChevronDown
           className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -157,12 +153,12 @@ function CategoryDropdown({
                   : "text-text-secondary hover:bg-muted hover:text-text-primary"
               }`}
             >
-              {t("common.filters.all", { defaultValue: "All" })}
+              {t("common.filters.all")}
               {current === "all" && (
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               )}
             </button>
-            {EQUIPMENT_CATEGORIES.map((cat) => (
+            {PRODUCT_CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => {
@@ -175,7 +171,7 @@ function CategoryDropdown({
                     : "text-text-secondary hover:bg-muted hover:text-text-primary"
                 }`}
               >
-                {t(`inventory.categories.${cat}`, { defaultValue: cat })}
+                {t(`store.categories.${cat}`)}
                 {current === cat && (
                   <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                 )}
@@ -209,7 +205,12 @@ function SortDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  const options: SortBy[] = ["name", "quantity", "condition", "createdAt"];
+  const options: { label: string; value: SortBy }[] = [
+    { label: "store.form.name", value: "name" },
+    { label: "store.form.price", value: "price" },
+    { label: "store.form.quantity", value: "quantity" },
+    { label: "common.date", value: "createdAt" },
+  ];
 
   return (
     <div ref={ref} className="relative">
@@ -225,10 +226,10 @@ function SortDropdown({
           className={`w-4 h-4 ${current !== "name" ? "text-primary" : "text-text-secondary"}`}
         />
         <span className="capitalize font-medium text-text-primary hidden sm:inline-block">
-          {t(`inventory.sort.${current}`, { defaultValue: current })}
+          {t(options.find((o) => o.value === current)?.label || current)}
         </span>
         <span className="capitalize font-medium text-text-primary sm:hidden">
-          {t("common.sort", { defaultValue: "Sort" })}
+          {t("common.sort")}
         </span>
         <ChevronDown
           className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -240,19 +241,19 @@ function SortDropdown({
           <div className="p-1">
             {options.map((opt) => (
               <button
-                key={opt}
+                key={opt.value}
                 onClick={() => {
-                  onChange(opt);
+                  onChange(opt.value);
                   setIsOpen(false);
                 }}
                 className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
-                  current === opt
+                  current === opt.value
                     ? "bg-primary/10 text-primary font-medium"
                     : "text-text-secondary hover:bg-muted hover:text-text-primary"
                 }`}
               >
-                {t(`inventory.sort.${opt}`, { defaultValue: opt })}
-                {current === opt && (
+                {t(opt.label)}
+                {current === opt.value && (
                   <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                 )}
               </button>
