@@ -40,8 +40,9 @@
     "decline": "Decline",
     "deactivate": "Deactivate",
     "activate": "Activate",
-
+    "remove": "Remove",
     "description": "Description",
+    "view": "View",
     "type": "Type",
     "locationFilters": "Location Filters",
     "actions": "Actions",
@@ -81,6 +82,7 @@
     "amount": "Amount",
     "joined": "Joined",
     "change": "Change",
+
     "characters": "characters",
     "hide": "Hide",
     "show": "Show",
@@ -115,7 +117,16 @@
     },
     "sort": "Sort",
     "startDate": "Start Date",
-    "endDate": "End Date"
+    "endDate": "End Date",
+    "weekDays": {
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
+    }
   },
   "confirm": {
     "default": {
@@ -402,6 +413,7 @@
     "training": "Training",
     "programs": "Programs",
     "announcements": "Announcements",
+    "marketing": "Marketing",
     "exercises": "Exercises",
     "coaches": "Coaches",
     "progress": "Progress",
@@ -859,16 +871,7 @@
         "accessFlexible": "Flexible",
         "accessFlexibleDesc": "Members are allowed in even if expired, but both they and the manager receive a warning.",
         "accessStrict": "Strict",
-        "accessStrictDesc": "Expired subscriptions strictly block entry. Physical access hardware will deny passage.",
-        "days": {
-          "monday": "Mon",
-          "tuesday": "Tue",
-          "wednesday": "Wed",
-          "thursday": "Thu",
-          "friday": "Fri",
-          "saturday": "Sat",
-          "sunday": "Sun"
-        }
+        "accessStrictDesc": "Expired subscriptions strictly block entry. Physical access hardware will deny passage."
       },
       "notifications": {
         "title": "Notification Settings",
@@ -1249,7 +1252,8 @@
         "title": "Quick Actions",
         "enroll": "New Member",
         "viewMembers": "View Members",
-        "report": "Report Issue"
+        "report": "Report Issue",
+        "viewPricing": "View Pricing"
       },
       "genderSplit": {
         "title": "Gender Distribution",
@@ -1799,6 +1803,94 @@
     "confirmDelete": {
       "title": "Delete Plan?",
       "message": "Are you sure you want to delete this plan? This action cannot be undone."
+    }
+  },
+  "marketing": {
+    "title": "Marketing & Media",
+    "subtitle": "Manage your gym's public gallery and promotional materials",
+    "tabs": {
+      "gallery": "Media Gallery",
+      "materials": "Marketing Materials"
+    },
+    "gallery": {
+      "title": "Media Gallery",
+      "subtitle": "Images and videos to showcase your gym",
+      "empty": "No media found",
+      "emptyDesc": "Upload photos and videos of your facilities, classes, and social events.",
+      "uploadAction": "Upload Media",
+      "setBanner": "Set as Cover",
+      "currentBanner": "Current Cover",
+      "confirmBanner": "Are you sure you want to set this image as the gym's background cover?",
+      "types": {
+        "image": "Image",
+        "video": "Video",
+        "document": "Document"
+      },
+      "categories": {
+        "marketing": "Marketing",
+        "facility": "Facility",
+        "class": "Class",
+        "social": "Social"
+      }
+    },
+    "materials": {
+      "title": "Marketing Materials",
+      "subtitle": "Promotional documents and flyers",
+      "empty": "No materials found",
+      "emptyDesc": "Upload PDFs and documents for promotion and membership info.",
+      "uploadAction": "Upload Material"
+    },
+    "form": {
+      "addMedia": "Add Media",
+      "addMaterial": "Add Marketing Material",
+      "editMedia": "Edit Media",
+      "title": "Title",
+      "titlePlaceholder": "Enter a short title",
+      "description": "Description",
+      "descriptionPlaceholder": "What is this media about?",
+      "type": "Media Type",
+      "category": "Category",
+      "file": "File",
+      "selectFile": "Select File",
+      "uploading": "Uploading media...",
+      "uploadSuccess": "Upload successful",
+      "successAdd": "Media added successfully",
+      "successUpdate": "Media updated successfully",
+      "successDelete": "Media deleted successfully",
+      "successBanner": "Cover image updated successfully",
+      "confirmDelete": "Are you sure you want to delete this media item?",
+      "deleteError": "Failed to delete media",
+      "bannerError": "Failed to update cover image"
+    },
+    "closures": {
+      "title": "Gym Closures",
+      "description": "Manage immediate and future gym closures.",
+      "closeNow": "Close Now",
+      "closeNowDesc": "Immediately close the gym for a specific duration.",
+      "planned": "Planned Closures",
+      "plannedDesc": "Schedule future closures for holidays or maintenance.",
+      "duration": "Duration",
+      "unit": "Unit",
+      "hours": "Hours",
+      "days": "Days",
+      "restOfDay": "Rest of the Day",
+      "reason": "Reason",
+      "reasonPlaceholder": "e.g., Annual Maintenance",
+      "startDate": "Start Date & Time",
+      "addAction": "Schedule Planned Closure",
+      "confirmAddTitle": "Notify Members & Coaches?",
+      "confirmAddText": "Adding this closure will immediately notify all active members and affiliated coaches via In-App, Email, and SMS. Are you sure?",
+      "confirmDeleteTitle": "Cancel Closure?",
+      "confirmDeleteText": "Cancelling this closure will notify everyone that the gym is reopening. Members and coaches will receive Email, SMS, and In-App notifications. Proceed?",
+      "closeNowConfirmTitle": "Close Gym Immediately?",
+      "closeNowConfirmText": "This will immediately close the gym and broadcast a notification to all members, coaches, and staff. This action cannot be undone easily.",
+      "overlapError": "Closures cannot overlap. Please check your dates.",
+      "closeNowAction": "Close Gym Now",
+      "confirm": "Confirm Closure",
+      "empty": "No planned closures scheduled.",
+      "genericReason": "Temporary Closure",
+      "scheduled": "Scheduled",
+      "active": "Active Now"
     }
   },
   "plans_ui": {

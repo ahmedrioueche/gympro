@@ -27,6 +27,30 @@ export interface Gym extends AuditInfo {
   settings?: GymSettings; // Optional nested settings object
   memberStats?: GymStats;
   appSubscription?: AppSubscription;
+  media?: GymMedia[];
+  bannerUrl?: string;
+  bannerPublicId?: string;
+}
+
+export const GYM_MEDIA_TYPES = ["image", "video", "document"] as const;
+export type GymMediaType = (typeof GYM_MEDIA_TYPES)[number];
+
+export const GYM_MEDIA_CATEGORIES = [
+  "marketing",
+  "facility",
+  "class",
+  "social",
+] as const;
+export type GymMediaCategory = (typeof GYM_MEDIA_CATEGORIES)[number];
+
+export interface GymMedia {
+  url: string;
+  publicId: string;
+  type: GymMediaType;
+  category: GymMediaCategory;
+  title?: string;
+  description?: string;
+  createdAt?: string | Date;
 }
 
 export type AccessControlType = "strict" | "flexible";
@@ -43,6 +67,14 @@ export interface GymSettings {
   servicesOffered?: BaseSubscriptionType[]; // List of services offered at the gym
   accessControlType?: AccessControlType; // How to handle expired subscriptions during check-in
   rules?: string[]; // List of gym rules
+  temporaryClosures?: TemporaryClosure[];
+  workingDays?: number[]; // 0-6 (Sunday to Saturday)
+}
+
+export interface TemporaryClosure {
+  start: string | Date;
+  end: string | Date;
+  reason?: string;
 }
 
 export interface GymStats {

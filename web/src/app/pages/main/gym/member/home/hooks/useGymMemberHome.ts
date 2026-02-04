@@ -1,4 +1,7 @@
-import type { GymSettings } from "@ahmedrioueche/gympro-client";
+import type {
+  GymSettings,
+  TemporaryClosure,
+} from "@ahmedrioueche/gympro-client";
 import { useCallback, useEffect, useState } from "react";
 
 export interface GymStatus {
@@ -6,6 +9,8 @@ export interface GymStatus {
   isWomenOnly: boolean;
   nextStatusChange: string | null; // e.g., "Opens at 08:00" or "Closes at 22:00"
   currentSession: "mixed" | "womenOnly" | "menOnly" | "closed";
+  isTemporaryClosure?: boolean;
+  activeClosure?: TemporaryClosure;
 }
 
 /**
@@ -17,6 +22,7 @@ export function useGymMemberHome(settings?: GymSettings) {
     isWomenOnly: false,
     nextStatusChange: null,
     currentSession: "closed",
+    isTemporaryClosure: false,
   });
 
   const calculateStatus = useCallback(() => {
@@ -26,8 +32,11 @@ export function useGymMemberHome(settings?: GymSettings) {
         isWomenOnly: false,
         nextStatusChange: null,
         currentSession: "closed" as const,
+        isTemporaryClosure: false,
       };
     }
+
+    const { start, end } = settings.workingHours;
 
     const now = new Date();
     const currentTime = now.toTimeString().slice(0, 5); // "HH:MM"
@@ -35,7 +44,39 @@ export function useGymMemberHome(settings?: GymSettings) {
       .toLocaleDateString("en-US", { weekday: "long" })
       .toLowerCase();
 
-    const { start, end } = settings.workingHours;
+    // Check for temporary closures first
+    if (settings.temporaryClosures?.length) {
+      for (const closure of settings.temporaryClosures) {
+        const closureStart = new Date(closure.start);
+        const closureEnd = new Date(closure.end);
+        if (now >= closureStart && now <= closureEnd) {
+          return {
+            isOpen: false,
+            isWomenOnly: false,
+            nextStatusChange: closure.reason || "Temporary Closure",
+            currentSession: "closed" as const,
+            isTemporaryClosure: true,
+            activeClosure: closure,
+          };
+        }
+      }
+    }
+
+    // Check if today is a working day
+    const dayOfWeek = now.getDay(); // 0 (Sunday) to 6 (Saturday)
+    const isWorkingDay = settings.workingDays
+      ? settings.workingDays.includes(dayOfWeek)
+      : true; // Default to open if not specified
+
+    if (!isWorkingDay) {
+      return {
+        isOpen: false,
+        isWomenOnly: false,
+        nextStatusChange: "Closed Today",
+        currentSession: "closed" as const,
+        isTemporaryClosure: false,
+      };
+    }
 
     // Check if gym is open
     const isOpen = currentTime >= start && currentTime < end;
@@ -83,6 +124,7 @@ export function useGymMemberHome(settings?: GymSettings) {
       isWomenOnly,
       nextStatusChange,
       currentSession,
+      isTemporaryClosure: false,
     };
   }, [settings]);
 

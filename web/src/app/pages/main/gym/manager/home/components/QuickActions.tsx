@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { AlertCircle, PlusCircle, Users } from "lucide-react";
+import { DollarSign, PlusCircle, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../../constants/navigation";
 
@@ -22,9 +22,9 @@ export function QuickActions() {
       bgHover: "hover:from-purple-600 hover:to-purple-700",
     },
     {
-      icon: <AlertCircle className="w-8 h-8 md:w-10 md:h-10" />,
-      label: t("home.gym.actions.report"),
-      link: "#",
+      icon: <DollarSign className="w-8 h-8 md:w-10 md:h-10" />,
+      label: t("home.gym.actions.viewPricing"),
+      link: APP_PAGES.gym.manager.pricing.link,
       gradient: "from-rose-500 to-rose-600",
       bgHover: "hover:from-rose-600 hover:to-rose-700",
     },

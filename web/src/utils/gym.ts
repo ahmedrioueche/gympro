@@ -14,7 +14,7 @@ export const getGymStatusStyles = (status?: GymStatus) => {
     return {
       gradient: "from-red-500/20 via-rose-500/20 to-pink-500/20",
       textGradient: "from-red-600 via-rose-600 to-pink-600",
-      badge: "bg-error text-white",
+      badge: "bg-[#EF4444] text-white shadow-red-500/30",
       glow: "shadow-red-500/20",
     };
   }
@@ -22,23 +22,48 @@ export const getGymStatusStyles = (status?: GymStatus) => {
     return {
       gradient: "from-pink-500/20 via-fuchsia-500/20 to-purple-500/20",
       textGradient: "from-pink-600 via-fuchsia-600 to-purple-600",
-      badge: "bg-pink-500 text-white",
+      badge: "bg-[#EC4899] text-white shadow-pink-500/30",
       glow: "shadow-pink-500/20",
     };
   }
   return {
     gradient: "from-emerald-500/20 via-teal-500/20 to-cyan-500/20",
     textGradient: "from-emerald-600 via-teal-600 to-cyan-600",
-    badge: "bg-success text-white",
+    badge: "bg-[#10B981] text-white shadow-emerald-500/30",
     glow: "shadow-emerald-500/20",
   };
 };
 
 export const getGymStatusText = (status: GymStatus, t: any) => {
+  if (status.isTemporaryClosure)
+    return status.nextStatusChange || t("home.gym.status.closed", "Closed");
   if (!status.isOpen) return t("home.gym.status.closed", "Closed");
   if (status.isWomenOnly)
     return t("home.gym.status.womenOnly", "Women Only Now");
   if (status.currentSession === "menOnly")
     return t("home.gym.status.menOnly", "Men Only Now");
   return t("home.gym.status.open", "Open Now");
+};
+
+export const formatWorkingDays = (days: number[], t: any) => {
+  if (!days || days.length === 0) return t("common.days.noDays", "No days");
+  if (days.length === 7) return t("common.days.allDays", "Every Day");
+  if (days.length === 6 && !days.includes(0))
+    return t("common.days.monSat", "Mon — Sat");
+  if (days.length === 5 && !days.includes(0) && !days.includes(6))
+    return t("common.days.monFri", "Mon — Fri");
+
+  const dayNames = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
+  return days
+    .sort((a, b) => (a === 0 ? 7 : a) - (b === 0 ? 7 : b)) // Sort Mon-Sun
+    .map((d) => t(`common.weekDays.${dayNames[d]}`, dayNames[d].slice(0, 3)))
+    .join(", ");
 };

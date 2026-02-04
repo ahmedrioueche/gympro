@@ -224,3 +224,9 @@ export interface ProductModalProps {
   product?: Product;
   onSuccess?: () => void;
 }
+
+export interface GymMediaModalProps {
+  gymId: string;
+  type?: "image" | "video" | "document";
+  onSuccess?: () => void;
+}

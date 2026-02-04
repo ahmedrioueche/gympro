@@ -1,4 +1,8 @@
-import type { Currency, WeeklyTimeRange } from "@ahmedrioueche/gympro-client";
+import type {
+  Currency,
+  TemporaryClosure,
+  WeeklyTimeRange,
+} from "@ahmedrioueche/gympro-client";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -13,7 +17,8 @@ export type TabType =
   | "notifications"
   | "services"
   | "rules"
-  | "location";
+  | "location"
+  | "closures";
 
 export function useGymManagerSettings() {
   const { t } = useTranslation();
@@ -37,6 +42,12 @@ export function useGymManagerSettings() {
     useState<string>("flexible");
   const [defaultCurrency, setDefaultCurrency] = useState<Currency>("USD");
   const [rules, setRules] = useState<string[]>([]);
+  const [temporaryClosures, setTemporaryClosures] = useState<
+    TemporaryClosure[]
+  >([]);
+  const [workingDays, setWorkingDays] = useState<number[]>([
+    0, 1, 2, 3, 4, 5, 6,
+  ]);
 
   // Location State (gym-level fields, not settings)
   const [address, setAddress] = useState("");
@@ -107,6 +118,16 @@ export function useGymManagerSettings() {
         } else {
           setRules([]);
         }
+        if (settings.temporaryClosures) {
+          setTemporaryClosures(settings.temporaryClosures);
+        } else {
+          setTemporaryClosures([]);
+        }
+        if (settings.workingDays && settings.workingDays.length > 0) {
+          setWorkingDays(settings.workingDays);
+        } else {
+          setWorkingDays([0, 1, 2, 3, 4, 5, 6]);
+        }
       }
     }
   }, [currentGym]);
@@ -147,6 +168,8 @@ export function useGymManagerSettings() {
         accessControlType,
         defaultCurrency,
         rules,
+        temporaryClosures,
+        workingDays,
       };
 
       const settingsResult = await updateSettings.mutateAsync({
@@ -183,6 +206,30 @@ export function useGymManagerSettings() {
     }
   };
 
+  const handleUpdateClosures = async (newClosures: TemporaryClosure[]) => {
+    if (!currentGym) return;
+    try {
+      const settingsUpdates = {
+        temporaryClosures: newClosures,
+      };
+      const result = await updateSettings.mutateAsync({
+        id: currentGym._id,
+        data: settingsUpdates,
+      });
+
+      if (result.success && result.data) {
+        setGym(result.data);
+        setTemporaryClosures(newClosures);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Failed to update closures:", error);
+      toast.error(t("common.error", "An error occurred"));
+      return false;
+    }
+  };
+
   const hasSettingsChanges =
     workingHoursStart !==
       (currentGym?.settings?.workingHours?.start || "06:00") ||
@@ -203,7 +250,14 @@ export function useGymManagerSettings() {
     accessControlType !==
       (currentGym?.settings?.accessControlType || "flexible") ||
     defaultCurrency !== (currentGym?.settings?.defaultCurrency || "USD") ||
-    JSON.stringify(rules) !== JSON.stringify(currentGym?.settings?.rules || []);
+    JSON.stringify(rules) !==
+      JSON.stringify(currentGym?.settings?.rules || []) ||
+    JSON.stringify(temporaryClosures) !==
+      JSON.stringify(currentGym?.settings?.temporaryClosures || []) ||
+    JSON.stringify(workingDays) !==
+      JSON.stringify(
+        currentGym?.settings?.workingDays || [0, 1, 2, 3, 4, 5, 6],
+      );
 
   const hasLocationChanges =
     address !== (currentGym?.address || "") ||
@@ -248,6 +302,11 @@ export function useGymManagerSettings() {
     setDefaultCurrency,
     rules,
     setRules,
+    temporaryClosures,
+    setTemporaryClosures,
+    handleUpdateClosures,
+    workingDays,
+    setWorkingDays,
     addRule: (rule: string) => {
       if (rule.trim()) {
         setRules((prev) => [...prev, rule.trim()]);

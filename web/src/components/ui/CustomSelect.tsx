@@ -122,13 +122,15 @@ const CustomSelect = <T extends string>({
   const selectedOptionData = options.find((o) => o.value === selectedOption);
 
   const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    option.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
-    <div className="relative" ref={selectRef}>
+    <div className="relative space-y-2" ref={selectRef}>
       {title && (
-        <label className="font-normal text-sm text-text-primary">{title}</label>
+        <label className="block text-sm font-medium text-text-primary">
+          {title}
+        </label>
       )}
 
       <div
@@ -139,7 +141,6 @@ const CustomSelect = <T extends string>({
         aria-label={title}
         aria-disabled={disabled}
         className={`
-          ${marginTop}
           p-3 px-4 rounded-lg 
           border 
           bg-surface

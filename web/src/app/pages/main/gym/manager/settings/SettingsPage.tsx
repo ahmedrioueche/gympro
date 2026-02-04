@@ -1,6 +1,7 @@
 import {
   Bell,
   BookOpen,
+  CalendarDays,
   Clock,
   Dumbbell,
   MapPin,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../../components/PageHeader";
+import ClosuresTab from "./components/ClosuresTab";
 import GeneralTab from "./components/GeneralTab";
 import LocationTab from "./components/LocationTab";
 import NotificationsTab from "./components/NotificationsTab";
@@ -68,6 +70,11 @@ export default function SettingsPage() {
     setEmail,
     website,
     setWebsite,
+    temporaryClosures,
+    setTemporaryClosures,
+    handleUpdateClosures,
+    workingDays,
+    setWorkingDays,
   } = useGymManagerSettings();
 
   const tabs = [
@@ -95,6 +102,11 @@ export default function SettingsPage() {
       id: "rules",
       label: t("settings.gym.tabs.rules", "Rules"),
       icon: BookOpen,
+    },
+    {
+      id: "closures",
+      label: t("settings.gym.tabs.closures", "Closures"),
+      icon: CalendarDays,
     },
   ];
 
@@ -156,6 +168,8 @@ export default function SettingsPage() {
               setAccessControlType={setAccessControlType}
               defaultCurrency={defaultCurrency}
               setDefaultCurrency={setDefaultCurrency}
+              workingDays={workingDays}
+              setWorkingDays={setWorkingDays}
             />
           )}
 
@@ -200,6 +214,15 @@ export default function SettingsPage() {
 
           {activeTab === "rules" && (
             <RulesTab rules={rules} addRule={addRule} removeRule={removeRule} />
+          )}
+          {activeTab === "closures" && (
+            <ClosuresTab
+              closures={temporaryClosures}
+              setClosures={setTemporaryClosures}
+              onSave={handleUpdateClosures}
+              workingHoursStart={workingHoursStart}
+              isSaving={isSaving}
+            />
           )}
         </div>
       </div>

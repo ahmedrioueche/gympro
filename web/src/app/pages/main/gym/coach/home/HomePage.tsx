@@ -1,6 +1,7 @@
 import Loading from "../../../../../../components/ui/Loading";
 import NotFound from "../../../../../../components/ui/NotFound";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
+import OperatingHours from "../../../../../components/gym/OperatingHours";
 import GymCoachAnnouncementsSection from "./components/GymCoachAnnouncementsSection";
 import GymCoachQuickActions from "./components/GymCoachQuickActions";
 import GymCoachQuickStats from "./components/GymCoachQuickStats";
@@ -48,11 +49,16 @@ export default function HomePage() {
         </div>
 
         {/* Bottom Row: Recent Activity */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-2 space-y-6">
           <GymCoachRecentActivity
             activities={recentActivity}
             isLoading={isRecentActivityLoading}
           />
+        </div>
+
+        {/* Operating Hours */}
+        <div className="lg:col-span-1">
+          <OperatingHours settings={gym.settings} status={status} />
         </div>
       </div>
     </div>

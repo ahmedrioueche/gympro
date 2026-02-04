@@ -33,6 +33,8 @@ interface GeneralTabProps {
   setAccessControlType: (value: string) => void;
   defaultCurrency: Currency;
   setDefaultCurrency: (value: Currency) => void;
+  workingDays: number[];
+  setWorkingDays: (value: number[]) => void;
 }
 
 export default function GeneralTab({
@@ -48,6 +50,8 @@ export default function GeneralTab({
   setAccessControlType,
   defaultCurrency,
   setDefaultCurrency,
+  workingDays,
+  setWorkingDays,
 }: GeneralTabProps) {
   const { t } = useTranslation();
   const [isAddingSlot, setIsAddingSlot] = useState(false);
@@ -128,7 +132,7 @@ export default function GeneralTab({
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.gym.general.currencyDesc",
-            "Select the currency for membership pricing display"
+            "Select the currency for membership pricing display",
           )}
         </p>
 
@@ -140,10 +144,50 @@ export default function GeneralTab({
             onChange={(val) => setDefaultCurrency(val as Currency)}
             placeholder={t(
               "settings.gym.general.selectCurrency",
-              "Select currency"
+              "Select currency",
             )}
             searchable
           />
+        </div>
+      </div>
+
+      <div className="pt-6 border-t border-border">
+        <h3 className="text-lg font-semibold text-text-primary mb-1">
+          {t("settings.gym.general.workingDays", "Working Days")}
+        </h3>
+        <p className="text-sm text-text-secondary mb-4">
+          {t(
+            "settings.gym.general.workingDaysDesc",
+            "Select the days your gym is operational",
+          )}
+        </p>
+
+        <div className="flex flex-wrap gap-2">
+          {WEEK_DAYS.map((day, index) => {
+            const dayIndex = (index + 1) % 7; // Convert to 0-6 (Sun-Sat) where WEEK_DAYS is Mon-Sun
+            const isSelected = workingDays.includes(dayIndex);
+
+            return (
+              <button
+                key={day}
+                type="button"
+                onClick={() => {
+                  if (isSelected) {
+                    setWorkingDays(workingDays.filter((d) => d !== dayIndex));
+                  } else {
+                    setWorkingDays([...workingDays, dayIndex]);
+                  }
+                }}
+                className={`px-4 py-2 rounded-xl border-2 font-medium transition-all duration-200 ${
+                  isSelected
+                    ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
+                    : "bg-surface-hover border-border text-text-secondary hover:border-primary/30"
+                }`}
+              >
+                {t(`common.weekDays.${day.toLowerCase()}`, day.slice(0, 3))}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -154,7 +198,7 @@ export default function GeneralTab({
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.gym.general.workingHoursDesc",
-            "Set your gym's operating hours"
+            "Set your gym's operating hours",
           )}
         </p>
 
@@ -181,7 +225,7 @@ export default function GeneralTab({
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.gym.general.genderPolicyDesc",
-            "Configure mixed or gender-specific training sessions"
+            "Configure mixed or gender-specific training sessions",
           )}
         </p>
 
@@ -203,7 +247,7 @@ export default function GeneralTab({
             <p className="text-xs text-text-secondary mt-0.5">
               {t(
                 "settings.gym.general.isMixedDesc",
-                "Allow males and females to train together"
+                "Allow males and females to train together",
               )}
             </p>
           </div>
@@ -214,7 +258,7 @@ export default function GeneralTab({
           <h4 className="text-sm font-medium text-text-primary mb-3">
             {t(
               "settings.gym.general.accessControlTitle",
-              "Access Control Mode"
+              "Access Control Mode",
             )}
           </h4>
           <div className="grid text-primary grid-cols-1 sm:grid-cols-2 gap-4">
@@ -241,7 +285,7 @@ export default function GeneralTab({
               <p className="text-xs text-text-secondary text-left">
                 {t(
                   "settings.gym.general.accessFlexibleDesc",
-                  "Members are allowed in even if expired, but both they and the manager receive a warning."
+                  "Members are allowed in even if expired, but both they and the manager receive a warning.",
                 )}
               </p>
             </button>
@@ -269,7 +313,7 @@ export default function GeneralTab({
               <p className="text-xs text-text-secondary text-left">
                 {t(
                   "settings.gym.general.accessStrictDesc",
-                  "Expired subscriptions strictly block entry. Physical access hardware will deny passage."
+                  "Expired subscriptions strictly block entry. Physical access hardware will deny passage.",
                 )}
               </p>
             </button>
@@ -284,13 +328,13 @@ export default function GeneralTab({
                 <h4 className="text-sm font-medium text-text-primary">
                   {t(
                     "settings.gym.general.femaleOnlyHours",
-                    "Female-Only Hours"
+                    "Female-Only Hours",
                   )}
                 </h4>
                 <p className="text-xs text-text-secondary mt-0.5">
                   {t(
                     "settings.gym.general.femaleOnlyHoursDesc",
-                    "Specify time ranges reserved for female members"
+                    "Specify time ranges reserved for female members",
                   )}
                 </p>
               </div>
@@ -331,8 +375,8 @@ export default function GeneralTab({
                               className="px-2 py-1 text-xs font-medium rounded-md bg-primary/10 text-primary border border-primary/20"
                             >
                               {t(
-                                `settings.gym.general.days.${day.toLowerCase()}`,
-                                day.slice(0, 3)
+                                `common.weekDays.${day.toLowerCase()}`,
+                                day.slice(0, 3),
                               )}
                             </span>
                           ))}
@@ -392,8 +436,8 @@ export default function GeneralTab({
                           }`}
                         >
                           {t(
-                            `settings.gym.general.days.${day.toLowerCase()}`,
-                            day.slice(0, 3)
+                            `common.weekDays.${day.toLowerCase()}`,
+                            day.slice(0, 3),
                           )}
                         </button>
                       );
@@ -403,7 +447,7 @@ export default function GeneralTab({
                     <p className="text-xs text-danger mt-1">
                       {t(
                         "settings.gym.general.selectAtLeastOneDay",
-                        "Please select at least one day"
+                        "Please select at least one day",
                       )}
                     </p>
                   )}
@@ -461,7 +505,7 @@ export default function GeneralTab({
                 <p className="text-sm text-text-secondary">
                   {t(
                     "settings.gym.general.noFemaleHours",
-                    "No female-only hours configured"
+                    "No female-only hours configured",
                   )}
                 </p>
               </div>

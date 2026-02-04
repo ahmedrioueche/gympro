@@ -17,6 +17,7 @@ import type {
   EditManagerModalProps,
   ExerciseDetailModalProps,
   GymInvitationModalProps,
+  GymMediaModalProps,
   InventoryItemModalProps,
   InviteCoachModalProps,
   LogSessionModalProps,
@@ -70,6 +71,7 @@ type ModalType =
   | "competition"
   | "create-product"
   | "edit-product"
+  | "add-gym-media"
   | null;
 
 interface ModalState {
@@ -106,6 +108,7 @@ interface ModalState {
   inventoryItemProps?: InventoryItemModalProps;
   competitionProps?: CompetitionModalProps;
   productProps?: ProductModalProps;
+  gymMediaProps?: GymMediaModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -303,6 +306,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: modal,
           productProps: props,
+        };
+      }
+      if (modal === "add-gym-media") {
+        return {
+          currentModal: "add-gym-media",
+          gymMediaProps: props,
         };
       }
       return { currentModal: null };

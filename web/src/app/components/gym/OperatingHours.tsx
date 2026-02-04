@@ -1,106 +1,178 @@
 import { type GymSettings } from "@ahmedrioueche/gympro-client";
-import { Clock, User, UserCheck, Users } from "lucide-react";
+import { format } from "date-fns";
+import { Clock, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { formatWorkingDays } from "../../../utils/gym";
+import type { GymStatus } from "../../pages/main/gym/member/home/hooks/useGymMemberHome";
 
 interface OperatingHoursProps {
   settings?: GymSettings;
+  status: GymStatus;
 }
 
-export default function OperatingHours({ settings }: OperatingHoursProps) {
+export default function OperatingHours({
+  settings,
+  status,
+}: OperatingHoursProps) {
   const { t } = useTranslation();
 
-  if (!settings?.workingHours) return null;
+  if (!settings?.workingHours) {
+    return (
+      <div className="bg-surface border border-border rounded-3xl p-6 shadow-sm flex-1 flex flex-col">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-primary/10 rounded-xl text-primary">
+            <Clock className="w-5 h-5" />
+          </div>
+          <h3 className="text-xl font-bold text-text-primary">
+            {t("home.gym.hours.title", "Operating Hours")}
+          </h3>
+        </div>
+        <div className="flex-1 flex flex-col items-center justify-center py-12">
+          <div className="p-4 bg-muted/10 rounded-full mb-4">
+            <Clock className="w-8 h-8 text-text-secondary/50" />
+          </div>
+          <p className="text-text-secondary font-medium text-center">
+            {t("home.gymMember.noHours", "No operating hours configured")}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const { start, end } = settings.workingHours;
   const isMixed = settings.isMixed ?? false;
   const femaleOnlyHours = settings.femaleOnlyHours || [];
 
   return (
-    <div className="bg-surface border border-border rounded-3xl p-6 shadow-sm">
+    <div className="bg-surface border border-border rounded-3xl p-6 shadow-sm flex flex-col h-full">
       <div className="flex items-center gap-3 mb-6">
         <div className="p-2 bg-primary/10 rounded-xl text-primary">
           <Clock className="w-5 h-5" />
         </div>
         <h3 className="text-xl font-bold text-text-primary">
-          {t("home.gym.hours.title")}
+          {t("home.gym.hours.title", "Operating Hours")}
         </h3>
       </div>
 
-      <div className="space-y-4">
-        {/* Total Working Hours */}
-        <div className="flex items-center justify-between p-4 bg-muted/10 rounded-2xl border border-border/50">
-          <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-primary" />
-            <span className="font-semibold text-text-primary">
-              {t("settings.gym.general.workingHours", "Working Hours")}
-            </span>
-          </div>
-          <span className="text-text-secondary font-mono font-bold">
-            {start} - {end}
-          </span>
-        </div>
-
-        {/* Gender Specific Hours */}
-        {isMixed ? (
-          <div className="flex items-center justify-between p-4 bg-indigo-500/5 rounded-2xl border border-indigo-500/20">
-            <div className="flex items-center gap-3">
-              <Users className="w-5 h-5 text-indigo-500" />
-              <span className="font-semibold text-indigo-600">
-                {t("home.gym.hours.mixed")}
+      <div className="space-y-4 flex-1">
+        {/* Active Closure Information */}
+        {status.isTemporaryClosure && status.activeClosure && (
+          <div className="p-4 bg-danger/5 border border-danger/20 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center gap-2 mb-2">
+              <Info className="w-4 h-4 text-danger" />
+              <span className="text-xs font-black text-danger uppercase tracking-widest">
+                {status.activeClosure.reason ||
+                  t("home.gym.temporaryClosure", "Closure Active")}
               </span>
             </div>
-            <span className="text-indigo-700 font-mono text-sm font-bold">
-              {start} - {end}
-            </span>
-          </div>
-        ) : femaleOnlyHours.length > 0 ? (
-          <div className="border border-pink-500/20 bg-pink-500/5 rounded-2xl p-4 space-y-3">
-            <div className="flex items-center gap-3 mb-2">
-              <UserCheck className="w-5 h-5 text-pink-500" />
-              <span className="font-semibold text-pink-600">
-                {t("home.gym.hours.womenOnly")}
-              </span>
+            <div className="text-lg font-black text-text-primary">
+              {format(new Date(status.activeClosure.start), "MMM d, p")} —{" "}
+              {format(new Date(status.activeClosure.end), "MMM d, p")}
             </div>
-
-            <div className="grid gap-2 grid-cols-1 sm:grid-cols-3">
-              {femaleOnlyHours.map((slot, idx) => (
-                <div
-                  key={idx}
-                  className=" bg-surface/50 border border-border rounded-xl p-3 flex flex-col gap-1.5 shadow-sm"
-                >
-                  <span className="text-pink-700 font-mono text-sm font-bold block">
-                    {slot.range.start} - {slot.range.end}
-                  </span>
-                  <div className="flex flex-wrap gap-1">
-                    {slot.days.map((day) => (
-                      <span
-                        key={day}
-                        className="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded-md bg-pink-100 text-pink-600 border border-pink-200"
-                      >
-                        {t(
-                          `settings.gym.general.days.${day.toLowerCase()}`,
-                          day.slice(0, 3)
-                        )}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between p-4 bg-blue-500/5 rounded-2xl border border-blue-500/20">
-            <div className="flex items-center gap-3">
-              <User className="w-5 h-5 text-blue-500" />
-              <span className="font-semibold text-blue-600">
-                {t("home.gym.hours.menOnly")}
-              </span>
-            </div>
-            <span className="text-blue-700 font-mono text-sm font-bold">
-              {start} - {end}
-            </span>
+            <p className="text-xs text-text-secondary mt-1 font-medium italic">
+              {t(
+                "home.gymMember.closureNotice",
+                "The gym is currently closed for the duration above.",
+              )}
+            </p>
           </div>
         )}
+
+        {/* Regular Working Hours */}
+        <div className="flex flex-col gap-2 p-4 bg-muted/10 rounded-2xl border border-border/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-primary" />
+              <span className="font-bold text-text-primary tracking-tight">
+                {t("settings.gym.general.workingHours", "Regular Hours")}
+              </span>
+            </div>
+            <div className="text-right">
+              <div className="text-lg font-black text-text-primary leading-none">
+                {start} — {end}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between mt-1">
+            <span className="text-xs font-bold text-text-secondary opacity-70 uppercase tracking-wider">
+              {t("home.gymMember.operatingDays", "Operating Days")}
+            </span>
+            <span className="text-xs font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-md border border-primary/10">
+              {formatWorkingDays(
+                settings.workingDays || [0, 1, 2, 3, 4, 5, 6],
+                t,
+              )}
+            </span>
+          </div>
+        </div>
+
+        {/* Gender Specific Sessions - only show if NOT temporarily closed or if we want to show it as "Regular" */}
+        <div className="mt-4">
+          <div className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em] mb-3 px-1">
+            {t("home.gym.sessions.title", "Access Schedule")}
+          </div>
+
+          <div className="space-y-2">
+            {isMixed ? (
+              <div className="flex items-center justify-between p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/10">
+                <span className="text-sm font-bold text-indigo-600">
+                  {t("home.gym.hours.mixed", "Mixed Access")}
+                </span>
+                <span className="text-xs font-black text-indigo-700 font-mono">
+                  {start} — {end}
+                </span>
+              </div>
+            ) : (
+              <>
+                {/* Men's Session (Default remainder) */}
+                <div className="flex items-center justify-between p-3 bg-blue-500/5 rounded-xl border border-blue-500/10">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-blue-600">
+                      {t("home.gym.hours.menOnly", "Men Only")}
+                    </span>
+                    <span className="text-[10px] text-blue-400 font-bold uppercase">
+                      {t("home.gym.hours.standardSession", "Standard Session")}
+                    </span>
+                  </div>
+                  <span className="text-xs font-black text-blue-700 font-mono">
+                    {start} — {end}
+                  </span>
+                </div>
+
+                {/* Female Only Hours */}
+                {femaleOnlyHours.map((slot, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col gap-2 p-3 bg-pink-500/5 rounded-xl border border-pink-500/10"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-bold text-pink-600">
+                        {t("home.gym.hours.womenOnly", "Women Only")}
+                      </span>
+                      <span className="text-xs font-black text-pink-700 font-mono">
+                        {slot.range.start} — {slot.range.end}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {slot.days.map((day) => (
+                        <span
+                          key={day}
+                          className="px-1.5 py-0.5 text-[9px] font-black uppercase rounded bg-pink-500/10 text-pink-600 border border-pink-500/20"
+                        >
+                          {t(
+                            `common.weekDays.${day.toLowerCase()}`,
+                            day.slice(0, 3),
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

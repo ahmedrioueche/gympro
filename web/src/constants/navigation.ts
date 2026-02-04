@@ -131,6 +131,10 @@ export const APP_PAGES = {
         name: "pages.gym.announcements",
         link: "/gym/manager/announcements",
       },
+      marketing: {
+        name: "pages.gym.marketing",
+        link: "/gym/manager/marketing",
+      },
       analytics: {
         name: "pages.gym.analytics",
         link: "/gym/manager/analytics",

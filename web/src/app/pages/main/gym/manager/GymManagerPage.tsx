@@ -74,6 +74,12 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.gym.manager.attendance.link],
   },
   {
+    label: "marketing",
+    icon: <Megaphone className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.marketing.link,
+    matchPaths: [APP_PAGES.gym.manager.marketing.link],
+  },
+  {
     label: "inventory",
     icon: <Package className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.inventory.link,
@@ -97,6 +103,7 @@ const sidebarLinks = [
     path: APP_PAGES.gym.manager.announcements.link,
     matchPaths: [APP_PAGES.gym.manager.announcements.link],
   },
+
   {
     label: "analytics",
     icon: <BarChart3 className="w-5 h-5" />,
@@ -136,6 +143,8 @@ function GymManagerPage() {
         return hasPermission(GYM_PERMISSIONS.settings.view);
       case "announcements":
         return hasPermission(GYM_PERMISSIONS.communication.view);
+      case "marketing":
+        return hasPermission(GYM_PERMISSIONS.marketing.view);
       case "inventory":
         return hasPermission(GYM_PERMISSIONS.inventory.view);
       case "store":

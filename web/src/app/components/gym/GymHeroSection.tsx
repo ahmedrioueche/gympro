@@ -1,4 +1,5 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
+import { format } from "date-fns";
 import {
   BookOpen,
   ExternalLink,
@@ -8,7 +9,11 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUserStore } from "../../../store/user";
-import { getGymStatusStyles, getGymStatusText } from "../../../utils/gym";
+import {
+  formatWorkingDays,
+  getGymStatusStyles,
+  getGymStatusText,
+} from "../../../utils/gym";
 import { cn } from "../../../utils/helper";
 import {
   getGoogleMapsUrl,
@@ -53,24 +58,50 @@ export default function GymHeroSection({
         styles.gradient,
         styles.glow,
       )}
-      style={{ minHeight: "35vh" }}
+      style={{ minHeight: "40vh" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-transparent animate-pulse duration-[10000ms]" />
-      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[100px] rounded-full -mr-32 -mt-32" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 blur-[100px] rounded-full -ml-32 -mb-32" />
+      {/* Background Image or Gradient */}
+      {gym.bannerUrl ? (
+        <div className="absolute inset-0">
+          <img
+            src={gym.bannerUrl}
+            alt={gym.name}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        </div>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-transparent animate-pulse duration-[10000ms]" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[100px] rounded-full -mr-32 -mt-32" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 blur-[100px] rounded-full -ml-32 -mb-32" />
+        </>
+      )}
 
       <div className="relative h-full p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
         {/* Top: Gym Name & Status */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 text-center sm:text-left">
           <div className="flex-1 min-w-0">
-            <h1
-              className={cn(
-                "text-4xl md:text-6xl lg:text-7xl font-[1000] mb-2 truncate leading-none tracking-tighter bg-clip-text text-transparent bg-gradient-to-r",
-                styles.textGradient,
-              )}
-            >
-              {gym.name}
-            </h1>
+            <div className="flex flex-col gap-2 mb-2">
+              <div
+                className={cn(
+                  "self-center sm:self-start px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest shadow-lg animate-in fade-in slide-in-from-left-4 duration-500",
+                  styles.badge,
+                )}
+              >
+                {status.isOpen
+                  ? t("common.open", "Open")
+                  : t("common.closed", "Closed")}
+              </div>
+              <h1
+                className={cn(
+                  "text-4xl md:text-6xl lg:text-7xl font-[1000] truncate leading-none tracking-tighter bg-clip-text text-transparent bg-gradient-to-r",
+                  styles.textGradient,
+                )}
+              >
+                {gym.name}
+              </h1>
+            </div>
             {gym.slogan && (
               <p className="text-lg md:text-xl text-text-secondary/60 line-clamp-1 font-semibold tracking-wide uppercase">
                 {gym.slogan}
@@ -111,14 +142,68 @@ export default function GymHeroSection({
         >
           {/* Hours Info */}
           {gym.settings?.workingHours ? (
-            <div className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 text-center md:text-left">
-              <div className="text-sm font-bold text-text-secondary mb-2">
-                {status.isOpen ? "Closes at" : "Opens at"}
+            <div className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 text-center md:text-left h-full flex flex-col justify-center">
+              <div className="flex items-center gap-2 mb-2 justify-center md:justify-start">
+                <div
+                  className={cn(
+                    "w-2 h-2 rounded-full",
+                    status.isOpen ? "bg-success animate-pulse" : "bg-error",
+                  )}
+                />
+                <div className="text-sm font-bold text-text-secondary uppercase tracking-wider">
+                  {status.isTemporaryClosure
+                    ? t("home.gym.temporaryClosure", "Closure Active")
+                    : t("home.gym.workingHours", "Operating Hours")}
+                </div>
               </div>
-              <div className="text-2xl md:text-3xl font-black text-text-primary">
-                {status.isOpen
-                  ? gym.settings.workingHours.end
-                  : gym.settings.workingHours.start}
+
+              <div className="flex flex-col gap-3">
+                {status.isTemporaryClosure && status.activeClosure ? (
+                  <>
+                    <div className="flex flex-col items-center md:items-start p-3 bg-red-500/10 rounded-xl border border-red-500/20">
+                      <div className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">
+                        {status.activeClosure.reason ||
+                          t("home.gym.temporaryClosure", "Closure Active")}
+                      </div>
+                      <div className="text-xl font-black text-text-primary">
+                        {format(
+                          new Date(status.activeClosure.start),
+                          "MMM d, p",
+                        )}{" "}
+                        —{" "}
+                        {format(new Date(status.activeClosure.end), "MMM d, p")}
+                      </div>
+                    </div>
+                    <div className="text-center md:text-left pt-2 border-t border-border/30">
+                      <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-0.5">
+                        {t("home.gym.regularHours", "Regular Hours")}
+                      </div>
+                      <div className="text-lg font-bold text-text-primary/70">
+                        {gym.settings.workingHours.start} —{" "}
+                        {gym.settings.workingHours.end}
+                      </div>
+                      <div className="text-[10px] font-bold text-text-secondary opacity-50 uppercase tracking-tighter">
+                        {formatWorkingDays(
+                          gym.settings?.workingDays || [0, 1, 2, 3, 4, 5, 6],
+                          t,
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-2xl md:text-3xl font-black text-text-primary mb-1">
+                      {gym.settings.workingHours.start} —{" "}
+                      {gym.settings.workingHours.end}
+                    </div>
+                    <div className="text-sm font-bold text-text-secondary opacity-70">
+                      {formatWorkingDays(
+                        gym.settings?.workingDays || [0, 1, 2, 3, 4, 5, 6],
+                        t,
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ) : (

@@ -8,6 +8,7 @@ import CompetitionsPage from "../../../../app/pages/main/gym/manager/competition
 import CreateMemberPage from "../../../../app/pages/main/gym/manager/create-member/CreateMemberPage";
 import HomePage from "../../../../app/pages/main/gym/manager/home/HomePage";
 import InventoryPage from "../../../../app/pages/main/gym/manager/inventory/InventoryPage";
+import MarketingPage from "../../../../app/pages/main/gym/manager/marketing/MarketingPage";
 import MembersPage from "../../../../app/pages/main/gym/manager/members/MembersPage";
 import NotificationsPage from "../../../../app/pages/main/gym/manager/notifications/NotificationsPage";
 import PricingPage from "../../../../app/pages/main/gym/manager/pricing/PricingPage";
@@ -87,6 +88,12 @@ export const storeRoute = createRoute({
   getParentRoute: () => GymManagerRootRoute,
   path: "/store",
   component: () => <StorePage />,
+});
+
+export const marketingRoute = createRoute({
+  getParentRoute: () => GymManagerRootRoute,
+  path: "/marketing",
+  component: () => <MarketingPage />,
 });
 
 export const competitionsRoute = createRoute({

@@ -21,7 +21,7 @@ export default function HomePage() {
   const canManageSettings = hasPermission(GYM_PERMISSIONS.settings.manage);
 
   const { data: analytics, isLoading } = useGymAnalytics(
-    canViewAnalytics ? currentGym?._id || "" : ""
+    canViewAnalytics ? currentGym?._id || "" : "",
   );
   const navigate = useNavigate();
   const status = useGymMemberHome(currentGym?.settings);
@@ -60,7 +60,7 @@ export default function HomePage() {
 
         {/* Operating Hours */}
         <div className="grid grid-cols-1 gap-8">
-          <OperatingHours settings={currentGym.settings} />
+          <OperatingHours settings={currentGym.settings} status={status} />
         </div>
       </div>
     </div>

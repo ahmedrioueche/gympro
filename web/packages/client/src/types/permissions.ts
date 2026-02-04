@@ -74,6 +74,11 @@ export const GYM_PERMISSIONS = {
     view: "competitions:view",
     manage: "competitions:manage",
   },
+  // Marketing & Media
+  marketing: {
+    view: "marketing:view",
+    manage: "marketing:manage",
+  },
 } as const;
 
 // Extract all permission values as a union type
@@ -342,6 +347,23 @@ export const PERMISSION_GROUPS: PermissionGroupInfo[] = [
       },
     ],
   },
+  {
+    key: "marketing",
+    label: "Marketing",
+    description: "Manage gym images, videos and marketing material",
+    permissions: [
+      {
+        key: "marketing:view",
+        label: "View Marketing",
+        description: "View marketing materials and gallery",
+      },
+      {
+        key: "marketing:manage",
+        label: "Manage Marketing",
+        description: "Upload and manage marketing materials",
+      },
+    ],
+  },
 ];
 
 // Default permissions by role
@@ -373,6 +395,8 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
     "store:manage",
     "competitions:view",
     "competitions:manage",
+    "marketing:view",
+    "marketing:manage",
   ],
   receptionist: [
     "members:view",
