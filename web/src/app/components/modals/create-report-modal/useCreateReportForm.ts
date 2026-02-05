@@ -1,14 +1,13 @@
-import {
-  ReportPriority,
-  ReportType,
-  uploadApi,
-} from "@ahmedrioueche/gympro-client";
+import { ReportPriority, ReportType } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { useCreateReport } from "../../../../hooks/queries/useReports";
+import { useFileUpload } from "../../../../hooks/useFileUpload";
 import { useModalStore } from "../../../../store/modal";
 
 export const useCreateReportForm = () => {
+  const { t } = useTranslation();
   const { closeModal } = useModalStore();
   const createReport = useCreateReport();
   const [subject, setSubject] = useState("");
@@ -18,34 +17,22 @@ export const useCreateReportForm = () => {
     ReportPriority.MEDIUM,
   );
   const [attachments, setAttachments] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+
+  const { uploads, isUploading, uploadFiles, clearUploads, ACCEPT_TYPES } =
+    useFileUpload({
+      onComplete: (urls) => {
+        setAttachments((prev) => [...prev, ...urls]);
+      },
+      onError: (error) => {
+        toast.error(error);
+      },
+    });
 
   const isValid = subject.trim().length > 0 && description.trim().length > 0;
 
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-
-    setIsUploading(true);
-    try {
-      const uploadPromises = Array.from(files).map((file) =>
-        uploadApi.uploadFile(file),
-      );
-      const responses = await Promise.all(uploadPromises);
-      const newAttachments = responses
-        .map((res) => (res.success && res.data ? res.data.url : null))
-        .filter((url): url is string => url !== null);
-
-      if (newAttachments.length < files.length) {
-        toast.error("Some files failed to upload");
-      }
-
-      setAttachments((prev) => [...prev, ...newAttachments]);
-    } catch (error) {
-      console.error("Upload error:", error);
-      toast.error("Failed to upload files");
-    } finally {
-      setIsUploading(false);
-    }
+    await uploadFiles(files);
   };
 
   const handleRemoveAttachment = (indexToRemove: number) => {
@@ -65,6 +52,7 @@ export const useCreateReportForm = () => {
         priority,
         attachments,
       });
+      clearUploads();
       closeModal();
     } catch {
       // Error toast handled by hook
@@ -85,8 +73,10 @@ export const useCreateReportForm = () => {
     handleUpload,
     handleRemoveAttachment,
     isUploading,
+    uploads,
     handleSubmit,
     isValid,
     isPending: createReport.isPending,
+    ACCEPT_TYPES,
   };
 };

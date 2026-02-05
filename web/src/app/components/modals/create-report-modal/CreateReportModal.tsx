@@ -1,5 +1,12 @@
 import { ReportPriority, ReportType } from "@ahmedrioueche/gympro-client";
-import { MessageSquarePlus, Upload, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
+  MessageSquarePlus,
+  Upload,
+  X,
+} from "lucide-react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
@@ -27,9 +34,11 @@ const CreateReportModal = () => {
     handleUpload,
     handleRemoveAttachment,
     isUploading,
+    uploads,
     handleSubmit,
     isValid,
     isPending,
+    ACCEPT_TYPES,
   } = useCreateReportForm();
 
   const isOpen = currentModal === "create-report";
@@ -64,7 +73,7 @@ const CreateReportModal = () => {
             : t("support.modal.submit"),
         onClick: handleSubmit,
         disabled: !isValid || isPending || isUploading,
-        loading: isPending || isUploading,
+        loading: isPending,
       }}
       secondaryButton={{
         label: t("common.cancel"),
@@ -99,17 +108,64 @@ const CreateReportModal = () => {
               ref={fileInputRef}
               className="hidden"
               onChange={(e) => handleUpload(e.target.files)}
-              accept="image/*,video/*"
+              accept={ACCEPT_TYPES?.IMAGE_AND_VIDEO || "image/*,video/*"}
             />
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="w-full border-2 border-dashed border-border rounded-xl p-4 flex items-center justify-center gap-2 text-text-secondary hover:text-primary hover:border-primary/50 transition-colors"
+              disabled={isUploading}
+              className="w-full border-2 border-dashed border-border rounded-xl p-4 flex items-center justify-center gap-2 text-text-secondary hover:text-primary hover:border-primary/50 transition-colors disabled:opacity-50"
             >
               <Upload className="w-5 h-5" />
               <span>{t("support.modal.uploadPlaceholder")}</span>
             </button>
 
+            {/* Upload Progress */}
+            {uploads.length > 0 && (
+              <div className="space-y-2">
+                {uploads.map((upload, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 p-2 bg-surface-secondary rounded-lg"
+                  >
+                    {upload.status === "uploading" ? (
+                      <Loader2 className="w-4 h-4 text-primary animate-spin flex-shrink-0" />
+                    ) : upload.status === "success" ? (
+                      <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    ) : upload.status === "error" ? (
+                      <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full border-2 border-border flex-shrink-0" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-text-primary truncate">
+                        {upload.file.name}
+                      </p>
+                      {upload.status === "uploading" && (
+                        <div className="mt-1 h-1.5 bg-border rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-primary rounded-full transition-all duration-300"
+                            style={{ width: `${upload.progress}%` }}
+                          />
+                        </div>
+                      )}
+                      {upload.error && (
+                        <p className="text-xs text-red-500 mt-0.5 truncate">
+                          {upload.error}
+                        </p>
+                      )}
+                    </div>
+                    {upload.status === "uploading" && (
+                      <span className="text-xs text-text-secondary flex-shrink-0">
+                        {upload.progress}%
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Completed attachments */}
             {attachments.length > 0 && (
               <div className="grid grid-cols-4 gap-2">
                 {attachments.map((url, index) => (

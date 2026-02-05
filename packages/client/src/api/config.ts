@@ -15,6 +15,12 @@ export const BASE_URL = (): string => {
   return configuredBaseURL || DEFAULT_BASE_URL;
 };
 
+// Alias for XHR usage
+export const getApiBaseUrl = (): string => BASE_URL();
+
+// Get auth token for XHR usage
+export const getAuthToken = (): string | null => TokenManager.getAccessToken();
+
 let apiClientInstance: AxiosInstance | null = null;
 
 export const configureApi = (config: ApiConfig): void => {
