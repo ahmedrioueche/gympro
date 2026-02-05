@@ -47,7 +47,7 @@ export class UploadController {
   )
   async uploadPublicFile(
     @UploadedFile() file: Express.Multer.File,
-    @Body('resourceType') resourceType?: 'auto' | 'raw' | 'image',
+    @Body('resourceType') resourceType?: 'auto' | 'raw' | 'image' | 'video',
   ) {
     if (!file) {
       throw new BadRequestException('No file provided');
@@ -65,7 +65,7 @@ export class UploadController {
     const type = resourceType || 'auto';
 
     // Basic validation of resourceType
-    if (!['auto', 'raw', 'image'].includes(type)) {
+    if (!['auto', 'raw', 'image', 'video'].includes(type)) {
       throw new BadRequestException('Invalid resourceType');
     }
 

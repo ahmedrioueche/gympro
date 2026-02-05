@@ -84,5 +84,6 @@ export * from "./types/settings";
 export * from "./types/stats";
 export * from "./types/subscription";
 export * from "./types/training";
+export * from "./types/upload";
 export * from "./types/user";
 export * from "./utils/helper";

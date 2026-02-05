@@ -18,7 +18,7 @@ import { useCreateReportForm } from "./useCreateReportForm";
 
 const CreateReportModal = () => {
   const { t } = useTranslation();
-  const { closeModal, currentModal } = useModalStore();
+  const { currentModal } = useModalStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -36,6 +36,7 @@ const CreateReportModal = () => {
     isUploading,
     uploads,
     handleSubmit,
+    handleClose,
     isValid,
     isPending,
     ACCEPT_TYPES,
@@ -62,7 +63,7 @@ const CreateReportModal = () => {
     <BaseModal
       title={t("support.modal.title")}
       subtitle={t("support.modal.subtitle")}
-      onClose={closeModal}
+      onClose={handleClose}
       icon={MessageSquarePlus}
       isOpen={isOpen}
       primaryButton={{
@@ -77,7 +78,7 @@ const CreateReportModal = () => {
       }}
       secondaryButton={{
         label: t("common.cancel"),
-        onClick: closeModal,
+        onClick: handleClose,
       }}
     >
       <div className="space-y-4">

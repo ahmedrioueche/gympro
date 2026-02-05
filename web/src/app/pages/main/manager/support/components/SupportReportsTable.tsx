@@ -146,6 +146,42 @@ export default function SupportReportsTable({
     },
   ];
 
+  const renderMobileCard = (report: Report) => (
+    <div
+      onClick={() => openModal("report_details", { report })}
+      className="p-4 cursor-pointer hover:bg-surface-hover transition-colors"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="font-medium text-text-primary truncate">
+            {report.subject}
+          </p>
+          <p className="text-xs text-text-secondary mt-0.5">
+            {t(`support.types.${report.type}`)} •{" "}
+            {formatDistanceToNow(new Date(report.createdAt), {
+              addSuffix: true,
+            })}
+          </p>
+        </div>
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          {getStatusBadge(report.status)}
+          {getPriorityBadge(report.priority)}
+        </div>
+      </div>
+      {report.responses && report.responses.length > 0 && (
+        <div className="mt-2 flex items-center gap-1.5 text-xs text-text-secondary">
+          <MessageSquare className="w-3 h-3" />
+          <span>
+            {report.responses.length}{" "}
+            {report.responses.length === 1
+              ? t("support.reply")
+              : t("support.replies")}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <Table
       data={reports}
@@ -153,6 +189,7 @@ export default function SupportReportsTable({
       isLoading={isLoading}
       keyExtractor={(report) => report._id}
       onRowClick={(report) => openModal("report_details", { report })}
+      renderMobileCard={renderMobileCard}
       emptyState={
         <NoData
           title={t("support.empty")}

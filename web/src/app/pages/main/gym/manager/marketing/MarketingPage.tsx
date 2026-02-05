@@ -20,7 +20,8 @@ function MarketingPage() {
   const handleAdd = () => {
     openModal("add-gym-media", {
       gymId: currentGym._id,
-      type: activeTab === "gallery" ? "image" : "document",
+      // Only fix type for materials tab, gallery allows image or video selection
+      type: activeTab === "materials" ? "document" : undefined,
     });
   };
 

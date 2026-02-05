@@ -26,8 +26,12 @@ export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Post()
-  create(@Req() req: any, @Body() createReportDto: CreateReportDto) {
-    return this.reportsService.create(req.user.sub, createReportDto);
+  async create(@Req() req: any, @Body() createReportDto: CreateReportDto) {
+    const report = await this.reportsService.create(
+      req.user.sub,
+      createReportDto,
+    );
+    return { success: true, data: report };
   }
 
   @Get('my')

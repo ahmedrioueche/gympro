@@ -56,6 +56,12 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.gym.manager.access.link],
   },
   {
+    label: "attendance",
+    icon: <Logs className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.attendance.link,
+    matchPaths: [APP_PAGES.gym.manager.attendance.link],
+  },
+  {
     label: "staff",
     icon: <UserCircle className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.staff.link,
@@ -67,12 +73,7 @@ const sidebarLinks = [
     path: APP_PAGES.gym.manager.coaching.link,
     matchPaths: [APP_PAGES.gym.manager.coaching.link],
   },
-  {
-    label: "attendance",
-    icon: <Logs className="w-5 h-5" />,
-    path: APP_PAGES.gym.manager.attendance.link,
-    matchPaths: [APP_PAGES.gym.manager.attendance.link],
-  },
+
   {
     label: "marketing",
     icon: <Megaphone className="w-5 h-5" />,
@@ -103,7 +104,6 @@ const sidebarLinks = [
     path: APP_PAGES.gym.manager.announcements.link,
     matchPaths: [APP_PAGES.gym.manager.announcements.link],
   },
-
   {
     label: "analytics",
     icon: <BarChart3 className="w-5 h-5" />,

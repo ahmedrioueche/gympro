@@ -7,6 +7,7 @@ import { useGymAnalytics } from "../../../../../../hooks/queries/useAnalytics";
 import { usePermissions } from "../../../../../../hooks/usePermissions";
 import { useGymStore } from "../../../../../../store/gym";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
+import MarketingCarousel from "../../../../../components/gym/MarketingCarousel";
 import OperatingHours from "../../../../../components/gym/OperatingHours";
 import { useGymMemberHome } from "../../member/home/hooks/useGymMemberHome";
 import { GenderSplit } from "./components/GenderSplit";
@@ -46,6 +47,8 @@ export default function HomePage() {
               : undefined
           }
         />
+
+        <MarketingCarousel gym={currentGym} />
 
         {/* Performance Stats */}
         {canViewAnalytics && (

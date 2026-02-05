@@ -85,8 +85,19 @@ export default function GalleryTab({
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-black/10">
-                  <Video className="w-12 h-12 text-text-secondary" />
+                <div className="relative w-full h-full">
+                  <video
+                    src={item.url}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                    preload="metadata"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                    <div className="p-3 rounded-full bg-black/50 backdrop-blur-sm">
+                      <Video className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
                 </div>
               )}
 

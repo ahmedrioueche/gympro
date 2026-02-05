@@ -15,7 +15,7 @@ export class UploadService {
 
   async uploadFile(
     file: Express.Multer.File,
-    resourceType: 'auto' | 'raw' | 'image' = 'auto',
+    resourceType: 'auto' | 'raw' | 'image' | 'video' = 'auto',
   ): Promise<{ url: string; publicId: string }> {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(

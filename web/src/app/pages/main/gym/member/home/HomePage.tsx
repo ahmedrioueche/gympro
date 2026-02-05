@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import NotFound from "../../../../../../components/ui/NotFound";
 import { useGymStore } from "../../../../../../store/gym";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
+import MarketingCarousel from "../../../../../components/gym/MarketingCarousel";
 import OperatingHours from "../../../../../components/gym/OperatingHours";
 import { useSubscriptionTypes } from "../../manager/pricing/hooks/useSubscriptionTypes";
 import AnnouncementsCard from "./components/AnnouncementsCard";
@@ -25,6 +26,7 @@ function HomePage() {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex flex-col gap-6 pb-8">
       <GymHeroSection gym={currentGym} status={status} />
+      <MarketingCarousel gym={currentGym} />
 
       {/* Bottom Grid - Using specialized components */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 mb-4">

@@ -3,6 +3,7 @@ import {
   formatFileSize,
   uploadApi,
   type UploadProgress,
+  type UploadResult,
   validateFile,
 } from "@ahmedrioueche/gympro-client";
 import { useCallback, useState } from "react";
@@ -12,12 +13,13 @@ export interface FileUploadState {
   progress: number;
   status: "pending" | "uploading" | "success" | "error";
   url?: string;
+  publicId?: string;
   error?: string;
 }
 
 interface UseFileUploadOptions {
   /** Called when all files have been uploaded */
-  onComplete?: (urls: string[]) => void;
+  onComplete?: (results: UploadResult[]) => void;
   /** Called on error */
   onError?: (error: string) => void;
 }
@@ -55,7 +57,11 @@ export const useFileUpload = (options?: UseFileUploadOptions) => {
    * Upload a single file with progress tracking
    */
   const uploadSingleFile = useCallback(
-    async (file: File, index: number): Promise<string | null> => {
+    async (
+      file: File,
+      index: number,
+      resourceType: "auto" | "raw" | "image" | "video" = "auto",
+    ): Promise<UploadResult | null> => {
       // Set initial uploading state
       setUploads((prev) => {
         const updated = [...prev];
@@ -69,7 +75,7 @@ export const useFileUpload = (options?: UseFileUploadOptions) => {
 
       const result = await uploadApi.uploadWithProgress(
         file,
-        "auto",
+        resourceType,
         (progress: UploadProgress) => {
           setUploads((prev) => {
             const updated = [...prev];
@@ -90,10 +96,11 @@ export const useFileUpload = (options?: UseFileUploadOptions) => {
             status: "success",
             progress: 100,
             url: result.data!.url,
+            publicId: result.data!.publicId,
           };
           return updated;
         });
-        return result.data.url;
+        return result.data;
       } else {
         setUploads((prev) => {
           const updated = [...prev];
@@ -114,7 +121,10 @@ export const useFileUpload = (options?: UseFileUploadOptions) => {
    * Upload multiple files with progress tracking
    */
   const uploadFiles = useCallback(
-    async (files: FileList | File[]): Promise<string[]> => {
+    async (
+      files: FileList | File[],
+      resourceType: "auto" | "raw" | "image" | "video" = "auto",
+    ): Promise<UploadResult[]> => {
       const fileArray = Array.from(files);
       if (fileArray.length === 0) return [];
 
@@ -141,21 +151,21 @@ export const useFileUpload = (options?: UseFileUploadOptions) => {
 
       // Upload all files in parallel
       const uploadPromises = valid.map((file, index) =>
-        uploadSingleFile(file, index),
+        uploadSingleFile(file, index, resourceType),
       );
 
       const results = await Promise.all(uploadPromises);
-      const successfulUrls = results.filter(
-        (url): url is string => url !== null,
+      const successfulResults = results.filter(
+        (res): res is UploadResult => res !== null,
       );
 
       setIsUploading(false);
 
-      if (successfulUrls.length > 0) {
-        options?.onComplete?.(successfulUrls);
+      if (successfulResults.length > 0) {
+        options?.onComplete?.(successfulResults);
       }
 
-      return successfulUrls;
+      return successfulResults;
     },
     [validateFiles, uploadSingleFile, options],
   );

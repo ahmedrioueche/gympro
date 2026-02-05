@@ -14,7 +14,7 @@ export const uploadApi = {
    */
   uploadFile: async (
     file: File,
-    resourceType: "auto" | "raw" | "image" = "auto",
+    resourceType: "auto" | "raw" | "image" | "video" = "auto",
   ): Promise<ApiResponse<UploadResult>> => {
     // Validate file first
     const validation = validateFile(file);
@@ -63,7 +63,7 @@ export const uploadApi = {
    */
   uploadWithProgress: (
     file: File,
-    resourceType: "auto" | "raw" | "image" = "auto",
+    resourceType: "auto" | "raw" | "image" | "video" = "auto",
     onProgress?: (progress: UploadProgress) => void,
   ): Promise<ApiResponse<UploadResult>> => {
     return new Promise((resolve) => {

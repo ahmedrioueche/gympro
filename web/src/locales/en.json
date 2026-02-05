@@ -3838,6 +3838,7 @@
     "conversation": "Conversation",
     "view_all_messages": "View all {{count}} messages",
     "reply": "Reply",
+    "replies": "Replies",
     "no_messages": "No messages yet",
     "type_message": "Type a message...",
     "you": "You",
@@ -3873,7 +3874,7 @@
       "submit": "Submit Report",
       "submitting": "Submitting...",
       "attachments": "Attachments",
-      "uploadPlaceholder": "Uploade images or videos to clarify the issue"
+      "uploadPlaceholder": "Upload images or videos to clarify the issue"
     }
   }
 }

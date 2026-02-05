@@ -1,6 +1,7 @@
 import Loading from "../../../../../../components/ui/Loading";
 import NotFound from "../../../../../../components/ui/NotFound";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
+import MarketingCarousel from "../../../../../components/gym/MarketingCarousel";
 import OperatingHours from "../../../../../components/gym/OperatingHours";
 import GymCoachAnnouncementsSection from "./components/GymCoachAnnouncementsSection";
 import GymCoachQuickActions from "./components/GymCoachQuickActions";
@@ -32,6 +33,9 @@ export default function HomePage() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
       {/* Gym Hero Section */}
       <GymHeroSection gym={gym} status={status} />
+
+      {/* Marketing Material */}
+      <MarketingCarousel gym={gym} />
 
       {/* Quick Stats Grid */}
       <GymCoachQuickStats stats={stats} isLoading={isStatsLoading} />
