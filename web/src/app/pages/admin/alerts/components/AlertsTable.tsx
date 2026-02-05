@@ -68,11 +68,11 @@ export default function AlertsTable({ alerts, isLoading }: AlertsTableProps) {
   const getSourceIcon = (source: string) => {
     switch (source) {
       case "sentry":
-        return <AlertCircle className="w-3 h-3 text-brand-primary" />;
+        return <AlertCircle className="w-3 h-3 text-text-primary" />;
       case "pino":
         return <Terminal className="w-3 h-3 text-text-secondary" />;
       default:
-        return <Info className="w-3 h-3 text-text-tertiary" />;
+        return <Info className="w-3 h-3 text-text-secondary" />;
     }
   };
 
@@ -89,7 +89,7 @@ export default function AlertsTable({ alerts, isLoading }: AlertsTableProps) {
             <span className="font-medium text-text-primary block truncate">
               {alert.title}
             </span>
-            <span className="text-xs text-text-tertiary truncate block">
+            <span className="text-xs text-text-secondary truncate block">
               {alert.message}
             </span>
           </div>

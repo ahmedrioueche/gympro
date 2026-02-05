@@ -22,6 +22,7 @@ export * from "./api/membership";
 export * from "./api/notification";
 export * from "./api/paddle";
 export * from "./api/progress";
+export * from "./api/reports";
 export * from "./api/session";
 export * from "./api/settings";
 export * from "./api/staff";

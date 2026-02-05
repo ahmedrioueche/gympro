@@ -33,6 +33,7 @@ import type {
   SessionDetailsModalProps,
   StaffModalProps,
   UpgradePreviewModalProps,
+  UserProfileModalProps,
 } from "../types/modals";
 
 type ModalType =
@@ -72,6 +73,8 @@ type ModalType =
   | "create-product"
   | "edit-product"
   | "add-gym-media"
+  | "create-report"
+  | "user_profile"
   | null;
 
 interface ModalState {
@@ -109,6 +112,7 @@ interface ModalState {
   competitionProps?: CompetitionModalProps;
   productProps?: ProductModalProps;
   gymMediaProps?: GymMediaModalProps;
+  userProfileProps?: UserProfileModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -312,6 +316,18 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "add-gym-media",
           gymMediaProps: props,
+        };
+      }
+      if (modal === "create-report") {
+        return {
+          currentModal: "create-report",
+          gymMediaProps: props,
+        };
+      }
+      if (modal === "user_profile") {
+        return {
+          currentModal: "user_profile",
+          userProfileProps: props,
         };
       }
       return { currentModal: null };

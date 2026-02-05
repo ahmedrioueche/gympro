@@ -260,6 +260,7 @@ export class AuthService {
         sub: user._id?.toString()!,
         email: user.profile.email || user.profile.phoneNumber || '',
         role: user.role,
+        appPermissions: user.appPermissions,
       };
 
       const accessToken = this.jwtService.sign(newPayload, {
@@ -673,6 +674,7 @@ export class AuthService {
       sub: user._id?.toString()!,
       email: user.profile.email || user.profile.phoneNumber || '',
       role: user.role,
+      appPermissions: user.appPermissions,
     };
 
     const accessToken = this.jwtService.sign(payload, {

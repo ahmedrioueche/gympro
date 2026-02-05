@@ -4,14 +4,16 @@ import type { TranslationType } from "../types/common";
 export const handleContactSupport = (
   t: TranslationType,
   subject?: string,
-  body?: string
+  body?: string,
 ) => {
   const email = APP_DATA.email;
-  const encodedSubject = encodeURIComponent(subject || t("support.subject"));
-  const encodedBody = encodeURIComponent(body || t("support.body"));
+  const encodedSubject = encodeURIComponent(
+    subject || t("support.email.subject"),
+  );
+  const encodedBody = encodeURIComponent(body || t("support.email.body"));
   window.open(
     `https://mail.google.com/mail/?view=cm&to=${email}&su=${encodedSubject}&body=${encodedBody}`,
-    "_blank"
+    "_blank",
   );
 };
 
@@ -21,7 +23,7 @@ export const openGmail = (email: string, subject?: string, body?: string) => {
   const encodedBody = encodeURIComponent(body || "");
   window.open(
     `https://mail.google.com/mail/?view=cm&to=${email}&su=${encodedSubject}&body=${encodedBody}`,
-    "_blank"
+    "_blank",
   );
 };
 

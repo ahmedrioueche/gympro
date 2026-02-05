@@ -147,11 +147,16 @@ export const UserTable = ({ users }: UserTableProps) => {
     },
   ];
 
+  const handleRowClick = (user: User) => {
+    openModal("user_profile", { user });
+  };
+
   return (
     <Table<User>
       columns={columns}
       data={users}
       keyExtractor={(item) => item._id}
+      onRowClick={handleRowClick}
       emptyState={
         <NoData
           icon={UserIcon}

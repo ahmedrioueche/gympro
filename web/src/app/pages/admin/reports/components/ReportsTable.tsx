@@ -1,14 +1,18 @@
-import type { Report } from "@ahmedrioueche/gympro-client";
+import { type Report } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
 import {
   AlertCircle,
+  ArrowRight,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   FileText,
   MessageSquare,
 } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import NoData from "../../../../../components/ui/NoData";
-import Table, { type TableColumn } from "../../../../../components/ui/Table";
+import { Table, type TableColumn } from "../../../../../components/ui/Table";
 import { useModalStore } from "../../../../../store/modal";
 
 interface ReportsTableProps {
@@ -22,6 +26,14 @@ export default function ReportsTable({
 }: ReportsTableProps) {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
+  const [expandedRows, setExpandedRows] = useState<string[]>([]);
+
+  const toggleRow = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedRows((prev) =>
+      prev.includes(id) ? prev.filter((key) => key !== id) : [...prev, id],
+    );
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -32,9 +44,9 @@ export default function ReportsTable({
       case "resolved":
         return "text-green-500 bg-green-500/10";
       case "closed":
-        return "text-gray-500 bg-gray-500/10";
+        return "text-text-secondary bg-surface-secondary";
       default:
-        return "text-gray-500 bg-gray-500/10";
+        return "text-text-secondary bg-surface-secondary";
     }
   };
 
@@ -47,7 +59,7 @@ export default function ReportsTable({
       case "low":
         return "text-blue-500";
       default:
-        return "text-gray-500";
+        return "text-text-secondary";
     }
   };
 
@@ -60,11 +72,29 @@ export default function ReportsTable({
       case "feature_request":
         return <CheckCircle2 className="w-4 h-4 text-green-500" />;
       default:
-        return <FileText className="w-4 h-4 text-gray-500" />;
+        return <FileText className="w-4 h-4 text-text-secondary" />;
     }
   };
 
   const columns: TableColumn<Report>[] = [
+    {
+      key: "expand",
+      header: "",
+      width: "w-10",
+      render: (report: Report) =>
+        report.responses && report.responses.length > 0 ? (
+          <button
+            onClick={(e) => toggleRow(report._id, e)}
+            className="p-1 hover:bg-surface-secondary rounded-lg transition-colors"
+          >
+            {expandedRows.includes(report._id) ? (
+              <ChevronUp className="w-4 h-4 text-text-secondary" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-text-secondary" />
+            )}
+          </button>
+        ) : null,
+    },
     {
       key: "subject",
       header: t("admin.reports.table.subject"),
@@ -77,7 +107,7 @@ export default function ReportsTable({
             <span className="font-medium text-text-primary block">
               {report.subject}
             </span>
-            <span className="text-xs text-text-tertiary">
+            <span className="text-xs text-text-secondary">
               {t(`admin.reports.type.${report.type}`)}
             </span>
           </div>
@@ -102,7 +132,7 @@ export default function ReportsTable({
         <div className="flex items-center gap-2">
           {typeof report.reporter !== "string" && report.reporter.profile ? (
             <>
-              <div className="w-6 h-6 rounded-full bg-brand-primary/10 flex items-center justify-center text-xs text-brand-primary font-bold">
+              <div className="w-6 h-6 rounded-full bg-surface-secondary flex items-center justify-center text-xs text-text-primary font-bold">
                 {report.reporter.profile.fullName?.[0]}
               </div>
               <span className="text-sm text-text-secondary">
@@ -110,7 +140,9 @@ export default function ReportsTable({
               </span>
             </>
           ) : (
-            <span className="text-sm text-text-secondary">Unknown</span>
+            <span className="text-sm text-text-secondary">
+              {t("common.unknown")}
+            </span>
           )}
         </div>
       ),
@@ -137,6 +169,24 @@ export default function ReportsTable({
         </span>
       ),
     },
+    {
+      key: "actions",
+      header: "",
+      width: "w-24",
+      align: "right",
+      render: (report: Report) => (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            openModal("report_details", { report });
+          }}
+          className="flex items-center gap-1 text-xs font-medium text-text-primary hover:text-text-primary/80 transition-colors"
+        >
+          {t("common.view")}
+          <ArrowRight className="w-3 h-3" />
+        </button>
+      ),
+    },
   ];
 
   return (
@@ -155,6 +205,59 @@ export default function ReportsTable({
           className=""
         />
       }
+      expandedRowKeys={expandedRows}
+      renderExpandedRow={(report) => (
+        <div className="bg-surface-secondary/50 p-4 border-t border-border">
+          <div className="max-w-3xl mx-auto space-y-4">
+            <h4 className="text-sm font-medium text-text-primary flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              {t("support.conversation")}
+            </h4>
+            {report.responses && report.responses.length > 0 ? (
+              <div className="space-y-3">
+                {report.responses.slice(-3).map((response, idx) => {
+                  const reporterId =
+                    typeof report.reporter === "string"
+                      ? report.reporter
+                      : report.reporter._id;
+                  const senderId =
+                    typeof response.sender === "string"
+                      ? response.sender
+                      : response.sender._id;
+                  const senderIsReporter = senderId === reporterId;
+
+                  return (
+                    <div key={idx} className="flex gap-3 text-sm">
+                      <span className="font-bold text-text-primary shrink-0">
+                        {senderIsReporter
+                          ? t("support.user")
+                          : t("support.admin")}
+                        :
+                      </span>
+                      <span className="text-text-secondary">
+                        {response.message}
+                      </span>
+                    </div>
+                  );
+                })}
+                {report.responses.length > 3 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openModal("report_details", { report });
+                    }}
+                    className="text-xs text-text-primary hover:underline"
+                  >
+                    {t("support.view_all_messages", {
+                      count: report.responses.length,
+                    })}
+                  </button>
+                )}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
     />
   );
 }

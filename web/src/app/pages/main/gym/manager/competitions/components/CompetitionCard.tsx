@@ -29,7 +29,7 @@ export function CompetitionCard({
       case "cancelled":
         return "bg-red-500/10 text-red-500 border-red-500/20";
       default:
-        return "bg-surface-tertiary text-text-secondary border-border";
+        return "bg-surface-secondary text-text-secondary border-border";
     }
   };
 

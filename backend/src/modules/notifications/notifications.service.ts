@@ -8,7 +8,7 @@ import {
 } from '@ahmedrioueche/gympro-client';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { I18nService } from '../../common/i18n/i18n.service';
 import { User } from '../../common/schemas/user.schema';
 import {
@@ -109,6 +109,78 @@ export class NotificationsService {
     // Delegate to ExternalService
     if (!options.skipExternal) {
       await this.externalService.notifyUser(user, options);
+    }
+  }
+
+  /**
+   * Notify all members and coaches about a gym closure or reopening
+   */
+  async notifyGymClosureChange(
+    gymId: string,
+    closure: any,
+    type: 'added' | 'deleted',
+  ) {
+    try {
+      const gym = await this.userModel.db.model('GymModel').findById(gymId);
+      if (!gym) return;
+
+      const members = await this.userModel.find({
+        memberships: {
+          $in: await this.userModel.db
+            .model('GymMembership')
+            .find({
+              gym: new Types.ObjectId(gymId),
+              membershipStatus: 'active',
+            })
+            .distinct('_id'),
+        },
+      });
+
+      const coaches = await this.userModel.find({
+        _id: {
+          $in: await this.userModel.db
+            .model('GymCoachAffiliation')
+            .find({
+              gymId: new Types.ObjectId(gymId),
+              status: 'active',
+            })
+            .distinct('coachId'),
+        },
+      });
+
+      const usersToNotify = [...members, ...coaches];
+      const options: Intl.DateTimeFormatOptions = {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      };
+      const startDate = new Date(closure.start).toLocaleString(
+        'en-GB',
+        options,
+      );
+      const endDate = new Date(closure.end).toLocaleString('en-GB', options);
+
+      this.logger.log(
+        `Notifying ${usersToNotify.length} users about closure ${type} for gym ${gym.name}`,
+      );
+
+      await this.externalService.notifyUsers(usersToNotify, {
+        key: `gym.closure_${type}`,
+        vars: {
+          gymName: gym.name,
+          reason: closure.reason || 'Temporary Closure',
+          start: startDate,
+          end: endDate,
+        },
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to notify users about gym closure change',
+        error.stack,
+      );
     }
   }
 

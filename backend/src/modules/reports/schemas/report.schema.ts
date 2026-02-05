@@ -43,6 +43,27 @@ export class Report extends Document {
 
   @Prop({ type: Object })
   metadata: Record<string, any>;
+
+  @Prop({ type: [String], default: [] })
+  attachments: string[];
+
+  @Prop({
+    type: [
+      {
+        sender: { type: Types.ObjectId, ref: 'User' },
+        message: String,
+        attachments: [String],
+        createdAt: Date,
+      },
+    ],
+    default: [],
+  })
+  responses: {
+    sender: User | Types.ObjectId;
+    message: string;
+    attachments: string[];
+    createdAt: Date;
+  }[];
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);

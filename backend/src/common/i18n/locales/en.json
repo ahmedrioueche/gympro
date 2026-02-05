@@ -44,7 +44,25 @@
       "gym_membership_added_body": "<p>Hello {{name}},</p><p>We're excited to inform you that you've been added as a member to <strong>{{gymName}}</strong>!</p><p>You can now log in to your dashboard to view your membership details, tracking your progress, and stay updated with gym announcements.</p><p>Best regards,<br>The {{gymName}} Team</p>"
     },
     "gym_announcement_subject": "Announcement: {{title}}",
-    "gym_announcement_body": "<div style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;\"><div style=\"text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; margin-bottom: 24px;\"><h1 style=\"color: #111827; font-size: 24px; margin: 0; letter-spacing: -0.025em;\">{{gymName}}</h1><p style=\"color: #6b7280; margin: 4px 0 0 0; font-size: 14px;\">Announcement</p></div><div style=\"margin-bottom: 32px;\"><p style=\"color: #374151; font-size: 16px; margin-bottom: 24px;\">Hello {{name}},</p><h2 style=\"color: #2563eb; font-size: 20px; margin: 0 0 16px 0; font-weight: 600;\">{{title}}</h2><div style=\"color: #4b5563; font-size: 16px; line-height: 1.6; background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #f3f4f6;\">{{message}}</div></div><div style=\"border-top: 1px solid #f3f4f6; padding-top: 24px; text-align: center;\"><p style=\"color: #9ca3af; font-size: 12px; margin: 0 0 8px 0;\">You are receiving this notification because you are a member of {{gymName}}.</p><p style=\"color: #6b7280; font-size: 14px; font-weight: 500; margin: 0;\">The {{gymName}} Team</p></div></div>"
+    "gym_announcement_body": "<div style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;\"><div style=\"text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; margin-bottom: 24px;\"><h1 style=\"color: #111827; font-size: 24px; margin: 0; letter-spacing: -0.025em;\">{{gymName}}</h1><p style=\"color: #6b7280; margin: 4px 0 0 0; font-size: 14px;\">Announcement</p></div><div style=\"margin-bottom: 32px;\"><p style=\"color: #374151; font-size: 16px; margin-bottom: 24px;\">Hello {{name}},</p><h2 style=\"color: #2563eb; font-size: 20px; margin: 0 0 16px 0; font-weight: 600;\">{{title}}</h2><div style=\"color: #4b5563; font-size: 16px; line-height: 1.6; background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #f3f4f6;\">{{message}}</div></div><div style=\"border-top: 1px solid #f3f4f6; padding-top: 24px; text-align: center;\"><p style=\"color: #9ca3af; font-size: 12px; margin: 0 0 8px 0;\">You are receiving this notification because you are a member of {{gymName}}.</p><p style=\"color: #6b7280; font-size: 14px; font-weight: 500; margin: 0;\">The {{gymName}} Team</p></div></div>",
+    "gym": {
+      "closure_added_subject": "{{gymName}}: Gym Closure Update",
+      "closure_added_body": "<p>Hello {{name}},</p><p>Please be informed that <strong>{{gymName}}</strong> will be temporarily closed for: <strong>{{reason}}</strong>.</p><p><strong>Closure Period:</strong><br>From: {{start}}<br>Until: {{end}}</p><p>We apologize for any inconvenience.</p><p>Best regards,<br>The {{gymName}} Team</p>",
+      "closure_deleted_subject": "{{gymName}}: Gym Reopening Update",
+      "closure_deleted_body": "<p>Hello {{name}},</p><p>Great news! The previously scheduled closure for <strong>{{gymName}}</strong> has been cancelled or the gym has reopened early.</p><p>The gym is now following its regular working hours.</p><p>See you at the gym!</p><p>Best regards,<br>The {{gymName}} Team</p>"
+    },
+    "admin": {
+      "user_signup_subject": "New User Signup: {{name}}",
+      "user_signup_body": "<p>Hello Admin,</p><p>A new user has just signed up on the platform.</p><ul><li><strong>Name:</strong> {{name}}</li></ul><p>Please review their profile if necessary.</p><p>Best regards,<br>The GymPro Team</p>",
+      "coach_approved_subject": "Coach Request Approved",
+      "coach_approved_body": "<p>Hello {{name}},</p><p>Congratulations! Your request to become a coach on GymPro has been approved.</p><p>You can now access the Coach Dashboard and start managing your clients and programs.</p><p>Welcome to the team!</p><p>Best regards,<br>The GymPro Team</p>",
+      "coach_rejected_subject": "Update on Your Coach Request",
+      "coach_rejected_body": "<p>Hello {{name}},</p><p>Thank you for your interest in becoming a coach on GymPro.</p><p>After careful review, we regret to inform you that we are unable to approve your request at this time.</p><p>If you have any questions, please contact our support team.</p><p>Best regards,<br>The GymPro Team</p>",
+      "user_subscribed_subject": "New Subscription: {{name}}",
+      "user_subscribed_body": "<p>Hello Admin,</p><p>A user has subscribed to a new plan.</p><ul><li><strong>User:</strong> {{name}}</li><li><strong>Plan:</strong> {{planName}}</li></ul><p>Best regards,<br>The GymPro Team</p>",
+      "gym_created_subject": "New Gym Created: {{gymName}}",
+      "gym_created_body": "<p>Hello Admin,</p><p>A new gym has been created on the platform.</p><ul><li><strong>Gym Name:</strong> {{gymName}}</li><li><strong>Owner:</strong> {{name}}</li></ul><p>Please review the details.</p><p>Best regards,<br>The GymPro Team</p>"
+    }
   },
   "notification": {
     "gym_membership_added_title": "New Gym Membership",
@@ -53,6 +71,12 @@
     "gym_announcement_body": "{{message}}",
     "program_assigned_title": "New Program Assigned",
     "program_assigned_body": "{{coachName}} assigned you a new program",
+    "gym": {
+      "closure_added_title": "Gym Closure: {{gymName}}",
+      "closure_added_body": "{{gymName}} will be closed from {{start}} to {{end}} due to {{reason}}.",
+      "closure_deleted_title": "Gym Reopened: {{gymName}}",
+      "closure_deleted_body": "The closure for {{gymName}} has been cancelled. We are open!"
+    },
     "admin": {
       "coach_approved_title": "Coach Request Approved",
       "coach_approved_body": "Your request to become a coach has been approved! You can now access the Coach Dashboard.",

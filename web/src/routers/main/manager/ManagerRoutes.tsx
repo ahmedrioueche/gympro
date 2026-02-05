@@ -8,6 +8,7 @@ import NotificationsPage from "../../../app/pages/main/manager/notifications/Not
 import PaymentsPage from "../../../app/pages/main/manager/payments/PaymentsPage";
 import SettingsPage from "../../../app/pages/main/manager/settings/SettingsPage";
 import SubscriptionPage from "../../../app/pages/main/manager/subscription/SubscriptionPage";
+import SupportPage from "../../../app/pages/main/manager/support/SupportPage";
 import { ManagerRootRoute } from "./ManagerRootRoute";
 
 export const homeRoute = createRoute({
@@ -50,6 +51,12 @@ export const analyticsRoute = createRoute({
   getParentRoute: () => ManagerRootRoute,
   path: "/analytics",
   component: () => <AnalyticsPage />,
+});
+
+export const supportRoute = createRoute({
+  getParentRoute: () => ManagerRootRoute,
+  path: "/support",
+  component: () => <SupportPage />,
 });
 
 export const notificationsRoute = createRoute({

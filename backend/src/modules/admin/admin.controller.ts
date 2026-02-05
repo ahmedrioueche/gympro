@@ -18,7 +18,7 @@ import { AdminDashboardGuard } from './guards/admin-dashboard.guard';
 import { AppPermissionGuard } from './guards/app-permission.guard';
 
 @Controller('admin')
-@UseGuards(JwtAuthGuard, AdminDashboardGuard)
+@UseGuards(JwtAuthGuard, AdminDashboardGuard, AppPermissionGuard)
 export class AdminController {
   constructor(
     private readonly adminService: AdminService,
@@ -26,19 +26,18 @@ export class AdminController {
   ) {}
 
   @Get('dashboard-stats')
+  @AppPermission(APP_PERMISSIONS.VIEW_DASHBOARD)
   getDashboardStats() {
     return this.adminStatsService.getDashboardStats();
   }
 
   @Post('editors')
-  @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
   createEditor(@Body() dto: CreateEditorDto) {
     return this.adminService.createEditor(dto);
   }
 
   @Get('editors')
-  @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
   async getEditors() {
     const editors = await this.adminService.getEditors();
@@ -46,7 +45,6 @@ export class AdminController {
   }
 
   @Put('editors/:id/permissions')
-  @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
   updateEditorPermissions(
     @Param('id') id: string,
@@ -56,7 +54,6 @@ export class AdminController {
   }
 
   @Delete('editors/:id')
-  @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
   deleteEditor(@Param('id') id: string) {
     return this.adminService.deleteEditor(id);
@@ -67,49 +64,46 @@ export class AdminController {
   // ============================================
 
   @Get('coach-requests')
-  @UseGuards(AppPermissionGuard)
-  // @AppPermission('manage_coach_requests') // TODO: Add permission
+  @AppPermission(APP_PERMISSIONS.MANAGE_COACH_REQUESTS)
   async getCoachRequests() {
     const requests = await this.adminService.getCoachRequests();
     return { success: true, data: requests };
   }
 
   @Post('coach-requests/:userId/approve')
-  @UseGuards(AppPermissionGuard)
-  // @AppPermission('manage_coach_requests') // TODO: Add permission
+  @AppPermission(APP_PERMISSIONS.MANAGE_COACH_REQUESTS)
   approveCoachRequest(@Param('userId') userId: string) {
     return this.adminService.approveCoachRequest(userId);
   }
 
   @Post('coach-requests/:userId/reject')
-  @UseGuards(AppPermissionGuard)
-  // @AppPermission('manage_coach_requests') // TODO: Add permission
+  @AppPermission(APP_PERMISSIONS.MANAGE_COACH_REQUESTS)
   rejectCoachRequest(@Param('userId') userId: string) {
     return this.adminService.rejectCoachRequest(userId);
   }
 
   @Get('coaches')
-  @UseGuards(AppPermissionGuard)
-  // @AppPermission('manage_coaches') // TODO: Add permission
+  @AppPermission(APP_PERMISSIONS.MANAGE_COACHES)
   async getCoaches() {
     const coaches = await this.adminService.getCoaches();
     return { success: true, data: coaches };
   }
 
   @Get('subscriptions')
+  @AppPermission(APP_PERMISSIONS.MANAGE_REVENUE)
   async getSubscriptions() {
     const subscriptions = await this.adminService.getSubscriptions();
     return { success: true, data: subscriptions };
   }
 
   @Get('payments')
+  @AppPermission(APP_PERMISSIONS.MANAGE_REVENUE)
   async getPayments() {
     const payments = await this.adminService.getPayments();
     return { success: true, data: payments };
   }
 
   @Get('users')
-  @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_USERS)
   async getUsers() {
     const users = await this.adminService.getUsers();
@@ -117,14 +111,12 @@ export class AdminController {
   }
 
   @Put('users/:id/status')
-  @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_USERS)
   async toggleUserStatus(@Param('id') id: string) {
     return this.adminService.toggleUserStatus(id);
   }
 
   @Get('gyms')
-  @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_GYMS)
   async getGyms() {
     const gyms = await this.adminService.getGyms();
@@ -132,7 +124,6 @@ export class AdminController {
   }
 
   @Put('gyms/:id/status')
-  @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_GYMS)
   async toggleGymStatus(@Param('id') id: string) {
     return this.adminService.toggleGymStatus(id);

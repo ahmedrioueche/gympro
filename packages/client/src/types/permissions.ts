@@ -59,6 +59,26 @@ export const GYM_PERMISSIONS = {
     view: "communication:view",
     manage: "communication:manage",
   },
+  // Inventory & Equipment
+  inventory: {
+    view: "inventory:view",
+    manage: "inventory:manage",
+  },
+  // Store
+  store: {
+    view: "store:view",
+    manage: "store:manage",
+  },
+  // Competitions
+  competitions: {
+    view: "competitions:view",
+    manage: "competitions:manage",
+  },
+  // Marketing & Media
+  marketing: {
+    view: "marketing:view",
+    manage: "marketing:manage",
+  },
 } as const;
 
 // Extract all permission values as a union type
@@ -276,6 +296,74 @@ export const PERMISSION_GROUPS: PermissionGroupInfo[] = [
       },
     ],
   },
+  {
+    key: "inventory",
+    label: "Inventory",
+    description: "Manage gym equipment and assets",
+    permissions: [
+      {
+        key: "inventory:view",
+        label: "View Inventory",
+        description: "View equipment list and status",
+      },
+      {
+        key: "inventory:manage",
+        label: "Manage Inventory",
+        description: "Add, edit, or remove equipment",
+      },
+    ],
+  },
+  {
+    key: "store",
+    label: "Store",
+    description: "Manage gym store and products",
+    permissions: [
+      {
+        key: "store:view",
+        label: "View Store",
+        description: "View store products and orders",
+      },
+      {
+        key: "store:manage",
+        label: "Manage Store",
+        description: "Manage products and orders",
+      },
+    ],
+  },
+  {
+    key: "competitions",
+    label: "Competitions",
+    description: "Manage gym competitions",
+    permissions: [
+      {
+        key: "competitions:view",
+        label: "View Competitions",
+        description: "View competitions and leaderboards",
+      },
+      {
+        key: "competitions:manage",
+        label: "Manage Competitions",
+        description: "Create and manage competitions",
+      },
+    ],
+  },
+  {
+    key: "marketing",
+    label: "Marketing",
+    description: "Manage gym images, videos and marketing material",
+    permissions: [
+      {
+        key: "marketing:view",
+        label: "View Marketing",
+        description: "View marketing materials and gallery",
+      },
+      {
+        key: "marketing:manage",
+        label: "Manage Marketing",
+        description: "Upload and manage marketing materials",
+      },
+    ],
+  },
 ];
 
 // Default permissions by role
@@ -301,6 +389,14 @@ export const DEFAULT_ROLE_PERMISSIONS: Record<string, GymPermission[]> = {
     "schedules:manage",
     "communication:view",
     "communication:manage",
+    "inventory:view",
+    "inventory:manage",
+    "store:view",
+    "store:manage",
+    "competitions:view",
+    "competitions:manage",
+    "marketing:view",
+    "marketing:manage",
   ],
   receptionist: [
     "members:view",

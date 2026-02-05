@@ -141,7 +141,8 @@ const AlertDetailsModal = lazy(
 );
 
 const ReportDetailsModal = lazy(
-  () => import("./app/pages/admin/reports/components/ReportDetailsModal"),
+  () =>
+    import("./app/components/modals/report-detail-modal/ReportDetailsModal"),
 );
 
 const InventoryItemModal = lazy(
@@ -163,12 +164,21 @@ const AddMediaModal = lazy(
     import("./app/pages/main/gym/manager/marketing/components/AddMediaModal"),
 );
 
+const CreateReportModal = lazy(
+  () => import("./app/components/modals/create-report-modal/CreateReportModal"),
+);
+
 const LogSessionModal = lazy(() =>
   import("./app/pages/main/member/training/components/log-session-modal/LogSessionModal").then(
     (module) => ({
-      default: module.LogSessionModal, // Exported component is named LogSessionModal, not default
+      default: module.LogSessionModal,
     }),
   ),
+);
+
+const UserProfileModal = lazy(
+  () =>
+    import("./app/components/modals/profile/user-profile-modal/UserProfileModal"),
 );
 
 function modals() {
@@ -208,6 +218,8 @@ function modals() {
       <CompetitionModal />
       <ProductModal />
       <AddMediaModal />
+      <CreateReportModal />
+      <UserProfileModal />
     </Suspense>
   );
 }

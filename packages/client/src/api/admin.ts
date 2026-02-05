@@ -226,7 +226,7 @@ export const adminApi = {
   /** Admin: Get all reports */
   getReports: async (): Promise<ApiResponse<Report[]>> => {
     try {
-      const res = await apiClient.get<ApiResponse<Report[]>>("/admin/reports");
+      const res = await apiClient.get<ApiResponse<Report[]>>("/reports/admin");
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -239,7 +239,7 @@ export const adminApi = {
   ): Promise<ApiResponse<Report>> => {
     try {
       const res = await apiClient.patch<ApiResponse<Report>>(
-        `/admin/reports/${id}/status`,
+        `/reports/admin/${id}/status`,
         { status },
       );
       return res.data;
@@ -272,6 +272,22 @@ export const adminApi = {
       const res = await apiClient.patch<
         ApiResponse<import("../types/alert").Alert>
       >(`/admin/alerts/${id}/status`, { status });
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Admin: Add response to report */
+  addResponse: async (
+    reportId: string,
+    data: import("../types/report").AddReportResponseDto,
+  ): Promise<ApiResponse<Report>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<Report>>(
+        `/reports/${reportId}/response`,
+        data,
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

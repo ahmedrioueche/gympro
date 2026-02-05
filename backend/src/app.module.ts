@@ -19,6 +19,7 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ChargilyModule } from './modules/chargily/chargily.module';
 import { CoachModule } from './modules/coach/coach.module';
+import { CompetitionModule } from './modules/competition/competition.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ExercisesModule } from './modules/exercises/exercises.module';
 import { GymAnnouncementModule } from './modules/gym-announcement/gym-announcement.module';
@@ -27,6 +28,7 @@ import { GymCoachModule } from './modules/gym-coach/gym-coach.module';
 import { GymModule } from './modules/gym/gym.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
 import { GymSubscriptionModule } from './modules/gymSubscription/gymSubscription.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaddleModule } from './modules/paddle/paddle.module';
 import { ProgressModule } from './modules/progress/progress.module';
@@ -34,6 +36,7 @@ import { ReportsModule } from './modules/reports/reports.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
+import { StoreModule } from './modules/store/store.module';
 import { TrainingModule } from './modules/training/training.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { UsersModule } from './modules/users/users.module';
@@ -106,6 +109,9 @@ import { UsersModule } from './modules/users/users.module';
     ReportsModule,
     AlertsModule,
     UploadModule,
+    InventoryModule,
+    CompetitionModule,
+    StoreModule,
   ],
   controllers: [AppController],
   providers: [

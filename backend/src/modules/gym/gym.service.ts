@@ -342,6 +342,23 @@ export class GymService {
     return gym;
   }
 
+  async setBanner(id: string, banner: { url: string; publicId: string }) {
+    const gym = await this.gymModel.findByIdAndUpdate(
+      id,
+      {
+        bannerUrl: banner.url,
+        bannerPublicId: banner.publicId,
+      },
+      { new: true },
+    );
+
+    if (!gym) {
+      throw new Error('Gym not found');
+    }
+
+    return gym;
+  }
+
   async update(id: string, updateGymDto: any) {
     const updatedGym = await this.gymModel
       .findByIdAndUpdate(id, updateGymDto, { new: true })
@@ -393,11 +410,43 @@ export class GymService {
           : currentSettings.femaleOnlyHours,
     };
 
+    // Detect closure changes for notifications
+    const oldClosures = currentSettings.temporaryClosures || [];
+    const newClosures = updateSettingsDto.temporaryClosures || [];
+
+    // Find added closures
+    const addedClosures = newClosures.filter(
+      (nc: any) =>
+        !oldClosures.some(
+          (oc: any) =>
+            new Date(oc.start).getTime() === new Date(nc.start).getTime() &&
+            new Date(oc.end).getTime() === new Date(nc.end).getTime(),
+        ),
+    );
+
+    // Find removed closures
+    const removedClosures = oldClosures.filter(
+      (oc: any) =>
+        !newClosures.some(
+          (nc: any) =>
+            new Date(nc.start).getTime() === new Date(oc.start).getTime() &&
+            new Date(nc.end).getTime() === new Date(oc.end).getTime(),
+        ),
+    );
+
     // Update the gym with new settings
     const updatedGym = await this.gymModel
       .findByIdAndUpdate(id, { settings: updatedSettings }, { new: true })
       .populate('owner')
       .exec();
+
+    // Trigger notifications asynchronously
+    addedClosures.forEach((closure) => {
+      this.notificationsService.notifyGymClosureChange(id, closure, 'added');
+    });
+    removedClosures.forEach((closure) => {
+      this.notificationsService.notifyGymClosureChange(id, closure, 'deleted');
+    });
 
     return updatedGym;
   }
@@ -408,5 +457,31 @@ export class GymService {
       throw new NotFoundException(`Gym with ID ${id} not found`);
     }
     return deletedGym;
+  }
+
+  async addMedia(id: string, mediaItem: any) {
+    const updatedGym = await this.gymModel
+      .findByIdAndUpdate(
+        id,
+        { $push: { media: { ...mediaItem, createdAt: new Date() } } },
+        { new: true },
+      )
+      .populate('owner')
+      .exec();
+    if (!updatedGym) {
+      throw new NotFoundException(`Gym with ID ${id} not found`);
+    }
+    return updatedGym;
+  }
+
+  async removeMedia(id: string, publicId: string) {
+    const updatedGym = await this.gymModel
+      .findByIdAndUpdate(id, { $pull: { media: { publicId } } }, { new: true })
+      .populate('owner')
+      .exec();
+    if (!updatedGym) {
+      throw new NotFoundException(`Gym with ID ${id} not found`);
+    }
+    return updatedGym;
   }
 }

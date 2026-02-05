@@ -49,7 +49,7 @@ export default function AlertDetailsModal() {
             </h3>
             <div className="flex gap-2">
               <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium bg-brand-primary/10 text-brand-primary`}
+                className={`px-2 py-0.5 rounded-full text-xs font-medium bg-brand-primary/10 text-text-primary`}
               >
                 {t(`admin.alerts.type.${alert.type}`)}
               </span>
@@ -58,12 +58,12 @@ export default function AlertDetailsModal() {
               >
                 {t(`admin.alerts.priority.${alert.priority}`)}
               </span>
-              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-surface-secondary text-text-tertiary">
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-surface-secondary text-text-secondary">
                 {t(`admin.alerts.source.${alert.source}`)}
               </span>
             </div>
           </div>
-          <span className="text-sm text-text-tertiary">
+          <span className="text-sm text-text-secondary">
             {format(new Date(alert.createdAt), "PPp")}
           </span>
         </div>
@@ -83,7 +83,7 @@ export default function AlertDetailsModal() {
               {t("admin.alerts.modals.stack_trace")}
             </h4>
             <div className="bg-[#0d1117] p-4 rounded-lg border border-border overflow-x-auto max-h-60 overflow-y-auto">
-              <pre className="text-xs text-brand-primary font-mono whitespace-pre">
+              <pre className="text-xs text-text-primary font-mono whitespace-pre">
                 {alert.stackTrace}
               </pre>
             </div>
@@ -99,7 +99,7 @@ export default function AlertDetailsModal() {
             <div className="grid grid-cols-2 gap-2 bg-surface-secondary p-3 rounded-lg border border-border/50 text-xs text-text-secondary font-mono">
               {Object.entries(alert.metadata).map(([key, value]) => (
                 <div key={key} className="flex flex-col gap-0.5">
-                  <span className="text-text-tertiary uppercase">{key}</span>
+                  <span className="text-text-secondary uppercase">{key}</span>
                   <span className="truncate">{JSON.stringify(value)}</span>
                 </div>
               ))}

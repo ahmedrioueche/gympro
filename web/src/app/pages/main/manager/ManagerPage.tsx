@@ -4,6 +4,7 @@ import {
   Bell,
   CreditCard,
   Dumbbell,
+  HelpCircle,
   Home,
   Settings,
   WalletCards,
@@ -53,6 +54,12 @@ const sidebarLinks = [
     icon: <Settings className="w-5 h-5" />,
     path: APP_PAGES.manager.settings.link,
     matchPaths: [APP_PAGES.manager.settings.link],
+  },
+  {
+    label: "support",
+    icon: <HelpCircle className="w-5 h-5" />,
+    path: APP_PAGES.manager.support.link,
+    matchPaths: [APP_PAGES.manager.support.link],
   },
 ];
 

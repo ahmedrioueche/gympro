@@ -19,6 +19,14 @@ export enum ReportStatus {
   CLOSED = "closed",
 }
 
+export interface ReportResponse {
+  _id?: string;
+  sender: User | string;
+  message: string;
+  attachments: string[];
+  createdAt: string;
+}
+
 export interface Report {
   _id: string;
   subject: string;
@@ -28,6 +36,8 @@ export interface Report {
   status: ReportStatus;
   reporter: User | string;
   metadata?: Record<string, any>;
+  attachments?: string[];
+  responses?: ReportResponse[];
   createdAt: string;
   updatedAt: string;
 }
@@ -38,6 +48,12 @@ export interface CreateReportDto {
   type: ReportType;
   priority?: ReportPriority;
   metadata?: Record<string, any>;
+  attachments?: string[];
+}
+
+export interface AddReportResponseDto {
+  message: string;
+  attachments?: string[];
 }
 
 export interface UpdateReportStatusDto {

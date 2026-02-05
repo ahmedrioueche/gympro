@@ -169,12 +169,12 @@ export interface CoachProfileModalProps {
 }
 
 export interface CoachPricingModalProps {
-  pricingId?: string; // If provided, edit mode; otherwise create mode
+  pricingId?: string;
   onSuccess?: () => void;
 }
 
 export interface GymInvitationModalProps {
-  invitationId: string; // The affiliation ID
+  invitationId: string;
   gymName: string;
   gymId?: string;
 }
@@ -229,4 +229,8 @@ export interface GymMediaModalProps {
   gymId: string;
   type?: "image" | "video" | "document";
   onSuccess?: () => void;
+}
+
+export interface UserProfileModalProps {
+  user: import("@ahmedrioueche/gympro-client").User;
 }

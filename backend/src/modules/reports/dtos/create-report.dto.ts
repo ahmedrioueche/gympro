@@ -27,4 +27,8 @@ export class CreateReportDto {
   @IsObject()
   @IsOptional()
   metadata?: Record<string, any>;
+
+  @IsString({ each: true })
+  @IsOptional()
+  attachments?: string[];
 }

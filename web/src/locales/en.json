@@ -435,6 +435,7 @@
     "competitions": "Competitions",
     "inventory": "Inventory",
     "store": "Store",
+    "support": "Support",
     "pin": "Pin ",
     "unpin": "Unpin "
   },
@@ -2144,10 +2145,6 @@
     "redirecting": "Redirecting to secure payment page...",
     "processing": "Processing your request..."
   },
-  "support": {
-    "subject": "I need help with my GymPro account",
-    "body": "Hi GymPro Support Team,\n\nI need help with my GymPro account"
-  },
   "payment": {
     "success": {
       "title": "Payment Successful!",
@@ -3819,6 +3816,64 @@
       },
       "empty": "No alerts found",
       "search_placeholder": "Search alerts by title or message..."
+    }
+  },
+  "support": {
+    "pageTitle": "Support",
+    "pageSubtitle": "Report issues and track your tickets",
+    "createReport": "Report Issue",
+    "empty": "No reports yet",
+    "emptyDesc": "When you report an issue, it will appear here",
+    "email": {
+      "subject": "I need help with my GymPro account",
+      "body": "Hi GymPro Support Team,\n\nI need help with my GymPro account"
+    },
+    "table": {
+      "subject": "Subject",
+      "type": "Type",
+      "priority": "Priority",
+      "status": "Status",
+      "created": "Created"
+    },
+    "conversation": "Conversation",
+    "view_all_messages": "View all {{count}} messages",
+    "reply": "Reply",
+    "no_messages": "No messages yet",
+    "type_message": "Type a message...",
+    "you": "You",
+    "admin": "Admin",
+    "user": "User",
+    "waiting_for_response": "Waiting for a response before you can reply again",
+    "upload_failed": "Failed to upload files",
+    "types": {
+      "issue": "Issue",
+      "feedback": "Feedback",
+      "feature_request": "Feature Request"
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "statuses": {
+      "open": "Open",
+      "in_progress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "modal": {
+      "title": "Report an Issue",
+      "subtitle": "Describe your issue and we'll get back to you",
+      "subject": "Subject",
+      "subjectPlaceholder": "Brief summary of the issue",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe the issue in detail...",
+      "type": "Type",
+      "priority": "Priority",
+      "submit": "Submit Report",
+      "submitting": "Submitting...",
+      "attachments": "Attachments",
+      "uploadPlaceholder": "Uploade images or videos to clarify the issue"
     }
   }
 }

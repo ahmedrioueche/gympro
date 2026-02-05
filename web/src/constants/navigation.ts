@@ -72,6 +72,10 @@ export const APP_PAGES = {
       name: "pages.manager.settings",
       link: "/manager/settings",
     },
+    support: {
+      name: "pages.manager.support",
+      link: "/manager/support",
+    },
   },
 
   gym: {

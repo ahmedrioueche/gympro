@@ -25,6 +25,9 @@ export class GymSettingsModel implements GymSettings {
   @Prop({ default: 'flexible' }) accessControlType?: AccessControlType;
   @Prop() defaultCurrency?: Currency;
   @Prop({ type: [String], default: [] }) rules?: string[];
+  @Prop({ type: [Object], default: [] }) temporaryClosures?: any[];
+  @Prop({ type: [Number], default: [0, 1, 2, 3, 4, 5, 6] })
+  workingDays?: number[];
 }
 export const GymSettingsSchema = SchemaFactory.createForClass(GymSettingsModel);
 
@@ -59,6 +62,30 @@ export class GymModel extends Document {
   @Prop({ type: GymSettingsSchema }) settings?: GymSettings;
   @Prop({ type: GymStatsSchema }) memberStats?: GymStats;
   @Prop({ type: Object }) appSubscription?: AppSubscription;
+  @Prop({
+    type: [
+      {
+        url: String,
+        publicId: String,
+        type: { type: String, enum: ['image', 'video', 'document'] },
+        category: {
+          type: String,
+          enum: ['marketing', 'facility', 'class', 'social'],
+        },
+        title: String,
+        description: String,
+        createdAt: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  })
+  media?: any[];
+
+  @Prop()
+  bannerUrl?: string;
+
+  @Prop()
+  bannerPublicId?: string;
   @Prop() createdAt: Date;
   @Prop() latitude?: number;
   @Prop() longitude?: number;

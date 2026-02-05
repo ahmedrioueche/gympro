@@ -213,4 +213,62 @@ export class GymController {
       );
     }
   }
+
+  @Post(':id/media')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('marketing:manage')
+  async addMedia(@Param('id') id: string, @Body() mediaItem: any) {
+    console.log(`AddMedia request for gym ${id}:`, mediaItem);
+    try {
+      const gym = await this.gymService.addMedia(id, mediaItem);
+      console.log(
+        `AddMedia success for gym ${id}. Media count: ${gym.media?.length}`,
+      );
+      return apiResponse(true, undefined, gym, 'Media added successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPDATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Delete(':id/media/:publicId')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('marketing:manage')
+  async removeMedia(
+    @Param('id') id: string,
+    @Param('publicId') publicId: string,
+  ) {
+    try {
+      const gym = await this.gymService.removeMedia(id, publicId);
+      return apiResponse(true, undefined, gym, 'Media removed successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPDATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Post(':id/banner')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('marketing:manage')
+  async setBanner(@Param('id') id: string, @Body() banner: any) {
+    try {
+      const gym = await this.gymService.setBanner(id, banner);
+      return apiResponse(true, undefined, gym, 'Banner set successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPDATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
 }

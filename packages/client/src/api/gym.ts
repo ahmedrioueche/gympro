@@ -68,12 +68,12 @@ export const gymApi = {
   /** Update a gym */
   update: async (
     id: string,
-    updateGymDto: Partial<Gym>
+    updateGymDto: Partial<Gym>,
   ): Promise<ApiResponse<Gym>> => {
     try {
       const res = await apiClient.patch<ApiResponse<Gym>>(
         `/gyms/${id}`,
-        updateGymDto
+        updateGymDto,
       );
       return res.data;
     } catch (error) {
@@ -84,12 +84,12 @@ export const gymApi = {
   /** Update gym settings */
   updateGymSettings: async (
     id: string,
-    updateSettingsDto: any
+    updateSettingsDto: any,
   ): Promise<ApiResponse<Gym>> => {
     try {
       const res = await apiClient.patch<ApiResponse<Gym>>(
         `/gyms/${id}/settings`,
-        updateSettingsDto
+        updateSettingsDto,
       );
       return res.data;
     } catch (error) {
@@ -110,7 +110,7 @@ export const gymApi = {
   /** Get all members for a specific gym (paginated) */
   getGymMembers: async (
     gymId: string,
-    options: { search?: string; page?: number; limit?: number } = {}
+    options: { search?: string; page?: number; limit?: number } = {},
   ): Promise<ApiResponse<PaginatedResponse<User>>> => {
     try {
       const { search, page = 1, limit = 12 } = options;
@@ -120,7 +120,7 @@ export const gymApi = {
       }
       const res = await apiClient.get<ApiResponse<PaginatedResponse<User>>>(
         `/gyms/${gymId}/members`,
-        { params }
+        { params },
       );
       return res.data;
     } catch (error) {
@@ -132,7 +132,51 @@ export const gymApi = {
   updateLastVisited: async (gymId: string): Promise<ApiResponse<void>> => {
     try {
       const res = await apiClient.post<ApiResponse<void>>(
-        `/gyms/${gymId}/last-visited`
+        `/gyms/${gymId}/last-visited`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Add media to a gym */
+  addMedia: async (gymId: string, media: any): Promise<ApiResponse<Gym>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<Gym>>(
+        `/gyms/${gymId}/media`,
+        media,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Remove media from a gym */
+  removeMedia: async (
+    gymId: string,
+    publicId: string,
+  ): Promise<ApiResponse<Gym>> => {
+    try {
+      const res = await apiClient.delete<ApiResponse<Gym>>(
+        `/gyms/${gymId}/media/${publicId}`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Set gym banner */
+  setBanner: async (
+    gymId: string,
+    banner: { url: string; publicId: string },
+  ): Promise<ApiResponse<Gym>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<Gym>>(
+        `/gyms/${gymId}/banner`,
+        banner,
       );
       return res.data;
     } catch (error) {

@@ -15,6 +15,8 @@ import {
 import { AppPermission } from '../admin/decorators/app-permission.decorator';
 import { AppPermissionGuard } from '../admin/guards/app-permission.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AddAttachmentsDto } from './dtos/add-attachments.dto';
+import { AddResponseDto } from './dtos/add-response.dto';
 import { CreateReportDto } from './dtos/create-report.dto';
 import { ReportsService } from './reports.service';
 
@@ -26,6 +28,12 @@ export class ReportsController {
   @Post()
   create(@Req() req: any, @Body() createReportDto: CreateReportDto) {
     return this.reportsService.create(req.user.sub, createReportDto);
+  }
+
+  @Get('my')
+  async findMyReports(@Req() req: any) {
+    const reports = await this.reportsService.findByReporter(req.user.sub);
+    return { success: true, data: reports };
   }
 
   @Get('admin')
@@ -46,6 +54,34 @@ export class ReportsController {
     const report = await this.reportsService.updateStatus(
       id,
       updateReportStatusDto,
+    );
+    return { success: true, data: report };
+  }
+
+  @Post(':id/response')
+  async addResponse(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body() addResponseDto: AddResponseDto,
+  ) {
+    const report = await this.reportsService.addResponse(
+      id,
+      req.user.sub,
+      addResponseDto,
+    );
+    return { success: true, data: report };
+  }
+
+  @Post(':id/attachments')
+  async addAttachments(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body() addAttachmentsDto: AddAttachmentsDto,
+  ) {
+    const report = await this.reportsService.addAttachments(
+      id,
+      req.user.sub,
+      addAttachmentsDto.attachments || [],
     );
     return { success: true, data: report };
   }
