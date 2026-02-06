@@ -212,6 +212,18 @@ export const APP_PAGES = {
         name: "pages.gym.payments",
         link: "/gym/coach/payments",
       },
+      inventory: {
+        name: "pages.gym.inventory",
+        link: "/gym/coach/inventory",
+      },
+      store: {
+        name: "pages.gym.store",
+        link: "/gym/coach/store",
+      },
+      competitions: {
+        name: "pages.gym.competitions",
+        link: "/gym/coach/competitions",
+      },
       analytics: {
         name: "pages.gym.analytics",
         link: "/gym/coach/analytics",

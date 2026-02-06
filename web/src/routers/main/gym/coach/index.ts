@@ -3,11 +3,14 @@ import {
   analyticsRoute,
   announcementsRoute,
   clientsRoute,
+  competitionsRoute,
   homeRoute,
+  inventoryRoute,
   notificationsRoute,
   paymentsRoute,
   scheduleRoute,
   settingsRoute,
+  storeRoute,
 } from "./GymCoachRoutes";
 
 export const GymCoachRootTree = GymCoachRootRoute.addChildren([
@@ -19,4 +22,7 @@ export const GymCoachRootTree = GymCoachRootRoute.addChildren([
   notificationsRoute,
   settingsRoute,
   announcementsRoute,
+  storeRoute,
+  inventoryRoute,
+  competitionsRoute,
 ]);

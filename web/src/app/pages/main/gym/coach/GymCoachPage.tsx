@@ -5,7 +5,10 @@ import {
   Calendar,
   Home,
   Megaphone,
+  Package,
   Settings,
+  Store,
+  Trophy,
   Users,
   Wallet,
 } from "lucide-react";
@@ -36,6 +39,24 @@ const sidebarLinks = [
     icon: <Wallet className="w-5 h-5" />,
     path: APP_PAGES.gym.coach.payments.link,
     matchPaths: [APP_PAGES.gym.coach.payments.link],
+  },
+  {
+    label: "inventory",
+    icon: <Package className="w-5 h-5" />,
+    path: APP_PAGES.gym.coach.inventory.link,
+    matchPaths: [APP_PAGES.gym.coach.inventory.link],
+  },
+  {
+    label: "store",
+    icon: <Store className="w-5 h-5" />,
+    path: APP_PAGES.gym.coach.store.link,
+    matchPaths: [APP_PAGES.gym.coach.store.link],
+  },
+  {
+    label: "competitions",
+    icon: <Trophy className="w-5 h-5" />,
+    path: APP_PAGES.gym.coach.competitions.link,
+    matchPaths: [APP_PAGES.gym.coach.competitions.link],
   },
   {
     label: "analytics",
