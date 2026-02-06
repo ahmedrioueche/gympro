@@ -27,6 +27,27 @@ import { InventoryService } from './inventory.service';
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 
+  /**
+   * Member-friendly endpoint - only requires gym membership, not inventory:view permission
+   * Returns all equipment items visible to members
+   */
+  @Get('member/equipment')
+  async findAllForMembers(
+    @Param('gymId') gymId: string,
+    @Query('search') search?: string,
+    @Query('category') category?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const data = await this.inventoryService.findAll(gymId, {
+      search,
+      category,
+      page: page ? parseInt(page) : undefined,
+      limit: limit ? parseInt(limit) : undefined,
+    });
+    return { success: true, ...data };
+  }
+
   @Get()
   @RequireGymPermission(GYM_PERMISSIONS.inventory.view)
   async findAll(

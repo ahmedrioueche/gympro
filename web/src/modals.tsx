@@ -181,6 +181,21 @@ const UserProfileModal = lazy(
     import("./app/components/modals/profile/user-profile-modal/UserProfileModal"),
 );
 
+const ProductDetailsModal = lazy(
+  () =>
+    import("./app/pages/main/gym/member/store/components/ProductDetailsModal"),
+);
+
+const CompetitionDetailsModal = lazy(
+  () =>
+    import("./app/components/modals/competition-details-modal/CompetitionDetailsModal"),
+);
+
+const SetWinnersModal = lazy(
+  () =>
+    import("./app/pages/main/gym/manager/competitions/components/SetWinnersModal"),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -220,6 +235,9 @@ function modals() {
       <AddMediaModal />
       <CreateReportModal />
       <UserProfileModal />
+      <ProductDetailsModal />
+      <CompetitionDetailsModal />
+      <SetWinnersModal />
     </Suspense>
   );
 }

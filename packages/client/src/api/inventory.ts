@@ -34,6 +34,35 @@ export const inventoryApi = {
   },
 
   /**
+   * Get equipment for gym members - doesn't require inventory:view permission
+   */
+  findAllForMembers: async (
+    gymId: string,
+    options: {
+      search?: string;
+      category?: string;
+      page?: number;
+      limit?: number;
+    } = {},
+  ): Promise<ApiResponse<EquipmentItem[]>> => {
+    try {
+      const { search, category, page, limit } = options;
+      const params = new URLSearchParams();
+      if (search) params.append("search", search);
+      if (category) params.append("category", category);
+      if (page) params.append("page", page.toString());
+      if (limit) params.append("limit", limit.toString());
+
+      const res = await apiClient.get<ApiResponse<EquipmentItem[]>>(
+        `/gyms/${gymId}/inventory/member/equipment?${params.toString()}`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
    * Get a single equipment item
    */
   findOne: async (

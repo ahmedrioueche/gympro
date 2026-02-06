@@ -66,6 +66,6 @@ import { UsersService } from './users.service';
     AppPlansService,
     PaddleService,
   ],
-  exports: [UsersService, GymPermissionsGuard], // Export for use in other modules
+  exports: [UsersService, GymPermissionsGuard, MongooseModule], // Export for use in other modules
 })
 export class UsersModule {}

@@ -14,7 +14,9 @@ export const competitionApi = {
   findAll: async (
     gymId: string,
     options: CompetitionQueryDto = {},
-  ): Promise<ApiResponse<Competition[]>> => {
+  ): Promise<
+    ApiResponse<import("../types/api").PaginatedResponse<Competition>>
+  > => {
     try {
       const { search, type, status, page, limit } = options;
       const params = new URLSearchParams();
@@ -24,9 +26,9 @@ export const competitionApi = {
       if (page) params.append("page", page.toString());
       if (limit) params.append("limit", limit.toString());
 
-      const res = await apiClient.get<ApiResponse<Competition[]>>(
-        `/gyms/${gymId}/competitions?${params.toString()}`,
-      );
+      const res = await apiClient.get<
+        ApiResponse<import("../types/api").PaginatedResponse<Competition>>
+      >(`/gyms/${gymId}/competitions?${params.toString()}`);
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -97,6 +99,107 @@ export const competitionApi = {
     try {
       const res = await apiClient.delete<ApiResponse<{ success: boolean }>>(
         `/gyms/${gymId}/competitions/${id}`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Get competitions for gym members (only active/completed)
+   */
+  getMemberCompetitions: async (
+    gymId: string,
+    options: CompetitionQueryDto = {},
+  ): Promise<
+    ApiResponse<import("../types/api").PaginatedResponse<Competition>>
+  > => {
+    try {
+      const { search, type, page, limit } = options;
+      const params = new URLSearchParams();
+      if (search) params.append("search", search);
+      if (type) params.append("type", type);
+      if (page) params.append("page", page.toString());
+      if (limit) params.append("limit", limit.toString());
+
+      const res = await apiClient.get<
+        ApiResponse<import("../types/api").PaginatedResponse<Competition>>
+      >(`/gyms/${gymId}/competitions/member/list?${params.toString()}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Member joins a competition
+   */
+  join: async (
+    gymId: string,
+    competitionId: string,
+  ): Promise<ApiResponse<Competition>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<Competition>>(
+        `/gyms/${gymId}/competitions/${competitionId}/join`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Member leaves a competition
+   */
+  leave: async (
+    gymId: string,
+    competitionId: string,
+  ): Promise<ApiResponse<Competition>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<Competition>>(
+        `/gyms/${gymId}/competitions/${competitionId}/leave`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Manager sets winners for a completed competition
+   */
+  setWinners: async (
+    gymId: string,
+    competitionId: string,
+    winners: {
+      place: 1 | 2 | 3;
+      userId: string;
+      userName?: string;
+      userAvatar?: string;
+    }[],
+  ): Promise<ApiResponse<Competition>> => {
+    try {
+      const res = await apiClient.put<ApiResponse<Competition>>(
+        `/gyms/${gymId}/competitions/${competitionId}/winners`,
+        { winners },
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /**
+   * Get participants for a competition (Manager only)
+   */
+  getParticipants: async (
+    gymId: string,
+    competitionId: string,
+  ): Promise<ApiResponse<any[]>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<any[]>>(
+        `/gyms/${gymId}/competitions/${competitionId}/participants`,
       );
       return res.data;
     } catch (error) {

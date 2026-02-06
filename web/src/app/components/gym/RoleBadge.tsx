@@ -5,9 +5,12 @@ const ROLE_STYLES = {
   manager: "bg-blue-500/10 text-blue-600 border-blue-500/20",
   receptionist: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
   coach: "bg-purple-500/10 text-purple-600 border-purple-500/20",
-  member: "bg-gray-500/10 text-gray-600 border-gray-500/20",
-  cleaner: "bg-gray-500/10 text-gray-600 border-gray-500/20",
-  maintenance: "bg-gray-500/10 text-gray-600 border-gray-500/20",
+  member: "bg-rose-500/10 text-rose-600 border-rose-500/20",
+  cleaner: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+  maintenance: "bg-sky-500/10 text-sky-600 border-sky-500/20",
+  security: "bg-red-500/10 text-red-600 border-red-500/20",
+  admin: "bg-indigo-500/10 text-indigo-600 border-indigo-500/20",
+  app_editor: "bg-fuchsia-500/10 text-fuchsia-600 border-fuchsia-500/20",
 } as const;
 
 interface RoleBadgeProps {

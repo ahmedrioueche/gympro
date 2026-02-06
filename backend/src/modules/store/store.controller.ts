@@ -43,6 +43,21 @@ export class StoreController {
     return { success: true, data };
   }
 
+  /**
+   * Member-friendly endpoint - only requires gym membership, not store:view permission
+   * Returns only active products
+   */
+  @Get('member/products')
+  async findAllForMembers(
+    @Param('gymId') gymId: string,
+    @Query() query: any,
+  ): Promise<
+    ApiResponse<{ data: Product[]; total: number; totalPages: number }>
+  > {
+    const data = await this.storeService.findAllForMembers(gymId, query);
+    return { success: true, data };
+  }
+
   @Get()
   @RequireGymPermission('store:view')
   async findAll(

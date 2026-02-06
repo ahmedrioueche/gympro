@@ -109,7 +109,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   // Default button configurations
   const secondaryConfig: FooterButton = {
-    label: t("common.cancel"),
+    label: secondaryButton?.label || t("common.cancel"),
     onClick: onClose,
     type: "button",
     variant: "default",

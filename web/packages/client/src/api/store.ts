@@ -25,6 +25,31 @@ export const storeApi = {
     }
   },
 
+  /**
+   * Get products for gym members - only returns active products
+   * Does not require store:view permission, just gym membership
+   */
+  getMemberProducts: async (
+    gymId: string,
+    params: {
+      search?: string;
+      category?: string;
+      page?: number;
+      limit?: number;
+    } = {},
+  ): Promise<
+    ApiResponse<{ data: Product[]; total: number; totalPages: number }>
+  > => {
+    try {
+      const res = await apiClient.get<
+        ApiResponse<{ data: Product[]; total: number; totalPages: number }>
+      >(`/gyms/${gymId}/store/member/products`, { params });
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   getProduct: async (
     gymId: string,
     id: string,

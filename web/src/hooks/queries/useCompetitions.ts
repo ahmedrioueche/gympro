@@ -15,6 +15,28 @@ export const competitionKeys = {
     [...competitionKeys.lists(), filters] as const,
   details: () => [...competitionKeys.all, "detail"] as const,
   detail: (id: string) => [...competitionKeys.details(), id] as const,
+  participants: (id: string) =>
+    [...competitionKeys.detail(id), "participants"] as const,
+};
+
+/**
+ * Get participants for a competition (Manager only)
+ */
+export const useCompetitionParticipants = (
+  gymId: string,
+  competitionId: string,
+) => {
+  return useQuery({
+    queryKey: competitionKeys.participants(competitionId),
+    queryFn: async () => {
+      const response = await competitionApi.getParticipants(
+        gymId,
+        competitionId,
+      );
+      return response.data;
+    },
+    enabled: !!gymId && !!competitionId,
+  });
 };
 
 export interface CompetitionResult {
@@ -37,7 +59,7 @@ export const useCompetitions = (
     queryFn: async () => {
       if (!gymId) throw new Error("Gym ID is required");
       const response = await competitionApi.findAll(gymId, options);
-      return response as unknown as CompetitionResult;
+      return response.data as unknown as CompetitionResult;
     },
     enabled: !!gymId,
   });

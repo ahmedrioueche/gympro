@@ -35,7 +35,9 @@ export type NotificationType =
   | "alert" // urgent alert
   | "announcement" // gym-wide announcements
   | "membership" // membership updates
-  | "invitation"; // gym invitations
+  | "invitation" // gym invitations
+  | "competition" // competition updates
+  | "trophy"; // winner announcements
 
 // Specialized notifications per role
 export interface MemberNotification extends BaseNotification {

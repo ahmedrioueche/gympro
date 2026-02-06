@@ -14,7 +14,7 @@ import {
 import { useGymStore } from "../../../../../../store/gym";
 import { useModalStore } from "../../../../../../store/modal";
 import PageHeader from "../../../../../components/PageHeader";
-import { CompetitionCard } from "./components/CompetitionCard";
+import { CompetitionCard } from "../../../../../components/cards/CompetitionCard";
 
 export default function CompetitionsPage() {
   const { t } = useTranslation();
@@ -76,6 +76,24 @@ export default function CompetitionsPage() {
         }
       },
     });
+  };
+
+  const handleSetWinners = (competition: Competition) => {
+    openModal("set-winners", {
+      competition,
+      onSuccess: () => refetch(),
+    });
+  };
+
+  const handleViewDetails = (competition: Competition) => {
+    openModal("competition-details", {
+      competition,
+      gymId: currentGym?._id,
+    });
+  };
+
+  const handleViewParticipants = (competition: Competition) => {
+    handleViewDetails(competition);
   };
 
   return (
@@ -140,6 +158,8 @@ export default function CompetitionsPage() {
               competition={competition}
               onEdit={handleEditCompetition}
               onDelete={handleDeleteCompetition}
+              onSetWinners={handleSetWinners}
+              onViewDetails={handleViewDetails}
             />
           ))}
         </div>

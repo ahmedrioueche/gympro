@@ -124,6 +124,14 @@
       "downgrade_effective_soon_body": "Reminder: your plan will change to {{planName}} on {{date}}.",
       "renewed_title": "Subscription Renewed",
       "renewed_body": "Good news! Your {{planName}} subscription has been successfully renewed."
-    }
+    },
+    "competition_created_title": "New Competition",
+    "competition_created_body": "A new competition '{{title}}' has started. Join now!",
+    "competition_participant_joined_title": "New Participant",
+    "competition_participant_joined_body": "{{participantName}} joined '{{competitionTitle}}'",
+    "competition_winners_set_title": "Competition Results",
+    "competition_winners_set_body": "Winners have been announced for '{{title}}'. Check out the results!",
+    "competition_winner_congrats_title": "Congratulations! 🏆",
+    "competition_winner_congrats_body": "You won #{{place}} place in '{{title}}'! Great job!"
   }
 }

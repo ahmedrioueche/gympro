@@ -234,3 +234,22 @@ export interface GymMediaModalProps {
 export interface UserProfileModalProps {
   user: import("@ahmedrioueche/gympro-client").User;
 }
+
+export interface ProductDetailsModalProps {
+  product: Product;
+}
+
+export interface CompetitionDetailsModalProps {
+  competition: import("@ahmedrioueche/gympro-client").Competition;
+  gymId?: string;
+}
+
+export interface SetWinnersModalProps {
+  competition: import("@ahmedrioueche/gympro-client").Competition;
+  onSuccess?: () => void;
+}
+
+export interface CompetitionParticipantsModalProps {
+  competitionId: string;
+  gymId: string;
+}

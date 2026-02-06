@@ -28,13 +28,19 @@
     "close": "Close",
     "processing": "Processing...",
     "cancel": "Cancel",
+    "joining": "Joining",
     "confirm": "Confirm",
     "all": "All",
     "days": "Days",
     "retry": "Retry",
     "gyms": "Gyms",
     "members": "Members",
+    "viewDetails": "View Details",
     "gems": "Gems",
+    "upload": "Upload",
+    "leaving": "Leaving...",
+    "winners": "Winners",
+    "winner": "Winner",
     "noData": "No Data",
     "accept": "Accept",
     "decline": "Decline",
@@ -3361,12 +3367,29 @@
   "competitions": {
     "title": "Gym Competitions",
     "subtitle": "Create and manage challenges for your members.",
+    "memberSubtitle": "Join competitions and earn recognition",
     "addCompetition": "Create Competition",
     "searchPlaceholder": "Search competitions...",
+    "eventTime": "Event Date & Time",
+    "setWinners": "Set Winners",
+    "viewParticipants": "View Participants",
+    "join": "Join",
+    "leave": "Leave",
+    "joined": "Joined",
+    "full": "Full",
+    "joinSuccess": "Successfully joined competition",
+    "leaveSuccess": "Successfully left competition",
+    "leaveConfirmMessage": "Are you sure you want to leave \"{{title}}\"?",
+    "participants": "Participants",
+    "duration": "Duration",
+    "rules": "Rules",
+    "prize": "Prize",
     "empty": {
       "title": "No competitions yet",
       "message": "Start engaging your members with fun challenges and competitions.",
-      "action": "Create Your First Competition"
+      "action": "Create Your First Competition",
+      "memberTitle": "No Competitions Available",
+      "memberMessage": "There are no active competitions at this gym."
     },
     "noResults": {
       "title": "No matches found",
@@ -3411,19 +3434,33 @@
       "type": "Competition Type",
       "description": "Description",
       "descriptionPlaceholder": "Describe the goals and rules of the competition...",
+      "schedulingMode": "Scheduling Mode",
+      "interval": "Date Range",
+      "fixed": "Fixed Date/Time",
       "startDate": "Start Date",
       "endDate": "End Date",
+      "eventTime": "Event Date & Time",
       "prize": "Prize",
       "prizePlaceholder": "e.g., 1 Month Free Membership",
       "maxParticipants": "Max Participants",
       "rules": "Rules",
       "rulesPlaceholder": "List the rules and requirements...",
       "banner": "Banner Image"
+    },
+    "winners": {
+      "label": "Winners",
+      "setWinners": "Set Winners",
+      "noParticipants": "No participants to select from",
+      "selectParticipant": "Select a participant",
+      "selectAtLeastOne": "Please select at least one winner",
+      "preview": "Preview",
+      "success": "Winners set successfully"
     }
   },
   "store": {
     "title": "Gym Store",
     "subtitle": "Manage products for sale at your gym.",
+    "memberSubtitle": "Explore our products and gear",
     "addProduct": "Add Product",
     "editProduct": "Edit Product",
     "deleteProduct": "Delete Product",
@@ -3486,6 +3523,12 @@
       "price": "Price",
       "quantity": "Qty",
       "status": "Status"
+    },
+    "details": {
+      "title": "Product Details",
+      "contactGym": "Interested in this product?",
+      "visitFrontDesk": "Visit the front desk to purchase",
+      "noDescription": "No description available"
     }
   },
   "admin": {

@@ -6,7 +6,10 @@ import {
   Key,
   Logs,
   Megaphone,
+  Package,
   Settings,
+  Store,
+  Trophy,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import Nav from "../../../../components/nav/Nav";
@@ -35,6 +38,24 @@ const sidebarLinks = [
     icon: <Logs className="w-5 h-5" />,
     path: APP_PAGES.gym.member.attendance.link,
     matchPaths: [APP_PAGES.gym.member.attendance.link],
+  },
+  {
+    label: "store",
+    icon: <Store className="w-5 h-5" />,
+    path: APP_PAGES.gym.member.store.link,
+    matchPaths: [APP_PAGES.gym.member.store.link],
+  },
+  {
+    label: "inventory",
+    icon: <Package className="w-5 h-5" />,
+    path: APP_PAGES.gym.member.inventory.link,
+    matchPaths: [APP_PAGES.gym.member.inventory.link],
+  },
+  {
+    label: "competitions",
+    icon: <Trophy className="w-5 h-5" />,
+    path: APP_PAGES.gym.member.competitions.link,
+    matchPaths: [APP_PAGES.gym.member.competitions.link],
   },
   {
     label: "announcements",

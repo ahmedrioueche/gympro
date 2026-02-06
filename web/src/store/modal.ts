@@ -8,7 +8,9 @@ import type {
   ClientProfileModalProps,
   CoachPricingModalProps,
   CoachProfileModalProps,
+  CompetitionDetailsModalProps,
   CompetitionModalProps,
+  CompetitionParticipantsModalProps,
   ConfirmModalProps,
   CreateAnnouncementModalProps,
   CreateExerciseModalProps,
@@ -22,6 +24,7 @@ import type {
   InviteCoachModalProps,
   LogSessionModalProps,
   MemberProfileModalProps,
+  ProductDetailsModalProps,
   ProductModalProps,
   ProgramDetailsModalProps,
   RenewSubscriptionModalProps,
@@ -31,6 +34,7 @@ import type {
   ReviewCoachRequestModalProps,
   ScanResultModalProps,
   SessionDetailsModalProps,
+  SetWinnersModalProps,
   StaffModalProps,
   UpgradePreviewModalProps,
   UserProfileModalProps,
@@ -75,6 +79,10 @@ type ModalType =
   | "add-gym-media"
   | "create-report"
   | "user_profile"
+  | "product-details"
+  | "competition-details"
+  | "set-winners"
+  | "competition-participants"
   | null;
 
 interface ModalState {
@@ -113,6 +121,10 @@ interface ModalState {
   productProps?: ProductModalProps;
   gymMediaProps?: GymMediaModalProps;
   userProfileProps?: UserProfileModalProps;
+  productDetailsProps?: ProductDetailsModalProps;
+  competitionDetailsProps?: CompetitionDetailsModalProps;
+  competitionParticipantsProps?: CompetitionParticipantsModalProps;
+  setWinnersProps?: SetWinnersModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -328,6 +340,30 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "user_profile",
           userProfileProps: props,
+        };
+      }
+      if (modal === "product-details") {
+        return {
+          currentModal: "product-details",
+          productDetailsProps: props,
+        };
+      }
+      if (modal === "competition-details") {
+        return {
+          currentModal: "competition-details",
+          competitionDetailsProps: props,
+        };
+      }
+      if (modal === "set-winners") {
+        return {
+          currentModal: "set-winners",
+          setWinnersProps: props,
+        };
+      }
+      if (modal === "competition-participants") {
+        return {
+          currentModal: "competition-participants",
+          competitionParticipantsProps: props,
         };
       }
       return { currentModal: null };

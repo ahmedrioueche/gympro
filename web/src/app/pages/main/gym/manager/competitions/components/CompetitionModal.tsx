@@ -44,11 +44,15 @@ export default function CompetitionModal() {
       title: competition?.title || "",
       description: competition?.description || "",
       type: competition?.type || "weightlifting",
+      schedulingMode: competition?.schedulingMode || "fixed",
       startDate: competition?.startDate
         ? new Date(competition.startDate).toISOString().split("T")[0]
         : "",
       endDate: competition?.endDate
         ? new Date(competition.endDate).toISOString().split("T")[0]
+        : "",
+      eventTime: competition?.eventTime
+        ? new Date(competition.eventTime).toISOString().slice(0, 16)
         : "",
       prize: competition?.prize || "",
       maxParticipants: competition?.maxParticipants,
@@ -57,6 +61,7 @@ export default function CompetitionModal() {
   });
 
   const typeValue = watch("type");
+  const schedulingMode = watch("schedulingMode");
 
   useEffect(() => {
     if (isOpen && competition) {
@@ -64,8 +69,16 @@ export default function CompetitionModal() {
         title: competition.title,
         description: competition.description,
         type: competition.type,
-        startDate: new Date(competition.startDate).toISOString().split("T")[0],
-        endDate: new Date(competition.endDate).toISOString().split("T")[0],
+        schedulingMode: competition.schedulingMode,
+        startDate: competition.startDate
+          ? new Date(competition.startDate).toISOString().split("T")[0]
+          : "",
+        endDate: competition.endDate
+          ? new Date(competition.endDate).toISOString().split("T")[0]
+          : "",
+        eventTime: competition.eventTime
+          ? new Date(competition.eventTime).toISOString().slice(0, 16)
+          : "",
         prize: competition.prize || "",
         maxParticipants: competition.maxParticipants,
         rules: competition.rules || "",
@@ -76,8 +89,10 @@ export default function CompetitionModal() {
         title: "",
         description: "",
         type: "weightlifting",
+        schedulingMode: "fixed",
         startDate: "",
         endDate: "",
+        eventTime: "",
         prize: "",
         rules: "",
       });
@@ -113,6 +128,12 @@ export default function CompetitionModal() {
     if (!gymId) return;
 
     const payload = { ...data, bannerImage };
+
+    // Process dates based on scheduling mode
+    if (payload.schedulingMode === "fixed") {
+      payload.startDate = payload.eventTime;
+      payload.endDate = payload.eventTime;
+    }
 
     try {
       if (isEdit && competition) {
@@ -200,7 +221,7 @@ export default function CompetitionModal() {
                       <Plus className="w-6 h-6" />
                     </div>
                     <span className="text-sm font-medium text-text-secondary">
-                      {t("common.uploading", { defaultValue: "Upload Banner" })}
+                      {t("common.upload", { defaultValue: "Upload Banner" })}
                     </span>
                   </div>
                 )}
@@ -242,19 +263,73 @@ export default function CompetitionModal() {
           placeholder={t("competitions.form.descriptionPlaceholder")}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <InputField
-            label={t("competitions.form.startDate")}
-            type="date"
-            {...register("startDate", { required: true })}
-            error={errors.startDate?.message}
-          />
-          <InputField
-            label={t("competitions.form.endDate")}
-            type="date"
-            {...register("endDate", { required: true })}
-            error={errors.endDate?.message}
-          />
+        <div className="space-y-4 p-4 bg-muted/50 rounded-2xl border border-border/50">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-bold text-text-primary uppercase tracking-wider">
+              {t("competitions.form.schedulingMode")}
+            </label>
+            <div className="flex p-1 bg-muted rounded-xl w-fit">
+              <button
+                type="button"
+                onClick={() => setValue("schedulingMode", "fixed")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  schedulingMode === "fixed"
+                    ? "bg-surface text-primary shadow-sm"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                {t("competitions.form.fixed")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setValue("schedulingMode", "interval")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  schedulingMode === "interval"
+                    ? "bg-surface text-primary shadow-sm"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                {t("competitions.form.interval")}
+              </button>
+            </div>
+          </div>
+
+          {schedulingMode === "fixed" ? (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+              <InputField
+                label={t("competitions.form.eventTime")}
+                type="datetime-local"
+                {...register("eventTime", {
+                  required: schedulingMode === "fixed",
+                })}
+                error={errors.eventTime?.message}
+              />
+              {/* Ensure startDate validation doesn't block submission in fixed mode */}
+              <input
+                type="hidden"
+                {...register("startDate", { required: false })}
+              />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
+              <InputField
+                label={t("competitions.form.startDate")}
+                type="date"
+                {...register("startDate", {
+                  required: schedulingMode === "interval",
+                })}
+                error={errors.startDate?.message}
+              />
+              <InputField
+                label={t("competitions.form.endDate")}
+                type="date"
+                {...register("endDate", {
+                  required: schedulingMode === "interval",
+                })}
+                error={errors.endDate?.message}
+              />
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

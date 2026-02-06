@@ -18,6 +18,14 @@ export const COMPETITION_STATUSES = [
 
 export type CompetitionType = (typeof COMPETITION_TYPES)[number];
 export type CompetitionStatus = (typeof COMPETITION_STATUSES)[number];
+export type CompetitionSchedulingMode = "interval" | "fixed";
+
+export interface CompetitionWinner {
+  place: 1 | 2 | 3;
+  userId: string;
+  userName?: string;
+  userAvatar?: string;
+}
 
 export interface Competition extends AuditInfo {
   _id: string;
@@ -26,11 +34,15 @@ export interface Competition extends AuditInfo {
   description: string;
   type: CompetitionType;
   status: CompetitionStatus;
+  schedulingMode: CompetitionSchedulingMode;
   startDate: string | Date;
-  endDate: string | Date;
+  endDate?: string | Date;
+  eventTime?: string | Date;
   rules?: string;
   prize?: string;
   bannerImage?: string;
   maxParticipants?: number;
   participantCount: number;
+  participants?: string[];
+  winners?: CompetitionWinner[];
 }

@@ -66,6 +66,44 @@ export class StoreService {
     return { data: data as unknown as Product[], total, totalPages };
   }
 
+  /**
+   * Find all products for gym members - only returns active products
+   * This is a public view for gym members without special permissions
+   */
+  async findAllForMembers(
+    gymId: string,
+    query: {
+      search?: string;
+      category?: string;
+      page?: number;
+      limit?: number;
+    },
+  ): Promise<{ data: Product[]; total: number; totalPages: number }> {
+    const { search, category, page = 1, limit = 10 } = query;
+    const filter: any = { gymId, status: 'active' }; // Only active products
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    if (category) filter.category = category;
+
+    const total = await this.productModel.countDocuments(filter);
+    const totalPages = Math.ceil(total / limit);
+    const data = await this.productModel
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean()
+      .exec();
+
+    return { data: data as unknown as Product[], total, totalPages };
+  }
+
   async findOne(gymId: string, id: string): Promise<Product> {
     const product = await this.productModel.findOne({ _id: id, gymId }).lean();
     if (!product) {

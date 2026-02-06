@@ -31,15 +31,25 @@ export class CompetitionModel extends Document implements Competition {
   @Prop({
     type: String,
     enum: COMPETITION_STATUSES,
-    default: 'draft',
+    default: 'active',
   })
   status: CompetitionStatus;
+
+  @Prop({
+    type: String,
+    enum: ['interval', 'fixed'],
+    default: 'interval',
+  })
+  schedulingMode: 'interval' | 'fixed';
 
   @Prop({ required: true })
   startDate: Date;
 
-  @Prop({ required: true })
-  endDate: Date;
+  @Prop()
+  endDate?: Date;
+
+  @Prop()
+  eventTime?: Date; // For fixed scheduling mode - the exact event date/time
 
   @Prop()
   rules?: string;
@@ -55,6 +65,27 @@ export class CompetitionModel extends Document implements Competition {
 
   @Prop({ default: 0, min: 0 })
   participantCount: number;
+
+  @Prop({ type: [String], default: [] })
+  participants: string[];
+
+  @Prop({
+    type: [
+      {
+        place: { type: Number, enum: [1, 2, 3], required: true },
+        userId: { type: String, required: true },
+        userName: { type: String },
+        userAvatar: { type: String },
+      },
+    ],
+    default: [],
+  })
+  winners: {
+    place: 1 | 2 | 3;
+    userId: string;
+    userName?: string;
+    userAvatar?: string;
+  }[];
 
   // Audit
   @Prop()

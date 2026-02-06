@@ -1,11 +1,17 @@
-import { CompetitionStatus, CompetitionType } from "../types/competition";
+import {
+  CompetitionSchedulingMode,
+  CompetitionStatus,
+  CompetitionType,
+} from "../types/competition";
 
 export interface CreateCompetitionDto {
   title: string;
   description: string;
   type: CompetitionType;
+  schedulingMode?: CompetitionSchedulingMode;
   startDate: string | Date;
-  endDate: string | Date;
+  endDate?: string | Date;
+  eventTime?: string | Date;
   rules?: string;
   prize?: string;
   bannerImage?: string;
