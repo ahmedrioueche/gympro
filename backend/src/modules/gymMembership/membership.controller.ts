@@ -214,6 +214,31 @@ export class MembershipController {
     );
   }
 
+  @Post('request/:gymId')
+  @UseGuards(JwtAuthGuard)
+  async requestAccess(@Param('gymId') gymId: string, @Req() req: any) {
+    try {
+      const userId = req.user.sub;
+      const result = await this.membershipService.requestGymAccess(
+        userId,
+        gymId,
+      );
+      return apiResponse(
+        true,
+        undefined,
+        result,
+        'Access request submitted successfully',
+      );
+    } catch (error) {
+      return apiResponse(
+        false,
+        error.response?.errorCode || ErrorCode.UPDATE_MEMBER_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
   @Get(':gymId/:membershipId')
   @UseGuards(JwtAuthGuard, GymPermissionsGuard)
   @RequireGymPermission('members:view')

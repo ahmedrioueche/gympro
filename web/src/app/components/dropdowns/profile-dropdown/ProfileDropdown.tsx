@@ -62,7 +62,9 @@ export default function ProfileDropdown({
       />
 
       {/* Coach Request - Only if not a coach and not an admin */}
-      {!user.dashboardAccess?.includes("coach") &&
+      {!availableDashboards.includes("coach") &&
+        user.role !== UserRole.Coach &&
+        user.coachVerification?.status !== "pending" &&
         user.role !== UserRole.Admin && (
           <DropdownItem
             icon="🎓"

@@ -3,10 +3,11 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
 import { useRequestGymAffiliation } from "../../../../../hooks/queries/useGymCoach";
+import { useModalStore } from "../../../../../store/modal";
 import PageHeader from "../../../../components/PageHeader";
 import GymList from "../../../../components/gym/GymList";
+import GymDiscovery from "../../../../components/gyms/GymDiscovery";
 import { CoachGymsTabs } from "./components/CoachGymsTabs";
-import { ExploreGyms } from "./components/ExploreGyms";
 import { InvitationsList } from "./components/InvitationsList";
 import { useCoachGymsPage } from "./hooks/useCoachGymsPage";
 
@@ -15,24 +16,40 @@ export default function GymsPage() {
   const {
     activeTab,
     setActiveTab,
-    searchTerm,
-    setSearchTerm,
     activeAffiliations,
     pendingInvitations,
-    exploreGyms,
+    exploreCount,
     isAffiliationsLoading,
-    isGymsLoading,
+    affiliations,
   } = useCoachGymsPage();
 
+  const { openModal } = useModalStore();
   const requestAffiliation = useRequestGymAffiliation();
 
   const handleRequestAffiliation = async (gymId: string) => {
-    try {
-      await requestAffiliation.mutateAsync({ gymId });
-      toast.success(t("coach.gyms.requestSent"));
-    } catch (error) {
-      toast.error(t("common.error"));
-    }
+    // 1. Check if ANY affiliation exists for this gym (active, pending, etc.)
+    const hasExistingAffiliation = affiliations.some(
+      (a) => a.gymId === gymId || a.gym?._id === gymId,
+    );
+
+    if (hasExistingAffiliation) return;
+
+    openModal("confirm", {
+      title: t("coach.gyms.confirmTitle", "Request Affiliation?"),
+      text: t(
+        "coach.gyms.confirmText",
+        "Would you like to request to join this gym as a coach?",
+      ),
+      confirmText: t("common.confirm"),
+      onConfirm: async () => {
+        try {
+          await requestAffiliation.mutateAsync({ gymId });
+          toast.success(t("coach.gyms.requestSent"));
+        } catch (error: any) {
+          toast.error(error.message || t("common.error"));
+        }
+      },
+    });
   };
 
   // Get gyms from affiliations for GymList
@@ -40,7 +57,7 @@ export default function GymsPage() {
     .map((a) => a.gym)
     .filter((g): g is NonNullable<typeof g> => !!g);
 
-  const isLoading = isAffiliationsLoading || isGymsLoading;
+  const isLoading = isAffiliationsLoading;
 
   return (
     <div className="space-y-6">
@@ -55,7 +72,7 @@ export default function GymsPage() {
         setActiveTab={setActiveTab}
         affiliationsCount={activeAffiliations.length}
         invitationsCount={pendingInvitations.length}
-        exploreCount={exploreGyms.length}
+        exploreCount={exploreCount}
       />
 
       {isLoading ? (
@@ -73,11 +90,8 @@ export default function GymsPage() {
           )}
 
           {activeTab === "explore" && (
-            <ExploreGyms
-              gyms={exploreGyms}
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              onRequestAffiliation={handleRequestAffiliation}
+            <GymDiscovery
+              onGymJoin={(gym) => handleRequestAffiliation(gym._id)}
             />
           )}
         </>

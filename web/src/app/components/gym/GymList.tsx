@@ -11,9 +11,16 @@ import GymCardSkeleton from "./gym-card/GymCard.Skeleton";
 interface GymListProps {
   gyms: Gym[];
   isLoading: boolean;
+  onSelect?: (gym: Gym) => void;
+  onJoin?: (gym: Gym) => void;
 }
 
-export default function GymList({ gyms, isLoading }: GymListProps) {
+export default function GymList({
+  gyms,
+  isLoading,
+  onSelect,
+  onJoin,
+}: GymListProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { setGym } = useGymStore();
@@ -37,9 +44,14 @@ export default function GymList({ gyms, isLoading }: GymListProps) {
     <div className="grid grid-cols-1 gap-6">
       {gyms.map((gym) => (
         <GymCard
+          onJoin={onJoin ? () => onJoin(gym) : undefined}
           onSelect={() => {
-            setGym(gym);
+            if (onSelect) {
+              onSelect(gym);
+              return;
+            }
 
+            setGym(gym);
             if (user) {
               const route = getGymRouteForDashboard(activeDashboard);
               navigate({ to: route });

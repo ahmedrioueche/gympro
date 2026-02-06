@@ -57,8 +57,8 @@ export class GymCoachService {
 
       const mapped = affiliations.map((a: any) => ({
         _id: a._id.toString(),
-        gymId: a.gymId.toString(),
-        coachId: a.coachId._id?.toString() || a.coachId.toString(),
+        gymId: a.gymId?.toString(),
+        coachId: a.coachId?._id?.toString() || a.coachId?.toString() || '',
         status: a.status,
         initiatedBy: a.initiatedBy,
         startDate: a.startDate,
@@ -68,7 +68,7 @@ export class GymCoachService {
         commissionRate: a.commissionRate,
         createdAt: a.createdAt,
         updatedAt: a.updatedAt,
-        coach: a.coachId._id
+        coach: a.coachId?._id
           ? {
               _id: a.coachId._id.toString(),
               fullName: a.coachId.profile?.fullName,
@@ -113,8 +113,8 @@ export class GymCoachService {
 
       const mapped = affiliations.map((a: any) => ({
         _id: a._id.toString(),
-        gymId: a.gymId._id?.toString() || a.gymId.toString(),
-        coachId: a.coachId.toString(),
+        gymId: a.gymId?._id?.toString() || a.gymId?.toString() || '',
+        coachId: a.coachId?.toString() || '',
         status: a.status,
         initiatedBy: a.initiatedBy,
         startDate: a.startDate,
@@ -124,7 +124,7 @@ export class GymCoachService {
         commissionRate: a.commissionRate,
         createdAt: a.createdAt,
         updatedAt: a.updatedAt,
-        gym: a.gymId._id
+        gym: a.gymId?._id
           ? {
               _id: a.gymId._id.toString(),
               name: a.gymId.name,

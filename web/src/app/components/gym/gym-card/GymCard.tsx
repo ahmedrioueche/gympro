@@ -9,9 +9,10 @@ import { GymSettingsView } from "./components/GymSettingsView";
 interface GymCardProps {
   gym: Gym;
   onSelect: () => void;
+  onJoin?: () => void;
 }
 
-export default function GymCard({ gym, onSelect }: GymCardProps) {
+export default function GymCard({ gym, onSelect, onJoin }: GymCardProps) {
   const [showSettings, setShowSettings] = useState(false);
   const { isDark } = useTheme();
   const displayRole = useGymDisplayRole(gym);
@@ -20,7 +21,11 @@ export default function GymCard({ gym, onSelect }: GymCardProps) {
     <div
       onClick={(e) => {
         e.preventDefault();
-        onSelect();
+        if (onJoin && !displayRole) {
+          onJoin();
+        } else {
+          onSelect();
+        }
       }}
       className={`w-full hover:cursor-pointer ${
         isDark
@@ -33,7 +38,9 @@ export default function GymCard({ gym, onSelect }: GymCardProps) {
       {!showSettings ? (
         <GymInfoOverview
           gym={gym}
+          displayRole={displayRole}
           onSelect={onSelect}
+          onJoin={onJoin}
           onToggleSettings={() => setShowSettings(true)}
         />
       ) : (

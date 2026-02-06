@@ -1,4 +1,8 @@
-import { CreateGymDto, GymSettings } from '@ahmedrioueche/gympro-client';
+import {
+  CreateGymDto,
+  GymSettings,
+  UserRole,
+} from '@ahmedrioueche/gympro-client';
 import {
   ConflictException,
   Injectable,
@@ -8,6 +12,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 import {
+  AffiliationStatus,
   GymCoachAffiliation,
   GymCoachAffiliationDocument,
 } from '../gym-coach/schemas/gym-coach-affiliation.schema';
@@ -109,8 +114,105 @@ export class GymService {
     return createdGym;
   }
 
-  async findAll() {
-    return this.gymModel.find().populate('owner').exec();
+  async findAll(
+    options: {
+      search?: string;
+      city?: string;
+      gender?: string;
+      services?: string[];
+      page?: number;
+      limit?: number;
+      excludeUserId?: string;
+    } = {},
+  ) {
+    const {
+      search,
+      city,
+      gender,
+      services,
+      page = 1,
+      limit = 12,
+      excludeUserId,
+    } = options;
+    const skip = (page - 1) * limit;
+    const query: any = {};
+
+    if (excludeUserId) {
+      const [memberships, affiliations] = await Promise.all([
+        this.membershipModel
+          .find({
+            user: new Types.ObjectId(excludeUserId),
+            membershipStatus: { $in: ['active', 'pending'] },
+          })
+          .select('gym')
+          .lean(),
+        this.affiliationModel
+          .find({
+            coachId: new Types.ObjectId(excludeUserId),
+            status: {
+              $in: [AffiliationStatus.ACTIVE, AffiliationStatus.PENDING],
+            },
+          })
+          .select('gymId')
+          .lean(),
+      ]);
+
+      const excludedGymIds = [
+        ...memberships.map((m) => m.gym.toString()),
+        ...affiliations.map((a) => a.gymId.toString()),
+      ];
+
+      if (excludedGymIds.length > 0) {
+        query._id = { $nin: excludedGymIds };
+      }
+    }
+
+    if (search && search.trim()) {
+      const searchRegex = new RegExp(search.trim(), 'i');
+      query.$or = [
+        { name: searchRegex },
+        { address: searchRegex },
+        { slogan: searchRegex },
+      ];
+    }
+
+    if (city && city.trim()) {
+      query.city = city;
+    }
+
+    if (gender) {
+      if (gender === 'mixed') {
+        query['settings.isMixed'] = true;
+      } else if (gender === 'female_only') {
+        query['settings.isMixed'] = false;
+      }
+    }
+
+    if (services && services.length > 0) {
+      query['settings.servicesOffered'] = { $all: services };
+    }
+
+    const total = await this.gymModel.countDocuments(query).exec();
+    const gyms = await this.gymModel
+      .find(query)
+      .populate('owner')
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    return {
+      data: gyms,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async findUniqueCities() {
+    return this.gymModel.distinct('city', {
+      city: { $ne: null, $exists: true, $nin: ['', ' '] },
+    });
   }
 
   async findByOwner(ownerId: string, populate = false) {
@@ -205,7 +307,8 @@ export class GymService {
       .map((membership: any) => {
         if (
           membership.gym &&
-          ['active', 'pending'].includes(membership.membershipStatus)
+          ['active', 'pending'].includes(membership.membershipStatus) &&
+          membership.roles.includes(UserRole.Member)
         ) {
           return membership.gym;
         }

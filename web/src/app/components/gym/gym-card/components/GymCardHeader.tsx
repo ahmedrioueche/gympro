@@ -10,7 +10,11 @@ export function GymCardHeader({ gym, displayRole }: GymCardHeaderProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="relative h-48 md:h-56 overflow-hidden border-b border-border/50">
+    <div
+      className={`relative overflow-hidden border-b border-border/50 transition-all duration-300 ${
+        gym.bannerUrl ? "h-48 md:h-56" : "h-32 md:h-38"
+      }`}
+    >
       {/* Background Image or Gradient */}
       {gym.bannerUrl ? (
         <div className="absolute inset-0">
@@ -68,12 +72,12 @@ export function GymCardHeader({ gym, displayRole }: GymCardHeaderProps) {
               className={`px-3 py-1.5 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold shadow-md ${
                 gym.isActive
                   ? "bg-success/20 text-success border-2 border-success/30"
-                  : "bg-text-secondary/20 text-text-secondary border-2 border-text-secondary/30"
+                  : "bg-danger/20 text-danger border-2 border-danger/30"
               }`}
             >
               {gym.isActive
-                ? t("gymCard.activeStatus", "● Active")
-                : t("gymCard.inactiveStatus", "○ Inactive")}
+                ? t("gyms.status_open", "Open")
+                : t("gyms.status_closed", "Closed")}
             </div>
           </div>
         </div>

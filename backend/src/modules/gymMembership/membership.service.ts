@@ -348,6 +348,68 @@ export class MembershipService {
   }
 
   /**
+   * Request access to join a gym (Member-initiated)
+   */
+  async requestGymAccess(userId: string, gymId: string) {
+    const uObjectId = this.toObjectId(userId);
+    const gObjectId = this.toObjectId(gymId);
+
+    if (!uObjectId || !gObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    // Check if user already has a membership (of any status)
+    const existingMembership = await this.membershipModel.findOne({
+      user: uObjectId,
+      gym: gObjectId,
+    });
+
+    if (existingMembership) {
+      if (existingMembership.membershipStatus === 'pending') {
+        throw new BadRequestException({
+          message: 'Affiliation request already exists',
+          errorCode: ErrorCode.AFFILIATION_ALREADY_EXISTS,
+        });
+      }
+      throw new BadRequestException({
+        message: 'You are already a member of this gym',
+        errorCode: ErrorCode.MEMBER_ALREADY_EXISTS,
+      });
+    }
+
+    // Create new pending membership
+    const membership = new this.membershipModel({
+      user: uObjectId,
+      gym: gObjectId,
+      roles: [UserRole.Member],
+      joinedAt: new Date().toISOString(),
+      membershipStatus: 'pending',
+      createdAt: new Date(),
+      createdBy: userId, // Requested by the user themselves
+    });
+
+    await membership.save();
+
+    // Add membership to user
+    await this.userModel.findByIdAndUpdate(uObjectId, {
+      $push: { memberships: membership._id },
+    });
+
+    // Update gym stats (increment pending count)
+    await this.updateGymStats(gymId);
+
+    // TODO: Notify managers about the new request?
+    // This can be added later if needed.
+
+    this.logger.log(`User ${userId} requested access to gym ${gymId}`);
+
+    return membership.toObject();
+  }
+
+  /**
    * Get a member's details by membership ID
    */
   async getMember(membershipId: string, gymId: string) {

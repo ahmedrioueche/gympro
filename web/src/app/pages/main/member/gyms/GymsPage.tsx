@@ -1,12 +1,15 @@
 import { Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useAllMyGyms } from "../../../../../hooks/queries/useGyms";
 import PageHeader from "../../../../components/PageHeader";
 import GymList from "../../../../components/gym/GymList";
+import GymDiscovery from "../../../../components/gyms/GymDiscovery";
+import { MemberGymsTabs } from "./components/MemberGymsTabs";
+import { useMemberGymsPage } from "./hooks/useMemberGymsPage";
 
 export default function GymsPage() {
   const { t } = useTranslation();
-  const { data: gyms = [], isLoading } = useAllMyGyms();
+  const { activeTab, setActiveTab, myGyms, exploreCount, isMyGymsLoading } =
+    useMemberGymsPage();
 
   return (
     <div className="space-y-6">
@@ -16,13 +19,25 @@ export default function GymsPage() {
         icon={Dumbbell}
       />
 
-      <div>
-        <h2 className="text-xl font-semibold text-text-primary mb-4">
-          {t("gyms.your_gyms")}
-        </h2>
+      <MemberGymsTabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        myGymsCount={myGyms.length}
+        exploreCount={exploreCount}
+      />
 
-        <GymList gyms={gyms} isLoading={isLoading} />
-      </div>
+      {activeTab === "my_gyms" && (
+        <div className="space-y-4">
+          <GymList gyms={myGyms} isLoading={isMyGymsLoading} />
+        </div>
+      )}
+
+      {activeTab === "explore" && (
+        <GymDiscovery
+          title={t("gyms.discover_title")}
+          description={t("gyms.discover_subtitle")}
+        />
+      )}
     </div>
   );
 }

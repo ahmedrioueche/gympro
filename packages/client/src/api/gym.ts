@@ -16,9 +16,20 @@ export const gymApi = {
   },
 
   /** Get all gyms */
-  findAll: async (): Promise<ApiResponse<Gym[]>> => {
+  findAll: async (params?: {
+    search?: string;
+    city?: string;
+    gender?: string;
+    services?: string[];
+    page?: number;
+    limit?: number;
+    excludeUserId?: string;
+  }): Promise<ApiResponse<PaginatedResponse<Gym>>> => {
     try {
-      const res = await apiClient.get<ApiResponse<Gym[]>>("/gyms");
+      const res = await apiClient.get<ApiResponse<PaginatedResponse<Gym>>>(
+        "/gyms",
+        { params },
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
@@ -140,6 +151,18 @@ export const gymApi = {
     }
   },
 
+  /** Request access to a gym */
+  requestAccess: async (gymId: string): Promise<ApiResponse<any>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<any>>(
+        `/membership/request/${gymId}`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** Add media to a gym */
   addMedia: async (gymId: string, media: any): Promise<ApiResponse<Gym>> => {
     try {
@@ -180,6 +203,19 @@ export const gymApi = {
       );
       return res.data;
     } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Get unique cities where gyms are located */
+  getUniqueCities: async (): Promise<ApiResponse<string[]>> => {
+    try {
+      console.log("Client: gymApi.getUniqueCities called");
+      const res = await apiClient.get<ApiResponse<string[]>>("/gyms/cities");
+      console.log("Client: gymApi.getUniqueCities response:", res.data);
+      return res.data;
+    } catch (error) {
+      console.error("Client: gymApi.getUniqueCities error:", error);
       throw handleApiError(error);
     }
   },

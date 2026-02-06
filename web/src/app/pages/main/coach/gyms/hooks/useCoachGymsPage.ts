@@ -7,47 +7,36 @@ export type CoachGymsTab = "affiliations" | "invitations" | "explore";
 
 export function useCoachGymsPage() {
   const [activeTab, setActiveTab] = useState<CoachGymsTab>("affiliations");
-  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: affiliations = [], isLoading: isAffiliationsLoading } =
     useCoachAffiliations();
-  const { data: allGyms = [], isLoading: isGymsLoading } = useGyms();
+  const { data: result } = useGyms();
+  const allGyms = result?.data || [];
 
   // Active affiliations (coach is accepted at these gyms)
   const activeAffiliations = affiliations.filter(
-    (a: GymCoachAffiliation) => a.status === "active"
+    (a: GymCoachAffiliation) => a.status === "active",
   );
 
   // Pending invitations from gyms (gym initiated, coach hasn't responded)
   const pendingInvitations = affiliations.filter(
     (a: GymCoachAffiliation) =>
-      a.status === "pending" && a.initiatedBy === "gym"
+      a.status === "pending" && a.initiatedBy === "gym",
   );
 
-  // Debug logging
-  console.log("All affiliations:", affiliations);
-  console.log("Pending invitations:", pendingInvitations);
-
-  // Filter explore gyms by search and exclude already affiliated ones
+  // Explore count (simplified for tab badge)
   const affiliatedGymIds = affiliations.map((a) => a.gymId);
-  const exploreGyms = allGyms.filter((gym) => {
-    const matchesSearch =
-      !searchTerm ||
-      gym.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      gym?.city?.toLowerCase().includes(searchTerm.toLowerCase());
-    const notAffiliated = !affiliatedGymIds.includes(gym._id);
-    return matchesSearch && notAffiliated;
-  });
+  const exploreCount = allGyms.filter(
+    (gym) => !affiliatedGymIds.includes(gym._id),
+  ).length;
 
   return {
     activeTab,
     setActiveTab,
-    searchTerm,
-    setSearchTerm,
     activeAffiliations,
     pendingInvitations,
-    exploreGyms,
+    exploreCount,
     isAffiliationsLoading,
-    isGymsLoading,
+    affiliations,
   };
 }

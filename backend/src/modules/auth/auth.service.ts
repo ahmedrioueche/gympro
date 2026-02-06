@@ -129,6 +129,9 @@ export class AuthService {
 
     await newUser.save();
 
+    // Populate memberships before returning (though it will be empty)
+    await newUser.populate('memberships');
+
     // Send verification email
     if (email && verificationToken) {
       const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
@@ -185,7 +188,10 @@ export class AuthService {
       ? { 'profile.phoneNumber': identifier }
       : { 'profile.email': identifier };
 
-    const user = await this.userModel.findOne(query);
+    const user = await this.userModel
+      .findOne(query)
+      .populate('memberships')
+      .exec();
 
     if (!user) {
       throw new UnauthorizedException({

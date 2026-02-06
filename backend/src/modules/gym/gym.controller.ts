@@ -48,10 +48,41 @@ export class GymController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(
+    @Query('search') search?: string,
+    @Query('city') city?: string,
+    @Query('gender') gender?: string,
+    @Query('services') services?: string | string[],
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('excludeUserId') excludeUserId?: string,
+  ) {
     try {
-      const gyms = await this.gymService.findAll();
-      return apiResponse(true, undefined, gyms);
+      const result = await this.gymService.findAll({
+        search,
+        city,
+        gender,
+        services: Array.isArray(services) ? services : services?.split(','),
+        page: page ? parseInt(page, 10) : 1,
+        limit: limit ? parseInt(limit, 10) : 12,
+        excludeUserId,
+      });
+      return apiResponse(true, undefined, result);
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.FETCH_GYMS_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Get('cities')
+  async getUniqueCities() {
+    try {
+      const cities = await this.gymService.findUniqueCities();
+      return apiResponse(true, undefined, cities);
     } catch (error) {
       return apiResponse(
         false,

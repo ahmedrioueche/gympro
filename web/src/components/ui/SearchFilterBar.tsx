@@ -23,6 +23,15 @@ interface SearchFilterBarProps<T extends string = string> {
   debounceMs?: number;
   /** Optional label shown next to filter on mobile */
   filterLabel?: string;
+  /** List of multiple filter configurations */
+  filters?: SearchFilterConfig<any>[];
+}
+
+export interface SearchFilterConfig<T extends string = string> {
+  value: T;
+  onChange: (value: T) => void;
+  options: FilterOption<T>[];
+  label?: string;
 }
 
 /**
@@ -39,6 +48,7 @@ export function SearchFilterBar<T extends string = string>({
   onFilterChange,
   filterOptions,
   debounceMs = 500,
+  filters,
 }: SearchFilterBarProps<T>) {
   const [localSearchValue, setLocalSearchValue] = useState(searchQuery);
   const debounceTimerRef = useRef<number | undefined>(undefined);
@@ -78,7 +88,7 @@ export function SearchFilterBar<T extends string = string>({
 
   return (
     <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-5 w-full">
-      <div className="flex items-center gap-2 md:gap-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         {/* Search Input - Flex Grow */}
         <div className="relative flex-1">
           <input
@@ -101,15 +111,29 @@ export function SearchFilterBar<T extends string = string>({
           )}
         </div>
 
-        {/* Filter Dropdown */}
-        {/* Filter Dropdown */}
-        {filterOptions && filterValue !== undefined && onFilterChange && (
-          <FilterDropdown
-            value={filterValue}
-            onChange={onFilterChange}
-            options={filterOptions}
-          />
-        )}
+        {/* Filter Dropdowns - Multi-filter support */}
+        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+          {filters?.map((filter, index) => (
+            <FilterDropdown
+              key={index}
+              value={filter.value}
+              onChange={filter.onChange}
+              options={filter.options}
+            />
+          ))}
+
+          {/* Backward compatibility for single filter */}
+          {!filters &&
+            filterOptions &&
+            filterValue !== undefined &&
+            onFilterChange && (
+              <FilterDropdown
+                value={filterValue}
+                onChange={onFilterChange}
+                options={filterOptions}
+              />
+            )}
+        </div>
       </div>
     </div>
   );

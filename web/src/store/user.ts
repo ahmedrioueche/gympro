@@ -37,7 +37,7 @@ interface UserState {
   isMember: () => boolean;
   isCoach: () => boolean;
   isStaff: () => boolean;
-  fetchUser: () => Promise<User | null>;
+  fetchUser: (force?: boolean) => Promise<User | null>;
 
   // Dashboard methods
   setActiveDashboard: (dashboard: DashboardType) => void;
@@ -171,7 +171,7 @@ export const useUserStore = create<UserState>()(
 
       setError: (error) => set({ error }),
 
-      fetchUser: async () => {
+      fetchUser: async (force = false) => {
         const {
           user,
           lastFetchedAt,
@@ -183,7 +183,7 @@ export const useUserStore = create<UserState>()(
         const now = Date.now();
         const cacheValid = lastFetchedAt && now - lastFetchedAt < cacheTTL;
 
-        if (user && cacheValid) {
+        if (user && cacheValid && !force) {
           return user; // use cached user
         }
 

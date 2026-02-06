@@ -5,6 +5,7 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useUserStore } from "../../store/user";
 import { useToast } from "../useToast";
 
 // Query Keys
@@ -12,11 +13,16 @@ export const gymKeys = {
   all: ["gyms"] as const,
   lists: () => [...gymKeys.all, "list"] as const,
   list: (filters?: any) => [...gymKeys.lists(), filters] as const,
+  cities: () => [...gymKeys.all, "cities"] as const,
   details: () => [...gymKeys.all, "detail"] as const,
   detail: (id: string) => [...gymKeys.details(), id] as const,
   myGyms: () => [...gymKeys.all, "my-gyms"] as const,
   memberGyms: () => [...gymKeys.all, "member"] as const,
-  allMyGyms: () => [...gymKeys.all, "all-my-gyms"] as const,
+  allMyGyms: (role?: string) => {
+    const base = [...gymKeys.all, "all-my-gyms"] as const;
+    if (!role) return base;
+    return [...base, role] as const;
+  },
 };
 
 // ============================================
@@ -26,12 +32,23 @@ export const gymKeys = {
 /**
  * Get all gyms
  */
-export const useGyms = () => {
+export const useGyms = (
+  params: {
+    search?: string;
+    city?: string;
+    gender?: string;
+    services?: string[];
+    page?: number;
+    limit?: number;
+    excludeUserId?: string;
+  } = {},
+) => {
   return useQuery({
-    queryKey: gymKeys.lists(),
+    queryKey: gymKeys.list(params),
     queryFn: async () => {
-      const response = await gymApi.findAll();
-      return response.data;
+      const response = await gymApi.findAll(params);
+      if (!response.success) throw new Error(response.message);
+      return response.data as any; // Cast as any then back to fix inference if needed or just use the proper type
     },
   });
 };
@@ -79,11 +96,21 @@ export const useMemberGyms = () => {
 /**
  * Get all gyms for current user (owned + member combined)
  * This is the recommended hook for GymSelector and similar components
+ * Automatically adapts based on the active dashboard role
  */
 export const useAllMyGyms = () => {
+  const activeDashboard = useUserStore((state) => state.activeDashboard);
+
   return useQuery({
-    queryKey: gymKeys.allMyGyms(),
+    queryKey: gymKeys.allMyGyms(activeDashboard),
     queryFn: async () => {
+      // If we are in the member dashboard, only show gyms where the user is a member
+      if (activeDashboard === "member") {
+        const response = await gymApi.findMemberGyms();
+        return response.data;
+      }
+
+      // For manager and coach dashboards, return all associated gyms (owned, member, and coach)
       const response = await gymApi.findAllMyGyms();
       return response.data;
     },
@@ -178,5 +205,69 @@ export const useDeleteGym = () => {
       queryClient.invalidateQueries({ queryKey: gymKeys.myGyms() });
       queryClient.invalidateQueries({ queryKey: gymKeys.allMyGyms() });
     },
+  });
+};
+
+/**
+ * Request access to a gym
+ */
+export const useRequestGymAccess = () => {
+  const queryClient = useQueryClient();
+  const { success, error } = useToast();
+  const { t } = useTranslation();
+  const { user, fetchUser } = useUserStore();
+
+  return useMutation({
+    mutationFn: async (gymId: string) => {
+      // Frontend check: Prevent sending if already pending or joined
+      const membership = user?.memberships?.find((m: any) => {
+        if (typeof m === "string") return false;
+        const gId = typeof m.gym === "string" ? m.gym : m.gym._id;
+        return gId === gymId;
+      });
+
+      if (membership && typeof membership !== "string") {
+        if (membership.membershipStatus === "pending") {
+          throw new Error(t("gyms.already_pending", "Request already pending"));
+        }
+        if (membership.membershipStatus === "active") {
+          throw new Error(t("gyms.already_joined", "Already a member"));
+        }
+      }
+
+      const response = await gymApi.requestAccess(gymId);
+      if (!response.success) throw new Error(response.message);
+      return response.data;
+    },
+    onSuccess: async () => {
+      // Invalidate pertinent queries to reflect pending status
+      queryClient.invalidateQueries({ queryKey: gymKeys.all });
+
+      // Refresh user profile to update membership status in store
+      // FORCE refresh to bypass cache
+      await fetchUser(true);
+
+      success(t("gyms.request_success", "Join request submitted!"));
+    },
+    onError: (err: any) => {
+      error(err.message || t("gyms.request_error", "Failed to submit request"));
+    },
+  });
+};
+
+/**
+ * Get unique cities where gyms are located
+ */
+export const useGymCities = () => {
+  return useQuery({
+    queryKey: gymKeys.cities(),
+    queryFn: async () => {
+      console.log("Fetching unique cities...");
+      const res = await gymApi.getUniqueCities();
+      if (!res.success) throw new Error(res.message);
+      return res.data || [];
+    },
+    staleTime: 0,
+    gcTime: 0,
   });
 };
