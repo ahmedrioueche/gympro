@@ -1,9 +1,9 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useMemo, useState } from "react";
-import { useGymStore } from "../../../../../store/gym";
-import { useUserStore } from "../../../../../store/user";
-import { getGymRouteForDashboard } from "../../../../../utils/gym-routing";
+import { useGymStore } from "../../../../store/gym";
+import { useUserStore } from "../../../../store/user";
+import { getGymRouteForDashboard } from "../../../../utils/gym-routing";
 
 /**
  * Main hook for GymSelector logic

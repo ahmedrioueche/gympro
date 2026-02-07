@@ -3,6 +3,7 @@ import {
   Award,
   Briefcase,
   CheckCircle,
+  ChevronRight,
   Clock,
   MapPin,
   Sparkles,
@@ -61,14 +62,14 @@ export default function CoachCard({
     // Accept/Decline actions for pending
     if (isPending && (onAccept || onDecline)) {
       return (
-        <div className="flex gap-2 w-full">
+        <div className="flex gap-3 w-full">
           {onAccept && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onAccept();
               }}
-              className="flex-1 px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-1"
+              className="flex-1 px-4 py-2.5 rounded-xl bg-green-600 text-white text-sm font-bold hover:bg-green-700 hover:shadow-lg hover:shadow-green-600/20 transition-all flex items-center justify-center gap-2"
             >
               <CheckCircle className="w-4 h-4" />
               {t("common.accept")}
@@ -80,7 +81,7 @@ export default function CoachCard({
                 e.stopPropagation();
                 onDecline();
               }}
-              className="flex-1 px-3 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors flex items-center justify-center gap-1"
+              className="flex-1 px-4 py-2.5 rounded-xl bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all flex items-center justify-center gap-2 border border-red-200"
             >
               <UserMinus className="w-4 h-4" />
               {t("common.decline")}
@@ -98,7 +99,7 @@ export default function CoachCard({
             e.stopPropagation();
             onRemove();
           }}
-          className="w-full px-3 py-2 rounded-lg bg-surface-secondary border border-border text-text-secondary text-sm font-medium hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors flex items-center justify-center gap-1"
+          className="w-full px-4 py-2.5 rounded-xl bg-surface-secondary border border-border text-text-secondary text-sm font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all flex items-center justify-center gap-2"
         >
           <UserMinus className="w-4 h-4" />
           {t("coaching.removeCoach")}
@@ -110,7 +111,7 @@ export default function CoachCard({
     if (affiliationStatus) {
       return (
         <div
-          className={`w-full cursor-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm ${
+          className={`w-full cursor-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm ${
             affiliationStatus === "active"
               ? "bg-green-500/10 text-green-600 border border-green-500/20"
               : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
@@ -132,7 +133,7 @@ export default function CoachCard({
             onInvite();
           }}
           disabled={isInviting}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
         >
           <UserPlus className="w-4 h-4" />
           {isInviting ? t("common.loading") : t("coaching.inviteCoach")}
@@ -142,177 +143,170 @@ export default function CoachCard({
 
     // Default: View profile
     return (
-      <div className="flex items-center justify-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+      <div className="flex items-center justify-between w-full text-primary font-bold text-sm group-hover:text-primary/80 transition-all px-1">
         <span>{t("coaches.viewProfile")}</span>
-        <svg
-          className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
+        <div className="p-1.5 rounded-full bg-primary/5 group-hover:bg-primary/20 group-hover:translate-x-1 transition-all">
+          <ChevronRight className="w-4 h-4" />
+        </div>
       </div>
     );
   };
 
   return (
     <div
-      className={`bg-surface border border-border rounded-2xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group flex flex-col ${
+      className={`bg-surface border border-border rounded-[2rem] overflow-hidden hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group flex flex-col h-full relative ${
         onViewDetails ? "cursor-pointer" : ""
       }`}
       onClick={handleCardClick}
     >
-      {/* Header Section with Gradient Background */}
-      <div className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 p-6 pb-4">
-        {/* Verified Badge (if applicable) */}
-        {coach.isVerified && (
-          <div className="absolute top-4 right-4">
-            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500/20 backdrop-blur-sm border border-blue-500/30">
-              <Award className="w-3.5 h-3.5 text-blue-500" />
-              <span className="text-xs font-semibold text-blue-600">
-                {t("coaches.verified")}
-              </span>
-            </div>
-          </div>
-        )}
+      {/* Decorative background element */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-[100%] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-        {/* Status Badge for Active/Pending */}
-        {(isActive || isPending) && (
-          <div className="absolute top-4 right-4">
-            {isActive && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/20 backdrop-blur-sm border border-green-500/30">
-                <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                <span className="text-xs font-semibold text-green-600">
-                  {t("coaching.active")}
-                </span>
-              </div>
-            )}
-            {isPending && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/20 backdrop-blur-sm border border-amber-500/30">
-                <Clock className="w-3.5 h-3.5 text-amber-500" />
-                <span className="text-xs font-semibold text-amber-600">
-                  {t("coaching.awaitingApproval")}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Avatar and Basic Info */}
-        <div className="flex items-start gap-4">
+      {/* Header Section */}
+      <div className="relative p-6 pb-0">
+        <div className="flex items-start justify-between mb-4">
           <div className="relative">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-secondary p-0.5 flex-shrink-0 shadow-lg">
-              <div className="w-full h-full rounded-2xl bg-surface overflow-hidden flex items-center justify-center">
+            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/5 to-secondary/20 p-[1px] shadow-2xl transition-transform duration-500 group-hover:scale-105">
+              <div className="w-full h-full rounded-3xl bg-surface overflow-hidden flex items-center justify-center">
                 {coach.profileImageUrl ? (
                   <img
                     src={coach.profileImageUrl}
                     alt={displayName}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                 ) : (
-                  <User className="w-10 h-10 text-text-secondary" />
+                  <div className="w-full h-full bg-gradient-to-br from-primary to-surface flex items-center justify-center">
+                    <User className="w-10 h-10 text-text-primary opacity-40" />
+                  </div>
                 )}
               </div>
             </div>
-            {/* Online/Active Status Indicator (placeholder - can be made dynamic) */}
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-success rounded-full border-2 border-surface" />
+            {/* Status dot */}
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-surface rounded-2xl flex items-center justify-center shadow-lg border border-border">
+              <div className="w-3 h-3 bg-success rounded-full animate-pulse" />
+            </div>
           </div>
 
-          <div className="flex-1 min-w-0 mt-1">
-            <h3 className="text-xl font-bold text-text-primary truncate mb-2 group-hover:text-primary transition-colors">
-              {displayName}
-            </h3>
+          <div className="flex flex-col items-end gap-2">
+            {/* Verified Badge */}
+            {coach.isVerified && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-blue-500/5 border border-blue-500/10 backdrop-blur-md">
+                <Award className="w-4 h-4 text-blue-500" />
+                <span className="text-[10px] font-black text-blue-600 uppercase tracking-wider">
+                  {t("coaches.verified")}
+                </span>
+              </div>
+            )}
 
-            {/* Rating and Experience Row */}
-            <div className="flex items-center gap-3 flex-wrap mb-3">
-              {coach.rating && (
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                  <span className="font-semibold text-text-primary text-sm">
-                    {coach.rating.toFixed(1)}
-                  </span>
-                  <span className="text-text-secondary text-xs">/5.0</span>
-                </div>
-              )}
-
-              {coach.yearsOfExperience && (
-                <div className="flex items-center gap-1 text-sm text-text-secondary">
-                  <Briefcase className="w-3.5 h-3.5" />
-                  <span className="font-medium">
-                    {coach.yearsOfExperience} {t("coaches.yearsShort")}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Location and Clients Info */}
-            <div className="flex items-center gap-3 flex-wrap">
-              {location && (
-                <div className="flex items-center gap-1.5 text-text-secondary">
-                  <MapPin className="w-3.5 h-3.5" />
-                  <span className="text-xs font-medium truncate max-w-[200px]">
-                    {location}
-                  </span>
-                </div>
-              )}
-              {coach.totalClients !== undefined && coach.totalClients > 0 && (
-                <div className="flex items-center gap-1.5">
-                  <div className="p-1 rounded-full bg-primary/10">
-                    <Users className="w-3 h-3 text-primary" />
+            {/* Availability Badge (if isActive/isPending) */}
+            {(isActive || isPending) && (
+              <>
+                {isActive && (
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-success/5 border border-success/10 backdrop-blur-md">
+                    <CheckCircle className="w-4 h-4 text-success" />
+                    <span className="text-[10px] font-black text-success uppercase tracking-wider">
+                      {t("coaching.active")}
+                    </span>
                   </div>
-                  <span className="text-xs font-semibold text-text-primary">
-                    {coach.totalClients}
-                  </span>
-                  <span className="text-xs text-text-secondary">
-                    {t(
-                      coach.totalClients === 1
-                        ? "coaches.client"
-                        : "coaches.clients"
-                    )}
-                  </span>
-                </div>
-              )}
-            </div>
+                )}
+                {isPending && (
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-amber-500/5 border border-amber-500/10 backdrop-blur-md">
+                    <Clock className="w-4 h-4 text-amber-500" />
+                    <span className="text-[10px] font-black text-amber-600 uppercase tracking-wider">
+                      {t("coaching.awaitingApproval")}
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
           </div>
+        </div>
+
+        <div className="space-y-1">
+          <h3 className="text-2xl font-black text-text-primary tracking-tight leading-tight group-hover:text-primary transition-colors">
+            {displayName}
+          </h3>
+          {location && (
+            <div className="flex items-center gap-1.5 text-text-primary">
+              <MapPin className="w-3.5 h-3.5 text-primary/60" />
+              <span className="text-xs font-bold uppercase tracking-widest opacity-80">
+                {location}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="p-6 pt-4 flex-1 flex flex-col">
+      <div className="p-6 flex-1 flex flex-col gap-6">
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-primary/30 rounded-2xl p-3 border border-border/50 flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <Star className="w-3.5 h-3.5 fill-yellow-500 text-yellow-500" />
+              <span className="text-[10px] font-black text-text-primary uppercase tracking-widest">
+                {t("coaches.rating")}
+              </span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg font-black text-text-primary">
+                {coach.rating !== undefined ? coach.rating.toFixed(1) : "N/A"}
+              </span>
+              {coach.rating !== undefined && (
+                <span className="text-xs font-bold text-text-primary italic opacity-60">
+                  /5.0
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-primary/30 rounded-2xl p-3 border border-border/50 flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <Briefcase className="w-3.5 h-3.5 text-primary" />
+              <span className="text-[10px] font-black text-text-primary uppercase tracking-widest">
+                {t("coaches.experience")}
+              </span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg font-black text-text-primary">
+                {coach.yearsOfExperience || "0"}
+              </span>
+              <span className="text-xs font-bold text-text-primary italic opacity-60">
+                {t("coaches.yearsShort")}
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* Bio */}
         {coach.bio && (
-          <p className="text-sm text-text-secondary line-clamp-3 mb-4 leading-relaxed">
-            {coach.bio}
-          </p>
+          <div className="relative">
+            <p className="text-sm text-text-secondary line-clamp-2 leading-relaxed font-medium italic opacity-80">
+              "{coach.bio}"
+            </p>
+          </div>
         )}
 
         {/* Specializations */}
         {coach.specializations && coach.specializations.length > 0 && (
-          <div className="mb-4">
-            <div className="flex items-center gap-1.5 mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-semibold text-text-secondary uppercase tracking-wide">
-                {t("coaches.specializations")}
-              </span>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent opacity-50" />
+              <Sparkles className="w-4 h-4 text-primary opacity-60" />
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent opacity-50" />
             </div>
-            <div className="flex flex-wrap gap-2">
-              {coach.specializations.slice(0, 4).map((spec, idx) => (
+            <div className="flex flex-wrap gap-2 justify-center">
+              {coach.specializations.slice(0, 3).map((spec, idx) => (
                 <span
                   key={idx}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 text-primary font-semibold border border-primary/20 hover:border-primary/40 transition-colors"
+                  className="text-[10px] px-3 py-1.5 rounded-full bg-surface border border-border text-text-primary font-black uppercase tracking-wider hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm"
                 >
                   {spec}
                 </span>
               ))}
-              {coach.specializations.length > 4 && (
-                <span className="text-xs px-3 py-1.5 rounded-lg bg-muted text-text-secondary font-medium">
-                  +{coach.specializations.length - 4}
+              {coach.specializations.length > 3 && (
+                <span className="text-[10px] px-3 py-1.5 rounded-full bg-primary text-text-primary font-black uppercase tracking-wider">
+                  +{coach.specializations.length - 3}
                 </span>
               )}
             </div>
@@ -320,8 +314,32 @@ export default function CoachCard({
         )}
 
         {/* Footer Section */}
-        <div className="mt-auto pt-4 border-t border-border/50">
-          {renderFooter()}
+        <div className="mt-auto pt-4 flex flex-col gap-4">
+          {coach.totalClients !== undefined && coach.totalClients > 0 && (
+            <div className="flex items-center justify-center gap-2 text-text-primary">
+              <Users className="w-4 h-4" />
+              <span className="text-xs font-bold">
+                {coach.totalClients}{" "}
+                {t(
+                  coach.totalClients === 1
+                    ? "coaches.client"
+                    : "coaches.clients",
+                ).toLowerCase()}
+              </span>
+              <div className="w-1 h-1 rounded-full bg-text-primary/30" />
+              <div className="flex -space-x-2">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="w-5 h-5 rounded-full border-2 border-surface bg-primary flex items-center justify-center overflow-hidden"
+                  >
+                    <User className="w-3 h-3 text-text-primary" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="pt-2">{renderFooter()}</div>
         </div>
       </div>
     </div>

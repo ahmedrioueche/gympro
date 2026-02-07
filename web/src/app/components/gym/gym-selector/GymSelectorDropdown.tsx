@@ -2,11 +2,11 @@ import type { Gym, UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { Building2, Home, Plus, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../../../constants/navigation";
-import useScreen from "../../../../../hooks/useScreen";
-import { useGymStore } from "../../../../../store/gym";
-import { useUserStore } from "../../../../../store/user";
-import { redirectToHomePageAfterTimeout } from "../../../../../utils/helper";
+import { APP_PAGES } from "../../../../constants/navigation";
+import useScreen from "../../../../hooks/useScreen";
+import { useGymStore } from "../../../../store/gym";
+import { useUserStore } from "../../../../store/user";
+import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
 import GymListItem from "./GymListItem";
 
 interface GymSelectorDropdownProps {

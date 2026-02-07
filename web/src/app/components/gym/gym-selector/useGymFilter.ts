@@ -1,6 +1,6 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useMemo } from "react";
-import { useUserStore } from "../../../../../store/user";
+import { useUserStore } from "../../../../store/user";
 
 /**
  * Hook to filter gyms based on active dashboard role.

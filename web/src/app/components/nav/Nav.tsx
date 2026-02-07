@@ -139,7 +139,9 @@ export default function Nav({ children, sidebarLinks = null }) {
                 sidebarLinks ? " md:px-10" : " md:px-[61px] md:-mt-2"
               }`}
             >
-              {user?.role === "admin" || user?.role === "app_editor" ? (
+              {user?.role === "admin" ||
+              user?.role === "app_editor" ||
+              gyms?.length === 0 ? (
                 <UserRoleBadge />
               ) : (
                 <GymSelector gyms={gyms} />

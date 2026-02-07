@@ -1,9 +1,16 @@
-import type { Gym } from "@ahmedrioueche/gympro-client";
+import {
+  formatPrice,
+  type Gym,
+  type PricingTier,
+} from "@ahmedrioueche/gympro-client";
+import { CircleDollarSign, Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useCoachAffiliations } from "../../../../../hooks/queries/useGymCoach";
-import { useRequestGymAccess } from "../../../../../hooks/queries/useGyms";
-import { useModalStore } from "../../../../../store/modal";
-import { useUserStore } from "../../../../../store/user";
+import { useCoachAffiliations } from "../../../../hooks/queries/useGymCoach";
+import { useGymSubscriptionTypes } from "../../../../hooks/queries/useGymSubscriptionTypes";
+import { useRequestGymAccess } from "../../../../hooks/queries/useGyms";
+import { useLanguageStore } from "../../../../store/language";
+import { useModalStore } from "../../../../store/modal";
+import { useUserStore } from "../../../../store/user";
 
 interface GymInfoOverviewProps {
   gym: Gym;
@@ -22,8 +29,12 @@ export function GymInfoOverview({
 }: GymInfoOverviewProps) {
   const { t } = useTranslation();
   const { user } = useUserStore();
+  const { language } = useLanguageStore();
   const { openModal } = useModalStore();
   const requestAccess = useRequestGymAccess();
+
+  // Fetch gym plans for pricing
+  const { data: plans = [] } = useGymSubscriptionTypes(gym._id);
 
   // Check if user has an existing membership for status display
   const { data: coachAffiliations = [] } = useCoachAffiliations();
@@ -132,6 +143,84 @@ export function GymInfoOverview({
                 </p>
               )}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Services and Pricing */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Services Offered */}
+        {gym.settings?.servicesOffered &&
+          gym.settings.servicesOffered.length > 0 && (
+            <div className="bg-surface/30 rounded-2xl p-6 border border-border/50">
+              <h4 className="flex items-center gap-2 text-sm font-bold text-text-primary mb-4 uppercase tracking-wider">
+                <Flame className="w-4 h-4 text-orange-500" />
+                {t("gymCard.servicesOffered", "Services Offered")}
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {gym.settings.servicesOffered.map((service, idx) => {
+                  const colors = [
+                    "bg-blue-500/10 text-blue-500 border-blue-500/20",
+                    "bg-purple-500/10 text-purple-500 border-purple-500/20",
+                    "bg-orange-500/10 text-orange-500 border-orange-500/20",
+                    "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+                  ];
+                  return (
+                    <span
+                      key={idx}
+                      className={`px-3 py-1 rounded-lg text-xs font-bold border capitalize ${colors[idx % colors.length]}`}
+                    >
+                      {service}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+        {/* Pricing Summary */}
+        <div className="bg-surface/30 rounded-2xl p-6 border border-border/50">
+          <h4 className="flex items-center gap-2 text-sm font-bold text-text-primary mb-4 uppercase tracking-wider">
+            <CircleDollarSign className="w-4 h-4 text-emerald-500" />
+            {t("gymCard.availablePlans", "Available Plans")}
+          </h4>
+          <div className="space-y-3">
+            {plans.length > 0 ? (
+              plans.slice(0, 2).map((plan: any) => {
+                const lowestPrice = plan.pricingTiers?.sort(
+                  (a: PricingTier, b: PricingTier) => a.price - b.price,
+                )[0];
+                return (
+                  <div
+                    key={plan._id}
+                    className="flex items-center justify-between bg-muted/20 rounded-xl px-4 py-2 border border-border/50"
+                  >
+                    <span className="text-xs font-bold text-text-secondary truncate pr-4">
+                      {plan.customName || plan.baseType}
+                    </span>
+                    <span className="text-sm font-black text-primary whitespace-nowrap">
+                      {lowestPrice
+                        ? formatPrice(
+                            lowestPrice.price,
+                            gym.settings?.defaultCurrency || "DZD",
+                            language,
+                          )
+                        : t("common.n_a", "N/A")}
+                    </span>
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-xs text-text-secondary italic">
+                {t("gymCard.noPlans", "No public plans available yet")}
+              </p>
+            )}
+            {plans.length > 2 && (
+              <p className="text-[10px] text-text-secondary text-right font-medium">
+                + {plans.length - 2}{" "}
+                {t("gymCard.morePlans", "more plans available")}
+              </p>
+            )}
           </div>
         </div>
       </div>

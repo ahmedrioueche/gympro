@@ -1,13 +1,12 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useRef } from "react";
 import { useUserStore } from "../../../../store/user";
-import GymSelectorButton from "./components/GymSelectorButton";
-import GymSelectorDropdown from "./components/GymSelectorDropdown";
-import NoGymsView from "./components/NoGymsView";
-import SingleGymView from "./components/SingleGymView";
-import { useClickOutside } from "./hooks/useClickOutside";
-import { useGymFilter } from "./hooks/useGymFilter";
-import { useGymSelector } from "./hooks/useGymSelector";
+import GymSelectorButton from "./GymSelectorButton";
+import GymSelectorDropdown from "./GymSelectorDropdown";
+import SingleGymView from "./SingleGymView";
+import { useClickOutside } from "./useClickOutside";
+import { useGymFilter } from "./useGymFilter";
+import { useGymSelector } from "./useGymSelector";
 
 interface GymSelectorProps {
   gyms?: Gym[];
@@ -35,7 +34,7 @@ export default function GymSelector({
 
   // No gyms available
   if (filteredGyms.length === 0) {
-    return <NoGymsView />;
+    return null;
   }
 
   // Single gym - simplified view

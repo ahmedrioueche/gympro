@@ -2,9 +2,9 @@ import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import { useTheme } from "../../../../context/ThemeContext";
 import { useGymDisplayRole } from "../../../hooks/useGymDisplayRole";
-import { GymCardHeader } from "./components/GymCardHeader";
-import { GymInfoOverview } from "./components/GymInfoOverview";
-import { GymSettingsView } from "./components/GymSettingsView";
+import { GymCardHeader } from "./GymCardHeader";
+import { GymInfoOverview } from "./GymInfoOverview";
+import { GymSettingsView } from "./GymSettingsView";
 
 interface GymCardProps {
   gym: Gym;

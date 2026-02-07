@@ -11,11 +11,15 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/common/schemas/user.schema';
+import { NotificationsService } from '../notifications/notifications.service';
 import { RequestCoachAccessDto } from './dto/request-coach-access.dto';
 
 @Injectable()
 export class DashboardService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   /**
    * Request access to the coach dashboard.
@@ -55,9 +59,28 @@ export class DashboardService {
     // Do NOT add 'coach' to dashboardAccess yet. Wait for admin approval.
     // const updatedAccess = [...(user.dashboardAccess || ['member']), 'coach'];
 
-    await this.userModel.findByIdAndUpdate(userId, {
-      // dashboardAccess: updatedAccess,
-      coachVerification,
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        // dashboardAccess: updatedAccess,
+        coachVerification,
+      },
+      { new: true },
+    );
+
+    // ✅ Trigger notification to staff
+    await this.notificationsService.notifyStaff({
+      key: 'admin.coach_request',
+      vars: {
+        name: user.profile?.fullName || user.profile?.username || 'User',
+      },
+      action: {
+        type: 'modal',
+        payload: 'admin_review_coach_request',
+        data: {
+          request: updatedUser,
+        },
+      },
     });
 
     return { success: true, message: 'Coach request submitted for review' };

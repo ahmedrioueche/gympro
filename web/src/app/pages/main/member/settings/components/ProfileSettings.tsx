@@ -167,26 +167,27 @@ export default function ProfileSettings({
         </div>
 
         {/* Coach Access Section */}
-        {!user.dashboardAccess?.includes("coach") && (
-          <div className="pt-6 border-t border-border">
-            <h4 className="text-base font-medium text-text-primary mb-2">
-              {t("member.settings.profile.coachAccess", "Coach Access")}
-            </h4>
-            <p className="text-sm text-text-secondary mb-4">
-              {t(
-                "member.settings.profile.coachAccessDesc",
-                "Are you a fitness professional? Request access to the coach dashboard to start managing clients.",
-              )}
-            </p>
-            <button
-              type="button"
-              onClick={() => openModal("request_coach_access")}
-              className="px-4 py-2 bg-primary/10 text-primary rounded-xl font-medium hover:bg-primary/20 transition-all border border-primary/20"
-            >
-              {t("member.settings.profile.becomeCoach", "Become a Coach")}
-            </button>
-          </div>
-        )}
+        {!user.dashboardAccess?.includes("coach") &&
+          user.coachVerification?.status !== "pending" && (
+            <div className="pt-6 border-t border-border">
+              <h4 className="text-base font-medium text-text-primary mb-2">
+                {t("member.settings.profile.coachAccess", "Coach Access")}
+              </h4>
+              <p className="text-sm text-text-secondary mb-4">
+                {t(
+                  "member.settings.profile.coachAccessDesc",
+                  "Are you a fitness professional? Request access to the coach dashboard to start managing clients.",
+                )}
+              </p>
+              <button
+                type="button"
+                onClick={() => openModal("request_coach_access")}
+                className="px-4 py-2 bg-primary/10 text-primary rounded-xl font-medium hover:bg-primary/20 transition-all border border-primary/20"
+              >
+                {t("member.settings.profile.becomeCoach", "Become a Coach")}
+              </button>
+            </div>
+          )}
       </div>
     </div>
   );

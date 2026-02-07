@@ -61,7 +61,9 @@
       "user_subscribed_subject": "New Subscription: {{name}}",
       "user_subscribed_body": "<p>Hello Admin,</p><p>A user has subscribed to a new plan.</p><ul><li><strong>User:</strong> {{name}}</li><li><strong>Plan:</strong> {{planName}}</li></ul><p>Best regards,<br>The GymPro Team</p>",
       "gym_created_subject": "New Gym Created: {{gymName}}",
-      "gym_created_body": "<p>Hello Admin,</p><p>A new gym has been created on the platform.</p><ul><li><strong>Gym Name:</strong> {{gymName}}</li><li><strong>Owner:</strong> {{name}}</li></ul><p>Please review the details.</p><p>Best regards,<br>The GymPro Team</p>"
+      "gym_created_body": "<p>Hello Admin,</p><p>A new gym has been created on the platform.</p><ul><li><strong>Gym Name:</strong> {{gymName}}</li><li><strong>Owner:</strong> {{name}}</li></ul><p>Please review the details.</p><p>Best regards,<br>The GymPro Team</p>",
+      "coach_request_subject": "New Coach Access Request: {{name}}",
+      "coach_request_body": "<p>Hello Admin,</p><p>A new coach access request has been submitted by <strong>{{name}}</strong>.</p><p>Please review their certification details and documents in the admin dashboard.</p><p>Best regards,<br>The GymPro Team</p>"
     }
   },
   "notification": {
@@ -87,7 +89,9 @@
       "user_subscribed_title": "New Subscription",
       "user_subscribed_body": "{{name}} subscribed to {{planName}}.",
       "gym_created_title": "New Gym Created",
-      "gym_created_body": "{{name}} created a new gym: {{gymName}}."
+      "gym_created_body": "{{name}} created a new gym: {{gymName}}.",
+      "coach_request_title": "New Coach Access Request",
+      "coach_request_body": "{{name}} requested coach access. Click to review."
     },
     "auth": {
       "verify_title": "Verify Your Email",

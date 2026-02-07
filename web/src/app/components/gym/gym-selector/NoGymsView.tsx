@@ -1,6 +1,6 @@
 import { Dumbbell } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import useScreen from "../../../../../hooks/useScreen";
+import useScreen from "../../../../hooks/useScreen";
 
 export default function NoGymsView() {
   const { t } = useTranslation();

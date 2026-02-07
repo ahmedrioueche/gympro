@@ -615,6 +615,7 @@
     "service_gym": "Gym Access",
     "service_cardio": "Cardio",
     "service_crossfit": "CrossFit",
+    "service_swimming": "Swimming",
     "status_open": "Open",
     "status_closed": "Closed",
     "status_pending": "Pending",
@@ -623,7 +624,7 @@
     "request_error": "Failed to submit join request. Please try again.",
     "already_pending": "You already have a pending request for this gym.",
     "already_joined": "You are already a member of this gym.",
-    "join_confirm_title": "Join {name}?",
+    "join_confirm_title": "Join {{name}}?",
     "join_confirm_text": "Would you like to send a join request to this gym? Once approved, you will have access to their services and programs.",
     "no_address": "No address provided",
     "members_count": "Members",
@@ -2910,6 +2911,7 @@
       "title": "No Coaches Found",
       "description": "No coaches are available in your area at the moment"
     },
+    "experience": "Experience",
     "requestCoaching": "Request Coaching",
     "requestModal": {
       "title": "Request Coaching from {{coachName}}",

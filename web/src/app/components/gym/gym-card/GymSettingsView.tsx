@@ -181,58 +181,6 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
           </div>
         )}
 
-        {/* Member Stats */}
-        {gym.memberStats && (
-          <div className="bg-surface/50 rounded-xl p-5 border border-border/50">
-            <h4 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-              <span>📊</span>
-              {t("gymCard.memberStats", "Member Statistics")}
-            </h4>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              <div className="text-center p-3 bg-primary/5 rounded-lg">
-                <p className="text-2xl font-bold text-text-primary">
-                  {gym.memberStats.total}
-                </p>
-                <p className="text-xs text-text-secondary mt-1">
-                  {t("gymCard.totalMembers", "Total")}
-                </p>
-              </div>
-              <div className="text-center p-3 bg-success/5 rounded-lg">
-                <p className="text-2xl font-bold text-success">
-                  {gym.memberStats.checkedIn}
-                </p>
-                <p className="text-xs text-text-secondary mt-1">
-                  {t("gymCard.checkedIn", "Checked In")}
-                </p>
-              </div>
-              <div className="text-center p-3 bg-success/5 rounded-lg">
-                <p className="text-2xl font-bold text-success">
-                  {gym.memberStats.withActiveSubscriptions}
-                </p>
-                <p className="text-xs text-text-secondary mt-1">
-                  {t("gymCard.activeSubscriptions", "Active")}
-                </p>
-              </div>
-              <div className="text-center p-3 bg-error/5 rounded-lg">
-                <p className="text-2xl font-bold text-error">
-                  {gym.memberStats.withExpiredSubscriptions}
-                </p>
-                <p className="text-xs text-text-secondary mt-1">
-                  {t("gymCard.expiredSubscriptions", "Expired")}
-                </p>
-              </div>
-              <div className="text-center p-3 bg-warning/5 rounded-lg">
-                <p className="text-2xl font-bold text-warning">
-                  {gym.memberStats.pendingApproval}
-                </p>
-                <p className="text-xs text-text-secondary mt-1">
-                  {t("gymCard.pendingApproval", "Pending")}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* App Subscription */}
         {gym.appSubscription && (
           <div className="bg-surface/50 rounded-xl p-5 border border-border/50">
