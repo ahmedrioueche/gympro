@@ -23,6 +23,7 @@ export const gymApi = {
     services?: string[];
     page?: number;
     limit?: number;
+    excludeUserId?: string;
   }): Promise<ApiResponse<PaginatedResponse<Gym>>> => {
     try {
       const res = await apiClient.get<ApiResponse<PaginatedResponse<Gym>>>(
@@ -209,9 +210,12 @@ export const gymApi = {
   /** Get unique cities where gyms are located */
   getUniqueCities: async (): Promise<ApiResponse<string[]>> => {
     try {
+      console.log("Client: gymApi.getUniqueCities called");
       const res = await apiClient.get<ApiResponse<string[]>>("/gyms/cities");
+      console.log("Client: gymApi.getUniqueCities response:", res.data);
       return res.data;
     } catch (error) {
+      console.error("Client: gymApi.getUniqueCities error:", error);
       throw handleApiError(error);
     }
   },

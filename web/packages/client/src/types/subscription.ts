@@ -12,21 +12,17 @@ export const SUBSCRIPTION_PERIOD_UNITS = [
   "month",
   "year",
 ] as const;
+
 export const BASE_SUBSCRIPTION_TYPES = [
-  "regular",
-  "coached",
-  "yoga",
-  "crossfit",
-  "pilates",
-  "boxing",
-  "sauna",
-  "massage",
-  "custom",
+  "starter",
+  "pro",
+  "premium",
+  "free",
 ] as const;
 
 export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
-export type BaseSubscriptionType = (typeof BASE_SUBSCRIPTION_TYPES)[number];
 export type SubscriptionPeriodUnit = (typeof SUBSCRIPTION_PERIOD_UNITS)[number];
+export type BaseSubscriptionType = (typeof BASE_SUBSCRIPTION_TYPES)[number];
 
 export interface SubscriptionInfo {
   typeId: string;
@@ -45,11 +41,11 @@ export interface PricingTier {
 export interface SubscriptionType extends AuditInfo {
   _id: string;
   gymId: string;
-  baseType: BaseSubscriptionType;
   customName?: string;
   description?: string;
   pricingTiers: PricingTier[];
   isAvailable: boolean;
+  services?: string[];
 }
 
 import { User } from "./user";

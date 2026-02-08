@@ -6,7 +6,6 @@ import {
   TimeRange,
   WeeklyTimeRange,
 } from "./common";
-import { BaseSubscriptionType } from "./subscription";
 import { User } from "./user";
 
 export interface Gym extends AuditInfo {
@@ -64,7 +63,7 @@ export interface GymSettings {
   workingHours?: TimeRange; // Default gym hours (mixed or general)
   isMixed?: boolean; // Can males and females train toghether at the same time?
   femaleOnlyHours?: WeeklyTimeRange[]; // Specific time ranges reserved for female members
-  servicesOffered?: BaseSubscriptionType[]; // List of services offered at the gym
+  servicesOffered?: string[]; // List of services offered at the gym
   accessControlType?: AccessControlType; // How to handle expired subscriptions during check-in
   rules?: string[]; // List of gym rules
   temporaryClosures?: TemporaryClosure[];
