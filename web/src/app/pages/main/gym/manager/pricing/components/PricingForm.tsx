@@ -1,7 +1,5 @@
 import {
-  BASE_SUBSCRIPTION_TYPES,
   CURRENCY_SYMBOLS,
-  type BaseSubscriptionType,
   type CreateSubscriptionTypeDto,
   type PricingTier,
 } from "@ahmedrioueche/gympro-client";
@@ -17,10 +15,10 @@ import { useGymStore } from "../../../../../../../store/gym";
 import { DURATION_PRESETS } from "../utils";
 
 export interface PricingFormData {
-  baseType: BaseSubscriptionType;
   customName?: string;
   description?: string;
   isAvailable: boolean;
+  services: string[];
 }
 
 interface PricingFormProps {
@@ -49,8 +47,8 @@ export const PricingForm = ({
     formState: { errors },
   } = useForm<PricingFormData>({
     defaultValues: {
-      baseType: "regular",
       isAvailable: true,
+      services: [],
       ...defaultValues,
     },
   });
@@ -58,21 +56,46 @@ export const PricingForm = ({
   const [tiers, setTiers] = useState<PricingTier[]>(
     initialTiers && initialTiers.length > 0
       ? initialTiers
-      : [{ duration: 1, durationUnit: "month", price: 0 }]
+      : [{ duration: 1, durationUnit: "month", price: 0 }],
   );
 
-  const baseType = watch("baseType");
+  const selectedServices = watch("services") || [];
+
+  const gymServices = currentGym?.settings?.servicesOffered || [];
+
+  const toggleService = (serviceId: string) => {
+    const current = watch("services") || [];
+    if (current.includes(serviceId)) {
+      setValue(
+        "services",
+        current.filter((s) => s !== serviceId),
+      );
+    } else {
+      setValue("services", [...current, serviceId]);
+    }
+  };
+
+  const SERVICE_LABELS: Record<string, string> = {
+    gym: t("settings.gym.services.gym", "General Gym Access"),
+    cardio: t("settings.gym.services.cardio", "Cardio Training"),
+    crossfit: t("settings.gym.services.crossfit", "CrossFit"),
+    swimming: t("settings.gym.services.swimming", "Swimming Pool"),
+    boxing: t("settings.gym.services.boxing", "Boxing / MMA"),
+    yoga: t("settings.gym.services.yoga", "Yoga & Pilates"),
+    sauna: t("settings.gym.services.sauna", "Sauna & Spa"),
+    massage: t("settings.gym.services.massage", "Massage Therapy"),
+  };
 
   useEffect(() => {
     if (defaultValues) {
       reset({
-        baseType: defaultValues.baseType || "regular",
         customName: defaultValues.customName,
         description: defaultValues.description,
         isAvailable:
           defaultValues.isAvailable !== undefined
             ? defaultValues.isAvailable
             : true,
+        services: defaultValues.services || [],
       });
     }
   }, [defaultValues, reset]);
@@ -97,7 +120,7 @@ export const PricingForm = ({
 
   const updateTier = (index: number, updates: Partial<PricingTier>) => {
     setTiers(
-      tiers.map((tier, i) => (i === index ? { ...tier, ...updates } : tier))
+      tiers.map((tier, i) => (i === index ? { ...tier, ...updates } : tier)),
     );
   };
 
@@ -116,21 +139,14 @@ export const PricingForm = ({
       className="space-y-6"
     >
       {/* Basic Info */}
-      <div className="grid grid-cols-2 gap-4">
-        <CustomSelect
-          title={t("pricing.form.baseType")}
-          selectedOption={baseType}
-          onChange={(val) => setValue("baseType", val as BaseSubscriptionType)}
-          options={BASE_SUBSCRIPTION_TYPES.map((type) => ({
-            value: type,
-            label: t(`createMember.form.subscription.${type}`),
-          }))}
-          error={errors.baseType?.message}
-        />
+      <div className="grid grid-cols-1 gap-4">
         <InputField
-          label={t("pricing.form.customName")}
+          label={t("pricing.form.customName", "Plan Name")}
           {...register("customName")}
-          placeholder={t(`createMember.form.subscription.${baseType}`)}
+          placeholder={t(
+            "pricing.form.customNamePlaceholder",
+            "e.g. Gold Membership, Pro Pack...",
+          )}
           error={errors.customName?.message}
         />
       </div>
@@ -144,6 +160,42 @@ export const PricingForm = ({
           { value: "hidden", label: t("pricing.form.hidden") },
         ]}
       />
+
+      {/* Linked Services */}
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-text-secondary">
+          {t("pricing.form.linkedServices", "Included Services")}
+        </label>
+        {gymServices.length === 0 ? (
+          <p className="text-xs text-text-secondary italic">
+            {t(
+              "pricing.form.noServicesConfigured",
+              "No services configured in gym settings. Go to Settings > Services to add them.",
+            )}
+          </p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {gymServices.map((service) => {
+              const isSelected = selectedServices.includes(service);
+              const label = SERVICE_LABELS[service] || service;
+              return (
+                <button
+                  key={service}
+                  type="button"
+                  onClick={() => toggleService(service)}
+                  className={`px-3 py-2 rounded-lg text-xs font-bold border-2 transition-all duration-200 capitalize ${
+                    isSelected
+                      ? "border-primary bg-primary/5 text-primary"
+                      : "border-border hover:border-primary/50 text-text-secondary hover:bg-surface-hover"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Pricing Tiers */}
       <div className="space-y-3">
@@ -166,7 +218,7 @@ export const PricingForm = ({
             const presetValue =
               DURATION_PRESETS.find(
                 (p) =>
-                  p.duration === tier.duration && p.unit === tier.durationUnit
+                  p.duration === tier.duration && p.unit === tier.durationUnit,
               )?.value || "1_month";
 
             return (
@@ -180,7 +232,7 @@ export const PricingForm = ({
                     selectedOption={presetValue}
                     onChange={(val) => {
                       const preset = DURATION_PRESETS.find(
-                        (p) => p.value === val
+                        (p) => p.value === val,
                       );
                       if (preset) {
                         updateTier(index, {

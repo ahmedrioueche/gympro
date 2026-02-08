@@ -5,6 +5,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useGymStore } from "../../../../../../../store/gym";
 import { useLanguageStore } from "../../../../../../../store/language";
+import { capitalize, formatDuration } from "../../../../../../../utils/helper";
 
 interface MemberPricingCardProps {
   plan: SubscriptionType;
@@ -24,10 +25,24 @@ export const MemberPricingCard = ({ plan }: MemberPricingCardProps) => {
       {/* Header */}
       <div className="mb-4">
         <h3 className="text-xl font-bold text-text-primary mb-1">
-          {plan.customName ||
-            t(`createMember.form.subscription.${plan.baseType}`, {
-              defaultValue: plan.baseType,
-            })}
+          {(plan.customName && capitalize(plan.customName)) ||
+            (plan.services && plan.services.length > 0
+              ? plan.services
+                  .map((s) => {
+                    const SERVICE_LABELS: Record<string, string> = {
+                      gym: t("settings.gym.services.gym", "Gym"),
+                      cardio: t("settings.gym.services.cardio", "Cardio"),
+                      crossfit: t("settings.gym.services.crossfit", "CrossFit"),
+                      swimming: t("settings.gym.services.swimming", "Swimming"),
+                      boxing: t("settings.gym.services.boxing", "Boxing"),
+                      yoga: t("settings.gym.services.yoga", "Yoga"),
+                      sauna: t("settings.gym.services.sauna", "Sauna"),
+                      massage: t("settings.gym.services.massage", "Massage"),
+                    };
+                    return SERVICE_LABELS[s] || s;
+                  })
+                  .join(" + ")
+              : t("pricing.form.regularPlan", "Regular Plan"))}
         </h3>
       </div>
 
@@ -44,7 +59,7 @@ export const MemberPricingCard = ({ plan }: MemberPricingCardProps) => {
             className="flex items-center justify-between bg-muted/20 rounded-2xl px-4 py-3 border border-border/50"
           >
             <span className="text-sm text-text-secondary font-medium">
-              {tier.duration} {t(`pricing.form.units.${tier.durationUnit}`)}
+              {formatDuration(tier.duration, tier.durationUnit, t)}
             </span>
             <span className="text-lg font-bold text-text-primary">
               {formatPrice(tier.price, currency, language)}

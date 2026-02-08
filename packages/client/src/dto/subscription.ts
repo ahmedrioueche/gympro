@@ -1,17 +1,17 @@
-import { BaseSubscriptionType, PricingTier } from "../types/subscription";
+import { PricingTier } from "../types/subscription";
 
 export interface CreateSubscriptionTypeDto {
-  baseType: BaseSubscriptionType;
   customName?: string;
   description?: string;
   pricingTiers: PricingTier[];
   isAvailable?: boolean;
+  services?: string[];
 }
 
 export interface UpdateSubscriptionTypeDto {
-  baseType?: BaseSubscriptionType;
   customName?: string;
   description?: string;
   pricingTiers?: PricingTier[];
   isAvailable?: boolean;
+  services?: string[];
 }

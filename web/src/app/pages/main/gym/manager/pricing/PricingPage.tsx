@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import ErrorComponent from "../../../../../../components/ui/Error";
 import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
+import { useModalStore } from "../../../../../../store/modal";
 import PageHeader from "../../../../../components/PageHeader";
 import { PricingCard } from "./components/PricingCard";
 import {
@@ -21,6 +22,7 @@ import {
 
 function PricingPage() {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
   const { data: plans, isLoading, error } = useSubscriptionTypes();
   const {
     createSubscriptionType,
@@ -45,9 +47,18 @@ function PricingPage() {
   };
 
   const handleDelete = async (plan: SubscriptionType) => {
-    if (window.confirm(t("pricing.confirmDelete.message"))) {
-      await deleteSubscriptionType(plan._id);
-    }
+    openModal("confirm", {
+      title: t("pricing.confirmDelete.title", "Delete Plan?"),
+      text: t(
+        "pricing.confirmDelete.message",
+        "Are you sure you want to delete this pricing plan? This action cannot be undone.",
+      ),
+      confirmText: t("common.delete"),
+      confirmVariant: "danger",
+      onConfirm: () => {
+        deleteSubscriptionType(plan._id);
+      },
+    });
   };
 
   if (isLoading) {

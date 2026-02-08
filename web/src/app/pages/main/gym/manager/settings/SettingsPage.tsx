@@ -75,6 +75,9 @@ export default function SettingsPage() {
     handleUpdateClosures,
     workingDays,
     setWorkingDays,
+    addService,
+    removeService,
+    toggleService,
   } = useGymManagerSettings();
 
   const tabs = [
@@ -206,7 +209,9 @@ export default function SettingsPage() {
               paymentMethods={paymentMethods}
               setPaymentMethods={setPaymentMethods}
               servicesOffered={servicesOffered}
-              setServicesOffered={setServicesOffered}
+              addService={addService}
+              removeService={removeService}
+              toggleService={toggleService}
               allowCustomSubscriptions={allowCustomSubscriptions}
               setAllowCustomSubscriptions={setAllowCustomSubscriptions}
             />

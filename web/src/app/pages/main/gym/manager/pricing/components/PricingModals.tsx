@@ -64,7 +64,12 @@ export const EditPricingModal = ({
       onClose={onClose}
       title={t("pricing.editPlan")}
       subtitle={
-        plan.customName || t(`createMember.form.subscription.${plan.baseType}`)
+        plan.customName ||
+        (plan.services && plan.services.length > 0
+          ? plan.services
+              .map((s) => t(`settings.gym.services.${s}`, s))
+              .join(", ")
+          : t("pricing.form.regularPlan", "Regular Plan"))
       }
       icon={DollarSign}
       maxWidth="max-w-2xl"
@@ -78,10 +83,10 @@ export const EditPricingModal = ({
       <PricingForm
         formId="edit-pricing-form"
         defaultValues={{
-          baseType: plan.baseType,
           customName: plan.customName,
           description: plan.description,
           isAvailable: plan.isAvailable,
+          services: plan.services || [],
         }}
         initialTiers={plan.pricingTiers}
         onSubmit={(data) => onSubmit(plan._id, data)}

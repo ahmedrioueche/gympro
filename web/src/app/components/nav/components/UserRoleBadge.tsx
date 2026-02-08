@@ -21,7 +21,7 @@ export function UserRoleBadge() {
       iconClass: "bg-indigo-500 text-white shadow-lg shadow-indigo-500/40",
     },
     app_editor: {
-      label: t("roles.appEditor", "App Editor"),
+      label: t("roles.app_editor", "App Editor"),
       icon: UserCog,
       colorClass:
         "from-emerald-500/30 via-teal-500/20 to-cyan-500/30 border-emerald-500/40 shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]",
@@ -54,9 +54,12 @@ export function UserRoleBadge() {
   };
 
   // Determine which config to use
-  // If we are in a dashboard context (admin, manager, coach, member), use that.
-  // Otherwise fallback to user role.
-  const currentKey = activeDashboard || user.role;
+  // Admin and Editor are global roles that override the dashboard context in the badge
+  const isSpecialRole = user.role === "admin" || user.role === "app_editor";
+  const baseKey = user.role === "owner" ? "manager" : user.role;
+  const currentKey = isSpecialRole
+    ? (user.role as string)
+    : activeDashboard || baseKey;
   const config = roleConfig[currentKey] || roleConfig.member;
 
   const Icon = config.icon;

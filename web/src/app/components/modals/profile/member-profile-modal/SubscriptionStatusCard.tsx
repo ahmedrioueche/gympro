@@ -13,6 +13,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { capitalize } from "../../../../../utils/helper";
 
 interface SubscriptionStatusCardProps {
   subscription?: SubscriptionInfo;
@@ -65,14 +66,26 @@ export function SubscriptionStatusCard({
 
   // Get plan name
   const getPlanName = (): string => {
-    if (subscriptionType?.customName) return subscriptionType.customName;
-    if (subscriptionType?.baseType) {
-      return (
-        subscriptionType.baseType.charAt(0).toUpperCase() +
-        subscriptionType.baseType.slice(1)
-      );
+    if (subscriptionType?.customName != null)
+      return capitalize(subscriptionType.customName);
+
+    if (subscriptionType?.services && subscriptionType.services.length > 0) {
+      const SERVICE_LABELS: Record<string, string> = {
+        gym: t("settings.gym.services.gym", "Gym"),
+        cardio: t("settings.gym.services.cardio", "Cardio"),
+        crossfit: t("settings.gym.services.crossfit", "CrossFit"),
+        swimming: t("settings.gym.services.swimming", "Swimming"),
+        boxing: t("settings.gym.services.boxing", "Boxing"),
+        yoga: t("settings.gym.services.yoga", "Yoga"),
+        sauna: t("settings.gym.services.sauna", "Sauna"),
+        massage: t("settings.gym.services.massage", "Massage"),
+      };
+      return subscriptionType.services
+        .map((s) => SERVICE_LABELS[s] || s)
+        .join(" + ");
     }
-    return t("memberProfile.subscription.regular");
+
+    return t("pricing.form.regularPlan", "Regular Plan");
   };
 
   // Get remaining days text
@@ -190,8 +203,8 @@ export function SubscriptionStatusCard({
               status === "active"
                 ? "bg-success"
                 : status === "expiring"
-                ? "bg-warning"
-                : "bg-error"
+                  ? "bg-warning"
+                  : "bg-error"
             }`}
             style={{ width: `${100 - progress}%` }}
           />

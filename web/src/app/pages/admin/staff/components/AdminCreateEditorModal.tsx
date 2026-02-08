@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../components/ui/BaseModal";
 import InputField from "../../../../../components/ui/InputField";
 import { useModalStore } from "../../../../../store/modal";
+import { useUserStore } from "../../../../../store/user";
 
 export const AdminCreateEditorModal = () => {
   const { t } = useTranslation();
@@ -37,8 +38,30 @@ export const AdminCreateEditorModal = () => {
     },
   });
 
+  const { user } = useUserStore();
+
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
+
+    if (user?.profile) {
+      const isSameEmail =
+        form.email &&
+        form.email.toLowerCase() === user.profile.email?.toLowerCase();
+      const isSameUsername =
+        form.username &&
+        form.username.toLowerCase() === user.profile.username?.toLowerCase();
+
+      if (isSameEmail || isSameUsername) {
+        toast.error(
+          t(
+            "staff.validation.selfAdditionBlocked",
+            "You cannot add yourself as staff",
+          ),
+        );
+        return;
+      }
+    }
+
     createEditor(form);
   };
 

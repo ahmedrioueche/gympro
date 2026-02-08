@@ -77,7 +77,7 @@ export default function PermissionSelector({
       <p className="text-sm text-text-secondary">
         {t(
           "staff.permissions.description",
-          "Select what this staff member can access and manage."
+          "Select what this staff member can access and manage.",
         )}
       </p>
 
@@ -86,7 +86,7 @@ export default function PermissionSelector({
         {PERMISSION_GROUPS.map((group) => {
           const groupPermissions = group.permissions.map((p) => p.key);
           const selectedCount = groupPermissions.filter((p) =>
-            permissions.includes(p)
+            permissions.includes(p),
           ).length;
           const allSelected = selectedCount === groupPermissions.length;
           const someSelected = selectedCount > 0 && !allSelected;
@@ -100,7 +100,7 @@ export default function PermissionSelector({
               <button
                 type="button"
                 onClick={() => toggleGroup(group.key)}
-                className="w-full flex items-center justify-between p-3 hover:bg-surface-hover transition-colors"
+                className="w-full flex items-center justify-between p-3 hover:bg-surface-hover transition-colors mb-4"
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -108,8 +108,8 @@ export default function PermissionSelector({
                       allSelected
                         ? "bg-primary border-primary"
                         : someSelected
-                        ? "bg-primary/30 border-primary"
-                        : "border-border"
+                          ? "bg-primary/30 border-primary"
+                          : "border-border"
                     }`}
                   >
                     {(allSelected || someSelected) && (
@@ -133,7 +133,7 @@ export default function PermissionSelector({
               </button>
 
               {/* Individual Permissions */}
-              <div className="px-3 pb-3 flex flex-wrap gap-2">
+              <div className="px-3 pb-3 flex flex-wrap gap-2 ">
                 {group.permissions.map((permission) => {
                   const isSelected = permissions.includes(permission.key);
                   return (
@@ -152,9 +152,9 @@ export default function PermissionSelector({
                         {t(
                           `staff.permissions.items.${permission.key.replace(
                             ":",
-                            "_"
+                            "_",
                           )}`,
-                          permission.label
+                          permission.label,
                         )}
                       </span>
                     </button>

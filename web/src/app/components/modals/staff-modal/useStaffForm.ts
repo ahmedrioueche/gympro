@@ -5,6 +5,7 @@ import {
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useUserStore } from "../../../../store/user";
 import { parsePhoneNumber } from "../../../../utils/phone.util";
 import {
   useAddStaff,
@@ -56,6 +57,7 @@ export function useStaffForm({
   onClose,
 }: UseStaffFormProps) {
   const { t } = useTranslation();
+  const { user: currentUser } = useUserStore();
   const [formData, setFormData] = useState<StaffFormData>(() => {
     const initial = {
       ...initialFormData,
@@ -104,6 +106,34 @@ export function useStaffForm({
 
     if (!formData.role) {
       newErrors.role = t("staff.validation.roleRequired") as StaffRole;
+    }
+
+    // Prevent user from adding themselves
+    if (currentUser?.profile) {
+      const isSameEmail =
+        formData.email &&
+        formData.email.toLowerCase() ===
+          currentUser.profile.email?.toLowerCase();
+
+      const fullPhoneNumber = formData.phoneNumber
+        ? parsePhoneNumber(formData.countryCode, formData.phoneNumber)
+        : undefined;
+      const isSamePhone =
+        fullPhoneNumber && fullPhoneNumber === currentUser.profile.phoneNumber;
+
+      if (isSameEmail || isSamePhone) {
+        if (isSameEmail) {
+          newErrors.email = t(
+            "staff.validation.selfAdditionBlocked",
+            "You cannot add yourself as staff.",
+          );
+        } else {
+          newErrors.phoneNumber = t(
+            "staff.validation.selfAdditionBlocked",
+            "You cannot add yourself as staff.",
+          );
+        }
+      }
     }
 
     setErrors(newErrors);

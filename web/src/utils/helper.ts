@@ -23,7 +23,7 @@ export const cn = (
 export const redirectToHomePageAfterTimeout = (
   role: UserRole,
   timeout: number,
-  navigate: (options: any) => void
+  navigate: (options: any) => void,
 ) => {
   const redirectUrl = getRoleHomePage(role);
 
@@ -33,7 +33,7 @@ export const redirectToHomePageAfterTimeout = (
 export const redirectAfterTimeout = (
   redirectUrl: string,
   timeout: number,
-  navigate: (options: any) => void
+  navigate: (options: any) => void,
 ) => {
   setTimeout(() => {
     navigate({ to: redirectUrl });
@@ -44,6 +44,11 @@ export function capitalize(input: string): string {
   return input
     .toLocaleLowerCase()
     .replace(/(^|\s)\p{L}/gu, (m) => m.toLocaleUpperCase());
+}
+
+export function formatDuration(duration: number, unit: string, t: any): string {
+  const unitKey = `common.${unit}${duration > 1 ? "s" : ""}`;
+  return `${duration} ${t(unitKey, unit)}`;
 }
 
 export function getTwoHourBucket(date: Date) {
@@ -80,7 +85,7 @@ export const getEmbedUrl = (url: string | undefined): string | null => {
 
   // Handle youtube.com/watch?v= format
   const youtubeMatch = url.match(
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/,
   );
   if (youtubeMatch && youtubeMatch[1]) {
     return `https://www.youtube.com/embed/${youtubeMatch[1]}`;

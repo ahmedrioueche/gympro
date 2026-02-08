@@ -1,5 +1,4 @@
 import type {
-  BaseSubscriptionType,
   Gym,
   PaymentMethod,
   SubscriptionHistory,
@@ -9,7 +8,6 @@ import type {
   SubscriptionType,
 } from '@ahmedrioueche/gympro-client';
 import {
-  BASE_SUBSCRIPTION_TYPES,
   PAYMENT_METHODS,
   SUBSCRIPTION_PERIOD_UNITS,
   SUBSCRIPTION_STATUSES,
@@ -62,17 +60,12 @@ export class SubscriptionTypeModel
 {
   declare _id: string;
   @Prop({ required: true }) gymId: string;
-  @Prop({
-    type: String,
-    required: true,
-    enum: BASE_SUBSCRIPTION_TYPES,
-  })
-  baseType: BaseSubscriptionType;
   @Prop() customName?: string;
   @Prop() description?: string;
   @Prop({ type: [PricingTierSchema], required: true })
   pricingTiers: PricingTierModel[];
   @Prop({ required: true }) isAvailable: boolean;
+  @Prop({ type: [String], default: [] }) services?: string[];
   @Prop() createdAt: Date;
   @Prop() updatedAt?: Date;
 }

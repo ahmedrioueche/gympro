@@ -1,8 +1,4 @@
-import {
-  formatPrice,
-  type Gym,
-  type PricingTier,
-} from "@ahmedrioueche/gympro-client";
+import { formatPrice, type Gym } from "@ahmedrioueche/gympro-client";
 import { CircleDollarSign, Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCoachAffiliations } from "../../../../hooks/queries/useGymCoach";
@@ -11,6 +7,7 @@ import { useRequestGymAccess } from "../../../../hooks/queries/useGyms";
 import { useLanguageStore } from "../../../../store/language";
 import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
+import { capitalize, formatDuration } from "../../../../utils/helper";
 
 interface GymInfoOverviewProps {
   gym: Gym;
@@ -165,12 +162,35 @@ export function GymInfoOverview({
                     "bg-orange-500/10 text-orange-500 border-orange-500/20",
                     "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
                   ];
+
+                  const SERVICE_LABELS: Record<string, string> = {
+                    gym: t("settings.gym.services.gym", "General Gym Access"),
+                    cardio: t(
+                      "settings.gym.services.cardio",
+                      "Cardio Training",
+                    ),
+                    crossfit: t("settings.gym.services.crossfit", "CrossFit"),
+                    swimming: t(
+                      "settings.gym.services.swimming",
+                      "Swimming Pool",
+                    ),
+                    boxing: t("settings.gym.services.boxing", "Boxing / MMA"),
+                    yoga: t("settings.gym.services.yoga", "Yoga & Pilates"),
+                    sauna: t("settings.gym.services.sauna", "Sauna & Spa"),
+                    massage: t(
+                      "settings.gym.services.massage",
+                      "Massage Therapy",
+                    ),
+                  };
+
+                  const label = SERVICE_LABELS[service] || service;
+
                   return (
                     <span
                       key={idx}
                       className={`px-3 py-1 rounded-lg text-xs font-bold border capitalize ${colors[idx % colors.length]}`}
                     >
-                      {service}
+                      {label}
                     </span>
                   );
                 })}
@@ -187,26 +207,84 @@ export function GymInfoOverview({
           <div className="space-y-3">
             {plans.length > 0 ? (
               plans.slice(0, 2).map((plan: any) => {
-                const lowestPrice = plan.pricingTiers?.sort(
-                  (a: PricingTier, b: PricingTier) => a.price - b.price,
+                const lowestTier = plan.pricingTiers?.sort(
+                  (a: any, b: any) => a.price - b.price,
                 )[0];
+
+                const durationLabel = lowestTier
+                  ? formatDuration(
+                      lowestTier.duration,
+                      lowestTier.durationUnit,
+                      t,
+                    )
+                  : "";
+
                 return (
                   <div
                     key={plan._id}
-                    className="flex items-center justify-between bg-muted/20 rounded-xl px-4 py-2 border border-border/50"
+                    className="flex flex-col gap-1 bg-muted/20 rounded-xl px-4 py-2 border border-border/50"
                   >
-                    <span className="text-xs font-bold text-text-secondary truncate pr-4">
-                      {plan.customName || plan.baseType}
-                    </span>
-                    <span className="text-sm font-black text-primary whitespace-nowrap">
-                      {lowestPrice
-                        ? formatPrice(
-                            lowestPrice.price,
-                            gym.settings?.defaultCurrency || "DZD",
-                            language,
-                          )
-                        : t("common.n_a", "N/A")}
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-text-primary truncate">
+                        {(plan.customName && capitalize(plan.customName)) ||
+                          (plan.services && plan.services.length > 0
+                            ? plan.services
+                                .map((s: string) => {
+                                  const SERVICE_LABELS: Record<string, string> =
+                                    {
+                                      gym: t(
+                                        "settings.gym.services.gym",
+                                        "Gym",
+                                      ),
+                                      cardio: t(
+                                        "settings.gym.services.cardio",
+                                        "Cardio",
+                                      ),
+                                      crossfit: t(
+                                        "settings.gym.services.crossfit",
+                                        "CrossFit",
+                                      ),
+                                      swimming: t(
+                                        "settings.gym.services.swimming",
+                                        "Swimming",
+                                      ),
+                                      boxing: t(
+                                        "settings.gym.services.boxing",
+                                        "Boxing",
+                                      ),
+                                      yoga: t(
+                                        "settings.gym.services.yoga",
+                                        "Yoga",
+                                      ),
+                                      sauna: t(
+                                        "settings.gym.services.sauna",
+                                        "Sauna",
+                                      ),
+                                      massage: t(
+                                        "settings.gym.services.massage",
+                                        "Massage",
+                                      ),
+                                    };
+                                  return SERVICE_LABELS[s] || s;
+                                })
+                                .join(" + ")
+                            : t("pricing.form.regularPlan", "Regular Plan"))}
+                      </span>
+                      <span className="text-sm font-black text-primary whitespace-nowrap">
+                        {lowestTier
+                          ? formatPrice(
+                              lowestTier.price,
+                              gym.settings?.defaultCurrency || "DZD",
+                              language,
+                            )
+                          : t("common.n_a", "N/A")}
+                      </span>
+                    </div>
+                    {durationLabel && (
+                      <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">
+                        {durationLabel}
+                      </span>
+                    )}
                   </div>
                 );
               })

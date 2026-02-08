@@ -315,6 +315,21 @@ export function useGymManagerSettings() {
     removeRule: (index: number) => {
       setRules((prev) => prev.filter((_, i) => i !== index));
     },
+    addService: (service: string) => {
+      if (service.trim() && !servicesOffered.includes(service.trim())) {
+        setServicesOffered((prev) => [...prev, service.trim()]);
+      }
+    },
+    removeService: (index: number) => {
+      setServicesOffered((prev) => prev.filter((_, i) => i !== index));
+    },
+    toggleService: (service: string) => {
+      setServicesOffered((prev) =>
+        prev.includes(service)
+          ? prev.filter((s) => s !== service)
+          : [...prev, service],
+      );
+    },
     // Form State - Location
     address,
     setAddress,

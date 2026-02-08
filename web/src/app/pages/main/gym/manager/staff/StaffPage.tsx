@@ -62,11 +62,6 @@ function StaffPage() {
           title={t("staff.title")}
           subtitle={t("staff.subtitle")}
           icon={UserCircle}
-          actionButton={{
-            label: t("staff.addButton"),
-            icon: Plus,
-            onClick: handleAddStaff,
-          }}
         />
         <Loading />
       </div>

@@ -32,7 +32,6 @@
     "cancel": "Cancel",
     "joining": "Joining",
     "confirm": "Confirm",
-    "days": "Days",
     "retry": "Retry",
     "gyms": "Gyms",
     "members": "Members",
@@ -86,6 +85,13 @@
     "settings": "Settings",
     "goBack": "Go Back",
     "years": "years",
+    "year": "year",
+    "months": "months",
+    "month": "month",
+    "weeks": "weeks",
+    "week": "week",
+    "days": "days",
+    "day": "day",
     "amount": "Amount",
     "joined": "Joined",
     "change": "Change",
@@ -2866,6 +2872,7 @@
       "contactRequired": "Email or phone number is required",
       "emailInvalid": "Please enter a valid email address",
       "roleRequired": "Please select a role",
+      "selfAdditionBlocked": "You cannot add yourself as staff",
       "checkForm": "Please check the form for errors"
     },
     "permissions": {
@@ -2952,6 +2959,8 @@
     }
   },
   "roles": {
+    "admin": "System Admin",
+    "app_editor": "App Editor",
     "owner": "Owner",
     "manager": "Manager",
     "receptionist": "Receptionist",
