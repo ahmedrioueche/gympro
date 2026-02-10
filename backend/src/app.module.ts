@@ -26,6 +26,7 @@ import { GymAnnouncementModule } from './modules/gym-announcement/gym-announceme
 import { GymCoachPaymentModule } from './modules/gym-coach-payment/gym-coach-payment.module';
 import { GymCoachModule } from './modules/gym-coach/gym-coach.module';
 import { GymModule } from './modules/gym/gym.module';
+import { GymClassModule } from './modules/gymClass/gymClass.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
 import { GymSubscriptionModule } from './modules/gymSubscription/gymSubscription.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
@@ -112,6 +113,7 @@ import { UsersModule } from './modules/users/users.module';
     InventoryModule,
     CompetitionModule,
     StoreModule,
+    GymClassModule,
   ],
   controllers: [AppController],
   providers: [

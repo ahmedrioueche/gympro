@@ -14,16 +14,19 @@ import type {
   ConfirmModalProps,
   CreateAnnouncementModalProps,
   CreateExerciseModalProps,
+  CreateMemberModalProps,
   CreateSessionModalProps,
   EditAppPlanModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
+  GymClassModalProps,
   GymInvitationModalProps,
   GymMediaModalProps,
   InventoryItemModalProps,
   InviteCoachModalProps,
   LogSessionModalProps,
   MemberProfileModalProps,
+  PricingModalProps,
   ProductDetailsModalProps,
   ProductModalProps,
   ProgramDetailsModalProps,
@@ -33,6 +36,7 @@ import type {
   RequestGymModalProps,
   ReviewCoachRequestModalProps,
   ScanResultModalProps,
+  ServiceModalProps,
   SessionDetailsModalProps,
   SetWinnersModalProps,
   StaffModalProps,
@@ -83,6 +87,10 @@ type ModalType =
   | "competition-details"
   | "set-winners"
   | "competition-participants"
+  | "gym_class"
+  | "service"
+  | "pricing"
+  | "create_member"
   | null;
 
 interface ModalState {
@@ -125,6 +133,10 @@ interface ModalState {
   competitionDetailsProps?: CompetitionDetailsModalProps;
   competitionParticipantsProps?: CompetitionParticipantsModalProps;
   setWinnersProps?: SetWinnersModalProps;
+  gymClassProps?: GymClassModalProps;
+  serviceProps?: ServiceModalProps;
+  pricingProps?: PricingModalProps;
+  createMemberProps?: CreateMemberModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -364,6 +376,30 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "competition-participants",
           competitionParticipantsProps: props,
+        };
+      }
+      if (modal === "gym_class") {
+        return {
+          currentModal: "gym_class",
+          gymClassProps: props,
+        };
+      }
+      if (modal === "service") {
+        return {
+          currentModal: "service",
+          serviceProps: props,
+        };
+      }
+      if (modal === "pricing") {
+        return {
+          currentModal: "pricing",
+          pricingProps: props,
+        };
+      }
+      if (modal === "create_member") {
+        return {
+          currentModal: "create_member",
+          createMemberProps: props,
         };
       }
       return { currentModal: null };

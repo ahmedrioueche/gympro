@@ -1,12 +1,4 @@
-import type { Session } from "@ahmedrioueche/gympro-client";
-import {
-  addDays,
-  endOfWeek,
-  format,
-  isSameDay,
-  parseISO,
-  startOfWeek,
-} from "date-fns";
+import { addDays, endOfWeek, format, startOfWeek } from "date-fns";
 import { useState } from "react";
 
 export interface UseScheduleReturn {
@@ -17,7 +9,11 @@ export interface UseScheduleReturn {
   goToNextWeek: () => void;
   goToPrevWeek: () => void;
   goToToday: () => void;
-  getSessionsForDay: (day: Date, sessions: Session[]) => Session[];
+  getItemsForDay: <T>(
+    day: Date,
+    items: T[],
+    getDate: (item: T) => string | Date,
+  ) => T[];
   formatDateHeader: () => string;
 }
 
@@ -41,14 +37,22 @@ export const useSchedule = (): UseScheduleReturn => {
     setCurrentDate(new Date());
   };
 
-  const getSessionsForDay = (day: Date, sessions: Session[]): Session[] => {
-    if (!sessions) return [];
-    return sessions.filter((session) => {
-      const sessionDate =
-        typeof session.startTime === "string"
-          ? parseISO(session.startTime)
-          : session.startTime;
-      return isSameDay(sessionDate, day);
+  const getItemsForDay = <T>(
+    day: Date,
+    items: T[],
+    getDate: (item: T) => string | Date,
+  ): T[] => {
+    if (!items) return [];
+    return items.filter((item) => {
+      const date = getDate(item);
+      const itemDate = typeof date === "string" ? new Date(date) : date;
+
+      // Compare year, month, and day
+      return (
+        itemDate.getFullYear() === day.getFullYear() &&
+        itemDate.getMonth() === day.getMonth() &&
+        itemDate.getDate() === day.getDate()
+      );
     });
   };
 
@@ -64,7 +68,7 @@ export const useSchedule = (): UseScheduleReturn => {
     goToNextWeek,
     goToPrevWeek,
     goToToday,
-    getSessionsForDay,
+    getItemsForDay,
     formatDateHeader,
   };
 };

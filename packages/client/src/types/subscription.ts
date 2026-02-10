@@ -13,8 +13,16 @@ export const SUBSCRIPTION_PERIOD_UNITS = [
   "year",
 ] as const;
 
+export const BASE_SUBSCRIPTION_TYPES = [
+  "starter",
+  "pro",
+  "premium",
+  "free",
+] as const;
+
 export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
 export type SubscriptionPeriodUnit = (typeof SUBSCRIPTION_PERIOD_UNITS)[number];
+export type BaseSubscriptionType = (typeof BASE_SUBSCRIPTION_TYPES)[number];
 
 export interface SubscriptionInfo {
   typeId: string;

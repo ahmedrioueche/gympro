@@ -1,18 +1,26 @@
-import type { Session } from "@ahmedrioueche/gympro-client";
+import type { GymClass, Session } from "@ahmedrioueche/gympro-client";
 import { DayColumn } from "./DayColumn";
 
 interface WeeklyGridProps {
   weekDays: Date[];
   sessions: Session[];
-  getSessionsForDay: (day: Date, sessions: Session[]) => Session[];
+  gymClasses: GymClass[];
+  getItemsForDay: <T>(
+    day: Date,
+    items: T[],
+    getDate: (item: T) => string | Date,
+  ) => T[];
   onSessionClick: (session: Session) => void;
+  onClassClick?: (gymClass: GymClass) => void;
 }
 
 export const WeeklyGrid = ({
   weekDays,
   sessions,
-  getSessionsForDay,
+  gymClasses,
+  getItemsForDay,
   onSessionClick,
+  onClassClick,
 }: WeeklyGridProps) => {
   return (
     <div className="bg-surface border border-border rounded-2xl overflow-hidden">
@@ -21,8 +29,10 @@ export const WeeklyGrid = ({
           <DayColumn
             key={day.toISOString()}
             day={day}
-            sessions={getSessionsForDay(day, sessions)}
+            sessions={getItemsForDay(day, sessions, (s) => s.startTime)}
+            gymClasses={getItemsForDay(day, gymClasses, (c) => c.scheduledAt)}
             onSessionClick={onSessionClick}
+            onClassClick={onClassClick}
           />
         ))}
       </div>

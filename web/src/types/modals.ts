@@ -6,11 +6,18 @@ import type {
   EditUserDto,
   EquipmentItem,
   Exercise,
+  GymClass,
   ProgramDayProgress,
   ProgramHistory,
   TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
 import type { Product } from "@ahmedrioueche/gympro-client/dist/types/product";
+
+export interface GymClassModalProps {
+  gymId: string;
+  gymClass?: GymClass;
+  onSuccess?: () => void;
+}
 
 export interface InventoryItemModalProps {
   gymId: string;
@@ -252,4 +259,19 @@ export interface SetWinnersModalProps {
 export interface CompetitionParticipantsModalProps {
   competitionId: string;
   gymId: string;
+}
+
+export interface ServiceModalProps {
+  mode: "create" | "edit";
+  service?: string;
+}
+
+export interface PricingModalProps {
+  mode: "create" | "edit";
+  plan?: import("@ahmedrioueche/gympro-client").SubscriptionType;
+  onSuccess?: () => void;
+}
+
+export interface CreateMemberModalProps {
+  onSuccess?: () => void;
 }

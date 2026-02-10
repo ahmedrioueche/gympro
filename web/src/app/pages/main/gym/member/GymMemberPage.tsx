@@ -1,6 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 import {
   Bell,
+  Calendar,
   CreditCard,
   Home,
   Key,
@@ -26,6 +27,12 @@ const sidebarLinks = [
     icon: <CreditCard className="w-5 h-5" />,
     path: APP_PAGES.gym.member.subscriptions.link,
     matchPaths: [APP_PAGES.gym.member.subscriptions.link],
+  },
+  {
+    label: "classes",
+    icon: <Calendar className="w-5 h-5" />,
+    path: APP_PAGES.gym.member.classes.link,
+    matchPaths: [APP_PAGES.gym.member.classes.link],
   },
   {
     label: "access",

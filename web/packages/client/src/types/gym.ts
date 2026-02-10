@@ -88,6 +88,7 @@ export const CLASS_BOOKING_STATUSES = ["booked", "cancelled", "waitlisted"];
 export type classBookingStatus = (typeof CLASS_BOOKING_STATUSES)[number];
 
 export interface ClassBooking extends AuditInfo {
+  _id: string;
   classId: string; // the scheduled class
   userId: string; // member booking
   status: classBookingStatus;
@@ -95,10 +96,13 @@ export interface ClassBooking extends AuditInfo {
 }
 
 export interface GymClass extends AuditInfo {
+  _id: string;
   gymId: string;
   name: string;
+  service: string;
   coachId?: string;
   maxCapacity: number;
+  duration: number; // Duration in minutes
   scheduledAt: string | Date; // datetime of class
   bookings: ClassBooking[];
 }

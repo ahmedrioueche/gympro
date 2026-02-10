@@ -2,9 +2,9 @@
 
 ## Overview
 
-You are a Senior Full-Stack Developer specializing in TypeScript, React, NestJS, and modern UI/UX frameworks. This is a **multi-platform application** (web + mobile) with a NestJS backend and DynamoDB database.
+You are a Senior Full-Stack Developer specializing in TypeScript, React, NestJS, and modern UI/UX frameworks. This is a **multi-platform application** (web + mobile) with a NestJS backend and MongoDB database.
 
-**Current Focus**: Web application development only. Ignore mobile and backend unless specifically requested.
+**Current Focus**: Web application development only. Ignore mobile unless specifically requested.
 
 ## Core Principles
 
@@ -13,6 +13,7 @@ You are a Senior Full-Stack Developer specializing in TypeScript, React, NestJS,
 - Create **readable, maintainable, and DRY** (Don't Repeat Yourself) code
 - Implement **immediate reactivity** - avoid page refreshes, reflect state changes instantly
 - Use **early returns** whenever possible for better readability
+- Always check the functions and components definition before usage, to use them correctly
 - Write **complete, fully functional code** - NO todos, placeholders, or missing pieces
 - If uncertain about correctness, explicitly state so
 
@@ -30,7 +31,7 @@ You are a Senior Full-Stack Developer specializing in TypeScript, React, NestJS,
 **Backend**
 
 - NestJS with TypeScript
-- DynamoDB for database
+- MongoDB for database
 
 **Mobile**
 
@@ -43,7 +44,7 @@ You are a Senior Full-Stack Developer specializing in TypeScript, React, NestJS,
 **Component Structure**
 
 - **Always split complex components** into smaller, reusable ones
-- Use components from `src/components/ui` for consistency
+- Use components from `components/ui` for consistency
 - If a custom component doesn't exist (e.g., custom checkbox), **create it first, then use it**
 - Avoid using default HTML elements directly
 - Store feature-specific components in `./components` subdirectories
@@ -92,7 +93,7 @@ If they don't exist, create them before using.
 **Translation Rules**
 
 - **ALWAYS use i18n translations** - NO hard-coded text anywhere
-- Add all text to `en.json` (or appropriate locale file)
+- Add all text to `en.json`
 - **Do NOT add fallback text** - missing translations should be apparent
 - Use translation keys that describe the content: `"memberProfile.subscription.active"`
 
@@ -124,15 +125,12 @@ const { t } = useTranslation();
 **Service Layer Pattern**
 
 - **Never use `fetch` directly in components**
-- Create API service classes in `src/services` folder
-- Name service files by resource: `members.ts`, `coaches.ts`, `subscriptions.ts`
-
-**Placeholder Data**
-
-- Store mock data in `src/services/placeholders/`
-- Name files: `members.json`, `coaches.json`, etc.
-- Service classes should use placeholder data initially
-- **Goal**: Switch from placeholders to real backend by only changing service classes
+- Do not use direct fetching in the application (web or mobile)
+- Use the client package for api calls and types/dtos
+- Always return ApiResponse in the api calls methods
+- Always use getMessage and ShowStatusToast fron src/utils/statusMessage for message display
+- Backend controllers should always return apiResponse function
+- Do not build the client packages, i build it myself
 
 **API Response Format**
 
@@ -180,28 +178,23 @@ export interface ApiResponse<T = any> {
 When creating new endpoints:
 
 1. **Types** (in client package)
-
    - Create/update interfaces in `client/types`
    - Ensure no duplication
 
 2. **Module**
-
    - Create NestJS module if needed
    - Register in appropriate parent module
 
 3. **Schema** (if needed)
-
    - Define DynamoDB schema
    - Include proper indexes
 
 4. **Controller**
-
    - Return `ApiResponse` format
    - Include appropriate error codes
    - Use proper HTTP status codes
 
 5. **Service**
-
    - Implement business logic
    - Handle errors gracefully
    - Return structured responses

@@ -3,6 +3,7 @@ import { Outlet } from "@tanstack/react-router";
 import {
   BarChart3,
   Bell,
+  Calendar,
   CreditCard,
   DollarSign,
   Home,
@@ -62,18 +63,23 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.gym.manager.attendance.link],
   },
   {
-    label: "staff",
-    icon: <UserCircle className="w-5 h-5" />,
-    path: APP_PAGES.gym.manager.staff.link,
-    matchPaths: [APP_PAGES.gym.manager.staff.link],
-  },
-  {
     label: "coaching",
     icon: <UserCheck className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.coaching.link,
     matchPaths: [APP_PAGES.gym.manager.coaching.link],
   },
-
+  {
+    label: "classes",
+    icon: <Calendar className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.classes.link,
+    matchPaths: [APP_PAGES.gym.manager.classes.link],
+  },
+  {
+    label: "staff",
+    icon: <UserCircle className="w-5 h-5" />,
+    path: APP_PAGES.gym.manager.staff.link,
+    matchPaths: [APP_PAGES.gym.manager.staff.link],
+  },
   {
     label: "marketing",
     icon: <Megaphone className="w-5 h-5" />,
@@ -98,6 +104,7 @@ const sidebarLinks = [
     path: APP_PAGES.gym.manager.competitions.link,
     matchPaths: [APP_PAGES.gym.manager.competitions.link],
   },
+
   {
     label: "announcements",
     icon: <Megaphone className="w-5 h-5" />,
@@ -151,6 +158,8 @@ function GymManagerPage() {
         return hasPermission(GYM_PERMISSIONS.store.view);
       case "competitions":
         return hasPermission(GYM_PERMISSIONS.competitions.view);
+      case "classes":
+        return hasPermission(GYM_PERMISSIONS.schedules.view);
       default:
         // Home, subscriptions (?), access (?), notifications are always visible for now
         // or check logic later

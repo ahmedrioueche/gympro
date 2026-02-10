@@ -2,6 +2,7 @@ import { createRoute } from "@tanstack/react-router";
 import AccessPage from "../../../../app/pages/main/gym/member/access/AccessPage";
 import AnnouncementsPage from "../../../../app/pages/main/gym/member/announcements/AnnouncementsPage";
 import AttendancePage from "../../../../app/pages/main/gym/member/attendance/AttendancePage";
+import ClassesPage from "../../../../app/pages/main/gym/member/classes/ClassesPage";
 import CompetitionsPage from "../../../../app/pages/main/gym/member/competitions/CompetitionsPage";
 import HomePage from "../../../../app/pages/main/gym/member/home/HomePage";
 import InventoryPage from "../../../../app/pages/main/gym/member/inventory/InventoryPage";
@@ -69,4 +70,10 @@ export const settingsRoute = createRoute({
   getParentRoute: () => GymMemberRootRoute,
   path: "/settings",
   component: () => <SettingsPage />,
+});
+
+export const classesRoute = createRoute({
+  getParentRoute: () => GymMemberRootRoute,
+  path: "/classes",
+  component: () => <ClassesPage />,
 });

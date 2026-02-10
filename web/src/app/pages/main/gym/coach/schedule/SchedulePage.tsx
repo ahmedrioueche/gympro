@@ -1,10 +1,12 @@
-import type { Session } from "@ahmedrioueche/gympro-client";
+import type { GymClass, Session } from "@ahmedrioueche/gympro-client";
 import { Calendar } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
+import { useCoachClasses } from "../../../../../../hooks/queries/useGymClasses";
 import { useCoachSessions } from "../../../../../../hooks/queries/useSessions";
 import { useModalStore } from "../../../../../../store/modal";
+import { useUserStore } from "../../../../../../store/user";
 import PageHeader from "../../../../../components/PageHeader";
 import { CalendarHeader } from "../../../../../components/schedule/CalendarHeader";
 import { WeeklyGrid } from "../../../../../components/schedule/WeeklyGrid";
@@ -14,6 +16,7 @@ import { useSchedule } from "./hooks/useSchedule";
 export default function SchedulePage() {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
+  const { user } = useUserStore();
   const { data: clients } = useGymCoachClients();
 
   const {
@@ -21,7 +24,7 @@ export default function SchedulePage() {
     goToNextWeek,
     goToPrevWeek,
     goToToday,
-    getSessionsForDay,
+    getItemsForDay,
     formatDateHeader,
     weekStart,
     weekEnd,
@@ -36,6 +39,14 @@ export default function SchedulePage() {
     endDate: weekEnd.toISOString(),
   });
 
+  // Fetch all gym classes (we filter by coach below)
+  // Fetch all gym classes for this coach
+  const {
+    data: classesData,
+    isLoading: isLoadingClasses,
+    isError: isErrorClasses,
+  } = useCoachClasses();
+
   // sessionsData is ApiResponse<Session[]>, so extract the actual array from data.data
   // Filter sessions to only show those for clients in the current gym
   const clientIds = new Set(clients?.map((c) => c.userId) || []);
@@ -44,17 +55,24 @@ export default function SchedulePage() {
     clientIds.has(session.memberId),
   );
 
-  const hasSessions = sessions.length > 0;
+  const coachClasses = classesData?.data || [];
+
+  const hasItems = sessions.length > 0 || coachClasses.length > 0;
 
   const handleSessionClick = (session: Session) => {
     openModal("session_details", { session });
+  };
+
+  const handleClassClick = (gymClass: GymClass) => {
+    // Possibly open a class details modal or navigate
+    console.log("Class clicked", gymClass);
   };
 
   const handleCreateSession = () => {
     openModal("create_session");
   };
 
-  if (isErrorSessions) {
+  if (isErrorSessions || isErrorClasses) {
     return (
       <div className="space-y-6">
         <PageHeader
@@ -78,7 +96,7 @@ export default function SchedulePage() {
         subtitle={t("schedule.subtitle")}
         icon={Calendar}
         actionButton={
-          hasSessions
+          hasItems
             ? {
                 label: t("schedule.createSession"),
                 icon: Calendar,
@@ -95,9 +113,9 @@ export default function SchedulePage() {
         onToday={goToToday}
       />
 
-      {isLoadingSessions ? (
+      {isLoadingSessions || isLoadingClasses ? (
         <Loading className="py-20" />
-      ) : !hasSessions ? (
+      ) : !hasItems ? (
         <NoData
           emoji="📅"
           title={t("schedule.noSessions")}
@@ -112,8 +130,10 @@ export default function SchedulePage() {
         <WeeklyGrid
           weekDays={weekDays}
           sessions={sessions}
-          getSessionsForDay={getSessionsForDay}
+          gymClasses={coachClasses}
+          getItemsForDay={getItemsForDay}
           onSessionClick={handleSessionClick}
+          onClassClick={handleClassClick}
         />
       )}
     </div>

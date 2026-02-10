@@ -33,6 +33,7 @@
     "joining": "Joining",
     "confirm": "Confirm",
     "retry": "Retry",
+    "next": "Next",
     "gyms": "Gyms",
     "members": "Members",
     "viewDetails": "View Details",
@@ -346,6 +347,7 @@
       "history": {
         "fetch_error": "Failed to fetch history"
       },
+
       "payment": {
         "checkout_creation_failed": "Failed to create checkout. Please try again.",
         "checkout_not_found": "Checkout session not found. Please start a new checkout.",
@@ -394,6 +396,16 @@
         "fetch_failed": "Failed to fetch affiliations",
         "already_exists": "Affiliation already exists",
         "invalid_action": "Invalid action"
+      },
+      "class": {
+        "not_found": "Class not found",
+        "full": "Class is fully booked",
+        "already_booked": "You have already booked this class",
+        "create_failed": "Failed to create class",
+        "update_failed": "Failed to update class",
+        "delete_failed": "Failed to delete class",
+        "booking_error": "Failed to process class booking",
+        "coach_not_available": "Coach is not available during this time slot"
       }
     }
   },
@@ -418,7 +430,8 @@
     "analytics": "Analytics",
     "notifications": "Notifications",
     "settings": "Settings",
-    "pricing": "Pricing",
+    "pricing": "Services & Pricing",
+    "pricing_plans": "Pricing Plans",
     "access": "Access",
     "staff": "Staff",
     "clients": "Clients",
@@ -446,6 +459,7 @@
     "alerts": "Alerts",
     "reports": "Reports",
     "competitions": "Competitions",
+    "classes": "Classes",
     "inventory": "Inventory",
     "store": "Store",
     "support": "Support",
@@ -785,6 +799,30 @@
       "country": "Country",
       "country_placeholder": "Enter country",
       "save_changes": "Save Changes"
+    }
+  },
+  "services": {
+    "add": "Add Service",
+    "editTitle": "Edit Service",
+    "createTitle": "Add Service",
+    "modalDesc": "Define a service offered at your gym",
+    "form": {
+      "name": "Service Name",
+      "placeholder": "e.g., Yoga, HIIT, Sauna"
+    },
+    "deleteSuccess": "Service deleted successfully",
+    "deleteError": "Failed to delete service",
+    "duplicateError": "Service already exists",
+    "updateSuccess": "Service updated successfully",
+    "createSuccess": "Service created successfully",
+    "saveError": "Failed to save service",
+    "confirmDelete": {
+      "title": "Delete Service?",
+      "message": "Are you sure you want to delete this service? It may affect existing classes or plans."
+    },
+    "noData": {
+      "title": "No Services Added",
+      "desc": "Add services like 'Gym Access', 'Yoga', or 'Sauna' to get started."
     }
   },
   "notifications": {
@@ -2549,7 +2587,8 @@
         "next": "Next: Schedule",
         "submit": "Create Program",
         "form": {
-          "name": "Program Name",
+          "serviceRequired": "Service is required",
+          "name": "Class Name",
           "namePlaceholder": "e.g. Summer Shred",
           "description": "Description",
           "descriptionPlaceholder": "Goals, target audience...",
@@ -2954,6 +2993,9 @@
     "rating": "Rating"
   },
   "pages": {
+    "gym": {
+      "classes": "Gym Classes"
+    },
     "member": {
       "coaches": "Coaches"
     }
@@ -3952,5 +3994,39 @@
       "attachments": "Attachments",
       "uploadPlaceholder": "Upload images or videos to clarify the issue"
     }
+  },
+  "classes": {
+    "deleteTitle": "Delete Class",
+    "confirmDeleteDesc": "Are you sure you want to delete this class? This action cannot be undone.",
+    "modalDesc": "Set the details for your group workout",
+    "noCoaches": "No coaches available",
+    "noCoachesDesc": "Invite coaches to your gym to assign them to classes.",
+    "memberPageDesc": "Browse and book upcoming group sessions",
+    "createBtn": "Create Class",
+    "editBtn": "Edit Class",
+    "bookBtn": "Book Now",
+    "cancelBtn": "Cancel Booking",
+    "booked": "Booked",
+    "full": "Class Full",
+    "spots": "Spots",
+    "noClasses": "No classes scheduled",
+    "noClassesDesc": "Start by creating your first group workout session.",
+    "editTitle": "Edit Class",
+    "createTitle": "Create Class",
+    "form": {
+      "name": "Class Name",
+      "namePlaceholder": "e.g., Morning Yoga",
+      "coach": "Select Coach",
+      "selectCoach": "Select a coach",
+      "capacity": "Max Capacity",
+      "date": "Date & Time",
+      "submitCreate": "Create Class",
+      "submitUpdate": "Update Class",
+      "duration": "Duration (minutes)",
+      "service": "Service Type",
+      "selectService": "Select a service",
+      "serviceRequired": "Service is required"
+    },
+    "assigned": "You have been assigned to {{className}} on {{date}} at {{time}}"
   }
 }

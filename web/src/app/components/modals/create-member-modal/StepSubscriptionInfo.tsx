@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import CustomSelect from "../../../../../../../components/ui/CustomSelect";
-import InputField from "../../../../../../../components/ui/InputField";
+import CustomSelect from "../../../../components/ui/CustomSelect";
+import InputField from "../../../../components/ui/InputField";
 
 interface FormData {
   subscriptionTypeId: string;
@@ -34,16 +34,6 @@ function StepSubscriptionInfo({
 
   return (
     <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold text-text-primary mb-2 flex items-center gap-2">
-          <span className="text-2xl">💳</span>
-          {t("createMember.steps.subscription.title")}
-        </h2>
-        <p className="text-text-secondary text-sm">
-          {t("createMember.steps.subscription.description")}
-        </p>
-      </div>
-
       <div className="space-y-1">
         <CustomSelect
           title={t("createMember.form.subscription.label")}

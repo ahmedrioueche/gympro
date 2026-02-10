@@ -3,7 +3,6 @@ import {
   BookOpen,
   CalendarDays,
   Clock,
-  Dumbbell,
   MapPin,
   Save,
   Settings,
@@ -15,7 +14,6 @@ import GeneralTab from "./components/GeneralTab";
 import LocationTab from "./components/LocationTab";
 import NotificationsTab from "./components/NotificationsTab";
 import RulesTab from "./components/RulesTab";
-import ServicesTab from "./components/ServicesTab";
 import {
   useGymManagerSettings,
   type TabType,
@@ -44,8 +42,6 @@ export default function SettingsPage() {
     setRenewalReminderDays,
     paymentMethods,
     setPaymentMethods,
-    servicesOffered,
-    setServicesOffered,
     allowCustomSubscriptions,
     setAllowCustomSubscriptions,
     accessControlType,
@@ -75,9 +71,6 @@ export default function SettingsPage() {
     handleUpdateClosures,
     workingDays,
     setWorkingDays,
-    addService,
-    removeService,
-    toggleService,
   } = useGymManagerSettings();
 
   const tabs = [
@@ -95,11 +88,6 @@ export default function SettingsPage() {
       id: "notifications",
       label: t("settings.gym.tabs.notifications", "Notifications"),
       icon: Bell,
-    },
-    {
-      id: "services",
-      label: t("settings.gym.tabs.services", "Services"),
-      icon: Dumbbell,
     },
     {
       id: "rules",
@@ -201,19 +189,6 @@ export default function SettingsPage() {
               setNotificationsEnabled={setNotificationsEnabled}
               renewalReminderDays={renewalReminderDays}
               setRenewalReminderDays={setRenewalReminderDays}
-            />
-          )}
-
-          {activeTab === "services" && (
-            <ServicesTab
-              paymentMethods={paymentMethods}
-              setPaymentMethods={setPaymentMethods}
-              servicesOffered={servicesOffered}
-              addService={addService}
-              removeService={removeService}
-              toggleService={toggleService}
-              allowCustomSubscriptions={allowCustomSubscriptions}
-              setAllowCustomSubscriptions={setAllowCustomSubscriptions}
             />
           )}
 

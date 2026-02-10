@@ -3,6 +3,7 @@ import {
   accessRoute,
   announcementsRoute,
   attendanceRoute,
+  classesRoute,
   competitionsRoute,
   homeRoute,
   inventoryRoute,
@@ -14,6 +15,7 @@ import {
 
 export const GymMemberRootTree = GymMemberRootRoute.addChildren([
   homeRoute,
+  classesRoute,
   subscriptionsRoute,
   notificationsRoute,
   settingsRoute,

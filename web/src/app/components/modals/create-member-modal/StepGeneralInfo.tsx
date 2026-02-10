@@ -1,11 +1,11 @@
 import { DEFAULT_COUNTRY_CODE } from "@ahmedrioueche/gympro-client";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import CustomSelect from "../../../../../../../components/ui/CustomSelect";
-import InputField from "../../../../../../../components/ui/InputField";
+import CustomSelect from "../../../../components/ui/CustomSelect";
+import InputField from "../../../../components/ui/InputField";
 import PhoneNumberInput, {
   usePhoneNumber,
-} from "../../../../../../../components/ui/PhoneNumberInput";
+} from "../../../../components/ui/PhoneNumberInput";
 
 interface FormData {
   email: string;
@@ -69,16 +69,6 @@ function StepGeneralInfo({
 
   return (
     <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold text-text-primary mb-2 flex items-center gap-2">
-          <span className="text-2xl">👤</span>
-          {t("createMember.steps.general.title")}
-        </h2>
-        <p className="text-text-secondary text-sm">
-          {t("createMember.steps.general.description")}
-        </p>
-      </div>
-
       {/* Personal Info Row */}
       <div className="grid grid-cols-1 gap-6">
         <InputField

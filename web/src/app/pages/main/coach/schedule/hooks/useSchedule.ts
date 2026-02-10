@@ -1,4 +1,3 @@
-import type { Session } from "@ahmedrioueche/gympro-client";
 import {
   addDays,
   endOfWeek,
@@ -17,7 +16,11 @@ export interface UseScheduleReturn {
   goToNextWeek: () => void;
   goToPrevWeek: () => void;
   goToToday: () => void;
-  getSessionsForDay: (day: Date, sessions: Session[]) => Session[];
+  getItemsForDay: <T>(
+    day: Date,
+    items: T[],
+    getDate: (item: T) => string | Date,
+  ) => T[];
   formatDateHeader: () => string;
 }
 
@@ -41,13 +44,16 @@ export const useSchedule = (): UseScheduleReturn => {
     setCurrentDate(new Date());
   };
 
-  const getSessionsForDay = (day: Date, sessions: Session[]): Session[] => {
-    return sessions.filter((session) => {
-      const sessionDate =
-        typeof session.startTime === "string"
-          ? parseISO(session.startTime)
-          : session.startTime;
-      return isSameDay(sessionDate, day);
+  const getItemsForDay = <T>(
+    day: Date,
+    items: T[],
+    getDate: (item: T) => string | Date,
+  ): T[] => {
+    if (!items) return [];
+    return items.filter((item) => {
+      const date = getDate(item);
+      const itemDate = typeof date === "string" ? parseISO(date) : date;
+      return isSameDay(itemDate, day);
     });
   };
 
@@ -63,7 +69,7 @@ export const useSchedule = (): UseScheduleReturn => {
     goToNextWeek,
     goToPrevWeek,
     goToToday,
-    getSessionsForDay,
+    getItemsForDay,
     formatDateHeader,
   };
 };

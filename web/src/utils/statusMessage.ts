@@ -169,6 +169,14 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
     "status.error.affiliation.already_exists",
   [ErrorCode.AFFILIATION_INVALID_ACTION]:
     "status.error.affiliation.invalid_action",
+  [ErrorCode.CLASS_NOT_FOUND]: "status.error.class.not_found",
+  [ErrorCode.CLASS_FULL]: "status.error.class.full",
+  [ErrorCode.ALREADY_BOOKED]: "status.error.class.already_booked",
+  [ErrorCode.CLASS_CREATE_ERROR]: "status.error.class.create_failed",
+  [ErrorCode.CLASS_UPDATE_ERROR]: "status.error.class.update_failed",
+  [ErrorCode.CLASS_DELETE_ERROR]: "status.error.class.delete_failed",
+  [ErrorCode.BOOKING_ERROR]: "status.error.class.booking_error",
+  [ErrorCode.COACH_NOT_AVAILABLE]: "status.error.class.coach_not_available",
 };
 
 /**

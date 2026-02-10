@@ -130,6 +130,10 @@ export const APP_PAGES = {
         name: "pages.gym.competitions",
         link: "/gym/manager/competitions",
       },
+      classes: {
+        name: "pages.gym.classes",
+        link: "/gym/manager/classes",
+      },
 
       announcements: {
         name: "pages.gym.announcements",
@@ -157,7 +161,10 @@ export const APP_PAGES = {
         name: "pages.gym.home",
         link: "/gym/member",
       },
-
+      classes: {
+        name: "pages.gym.classes",
+        link: "/gym/member/classes",
+      },
       subscriptions: {
         name: "pages.gym.subscriptions",
         link: "/gym/member/subscriptions",

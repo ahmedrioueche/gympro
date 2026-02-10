@@ -7,8 +7,9 @@ import { CLASS_BOOKING_STATUSES } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-@Schema({ _id: false, timestamps: true })
+@Schema({ timestamps: true })
 export class ClassBookingModel implements ClassBooking {
+  _id: string;
   @Prop({ required: true })
   classId: string;
 
@@ -25,7 +26,7 @@ export class ClassBookingModel implements ClassBooking {
   @Prop({ type: Date, required: true })
   bookedAt: string | Date;
 
-  @Prop({ required: true })
+  @Prop()
   createdAt: Date;
 
   @Prop()
@@ -40,13 +41,16 @@ export class ClassBookingModel implements ClassBooking {
 
 @Schema({ timestamps: true })
 export class GymClassModel extends Document implements GymClass {
-  @Prop() declare _id: string;
+  declare _id: string;
 
   @Prop({ type: Types.ObjectId, ref: 'GymModel', required: true, index: true })
   gymId: string;
 
   @Prop({ required: true })
   name: string;
+
+  @Prop({ required: true })
+  service: string; // The service type this class belongs to (e.g., 'yoga', 'crossfit')
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
   coachId?: string;
@@ -57,10 +61,13 @@ export class GymClassModel extends Document implements GymClass {
   @Prop({ type: Date, required: true, index: true })
   scheduledAt: string | Date;
 
+  @Prop({ required: true, min: 1 })
+  duration: number; // in minutes
+
   @Prop({ type: [ClassBookingModel], default: [] })
   bookings: ClassBooking[];
 
-  @Prop({ required: true })
+  @Prop()
   createdAt: Date;
 
   @Prop()

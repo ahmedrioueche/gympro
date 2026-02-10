@@ -26,16 +26,6 @@ function StepContactPreferences({
 
   return (
     <div className="space-y-6 animate-in slide-in-from-right-4 duration-500">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold text-text-primary mb-2 flex items-center gap-2">
-          <span className="text-2xl">📱</span>
-          {t("createMember.steps.contact.title")}
-        </h2>
-        <p className="text-text-secondary text-sm">
-          {t("createMember.steps.contact.description")}
-        </p>
-      </div>
-
       {/* Send Welcome Message Toggle */}
       {!formData.isContactless && (
         <div className="bg-surface/50 border border-border rounded-xl p-4">
@@ -116,7 +106,7 @@ function StepContactPreferences({
               </span>
               <span className="text-text-primary font-semibold">
                 {subscriptionOptions.find(
-                  (s) => s.value === formData.subscriptionTypeId
+                  (s) => s.value === formData.subscriptionTypeId,
                 )?.label || "-"}
               </span>
             </div>

@@ -197,6 +197,20 @@ const SetWinnersModal = lazy(
     import("./app/pages/main/gym/manager/competitions/components/SetWinnersModal"),
 );
 
+const GymClassModal = lazy(
+  () => import("./app/pages/main/gym/manager/classes/components/GymClassModal"),
+);
+
+const ServiceModal = lazy(
+  () => import("./app/pages/main/gym/manager/pricing/components/ServiceModal"),
+);
+const PricingModal = lazy(
+  () => import("./app/pages/main/gym/manager/pricing/components/PricingModal"),
+);
+const CreateMemberModal = lazy(
+  () => import("./app/components/modals/create-member-modal/CreateMemberModal"),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -239,6 +253,10 @@ function modals() {
       <ProductDetailsModal />
       <CompetitionDetailsModal />
       <SetWinnersModal />
+      <GymClassModal />
+      <ServiceModal />
+      <PricingModal />
+      <CreateMemberModal />
     </Suspense>
   );
 }

@@ -1,12 +1,11 @@
 import { membersApi } from "@ahmedrioueche/gympro-client";
-import { ErrorComponent, useNavigate } from "@tanstack/react-router";
+import { ErrorComponent } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Plus, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
 import Loading from "../../../../../../components/ui/Loading";
-import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useMembers } from "../../../../../../hooks/queries/useMembers";
 import { useGymStore } from "../../../../../../store/gym";
 import { useModalStore } from "../../../../../../store/modal";
@@ -30,14 +29,13 @@ function MembersPage() {
   const { user } = useUserStore();
   const { currentGym } = useGymStore();
   const [viewMode, setViewMode] = useState<ViewMode>(
-    user?.appSettings?.viewPreference || "cards"
+    user?.appSettings?.viewPreference || "cards",
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [sortBy, setSortBy] = useState<SortBy>("name");
   const [currentPage, setCurrentPage] = useState(1);
   const { openModal } = useModalStore();
-  const navigate = useNavigate();
 
   // Fetch members using the API - paginated from backend
   const {
@@ -60,7 +58,7 @@ function MembersPage() {
   // Transform and filter members
   const filteredMembers = useMemo(() => {
     const displayMembers = members.map((m) =>
-      getMemberDisplay(m, currentGym?._id)
+      getMemberDisplay(m, currentGym?._id),
     );
 
     let filtered = displayMembers;
@@ -138,12 +136,12 @@ function MembersPage() {
       // Find the membership ID for this member
       const memberData = members.find((m) => m._id === memberId);
       const membershipId = memberData?.memberships?.find(
-        (m) => m.gym?._id === currentGym._id
+        (m) => m.gym?._id === currentGym._id,
       )?._id;
 
       if (!membershipId) {
         throw new Error(
-          t("members.delete.errors.membershipNotFound", "Membership not found")
+          t("members.delete.errors.membershipNotFound", "Membership not found"),
         );
       }
 
@@ -152,7 +150,7 @@ function MembersPage() {
       refetch(); // Refresh the members list
     } catch (error: any) {
       toast.error(
-        error?.message || t("members.delete.error", "Failed to remove member")
+        error?.message || t("members.delete.error", "Failed to remove member"),
       );
     }
   };
@@ -189,7 +187,9 @@ function MembersPage() {
         actionButton={{
           label: t("members.addMember"),
           onClick: () => {
-            navigate({ to: APP_PAGES.gym.manager.create_member.link });
+            openModal("create_member", {
+              onSuccess: () => refetch(),
+            });
           },
           icon: Plus,
         }}
@@ -285,7 +285,7 @@ function MembersPage() {
                 >
                   {page}
                 </button>
-              )
+              ),
             )}
 
             {/* Next Button */}

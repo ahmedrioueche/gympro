@@ -1,78 +1,35 @@
-import {
-  type CreateSubscriptionTypeDto,
-  type SubscriptionType,
-} from "@ahmedrioueche/gympro-client";
-import { DollarSign, Plus } from "lucide-react";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { DollarSign, Dumbbell, Edit2, Trash2 } from "lucide-react";
 import ErrorComponent from "../../../../../../components/ui/Error";
 import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
-import { useModalStore } from "../../../../../../store/modal";
+import Tab from "../../../../../../components/ui/Tab";
 import PageHeader from "../../../../../components/PageHeader";
 import { PricingCard } from "./components/PricingCard";
-import {
-  CreatePricingModal,
-  EditPricingModal,
-} from "./components/PricingModals";
-import {
-  useManageSubscriptionType,
-  useSubscriptionTypes,
-} from "./hooks/useSubscriptionTypes";
+import { usePricingPage } from "./hooks/usePricingPage";
 
 function PricingPage() {
-  const { t } = useTranslation();
-  const { openModal } = useModalStore();
-  const { data: plans, isLoading, error } = useSubscriptionTypes();
   const {
-    createSubscriptionType,
-    updateSubscriptionType,
-    deleteSubscriptionType,
-    isCreating,
-    isUpdating,
-    isDeleting,
-  } = useManageSubscriptionType();
+    t,
+    activeTab,
+    setActiveTab,
+    plans,
+    isLoadingPlans,
+    error,
+    services,
+    handleEditService,
+    handleDeleteService,
+    handleOpenPricingModal,
+    handleDeletePlan,
+    getPageHeaderAction,
+  } = usePricingPage();
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [editingPlan, setEditingPlan] = useState<SubscriptionType | null>(null);
-
-  const handleCreate = async (data: CreateSubscriptionTypeDto) => {
-    await createSubscriptionType(data);
-    setIsCreateModalOpen(false);
-  };
-
-  const handleUpdate = async (id: string, data: CreateSubscriptionTypeDto) => {
-    await updateSubscriptionType({ id, dto: data });
-    setEditingPlan(null);
-  };
-
-  const handleDelete = async (plan: SubscriptionType) => {
-    openModal("confirm", {
-      title: t("pricing.confirmDelete.title", "Delete Plan?"),
-      text: t(
-        "pricing.confirmDelete.message",
-        "Are you sure you want to delete this pricing plan? This action cannot be undone.",
-      ),
-      confirmText: t("common.delete"),
-      confirmVariant: "danger",
-      onConfirm: () => {
-        deleteSubscriptionType(plan._id);
-      },
-    });
-  };
-
-  if (isLoading) {
+  if (isLoadingPlans) {
     return (
-      <div>
+      <div className="space-y-8">
         <PageHeader
           title={t("pricing.title")}
           subtitle={t("pricing.subtitle")}
           icon={DollarSign}
-          actionButton={{
-            label: t("pricing.addPlan"),
-            icon: Plus,
-            onClick: () => setIsCreateModalOpen(true),
-          }}
         />
         <Loading />
       </div>
@@ -87,50 +44,97 @@ function PricingPage() {
         title={t("pricing.title")}
         subtitle={t("pricing.subtitle")}
         icon={DollarSign}
-        actionButton={{
-          label: t("pricing.addPlan"),
-          icon: Plus,
-          onClick: () => setIsCreateModalOpen(true),
-        }}
+        actionButton={getPageHeaderAction()}
       />
 
-      {plans?.length === 0 ? (
-        <NoData
-          icon={DollarSign}
-          title={t("pricing.noPlans.title")}
-          description={t("pricing.noPlans.subtitle")}
-          actionButton={{
-            label: t("pricing.addPlan"),
-            icon: Plus,
-            onClick: () => setIsCreateModalOpen(true),
-          }}
+      {/* Tabs */}
+      <div className="flex gap-4 border-b border-border">
+        <Tab
+          label={t("settings.gym.tabs.services", "Services")}
+          isActive={activeTab === "services"}
+          onClick={() => setActiveTab("services")}
         />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {plans?.map((plan) => (
-            <PricingCard
-              key={plan._id}
-              plan={plan}
-              onEdit={setEditingPlan}
-              onDelete={handleDelete}
+        <Tab
+          label={t("pricing.tab", "Pricing Plans")}
+          isActive={activeTab === "pricing"}
+          onClick={() => setActiveTab("pricing")}
+          count={plans?.length}
+        />
+      </div>
+
+      {/* Services Tab Content */}
+      {activeTab === "services" && (
+        <div className="space-y-6">
+          {services.length === 0 ? (
+            <NoData
+              icon={Dumbbell}
+              title={t("services.noData.title", "No Services Added")}
+              description={t(
+                "services.noData.desc",
+                "Add services like 'Gym Access', 'Yoga', or 'Sauna' to get started.",
+              )}
+              actionButton={getPageHeaderAction()}
             />
-          ))}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {services.map((service) => (
+                <div
+                  key={service}
+                  className="bg-surface border border-border rounded-xl p-4 flex items-center justify-between group hover:border-primary/50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-lg text-primary">
+                      <Dumbbell className="w-5 h-5" />
+                    </div>
+                    <span className="font-medium text-text-primary">
+                      {service}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={() => handleEditService(service)}
+                      className="p-2 hover:bg-background rounded-lg text-text-secondary hover:text-primary transition-colors"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteService(service)}
+                      className="p-2 hover:bg-red-50 rounded-lg text-text-secondary hover:text-error transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      <CreatePricingModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSubmit={handleCreate}
-        isLoading={isCreating}
-      />
-
-      <EditPricingModal
-        plan={editingPlan}
-        onClose={() => setEditingPlan(null)}
-        onSubmit={handleUpdate}
-        isLoading={isUpdating}
-      />
+      {/* Pricing Tab Content */}
+      {activeTab === "pricing" && (
+        <>
+          {plans?.length === 0 ? (
+            <NoData
+              icon={DollarSign}
+              title={t("pricing.noPlans.title")}
+              description={t("pricing.noPlans.subtitle")}
+              actionButton={getPageHeaderAction()}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {plans?.map((plan) => (
+                <PricingCard
+                  key={plan._id}
+                  plan={plan}
+                  onEdit={(p) => handleOpenPricingModal("edit", p)}
+                  onDelete={handleDeletePlan}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

@@ -1,17 +1,22 @@
-import type { Session } from "@ahmedrioueche/gympro-client";
+import type { GymClass, Session } from "@ahmedrioueche/gympro-client";
 import { format, isToday } from "date-fns";
+import { ClassScheduleCard } from "./ClassScheduleCard";
 import { SessionCard } from "./SessionCard";
 
 interface DayColumnProps {
   day: Date;
   sessions: Session[];
+  gymClasses: GymClass[];
   onSessionClick: (session: Session) => void;
+  onClassClick?: (gymClass: GymClass) => void;
 }
 
 export const DayColumn = ({
   day,
   sessions,
+  gymClasses,
   onSessionClick,
+  onClassClick,
 }: DayColumnProps) => {
   const isCurrentDay = isToday(day);
 
@@ -39,8 +44,15 @@ export const DayColumn = ({
         </p>
       </div>
 
-      {/* Sessions */}
+      {/* Items */}
       <div className="p-2 min-h-[150px] md:min-h-[400px] space-y-2">
+        {gymClasses.map((gymClass) => (
+          <ClassScheduleCard
+            key={gymClass._id}
+            gymClass={gymClass}
+            onClick={() => onClassClick?.(gymClass)}
+          />
+        ))}
         {sessions.map((session) => (
           <SessionCard
             key={session._id}

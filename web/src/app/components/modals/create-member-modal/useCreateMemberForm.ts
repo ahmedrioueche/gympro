@@ -199,8 +199,8 @@ export function useCreateMemberForm(
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
 
     if (step !== 3 || !validateStep(step)) {
       return;
@@ -256,7 +256,6 @@ export function useCreateMemberForm(
 
       await membersApi.createMember(memberData);
       setShowSuccess(true);
-      toast.success(t("createMember.success.title"));
     } catch (error: any) {
       console.error(error);
       const errorMessage =

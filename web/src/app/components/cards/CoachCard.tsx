@@ -2,6 +2,7 @@ import { type CoachProfile } from "@ahmedrioueche/gympro-client";
 import {
   Award,
   Briefcase,
+  Check,
   CheckCircle,
   ChevronRight,
   Clock,
@@ -27,6 +28,10 @@ interface CoachCardProps {
   onRemove?: () => void;
   isActive?: boolean;
   isPending?: boolean;
+  // Selection props
+  selectable?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
 }
 
 export default function CoachCard({
@@ -40,6 +45,9 @@ export default function CoachCard({
   onRemove,
   isActive,
   isPending,
+  selectable,
+  isSelected,
+  onSelect,
 }: CoachCardProps) {
   const { t } = useTranslation();
   const displayName = coach.fullName || coach.username;
@@ -52,13 +60,37 @@ export default function CoachCard({
     .join(", ");
 
   const handleCardClick = () => {
-    if (onViewDetails) {
+    if (selectable && onSelect) {
+      onSelect();
+    } else if (onViewDetails) {
       onViewDetails(coach);
     }
   };
 
   // Determine footer content based on props
   const renderFooter = () => {
+    // If selectable, show selection state or verified badge if no specific footer action
+    if (selectable) {
+      return (
+        <div
+          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+            isSelected
+              ? "bg-primary text-white shadow-lg shadow-primary/25"
+              : "bg-surface-secondary text-text-secondary group-hover:bg-surface-secondary/80"
+          }`}
+        >
+          {isSelected ? (
+            <>
+              <Check className="w-4 h-4" />
+              {t("common.selected", "Selected")}
+            </>
+          ) : (
+            t("common.select", "Select")
+          )}
+        </div>
+      );
+    }
+
     // Accept/Decline actions for pending
     if (isPending && (onAccept || onDecline)) {
       return (
@@ -154,11 +186,22 @@ export default function CoachCard({
 
   return (
     <div
-      className={`bg-surface border border-border rounded-[2rem] overflow-hidden hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group flex flex-col h-full relative ${
-        onViewDetails ? "cursor-pointer" : ""
-      }`}
+      className={`bg-surface border rounded-[2rem] overflow-hidden transition-all duration-300 group flex flex-col h-full relative ${
+        selectable
+          ? isSelected
+            ? "border-primary ring-4 ring-primary/20 shadow-xl shadow-primary/10"
+            : "border-border hover:border-primary/50 hover:shadow-lg opacity-70 hover:opacity-100 cursor-pointer"
+          : "border-border hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 duration-500"
+      } ${onViewDetails && !selectable ? "cursor-pointer" : ""}`}
       onClick={handleCardClick}
     >
+      {/* Selection Overlay */}
+      {selectable && isSelected && (
+        <div className="absolute top-4 right-4 z-10 bg-primary text-white rounded-full p-1.5 shadow-lg shadow-primary/30 animate-in zoom-in duration-300">
+          <Check className="w-5 h-5" />
+        </div>
+      )}
+
       {/* Decorative background element */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-[100%] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
