@@ -104,6 +104,13 @@ export function useNotificationAction() {
         }
       }
 
+      // Special case: coaching client page (handle global vs gym context)
+      if (targetPath === "/coach/clients") {
+        if (activeDashboard === "coach") {
+          targetPath = "/gym/coach/clients";
+        }
+      }
+
       navigate({ to: targetPath });
       return true;
     }

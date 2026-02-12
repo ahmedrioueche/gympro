@@ -11,8 +11,7 @@ export const useCoachSessions = (query?: SessionQueryDto) => {
     queryKey: ["sessions", query],
     queryFn: async () => {
       const response = await sessionApi.getAll(query);
-      // response.data is ApiResponse<Session[]>, so we need response.data.data
-      return response.data as any; // The actual data is in response.data which is ApiResponse
+      return response; // Now returns ApiResponse<Session[]>
     },
   });
 };
@@ -23,7 +22,7 @@ export const useCreateSession = () => {
   return useMutation({
     mutationFn: async (data: CreateSessionDto) => {
       const response = await sessionApi.create(data);
-      return response.data;
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions"] });
@@ -38,38 +37,36 @@ export const useUpdateSession = () => {
     mutationFn: async ({
       id,
       data,
+      updateSeries,
     }: {
       id: string;
       data: UpdateSessionDto;
+      updateSeries?: boolean;
     }) => {
-      const response = await sessionApi.update(id, data);
-      return response.data;
+      const response = await sessionApi.update(id, data, updateSeries);
+      return response;
     },
-    onMutate: async ({ id, data }) => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ["sessions"] });
+    onMutate: async ({ id, data, updateSeries }) => {
+      if (updateSeries) return; // Don't do optimistic update for series
 
-      // Snapshot the previous value
+      await queryClient.cancelQueries({ queryKey: ["sessions"] });
       const previousSessions = queryClient.getQueriesData({
         queryKey: ["sessions"],
       });
 
-      // Optimistically update to the new value
       queryClient.setQueriesData({ queryKey: ["sessions"] }, (old: any) => {
         if (!old || !old.data) return old;
         return {
           ...old,
           data: old.data.map((session: any) =>
-            session._id === id ? { ...session, ...data } : session
+            session._id === id ? { ...session, ...data } : session,
           ),
         };
       });
 
-      // Return a context object with the snapshotted value
       return { previousSessions };
     },
-    onError: (_err, _newSession, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (_err, _vars, context) => {
       if (context?.previousSessions) {
         context.previousSessions.forEach(([queryKey, data]) => {
           queryClient.setQueryData(queryKey, data);
@@ -77,7 +74,6 @@ export const useUpdateSession = () => {
       }
     },
     onSettled: () => {
-      // Always refetch after error or success:
       queryClient.invalidateQueries({ queryKey: ["sessions"] });
     },
   });
@@ -87,9 +83,15 @@ export const useDeleteSession = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const response = await sessionApi.delete(id);
-      return response.data;
+    mutationFn: async ({
+      id,
+      deleteSeries,
+    }: {
+      id: string;
+      deleteSeries?: boolean;
+    }) => {
+      const response = await sessionApi.delete(id, deleteSeries);
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sessions"] });

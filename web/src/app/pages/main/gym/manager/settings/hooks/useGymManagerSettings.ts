@@ -1,5 +1,6 @@
 import type {
   Currency,
+  GymService,
   TemporaryClosure,
   WeeklyTimeRange,
 } from "@ahmedrioueche/gympro-client";
@@ -7,6 +8,9 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import {
+  useAddFacility,
+  useRemoveFacility,
+  useUpdateFacility,
   useUpdateGym,
   useUpdateGymSettings,
 } from "../../../../../../../hooks/queries/useGyms";
@@ -18,7 +22,9 @@ export type TabType =
   | "services"
   | "rules"
   | "location"
-  | "closures";
+  | "closures"
+  | "facilities"
+  | "payments";
 
 export function useGymManagerSettings() {
   const { t } = useTranslation();
@@ -26,6 +32,9 @@ export function useGymManagerSettings() {
   const [activeTab, setActiveTab] = useState<TabType>("general");
   const updateSettings = useUpdateGymSettings();
   const updateGym = useUpdateGym();
+  const addFacility = useAddFacility();
+  const updateFacility = useUpdateFacility();
+  const removeFacility = useRemoveFacility();
 
   // Settings State - Initialize with proper defaults
   const [workingHoursStart, setWorkingHoursStart] = useState("06:00");
@@ -35,7 +44,7 @@ export function useGymManagerSettings() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [renewalReminderDays, setRenewalReminderDays] = useState(7);
   const [paymentMethods, setPaymentMethods] = useState<string[]>(["cash"]);
-  const [servicesOffered, setServicesOffered] = useState<string[]>(["gym"]);
+  const [servicesOffered, setServicesOffered] = useState<GymService[]>([]);
   const [allowCustomSubscriptions, setAllowCustomSubscriptions] =
     useState(false);
   const [accessControlType, setAccessControlType] =
@@ -315,22 +324,41 @@ export function useGymManagerSettings() {
     removeRule: (index: number) => {
       setRules((prev) => prev.filter((_, i) => i !== index));
     },
-    addService: (service: string) => {
-      if (service.trim() && !servicesOffered.includes(service.trim())) {
-        setServicesOffered((prev) => [...prev, service.trim()]);
+    addService: (serviceName: string) => {
+      const trimmed = serviceName.trim();
+      if (trimmed && !servicesOffered.some((s) => s.name === trimmed)) {
+        const newService: GymService = {
+          _id: Math.random().toString(36).substr(2, 9),
+          name: trimmed,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        setServicesOffered((prev) => [...prev, newService]);
       }
     },
     removeService: (index: number) => {
       setServicesOffered((prev) => prev.filter((_, i) => i !== index));
     },
-    toggleService: (service: string) => {
-      setServicesOffered((prev) =>
-        prev.includes(service)
-          ? prev.filter((s) => s !== service)
-          : [...prev, service],
-      );
+    toggleService: (serviceName: string) => {
+      setServicesOffered((prev) => {
+        const exists = prev.find(
+          (s) => s.name === serviceName || s._id === serviceName,
+        );
+        if (exists) {
+          return prev.filter(
+            (s) => s.name !== serviceName && s._id !== serviceName,
+          );
+        } else {
+          const newService: GymService = {
+            _id: Math.random().toString(36).substr(2, 9),
+            name: serviceName,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+          return [...prev, newService];
+        }
+      });
     },
-    // Form State - Location
     address,
     setAddress,
     city,
@@ -345,5 +373,69 @@ export function useGymManagerSettings() {
     setEmail,
     website,
     setWebsite,
+    addPaymentMethod: (method: string) => {
+      if (method.trim() && !paymentMethods.includes(method.trim())) {
+        setPaymentMethods((prev) => [...prev, method.trim()]);
+      }
+    },
+    removePaymentMethod: (index: number) => {
+      setPaymentMethods((prev) => prev.filter((_, i) => i !== index));
+    },
+    togglePaymentMethod: (method: string) => {
+      setPaymentMethods((prev) =>
+        prev.includes(method)
+          ? prev.filter((m) => m !== method)
+          : [...prev, method],
+      );
+    },
+    // Facility management
+    facilities: currentGym?.facilities || [],
+    handleAddFacility: async (data: any) => {
+      if (!currentGym) return;
+      const result = await addFacility.mutateAsync({
+        gymId: currentGym._id,
+        data,
+      });
+      if (result) {
+        setGym(result);
+        toast.success(
+          t("settings.gym.facilities.addSuccess", "Facility added"),
+        );
+      }
+      return result;
+    },
+    handleUpdateFacility: async (facilityId: string, data: any) => {
+      if (!currentGym) return;
+      const result = await updateFacility.mutateAsync({
+        gymId: currentGym._id,
+        facilityId,
+        data,
+      });
+      if (result) {
+        setGym(result);
+        toast.success(
+          t("settings.gym.facilities.updateSuccess", "Facility updated"),
+        );
+      }
+      return result;
+    },
+    handleRemoveFacility: async (facilityId: string) => {
+      if (!currentGym) return;
+      const result = await removeFacility.mutateAsync({
+        gymId: currentGym._id,
+        facilityId,
+      });
+      if (result) {
+        setGym(result);
+        toast.success(
+          t("settings.gym.facilities.removeSuccess", "Facility removed"),
+        );
+      }
+      return result;
+    },
+    isFacilityLoading:
+      addFacility.isPending ||
+      updateFacility.isPending ||
+      removeFacility.isPending,
   };
 }

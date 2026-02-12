@@ -214,14 +214,22 @@ export class CoachService {
       // Get member info for notifications
       const member = await this.userModel.findById(memberId);
 
-      // Send in-app notification to coach
+      // Send in-app and external notification to coach
       await this.notificationsService.notifyUser(coach, {
-        title: 'New Coaching Request',
-        message: `${member?.profile?.fullName || member?.profile?.username} has requested your coaching services`,
+        key: 'coach.request',
+        vars: {
+          memberName:
+            member?.profile?.fullName || member?.profile?.username || 'User',
+          message: data.message || '',
+        },
         type: 'alert',
         priority: 'high',
         relatedId: request?._id?.toString(),
         skipExternal: false,
+        action: {
+          type: 'link',
+          payload: '/coach/clients',
+        },
       });
 
       // Convert to plain object to access timestamps
@@ -734,7 +742,7 @@ export class CoachService {
    * Respond to a coaching request (accept or decline)
    */
   async respondToRequest(
-    coachId: string,
+    userId: string,
     requestId: string,
     data: RespondToRequestDto,
   ): Promise<ApiResponse<CoachRequestType>> {
@@ -749,8 +757,14 @@ export class CoachService {
         };
       }
 
-      // Verify this request is for this coach
-      if (request.coachId.toString() !== coachId) {
+      // Determine who should be responding
+      const isMemberInitiated = request.initiatedBy === 'member';
+      const expectedResponderId = isMemberInitiated
+        ? request.coachId.toString()
+        : request.memberId.toString();
+
+      // Verify the current user is the expected responder
+      if (expectedResponderId !== userId) {
         return {
           success: false,
           errorCode: ErrorCode.UNAUTHORIZED,
@@ -764,37 +778,60 @@ export class CoachService {
       request.respondedAt = new Date();
       await request.save();
 
-      // If accepted, add member to coach's coachedMembers array
+      const member = await this.userModel.findById(request.memberId);
+      const coach = await this.userModel.findById(request.coachId);
+
+      // If accepted, establish the coaching relationship
       if (data.action === 'accept') {
-        await this.userModel.findByIdAndUpdate(coachId, {
-          $addToSet: { 'coachingInfo.coachedMembers': request.memberId },
+        const coachIdStr = request.coachId.toString();
+        const memberIdStr = request.memberId.toString();
+
+        await this.userModel.findByIdAndUpdate(coachIdStr, {
+          $addToSet: { 'coachingInfo.coachedMembers': memberIdStr },
         });
 
-        // Update member's coachId
-        await this.userModel.findByIdAndUpdate(request.memberId, {
-          'coachingInfo.coachId': new Types.ObjectId(coachId),
+        await this.userModel.findByIdAndUpdate(memberIdStr, {
+          'coachingInfo.coachId': new Types.ObjectId(coachIdStr),
         });
       }
 
-      // Notify member
-      const member = await this.userModel.findById(request.memberId);
-      const coach = await this.userModel.findById(coachId);
-
-      if (member) {
-        await this.notificationsService.notifyUser(member, {
-          title:
-            data.action === 'accept'
-              ? 'Coaching Request Accepted'
-              : 'Coaching Request Declined',
-          message:
-            data.action === 'accept'
-              ? `${coach?.profile?.fullName || coach?.profile?.username} accepted your coaching request!`
-              : `${coach?.profile?.fullName || coach?.profile?.username} declined your coaching request`,
-          type: 'alert',
-          priority: 'high',
-          relatedId: request?._id?.toString(),
-          skipExternal: false,
-        });
+      // Notify the other party
+      if (isMemberInitiated) {
+        // Coach responded, notify member
+        if (member) {
+          await this.notificationsService.notifyUser(member, {
+            key: `coach.respond_${data.action}`,
+            vars: {
+              coachName:
+                coach?.profile?.fullName || coach?.profile?.username || 'Coach',
+            },
+            type: 'alert',
+            priority: 'high',
+            relatedId: request?._id?.toString(),
+            skipExternal: false,
+          });
+        }
+      } else {
+        // Member responded, notify coach
+        if (coach) {
+          await this.notificationsService.notifyUser(coach, {
+            key: `coach.offer_respond_${data.action}`,
+            vars: {
+              memberName:
+                member?.profile?.fullName ||
+                member?.profile?.username ||
+                'Member',
+            },
+            type: 'alert',
+            priority: 'high',
+            relatedId: request?._id?.toString(),
+            skipExternal: false,
+            action: {
+              type: 'link',
+              payload: '/coach/clients',
+            },
+          });
+        }
       }
 
       const requestObj = request.toObject();
@@ -1059,12 +1096,26 @@ export class CoachService {
 
       // Send in-app notification to member
       await this.notificationsService.notifyUser(member, {
-        title: 'New Coaching Offer',
-        message: `${coach?.profile?.fullName || coach?.profile?.username} wants to be your coach!`,
+        key: 'coach.offer',
+        vars: {
+          coachName:
+            coach?.profile?.fullName || coach?.profile?.username || 'Coach',
+        },
         type: 'alert',
         priority: 'high',
         relatedId: request?._id?.toString(),
         skipExternal: false,
+        action: {
+          type: 'modal',
+          payload: 'coaching_offer',
+          data: {
+            requestId: request?._id?.toString(),
+            coachName: coach?.profile?.fullName || coach?.profile?.username,
+            coachId: coachId,
+            coachImageUrl: coach?.profile?.profileImageUrl,
+            message: data.message,
+          },
+        },
       });
 
       const requestObj = request.toObject();

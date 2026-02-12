@@ -587,4 +587,62 @@ export class GymService {
     }
     return updatedGym;
   }
+
+  async addFacility(gymId: string, facility: any) {
+    const facilityWithId = {
+      ...facility,
+      _id: new Types.ObjectId().toString(),
+    };
+    console.log(`Adding facility to gym ${gymId}:`, facilityWithId);
+    const updatedGym = await this.gymModel
+      .findByIdAndUpdate(
+        gymId,
+        { $push: { facilities: { ...facilityWithId, createdAt: new Date() } } },
+        { new: true },
+      )
+      .exec();
+    console.log(
+      `Facility added. New facilities count: ${updatedGym?.facilities?.length}`,
+    );
+    if (!updatedGym) {
+      throw new NotFoundException(`Gym with ID ${gymId} not found`);
+    }
+    return updatedGym;
+  }
+
+  async updateFacility(gymId: string, facilityId: string, facility: any) {
+    const updatedGym = await this.gymModel
+      .findOneAndUpdate(
+        { _id: gymId, 'facilities._id': facilityId },
+        { $set: { 'facilities.$': { ...facility, _id: facilityId } } },
+        { new: true },
+      )
+      .exec();
+    if (!updatedGym) {
+      throw new NotFoundException(`Facility or Gym not found`);
+    }
+    return updatedGym;
+  }
+
+  async removeFacility(gymId: string, facilityId: string) {
+    const updatedGym = await this.gymModel
+      .findByIdAndUpdate(
+        gymId,
+        { $pull: { facilities: { _id: facilityId } } },
+        { new: true },
+      )
+      .exec();
+    if (!updatedGym) {
+      throw new NotFoundException(`Gym with ID ${gymId} not found`);
+    }
+    return updatedGym;
+  }
+
+  async validateFacility(gymId: string, facilityId: string) {
+    const gym = await this.gymModel.findOne({
+      _id: gymId,
+      'facilities._id': facilityId,
+    });
+    return !!gym;
+  }
 }

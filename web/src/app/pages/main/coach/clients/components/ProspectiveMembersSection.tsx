@@ -1,3 +1,4 @@
+import type { ProspectiveMember } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../../components/ui/Loading";
@@ -5,16 +6,25 @@ import NoData from "../../../../../../components/ui/NoData";
 import { useProspectiveMembers } from "../hooks/useProspectiveMembers";
 import { ProspectiveMemberCard } from "./ProspectiveMemberCard";
 
-export function ProspectiveMembersSection() {
+interface ProspectiveMembersSectionProps {
+  members?: ProspectiveMember[];
+}
+
+export function ProspectiveMembersSection({
+  members: membersProp,
+}: ProspectiveMembersSectionProps) {
   const { t } = useTranslation();
-  const [filters, setFilters] = useState<{
+  const [filters] = useState<{
     city?: string;
     state?: string;
   }>({});
 
-  const { data: members = [], isLoading } = useProspectiveMembers(filters);
+  const { data: fetchedMembers = [], isLoading } =
+    useProspectiveMembers(filters);
 
-  if (isLoading) {
+  const members = membersProp || fetchedMembers;
+
+  if (isLoading && !membersProp) {
     return <Loading />;
   }
 

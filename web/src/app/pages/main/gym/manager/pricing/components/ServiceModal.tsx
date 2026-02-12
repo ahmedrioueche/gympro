@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import InputField from "../../../../../../../components/ui/InputField";
+import TextArea from "../../../../../../../components/ui/TextArea";
 import { useModalStore } from "../../../../../../../store/modal";
 import { useGymServices } from "../hooks/useGymServices";
 
@@ -13,15 +14,18 @@ export default function ServiceModal() {
   const { saveService, isUpdating } = useGymServices();
 
   const [serviceName, setServiceName] = useState("");
+  const [description, setDescription] = useState("");
 
   const isOpen = currentModal === "service";
   const isEdit = mode === "edit";
 
   useEffect(() => {
     if (isOpen && isEdit && editingService) {
-      setServiceName(editingService);
+      setServiceName(editingService.name);
+      setDescription(editingService.description || "");
     } else {
       setServiceName("");
+      setDescription("");
     }
   }, [isOpen, isEdit, editingService]);
 
@@ -30,7 +34,7 @@ export default function ServiceModal() {
     if (!serviceName.trim()) return;
 
     const success = await saveService(
-      serviceName,
+      { name: serviceName, description },
       isEdit ? editingService : undefined,
     );
     if (success) {
@@ -68,6 +72,16 @@ export default function ServiceModal() {
           )}
           required
           autoFocus
+        />
+        <TextArea
+          label={t("services.form.description", "Description")}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder={t(
+            "services.form.descriptionPlaceholder",
+            "Describe what this service covers...",
+          )}
+          className="min-h-[100px] resize-none text-sm"
         />
       </form>
     </BaseModal>

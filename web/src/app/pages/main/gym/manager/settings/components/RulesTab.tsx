@@ -28,7 +28,7 @@ export default function RulesTab({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* Header */}
       <div className="flex items-start gap-4">
         <div className="p-3 rounded-xl bg-primary/10">

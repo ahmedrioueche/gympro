@@ -18,15 +18,33 @@ export default function NotificationsTab({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-1">
-          {t("settings.gym.notifications.title", "Notification Settings")}
-        </h3>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+      {/* Header */}
+      <div className="flex items-start gap-4">
+        <div className="p-3 rounded-xl bg-primary/10">
+          <Bell className="w-6 h-6 text-primary" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-text-primary">
+            {t("settings.gym.notifications.title", "Notification Settings")}
+          </h3>
+          <p className="text-sm text-text-secondary mt-1">
+            {t(
+              "settings.gym.notifications.description",
+              "Manage how and when your members receive automated alerts.",
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("settings.gym.notifications.status", "System Notifications")}
+        </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.gym.notifications.enabledDesc",
-            "Enable or disable gym-wide notifications"
+            "Enable or disable gym-wide notifications",
           )}
         </p>
 
@@ -54,7 +72,7 @@ export default function NotificationsTab({
             type="number"
             label={t(
               "settings.gym.notifications.renewalReminder",
-              "Renewal Reminder"
+              "Renewal Reminder",
             )}
             value={renewalReminderDays}
             onChange={(e) =>
@@ -64,13 +82,13 @@ export default function NotificationsTab({
             max={30}
             placeholder={t(
               "settings.gym.notifications.reminderDaysPlaceholder",
-              "e.g., 7"
+              "e.g., 7",
             )}
           />
           <p className="text-xs text-text-secondary mt-2">
             {t(
               "settings.gym.notifications.renewalReminderDesc",
-              "Days before subscription expiry to notify members"
+              "Days before subscription expiry to notify members",
             )}
           </p>
         </div>
@@ -85,7 +103,7 @@ export default function NotificationsTab({
           <p className="text-xs text-text-secondary mt-1">
             {t(
               "settings.gym.notifications.noteDesc",
-              "Members will receive automatic notifications before their subscriptions expire."
+              "Members will receive automatic notifications before their subscriptions expire.",
             )}
           </p>
         </div>

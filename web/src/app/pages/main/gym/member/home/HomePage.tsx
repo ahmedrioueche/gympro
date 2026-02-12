@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import NotFound from "../../../../../../components/ui/NotFound";
+import { useGymSubscriptionTypes } from "../../../../../../hooks/useGymSubscriptionTypes";
 import { useGymStore } from "../../../../../../store/gym";
 import GymHeroSection from "../../../../../components/gym/GymHeroSection";
 import MarketingCarousel from "../../../../../components/gym/MarketingCarousel";
 import OperatingHours from "../../../../../components/gym/OperatingHours";
-import { useSubscriptionTypes } from "../../manager/pricing/hooks/useSubscriptionTypes";
 import AnnouncementsCard from "./components/AnnouncementsCard";
 import { MemberPricingCard } from "./components/MemberPricingCard";
 import { useGymAnnouncements } from "./hooks/useGymAnnouncements";
@@ -17,7 +17,8 @@ function HomePage() {
   const { data: announcements = [], isLoading: announcementsLoading } =
     useGymAnnouncements(currentGym?._id);
 
-  const { data: plans = [], isLoading: plansLoading } = useSubscriptionTypes();
+  const { data: plans = [], isLoading: plansLoading } =
+    useGymSubscriptionTypes();
 
   if (!currentGym) {
     return <NotFound />;

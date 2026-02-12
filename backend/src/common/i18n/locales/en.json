@@ -51,6 +51,14 @@
       "closure_deleted_subject": "{{gymName}}: Gym Reopening Update",
       "closure_deleted_body": "<p>Hello {{name}},</p><p>Great news! The previously scheduled closure for <strong>{{gymName}}</strong> has been cancelled or the gym has reopened early.</p><p>The gym is now following its regular working hours.</p><p>See you at the gym!</p><p>Best regards,<br>The {{gymName}} Team</p>"
     },
+    "coach": {
+      "request_subject": "New Coaching Request",
+      "request_body": "<p>Hello {{name}},</p><p>You have received a new coaching request from <strong>{{memberName}}</strong>.</p><p><strong>Message:</strong></p><p><i>{{message}}</i></p><p>You can review and respond to this request from your Coach Dashboard.</p><p>Best regards,<br>The GymPro Team</p>",
+      "respond_accept_subject": "Coaching Request Accepted!",
+      "respond_accept_body": "<p>Hello {{name}},</p><p>Great news! <strong>{{coachName}}</strong> has accepted your coaching request.</p><p>You can now start working together. Check your dashboard for more details.</p><p>Best regards,<br>The GymPro Team</p>",
+      "respond_decline_subject": "Update on Your Coaching Request",
+      "respond_decline_body": "<p>Hello {{name}},</p><p>We're writing to inform you that <strong>{{coachName}}</strong> has declined your coaching request at this time.</p><p>Don't worry, there are many other great coaches available on GymPro. Feel free to explore and find another match!</p><p>Best regards,<br>The GymPro Team</p>"
+    },
     "admin": {
       "user_signup_subject": "New User Signup: {{name}}",
       "user_signup_body": "<p>Hello Admin,</p><p>A new user has just signed up on the platform.</p><ul><li><strong>Name:</strong> {{name}}</li></ul><p>Please review their profile if necessary.</p><p>Best regards,<br>The GymPro Team</p>",
@@ -142,6 +150,19 @@
       "assigned_body": "You have been assigned to {{className}} on {{date}} at {{time}}",
       "updated_title": "Class Updated",
       "updated_body": "The class {{className}} on {{date}} at {{time}} has been updated"
+    },
+    "coach": {
+      "request_title": "New Coaching Request",
+      "request_body": "{{memberName}} has requested your coaching services.",
+      "respond_accept_title": "Request Accepted",
+      "respond_accept_body": "{{coachName}} accepted your coaching request!",
+      "respond_decline_title": "Request Declined",
+      "respond_decline_body": "{{coachName}} declined your coaching request.",
+      "offer_title": "New Coaching Offer",
+      "offer_respond_accept_title": "Offer Accepted",
+      "offer_respond_accept_body": "{{memberName}} accepted your coaching offer!",
+      "offer_respond_decline_title": "Offer Declined",
+      "offer_respond_decline_body": "{{memberName}} declined your coaching offer."
     }
   }
 }

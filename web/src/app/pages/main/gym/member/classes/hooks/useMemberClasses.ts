@@ -49,11 +49,40 @@ export function useMemberClasses() {
     }
   };
 
-  const classes = classesResponse?.data || [];
-  const hasClasses = classes.length > 0;
+  const now = new Date();
+  const groupedClasses = (classesResponse?.data || []).reduce(
+    (acc: any[], curr: any) => {
+      if (!curr.seriesId) {
+        acc.push(curr);
+      } else {
+        const existingIndex = acc.findIndex(
+          (c) => c.seriesId === curr.seriesId,
+        );
+        if (existingIndex === -1) {
+          acc.push(curr);
+        } else {
+          const existing = acc[existingIndex];
+          const existingDate = new Date(existing.scheduledAt);
+          const currDate = new Date(curr.scheduledAt);
+
+          // If current is upcoming and (existing is past OR current is sooner than existing)
+          if (currDate >= now) {
+            if (existingDate < now || currDate < existingDate) {
+              acc[existingIndex] = curr;
+            }
+          }
+        }
+      }
+      return acc;
+    },
+    [],
+  );
+
+  const hasClasses = groupedClasses.length > 0;
 
   return {
-    classes,
+    classes: groupedClasses,
+    allClasses: classesResponse?.data || [],
     isLoading,
     isProcessing: bookMutation.isPending || cancelMutation.isPending,
     hasClasses,

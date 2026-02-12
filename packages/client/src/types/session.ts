@@ -18,15 +18,23 @@ export interface Session {
   coachId: string;
   memberId: string;
   startTime: Date | string; // ISO string in JSON
+  duration: number; // minutes
   endTime: Date | string;
   type: SessionType;
   status: SessionStatus;
   notes?: string;
   meetingLink?: string;
   location?: string;
+  facilityId?: string;
   price?: number;
   currency?: string;
   gymId?: string;
+  seriesId?: string;
+  recurrence?: {
+    type: "none" | "daily" | "weekly" | "biweekly" | "monthly" | "custom";
+    endDate?: string | Date;
+    days?: number[];
+  };
   createdAt: Date | string;
   updatedAt: Date | string;
 
@@ -48,20 +56,28 @@ export interface Session {
 export interface CreateSessionDto {
   memberId: string;
   startTime: string; // ISO String
-  endTime: string; // ISO String
+  duration: number; // minutes
   type: SessionType;
   notes?: string;
   meetingLink?: string;
   location?: string;
+  facilityId?: string;
+  gymId?: string;
+  recurrence?: {
+    type: "none" | "daily" | "weekly" | "biweekly" | "monthly" | "custom";
+    endDate?: string | Date;
+    days?: number[];
+  };
 }
 
 export interface UpdateSessionDto {
   startTime?: string;
-  endTime?: string;
+  duration?: number;
   status?: SessionStatus;
   notes?: string;
   meetingLink?: string;
   location?: string;
+  facilityId?: string;
 }
 
 export interface SessionQueryDto {

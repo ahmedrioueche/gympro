@@ -108,6 +108,28 @@ export const PricingCard = ({ plan, onEdit, onDelete }: PricingCardProps) => {
         ))}
       </div>
 
+      {/* Allowed Intervals */}
+      {plan.allowedIntervals &&
+        plan.allowedIntervals.filter((i) => i > 1).length > 0 && (
+          <div className="mb-6">
+            <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest mb-2 block">
+              {t("pricing.card.intervals", "Available Multiples")}
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {plan.allowedIntervals
+                .filter((i) => i > 1)
+                .map((i) => (
+                  <span
+                    key={i}
+                    className="px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold border border-primary/20"
+                  >
+                    {i}x
+                  </span>
+                ))}
+            </div>
+          </div>
+        )}
+
       {/* Actions */}
       <div className="flex gap-3 pt-4 border-t border-white/5 mt-auto">
         <button

@@ -23,7 +23,7 @@ export function PendingRequestsSection() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {requests.map((request) => (
         <ClientRequestCard key={request._id} request={request} />
       ))}

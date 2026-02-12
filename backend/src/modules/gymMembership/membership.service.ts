@@ -220,19 +220,18 @@ export class MembershipService {
     // Create subscription info if provided
     let subscriptionInfo: SubscriptionInfo | undefined = undefined;
     if (dto.subscriptionTypeId && dto.subscriptionStartDate) {
-      // Calculate end date based on subscription type
-      // For now, we'll set it to 1 month from start date as default
-      // This should be enhanced to fetch actual subscription type duration
-      const startDate = new Date(dto.subscriptionStartDate);
-      const endDate = new Date(startDate);
-      endDate.setMonth(endDate.getMonth() + 1);
+      const { endDate } = await this.calculateSubscriptionEndDate(
+        dto.subscriptionTypeId,
+        dto.subscriptionStartDate!,
+        dto.subscriptionDuration,
+      );
 
       subscriptionInfo = {
         typeId: dto.subscriptionTypeId,
         startDate: dto.subscriptionStartDate,
-        endDate: endDate.toISOString().split('T')[0],
+        endDate,
         status: 'active' as const,
-        paymentMethod: dto.paymentMethod as any, // Type is validated in DTO
+        paymentMethod: dto.paymentMethod as any,
       };
     }
 
@@ -284,7 +283,11 @@ export class MembershipService {
           errorCode: ErrorCode.INVALID_USER_DATA,
         });
       }
-      const pricePaid = await this.getSubscriptionPrice(dto.subscriptionTypeId);
+      const { price: pricePaid } = await this.calculateSubscriptionEndDate(
+        dto.subscriptionTypeId,
+        dto.subscriptionStartDate!,
+        dto.subscriptionDuration,
+      );
 
       const history = new this.historyModel({
         subscription: subscriptionInfo,
@@ -776,6 +779,7 @@ export class MembershipService {
     dto: {
       subscriptionTypeId: string;
       startDate: string;
+      subscriptionDuration?: string;
       paymentMethod?: string;
       notes?: string;
     },
@@ -821,15 +825,17 @@ export class MembershipService {
       // We'll save user later in this function
     }
 
-    // Calculate end date (default 1 month for now, should be based on type)
-    const start = new Date(dto.startDate);
-    const end = new Date(start);
-    end.setMonth(end.getMonth() + 1);
+    const { endDate, price: pricePaid } =
+      await this.calculateSubscriptionEndDate(
+        dto.subscriptionTypeId,
+        dto.startDate,
+        dto.subscriptionDuration,
+      );
 
     const subscriptionInfo: SubscriptionInfo = {
       typeId: dto.subscriptionTypeId,
       startDate: dto.startDate,
-      endDate: end.toISOString().split('T')[0],
+      endDate,
       status: 'active',
       paymentMethod: (dto.paymentMethod as any) || 'cash',
     };
@@ -854,7 +860,7 @@ export class MembershipService {
       .lean()
       .exec();
 
-    const pricePaid = await this.getSubscriptionPrice(dto.subscriptionTypeId);
+    // Price already calculated above
 
     const history = new this.historyModel({
       subscription: subscriptionInfo,
@@ -1222,7 +1228,68 @@ export class MembershipService {
     const tier = type.pricingTiers.find(
       (t) => t.duration === duration && t.durationUnit === unit,
     );
-    return tier?.price || 0;
+
+    if (tier) return tier.price;
+
+    // If no exact match, try to find a base tier (duration 1) and calculate proportional price
+    const baseTier = type.pricingTiers.find(
+      (t) => t.duration === 1 && t.durationUnit === unit,
+    );
+
+    if (baseTier) {
+      return baseTier.price * duration;
+    }
+
+    return 0;
+  }
+
+  /**
+   * Helper to calculate subscription end date and price
+   */
+  private async calculateSubscriptionEndDate(
+    typeId: string,
+    startDate: string | Date,
+    durationStr?: string,
+  ): Promise<{ endDate: string; price: number }> {
+    let duration = 1;
+    let unit: 'day' | 'week' | 'month' | 'year' = 'month';
+
+    if (durationStr) {
+      const parts = durationStr.split('_');
+      if (parts.length === 2) {
+        duration = parseInt(parts[0]) || 1;
+        const unitPart = parts[1].toLowerCase();
+        if (unitPart.includes('session') || unitPart.includes('day')) {
+          unit = 'day';
+        } else if (unitPart.includes('week')) {
+          unit = 'week';
+        } else if (unitPart.includes('month')) {
+          unit = 'month';
+        } else if (unitPart.includes('year')) {
+          unit = 'year';
+        }
+      }
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(start);
+
+    if (unit === 'day') {
+      end.setDate(end.getDate() + duration);
+    } else if (unit === 'week') {
+      end.setDate(end.getDate() + duration * 7);
+    } else if (unit === 'month') {
+      end.setDate(end.getDate() + duration * 30);
+    } else if (unit === 'year') {
+      end.setFullYear(end.getFullYear() + duration);
+    }
+
+    const price = await this.getSubscriptionPrice(typeId, duration, unit);
+
+    return {
+      endDate: end.toISOString().split('T')[0],
+      price,
+    };
   }
 
   // ==================== STAFF METHODS ====================

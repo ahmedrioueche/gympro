@@ -6,6 +6,7 @@ export interface CreateSubscriptionTypeDto {
   pricingTiers: PricingTier[];
   isAvailable?: boolean;
   services?: string[];
+  allowedIntervals?: number[];
 }
 
 export interface UpdateSubscriptionTypeDto {
@@ -14,4 +15,5 @@ export interface UpdateSubscriptionTypeDto {
   pricingTiers?: PricingTier[];
   isAvailable?: boolean;
   services?: string[];
+  allowedIntervals?: number[];
 }

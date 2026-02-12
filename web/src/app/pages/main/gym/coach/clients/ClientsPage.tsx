@@ -1,25 +1,56 @@
 import { Users } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Tab from "../../../../../../components/ui/Tab";
 import PageHeader from "../../../../../components/PageHeader";
+import { useActiveClients } from "../../../coach/clients/hooks/useActiveClients";
+import { usePendingRequests } from "../../../coach/clients/hooks/usePendingRequests";
 import { GymActiveClientsSection } from "./components/GymActiveClientsSection";
 import { GymMembersSection } from "./components/GymMembersSection";
 import { ReceivedRequestsSection } from "./components/ReceivedRequestsSection";
 import { SentRequestsSection } from "./components/SentRequestsSection";
+import { useGymMembers } from "./hooks/useGymMembers";
+import { useSentRequests } from "./hooks/useSentRequests";
 
 export default function ClientsPage() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<number>(0);
 
+  // Fetch data for counts
+  const { data: activeClients = [] } = useActiveClients();
+  const { data: receivedRequests = [] } = usePendingRequests();
+  const { data: sentRequests = [] } = useSentRequests();
+  const { data: gymMembers = [] } = useGymMembers();
+
+  // Filtration logic: exclude those who have a pending or active relationship
+  const excludedUserIds = useMemo(() => {
+    const activeIds = activeClients.map((c) => c.userId);
+    const receivedIds = receivedRequests.map((r) => r.memberId);
+    const sentIds = sentRequests.map((r) => r.memberId);
+    return new Set([...activeIds, ...receivedIds, ...sentIds]);
+  }, [activeClients, receivedRequests, sentRequests]);
+
+  const filteredGymMembers = useMemo(() => {
+    return gymMembers.filter((m) => !excludedUserIds.has(m.userId));
+  }, [gymMembers, excludedUserIds]);
+
   const tabs = [
-    { id: 0, label: t("coach.clients.tabs.active") },
-    { id: 1, label: t("coach.clients.tabs.gymMembers") },
+    {
+      id: 0,
+      label: `${t("coach.clients.tabs.active")} (${activeClients.length})`,
+    },
+    {
+      id: 1,
+      label: `${t("coach.clients.tabs.gymMembers")} (${filteredGymMembers.length})`,
+    },
     {
       id: 2,
-      label: t("coach.clients.tabs.receivedRequests"),
+      label: `${t("coach.clients.tabs.receivedRequests")} (${receivedRequests.length})`,
     },
-    { id: 3, label: t("coach.clients.tabs.sentRequests") },
+    {
+      id: 3,
+      label: `${t("coach.clients.tabs.sentRequests")} (${sentRequests.length})`,
+    },
   ];
 
   return (
@@ -47,7 +78,7 @@ export default function ClientsPage() {
 
       <div className="mt-6">
         {activeTab === 0 && <GymActiveClientsSection />}
-        {activeTab === 1 && <GymMembersSection />}
+        {activeTab === 1 && <GymMembersSection members={filteredGymMembers} />}
         {activeTab === 2 && <ReceivedRequestsSection />}
         {activeTab === 3 && <SentRequestsSection />}
       </div>

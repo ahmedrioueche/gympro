@@ -171,7 +171,7 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
                           key={idx}
                           className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm"
                         >
-                          {service}
+                          {service.name}
                         </span>
                       ))}
                     </div>

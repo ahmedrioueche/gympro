@@ -33,19 +33,35 @@ export const useSessionDetails = () => {
   }, [session]);
 
   const handleStatusChange = async (status: SessionStatus) => {
-    // Optimistic update locally
-    setCurrentStatus(status);
+    if (!session) return;
+    const performUpdate = async (updateSeries = false) => {
+      setCurrentStatus(status);
+      try {
+        const response = await updateSession.mutateAsync({
+          id: session._id,
+          data: { status },
+          updateSeries,
+        });
+        const message = getMessage({ success: !!response, data: response }, t);
+        showStatusToast(message, toast);
+      } catch (error) {
+        setCurrentStatus(session.status);
+      }
+    };
 
-    try {
-      const response = await updateSession.mutateAsync({
-        id: session!._id,
-        data: { status },
+    if (session.seriesId && status === SessionStatus.CANCELLED) {
+      openModal("confirm", {
+        title: t("schedule.cancelSession"),
+        text: t("schedule.cancelSeriesConfirm"),
+        confirmText: t("schedule.cancelThisOnly"),
+        onConfirm: () => performUpdate(false),
+        secondaryAction: {
+          label: t("schedule.cancelEntireSeries"),
+          onClick: () => performUpdate(true),
+        },
       });
-      const message = getMessage({ success: !!response, data: response }, t);
-      showStatusToast(message, toast);
-    } catch (error) {
-      // Revert on error
-      setCurrentStatus(session?.status);
+    } else {
+      performUpdate(false);
     }
   };
 
@@ -61,16 +77,36 @@ export const useSessionDetails = () => {
 
   const handleDelete = () => {
     if (!session) return;
-    openModal("confirm", {
-      title: t("schedule.deleteSession"),
-      text: t("schedule.deleteSessionConfirm"),
-      confirmText: t("common.delete"),
-      onConfirm: async () => {
-        await deleteSession.mutateAsync(session._id);
-        closeModal();
-        toast.success(t("schedule.sessionDeleted"));
-      },
-    });
+
+    const performDelete = async (deleteSeries = false) => {
+      await deleteSession.mutateAsync({ id: session._id, deleteSeries });
+      closeModal();
+      toast.success(
+        deleteSeries
+          ? t("schedule.seriesDeleted")
+          : t("schedule.sessionDeleted"),
+      );
+    };
+
+    if (session.seriesId) {
+      openModal("confirm", {
+        title: t("schedule.deleteSession"),
+        text: t("schedule.deleteSeriesConfirm"),
+        confirmText: t("schedule.deleteThisOnly"),
+        onConfirm: () => performDelete(false),
+        secondaryAction: {
+          label: t("schedule.deleteEntireSeries"),
+          onClick: () => performDelete(true),
+        },
+      });
+    } else {
+      openModal("confirm", {
+        title: t("schedule.deleteSession"),
+        text: t("schedule.deleteSessionConfirm"),
+        confirmText: t("common.delete"),
+        onConfirm: () => performDelete(false),
+      });
+    }
   };
 
   return {

@@ -1,8 +1,10 @@
 import {
   Bell,
   BookOpen,
+  Building2,
   CalendarDays,
   Clock,
+  CreditCard,
   MapPin,
   Save,
   Settings,
@@ -10,9 +12,11 @@ import {
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../../components/PageHeader";
 import ClosuresTab from "./components/ClosuresTab";
+import FacilitiesTab from "./components/FacilitiesTab";
 import GeneralTab from "./components/GeneralTab";
 import LocationTab from "./components/LocationTab";
 import NotificationsTab from "./components/NotificationsTab";
+import PaymentsTab from "./components/PaymentsTab";
 import RulesTab from "./components/RulesTab";
 import {
   useGymManagerSettings,
@@ -71,6 +75,15 @@ export default function SettingsPage() {
     handleUpdateClosures,
     workingDays,
     setWorkingDays,
+    addPaymentMethod,
+    removePaymentMethod,
+    togglePaymentMethod,
+    // Facilities
+    facilities,
+    handleAddFacility,
+    handleUpdateFacility,
+    handleRemoveFacility,
+    isFacilityLoading,
   } = useGymManagerSettings();
 
   const tabs = [
@@ -85,10 +98,16 @@ export default function SettingsPage() {
       icon: MapPin,
     },
     {
-      id: "notifications",
-      label: t("settings.gym.tabs.notifications", "Notifications"),
-      icon: Bell,
+      id: "facilities",
+      label: t("settings.gym.tabs.facilities", "Facilities"),
+      icon: Building2,
     },
+    {
+      id: "payments",
+      label: t("settings.gym.tabs.payments", "Payments"),
+      icon: CreditCard,
+    },
+
     {
       id: "rules",
       label: t("settings.gym.tabs.rules", "Rules"),
@@ -98,6 +117,11 @@ export default function SettingsPage() {
       id: "closures",
       label: t("settings.gym.tabs.closures", "Closures"),
       icon: CalendarDays,
+    },
+    {
+      id: "notifications",
+      label: t("settings.gym.tabs.notifications", "Notifications"),
+      icon: Bell,
     },
   ];
 
@@ -202,6 +226,25 @@ export default function SettingsPage() {
               onSave={handleUpdateClosures}
               workingHoursStart={workingHoursStart}
               isSaving={isSaving}
+            />
+          )}
+
+          {activeTab === "payments" && (
+            <PaymentsTab
+              paymentMethods={paymentMethods}
+              togglePaymentMethod={togglePaymentMethod}
+              addPaymentMethod={addPaymentMethod}
+              removePaymentMethod={removePaymentMethod}
+            />
+          )}
+
+          {activeTab === "facilities" && (
+            <FacilitiesTab
+              facilities={facilities}
+              onAdd={handleAddFacility}
+              onUpdate={handleUpdateFacility}
+              onRemove={handleRemoveFacility}
+              isLoading={isFacilityLoading}
             />
           )}
         </div>

@@ -1,5 +1,5 @@
-// components/ui/Dropdown.tsx
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTheme } from "../../context/ThemeContext";
 
 interface DropdownProps {
@@ -7,7 +7,7 @@ interface DropdownProps {
   children: React.ReactNode | ((closeDropdown: () => void) => React.ReactNode);
   align?: "left" | "right";
   className?: string;
-  onOpen?: () => void; // Callback when dropdown opens
+  onOpen?: () => void;
 }
 
 export default function Dropdown({
@@ -29,6 +29,12 @@ export default function Dropdown({
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
+        // Also check portals if needed, but for simple dropdowns this is usually enough
+        // unless we want to ignore clicks inside the portal itself
+        const portal = document.getElementById("dropdown-portal-root");
+        if (portal && portal.contains(event.target as Node)) {
+          return;
+        }
         closeDropdown();
       }
     }
@@ -40,45 +46,51 @@ export default function Dropdown({
     }
   }, [isOpen]);
 
-  return (
-    <div ref={dropdownRef} className="relative">
+  const toggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newState = !isOpen;
+    setIsOpen(newState);
+    if (newState && onOpen) {
+      onOpen();
+    }
+  };
+
+  const getPortalContent = () => {
+    if (!isOpen || !dropdownRef.current) return null;
+
+    const rect = dropdownRef.current.getBoundingClientRect();
+    const top = rect.bottom + window.scrollY;
+    const left = align === "left" ? rect.left + window.scrollX : "auto";
+    const right =
+      align === "right"
+        ? window.innerWidth - (rect.right + window.scrollX)
+        : "auto";
+
+    return createPortal(
       <div
-        onClick={() => {
-          const newState = !isOpen;
-          setIsOpen(newState);
-          if (newState && onOpen) {
-            onOpen(); // Call onOpen when dropdown opens
-          }
+        id="dropdown-portal-root"
+        className={`absolute w-72 rounded-xl border border-border bg-background shadow-2xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${className}`}
+        style={{
+          top: `${top}px`,
+          left: left === "auto" ? "auto" : `${left}px`,
+          right: right === "auto" ? "auto" : `${right}px`,
         }}
-        className="cursor-pointer"
+        onClick={(e) => e.stopPropagation()}
       >
+        <div className="py-2">
+          {typeof children === "function" ? children(closeDropdown) : children}
+        </div>
+      </div>,
+      document.body,
+    );
+  };
+
+  return (
+    <div ref={dropdownRef} className="relative inline-block">
+      <div onClick={toggle} className="cursor-pointer">
         {trigger}
       </div>
-
-      {isOpen && (
-        <div
-          className={`fixed w-72 rounded-lg border border-border bg-background  shadow-xl z-50 ${
-            align === "right" ? "right-auto" : "left-auto"
-          } ${className}`}
-          style={{
-            top: `${
-              dropdownRef.current?.getBoundingClientRect().bottom ?? 0
-            }px`,
-            [align === "right" ? "right" : "left"]: `${
-              align === "right"
-                ? window.innerWidth -
-                  (dropdownRef.current?.getBoundingClientRect().right ?? 0)
-                : (dropdownRef.current?.getBoundingClientRect().left ?? 0)
-            }px`,
-          }}
-        >
-          <div className="py-2">
-            {typeof children === "function"
-              ? children(closeDropdown)
-              : children}
-          </div>
-        </div>
-      )}
+      {getPortalContent()}
     </div>
   );
 }

@@ -201,14 +201,19 @@ const GymClassModal = lazy(
   () => import("./app/pages/main/gym/manager/classes/components/GymClassModal"),
 );
 
-const ServiceModal = lazy(
-  () => import("./app/pages/main/gym/manager/pricing/components/ServiceModal"),
-);
+const ServiceModal = lazy(() => import("./app/components/modals/ServiceModal"));
 const PricingModal = lazy(
   () => import("./app/pages/main/gym/manager/pricing/components/PricingModal"),
 );
 const CreateMemberModal = lazy(
   () => import("./app/components/modals/create-member-modal/CreateMemberModal"),
+);
+const ClassDetailsModal = lazy(
+  () => import("./app/components/modals/ClassDetailsModal"),
+);
+
+const CoachingOfferModal = lazy(
+  () => import("./app/components/modals/CoachingOfferModal"),
 );
 
 function modals() {
@@ -236,6 +241,7 @@ function modals() {
       <CoachPricingModal />
       <RequestCoachAccessModal />
       <GymInvitationModal />
+      <CoachingOfferModal />
       <CreateAnnouncementModal />
       <LogSessionModal />
       <ReviewCoachRequestModal />
@@ -257,6 +263,7 @@ function modals() {
       <ServiceModal />
       <PricingModal />
       <CreateMemberModal />
+      <ClassDetailsModal />
     </Suspense>
   );
 }

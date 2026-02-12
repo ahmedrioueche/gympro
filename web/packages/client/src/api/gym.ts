@@ -219,4 +219,52 @@ export const gymApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Add a facility to a gym */
+  addFacility: async (
+    gymId: string,
+    facility: any,
+  ): Promise<ApiResponse<Gym>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<Gym>>(
+        `/gyms/${gymId}/facilities`,
+        facility,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Update a facility in a gym */
+  updateFacility: async (
+    gymId: string,
+    facilityId: string,
+    facility: any,
+  ): Promise<ApiResponse<Gym>> => {
+    try {
+      const res = await apiClient.patch<ApiResponse<Gym>>(
+        `/gyms/${gymId}/facilities/${facilityId}`,
+        facility,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Remove a facility from a gym */
+  removeFacility: async (
+    gymId: string,
+    facilityId: string,
+  ): Promise<ApiResponse<Gym>> => {
+    try {
+      const res = await apiClient.delete<ApiResponse<Gym>>(
+        `/gyms/${gymId}/facilities/${facilityId}`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };

@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
 
-interface TextAreaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   className?: string;
   disabled?: boolean;
@@ -12,14 +11,17 @@ interface TextAreaProps
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     { label, className = "", error, disabled = false, width, ...props },
-    ref
+    ref,
   ) => {
     const baseClasses =
-      "w-full px-4 py-3 rounded-xl bg-surface text-text-primary placeholder-text-secondary " +
-      "border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all";
+      "block w-full px-4 py-3 border rounded-xl bg-surface text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:border-primary/50";
 
-    const disabledClasses = disabled ? "opacity-50 cursor-not-allowed" : "";
-    const errorClasses = error ? "border-red-500 focus:ring-red-500" : "";
+    const disabledClasses = disabled
+      ? "opacity-50 cursor-not-allowed hover:border-border"
+      : "";
+    const errorClasses = error
+      ? "border-danger focus:ring-danger hover:border-danger/70"
+      : "border-border";
 
     const textareaClasses = `${baseClasses} ${disabledClasses} ${errorClasses} ${className}`;
 
@@ -41,7 +43,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         {error && <p className="text-red-500 text-sm">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 TextArea.displayName = "TextArea";

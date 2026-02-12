@@ -5,6 +5,7 @@ import type {
   AlertDetailsModalProps,
   AssignProgramModalProps,
   CancelSubscriptionModalProps,
+  ClassDetailsModalProps,
   ClientProfileModalProps,
   CoachPricingModalProps,
   CoachProfileModalProps,
@@ -91,6 +92,8 @@ type ModalType =
   | "service"
   | "pricing"
   | "create_member"
+  | "class_details"
+  | "coaching_offer"
   | null;
 
 interface ModalState {
@@ -137,6 +140,8 @@ interface ModalState {
   serviceProps?: ServiceModalProps;
   pricingProps?: PricingModalProps;
   createMemberProps?: CreateMemberModalProps;
+  classDetailsProps?: ClassDetailsModalProps;
+  coachingOfferProps?: import("../types/modals").CoachingOfferModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -400,6 +405,18 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "create_member",
           createMemberProps: props,
+        };
+      }
+      if (modal === "class_details") {
+        return {
+          currentModal: "class_details",
+          classDetailsProps: props,
+        };
+      }
+      if (modal === "coaching_offer") {
+        return {
+          currentModal: "coaching_offer",
+          coachingOfferProps: props,
         };
       }
       return { currentModal: null };

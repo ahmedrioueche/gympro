@@ -46,6 +46,7 @@ export interface SubscriptionType extends AuditInfo {
   pricingTiers: PricingTier[];
   isAvailable: boolean;
   services?: string[];
+  allowedIntervals?: number[];
 }
 
 import { User } from "./user";

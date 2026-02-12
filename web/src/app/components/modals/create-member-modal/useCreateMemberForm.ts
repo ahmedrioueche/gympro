@@ -1,7 +1,6 @@
 import {
   membersApi,
   PAYMENT_METHODS,
-  type CreateMemberDto,
   type PaymentMethod,
 } from "@ahmedrioueche/gympro-client";
 import { useState } from "react";
@@ -152,7 +151,7 @@ export function useCreateMemberForm(
 
   const handleNext = () => {
     if (validateStep(step)) {
-      setStep((prev) => Math.min(prev + 1, 3));
+      setStep((prev) => Math.min(prev + 1, 2));
     } else {
       toast.error(
         t(
@@ -182,6 +181,13 @@ export function useCreateMemberForm(
           contactMethod: "email",
         };
       }
+      if (field === "subscriptionTypeId") {
+        return {
+          ...prev,
+          [field]: value as string,
+          subscriptionDuration: "", // Reset duration when plan changes
+        };
+      }
       return { ...prev, [field]: value };
     });
 
@@ -202,7 +208,7 @@ export function useCreateMemberForm(
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
 
-    if (step !== 3 || !validateStep(step)) {
+    if (step !== 2 || !validateStep(step)) {
       return;
     }
 
@@ -241,7 +247,7 @@ export function useCreateMemberForm(
     setErrors({});
 
     try {
-      const memberData: CreateMemberDto = {
+      const memberData: any = {
         gymId,
         ...(formData.email ? { email: formData.email } : {}),
         ...(formData.phoneNumber ? { phoneNumber: formData.phoneNumber } : {}),
@@ -249,6 +255,7 @@ export function useCreateMemberForm(
         gender: formData.gender,
         age: formData.age,
         subscriptionTypeId: formData.subscriptionTypeId,
+        subscriptionDuration: formData.subscriptionDuration,
         subscriptionStartDate: formData.subscriptionStartDate,
         // subscriptionEndDate is calculated by backend based on subscription type
         paymentMethod: formData.paymentMethod as PaymentMethod,

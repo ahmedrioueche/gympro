@@ -43,14 +43,24 @@ export class SessionsController {
     @Req() req: any,
     @Param('id') id: string,
     @Body() updateSessionDto: UpdateSessionDto,
+    @Query('updateSeries') updateSeries: string,
   ) {
     const userId = req.user.sub;
-    return this.sessionsService.update(id, updateSessionDto, userId);
+    return this.sessionsService.update(
+      id,
+      updateSessionDto,
+      userId,
+      updateSeries === 'true',
+    );
   }
 
   @Delete(':id')
-  remove(@Req() req: any, @Param('id') id: string) {
+  remove(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Query('deleteSeries') deleteSeries: string,
+  ) {
     const userId = req.user.sub;
-    return this.sessionsService.remove(id, userId);
+    return this.sessionsService.remove(id, userId, deleteSeries === 'true');
   }
 }

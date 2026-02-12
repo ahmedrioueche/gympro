@@ -1,8 +1,9 @@
 import type { ProspectiveMember } from "@ahmedrioueche/gympro-client";
-import { MapPin, Send, User } from "lucide-react";
+import { ChevronRight, MapPin, Send, User } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useToast } from "../../../../../../hooks/useToast";
+import TextArea from "../../../../../../components/ui/TextArea";
+import { useModalStore } from "../../../../../../store/modal";
 import { useSendCoachRequest } from "../hooks/useSendCoachRequest";
 
 interface ProspectiveMemberCardProps {
@@ -11,9 +12,9 @@ interface ProspectiveMemberCardProps {
 
 export function ProspectiveMemberCard({ member }: ProspectiveMemberCardProps) {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
   const [showMessageForm, setShowMessageForm] = useState(false);
   const [message, setMessage] = useState("");
-  const { success } = useToast();
 
   const { mutate: sendRequest, isPending } = useSendCoachRequest();
 
@@ -22,84 +23,114 @@ export function ProspectiveMemberCard({ member }: ProspectiveMemberCardProps) {
       {
         memberId: member.userId,
         data: { message: message || undefined },
-        memberName: member.username || member.fullName,
+        memberName: member.fullName || member.username,
       },
       {
         onSuccess: () => {
           setShowMessageForm(false);
           setMessage("");
-          const memberName = member.fullName || member.username;
-          success(
-            t("coach.clients.requestSentTo", `Request sent to ${memberName}`, {
-              memberName,
-            }),
-          );
         },
       },
     );
   };
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const name = member.fullName || member.username;
+
   return (
-    <div className="bg-surface border border-border rounded-lg p-6 hover:border-border-hover transition-colors">
+    <div className="bg-surface border border-border rounded-2xl p-6 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:scale-105 group relative overflow-hidden">
+      {/* Decorative background element */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
+
       {/* Member Header */}
-      <div className="flex items-center space-x-4 mb-4">
-        <div className="w-14 h-14 rounded-full bg-primary-light flex items-center justify-center text-primary font-semibold text-lg">
-          {member.fullName?.[0] || member.username[0]}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xl font-bold shadow-lg ring-2 ring-background">
+          {member.profileImageUrl ? (
+            <img
+              src={member.profileImageUrl}
+              alt={name}
+              className="w-full h-full rounded-full object-cover"
+            />
+          ) : (
+            getInitials(name)
+          )}
         </div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-text-primary">
-            {member.fullName || member.username}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-bold text-text-primary truncate group-hover:text-primary transition-colors">
+            {name}
           </h3>
-          <p className="text-sm text-text-secondary">@{member.username}</p>
+          <p className="text-sm text-text-secondary truncate">
+            @{member.username}
+          </p>
         </div>
       </div>
 
       {/* Member Info */}
-      <div className="space-y-2 mb-4">
-        {member.location?.city && (
-          <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <MapPin className="w-4 h-4" />
-            <span>
-              {[
-                member.location.city,
-                member.location.state,
-                member.location.country,
-              ]
-                .filter(Boolean)
-                .join(", ")}
-            </span>
+      <div className="space-y-3 mb-6">
+        <div className="flex items-center gap-2.5 text-sm text-text-secondary">
+          <div className="p-1.5 bg-background rounded-lg border border-border">
+            <MapPin className="w-3.5 h-3.5 text-primary" />
           </div>
-        )}
+          <span className="truncate">
+            {member.location?.city
+              ? [
+                  member.location.city,
+                  member.location.state,
+                  member.location.country,
+                ]
+                  .filter(Boolean)
+                  .join(", ")
+              : t("common.locationUnknown", "Location unknown")}
+          </span>
+        </div>
 
-        <div className="flex items-center gap-2 text-sm text-text-secondary">
-          <User className="w-4 h-4" />
+        <div className="flex items-center gap-2.5 text-sm text-text-secondary">
+          <div className="p-1.5 bg-background rounded-lg border border-border">
+            <User className="w-3.5 h-3.5 text-secondary" />
+          </div>
           <span>
             {member.hasCoach
               ? t("coach.clients.prospectiveMembers.hasCoach")
-              : "Looking for a coach"}
+              : t(
+                  "coach.clients.prospectiveMembers.lookingForCoach",
+                  "Looking for a coach",
+                )}
           </span>
         </div>
       </div>
 
       {/* Message Form */}
-      {showMessageForm && (
-        <div className="mb-4 space-y-3">
-          <textarea
+      {showMessageForm ? (
+        <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          <TextArea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder={t(
-              "coach.clients.modals.sendRequest.messagePlaceholder",
-            )}
-            className="w-full px-4 py-2 bg-surface-dark border border-border rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary resize-none"
+            placeholder={t("coach.clients.modals.respond.messagePlaceholder", {
+              memberName: name,
+            })}
+            className="text-sm"
             rows={3}
+            autoFocus
           />
           <div className="flex items-center gap-2">
             <button
               onClick={handleSendRequest}
               disabled={isPending}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 font-medium"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all disabled:opacity-50 font-bold text-sm shadow-lg shadow-primary/20"
             >
-              <Send className="w-4 h-4" />
+              {isPending ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
               {isPending
                 ? t("common.processing")
                 : t("coach.clients.modals.sendRequest.send")}
@@ -110,26 +141,35 @@ export function ProspectiveMemberCard({ member }: ProspectiveMemberCardProps) {
                 setMessage("");
               }}
               disabled={isPending}
-              className="px-4 py-2 bg-surface-dark text-text-secondary rounded-lg hover:bg-surface-darker transition-colors disabled:opacity-50"
+              className="px-4 py-2.5 bg-background border border-border text-text-secondary rounded-xl hover:bg-surface transition-all disabled:opacity-50 text-sm font-medium"
             >
               {t("common.cancel")}
             </button>
           </div>
         </div>
-      )}
+      ) : (
+        <div className="flex gap-2 pt-2">
+          <button
+            onClick={() =>
+              openModal("member_profile", { memberId: member.userId })
+            }
+            className="flex-1 px-4 py-2.5 bg-background border border-border text-text-secondary rounded-xl hover:border-primary hover:text-primary transition-all duration-300 font-bold text-sm flex items-center justify-center gap-2"
+          >
+            {t("members.card.viewProfile")}
+            <ChevronRight className="w-4 h-4" />
+          </button>
 
-      {/* Action Button */}
-      {!showMessageForm && (
-        <button
-          onClick={() => setShowMessageForm(true)}
-          disabled={member.hasCoach}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-        >
-          <Send className="w-4 h-4" />
-          {member.hasCoach
-            ? t("coach.clients.prospectiveMembers.alreadySent")
-            : t("coach.clients.prospectiveMembers.sendRequest")}
-        </button>
+          <button
+            onClick={() => setShowMessageForm(true)}
+            disabled={member.hasCoach}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-bold text-sm shadow-md shadow-primary/10"
+          >
+            <Send className="w-4 h-4" />
+            {member.hasCoach
+              ? t("coach.clients.prospectiveMembers.alreadySent")
+              : t("coach.clients.prospectiveMembers.sendRequest")}
+          </button>
+        </div>
       )}
     </div>
   );

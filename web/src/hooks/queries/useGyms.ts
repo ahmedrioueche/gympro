@@ -271,3 +271,74 @@ export const useGymCities = () => {
     gcTime: 0,
   });
 };
+
+/**
+ * Add a facility to a gym
+ */
+export const useAddFacility = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ gymId, data }: { gymId: string; data: any }) => {
+      const response = await gymApi.addFacility(gymId, data);
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: gymKeys.detail(variables.gymId),
+      });
+    },
+  });
+};
+
+/**
+ * Update a facility in a gym
+ */
+export const useUpdateFacility = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      gymId,
+      facilityId,
+      data,
+    }: {
+      gymId: string;
+      facilityId: string;
+      data: any;
+    }) => {
+      const response = await gymApi.updateFacility(gymId, facilityId, data);
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: gymKeys.detail(variables.gymId),
+      });
+    },
+  });
+};
+
+/**
+ * Remove a facility from a gym
+ */
+export const useRemoveFacility = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      gymId,
+      facilityId,
+    }: {
+      gymId: string;
+      facilityId: string;
+    }) => {
+      const response = await gymApi.removeFacility(gymId, facilityId);
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: gymKeys.detail(variables.gymId),
+      });
+    },
+  });
+};

@@ -1,7 +1,6 @@
 import type {
   AccessControlType,
   AppSubscription,
-  BaseSubscriptionType,
   Currency,
   GymSettings,
   GymStats,
@@ -12,6 +11,16 @@ import type {
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+@Schema({ timestamps: true })
+export class FacilityModel {
+  declare _id: string;
+  @Prop({ required: true }) name: string;
+  @Prop() capacity?: number;
+  @Prop() description?: string;
+  @Prop() createdAt: Date;
+}
+export const FacilitySchema = SchemaFactory.createForClass(FacilityModel);
+
 @Schema({ _id: false })
 export class GymSettingsModel implements GymSettings {
   @Prop() paymentMethods: PaymentMethod[];
@@ -21,7 +30,7 @@ export class GymSettingsModel implements GymSettings {
   @Prop({ type: Object }) workingHours?: TimeRange;
   @Prop() isMixed?: boolean;
   @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
-  @Prop({ type: [String] }) servicesOffered?: BaseSubscriptionType[];
+  @Prop({ type: [Object], default: [] }) servicesOffered?: any[];
   @Prop({ default: 'flexible' }) accessControlType?: AccessControlType;
   @Prop() defaultCurrency?: Currency;
   @Prop({ type: [String], default: [] }) rules?: string[];
@@ -80,6 +89,9 @@ export class GymModel extends Document {
     default: [],
   })
   media?: any[];
+
+  @Prop({ type: [FacilitySchema], default: [] })
+  facilities?: FacilityModel[];
 
   @Prop()
   bannerUrl?: string;

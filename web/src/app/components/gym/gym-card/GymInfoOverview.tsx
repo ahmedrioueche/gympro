@@ -183,7 +183,7 @@ export function GymInfoOverview({
                     ),
                   };
 
-                  const label = SERVICE_LABELS[service] || service;
+                  const label = SERVICE_LABELS[service.name] || service.name;
 
                   return (
                     <span

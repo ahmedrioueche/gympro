@@ -744,4 +744,12 @@ export class GymCoachService {
       };
     }
   }
+
+  async validateFacility(gymId: string, facilityId: string) {
+    const gym = await this.gymModel.findOne({
+      _id: gymId,
+      'facilities._id': facilityId,
+    });
+    return !!gym;
+  }
 }

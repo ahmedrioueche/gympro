@@ -10,6 +10,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
+import { GymService } from '../gym/gym.service';
+import { MembershipService } from '../gymMembership/membership.service';
+import { SubscriptionTypeModel } from '../gymSubscription/gymSubscription.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SessionModel } from '../sessions/schemas/session.schema';
 import { GymClassModel } from './gymClass.schema';
@@ -21,7 +24,11 @@ export class GymClassService {
     private gymClassModel: Model<GymClassModel>,
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(SessionModel.name) private sessionModel: Model<SessionModel>,
+    @InjectModel(SubscriptionTypeModel.name)
+    private subscriptionTypeModel: Model<SubscriptionTypeModel>,
     private notificationsService: NotificationsService,
+    private membershipService: MembershipService,
+    private gymService: GymService,
   ) {}
 
   async create(
@@ -30,37 +37,118 @@ export class GymClassService {
     createdBy: string,
   ): Promise<ApiResponse<GymClass>> {
     try {
-      if (dto.coachId) {
-        await this.validateCoachAvailability(
-          dto.coachId,
-          new Date(dto.scheduledAt),
-          dto.duration,
+      if (dto.facilityId) {
+        const isValid = await this.gymService.validateFacility(
+          gymId,
+          dto.facilityId,
         );
+        if (!isValid) {
+          throw new Error('Invalid facility selected for this gym');
+        }
       }
 
-      const gymClass = await this.gymClassModel.create({
-        ...dto,
+      const baseData = { ...dto };
+      if (!baseData.coachId) delete baseData.coachId;
+
+      // Determine recurrence dates
+      const dates = this.generateRecurringDates(
+        new Date(dto.scheduledAt),
+        dto.recurrence,
+      );
+
+      // Validate coach availability for ALL dates first using batch approach
+      if (dto.coachId) {
+        const rangeStart = dates[0];
+        const rangeEnd = new Date(
+          dates[dates.length - 1].getTime() + dto.duration * 60000,
+        );
+
+        const [conflictingSessions, existingClasses] = await Promise.all([
+          this.sessionModel
+            .find({
+              coachId: new Types.ObjectId(dto.coachId),
+              startTime: { $lt: rangeEnd },
+              endTime: { $gt: rangeStart },
+              status: { $ne: 'cancelled' },
+            })
+            .lean(),
+          this.gymClassModel
+            .find({
+              coachId: new Types.ObjectId(dto.coachId),
+              scheduledAt: {
+                $gte: new Date(rangeStart.getTime() - 4 * 60 * 60 * 1000),
+                $lte: new Date(rangeEnd.getTime() + 4 * 60 * 60 * 1000),
+              },
+              status: { $ne: 'cancelled' },
+            })
+            .lean(),
+        ]);
+
+        for (const date of dates) {
+          const start = date;
+          const end = new Date(start.getTime() + dto.duration * 60000);
+
+          // Check sessions
+          const sessionConflict = conflictingSessions.find(
+            (s) => new Date(s.startTime) < end && new Date(s.endTime) > start,
+          );
+          if (sessionConflict) {
+            throw new Error(
+              `Conflict on ${date.toLocaleDateString()}: Coach has a conflicting session`,
+            );
+          }
+
+          // Check classes
+          const classConflict = existingClasses.find((c) => {
+            const clsStart = new Date(c.scheduledAt);
+            const clsEnd = new Date(clsStart.getTime() + c.duration * 60000);
+            return clsStart < end && clsEnd > start;
+          });
+          if (classConflict) {
+            throw new Error(
+              `Conflict on ${date.toLocaleDateString()}: Coach has another class at this time`,
+            );
+          }
+        }
+      }
+
+      const seriesId = new Types.ObjectId().toString();
+      const classesToCreate = dates.map((date) => ({
+        ...baseData,
         gymId,
         createdBy,
-      });
+        scheduledAt: date,
+        seriesId: dates.length > 1 ? seriesId : undefined,
+        recurrence: dates.length > 1 ? dto.recurrence : undefined,
+        status: 'active',
+      }));
 
-      if (dto.coachId) {
-        await this.notifyCoach(dto.coachId, gymClass, 'assigned');
+      const createdClasses =
+        await this.gymClassModel.insertMany(classesToCreate);
+
+      if (dto.coachId && createdClasses.length > 0) {
+        await this.notifyCoach(
+          dto.coachId,
+          createdClasses[0] as any,
+          'assigned',
+        );
       }
 
       return {
         success: true,
-        data: gymClass.toObject() as GymClass,
+        data: (createdClasses[0] as any).toObject
+          ? (createdClasses[0] as any).toObject()
+          : createdClasses[0],
       };
     } catch (error) {
-      if (error.message.includes('Coach is not available')) {
+      console.error('Create class error:', error);
+      if (error.message.includes('Conflict on')) {
         return {
           success: false,
           errorCode: ErrorCode.COACH_NOT_AVAILABLE,
           message: error.message,
         };
       }
-      console.error('Create class error:', error);
       return {
         success: false,
         errorCode: ErrorCode.CLASS_CREATE_ERROR,
@@ -69,10 +157,73 @@ export class GymClassService {
     }
   }
 
+  private generateRecurringDates(
+    startDate: Date,
+    recurrence: CreateGymClassDto['recurrence'],
+  ): Date[] {
+    if (!recurrence || recurrence.type === 'none') return [startDate];
+
+    const MAX_INSTANCES = 100;
+    const dates: Date[] = [];
+
+    let iterationDate = new Date(startDate);
+    let endDate = recurrence.endDate ? new Date(recurrence.endDate) : null;
+
+    if (!endDate) {
+      endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 3);
+    }
+
+    const hours = startDate.getHours();
+    const minutes = startDate.getMinutes();
+
+    const isDayMatch = (date: Date) => {
+      if (recurrence.type === 'custom' && recurrence.days) {
+        return recurrence.days.includes(date.getDay());
+      }
+      return true; // For daily, weekly, biweekly, monthly - logic handled by iteration
+    };
+
+    // For custom recurrence, ensure we start on a valid day
+    if (recurrence.type === 'custom' && !isDayMatch(iterationDate)) {
+      for (let i = 0; i < 7; i++) {
+        iterationDate.setDate(iterationDate.getDate() + 1);
+        if (isDayMatch(iterationDate)) break;
+      }
+    }
+
+    while (dates.length < MAX_INSTANCES && iterationDate <= endDate) {
+      if (isDayMatch(iterationDate)) {
+        const dateToAdd = new Date(iterationDate);
+        dateToAdd.setHours(hours, minutes, 0, 0);
+        dates.push(dateToAdd);
+      }
+
+      // Increment
+      if (recurrence.type === 'daily') {
+        iterationDate.setDate(iterationDate.getDate() + 1);
+      } else if (recurrence.type === 'weekly') {
+        iterationDate.setDate(iterationDate.getDate() + 7);
+      } else if (recurrence.type === 'biweekly') {
+        iterationDate.setDate(iterationDate.getDate() + 14);
+      } else if (recurrence.type === 'monthly') {
+        iterationDate.setMonth(iterationDate.getMonth() + 1);
+      } else if (recurrence.type === 'custom') {
+        iterationDate.setDate(iterationDate.getDate() + 1);
+      } else {
+        break;
+      }
+    }
+
+    // Fallback to start date if something went wrong
+    return dates.length > 0 ? dates : [startDate];
+  }
+
   async update(
     id: string,
     dto: UpdateGymClassDto,
     updatedBy: string,
+    updateSeries = false,
   ): Promise<ApiResponse<GymClass>> {
     try {
       const existingClass = await this.gymClassModel.findById(id);
@@ -83,6 +234,10 @@ export class GymClassService {
           message: 'Class not found',
         };
       }
+
+      // Prepare update data
+      const updateData = { ...dto, updatedBy };
+      if (updateData.coachId === '') delete (updateData as any).coachId;
 
       if (
         (dto.coachId && dto.coachId !== existingClass.coachId) ||
@@ -105,11 +260,43 @@ export class GymClassService {
         }
       }
 
-      const gymClass = await this.gymClassModel.findByIdAndUpdate(
-        id,
-        { ...dto, updatedBy },
-        { new: true },
-      );
+      if (dto.facilityId) {
+        const isValid = await this.gymService.validateFacility(
+          existingClass.gymId,
+          dto.facilityId,
+        );
+        if (!isValid) {
+          throw new Error('Invalid facility selected for this gym');
+        }
+      }
+
+      let gymClass: GymClassModel | null;
+
+      if (updateSeries && existingClass.seriesId) {
+        // Update all upcoming classes in series
+        // We exclude scheduledAt from series update to avoid squashing everything into one date
+        const seriesUpdateData = { ...updateData };
+        delete seriesUpdateData.scheduledAt;
+
+        await this.gymClassModel.updateMany(
+          {
+            seriesId: existingClass.seriesId,
+            scheduledAt: { $gte: existingClass.scheduledAt },
+          },
+          seriesUpdateData,
+        );
+
+        // If time changed, we'd need more complex logic to shift dates.
+        // For now, if scheduledAt is provided, only update the current instance's full date
+        // and other instances get only non-date fields updated.
+        gymClass = await this.gymClassModel.findByIdAndUpdate(id, updateData, {
+          new: true,
+        });
+      } else {
+        gymClass = await this.gymClassModel.findByIdAndUpdate(id, updateData, {
+          new: true,
+        });
+      }
 
       if (dto.coachId && dto.coachId !== existingClass.coachId) {
         await this.notifyCoach(dto.coachId, gymClass as any, 'assigned');
@@ -121,7 +308,7 @@ export class GymClassService {
       };
     } catch (error) {
       console.error('Update class error:', error);
-      if (error.message.includes('Coach is not available')) {
+      if (error?.message?.includes('Coach is not available')) {
         return {
           success: false,
           errorCode: ErrorCode.COACH_NOT_AVAILABLE,
@@ -136,16 +323,28 @@ export class GymClassService {
     }
   }
 
-  async remove(id: string): Promise<ApiResponse<void>> {
+  async remove(id: string, deleteSeries = false): Promise<ApiResponse<void>> {
     try {
-      const result = await this.gymClassModel.findByIdAndDelete(id);
-      if (!result) {
+      const gymClass = await this.gymClassModel.findById(id);
+      if (!gymClass) {
         return {
           success: false,
           errorCode: ErrorCode.CLASS_NOT_FOUND,
           message: 'Class not found',
         };
       }
+
+      if (deleteSeries && gymClass.seriesId) {
+        await this.gymClassModel.updateMany(
+          { seriesId: gymClass.seriesId },
+          { status: 'cancelled' },
+        );
+      } else {
+        await this.gymClassModel.findByIdAndUpdate(id, {
+          status: 'cancelled',
+        });
+      }
+
       return { success: true };
     } catch (error) {
       console.error('Delete class error:', error);
@@ -160,7 +359,7 @@ export class GymClassService {
   async findAllByGym(gymId: string): Promise<ApiResponse<GymClass[]>> {
     try {
       const classes = await this.gymClassModel
-        .find({ gymId })
+        .find({ gymId, status: { $ne: 'cancelled' } })
         .populate(
           'coachId',
           'profile.fullName profile.username profile.profileImageUrl',
@@ -183,16 +382,23 @@ export class GymClassService {
 
   async findAllByCoach(coachId: string): Promise<ApiResponse<GymClass[]>> {
     try {
-      console.log(`[GymClassService] Finding classes for coach: ${coachId}`);
+      let queryId: any = coachId;
+      if (Types.ObjectId.isValid(coachId)) {
+        queryId = new Types.ObjectId(coachId);
+      }
+
       const classes = await this.gymClassModel
-        .find({ coachId: new Types.ObjectId(coachId) })
-        .populate('gymId', 'name') // minimal populate for identification
+        .find({
+          $or: [{ coachId: queryId }, { coachId: coachId }],
+          status: { $ne: 'cancelled' },
+        })
+        .populate('gymId', 'name')
+        .populate(
+          'coachId',
+          'profile.fullName profile.username profile.profileImageUrl',
+        )
         .sort({ scheduledAt: 1 })
         .lean();
-
-      console.log(
-        `[GymClassService] Found ${classes.length} classes for coach ${coachId}`,
-      );
 
       return {
         success: true,
@@ -244,11 +450,11 @@ export class GymClassService {
   ): Promise<ApiResponse<GymClass>> {
     try {
       const gymClass = await this.gymClassModel.findById(dto.classId);
-      if (!gymClass) {
+      if (!gymClass || gymClass.status === 'cancelled') {
         return {
           success: false,
           errorCode: ErrorCode.CLASS_NOT_FOUND,
-          message: 'Class not found',
+          message: 'Class not found or cancelled',
         };
       }
 
@@ -264,13 +470,59 @@ export class GymClassService {
         };
       }
 
-      // Check capacity
+      // 1. Check if class time has passed
+      if (new Date(gymClass.scheduledAt) < new Date()) {
+        return {
+          success: false,
+          errorCode: ErrorCode.CLASS_ALREADY_PASSED,
+          message: 'Cannot book a class that has already started or passed',
+        };
+      }
+
+      // 2. Check capacity
       if (gymClass.bookings.length >= gymClass.maxCapacity) {
         return {
           success: false,
           errorCode: ErrorCode.CLASS_FULL,
           message: 'Class is full',
         };
+      }
+
+      // 3. Check membership and plan access
+      const { membership } = await this.membershipService.getMyMembershipInGym(
+        userId,
+        gymClass.gymId,
+      );
+
+      if (!membership || membership.membershipStatus !== 'active') {
+        return {
+          success: false,
+          errorCode: ErrorCode.NO_ACTIVE_SUBSCRIPTION,
+          message: 'You need an active membership to book this class',
+        };
+      }
+
+      // 4. Check plan access to this service
+      if (membership.subscription?.typeId) {
+        const subType = await this.subscriptionTypeModel
+          .findById(membership.subscription.typeId)
+          .lean();
+
+        if (subType && subType.services && subType.services.length > 0) {
+          // Normalize service names for comparison
+          const allowedServices = subType.services.map((s) =>
+            s.toLowerCase().trim(),
+          );
+          const classService = gymClass.service.toLowerCase().trim();
+
+          if (!allowedServices.includes(classService)) {
+            return {
+              success: false,
+              errorCode: ErrorCode.PLAN_ACCESS_DENIED,
+              message: `Your current plan does not include access to ${gymClass.service} classes.`,
+            };
+          }
+        }
       }
 
       // Add booking
@@ -349,7 +601,7 @@ export class GymClassService {
   ): Promise<void> {
     const end = new Date(start.getTime() + duration * 60000);
 
-    // Check for conflicting sessions
+    // 1. Check for conflicting sessions
     const conflictingSession = await this.sessionModel.findOne({
       coachId: new Types.ObjectId(coachId),
       startTime: { $lt: end },
@@ -358,31 +610,11 @@ export class GymClassService {
     });
 
     if (conflictingSession) {
-      throw new Error(
-        'Coach is not available at this time (Conflicting Session)',
-      );
+      throw new Error('Coach has a conflicting session');
     }
 
-    // Check for conflicting classes
-    const conflictingClass = await this.gymClassModel.findOne({
-      coachId: new Types.ObjectId(coachId),
-      _id: { $ne: excludeClassId },
-      $or: [
-        {
-          scheduledAt: { $lt: end },
-          // We can't query end time directly as it's computed, but we can check start time proximity
-          // A safer check is to fetch potentially conflicting classes and filter in code or use aggregation
-          // For simplicity, let's assume classes are max 3 hours long and query a window
-        },
-      ],
-    });
-
-    // More robust check for class conflicts
-    // Since we store duration, we need to find classes where:
-    // (existingStart < newEnd) AND (existingEnd > newStart)
-    // existingEnd = existingStart + existingDuration
-    // This is hard to do in a simple find query without aggregation.
-    // Let's fetch classes in a window of +/- 4 hours to be safe
+    // 2. Check for conflicting classes (logical check)
+    // Fetch classes in a window of +/- 4 hours to check overlaps
     const windowStart = new Date(start.getTime() - 4 * 60 * 60 * 1000);
     const windowEnd = new Date(start.getTime() + 4 * 60 * 60 * 1000);
 
@@ -390,6 +622,7 @@ export class GymClassService {
       coachId: new Types.ObjectId(coachId),
       _id: { $ne: excludeClassId },
       scheduledAt: { $gte: windowStart, $lte: windowEnd },
+      status: { $ne: 'cancelled' },
     });
 
     for (const cls of nearbyClasses) {
@@ -397,9 +630,7 @@ export class GymClassService {
       const clsEnd = new Date(clsStart.getTime() + cls.duration * 60000);
 
       if (clsStart < end && clsEnd > start) {
-        throw new Error(
-          'Coach is not available at this time (Conflicting Class)',
-        );
+        throw new Error('Coach has another class at this time');
       }
     }
   }

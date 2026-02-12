@@ -1,8 +1,6 @@
 import { addDays, addMonths, addWeeks, addYears, format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
-import { DURATION_OPTIONS } from "../../../../hooks/useSubscriptionOptions";
 import { useModalStore } from "../../../../store/modal";
-
 export interface FormData {
   subscriptionTypeId: string;
   startDate: string;
@@ -12,19 +10,21 @@ export interface FormData {
 
 export function calculateEndDate(startDate: string, duration: string): string {
   const start = new Date(startDate);
-  const option = DURATION_OPTIONS.find((d) => d.value === duration);
+  const parts = duration.split("_");
+  if (parts.length !== 2) return startDate;
 
-  if (!option) return startDate;
+  const count = parseInt(parts[0]) || 1;
+  const unit = parts[1].toLowerCase();
 
   let endDate = start;
-  if ("days" in option && option.days) {
-    endDate = addDays(start, option.days);
-  } else if ("weeks" in option && option.weeks) {
-    endDate = addWeeks(start, option.weeks);
-  } else if ("months" in option && option.months) {
-    endDate = addMonths(start, option.months);
-  } else if ("years" in option && option.years) {
-    endDate = addYears(start, option.years);
+  if (unit.includes("session") || unit.includes("day")) {
+    endDate = addDays(start, count);
+  } else if (unit.includes("week")) {
+    endDate = addWeeks(start, count);
+  } else if (unit.includes("month")) {
+    endDate = addMonths(start, count);
+  } else if (unit.includes("year")) {
+    endDate = addYears(start, count);
   }
 
   return format(endDate, "yyyy-MM-dd");

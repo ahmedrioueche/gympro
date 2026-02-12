@@ -302,4 +302,66 @@ export class GymController {
       );
     }
   }
+
+  @Post(':id/facilities')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('settings:manage')
+  async addFacility(@Param('id') id: string, @Body() facility: any) {
+    try {
+      const gym = await this.gymService.addFacility(id, facility);
+      return apiResponse(true, undefined, gym, 'Facility added successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPDATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Patch(':id/facilities/:facilityId')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('settings:manage')
+  async updateFacility(
+    @Param('id') gymId: string,
+    @Param('facilityId') facilityId: string,
+    @Body() facility: any,
+  ) {
+    try {
+      const gym = await this.gymService.updateFacility(
+        gymId,
+        facilityId,
+        facility,
+      );
+      return apiResponse(true, undefined, gym, 'Facility updated successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPDATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Delete(':id/facilities/:facilityId')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @RequireGymPermission('settings:manage')
+  async removeFacility(
+    @Param('id') gymId: string,
+    @Param('facilityId') facilityId: string,
+  ) {
+    try {
+      const gym = await this.gymService.removeFacility(gymId, facilityId);
+      return apiResponse(true, undefined, gym, 'Facility removed successfully');
+    } catch (error) {
+      return apiResponse(
+        false,
+        ErrorCode.UPDATE_GYM_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
 }

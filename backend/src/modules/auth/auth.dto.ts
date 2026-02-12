@@ -147,6 +147,10 @@ export class CreateMemberDto {
   subscriptionStartDate?: string;
 
   @IsOptional()
+  @IsString()
+  subscriptionDuration?: string;
+
+  @IsOptional()
   @IsIn([...PAYMENT_METHODS])
   paymentMethod?: string;
 }

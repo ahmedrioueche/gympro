@@ -2,12 +2,12 @@ import { type SubscriptionType } from "@ahmedrioueche/gympro-client";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  useGymSubscriptionTypes,
+  useManageSubscriptionType,
+} from "../../../../../../../hooks/useGymSubscriptionTypes";
 import { useModalStore } from "../../../../../../../store/modal";
 import { useGymServices } from "./useGymServices";
-import {
-  useManageSubscriptionType,
-  useSubscriptionTypes,
-} from "./useSubscriptionTypes";
 
 export type TabType = "services" | "pricing";
 
@@ -22,7 +22,7 @@ export const usePricingPage = () => {
     isLoading: isLoadingPlans,
     error,
     refetch: refetchPlans,
-  } = useSubscriptionTypes();
+  } = useGymSubscriptionTypes();
   const { deleteSubscriptionType } = useManageSubscriptionType();
 
   // Services Data
@@ -54,7 +54,7 @@ export const usePricingPage = () => {
     });
   };
 
-  const handleRemoveService = (service: string) => {
+  const handleRemoveService = (serviceId: string) => {
     openModal("confirm", {
       title: t("services.confirmDelete.title", "Delete Service?"),
       text: t(
@@ -64,7 +64,7 @@ export const usePricingPage = () => {
       confirmText: t("common.delete"),
       confirmVariant: "danger",
       onConfirm: () => {
-        handleDeleteService(service);
+        handleDeleteService(serviceId);
       },
     });
   };

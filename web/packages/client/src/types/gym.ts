@@ -8,6 +8,14 @@ import {
 } from "./common";
 import { User } from "./user";
 
+export interface Facility {
+  _id: string;
+  name: string;
+  capacity?: number;
+  description?: string;
+  createdAt?: string | Date;
+}
+
 export interface Gym extends AuditInfo {
   _id: string;
   name: string;
@@ -27,6 +35,7 @@ export interface Gym extends AuditInfo {
   memberStats?: GymStats;
   appSubscription?: AppSubscription;
   media?: GymMedia[];
+  facilities?: Facility[];
   bannerUrl?: string;
   bannerPublicId?: string;
 }
@@ -54,6 +63,14 @@ export interface GymMedia {
 
 export type AccessControlType = "strict" | "flexible";
 
+export interface GymService {
+  _id: string;
+  name: string;
+  description?: string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
+
 export interface GymSettings {
   paymentMethods: PaymentMethod[];
   defaultCurrency?: Currency; // For subscription/payment display (e.g., "DZD")
@@ -63,7 +80,7 @@ export interface GymSettings {
   workingHours?: TimeRange; // Default gym hours (mixed or general)
   isMixed?: boolean; // Can males and females train toghether at the same time?
   femaleOnlyHours?: WeeklyTimeRange[]; // Specific time ranges reserved for female members
-  servicesOffered?: string[]; // List of services offered at the gym
+  servicesOffered?: GymService[]; // List of services offered at the gym
   accessControlType?: AccessControlType; // How to handle expired subscriptions during check-in
   rules?: string[]; // List of gym rules
   temporaryClosures?: TemporaryClosure[];
@@ -105,4 +122,12 @@ export interface GymClass extends AuditInfo {
   duration: number; // Duration in minutes
   scheduledAt: string | Date; // datetime of class
   bookings: ClassBooking[];
+  status: "active" | "cancelled" | "completed";
+  facilityId?: string;
+  recurrence?: {
+    type: "none" | "daily" | "weekly" | "biweekly" | "monthly" | "custom";
+    endDate?: string | Date;
+    days?: number[]; // For custom recurrence
+  };
+  seriesId?: string; // To link recurring classes
 }

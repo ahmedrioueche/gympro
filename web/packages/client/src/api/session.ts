@@ -1,3 +1,4 @@
+import { ApiResponse } from "../types/api";
 import {
   CreateSessionDto,
   Session,
@@ -7,16 +8,49 @@ import {
 import { getApiClient } from "./config";
 
 export const sessionApi = {
-  create: (data: CreateSessionDto) =>
-    getApiClient().post<Session>("/sessions", data),
+  create: async (data: CreateSessionDto): Promise<ApiResponse<Session>> => {
+    const res = await getApiClient().post<ApiResponse<Session>>(
+      "/sessions",
+      data,
+    );
+    return res.data;
+  },
 
-  getAll: (query?: SessionQueryDto) =>
-    getApiClient().get<Session[]>("/sessions", { params: query }),
+  getAll: async (query?: SessionQueryDto): Promise<ApiResponse<Session[]>> => {
+    const res = await getApiClient().get<ApiResponse<Session[]>>("/sessions", {
+      params: query,
+    });
+    return res.data;
+  },
 
-  getOne: (id: string) => getApiClient().get<Session>(`/sessions/${id}`),
+  getOne: async (id: string): Promise<ApiResponse<Session>> => {
+    const res = await getApiClient().get<ApiResponse<Session>>(
+      `/sessions/${id}`,
+    );
+    return res.data;
+  },
 
-  update: (id: string, data: UpdateSessionDto) =>
-    getApiClient().patch<Session>(`/sessions/${id}`, data),
+  update: async (
+    id: string,
+    data: UpdateSessionDto,
+    updateSeries = false,
+  ): Promise<ApiResponse<Session>> => {
+    const res = await getApiClient().patch<ApiResponse<Session>>(
+      `/sessions/${id}`,
+      data,
+      { params: { updateSeries } },
+    );
+    return res.data;
+  },
 
-  delete: (id: string) => getApiClient().delete<void>(`/sessions/${id}`),
+  delete: async (
+    id: string,
+    deleteSeries = false,
+  ): Promise<ApiResponse<void>> => {
+    const res = await getApiClient().delete<ApiResponse<void>>(
+      `/sessions/${id}`,
+      { params: { deleteSeries } },
+    );
+    return res.data;
+  },
 };

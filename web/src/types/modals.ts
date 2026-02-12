@@ -7,6 +7,7 @@ import type {
   EquipmentItem,
   Exercise,
   GymClass,
+  GymService,
   ProgramDayProgress,
   ProgramHistory,
   TrainingProgram,
@@ -136,6 +137,7 @@ export interface CreateExerciseModalProps {
 
 export interface CreateSessionModalProps {
   onSuccess?: () => void;
+  gymId?: string;
 }
 
 export interface SessionDetailsModalProps {
@@ -263,7 +265,7 @@ export interface CompetitionParticipantsModalProps {
 
 export interface ServiceModalProps {
   mode: "create" | "edit";
-  service?: string;
+  service?: GymService;
 }
 
 export interface PricingModalProps {
@@ -273,5 +275,23 @@ export interface PricingModalProps {
 }
 
 export interface CreateMemberModalProps {
+  onSuccess?: () => void;
+}
+
+export interface ClassDetailsModalProps {
+  gymClass: GymClass;
+  onBook?: (id: string) => void;
+  onCancel?: (id: string) => void;
+  onCancelClass?: (id: string) => void;
+  canBook?: boolean;
+  isBooking?: boolean;
+  isPassed?: boolean;
+}
+export interface CoachingOfferModalProps {
+  requestId: string;
+  coachName: string;
+  coachId: string;
+  coachImageUrl?: string;
+  message?: string;
   onSuccess?: () => void;
 }

@@ -1,18 +1,23 @@
-import type { LucideIcon } from "lucide-react";
+import { ChevronDown, type LucideIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import Button from "../../components/ui/Button";
+import Dropdown, { DropdownItem } from "../../components/ui/Dropdown";
+
+interface Action {
+  label: string;
+  icon: LucideIcon;
+  onClick: () => void;
+  show?: boolean;
+  loading?: boolean;
+  disabled?: boolean;
+}
 
 interface PageHeaderProps {
   icon?: LucideIcon;
   title: string;
   subtitle: string;
-  actionButton?: {
-    label: string;
-    icon: LucideIcon;
-    onClick: () => void;
-    show?: boolean;
-    loading?: boolean;
-    disabled?: boolean;
-  };
+  actionButton?: Action;
+  actions?: Action[];
   gradientFrom?: string;
   gradientTo?: string;
 }
@@ -23,10 +28,29 @@ function PageHeader({
   title,
   subtitle,
   actionButton = null,
+  actions = [],
 }: PageHeaderProps) {
-  const ActionIcon = actionButton?.icon;
-  const showBtn = actionButton?.show ?? true;
+  const { t } = useTranslation();
+  const allActions = actionButton ? [actionButton, ...actions] : actions;
+  const visibleActions = allActions.filter((a) => a.show !== false);
 
+  const renderAction = (action: Action) => {
+    const ActionIcon = action.icon;
+    return (
+      <Button
+        onClick={action.onClick}
+        loading={action.loading}
+        disabled={action.disabled}
+        className="group/btn relative inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 hover:from-blue-600 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-purple-500/15 overflow-hidden"
+      >
+        <span className="relative z-10">{action.label}</span>
+        {ActionIcon && (
+          <ActionIcon className="relative z-10 w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" />
+        )}
+        <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+      </Button>
+    );
+  };
   return (
     <div className="relative mb-12 group">
       {/* Main container */}
@@ -61,19 +85,41 @@ function PageHeader({
             </div>
 
             {/* Right CTA */}
-            {showBtn && ActionIcon && (
+            {visibleActions.length > 0 && (
               <div className="w-full sm:w-auto flex justify-center sm:justify-end">
-                <Button
-                  onClick={actionButton.onClick}
-                  loading={actionButton.loading}
-                  disabled={actionButton.disabled}
-                  className="group/btn relative inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 hover:from-blue-600 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-purple-500/15 overflow-hidden"
-                >
-                  <span className="relative z-10">{actionButton.label}</span>
-                  <ActionIcon className="relative z-10 w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" />
-                  {/* Shine effect */}
-                  <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                </Button>
+                {visibleActions.length === 1 ? (
+                  renderAction(visibleActions[0])
+                ) : (
+                  <Dropdown
+                    trigger={
+                      <Button className="group/btn mb-1 relative inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 hover:from-blue-600 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-purple-500/15 overflow-hidden">
+                        <span className="relative z-10">
+                          {t?.("common.actions", "Actions") || "Actions"}
+                        </span>
+                        <ChevronDown className="relative z-10 w-4 h-4 transition-transform group-hover/btn:translate-y-0.5" />
+                        <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                      </Button>
+                    }
+                  >
+                    {(closeDropdown) => (
+                      <div className="flex flex-col ">
+                        {visibleActions.map((action, idx) => (
+                          <DropdownItem
+                            key={idx}
+                            label={action.label}
+                            icon={
+                              action.icon && <action.icon className="w-4 h-4" />
+                            }
+                            onClick={() => {
+                              action.onClick();
+                              closeDropdown();
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </Dropdown>
+                )}
               </div>
             )}
           </div>

@@ -167,14 +167,21 @@ export default function ClosuresTab({
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
       {/* Header */}
-      <div>
-        <h3 className="text-xl font-bold text-text-primary mb-1 flex items-center gap-2">
+      <div className="flex items-start gap-4">
+        <div className="p-3 rounded-xl bg-primary/10">
           <Calendar className="w-6 h-6 text-primary" />
-          {t("marketing.closures.title")}
-        </h3>
-        <p className="text-sm text-text-secondary">
-          {t("marketing.closures.description")}
-        </p>
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-text-primary">
+            {t("marketing.closures.title", "Temporary Closures")}
+          </h3>
+          <p className="text-sm text-text-secondary mt-1">
+            {t(
+              "marketing.closures.description",
+              "Manage scheduled closures or shut down the gym immediately.",
+            )}
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

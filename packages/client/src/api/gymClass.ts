@@ -63,10 +63,11 @@ export const gymClassApi = {
   updateClass: async (
     id: string,
     dto: UpdateGymClassDto,
+    updateSeries = false,
   ): Promise<ApiResponse<GymClass>> => {
     try {
       const res = await apiClient.patch<ApiResponse<GymClass>>(
-        `/gym-class/${id}`,
+        `/gym-class/${id}${updateSeries ? "?updateSeries=true" : ""}`,
         dto,
       );
       return res.data;
@@ -76,9 +77,14 @@ export const gymClassApi = {
   },
 
   /** Delete a class */
-  deleteClass: async (id: string): Promise<ApiResponse<void>> => {
+  deleteClass: async (
+    id: string,
+    deleteSeries = false,
+  ): Promise<ApiResponse<void>> => {
     try {
-      const res = await apiClient.delete<ApiResponse<void>>(`/gym-class/${id}`);
+      const res = await apiClient.delete<ApiResponse<void>>(
+        `/gym-class/${id}${deleteSeries ? "?deleteSeries=true" : ""}`,
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

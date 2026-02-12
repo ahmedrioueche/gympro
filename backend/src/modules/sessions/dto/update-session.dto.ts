@@ -5,9 +5,12 @@ import {
 import {
   IsDateString,
   IsEnum,
+  IsMongoId,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
+  Min,
 } from 'class-validator';
 
 export class UpdateSessionDto implements IUpdateSessionDto {
@@ -16,8 +19,9 @@ export class UpdateSessionDto implements IUpdateSessionDto {
   startTime?: string;
 
   @IsOptional()
-  @IsDateString()
-  endTime?: string;
+  @IsNumber()
+  @Min(1)
+  duration?: number;
 
   @IsOptional()
   @IsEnum(SessionStatus)
@@ -34,4 +38,8 @@ export class UpdateSessionDto implements IUpdateSessionDto {
   @IsOptional()
   @IsString()
   location?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  facilityId?: string;
 }

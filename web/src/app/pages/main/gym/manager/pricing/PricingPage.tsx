@@ -1,10 +1,11 @@
-import { DollarSign, Dumbbell, Edit2, Trash2 } from "lucide-react";
+import { DollarSign, Dumbbell } from "lucide-react";
 import ErrorComponent from "../../../../../../components/ui/Error";
 import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
 import Tab from "../../../../../../components/ui/Tab";
 import PageHeader from "../../../../../components/PageHeader";
 import { PricingCard } from "./components/PricingCard";
+import { ServiceCard } from "./components/ServiceCard";
 import { usePricingPage } from "./hooks/usePricingPage";
 
 function PricingPage() {
@@ -53,6 +54,7 @@ function PricingPage() {
           label={t("settings.gym.tabs.services", "Services")}
           isActive={activeTab === "services"}
           onClick={() => setActiveTab("services")}
+          count={services.length}
         />
         <Tab
           label={t("pricing.tab", "Pricing Plans")}
@@ -76,35 +78,14 @@ function PricingPage() {
               actionButton={getPageHeaderAction()}
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => (
-                <div
-                  key={service}
-                  className="bg-surface border border-border rounded-xl p-4 flex items-center justify-between group hover:border-primary/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/10 p-2 rounded-lg text-primary">
-                      <Dumbbell className="w-5 h-5" />
-                    </div>
-                    <span className="font-medium text-text-primary">
-                      {service}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => handleEditService(service)}
-                      className="p-2 hover:bg-background rounded-lg text-text-secondary hover:text-primary transition-colors"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteService(service)}
-                      className="p-2 hover:bg-red-50 rounded-lg text-text-secondary hover:text-error transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
+                <ServiceCard
+                  key={service._id}
+                  service={service}
+                  onEdit={handleEditService}
+                  onDelete={handleDeleteService}
+                />
               ))}
             </div>
           )}

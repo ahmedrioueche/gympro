@@ -1,6 +1,6 @@
 import type { CoachRequestWithDetails } from "@ahmedrioueche/gympro-client";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
-import { Check, MapPin, MessageSquare, X } from "lucide-react";
+import { Check, Clock, MapPin, MessageSquare, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../../../store/modal";
@@ -10,26 +10,6 @@ interface ClientRequestCardProps {
   request: CoachRequestWithDetails;
   isSent?: boolean;
 }
-
-const getAvatarColor = () => {
-  const colors = [
-    "bg-gradient-to-br from-primary to-primary-dark",
-    "bg-gradient-to-br from-blue-500 to-blue-700",
-    "bg-gradient-to-br from-purple-500 to-purple-700",
-    "bg-gradient-to-br from-pink-500 to-pink-700",
-    "bg-gradient-to-br from-green-500 to-green-700",
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-};
-
-const getInitials = (name: string) => {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-};
 
 export function ClientRequestCard({
   request,
@@ -71,87 +51,102 @@ export function ClientRequestCard({
     );
   };
 
-  const memberName =
+  const name =
     request.memberDetails?.fullName || request.memberDetails?.username;
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <div
       onClick={() =>
         openModal("member_profile", { memberId: request.memberId })
       }
-      className="bg-surface cursor-pointer border border-border rounded-2xl p-6 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:scale-105 group"
+      className="bg-surface cursor-pointer border border-border rounded-2xl p-6 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden"
     >
-      {/* Avatar and Name */}
-      <div className="flex items-center gap-4 mb-4">
-        <div
-          className={`w-16 h-16 rounded-full ${getAvatarColor()} flex items-center justify-center text-white text-xl font-bold shadow-lg`}
-        >
+      {/* Glow Effect for pending */}
+      {!isSent && (
+        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-3xl -mr-12 -mt-12" />
+      )}
+
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-5">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xl font-bold shadow-lg ring-4 ring-background">
           {request.memberDetails?.profileImageUrl ? (
             <img
               src={request.memberDetails.profileImageUrl}
-              alt={memberName}
+              alt={name}
               className="w-full h-full rounded-full object-cover"
             />
           ) : (
-            getInitials(memberName)
+            getInitials(name || "")
           )}
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-lg font-bold text-text-primary truncate group-hover:text-primary transition-colors">
-            {memberName}
+            {name}
           </h3>
-          {request.memberDetails?.location && (
-            <p className="text-sm text-text-secondary flex items-center gap-1 mt-1 truncate">
-              <MapPin className="w-3 h-3 flex-shrink-0" />
-              {request.memberDetails.location}
-            </p>
-          )}
+          <div className="flex items-center gap-2 mt-1">
+            <span className="flex items-center gap-1 text-xs text-text-secondary bg-background px-2 py-1 rounded-lg border border-border">
+              <Clock className="w-3 h-3" />
+              {formatDistanceToNow(new Date(request.createdAt), {
+                addSuffix: true,
+              })}
+            </span>
+            {isSent && (
+              <span
+                className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
+                  request.status === "pending"
+                    ? "bg-warning/10 text-warning border-warning/20"
+                    : request.status === "accepted"
+                      ? "bg-success/10 text-success border-success/20"
+                      : "bg-error/10 text-error border-error/20"
+                }`}
+              >
+                {request.status}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Status and Time */}
-      <div className="flex gap-2 mb-4 flex-wrap">
-        {isSent && (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-surface-dark border-border text-text-secondary">
-            {t(
-              `coach.clients.requests.status.${request.status}`,
-              request.status,
-            )}
-          </span>
-        )}
-        <span className="px-3 py-1 rounded-full text-xs font-medium bg-background text-text-secondary">
-          ⏱️ {formatDistanceToNow(new Date(request.createdAt))} ago
-        </span>
-      </div>
+      {/* Member Details Mini-Info */}
+      {request.memberDetails?.location && (
+        <div className="flex items-center gap-2 text-sm text-text-secondary mb-4 px-1">
+          <MapPin className="w-3.5 h-3.5 text-primary" />
+          <span className="truncate">{request.memberDetails.location}</span>
+        </div>
+      )}
 
-      {/* Member Message */}
+      {/* Message Bubble */}
       {request.message && (
-        <div className="mb-4 p-4 bg-background border border-border rounded-xl">
-          <div className="flex items-center gap-2 text-text-secondary text-sm mb-2">
-            <MessageSquare className="w-4 h-4" />
-            <span className="font-medium">
+        <div className="mb-6 relative">
+          <div className="p-4 bg-background border border-border rounded-2xl rounded-tl-none italic text-text-primary text-sm leading-relaxed shadow-inner">
+            <div className="flex items-center gap-2 text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2 not-italic">
+              <MessageSquare className="w-3 h-3 text-primary" />
               {isSent
-                ? t(
-                    "coach.clients.pendingRequests.messageLabel.sent",
-                    "Message from coach",
-                  )
+                ? t("coach.clients.pendingRequests.messageLabelSent")
                 : t("coach.clients.pendingRequests.messageLabel")}
-            </span>
+            </div>
+            "{request.message}"
           </div>
-          <p className="text-text-primary text-sm leading-relaxed">
-            {request.message}
-          </p>
         </div>
       )}
 
       {/* Response Form */}
-      {showResponse && (
+      {showResponse ? (
         <div
-          className="mb-4 p-4 bg-background border border-border rounded-xl space-y-4"
+          className="p-4 bg-background border border-border rounded-2xl space-y-4 animate-in zoom-in-95 duration-200"
           onClick={(e) => e.stopPropagation()}
         >
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-2">
+            <label className="block text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-2">
               {t("coach.clients.pendingRequests.respondLabel")}
             </label>
             <textarea
@@ -160,28 +155,31 @@ export function ClientRequestCard({
               placeholder={t(
                 "coach.clients.modals.respond.messagePlaceholder",
                 {
-                  memberName,
+                  memberName: name,
                 },
               )}
-              className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none transition-all"
+              className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none transition-all text-sm"
               rows={3}
+              autoFocus
             />
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handleSubmit}
               disabled={isPending}
-              className={`flex-1 px-4 py-2.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`flex-1 px-4 py-2.5 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 text-white shadow-lg ${
                 actionType === "accept"
-                  ? "bg-success text-white hover:bg-success-dark hover:shadow-lg hover:shadow-success/30"
-                  : "bg-error text-white hover:bg-error-dark hover:shadow-lg hover:shadow-error/30"
+                  ? "bg-primary hover:bg-primary-dark shadow-primary/20"
+                  : "bg-danger hover:bg-danger-dark shadow-danger/20"
               }`}
             >
-              {isPending
-                ? t("common.processing")
-                : actionType === "accept"
-                  ? t("coach.clients.modals.respond.acceptButton")
-                  : t("coach.clients.modals.respond.declineButton")}
+              {isPending ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
+              ) : actionType === "accept" ? (
+                t("coach.clients.modals.respond.acceptButton")
+              ) : (
+                t("coach.clients.modals.respond.declineButton")
+              )}
             </button>
             <button
               onClick={() => {
@@ -190,40 +188,39 @@ export function ClientRequestCard({
                 setActionType(null);
               }}
               disabled={isPending}
-              className="px-4 py-2.5 bg-background border border-border text-text-secondary rounded-lg hover:border-text-secondary transition-all duration-300 disabled:opacity-50"
+              className="px-4 py-2.5 bg-surface border border-border text-text-secondary rounded-xl hover:bg-surface-hover transition-all text-sm font-bold"
             >
               {t("common.cancel")}
             </button>
           </div>
         </div>
-      )}
-
-      {/* Actions */}
-      {!isSent && !showResponse && (
-        <div className="flex gap-2 pt-4 border-t border-border">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleRespond("accept");
-            }}
-            disabled={isPending}
-            className="flex-1 px-4 py-2.5 bg-success/10 text-success rounded-lg hover:bg-success hover:text-white transition-all duration-300 font-semibold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            <Check className="w-4 h-4" />
-            {t("coach.clients.pendingRequests.accept")}
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleRespond("decline");
-            }}
-            disabled={isPending}
-            className="flex-1 px-4 py-2.5 bg-background border border-border text-text-secondary rounded-lg hover:border-error hover:text-error hover:bg-error/5 transition-all duration-300 font-semibold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            <X className="w-4 h-4" />
-            {t("coach.clients.pendingRequests.decline")}
-          </button>
-        </div>
+      ) : (
+        /* Card Actions */
+        !isSent && (
+          <div className="flex gap-2 pt-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRespond("accept");
+              }}
+              disabled={isPending}
+              className="flex-1 px-4 py-3 bg-success text-white rounded-xl hover:bg-success-dark transition-all duration-300 font-bold text-sm shadow-lg shadow-success/10 flex items-center justify-center gap-2"
+            >
+              <Check className="w-4 h-4" />
+              {t("coach.clients.pendingRequests.accept")}
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRespond("decline");
+              }}
+              disabled={isPending}
+              className="px-4 py-3 bg-error text-white rounded-xl hover:bg-error-dark transition-all duration-300 font-bold text-sm shadow-lg shadow-error/10 flex items-center justify-center"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )
       )}
     </div>
   );

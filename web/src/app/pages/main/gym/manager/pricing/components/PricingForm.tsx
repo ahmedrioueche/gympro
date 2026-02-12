@@ -19,6 +19,7 @@ export interface PricingFormData {
   description?: string;
   isAvailable: boolean;
   services: string[];
+  allowedIntervals?: number[];
 }
 
 interface PricingFormProps {
@@ -49,6 +50,7 @@ export const PricingForm = ({
     defaultValues: {
       isAvailable: true,
       services: [],
+      allowedIntervals: [1],
       ...defaultValues,
     },
   });
@@ -96,6 +98,7 @@ export const PricingForm = ({
             ? defaultValues.isAvailable
             : true,
         services: defaultValues.services || [],
+        allowedIntervals: defaultValues.allowedIntervals || [1],
       });
     }
   }, [defaultValues, reset]);
@@ -176,13 +179,16 @@ export const PricingForm = ({
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {gymServices.map((service) => {
-              const isSelected = selectedServices.includes(service);
-              const label = SERVICE_LABELS[service] || service;
+              const sObj = typeof service === "string" ? null : service;
+              const sName = sObj ? sObj.name : (service as unknown as string);
+              const isSelected = selectedServices.includes(sName);
+              const label = SERVICE_LABELS[sName] || sName;
+
               return (
                 <button
-                  key={service}
+                  key={sObj ? sObj._id : sName}
                   type="button"
-                  onClick={() => toggleService(service)}
+                  onClick={() => toggleService(sName)}
                   className={`px-3 py-2 rounded-lg text-xs font-bold border-2 transition-all duration-200 capitalize ${
                     isSelected
                       ? "border-primary bg-primary/5 text-primary"
@@ -283,6 +289,61 @@ export const PricingForm = ({
           })}
         </div>
       </div>
+
+      {/* Allowed Intervals (Multipliers) */}
+      {(tiers.some((t) => t.duration === 1 && t.durationUnit === "month") ||
+        tiers.some((t) => t.duration === 1 && t.durationUnit === "week")) && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-text-secondary">
+              {t("pricing.form.allowedIntervals", "Allowed Intervals")}
+            </label>
+            <Tooltip
+              content={t(
+                "pricing.form.allowedIntervalsTip",
+                "Allow members to subscribe for multiple periods at once (e.g. 3 months, 6 months). The price will be calculated proportionally based on the 1-unit price.",
+              )}
+            >
+              <Info className="w-4 h-4 text-text-secondary cursor-help" />
+            </Tooltip>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {[1, 2, 3, 6, 12, 24].map((interval) => {
+              const currentIntervals = watch("allowedIntervals") || [1];
+              const isSelected = currentIntervals.includes(interval);
+              const label =
+                interval === 1
+                  ? t("pricing.form.baseInterval", "Base (1x)")
+                  : `${interval}x`;
+
+              return (
+                <button
+                  key={interval}
+                  type="button"
+                  onClick={() => {
+                    const next = isSelected
+                      ? currentIntervals.filter((i) => i !== interval)
+                      : [...currentIntervals, interval];
+                    // Ensure at least 1 is selected
+                    if (next.length === 0) return;
+                    setValue(
+                      "allowedIntervals",
+                      next.sort((a, b) => a - b),
+                    );
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium border-2 transition-all duration-200 ${
+                    isSelected
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-text-secondary hover:border-primary/50"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <TextArea
         label={t("pricing.form.description")}

@@ -1,21 +1,30 @@
 import type { GymClass, Session } from "@ahmedrioueche/gympro-client";
-import { Calendar } from "lucide-react";
+import { Calendar as CalendarIcon, List, Plus } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
 import NoData from "../../../../../components/ui/NoData";
-import { useGymClasses } from "../../../../../hooks/queries/useGymClasses";
+import {
+  useCoachClasses,
+  useDeleteClass,
+} from "../../../../../hooks/queries/useGymClasses";
 import { useCoachSessions } from "../../../../../hooks/queries/useSessions";
+import { useGymStore } from "../../../../../store/gym";
 import { useModalStore } from "../../../../../store/modal";
 import { useUserStore } from "../../../../../store/user";
 import PageHeader from "../../../../components/PageHeader";
 import { CalendarHeader } from "../../../../components/schedule/CalendarHeader";
+import { SessionCard } from "../../../../components/schedule/SessionCard";
 import { WeeklyGrid } from "../../../../components/schedule/WeeklyGrid";
+import ClassCard from "../../gym/manager/classes/components/ClassCard";
 import { useSchedule } from "./hooks/useSchedule";
 
 export default function SchedulePage() {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
+  const { currentGym } = useGymStore();
   const { user } = useUserStore();
+  const [view, setView] = useState<"calendar" | "list">("calendar");
 
   const {
     weekDays,
@@ -37,41 +46,79 @@ export default function SchedulePage() {
     endDate: weekEnd.toISOString(),
   });
 
-  // Fetch all gym classes (we filter by coach below)
-  // In this general coach page, we might not have a specific gymId context easily
-  // For now, try to fetch without gymId if API supports it, or use first gym coach is affiliated with
-  // Assuming useGymClasses(undefined) fetches nothing or we need a gymId
-  const { data: classesData, isLoading: isLoadingClasses } = useGymClasses();
+  const {
+    data: classesData,
+    isLoading: isLoadingClasses,
+    isError: isErrorClasses,
+  } = useCoachClasses();
 
-  // sessionsData is ApiResponse<Session[]>, so extract the actual array from data.data
   const sessions = sessionsData?.data || [];
+  const coachClasses = classesData?.data || [];
 
-  // Filter classes for this coach
-  const coachClasses = (classesData?.data || []).filter(
-    (c) => c.coachId === user?._id,
-  );
-
-  const hasItems = sessions.length > 0 || coachClasses.length > 0;
+  const { mutate: deleteClass } = useDeleteClass();
 
   const handleSessionClick = (session: Session) => {
     openModal("session_details", { session });
   };
 
+  const handleDeleteClass = (gymClass: GymClass) => {
+    if (gymClass.seriesId) {
+      openModal("confirm", {
+        title: t("classes.delete.title", "Delete Class"),
+        text: t(
+          "classes.delete.message",
+          "This is a recurring class. Would you like to cancel only this specific session or the entire series?",
+        ),
+        onConfirm: () => {
+          deleteClass({ id: gymClass._id, deleteSeries: false });
+        },
+        confirmVariant: "danger",
+        confirmText: t("classes.delete.confirmOne", "Cancel only this session"),
+        secondaryAction: {
+          label: t("classes.delete.confirmSeries", "Cancel entire series"),
+          onClick: () => {
+            deleteClass({ id: gymClass._id, deleteSeries: true });
+          },
+        },
+      });
+    } else {
+      openModal("confirm", {
+        title: t("classes.delete.title", "Delete Class"),
+        text: t(
+          "classes.confirmDeleteDesc",
+          "Are you sure you want to delete this class? This action cannot be undone.",
+        ),
+        onConfirm: () => {
+          deleteClass({ id: gymClass._id });
+        },
+        confirmVariant: "danger",
+        confirmText: t("common.delete", "Delete"),
+      });
+    }
+  };
+
   const handleClassClick = (gymClass: GymClass) => {
-    console.log("Class clicked", gymClass);
+    openModal("class_details", {
+      gymClass,
+      onCancelClass: () => handleDeleteClass(gymClass),
+    });
   };
 
   const handleCreateSession = () => {
-    openModal("create_session");
+    openModal("create_session", { gymId: currentGym?._id });
   };
 
-  if (isErrorSessions) {
+  const handleCreateClass = () => {
+    openModal("gym_class", { gymId: currentGym?._id });
+  };
+
+  if (isErrorSessions || isErrorClasses) {
     return (
       <div className="space-y-6">
         <PageHeader
           title={t("schedule.title")}
           subtitle={t("schedule.subtitle")}
-          icon={Calendar}
+          icon={CalendarIcon}
         />
         <NoData
           emoji="⚠️"
@@ -82,29 +129,70 @@ export default function SchedulePage() {
     );
   }
 
+  // Group recurring classes for list view
+  const now = new Date();
+  const groupedClasses = coachClasses.reduce(
+    (acc: GymClass[], curr: GymClass) => {
+      if (!curr.seriesId) {
+        acc.push(curr);
+      } else {
+        const existingIndex = acc.findIndex(
+          (c) => c.seriesId === curr.seriesId,
+        );
+        if (existingIndex === -1) {
+          acc.push(curr);
+        } else {
+          const existingDate = new Date(acc[existingIndex].scheduledAt);
+          const currDate = new Date(curr.scheduledAt);
+          if (
+            currDate >= now &&
+            (existingDate < now || currDate < existingDate)
+          ) {
+            acc[existingIndex] = curr;
+          }
+        }
+      }
+      return acc;
+    },
+    [],
+  );
+
+  const hasItems = sessions.length > 0 || coachClasses.length > 0;
+
   return (
     <div className="space-y-6">
       <PageHeader
         title={t("schedule.title")}
         subtitle={t("schedule.subtitle")}
-        icon={Calendar}
-        actionButton={
-          hasItems
-            ? {
-                label: t("schedule.createSession"),
-                icon: Calendar,
-                onClick: handleCreateSession,
-              }
-            : undefined
-        }
+        icon={CalendarIcon}
+        actions={[
+          {
+            label:
+              view === "calendar" ? t("common.list") : t("common.calendar"),
+            icon: view === "calendar" ? List : CalendarIcon,
+            onClick: () => setView(view === "calendar" ? "list" : "calendar"),
+          },
+          {
+            label: t("schedule.createSession"),
+            icon: Plus,
+            onClick: handleCreateSession,
+          },
+          {
+            label: t("schedule.createClass"),
+            icon: Plus,
+            onClick: handleCreateClass,
+          },
+        ]}
       />
 
-      <CalendarHeader
-        dateHeader={formatDateHeader()}
-        onPrevWeek={goToPrevWeek}
-        onNextWeek={goToNextWeek}
-        onToday={goToToday}
-      />
+      {view === "calendar" && (
+        <CalendarHeader
+          dateHeader={formatDateHeader()}
+          onPrevWeek={goToPrevWeek}
+          onNextWeek={goToNextWeek}
+          onToday={goToToday}
+        />
+      )}
 
       {isLoadingSessions || isLoadingClasses ? (
         <Loading className="py-20" />
@@ -115,11 +203,11 @@ export default function SchedulePage() {
           description={t("schedule.noSessionsDesc")}
           actionButton={{
             label: t("schedule.createSession"),
-            icon: Calendar,
+            icon: Plus,
             onClick: handleCreateSession,
           }}
         />
-      ) : (
+      ) : view === "calendar" ? (
         <WeeklyGrid
           weekDays={weekDays}
           sessions={sessions}
@@ -128,6 +216,50 @@ export default function SchedulePage() {
           onSessionClick={handleSessionClick}
           onClassClick={handleClassClick}
         />
+      ) : (
+        <div className="space-y-8">
+          {groupedClasses.length > 0 && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <List className="w-5 h-5 text-primary" />
+                {t("pages.gym.classes")}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {groupedClasses.map((gymClass) => (
+                  <ClassCard
+                    key={gymClass._id}
+                    gymClass={gymClass}
+                    onEdit={(c) =>
+                      openModal("gym_class", {
+                        gymId: currentGym?._id,
+                        gymClass: c,
+                      })
+                    }
+                    onDelete={handleDeleteClass}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {sessions.length > 0 && (
+            <div className="space-y-4">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <CalendarIcon className="w-5 h-5 text-primary" />
+                {t("schedule.sessions")}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {sessions.map((session) => (
+                  <SessionCard
+                    key={session._id}
+                    session={session}
+                    onClick={() => handleSessionClick(session)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

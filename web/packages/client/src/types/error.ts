@@ -138,6 +138,8 @@ export enum ErrorCode {
   CLASS_DELETE_ERROR = "CLASS_006",
   BOOKING_ERROR = "CLASS_007",
   COACH_NOT_AVAILABLE = "CLASS_008",
+  CLASS_ALREADY_PASSED = "CLASS_009",
+  PLAN_ACCESS_DENIED = "CLASS_010",
 }
 
 export const HttpStatusToErrorCode: Record<number, ErrorCode> = {

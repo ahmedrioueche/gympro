@@ -3,12 +3,11 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
-import { useSubscriptionOptions } from "../../../../hooks/useSubscriptionOptions";
+import { useGymSubscriptionOptions } from "../../../../hooks/useGymSubscriptionOptions";
 import { useGymStore } from "../../../../store/gym";
 import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
 import Tip from "../../ui/Tip";
-import StepContactPreferences from "./StepContactPreferences";
 import StepGeneralInfo from "./StepGeneralInfo";
 import StepSubscriptionInfo from "./StepSubscriptionInfo";
 import { useCreateMemberForm } from "./useCreateMemberForm";
@@ -20,9 +19,6 @@ export default function CreateMemberModal() {
   const { currentModal, closeModal, createMemberProps } = useModalStore();
   const { onSuccess } = createMemberProps || {};
 
-  const { subscriptionTypeOptions, durationOptions, paymentMethodOptions } =
-    useSubscriptionOptions();
-
   const {
     step,
     formData,
@@ -33,21 +29,42 @@ export default function CreateMemberModal() {
     handleBack,
     handleInputChange,
     handleSubmit,
+    resetForm,
   } = useCreateMemberForm(
     currentGym?._id,
     user?.profile?.email,
     user?.profile?.phoneNumber,
   );
 
+  const {
+    subscriptionTypeOptions,
+    durationOptions,
+    paymentMethodOptions,
+    selectedPlan,
+  } = useGymSubscriptionOptions(formData.subscriptionTypeId);
+
+  const isOpen = currentModal === "create_member";
+
   useEffect(() => {
-    if (showSuccess) {
+    if (isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
+
+  // Auto-select first interval when duration options are available
+  useEffect(() => {
+    if (durationOptions.length > 0 && !formData.subscriptionDuration) {
+      handleInputChange("subscriptionDuration", durationOptions[0].value);
+    }
+  }, [durationOptions, formData.subscriptionDuration, handleInputChange]);
+
+  useEffect(() => {
+    if (showSuccess && isOpen) {
       toast.success(t("createMember.success.title"));
       onSuccess?.();
       closeModal();
     }
-  }, [showSuccess, onSuccess, closeModal, t]);
-
-  const isOpen = currentModal === "create_member";
+  }, [showSuccess, isOpen, onSuccess]);
 
   return (
     <BaseModal
@@ -57,8 +74,8 @@ export default function CreateMemberModal() {
       icon={UserPlus}
       maxWidth="max-w-4xl"
       primaryButton={{
-        label: step === 3 ? t("common.submit") : t("common.next"),
-        onClick: step === 3 ? () => handleSubmit() : handleNext,
+        label: step === 2 ? t("common.submit") : t("common.next"),
+        onClick: step === 2 ? () => handleSubmit() : handleNext,
         loading: isSubmitting,
       }}
       tertiaryButton={
@@ -91,14 +108,8 @@ export default function CreateMemberModal() {
               subscriptionOptions={subscriptionTypeOptions}
               durationOptions={durationOptions}
               paymentMethodOptions={paymentMethodOptions}
+              selectedPlan={selectedPlan}
               errors={errors}
-            />
-          )}
-          {step === 3 && (
-            <StepContactPreferences
-              formData={formData}
-              handleInputChange={handleInputChange}
-              subscriptionOptions={subscriptionTypeOptions}
             />
           )}
         </form>

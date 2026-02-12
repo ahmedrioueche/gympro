@@ -30,11 +30,10 @@ export class SessionsService {
 
   async create(
     coachId: string,
-    createSessionDto: CreateSessionDto,
+    dto: CreateSessionDto,
   ): Promise<ApiResponse<Session>> {
     try {
-      // Validate member exists and has this coach (optional strict check)
-      const member = await this.userModel.findById(createSessionDto.memberId);
+      const member = await this.userModel.findById(dto.memberId);
       if (!member) {
         return {
           success: false,
@@ -43,39 +42,70 @@ export class SessionsService {
         };
       }
 
-      // Check for conflicts (simple check)
-      const conflict = await this.sessionModel.findOne({
-        coachId,
-        $or: [
-          {
-            startTime: { $lt: createSessionDto.endTime },
-            endTime: { $gt: createSessionDto.startTime },
-          },
-        ],
-        status: { $ne: 'cancelled' },
-      });
-
-      if (conflict) {
-        return {
-          success: false,
-          errorCode: ErrorCode.SESSION_TIME_CONFLICT,
-          message: 'Time slot overlaps with an existing session',
-        };
+      if (dto.facilityId && dto.gymId) {
+        const isValid = await this.gymCoachService.validateFacility(
+          dto.gymId,
+          dto.facilityId,
+        );
+        if (!isValid) {
+          return {
+            success: false,
+            errorCode: ErrorCode.INVALID_REQUEST,
+            message: 'Invalid facility selected',
+          };
+        }
       }
 
-      // Fetch affiliation to determine price/gymId if applicable
-      // Note: Assuming logic to determine price exists or is passed in DTO.
-      // For now, we rely on DTO or default.
-      // If gymId is not in DTO, we might try to infer it. (Skipping for now).
+      const dates = this.generateRecurringDates(
+        new Date(dto.startTime),
+        dto.recurrence,
+      );
 
-      const session = await this.sessionModel.create({
-        ...createSessionDto,
-        coachId,
+      // Validate conflicts for all dates
+      for (const date of dates) {
+        const start = date;
+        const end = new Date(start.getTime() + dto.duration * 60000);
+
+        const conflict = await this.sessionModel.findOne({
+          coachId,
+          $or: [
+            {
+              startTime: { $lt: end },
+              endTime: { $gt: start },
+            },
+          ],
+          status: { $ne: SessionStatus.CANCELLED },
+        });
+
+        if (conflict) {
+          return {
+            success: false,
+            errorCode: ErrorCode.SESSION_TIME_CONFLICT,
+            message: `Time conflict on ${date.toLocaleDateString()}`,
+          };
+        }
+      }
+
+      const seriesId = new Types.ObjectId().toString();
+      const sessionsToCreate = dates.map((date) => {
+        const start = date;
+        const end = new Date(start.getTime() + dto.duration * 60000);
+        return {
+          ...dto,
+          coachId,
+          startTime: start,
+          endTime: end,
+          seriesId: dates.length > 1 ? seriesId : undefined,
+          status: SessionStatus.SCHEDULED,
+        };
       });
+
+      const createdSessions =
+        await this.sessionModel.insertMany(sessionsToCreate);
 
       return {
         success: true,
-        data: session.toObject(),
+        data: (createdSessions[0] as any).toObject(),
       };
     } catch (error) {
       console.error('Create session error:', error);
@@ -108,8 +138,6 @@ export class SessionsService {
           // Coaches can ONLY see their own sessions
           filter.coachId = new Types.ObjectId(userId);
         }
-        // Admins/Managers (if any) might see all, or handled via different logic.
-        // Assuming loose filtering for others or implicit trust if role not matched above.
       }
 
       // Date range filter
@@ -132,9 +160,7 @@ export class SessionsService {
         .sort({ startTime: 1 })
         .lean();
 
-      // Transform populated fields to match Session interface structure if needed,
-      // or rely on frontend to handle "memberId" as object.
-      // The Session interface has member?: {...} which implies we should map it
+      // Transform populated fields to match Session interface structure
       const mappedSessions = sessions.map((s: any) => ({
         ...s,
         _id: s._id.toString(),
@@ -184,7 +210,7 @@ export class SessionsService {
 
       return {
         success: true,
-        data: session as any, // Cast for simplicity, ideal to map
+        data: session as any,
       };
     } catch (error) {
       return {
@@ -195,10 +221,63 @@ export class SessionsService {
     }
   }
 
+  private generateRecurringDates(
+    startDate: Date,
+    recurrence: CreateSessionDto['recurrence'],
+  ): Date[] {
+    if (!recurrence || recurrence.type === 'none') return [startDate];
+
+    const MAX_INSTANCES = 50; // Limit for personal sessions
+    const dates: Date[] = [];
+
+    let iterationDate = new Date(startDate);
+    let endDate = recurrence.endDate ? new Date(recurrence.endDate) : null;
+
+    if (!endDate) {
+      endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 2); // Default 2 months
+    }
+
+    const hours = startDate.getHours();
+    const minutes = startDate.getMinutes();
+
+    const isDayMatch = (date: Date) => {
+      if (recurrence.type === 'custom' && recurrence.days) {
+        return recurrence.days.includes(date.getDay());
+      }
+      return true;
+    };
+
+    while (dates.length < MAX_INSTANCES && iterationDate <= endDate) {
+      if (isDayMatch(iterationDate)) {
+        const dateToAdd = new Date(iterationDate);
+        dateToAdd.setHours(hours, minutes, 0, 0);
+        dates.push(dateToAdd);
+      }
+
+      if (recurrence.type === 'daily') {
+        iterationDate.setDate(iterationDate.getDate() + 1);
+      } else if (recurrence.type === 'weekly') {
+        iterationDate.setDate(iterationDate.getDate() + 7);
+      } else if (recurrence.type === 'biweekly') {
+        iterationDate.setDate(iterationDate.getDate() + 14);
+      } else if (recurrence.type === 'monthly') {
+        iterationDate.setMonth(iterationDate.getMonth() + 1);
+      } else if (recurrence.type === 'custom') {
+        iterationDate.setDate(iterationDate.getDate() + 1);
+      } else {
+        break;
+      }
+    }
+
+    return dates.length > 0 ? dates : [startDate];
+  }
+
   async update(
     id: string,
-    updateSessionDto: UpdateSessionDto,
-    userId: string, // Check ownership
+    dto: UpdateSessionDto,
+    userId: string,
+    updateSeries = false,
   ): Promise<ApiResponse<Session>> {
     try {
       const session = await this.sessionModel.findById(id);
@@ -210,7 +289,6 @@ export class SessionsService {
         };
       }
 
-      // Verify ownership (coach or member involved)
       if (
         session.coachId.toString() !== userId &&
         session.memberId.toString() !== userId
@@ -222,29 +300,45 @@ export class SessionsService {
         };
       }
 
-      const originalStatus = session.status;
-      const newStatus = updateSessionDto.status;
+      const updateData: any = { ...dto };
+      if (dto.startTime || dto.duration) {
+        const start = dto.startTime
+          ? new Date(dto.startTime)
+          : session.startTime;
+        const duration = dto.duration || session.duration;
+        const end = new Date(start.getTime() + duration * 60000);
+        updateData.endTime = end;
+      }
 
-      // Update fields
-      Object.keys(updateSessionDto).forEach((key) => {
-        if (updateSessionDto[key] !== undefined) {
-          session[key] = updateSessionDto[key];
-        }
-      });
-      await session.save();
+      if (updateSeries && session.seriesId) {
+        // Update this and future sessions in series
+        await this.sessionModel.updateMany(
+          {
+            seriesId: session.seriesId,
+            startTime: { $gte: session.startTime },
+          },
+          updateData,
+        );
+        const updated = await this.sessionModel.findById(id);
+        return { success: true, data: updated?.toObject() };
+      }
 
-      // Trigger: If status changed to COMPLETED
-      // session.gymId needs to be present. If not, we can try to look it up if needed,
-      // but for now we assume it's set on creation or update.
-      // If we enable "free floating" sessions to be linked to a gym later, we'd need that logic.
+      const updated = await this.sessionModel.findByIdAndUpdate(
+        id,
+        updateData,
+        {
+          new: true,
+        },
+      );
+
+      // Handle commission logic if status changed to COMPLETED
       if (
-        newStatus === SessionStatus.COMPLETED &&
-        originalStatus !== SessionStatus.COMPLETED &&
+        dto.status === SessionStatus.COMPLETED &&
+        session.status !== SessionStatus.COMPLETED &&
         session.gymId &&
         session.price &&
         session.price > 0
       ) {
-        // Calculate Commission
         const affiliation = await this.gymCoachService.findAffiliation(
           session.gymId,
           session.coachId,
@@ -263,7 +357,7 @@ export class SessionsService {
             category: GymCoachPaymentCategory.SESSION_COMMISSION,
             referenceId: session._id,
             referenceType: 'Session',
-            description: `Commission for session with member ${session.memberId}`, // optimize later with names
+            description: `Commission for session with member ${session.memberId}`,
             metadata: {
               commissionRateSnapshot: affiliation.commissionRate,
               originalServicePrice: session.price,
@@ -274,7 +368,7 @@ export class SessionsService {
 
       return {
         success: true,
-        data: session.toObject(),
+        data: updated?.toObject(),
       };
     } catch (error) {
       console.error('Update session error:', error);
@@ -286,7 +380,11 @@ export class SessionsService {
     }
   }
 
-  async remove(id: string, userId: string): Promise<ApiResponse<void>> {
+  async remove(
+    id: string,
+    userId: string,
+    deleteSeries = false,
+  ): Promise<ApiResponse<void>> {
     try {
       const session = await this.sessionModel.findById(id);
       if (!session) {
@@ -297,8 +395,11 @@ export class SessionsService {
         };
       }
 
-      // Verify ownership
-      if (session.coachId.toString() !== userId) {
+      // Both coach and member can cancel/remove their sessions
+      if (
+        session.coachId.toString() !== userId &&
+        session.memberId.toString() !== userId
+      ) {
         return {
           success: false,
           errorCode: ErrorCode.UNAUTHORIZED,
@@ -306,7 +407,11 @@ export class SessionsService {
         };
       }
 
-      await this.sessionModel.findByIdAndDelete(id);
+      if (deleteSeries && session.seriesId) {
+        await this.sessionModel.deleteMany({ seriesId: session.seriesId });
+      } else {
+        await this.sessionModel.findByIdAndDelete(id);
+      }
       return { success: true };
     } catch (error) {
       console.error('Delete session error:', error);

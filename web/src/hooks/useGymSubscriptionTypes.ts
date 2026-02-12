@@ -6,7 +6,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { useGymStore } from "../../../../../../../store/gym";
+import { useGymStore } from "../store/gym";
 
 export const subscriptionKeys = {
   all: ["subscriptionTypes"] as const,
@@ -14,7 +14,7 @@ export const subscriptionKeys = {
   list: (gymId: string) => [...subscriptionKeys.lists(), gymId] as const,
 };
 
-export function useSubscriptionTypes() {
+export function useGymSubscriptionTypes() {
   const { currentGym } = useGymStore();
   const gymId = currentGym?._id;
 
@@ -43,7 +43,7 @@ export function useManageSubscriptionType() {
     },
     onError: (error: any) => {
       toast.error(
-        error.response?.data?.message || t("pricing.error.create_failed")
+        error.response?.data?.message || t("pricing.error.create_failed"),
       );
     },
   });
@@ -59,7 +59,7 @@ export function useManageSubscriptionType() {
     },
     onError: (error: any) => {
       toast.error(
-        error.response?.data?.message || t("pricing.error.update_failed")
+        error.response?.data?.message || t("pricing.error.update_failed"),
       );
     },
   });
@@ -75,7 +75,7 @@ export function useManageSubscriptionType() {
     },
     onError: (error: any) => {
       toast.error(
-        error.response?.data?.message || t("pricing.error.delete_failed")
+        error.response?.data?.message || t("pricing.error.delete_failed"),
       );
     },
   });

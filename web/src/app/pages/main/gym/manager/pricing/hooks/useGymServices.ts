@@ -1,3 +1,4 @@
+import { type GymService } from "@ahmedrioueche/gympro-client";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useUpdateGymSettings } from "../../../../../../../hooks/queries/useGyms";
@@ -10,21 +11,36 @@ export function useGymServices() {
   const { openModal } = useModalStore();
   const updateSettings = useUpdateGymSettings();
 
-  const services = currentGym?.settings?.servicesOffered || [];
+  const services = (currentGym?.settings?.servicesOffered || []) as (
+    | GymService
+    | string
+  )[];
+
+  // Helper to normalize services (handle legacy strings)
+  const normalizedServices: GymService[] = services.map((s, index) => {
+    if (typeof s === "string") {
+      return {
+        _id: `legacy-${index}`,
+        name: s,
+        createdAt: new Date().toISOString(),
+      };
+    }
+    return s;
+  });
 
   const handleAddService = () => {
     openModal("service", { mode: "create" });
   };
 
-  const handleEditService = (service: string) => {
+  const handleEditService = (service: GymService) => {
     openModal("service", { mode: "edit", service });
   };
 
-  const handleDeleteService = async (service: string) => {
+  const handleDeleteService = async (serviceId: string) => {
     if (!currentGym) return;
 
     // Optimistic update
-    const newServices = services.filter((s) => s !== service);
+    const newServices = normalizedServices.filter((s) => s._id !== serviceId);
     const previousGym = { ...currentGym };
 
     // Update store immediately
@@ -33,10 +49,6 @@ export function useGymServices() {
       settings: {
         ...currentGym.settings,
         servicesOffered: newServices,
-        // Ensure other required props match GymSettings interface if needed,
-        // but Typescript might be lenient with spread.
-        // Best to just spread settings.
-        paymentMethods: currentGym.settings?.paymentMethods || [],
       } as any,
     });
 
@@ -59,21 +71,35 @@ export function useGymServices() {
     }
   };
 
-  const saveService = async (newService: string, oldService?: string) => {
+  const saveService = async (
+    data: { name: string; description?: string },
+    existingService?: GymService,
+  ) => {
     if (!currentGym) return;
 
-    let newServices = [...services];
+    let newServices = [...normalizedServices];
 
-    if (oldService) {
-      // Edit mode: replace old with new
-      newServices = newServices.map((s) => (s === oldService ? newService : s));
+    if (existingService) {
+      // Edit mode
+      newServices = newServices.map((s) =>
+        s._id === existingService._id
+          ? { ...s, ...data, updatedAt: new Date().toISOString() }
+          : s,
+      );
     } else {
-      // Create mode: append
-      if (newServices.includes(newService)) {
+      // Create mode
+      const newServiceObj: GymService = {
+        _id: Math.random().toString(36).substring(7), // Temporary ID
+        name: data.name,
+        description: data.description,
+        createdAt: new Date().toISOString(),
+      };
+
+      if (newServices.some((s) => s.name === data.name)) {
         toast.error(t("services.duplicateError", "Service already exists"));
         return;
       }
-      newServices.push(newService);
+      newServices.push(newServiceObj);
     }
 
     try {
@@ -83,11 +109,9 @@ export function useGymServices() {
       });
 
       if (result.success && result.data) {
-        // Update local store with fresh data from backend
         setGym(result.data);
-
         toast.success(
-          oldService
+          existingService
             ? t("services.updateSuccess", "Service updated successfully")
             : t("services.createSuccess", "Service created successfully"),
         );
@@ -102,7 +126,7 @@ export function useGymServices() {
   };
 
   return {
-    services,
+    services: normalizedServices,
     handleAddService,
     handleEditService,
     handleDeleteService,

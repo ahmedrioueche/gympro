@@ -32,23 +32,84 @@ export const useManagerClasses = () => {
     openModal("gym_class", { gymId, gymClass, onSuccess: refetch });
   };
 
-  const handleDelete = (id: string) => {
-    openModal("confirm", {
-      title: t("classes.deleteTitle", "Delete Class"),
-      text: t(
-        "classes.confirmDeleteDesc",
-        "Are you sure you want to delete this class? This action cannot be undone.",
-      ),
-      onConfirm: async () => {
-        await deleteClass(id);
-      },
-      confirmVariant: "danger",
-      confirmText: t("common.delete", "Delete"),
-    });
+  const handleDelete = (gymClass: GymClass) => {
+    if (!gymId) return;
+
+    if (gymClass.seriesId) {
+      openModal("confirm", {
+        title: t("classes.delete.title", "Delete Class"),
+        text: t(
+          "classes.delete.message",
+          "This is a recurring class. Would you like to cancel only this specific session or the entire series?",
+        ),
+        onConfirm: async () => {
+          await deleteClass({ id: gymClass._id, deleteSeries: false });
+        },
+        confirmVariant: "danger",
+        confirmText: t("classes.delete.confirmOne", "Cancel only this session"),
+        secondaryAction: {
+          label: t("classes.delete.confirmSeries", "Cancel entire series"),
+          onClick: async () => {
+            await deleteClass({ id: gymClass._id, deleteSeries: true });
+          },
+        },
+      });
+    } else {
+      openModal("confirm", {
+        title: t("classes.delete.title", "Delete Class"),
+        text: t(
+          "classes.confirmDeleteDesc",
+          "Are you sure you want to delete this class? This action cannot be undone.",
+        ),
+        onConfirm: async () => {
+          await deleteClass({ id: gymClass._id });
+        },
+        confirmVariant: "danger",
+        confirmText: t("common.delete", "Delete"),
+      });
+    }
   };
 
+  // Group classes by seriesId to avoid duplication in the management list
+  const now = new Date();
+  const groupedClasses = (classesResponse?.data || []).reduce(
+    (acc: GymClass[], curr: GymClass) => {
+      if (!curr.seriesId) {
+        acc.push(curr);
+      } else {
+        const existingIndex = acc.findIndex(
+          (c) => c.seriesId === curr.seriesId,
+        );
+        if (existingIndex === -1) {
+          acc.push(curr);
+        } else {
+          const existing = acc[existingIndex];
+          const existingDate = new Date(existing.scheduledAt);
+          const currDate = new Date(curr.scheduledAt);
+
+          // If existing is in the past and current is upcoming, prefer current
+          if (existingDate < now && currDate >= now) {
+            acc[existingIndex] = curr;
+          }
+          // Otherwise keep the one closest to 'now' if both are upcoming,
+          // or just keep the first one if both are past
+          else if (
+            existingDate >= now &&
+            currDate >= now &&
+            currDate < existingDate
+          ) {
+            acc[existingIndex] = curr;
+          }
+        }
+      }
+      return acc;
+    },
+    [],
+  );
+
   return {
-    classes: classesResponse?.data || [],
+    classes: groupedClasses,
+    allClasses: classesResponse?.data || [],
     isLoading,
     error,
     handleCreate,

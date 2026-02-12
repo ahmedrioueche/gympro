@@ -1,8 +1,8 @@
 import { DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
+import { useManageSubscriptionType } from "../../../../../../../hooks/useGymSubscriptionTypes";
 import { useModalStore } from "../../../../../../../store/modal";
-import { useManageSubscriptionType } from "../hooks/useSubscriptionTypes";
 import { PricingForm } from "./PricingForm";
 
 export const PricingModal = () => {

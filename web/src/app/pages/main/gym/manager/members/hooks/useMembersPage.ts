@@ -140,7 +140,9 @@ export function useMembersPage() {
   };
 
   const handleAddMember = () => {
-    openModal("create_member");
+    openModal("create_member", {
+      onSuccess: () => refetch(),
+    });
   };
 
   return {
@@ -159,6 +161,7 @@ export function useMembersPage() {
     totalMembers,
     totalPages,
     membersRaw: members,
+    currentGym,
     handleSearchChange,
     handlePageChange,
     handleViewProfile,

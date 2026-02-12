@@ -6,6 +6,7 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import {
   Check,
+  Clock,
   Edit2,
   Plus,
   ShieldCheck,
@@ -123,12 +124,29 @@ export default function GeneralTab({
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      {/* Currency Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-1">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+      {/* Header */}
+      <div className="flex items-start gap-4">
+        <div className="p-3 rounded-xl bg-primary/10">
+          <Clock className="w-6 h-6 text-primary" />
+        </div>
+        <div>
+          <h3 className="text-lg font-semibold text-text-primary">
+            {t("settings.gym.tabs.general", "General Settings")}
+          </h3>
+          <p className="text-sm text-text-secondary mt-1">
+            {t(
+              "settings.gym.general.description",
+              "Configure your gym's basic operating rules and preferences.",
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
           {t("settings.gym.general.currency", "Currency")}
-        </h3>
+        </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.gym.general.currencyDesc",
@@ -152,9 +170,9 @@ export default function GeneralTab({
       </div>
 
       <div className="pt-6 border-t border-border">
-        <h3 className="text-lg font-semibold text-text-primary mb-1">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
           {t("settings.gym.general.workingDays", "Working Days")}
-        </h3>
+        </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.gym.general.workingDaysDesc",
@@ -192,9 +210,9 @@ export default function GeneralTab({
       </div>
 
       <div className="pt-6 border-t border-border">
-        <h3 className="text-lg font-semibold text-text-primary mb-1">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
           {t("settings.gym.general.workingHours", "Working Hours")}
-        </h3>
+        </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.gym.general.workingHoursDesc",
@@ -219,9 +237,9 @@ export default function GeneralTab({
       </div>
 
       <div className="pt-6 border-t border-border">
-        <h3 className="text-lg font-semibold text-text-primary mb-1">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
           {t("settings.gym.general.genderPolicy", "Gender Policy")}
-        </h3>
+        </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.gym.general.genderPolicyDesc",

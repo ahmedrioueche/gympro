@@ -177,6 +177,8 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.CLASS_DELETE_ERROR]: "status.error.class.delete_failed",
   [ErrorCode.BOOKING_ERROR]: "status.error.class.booking_error",
   [ErrorCode.COACH_NOT_AVAILABLE]: "status.error.class.coach_not_available",
+  [ErrorCode.CLASS_ALREADY_PASSED]: "status.error.class.already_passed",
+  [ErrorCode.PLAN_ACCESS_DENIED]: "status.error.class.plan_access_denied",
 };
 
 /**

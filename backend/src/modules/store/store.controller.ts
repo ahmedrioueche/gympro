@@ -33,7 +33,7 @@ export class StoreController {
   async create(
     @Param('gymId') gymId: string,
     @Body() createProductDto: CreateProductDto,
-    @GetUser('_id') userId: string,
+    @GetUser('sub') userId: string,
   ): Promise<ApiResponse<Product>> {
     const data = await this.storeService.create(
       gymId,
@@ -86,7 +86,7 @@ export class StoreController {
     @Param('gymId') gymId: string,
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-    @GetUser('_id') userId: string,
+    @GetUser('sub') userId: string,
   ): Promise<ApiResponse<Product>> {
     const data = await this.storeService.update(
       gymId,

@@ -55,6 +55,9 @@ export class GymClassModel extends Document implements GymClass {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   coachId?: string;
 
+  @Prop({ type: String })
+  facilityId?: string;
+
   @Prop({ required: true, min: 1 })
   maxCapacity: number;
 
@@ -66,6 +69,23 @@ export class GymClassModel extends Document implements GymClass {
 
   @Prop({ type: [ClassBookingModel], default: [] })
   bookings: ClassBooking[];
+
+  @Prop({
+    type: String,
+    enum: ['active', 'cancelled', 'completed'],
+    default: 'active',
+  })
+  status: 'active' | 'cancelled' | 'completed';
+
+  @Prop({ type: Object })
+  recurrence?: {
+    type: 'none' | 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'custom';
+    endDate?: string | Date;
+    days?: number[];
+  };
+
+  @Prop({ type: String, index: true })
+  seriesId?: string;
 
   @Prop()
   createdAt: Date;

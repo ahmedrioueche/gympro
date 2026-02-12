@@ -6,9 +6,12 @@ import {
   IsDateString,
   IsEnum,
   IsMongoId,
+  IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   IsUrl,
+  Min,
 } from 'class-validator';
 
 export class CreateSessionDto implements ICreateSessionDto {
@@ -18,8 +21,9 @@ export class CreateSessionDto implements ICreateSessionDto {
   @IsDateString()
   startTime: string;
 
-  @IsDateString()
-  endTime: string;
+  @IsNumber()
+  @Min(1)
+  duration: number;
 
   @IsEnum(SessionType)
   type: SessionType;
@@ -35,4 +39,20 @@ export class CreateSessionDto implements ICreateSessionDto {
   @IsOptional()
   @IsString()
   location?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  facilityId?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  gymId?: string;
+
+  @IsOptional()
+  @IsObject()
+  recurrence?: {
+    type: 'none' | 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'custom';
+    endDate?: string | Date;
+    days?: number[];
+  };
 }
