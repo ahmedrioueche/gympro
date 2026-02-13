@@ -28,15 +28,34 @@ export class GymClassController {
   @Get('gym/:gymId')
   async findAllByGym(
     @Param('gymId') gymId: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ): Promise<ApiResponse<GymClass[]>> {
-    return this.gymClassService.findAllByGym(gymId);
+    return this.gymClassService.findAllByGym(
+      gymId,
+      startDate ? new Date(startDate) : undefined,
+      endDate ? new Date(endDate) : undefined,
+    );
   }
 
   @Get('coach/me')
   async findAllByCoach(
     @GetUser('sub') userId: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ): Promise<ApiResponse<GymClass[]>> {
-    return this.gymClassService.findAllByCoach(userId);
+    return this.gymClassService.findAllByCoach(
+      userId,
+      startDate ? new Date(startDate) : undefined,
+      endDate ? new Date(endDate) : undefined,
+    );
+  }
+
+  @Get('member/me')
+  async findAllByMember(
+    @GetUser('sub') userId: string,
+  ): Promise<ApiResponse<GymClass[]>> {
+    return this.gymClassService.findAllByMember(userId);
   }
 
   @Get(':id')
@@ -72,8 +91,21 @@ export class GymClassController {
   async remove(
     @Param('id') id: string,
     @Query('deleteSeries') deleteSeries?: string,
+    @Query('hardDelete') hardDelete?: string,
   ): Promise<ApiResponse<void>> {
-    return this.gymClassService.remove(id, deleteSeries === 'true');
+    return this.gymClassService.remove(
+      id,
+      deleteSeries === 'true',
+      hardDelete === 'true',
+    );
+  }
+
+  @Patch(':id/restore')
+  async restore(
+    @Param('id') id: string,
+    @Query('restoreSeries') restoreSeries?: string,
+  ): Promise<ApiResponse<void>> {
+    return this.gymClassService.restore(id, restoreSeries === 'true');
   }
 
   @Post('book')

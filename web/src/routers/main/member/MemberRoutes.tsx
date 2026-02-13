@@ -7,6 +7,7 @@ import HomePage from "../../../app/pages/main/member/home/HomePage";
 import NotificationsPage from "../../../app/pages/main/member/notifications/NotificationsPage";
 import ProgramsPage from "../../../app/pages/main/member/programs/ProgramsPage";
 import ProgressPage from "../../../app/pages/main/member/progress/ProgressPage";
+import SchedulePage from "../../../app/pages/main/member/schedule/SchedulePage";
 import SettingsPage from "../../../app/pages/main/member/settings/SettingsPage";
 import SubscriptionsPage from "../../../app/pages/main/member/subscriptions/SubscriptionsPage";
 import TrainingPage from "../../../app/pages/main/member/training/TrainingPage";
@@ -76,4 +77,10 @@ export const notificationsRoute = createRoute({
   getParentRoute: () => MemberRootRoute,
   path: "/notifications",
   component: () => <NotificationsPage />,
+});
+
+export const scheduleRoute = createRoute({
+  getParentRoute: () => MemberRootRoute,
+  path: "/schedule",
+  component: () => <SchedulePage />,
 });

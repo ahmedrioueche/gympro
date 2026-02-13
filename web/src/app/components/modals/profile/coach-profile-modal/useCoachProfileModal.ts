@@ -6,7 +6,7 @@ import { useCoachProfile } from "./useCoachProfile";
 export function useCoachProfileModal() {
   const { currentModal, coachProfileProps, closeModal, openModal } =
     useModalStore();
-  const { activeDashboard } = useUserStore();
+  const { activeDashboard, user } = useUserStore();
   const { currentGym } = useGymStore();
 
   const { coachId, coach: coachFromProps } = coachProfileProps || {};
@@ -22,7 +22,8 @@ export function useCoachProfileModal() {
   const isManagerDashboard = activeDashboard === "manager";
 
   // Check if user is already being coached by this coach
-  const isAlreadyCoached = false; // TODO: Check user.coachingInfo.coachId === coachId
+  const isAlreadyCoached =
+    (user as any)?.coachingInfo?.coachId === coach?.userId;
 
   // Check if coach is already affiliated with current gym
   const isAlreadyAffiliated = false; // TODO: Check gym affiliations

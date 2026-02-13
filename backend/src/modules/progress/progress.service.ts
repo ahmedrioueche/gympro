@@ -136,8 +136,8 @@ export class ProgressService {
     const uniqueDates = Array.from(new Set(dates)).sort();
 
     let currentStreak = 0;
-    let bestStreak = 0;
-    let tempStreak = 0;
+    const bestStreak = 0;
+    const tempStreak = 0;
 
     // Check current streak (working backwards from today)
     const today = new Date().toISOString().split('T')[0];
@@ -176,7 +176,7 @@ export class ProgressService {
     let curr = 0;
     if (hasToday || hasYesterday) {
       // Work backwards
-      let checkDate = new Date();
+      const checkDate = new Date();
       if (!hasToday) checkDate.setDate(checkDate.getDate() - 1);
 
       while (true) {

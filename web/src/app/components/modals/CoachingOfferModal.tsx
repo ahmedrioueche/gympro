@@ -95,9 +95,6 @@ export default function CoachingOfferModal() {
               {t("coaching.offer.coachMessage")}
             </div>
             <div className="p-4 bg-surface rounded-2xl border border-border italic text-text-secondary relative">
-              <span className="absolute -top-3 left-4 px-2 bg-surface text-[10px] text-primary font-bold uppercase">
-                {t("coaching.offer.message")}
-              </span>
               "{coachingOfferProps.message}"
             </div>
           </div>

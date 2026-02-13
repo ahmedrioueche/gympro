@@ -7,17 +7,20 @@ import {
   useUpdateSession,
 } from "../../../../hooks/queries/useSessions";
 import { useModalStore } from "../../../../store/modal";
+import { useUserStore } from "../../../../store/user";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 
 export const useSessionDetails = () => {
   const { t } = useTranslation();
   const { currentModal, sessionDetailsProps, closeModal, openModal } =
     useModalStore();
+  const { activeDashboard } = useUserStore();
   const updateSession = useUpdateSession();
   const deleteSession = useDeleteSession();
 
   const isOpen = currentModal === "session_details";
   const session = sessionDetailsProps?.session;
+  const isMemberView = activeDashboard === "member";
 
   const [notes, setNotes] = useState("");
   // Local status state for immediate UI feedback (optimistic in modal)
@@ -120,5 +123,6 @@ export const useSessionDetails = () => {
     handleDelete,
     closeModal,
     isUpdating: updateSession.isPending,
+    isMemberView,
   };
 };

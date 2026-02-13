@@ -130,4 +130,5 @@ export interface GymClass extends AuditInfo {
     days?: number[]; // For custom recurrence
   };
   seriesId?: string; // To link recurring classes
+  isSeries?: boolean; // If true, this is a template for recurring classes
 }

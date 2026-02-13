@@ -64,6 +64,9 @@ export class GymClassModel extends Document implements GymClass {
   @Prop({ type: Date, required: true, index: true })
   scheduledAt: string | Date;
 
+  @Prop({ type: Date, index: true })
+  originalScheduledAt?: string | Date; // Used to track which recurrence slot this instance belongs to
+
   @Prop({ required: true, min: 1 })
   duration: number; // in minutes
 
@@ -86,6 +89,9 @@ export class GymClassModel extends Document implements GymClass {
 
   @Prop({ type: String, index: true })
   seriesId?: string;
+
+  @Prop({ default: false })
+  isSeries: boolean;
 
   @Prop()
   createdAt: Date;

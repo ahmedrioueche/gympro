@@ -1,27 +1,33 @@
 import type { GymClass } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
-import { Calendar, Clock, Info, User, Users } from "lucide-react";
+import { Calendar, Clock, Info, Star, User, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
 import { useModalStore } from "../../../store/modal";
+import { useUserStore } from "../../../store/user";
 import { capitalize, cn } from "../../../utils/helper";
+import { MinimalCoachCard } from "../ui/MinimalCoachCard";
 
 export default function ClassDetailsModal() {
   const { t } = useTranslation();
   const { currentModal, closeModal, classDetailsProps, openModal } =
     useModalStore();
+  const { activeDashboard } = useUserStore();
+  const isMemberView = activeDashboard === "member";
   const {
     gymClass,
     onBook,
     onCancel,
     isBooking,
     onCancelClass,
+    onRestoreClass,
     isPassed: passedProp,
   } = (classDetailsProps as {
     gymClass: GymClass;
     onBook?: (id: string) => void;
     onCancel?: (id: string) => void;
     onCancelClass?: (id: string, deleteSeries?: boolean) => void;
+    onRestoreClass?: (id: string) => void;
     isBooking?: boolean;
     isPassed?: boolean;
   }) || {};
@@ -33,7 +39,6 @@ export default function ClassDetailsModal() {
   const coachData = gymClass.coachId as any;
   const coach = coachData?.profile || coachData;
   const coachName = coach?.fullName || coach?.username;
-  const coachImage = coach?.profileImageUrl || coach?.picture;
 
   const isFull = (gymClass.bookings?.length || 0) >= gymClass.maxCapacity;
 
@@ -42,13 +47,6 @@ export default function ClassDetailsModal() {
 
   const coachId =
     coachData?._id || (typeof coachData === "string" ? coachData : null);
-  const canViewCoachProfile = !!coachId;
-
-  const handleCoachClick = () => {
-    if (canViewCoachProfile) {
-      openModal("coach_profile", { coachId });
-    }
-  };
 
   const handleCancelClick = () => {
     if (!onCancel) return;
@@ -77,6 +75,13 @@ export default function ClassDetailsModal() {
     onCancelClass(gymClass._id);
   };
 
+  const handleRestoreClick = () => {
+    if (!onRestoreClass) return;
+    onRestoreClass(gymClass._id);
+  };
+
+  const isCancelled = gymClass.status === "cancelled";
+
   return (
     <BaseModal
       isOpen={isOpen}
@@ -84,140 +89,140 @@ export default function ClassDetailsModal() {
       title={gymClass.name}
       subtitle={capitalize(gymClass.service || "")}
       icon={Info}
-      maxWidth="max-w-lg"
+      maxWidth="max-w-xl"
       primaryButton={
-        onBook || onCancel || onCancelClass
+        isCancelled && onRestoreClass
           ? {
-              label: onCancelClass
-                ? t("classes.cancelClassBtn", "Cancel Class")
-                : onCancel
-                  ? t("classes.cancelBtn")
-                  : isPassed
-                    ? t("classes.passed", "Passed")
-                    : isFull
-                      ? t("classes.full")
-                      : t("classes.bookBtn"),
-              onClick: () => {
-                if (onCancelClass) handleCancelClassClick();
-                else if (onCancel) handleCancelClick();
-                else if (onBook) {
-                  onBook(gymClass._id);
-                  closeModal();
-                }
-              },
-              disabled:
-                (!onCancel && !onCancelClass && (isFull || isPassed)) ||
-                isBooking,
-              loading: isBooking,
-              variant: onCancel || onCancelClass ? "danger" : "primary",
+              label: t("common.restore", "Restore"),
+              onClick: handleRestoreClick,
+              variant: "primary",
             }
-          : undefined
+          : onBook || onCancel || onCancelClass
+            ? {
+                label: onCancelClass
+                  ? isCancelled
+                    ? t("common.deletePermanently", "Delete permanently")
+                    : t("classes.cancelClassBtn", "Cancel Class")
+                  : onCancel
+                    ? t("classes.cancelBtn")
+                    : isPassed
+                      ? t("classes.passed", "Passed")
+                      : isFull
+                        ? t("classes.full")
+                        : t("classes.bookBtn"),
+                onClick: () => {
+                  if (onCancelClass) handleCancelClassClick();
+                  else if (onCancel) handleCancelClick();
+                  else if (onBook) {
+                    onBook(gymClass._id);
+                    closeModal();
+                  }
+                },
+                disabled:
+                  (!onCancel && !onCancelClass && (isFull || isPassed)) ||
+                  isBooking,
+                loading: isBooking,
+                variant: onCancel || onCancelClass ? "danger" : "primary",
+              }
+            : undefined
       }
       secondaryButton={
         onCancelClass
-          ? {
-              label: t("common.edit"),
-              onClick: handleEditClick,
-              variant: "default",
-            }
-          : {
-              label: t("common.close"),
-              onClick: closeModal,
-            }
+          ? isCancelled
+            ? onRestoreClass
+              ? {
+                  label: t("common.deletePermanently", "Delete permanently"),
+                  onClick: handleCancelClassClick,
+                  variant: "danger",
+                }
+              : undefined
+            : {
+                label: t("common.edit"),
+                onClick: handleEditClick,
+                variant: "default",
+              }
+          : undefined
       }
     >
-      <div className="space-y-6">
-        {/* Class Status Badges */}
-        {(onCancel || isFull || isPassed) && (
-          <div className="flex flex-wrap gap-2 -mb-2">
-            {onCancel && (
-              <span className="px-2.5 py-1 rounded-lg bg-green-500/20 text-green-400 text-[10px] font-bold uppercase tracking-wider border border-green-500/30">
-                {t("classes.booked", "Booked")}
-              </span>
-            )}
-            {isFull && !onCancel && (
-              <span className="px-2.5 py-1 rounded-lg bg-red-500/20 text-red-400 text-[10px] font-bold uppercase tracking-wider border border-red-500/30">
-                {t("classes.full", "Full Capacity")}
-              </span>
-            )}
-            {isPassed && (
-              <span className="px-2.5 py-1 rounded-lg bg-white/10 text-white/50 text-[10px] font-bold uppercase tracking-wider border border-white/10">
-                {t("classes.passed", "Passed")}
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Class Primary Info */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-surface-secondary/30 p-4 rounded-2xl border border-white/5 space-y-1">
-            <div className="flex items-center gap-2 text-primary">
-              <Calendar className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">
-                {t("common.date")}
+      <div className="space-y-8">
+        {/* Status Indicators */}
+        <div className="flex flex-wrap gap-2">
+          {onCancel && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 shadow-[0_0_15px_-3px_rgba(34,197,94,0.2)] animate-in fade-in zoom-in duration-300">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-[10px] font-bold text-green-400 uppercase tracking-widest">
+                {t("classes.booked", "Reserved")}
               </span>
             </div>
-            <p className="text-white font-medium">
-              {format(new Date(gymClass.scheduledAt), "EEEE, MMM d")}
-            </p>
-          </div>
-
-          <div className="bg-surface-secondary/30 p-4 rounded-2xl border border-white/5 space-y-1">
-            <div className="flex items-center gap-2 text-primary">
-              <Clock className="w-4 h-4" />
-              <span className="text-xs font-bold uppercase tracking-wider">
-                {t("common.time")}
+          )}
+          {isFull && !onCancel && (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_-3px_rgba(239,68,68,0.2)]">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+              <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest">
+                {t("classes.full", "Class Full")}
               </span>
             </div>
-            <p className="text-white font-medium">
-              {format(new Date(gymClass.scheduledAt), "HH:mm")} (
-              {gymClass.duration} min)
-            </p>
-          </div>
+          )}
+          {isCancelled ? (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 shadow-[0_0_15px_-3px_rgba(239,68,68,0.2)]">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+              <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest">
+                {t("common.cancelled", "Cancelled")}
+              </span>
+            </div>
+          ) : isPassed ? (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 opacity-60">
+              <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">
+                {t("classes.passed", "Completed")}
+              </span>
+            </div>
+          ) : null}
         </div>
 
-        {/* Coach & Capacity */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-surface-secondary/30 rounded-2xl border border-white/5">
-            <div
-              onClick={handleCoachClick}
-              className={cn(
-                "flex items-center gap-3",
-                canViewCoachProfile &&
-                  "cursor-pointer hover:opacity-80 transition-opacity",
-              )}
-            >
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30 overflow-hidden">
-                {coachImage ? (
-                  <img
-                    src={coachImage}
-                    alt={coachName}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <User className="w-5 h-5 text-primary" />
-                )}
-              </div>
-              <div>
-                <span className="text-xs text-text-secondary block">
-                  {t("common.coach")}
-                </span>
-                <span className="text-white font-medium">
-                  {coachName || t("common.notAssigned")}
-                </span>
-              </div>
+        {/* Info Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center text-center gap-2 group hover:bg-white/10 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Calendar className="w-5 h-5 text-primary" />
             </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-white/40 mb-0.5">
+                {t("common.date")}
+              </p>
+              <p className="text-sm font-semibold text-white">
+                {format(scheduledDate, "EEEE, MMM d")}
+              </p>
+            </div>
+          </div>
 
-            <div className="text-right">
-              <div className="flex items-center gap-1.5 text-text-secondary justify-end">
-                <Users className="w-3.5 h-3.5" />
-                <span className="text-xs uppercase font-bold tracking-tighter">
-                  {t("common.capacity")}
-                </span>
-              </div>
+          <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center text-center gap-2 group hover:bg-white/10 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Clock className="w-5 h-5 text-secondary" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-white/40 mb-0.5">
+                {t("common.time")}
+              </p>
+              <p className="text-sm font-semibold text-white">
+                {format(scheduledDate, "HH:mm")}
+              </p>
+              <p className="text-[10px] text-white/30 font-medium">
+                ({gymClass.duration} min)
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center text-center gap-2 group hover:bg-white/10 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Users className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-white/40 mb-0.5">
+                {t("common.capacity")}
+              </p>
               <p
                 className={cn(
-                  "font-medium",
+                  "text-sm font-semibold",
                   isFull ? "text-red-400" : "text-white",
                 )}
               >
@@ -227,8 +232,55 @@ export default function ClassDetailsModal() {
           </div>
         </div>
 
+        {/* Coach Section */}
+        <div className="space-y-4">
+          <label className="text-[11px] uppercase tracking-widest font-bold text-white/30 ml-1">
+            {t("common.instructor", "Instructor")}
+          </label>
+          <div className="relative group">
+            {coachId ? (
+              <MinimalCoachCard
+                coach={{
+                  _id: coachId,
+                  fullName: coachName || "",
+                  username: coach?.username || "",
+                  profileImageUrl: coach?.profileImageUrl || coach?.picture,
+                }}
+              />
+            ) : (
+              <div className="p-6 bg-white/5 border border-dashed border-white/10 rounded-2xl flex flex-col items-center gap-2 text-white/40 italic">
+                <User className="w-8 h-8 opacity-20" />
+                <p className="text-sm">{t("common.notAssigned")}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Note / Tip */}
+        {isMemberView && (
+          <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] rounded-full -mr-16 -mt-16" />
+            <div className="relative flex gap-4">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <Star className="w-5 h-5 text-primary shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-bold text-white">
+                  {t("classes.bookingTipTitle", "Why book this class?")}
+                </p>
+                <p className="text-xs text-white/60 leading-relaxed">
+                  {t(
+                    "classes.bookingTipDesc",
+                    "Secure your spot and get notified of any updates. Group sessions are a great way to stay motivated!",
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {onBook && (
-          <p className="text-[10px] text-text-secondary text-center uppercase tracking-widest opacity-60">
+          <p className="text-[10px] text-white/20 text-center uppercase tracking-[0.2em] font-medium">
             {t("classes.bookingTip", "Subject to availability and gym rules")}
           </p>
         )}

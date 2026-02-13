@@ -8,6 +8,7 @@ import {
   notificationsRoute,
   programsRoute,
   progressRoute,
+  scheduleRoute,
   settingsRoute,
   subscriptionsRoute,
   trainingRoute,
@@ -23,6 +24,7 @@ export const MemberRootTree = MemberRootRoute.addChildren([
   progressRoute,
   attendanceRoute,
   trainingRoute,
+  scheduleRoute,
   exercisesRoute,
   coachesRoute,
 ]);

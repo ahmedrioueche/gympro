@@ -258,15 +258,11 @@ export class AuthController {
       this.setAuthCookies(res, result.accessToken, result.refreshToken, true);
 
       // Redirect to generic callback page
-      const callbackUrl = buildRedirectUrl(
-        platform as Platform,
-        '/auth/callback',
-        {
-          success: 'true',
-          accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
-        },
-      );
+      const callbackUrl = buildRedirectUrl(platform, '/auth/callback', {
+        success: 'true',
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      });
 
       res.redirect(callbackUrl);
     } catch (error) {
@@ -279,14 +275,10 @@ export class AuthController {
         platform = Platform.WEB;
       }
 
-      const errorUrl = buildRedirectUrl(
-        platform as Platform,
-        '/auth/callback',
-        {
-          success: 'false',
-          error: 'google_auth_failed',
-        },
-      );
+      const errorUrl = buildRedirectUrl(platform, '/auth/callback', {
+        success: 'false',
+        error: 'google_auth_failed',
+      });
 
       res.redirect(errorUrl);
     }

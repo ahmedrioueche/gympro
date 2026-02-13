@@ -34,6 +34,12 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.coach.clients.link],
   },
   {
+    label: "schedule",
+    icon: <Calendar className="w-5 h-5" />,
+    path: APP_PAGES.coach.schedule.link,
+    matchPaths: [APP_PAGES.coach.schedule.link],
+  },
+  {
     label: "pricing",
     icon: <DollarSign className="w-5 h-5" />,
     path: APP_PAGES.coach.pricing.link,
@@ -57,12 +63,7 @@ const sidebarLinks = [
     path: APP_PAGES.coach.exercises.link,
     matchPaths: [APP_PAGES.coach.exercises.link],
   },
-  {
-    label: "schedule",
-    icon: <Calendar className="w-5 h-5" />,
-    path: APP_PAGES.coach.schedule.link,
-    matchPaths: [APP_PAGES.coach.schedule.link],
-  },
+
   {
     label: "analytics",
     icon: <BarChart3 className="w-5 h-5" />,

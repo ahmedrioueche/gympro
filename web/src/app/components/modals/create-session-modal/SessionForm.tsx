@@ -4,6 +4,8 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../../components/ui/CustomSelect";
+import InputField from "../../../../components/ui/InputField";
+import { cn } from "../../../../utils/helper";
 
 interface SessionFormProps {
   data: CreateSessionDto;
@@ -59,33 +61,23 @@ export const SessionForm = ({
 
       {/* Date & Duration */}
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-text-primary mb-2">
-            {t("schedule.form.startTime")}
-          </label>
-          <input
-            type="datetime-local"
-            value={data.startTime}
-            onChange={(e) => updateField("startTime", e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-border bg-surface text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-text-primary mb-2">
-            {t("schedule.form.duration")}
-          </label>
-          <input
-            type="number"
-            value={data.duration}
-            onChange={(e) => updateField("duration", parseInt(e.target.value))}
-            placeholder="60"
-            min="15"
-            step="15"
-            className="w-full px-4 py-3 rounded-xl border border-border bg-surface text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-            required
-          />
-        </div>
+        <InputField
+          label={t("schedule.form.startTime")}
+          type="datetime-local"
+          value={data.startTime}
+          onChange={(e) => updateField("startTime", e.target.value)}
+          required
+        />
+        <InputField
+          label={t("schedule.form.duration")}
+          type="number"
+          value={data.duration.toString()}
+          onChange={(e) => updateField("duration", parseInt(e.target.value))}
+          placeholder="60"
+          min="15"
+          step="15"
+          required
+        />
       </div>
 
       {/* Facility / Location */}
@@ -104,18 +96,13 @@ export const SessionForm = ({
             placeholder={t("schedule.form.selectFacility")}
           />
         ) : (
-          <div>
-            <label className="block text-sm font-medium text-text-primary mb-2">
-              {t("schedule.form.location")}
-            </label>
-            <input
-              type="text"
-              value={data.location || ""}
-              onChange={(e) => updateField("location", e.target.value)}
-              placeholder={t("schedule.form.locationPlaceholder")}
-              className="w-full px-4 py-3 rounded-xl border border-border bg-surface text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-            />
-          </div>
+          <InputField
+            label={t("schedule.form.location")}
+            type="text"
+            value={data.location || ""}
+            onChange={(e) => updateField("location", e.target.value)}
+            placeholder={t("schedule.form.locationPlaceholder")}
+          />
         )}
 
         <CustomSelect
@@ -166,11 +153,9 @@ export const SessionForm = ({
         />
 
         {data.recurrence?.type !== "none" && (
-          <div>
-            <label className="block text-sm font-medium text-text-primary mb-2">
-              {t("classes.form.recurrence.endDate")}
-            </label>
-            <input
+          <div className="space-y-3">
+            <InputField
+              label={t("classes.form.recurrence.endDate")}
               type="date"
               value={
                 data.recurrence?.endDate ? String(data.recurrence.endDate) : ""
@@ -181,32 +166,66 @@ export const SessionForm = ({
                   endDate: e.target.value,
                 })
               }
-              className="w-full px-4 py-3 rounded-xl border border-border bg-surface text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
-              required
+              required={!(data.recurrence as any)?.noEndDate}
+              disabled={(data.recurrence as any)?.noEndDate}
             />
+            <label className="flex items-center gap-3 px-1 cursor-pointer select-none group/check">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={(data.recurrence as any)?.noEndDate || false}
+                  onChange={(e) =>
+                    updateField("recurrence" as any, {
+                      ...data.recurrence,
+                      noEndDate: e.target.checked,
+                      endDate: e.target.checked ? "" : data.recurrence?.endDate,
+                    })
+                  }
+                  className="peer hidden"
+                />
+                <div className="w-5 h-5 rounded-md border-2 border-white/10 peer-checked:border-primary peer-checked:bg-primary transition-all flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+                </div>
+              </div>
+              <span className="text-xs font-semibold text-white/40 group-hover/check:text-white/60 transition-colors uppercase tracking-wider">
+                {t(
+                  "classes.form.recurrence.noEndDate",
+                  "Ongoing (No end date)",
+                )}
+              </span>
+            </label>
           </div>
         )}
       </div>
 
       {data.recurrence?.type === "custom" && (
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-text-secondary">
+        <div className="space-y-4 pt-4 border-t border-white/5">
+          <label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] ml-1">
             {t("classes.form.recurrence.days")}
           </label>
-          <div className="flex flex-wrap gap-2">
-            {[0, 1, 2, 3, 4, 5, 6].map((day) => {
+          <div className="flex flex-wrap gap-3">
+            {[1, 2, 3, 4, 5, 6, 0].map((day) => {
               const isSelected = data.recurrence?.days?.includes(day);
-              const labels = ["S", "M", "T", "W", "T", "F", "S"];
+              const labels = [
+                t("common.weekDays.sunday", "Sun"),
+                t("common.weekDays.monday", "Mon"),
+                t("common.weekDays.tuesday", "Tue"),
+                t("common.weekDays.wednesday", "Wed"),
+                t("common.weekDays.thursday", "Thu"),
+                t("common.weekDays.friday", "Fri"),
+                t("common.weekDays.saturday", "Sat"),
+              ];
               return (
                 <button
                   key={day}
                   type="button"
                   onClick={() => handleDayToggle(day)}
-                  className={`w-9 h-9 rounded-xl text-xs font-bold flex items-center justify-center transition-all ${
+                  className={cn(
+                    "flex-1 min-w-[60px] h-11 rounded-xl text-xs font-bold transition-all border",
                     isSelected
-                      ? "bg-primary text-white shadow-lg shadow-primary/20"
-                      : "bg-surface text-text-secondary hover:bg-surface-hover border border-border"
-                  }`}
+                      ? "bg-primary text-white border-primary shadow-[0_0_15px_-3px_rgba(var(--primary-rgb),0.4)]"
+                      : " text-white/40 border-white/10 hover:border-white/20 hover:text-white/60",
+                  )}
                 >
                   {labels[day]}
                 </button>

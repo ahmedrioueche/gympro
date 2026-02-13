@@ -26,7 +26,9 @@ export const useCreateSessionModal = () => {
   const facilities = (gymData as any)?.facilities || [];
 
   // Session Form Data
-  const [sessionData, setSessionData] = useState<CreateSessionDto>({
+  const [sessionData, setSessionData] = useState<
+    CreateSessionDto & { recurrence: { noEndDate?: boolean } }
+  >({
     memberId: "",
     startTime: "",
     duration: 60,
@@ -36,6 +38,7 @@ export const useCreateSessionModal = () => {
     gymId: gymId,
     recurrence: {
       type: "none",
+      noEndDate: false,
     },
   });
 
@@ -57,13 +60,14 @@ export const useCreateSessionModal = () => {
       gymId: gymId,
       recurrence: {
         type: "none",
+        noEndDate: false,
       },
     });
   };
 
   const updateSessionField = <K extends keyof CreateSessionDto>(
     field: K,
-    value: CreateSessionDto[K],
+    value: any,
   ) => {
     setSessionData((prev) => ({ ...prev, [field]: value }));
   };
@@ -76,7 +80,21 @@ export const useCreateSessionModal = () => {
       return;
     }
 
-    const response = await createSession.mutateAsync(sessionData);
+    // Transform data for API
+    const submissionData = { ...sessionData };
+    if (submissionData.recurrence?.type === "none") {
+      delete submissionData.recurrence;
+    } else if (submissionData.recurrence?.noEndDate) {
+      submissionData.recurrence = {
+        ...submissionData.recurrence,
+        endDate: undefined,
+      };
+      delete (submissionData.recurrence as any).noEndDate;
+    } else {
+      delete (submissionData.recurrence as any).noEndDate;
+    }
+
+    const response = await createSession.mutateAsync(submissionData as any);
     const message = getMessage(response, t);
     showStatusToast(message, toast);
     if (response?.success) {

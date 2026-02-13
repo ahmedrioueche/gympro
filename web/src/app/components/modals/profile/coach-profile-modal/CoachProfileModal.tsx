@@ -39,15 +39,26 @@ export default function CoachProfileModal() {
   // Build actions based on dashboard context
   const actions: ProfileModalAction[] = [];
 
-  // Member: Request Coaching
-  if (isMemberDashboard && !isAlreadyCoached) {
-    actions.push({
-      label: t("coaches.requestCoaching"),
-      onClick: handleRequestCoaching,
-      icon: UserPlus,
-      variant: "filled",
-      color: "primary",
-    });
+  // Member: Request Coaching or Already Coached
+  if (isMemberDashboard) {
+    if (isAlreadyCoached) {
+      actions.push({
+        label: t("coaches.alreadyCoached"),
+        onClick: () => {},
+        icon: UserPlus,
+        variant: "filled",
+        color: "success",
+        disabled: true,
+      });
+    } else {
+      actions.push({
+        label: t("coaches.requestCoaching"),
+        onClick: handleRequestCoaching,
+        icon: UserPlus,
+        variant: "filled",
+        color: "primary",
+      });
+    }
   }
 
   // Manager: Invite to Gym

@@ -31,6 +31,19 @@ export const useCoachClasses = () => {
   });
 };
 
+export const useMemberBookedClasses = () => {
+  return useQuery({
+    queryKey: ["member-booked-classes"],
+    queryFn: async () => {
+      const response = await gymClassApi.getMemberClasses();
+      if (!response.success) {
+        throw new Error(response.message || "Failed to fetch member classes");
+      }
+      return response;
+    },
+  });
+};
+
 export const useCreateClass = (gymId?: string) => {
   const queryClient = useQueryClient();
 
@@ -77,11 +90,38 @@ export const useDeleteClass = (gymId?: string) => {
     mutationFn: async ({
       id,
       deleteSeries = false,
+      hardDelete = false,
     }: {
       id: string;
       deleteSeries?: boolean;
+      hardDelete?: boolean;
     }) => {
-      const response = await gymClassApi.deleteClass(id, deleteSeries);
+      const response = await gymClassApi.deleteClass(
+        id,
+        deleteSeries,
+        hardDelete,
+      );
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["gym-classes", gymId] });
+      queryClient.invalidateQueries({ queryKey: ["coach-classes"] });
+    },
+  });
+};
+
+export const useRestoreClass = (gymId?: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      restoreSeries = false,
+    }: {
+      id: string;
+      restoreSeries?: boolean;
+    }) => {
+      const response = await gymClassApi.restoreClass(id, restoreSeries);
       return response;
     },
     onSuccess: () => {

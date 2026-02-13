@@ -125,18 +125,19 @@ export class SessionsService {
     try {
       const filter: any = {};
 
-      if (query.coachId) filter.coachId = new Types.ObjectId(query.coachId);
-      if (query.memberId) filter.memberId = new Types.ObjectId(query.memberId);
+      // IDs are stored as strings in the DB (from insertMany),
+      // so we query with strings to match
+      if (query.coachId) filter.coachId = query.coachId;
+      if (query.memberId) filter.memberId = query.memberId;
       if (query.status) filter.status = query.status;
+      if (query.gymId) filter.gymId = query.gymId;
 
       // Enforce Role-Based Access Control
       if (userId && userRole) {
         if (userRole === 'member') {
-          // Members can ONLY see their own sessions
-          filter.memberId = new Types.ObjectId(userId);
+          filter.memberId = userId;
         } else if (userRole === 'coach') {
-          // Coaches can ONLY see their own sessions
-          filter.coachId = new Types.ObjectId(userId);
+          filter.coachId = userId;
         }
       }
 
@@ -149,36 +150,50 @@ export class SessionsService {
 
       const sessions = await this.sessionModel
         .find(filter)
-        .populate(
-          'memberId',
-          'profile.fullName profile.username profile.profileImageUrl',
-        )
-        .populate(
-          'coachId',
-          'profile.fullName profile.username profile.profileImageUrl',
-        )
         .sort({ startTime: 1 })
         .lean();
 
-      // Transform populated fields to match Session interface structure
-      const mappedSessions = sessions.map((s: any) => ({
-        ...s,
-        _id: s._id.toString(),
-        coachId: s.coachId._id.toString(),
-        memberId: s.memberId._id.toString(),
-        member: {
-          _id: s.memberId._id.toString(),
-          fullName: s.memberId.profile.fullName,
-          username: s.memberId.profile.username,
-          profileImageUrl: s.memberId.profile.profileImageUrl,
-        },
-        coach: {
-          _id: s.coachId._id.toString(),
-          fullName: s.coachId.profile.fullName,
-          username: s.coachId.profile.username,
-          profileImageUrl: s.coachId.profile.profileImageUrl,
-        },
-      }));
+      // Manually populate member and coach since IDs are stored as strings
+      const userIds = [
+        ...new Set(
+          sessions.flatMap((s: any) => [s.memberId, s.coachId].filter(Boolean)),
+        ),
+      ];
+      const users = await this.userModel
+        .find({ _id: { $in: userIds } })
+        .select('profile.fullName profile.username profile.profileImageUrl')
+        .lean();
+
+      const userMap = new Map(users.map((u: any) => [u._id.toString(), u]));
+
+      // Transform to match Session interface structure
+      const mappedSessions = sessions
+        .map((s: any) => {
+          const member = userMap.get(s.memberId?.toString());
+          const coach = userMap.get(s.coachId?.toString());
+          if (!member || !coach) return null;
+
+          return {
+            ...s,
+            _id: s._id.toString(),
+            coachId: s.coachId.toString(),
+            memberId: s.memberId.toString(),
+            gymId: s.gymId?.toString(),
+            member: {
+              _id: member._id.toString(),
+              fullName: member.profile?.fullName || 'Unknown',
+              username: member.profile?.username || 'unknown',
+              profileImageUrl: member.profile?.profileImageUrl,
+            },
+            coach: {
+              _id: coach._id.toString(),
+              fullName: coach.profile?.fullName || 'Unknown',
+              username: coach.profile?.username || 'unknown',
+              profileImageUrl: coach.profile?.profileImageUrl,
+            },
+          };
+        })
+        .filter(Boolean);
 
       return {
         success: true,
@@ -230,7 +245,7 @@ export class SessionsService {
     const MAX_INSTANCES = 50; // Limit for personal sessions
     const dates: Date[] = [];
 
-    let iterationDate = new Date(startDate);
+    const iterationDate = new Date(startDate);
     let endDate = recurrence.endDate ? new Date(recurrence.endDate) : null;
 
     if (!endDate) {
@@ -427,7 +442,7 @@ export class SessionsService {
     startDate?: Date,
     endDate?: Date,
   ): Promise<number> {
-    const query: any = { coachId: new Types.ObjectId(coachId) };
+    const query: any = { coachId };
 
     if (startDate || endDate) {
       query.startTime = {};
@@ -440,7 +455,7 @@ export class SessionsService {
 
   async findRecent(coachId: string, limit: number): Promise<Session[]> {
     return this.sessionModel
-      .find({ coachId: new Types.ObjectId(coachId), status: 'completed' })
+      .find({ coachId, status: 'completed' })
       .populate('memberId', 'profile.fullName')
       .sort({ startTime: -1 })
       .limit(limit)

@@ -50,99 +50,45 @@ export class GymClassService {
       const baseData = { ...dto };
       if (!baseData.coachId) delete baseData.coachId;
 
-      // Determine recurrence dates
-      const dates = this.generateRecurringDates(
-        new Date(dto.scheduledAt),
-        dto.recurrence,
-      );
+      const isRecurring = dto.recurrence && dto.recurrence.type !== 'none';
+      const seriesId = isRecurring
+        ? new Types.ObjectId().toString()
+        : undefined;
 
-      // Validate coach availability for ALL dates first using batch approach
+      // Validate coach availability for the INITIAL date
       if (dto.coachId) {
-        const rangeStart = dates[0];
-        const rangeEnd = new Date(
-          dates[dates.length - 1].getTime() + dto.duration * 60000,
+        await this.validateCoachAvailability(
+          dto.coachId,
+          new Date(dto.scheduledAt),
+          dto.duration,
+          undefined,
+          seriesId,
         );
-
-        const [conflictingSessions, existingClasses] = await Promise.all([
-          this.sessionModel
-            .find({
-              coachId: new Types.ObjectId(dto.coachId),
-              startTime: { $lt: rangeEnd },
-              endTime: { $gt: rangeStart },
-              status: { $ne: 'cancelled' },
-            })
-            .lean(),
-          this.gymClassModel
-            .find({
-              coachId: new Types.ObjectId(dto.coachId),
-              scheduledAt: {
-                $gte: new Date(rangeStart.getTime() - 4 * 60 * 60 * 1000),
-                $lte: new Date(rangeEnd.getTime() + 4 * 60 * 60 * 1000),
-              },
-              status: { $ne: 'cancelled' },
-            })
-            .lean(),
-        ]);
-
-        for (const date of dates) {
-          const start = date;
-          const end = new Date(start.getTime() + dto.duration * 60000);
-
-          // Check sessions
-          const sessionConflict = conflictingSessions.find(
-            (s) => new Date(s.startTime) < end && new Date(s.endTime) > start,
-          );
-          if (sessionConflict) {
-            throw new Error(
-              `Conflict on ${date.toLocaleDateString()}: Coach has a conflicting session`,
-            );
-          }
-
-          // Check classes
-          const classConflict = existingClasses.find((c) => {
-            const clsStart = new Date(c.scheduledAt);
-            const clsEnd = new Date(clsStart.getTime() + c.duration * 60000);
-            return clsStart < end && clsEnd > start;
-          });
-          if (classConflict) {
-            throw new Error(
-              `Conflict on ${date.toLocaleDateString()}: Coach has another class at this time`,
-            );
-          }
-        }
       }
 
-      const seriesId = new Types.ObjectId().toString();
-      const classesToCreate = dates.map((date) => ({
+      const createdClass = await this.gymClassModel.create({
         ...baseData,
         gymId,
         createdBy,
-        scheduledAt: date,
-        seriesId: dates.length > 1 ? seriesId : undefined,
-        recurrence: dates.length > 1 ? dto.recurrence : undefined,
+        seriesId,
+        isSeries: isRecurring,
         status: 'active',
-      }));
+      });
 
-      const createdClasses =
-        await this.gymClassModel.insertMany(classesToCreate);
-
-      if (dto.coachId && createdClasses.length > 0) {
-        await this.notifyCoach(
-          dto.coachId,
-          createdClasses[0] as any,
-          'assigned',
-        );
+      if (dto.coachId) {
+        await this.notifyCoach(dto.coachId, createdClass as any, 'assigned');
       }
 
       return {
         success: true,
-        data: (createdClasses[0] as any).toObject
-          ? (createdClasses[0] as any).toObject()
-          : createdClasses[0],
+        data: createdClass.toObject() as GymClass,
       };
     } catch (error) {
       console.error('Create class error:', error);
-      if (error.message.includes('Conflict on')) {
+      if (
+        error.message.includes('conflicting session') ||
+        error.message.includes('another class')
+      ) {
         return {
           success: false,
           errorCode: ErrorCode.COACH_NOT_AVAILABLE,
@@ -152,39 +98,46 @@ export class GymClassService {
       return {
         success: false,
         errorCode: ErrorCode.CLASS_CREATE_ERROR,
-        message: 'Failed to create class',
+        message: error.message || 'Failed to create class',
       };
     }
   }
 
-  private generateRecurringDates(
+  private generateInstances(
+    template: any,
     startDate: Date,
-    recurrence: CreateGymClassDto['recurrence'],
-  ): Date[] {
-    if (!recurrence || recurrence.type === 'none') return [startDate];
+    endDate: Date,
+    persistentInstances: any[],
+  ): GymClass[] {
+    const toPlain = (doc: any) =>
+      typeof doc.toObject === 'function' ? doc.toObject() : doc;
 
-    const MAX_INSTANCES = 100;
-    const dates: Date[] = [];
-
-    let iterationDate = new Date(startDate);
-    let endDate = recurrence.endDate ? new Date(recurrence.endDate) : null;
-
-    if (!endDate) {
-      endDate = new Date(startDate);
-      endDate.setMonth(endDate.getMonth() + 3);
+    const instances: GymClass[] = [];
+    const recurrence = template.recurrence;
+    if (!recurrence || recurrence.type === 'none') {
+      const scheduled = new Date(template.scheduledAt);
+      if (scheduled >= startDate && scheduled <= endDate) {
+        return [toPlain(template) as GymClass];
+      }
+      return [];
     }
 
-    const hours = startDate.getHours();
-    const minutes = startDate.getMinutes();
+    const iterationDate = new Date(template.scheduledAt);
+    const recurrenceEndDate = recurrence.endDate
+      ? new Date(recurrence.endDate)
+      : null;
+
+    const hours = iterationDate.getHours();
+    const minutes = iterationDate.getMinutes();
 
     const isDayMatch = (date: Date) => {
       if (recurrence.type === 'custom' && recurrence.days) {
         return recurrence.days.includes(date.getDay());
       }
-      return true; // For daily, weekly, biweekly, monthly - logic handled by iteration
+      return true;
     };
 
-    // For custom recurrence, ensure we start on a valid day
+    // Ensure we start on a valid day for custom series
     if (recurrence.type === 'custom' && !isDayMatch(iterationDate)) {
       for (let i = 0; i < 7; i++) {
         iterationDate.setDate(iterationDate.getDate() + 1);
@@ -192,11 +145,43 @@ export class GymClassService {
       }
     }
 
-    while (dates.length < MAX_INSTANCES && iterationDate <= endDate) {
+    const MAX_INSTANCES = 500;
+    while (instances.length < MAX_INSTANCES && iterationDate <= endDate) {
+      if (recurrenceEndDate && iterationDate > recurrenceEndDate) break;
+
       if (isDayMatch(iterationDate)) {
-        const dateToAdd = new Date(iterationDate);
-        dateToAdd.setHours(hours, minutes, 0, 0);
-        dates.push(dateToAdd);
+        const currentDate = new Date(iterationDate);
+        currentDate.setHours(hours, minutes, 0, 0);
+
+        if (currentDate >= startDate) {
+          // Check if we have a persistent override for this slot
+          const override = persistentInstances.find((p) => {
+            if (String(p.seriesId) !== String(template.seriesId)) return false;
+
+            if (p.originalScheduledAt) {
+              const pOrigDate = new Date(p.originalScheduledAt);
+              return pOrigDate.getTime() === currentDate.getTime();
+            }
+
+            // Fallback: match by scheduledAt for older data or sessions that haven't moved
+            const pDate = new Date(p.scheduledAt);
+            return pDate.getTime() === currentDate.getTime();
+          });
+
+          if (override) {
+            // Include persistent instance if it's not a deletion or if we want to show cancelled ones
+            instances.push(toPlain(override) as GymClass);
+          } else {
+            // Generate virtual instance
+            instances.push({
+              ...(toPlain(template) as GymClass),
+              _id: `v_${template._id}_${currentDate.getTime()}`,
+              scheduledAt: currentDate,
+              isSeries: false,
+              bookings: [], // Virtual instances start empty
+            });
+          }
+        }
       }
 
       // Increment
@@ -215,8 +200,7 @@ export class GymClassService {
       }
     }
 
-    // Fallback to start date if something went wrong
-    return dates.length > 0 ? dates : [startDate];
+    return instances;
   }
 
   async update(
@@ -226,8 +210,56 @@ export class GymClassService {
     updateSeries = false,
   ): Promise<ApiResponse<GymClass>> {
     try {
-      const existingClass = await this.gymClassModel.findById(id);
-      if (!existingClass) {
+      let gymClass: GymClassModel | null = null;
+      let targetDate: Date | null = null;
+
+      if (id.startsWith('v_')) {
+        const parts = id.split('_');
+        const templateId = parts[1];
+        const timestamp = parseInt(parts[2]);
+        targetDate = new Date(timestamp);
+
+        const template = await this.gymClassModel.findById(templateId);
+        if (!template) {
+          return {
+            success: false,
+            errorCode: ErrorCode.CLASS_NOT_FOUND,
+            message: 'Series template not found',
+          };
+        }
+
+        // Check if persistent override exists
+        gymClass = await this.gymClassModel.findOne({
+          seriesId: template.seriesId,
+          $or: [
+            { originalScheduledAt: targetDate },
+            {
+              scheduledAt: targetDate,
+              originalScheduledAt: { $exists: false },
+            },
+          ],
+        });
+
+        if (!gymClass) {
+          const { _id, createdAt, updatedAt, ...templateData } =
+            template.toObject();
+
+          gymClass = await this.gymClassModel.create({
+            ...templateData,
+            scheduledAt: targetDate,
+            originalScheduledAt: targetDate,
+            isSeries: false,
+            bookings: [],
+          });
+          id = (gymClass as any)._id.toString();
+        } else {
+          id = (gymClass as any)._id.toString();
+        }
+      } else {
+        gymClass = await this.gymClassModel.findById(id);
+      }
+
+      if (!gymClass) {
         return {
           success: false,
           errorCode: ErrorCode.CLASS_NOT_FOUND,
@@ -235,12 +267,23 @@ export class GymClassService {
         };
       }
 
-      // Prepare update data
+      const existingClass = gymClass;
+      // Prepare update data and sanitize protected fields
       const updateData = { ...dto, updatedBy };
+      delete (updateData as any)._id;
+      delete (updateData as any).seriesId;
+      delete (updateData as any).isSeries;
+      delete (updateData as any).gymId;
+      delete (updateData as any).createdAt;
+      delete (updateData as any).updatedAt;
+      delete (updateData as any).bookings; // Bookings should be managed via book/cancel-booking
+      delete (updateData as any).__v;
+
       if (updateData.coachId === '') delete (updateData as any).coachId;
 
       if (
-        (dto.coachId && dto.coachId !== existingClass.coachId) ||
+        (dto.coachId &&
+          String(dto.coachId) !== String(existingClass.coachId)) ||
         dto.scheduledAt ||
         dto.duration
       ) {
@@ -252,10 +295,11 @@ export class GymClassService {
 
         if (coachId) {
           await this.validateCoachAvailability(
-            coachId,
+            String(coachId),
             scheduledAt,
             duration,
             id,
+            existingClass.seriesId,
           );
         }
       }
@@ -270,41 +314,54 @@ export class GymClassService {
         }
       }
 
-      let gymClass: GymClassModel | null;
+      let updatedClass: GymClassModel | null;
 
       if (updateSeries && existingClass.seriesId) {
-        // Update all upcoming classes in series
-        // We exclude scheduledAt from series update to avoid squashing everything into one date
-        const seriesUpdateData = { ...updateData };
-        delete seriesUpdateData.scheduledAt;
-
-        await this.gymClassModel.updateMany(
-          {
-            seriesId: existingClass.seriesId,
-            scheduledAt: { $gte: existingClass.scheduledAt },
-          },
-          seriesUpdateData,
+        // 1. Update the template record (isSeries: true)
+        // This handles metadata AND shifts future virtual slots via scheduledAt
+        await this.gymClassModel.updateOne(
+          { seriesId: existingClass.seriesId, isSeries: true },
+          { $set: updateData },
         );
 
-        // If time changed, we'd need more complex logic to shift dates.
-        // For now, if scheduledAt is provided, only update the current instance's full date
-        // and other instances get only non-date fields updated.
-        gymClass = await this.gymClassModel.findByIdAndUpdate(id, updateData, {
-          new: true,
-        });
+        // 2. Update all other persistent instances (isSeries: false)
+        // We exclude scheduledAt for these to avoid collapsing every different day into one date
+        const instanceUpdateData = { ...updateData };
+        delete instanceUpdateData.scheduledAt;
+
+        await this.gymClassModel.updateMany(
+          { seriesId: existingClass.seriesId, isSeries: false },
+          { $set: instanceUpdateData },
+        );
+
+        // 3. Finally, update the specific current instance (handles scheduledAt for today)
+        updatedClass = await this.gymClassModel.findByIdAndUpdate(
+          id,
+          { $set: updateData },
+          { new: true },
+        );
       } else {
-        gymClass = await this.gymClassModel.findByIdAndUpdate(id, updateData, {
-          new: true,
-        });
+        updatedClass = await this.gymClassModel.findByIdAndUpdate(
+          id,
+          { $set: updateData },
+          { new: true },
+        );
       }
 
-      if (dto.coachId && dto.coachId !== existingClass.coachId) {
-        await this.notifyCoach(dto.coachId, gymClass as any, 'assigned');
+      if (
+        dto.coachId &&
+        String(dto.coachId) !== String(existingClass.coachId)
+      ) {
+        await this.notifyCoach(
+          String(dto.coachId),
+          updatedClass as any,
+          'assigned',
+        );
       }
 
       return {
         success: true,
-        data: gymClass?.toObject() as GymClass,
+        data: updatedClass?.toObject() as GymClass,
       };
     } catch (error) {
       console.error('Update class error:', error);
@@ -318,14 +375,38 @@ export class GymClassService {
       return {
         success: false,
         errorCode: ErrorCode.CLASS_UPDATE_ERROR,
-        message: 'Failed to update class',
+        message: error.message || 'Failed to update class',
       };
     }
   }
 
-  async remove(id: string, deleteSeries = false): Promise<ApiResponse<void>> {
+  async remove(
+    id: string,
+    deleteSeries = false,
+    hardDelete = false,
+  ): Promise<ApiResponse<void>> {
     try {
-      const gymClass = await this.gymClassModel.findById(id);
+      let gymClass: GymClassModel | null = null;
+      let targetDate: Date | null = null;
+
+      if (id.startsWith('v_')) {
+        const parts = id.split('_');
+        const templateId = parts[1];
+        const timestamp = parseInt(parts[2]);
+        targetDate = new Date(timestamp);
+
+        gymClass = await this.gymClassModel.findById(templateId);
+        if (!gymClass) {
+          return {
+            success: false,
+            errorCode: ErrorCode.CLASS_NOT_FOUND,
+            message: 'Series template not found',
+          };
+        }
+      } else {
+        gymClass = await this.gymClassModel.findById(id);
+      }
+
       if (!gymClass) {
         return {
           success: false,
@@ -334,15 +415,39 @@ export class GymClassService {
         };
       }
 
+      if (hardDelete) {
+        if (deleteSeries && gymClass.seriesId) {
+          await this.gymClassModel.deleteMany({ seriesId: gymClass.seriesId });
+        } else {
+          await this.gymClassModel.findByIdAndDelete(gymClass._id);
+        }
+        return { success: true };
+      }
+
       if (deleteSeries && gymClass.seriesId) {
+        // Cancel the entire series: templates and persistent instances
         await this.gymClassModel.updateMany(
           { seriesId: gymClass.seriesId },
           { status: 'cancelled' },
         );
-      } else {
-        await this.gymClassModel.findByIdAndUpdate(id, {
+      } else if (id.startsWith('v_') && targetDate) {
+        // Cancel a specific VIRTUAL slot
+        const template = gymClass; // In this branch, gymClass is the template
+        const { _id, createdAt, updatedAt, ...templateData } =
+          template.toObject();
+
+        await this.gymClassModel.create({
+          ...templateData,
+          scheduledAt: targetDate,
+          originalScheduledAt: targetDate,
+          isSeries: false,
           status: 'cancelled',
+          bookings: [],
         });
+      } else {
+        // Cancel a specific PERSISTENT instance
+        gymClass.status = 'cancelled';
+        await gymClass.save();
       }
 
       return { success: true };
@@ -356,22 +461,123 @@ export class GymClassService {
     }
   }
 
-  async findAllByGym(gymId: string): Promise<ApiResponse<GymClass[]>> {
+  async restore(id: string, restoreSeries = false): Promise<ApiResponse<void>> {
     try {
-      const classes = await this.gymClassModel
-        .find({ gymId, status: { $ne: 'cancelled' } })
+      let gymClass: GymClassModel | null = null;
+      if (id.startsWith('v_')) {
+        const parts = id.split('_');
+        const templateId = parts[1];
+        gymClass = await this.gymClassModel.findById(templateId);
+      } else {
+        gymClass = await this.gymClassModel.findById(id);
+      }
+
+      if (!gymClass) {
+        return {
+          success: false,
+          errorCode: ErrorCode.CLASS_NOT_FOUND,
+          message: 'Class not found',
+        };
+      }
+
+      if (restoreSeries && gymClass.seriesId) {
+        await this.gymClassModel.updateMany(
+          { seriesId: gymClass.seriesId },
+          { status: 'active' },
+        );
+      } else {
+        gymClass.status = 'active';
+        await gymClass.save();
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Restore class error:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.CLASS_UPDATE_ERROR,
+        message: 'Failed to restore class',
+      };
+    }
+  }
+
+  async findAllByGym(
+    gymId: string,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<ApiResponse<GymClass[]>> {
+    try {
+      const now = new Date();
+      const start =
+        startDate || new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 1 month ago
+      const end = endDate || new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000); // 3 months ahead
+
+      // Fetch series templates and persistent instances
+      const templates = await this.gymClassModel
+        .find({
+          gymId,
+          isSeries: true,
+          // We include cancelled templates for management purposes
+        })
         .populate(
           'coachId',
           'profile.fullName profile.username profile.profileImageUrl',
         )
-        .sort({ scheduledAt: 1 })
         .lean();
+
+      const persistentInstances = await this.gymClassModel
+        .find({
+          gymId,
+          isSeries: false,
+          scheduledAt: { $gte: start, $lte: end },
+        })
+        .populate(
+          'coachId',
+          'profile.fullName profile.username profile.profileImageUrl',
+        )
+        .lean();
+
+      let allInstances: GymClass[] = [];
+
+      // Generate virtual slots from templates
+      for (const template of templates) {
+        const generated = this.generateInstances(
+          template as any,
+          start,
+          end,
+          persistentInstances as any,
+        );
+        allInstances = [...allInstances, ...generated];
+      }
+
+      // Add persistent instances that are NOT part of any series (standalone classes)
+      // OR series instances that weren't matched by any recurring slot
+      const matchedPersistentIds = new Set(
+        allInstances
+          .filter((i) => !String(i._id).startsWith('v_'))
+          .map((i) => String(i._id)),
+      );
+      const unmatchedPersistentInstances = persistentInstances.filter(
+        (p) => !matchedPersistentIds.has(String(p._id)),
+      );
+
+      allInstances = [
+        ...allInstances,
+        ...(unmatchedPersistentInstances as unknown as GymClass[]),
+      ];
+
+      // Sort by date
+      allInstances.sort(
+        (a, b) =>
+          new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime(),
+      );
 
       return {
         success: true,
-        data: classes as unknown as GymClass[],
+        data: allInstances,
       };
     } catch (error) {
+      console.error('Find all by gym error:', error);
       return {
         success: false,
         errorCode: ErrorCode.INTERNAL_SERVER_ERROR,
@@ -380,16 +586,108 @@ export class GymClassService {
     }
   }
 
-  async findAllByCoach(coachId: string): Promise<ApiResponse<GymClass[]>> {
+  async findAllByCoach(
+    coachId: string,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<ApiResponse<GymClass[]>> {
     try {
+      const now = new Date();
+      const start =
+        startDate || new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const end = endDate || new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+
       let queryId: any = coachId;
       if (Types.ObjectId.isValid(coachId)) {
         queryId = new Types.ObjectId(coachId);
       }
 
+      // Fetch series templates and persistent instances for this coach
+      const templates = await this.gymClassModel
+        .find({
+          coachId: { $in: [queryId, coachId] },
+          isSeries: true,
+          status: { $ne: 'cancelled' },
+        })
+        .populate('gymId', 'name')
+        .populate(
+          'coachId',
+          'profile.fullName profile.username profile.profileImageUrl',
+        )
+        .lean();
+
+      const persistentInstances = await this.gymClassModel
+        .find({
+          coachId: { $in: [queryId, coachId] },
+          isSeries: false,
+          scheduledAt: { $gte: start, $lte: end },
+        })
+        .populate('gymId', 'name')
+        .populate(
+          'coachId',
+          'profile.fullName profile.username profile.profileImageUrl',
+        )
+        .lean();
+
+      let allInstances: GymClass[] = [];
+
+      // Generate virtual slots from templates
+      for (const template of templates) {
+        const generated = this.generateInstances(
+          template as any,
+          start,
+          end,
+          persistentInstances as any,
+        );
+        allInstances = [...allInstances, ...generated];
+      }
+
+      // Add persistent instances that are NOT part of any series
+      // OR series instances that weren't matched by any recurring slot
+      const matchedPersistentIds = new Set(
+        allInstances
+          .filter((i) => !String(i._id).startsWith('v_'))
+          .map((i) => String(i._id)),
+      );
+      const unmatchedPersistentInstances = persistentInstances.filter(
+        (p) => !matchedPersistentIds.has(String(p._id)),
+      );
+
+      allInstances = [
+        ...allInstances,
+        ...(unmatchedPersistentInstances as unknown as GymClass[]),
+      ];
+
+      // Sort by date
+      allInstances.sort(
+        (a, b) =>
+          new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime(),
+      );
+
+      return {
+        success: true,
+        data: allInstances,
+      };
+    } catch (error) {
+      console.error('Find all by coach error:', error);
+      return {
+        success: false,
+        errorCode: ErrorCode.INTERNAL_SERVER_ERROR,
+        message: 'Failed to fetch coach classes',
+      };
+    }
+  }
+
+  async findAllByMember(memberId: string): Promise<ApiResponse<GymClass[]>> {
+    try {
+      let memberObjectId: any = memberId;
+      if (Types.ObjectId.isValid(memberId)) {
+        memberObjectId = new Types.ObjectId(memberId);
+      }
+
       const classes = await this.gymClassModel
         .find({
-          $or: [{ coachId: queryId }, { coachId: coachId }],
+          'bookings.userId': { $in: [memberObjectId, memberId] },
           status: { $ne: 'cancelled' },
         })
         .populate('gymId', 'name')
@@ -408,7 +706,7 @@ export class GymClassService {
       return {
         success: false,
         errorCode: ErrorCode.INTERNAL_SERVER_ERROR,
-        message: 'Failed to fetch coach classes',
+        message: 'Failed to fetch member classes',
       };
     }
   }
@@ -449,7 +747,57 @@ export class GymClassService {
     dto: CreateClassBookingDto,
   ): Promise<ApiResponse<GymClass>> {
     try {
-      const gymClass = await this.gymClassModel.findById(dto.classId);
+      let classId = dto.classId;
+      let gymClass: GymClassModel | null = null;
+      let targetDate: Date | null = null;
+
+      if (classId.startsWith('v_')) {
+        // Virtual instance: v_{templateId}_{timestamp}
+        const parts = classId.split('_');
+        const templateId = parts[1];
+        const timestamp = parseInt(parts[2]);
+        targetDate = new Date(timestamp);
+
+        const template = await this.gymClassModel.findById(templateId);
+        if (!template) {
+          return {
+            success: false,
+            errorCode: ErrorCode.CLASS_NOT_FOUND,
+            message: 'Series template not found',
+          };
+        }
+
+        // Check if a persistent instance already exists for this slot
+        gymClass = await this.gymClassModel.findOne({
+          seriesId: template.seriesId,
+          $or: [
+            { originalScheduledAt: targetDate },
+            {
+              scheduledAt: targetDate,
+              originalScheduledAt: { $exists: false },
+            },
+          ],
+        });
+
+        if (!gymClass) {
+          const { _id, createdAt, updatedAt, ...templateData } =
+            template.toObject();
+
+          gymClass = await this.gymClassModel.create({
+            ...templateData,
+            scheduledAt: targetDate,
+            originalScheduledAt: targetDate,
+            isSeries: false,
+            bookings: [],
+          });
+          classId = (gymClass as any)._id.toString();
+        } else {
+          classId = (gymClass as any)._id.toString();
+        }
+      } else {
+        gymClass = await this.gymClassModel.findById(classId);
+      }
+
       if (!gymClass || gymClass.status === 'cancelled') {
         return {
           success: false,
@@ -460,7 +808,7 @@ export class GymClassService {
 
       // Check if already booked
       const alreadyBooked = gymClass.bookings.some(
-        (b) => b.userId.toString() === userId,
+        (b) => String(b.userId) === String(userId),
       );
       if (alreadyBooked) {
         return {
@@ -509,7 +857,6 @@ export class GymClassService {
           .lean();
 
         if (subType && subType.services && subType.services.length > 0) {
-          // Normalize service names for comparison
           const allowedServices = subType.services.map((s) =>
             s.toLowerCase().trim(),
           );
@@ -528,12 +875,12 @@ export class GymClassService {
       // Add booking
       gymClass.bookings.push({
         _id: new Types.ObjectId().toString(),
-        classId: dto.classId,
+        classId: classId,
         userId,
         status: 'booked',
         bookedAt: new Date(),
         createdAt: new Date(),
-      });
+      } as any);
 
       await gymClass.save();
 
@@ -566,7 +913,7 @@ export class GymClassService {
       }
 
       const bookingIndex = gymClass.bookings.findIndex(
-        (b) => b.userId.toString() === userId,
+        (b) => String(b.userId) === String(userId),
       );
       if (bookingIndex === -1) {
         return {
@@ -598,6 +945,7 @@ export class GymClassService {
     start: Date,
     duration: number,
     excludeClassId?: string,
+    seriesId?: string,
   ): Promise<void> {
     const end = new Date(start.getTime() + duration * 60000);
 
@@ -610,7 +958,7 @@ export class GymClassService {
     });
 
     if (conflictingSession) {
-      throw new Error('Coach has a conflicting session');
+      throw new Error('Coach has a conflicting session at this time');
     }
 
     // 2. Check for conflicting classes (logical check)
@@ -626,6 +974,16 @@ export class GymClassService {
     });
 
     for (const cls of nearbyClasses) {
+      // If we're validating an instance, ignore the parent template of the same series
+      // This allows promoting virtual instances at the template's start time.
+      if (
+        seriesId &&
+        String(cls.seriesId) === String(seriesId) &&
+        cls.isSeries
+      ) {
+        continue;
+      }
+
       const clsStart = new Date(cls.scheduledAt as Date);
       const clsEnd = new Date(clsStart.getTime() + cls.duration * 60000);
 

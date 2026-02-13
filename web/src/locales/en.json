@@ -28,9 +28,11 @@
     "go": "Go",
     "markAsDone": "Mark as Done",
     "done": "Done",
+    "restore": "Restore",
     "close": "Close",
     "processing": "Processing...",
     "cancel": "Cancel",
+    "unassigned": "Unassigned",
     "joining": "Joining",
     "confirm": "Confirm",
     "retry": "Retry",
@@ -171,7 +173,9 @@
     "save": "Save",
     "saving": "Saving...",
     "edit": "Edit",
-    "close": "Close"
+    "close": "Close",
+    "booked": "Booked",
+    "viewTraining": "Go to Training"
   },
 
   "auth": {
@@ -1457,6 +1461,7 @@
       "cancelSeriesConfirm": "This is a recurring session. Do you want to cancel only this session or the entire upcoming series?",
       "cancelThisOnly": "Cancel this session only",
       "cancelEntireSeries": "Cancel entire series",
+      "willAttend": "I will attend",
       "form": {
         "client": "Client",
         "selectClient": "Select a client",
@@ -3054,6 +3059,7 @@
     },
     "experience": "Experience",
     "requestCoaching": "Request Coaching",
+    "alreadyCoached": "My Coach",
     "requestModal": {
       "title": "Request Coaching from {{coachName}}",
       "send": "Send Request",
@@ -3121,6 +3127,11 @@
     "deleteSession": "Delete Session",
     "deleteSessionConfirm": "Are you sure you want to delete this session? This action cannot be undone.",
     "sessionDeleted": "Session deleted successfully",
+    "sessions": "Sessions",
+    "memberSubtitle": "View your upcoming classes, sessions and workouts",
+    "empty": "Your schedule is empty",
+    "emptyDesc": "You don't have any classes or sessions scheduled for this week.",
+    "recurring": "Recurring",
     "form": {
       "client": "Client",
       "selectClient": "Select a client",
@@ -4107,6 +4118,24 @@
     }
   },
   "classes": {
+    "delete": {
+      "title": "Delete Class",
+      "message": "This is a recurring class. Would you like to cancel only this specific session or the entire series?",
+      "confirmOne": "Cancel only this session",
+      "confirmSeries": "Cancel entire series"
+    },
+    "update": {
+      "title": "Update Class",
+      "message": "This is a recurring class. Do you want to apply changes to only this session or the entire upcoming series?",
+      "confirmOne": "Update this session only",
+      "confirmSeries": "Update entire series"
+    },
+    "restore": {
+      "title": "Restore class",
+      "message": "Restore cancelled class?",
+      "confirmOne ": "Restore this session only",
+      "confirmSeries": "Restore entire series"
+    },
     "deleteTitle": "Delete Class",
     "confirmDeleteDesc": "Are you sure you want to delete this class? This action cannot be undone.",
     "modalDesc": "Set the details for your group workout",

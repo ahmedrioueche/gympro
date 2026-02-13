@@ -81,7 +81,9 @@ export class NotificationsGateway
     @ConnectedSocket() client: Socket,
   ) {
     const room = `gym_${data.gymId}`;
-    console.error(`[NotificationsGateway] Received join_gym request for room: ${room}`);
+    console.error(
+      `[NotificationsGateway] Received join_gym request for room: ${room}`,
+    );
     client.join(room);
     this.logger.log(`Client ${client.id} joined gym room: ${room}`);
     return { event: 'joined_gym', data: room };
@@ -92,7 +94,10 @@ export class NotificationsGateway
    */
   sendToGym(gymId: string, event: string, data: any) {
     const room = `gym_${gymId}`;
-    console.error(`[NotificationsGateway] Sending '${event}' to room: ${room}. Data:`, data);
+    console.error(
+      `[NotificationsGateway] Sending '${event}' to room: ${room}. Data:`,
+      data,
+    );
     this.logger.log(`Emitting '${event}' to room: ${room}`);
     this.server.to(room).emit(event, data);
   }

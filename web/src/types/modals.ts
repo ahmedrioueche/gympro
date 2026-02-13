@@ -34,6 +34,11 @@ export interface ConfirmModalProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   verificationText?: string;
+  secondaryAction?: {
+    label: string;
+    onClick: () => void | Promise<void>;
+    variant?: "danger" | "success" | "primary" | "default";
+  };
 }
 
 export interface UpgradePreviewModalProps {

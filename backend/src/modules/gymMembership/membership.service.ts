@@ -57,7 +57,7 @@ export class MembershipService {
 
     // Validate that at least one contact method is provided or generate dummy ones
     let finalEmail = email;
-    let finalPhone = phoneNumber;
+    const finalPhone = phoneNumber;
     let isDummyUser = false;
 
     if (!email && !phoneNumber) {
@@ -222,7 +222,7 @@ export class MembershipService {
     if (dto.subscriptionTypeId && dto.subscriptionStartDate) {
       const { endDate } = await this.calculateSubscriptionEndDate(
         dto.subscriptionTypeId,
-        dto.subscriptionStartDate!,
+        dto.subscriptionStartDate,
         dto.subscriptionDuration,
       );
 
@@ -1052,7 +1052,7 @@ export class MembershipService {
       }
 
       // Since gym is populated, it's an object with _id property
-      const gymData = m.gym as any;
+      const gymData = m.gym;
 
       // Safely extract gymId and slug
       let gId = '';
@@ -1109,7 +1109,7 @@ export class MembershipService {
       history = allHistory.filter((h: any) => {
         if (!h || !h.gym) return false;
 
-        const historyGym = h.gym as any;
+        const historyGym = h.gym;
         let gId = '';
         let gSlug = '';
 

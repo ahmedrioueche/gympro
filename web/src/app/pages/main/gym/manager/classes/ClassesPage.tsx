@@ -6,11 +6,11 @@ import ErrorComponent from "../../../../../../components/ui/Error";
 import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
 import { useModalStore } from "../../../../../../store/modal";
+import ClassCard from "../../../../../components/cards/ClassCard";
 import PageHeader from "../../../../../components/PageHeader";
 import { CalendarHeader } from "../../../../../components/schedule/CalendarHeader";
 import { WeeklyGrid } from "../../../../../components/schedule/WeeklyGrid";
 import { useSchedule } from "../../coach/schedule/hooks/useSchedule";
-import ClassCard from "./components/ClassCard";
 import { useManagerClasses } from "./hooks/useManagerClasses";
 
 export default function ClassesPage() {
@@ -24,6 +24,7 @@ export default function ClassesPage() {
     handleCreate,
     handleEdit,
     handleDelete,
+    handleRestore,
   } = useManagerClasses();
 
   const {
@@ -39,8 +40,8 @@ export default function ClassesPage() {
   const handleClassClick = (gymClass: GymClass) => {
     openModal("class_details", {
       gymClass,
-      onCancelClass: (id: string, deleteSeries?: boolean) =>
-        handleDelete(gymClass),
+      onCancelClass: () => handleDelete(gymClass),
+      onRestoreClass: () => handleRestore(gymClass),
     });
   };
 
@@ -122,6 +123,7 @@ export default function ClassesPage() {
               gymClass={gymClass}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onRestore={handleRestore}
             />
           ))}
         </div>

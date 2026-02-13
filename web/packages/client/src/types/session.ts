@@ -86,4 +86,5 @@ export interface SessionQueryDto {
   coachId?: string;
   memberId?: string;
   status?: SessionStatus;
+  gymId?: string;
 }

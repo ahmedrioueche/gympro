@@ -59,7 +59,7 @@ export class AttendanceService {
         memberId = decoded.memberId;
       } catch (err) {
         if (err.name === 'TokenExpiredError') {
-          const payload = this.jwtService.decode(token) as any;
+          const payload = this.jwtService.decode(token);
           memberId = payload?.memberId;
           throw new BadRequestException('QR Code has expired. Please refresh.');
         }

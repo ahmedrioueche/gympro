@@ -4,11 +4,11 @@ import { useTranslation } from "react-i18next";
 import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
 import { useModalStore } from "../../../../../../store/modal";
+import ClassCard from "../../../../../components/cards/ClassCard";
 import PageHeader from "../../../../../components/PageHeader";
 import { CalendarHeader } from "../../../../../components/schedule/CalendarHeader";
 import { WeeklyGrid } from "../../../../../components/schedule/WeeklyGrid";
 import { useSchedule } from "../../coach/schedule/hooks/useSchedule";
-import { MemberClassCard } from "./components/MemberClassCard";
 import { useMemberClasses } from "./hooks/useMemberClasses";
 
 export default function ClassesPage() {
@@ -37,10 +37,13 @@ export default function ClassesPage() {
   const { openModal } = useModalStore();
 
   const handleClassClick = (gymClass: any) => {
+    const isBooked = gymClass.bookings?.some(
+      (b: any) => b.userId === user?._id,
+    );
     openModal("class_details", {
       gymClass,
-      onBook: handleBook,
-      onCancel: handleCancel,
+      onBook: !isBooked ? handleBook : undefined,
+      onCancel: isBooked ? handleCancel : undefined,
       isBooking: isProcessing,
     });
   };
@@ -104,12 +107,10 @@ export default function ClassesPage() {
             const isFull = gymClass.bookings.length >= gymClass.maxCapacity;
 
             return (
-              <MemberClassCard
+              <ClassCard
                 key={gymClass._id}
                 gymClass={gymClass}
-                userId={user?._id}
                 isBooked={isBooked}
-                isFull={isFull}
                 onBook={handleBook}
                 onCancel={handleCancel}
                 isLoading={isProcessing}

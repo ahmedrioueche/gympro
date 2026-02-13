@@ -58,6 +58,7 @@ export const DayColumn = ({
             key={session._id}
             session={session}
             onClick={() => onSessionClick(session)}
+            compact
           />
         ))}
       </div>

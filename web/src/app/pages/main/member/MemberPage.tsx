@@ -3,6 +3,7 @@ import {
   Activity,
   BarChart3,
   Bell,
+  Calendar,
   Clipboard,
   CreditCard,
   Dumbbell,
@@ -33,14 +34,18 @@ const sidebarLinks = [
     path: APP_PAGES.member.subscriptions.link,
     matchPaths: [APP_PAGES.member.subscriptions.link],
   },
-
+  {
+    label: "schedule",
+    icon: <Calendar className="w-5 h-5" />,
+    path: APP_PAGES.member.schedule.link,
+    matchPaths: [APP_PAGES.member.schedule.link],
+  },
   {
     label: "training",
     icon: <CreditCard className="w-5 h-5" />,
     path: APP_PAGES.member.training.link,
     matchPaths: [APP_PAGES.member.training.link],
   },
-
   {
     label: "programs",
     icon: <Clipboard className="w-5 h-5" />,

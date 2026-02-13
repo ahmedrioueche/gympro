@@ -1,7 +1,10 @@
+import { SessionStatus } from "@ahmedrioueche/gympro-client";
 import { format, parseISO } from "date-fns";
-import { Calendar, Trash2 } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
+import TextArea from "../../../../components/ui/TextArea";
+import { MinimalCoachCard } from "../../ui/MinimalCoachCard";
 import { SessionClientInfo } from "./SessionClientInfo";
 import { SessionStatusSelector } from "./SessionStatusSelector";
 import { useSessionDetails } from "./useSessionDetails";
@@ -19,6 +22,7 @@ export const SessionDetailsModal = () => {
     handleDelete,
     closeModal,
     isUpdating,
+    isMemberView,
   } = useSessionDetails();
 
   if (!isOpen || !session) return null;
@@ -32,70 +36,139 @@ export const SessionDetailsModal = () => {
       ? parseISO(session.endTime)
       : session.endTime;
 
+  const isCancelled = currentStatus === SessionStatus.CANCELLED;
+  const isFuture = startTime > new Date();
+
   return (
     <BaseModal
       isOpen={isOpen}
       onClose={closeModal}
       title={t("schedule.sessionDetails")}
-      subtitle={format(startTime, "EEEE, MMMM d, yyyy")}
+      subtitle={currentStatus ? t(`schedule.status.${currentStatus}`) : ""}
       icon={Calendar}
-      primaryButton={{
-        label: t("common.save"),
-        onClick: handleSaveNotes,
-        loading: isUpdating,
+      primaryButton={
+        !isMemberView
+          ? {
+              label: t("common.save"),
+              onClick: handleSaveNotes,
+              loading: isUpdating,
+            }
+          : undefined
+      }
+      tertiaryButton={{
+        label: isMemberView
+          ? isCancelled && isFuture
+            ? t("schedule.willAttend", "I will attend")
+            : t("schedule.notAttending", "I won't attend")
+          : t("schedule.deleteSession"),
+        onClick: isMemberView
+          ? () =>
+              handleStatusChange(
+                isCancelled ? SessionStatus.SCHEDULED : SessionStatus.CANCELLED,
+              )
+          : handleDelete,
+        variant: isMemberView && isCancelled ? "primary" : "danger",
+        disabled: isMemberView && !isFuture, // Disable all actions for members if session is in the past
       }}
+      maxWidth="max-w-2xl"
     >
       <div className="space-y-6">
-        {/* Time */}
-        <div className="bg-surface-secondary rounded-xl p-4">
-          <p className="text-sm text-text-secondary mb-1">
-            {t("schedule.form.time")}
-          </p>
-          <p className="text-lg font-semibold text-text-primary">
-            {format(startTime, "HH:mm")} - {format(endTime, "HH:mm")}
-          </p>
+        {/* Date and Time Header */}
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-white/40 mb-0.5">
+                {t("common.date", "Date")}
+              </p>
+              <p className="text-sm font-semibold text-white">
+                {format(startTime, "EEEE, MMM d")}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex-1 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+              <Clock className="w-5 h-5 text-secondary" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider font-bold text-white/40 mb-0.5">
+                {t("schedule.form.time")}
+              </p>
+              <p className="text-sm font-semibold text-white">
+                {format(startTime, "HH:mm")} - {format(endTime, "HH:mm")}
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Client Info */}
-        <SessionClientInfo member={session.member} type={session.type} />
+        {/* Participant Info Section */}
+        <div className="space-y-3">
+          <label className="text-[11px] uppercase tracking-widest font-bold text-white/30 ml-1">
+            {isMemberView ? t("common.coach") : t("common.member")}
+          </label>
+          {isMemberView ? (
+            session.coach ? (
+              <MinimalCoachCard coach={session.coach} />
+            ) : (
+              <div className="p-4 bg-white/5 rounded-2xl text-white/40 text-sm">
+                {t("common.notAssigned")}
+              </div>
+            )
+          ) : (
+            <SessionClientInfo member={session.member} type={session.type} />
+          )}
+        </div>
 
-        {/* Status */}
-        <SessionStatusSelector
-          currentStatus={currentStatus}
-          onStatusChange={handleStatusChange}
-        />
-
-        {/* Location */}
-        {session.location && (
-          <div>
-            <p className="text-sm text-text-secondary mb-1">
-              {t("schedule.form.location")}
-            </p>
-            <p className="text-text-primary">{session.location}</p>
+        {/* Status Selector Section (Coach Only) */}
+        {!isMemberView && (
+          <div className="space-y-3">
+            <label className="text-[11px] uppercase tracking-widest font-bold text-white/30 ml-1">
+              {t("common.status", "Session Status")}
+            </label>
+            <SessionStatusSelector
+              currentStatus={currentStatus}
+              onStatusChange={handleStatusChange}
+            />
           </div>
         )}
 
-        {/* Notes */}
-        <div>
-          <label className="block text-sm font-medium text-text-primary mb-2">
+        {/* Location Section */}
+        {session.location && (
+          <div className="space-y-3">
+            <label className="text-[11px] uppercase tracking-widest font-bold text-white/30 ml-1">
+              {t("schedule.form.location")}
+            </label>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-3">
+              <MapPin className="w-4 h-4 text-white/40" />
+              <p className="text-sm text-white/80">{session.location}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Notes Section (Coach Can Edit, Member Can View if provided) */}
+        <div className="space-y-3">
+          <label className="text-[11px] uppercase tracking-widest font-bold text-white/30 ml-1">
             {t("schedule.form.notes")}
           </label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={4}
-            className="w-full px-4 py-3 rounded-xl border border-border bg-surface text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
-          />
+          {isMemberView ? (
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-white/60 text-sm min-h-[100px] whitespace-pre-wrap">
+              {session.notes ||
+                t("common.noNotes", "No notes provided for this session.")}
+            </div>
+          ) : (
+            <div className="relative group">
+              <TextArea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder={t("schedule.form.notesPlaceholder")}
+                rows={4}
+              />
+            </div>
+          )}
         </div>
-
-        {/* Delete Button */}
-        <button
-          onClick={handleDelete}
-          className="w-full py-3 rounded-xl text-red-500 bg-red-500/10 hover:bg-red-500/20 font-medium transition-colors flex items-center justify-center gap-2"
-        >
-          <Trash2 className="w-4 h-4" />
-          {t("schedule.deleteSession")}
-        </button>
       </div>
     </BaseModal>
   );

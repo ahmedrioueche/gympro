@@ -289,6 +289,10 @@ export const APP_PAGES = {
       name: "pages.member.training",
       link: "/member/training",
     },
+    schedule: {
+      name: "pages.member.schedule",
+      link: "/member/schedule",
+    },
     notifications: {
       name: "pages.member.notifications",
       link: "/member/notifications",

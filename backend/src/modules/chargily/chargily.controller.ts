@@ -214,7 +214,7 @@ export class ChargilyController {
         userId,
         billingCycle,
         userLocale,
-        this.frontendUrl!,
+        this.frontendUrl,
       );
 
       return apiResponse(true, undefined, result);

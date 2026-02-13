@@ -31,6 +31,17 @@ export const gymClassApi = {
     }
   },
 
+  /** Get all classes the logged-in member has booked */
+  getMemberClasses: async (): Promise<ApiResponse<GymClass[]>> => {
+    try {
+      const res =
+        await apiClient.get<ApiResponse<GymClass[]>>(`/gym-class/member/me`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** Get a single class */
   getClass: async (id: string): Promise<ApiResponse<GymClass>> => {
     try {
@@ -80,10 +91,27 @@ export const gymClassApi = {
   deleteClass: async (
     id: string,
     deleteSeries = false,
+    hardDelete = false,
   ): Promise<ApiResponse<void>> => {
     try {
       const res = await apiClient.delete<ApiResponse<void>>(
-        `/gym-class/${id}${deleteSeries ? "?deleteSeries=true" : ""}`,
+        `/gym-class/${id}?deleteSeries=${deleteSeries}&hardDelete=${hardDelete}`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Restore a class */
+  restoreClass: async (
+    id: string,
+    restoreSeries = false,
+  ): Promise<ApiResponse<void>> => {
+    try {
+      const res = await apiClient.patch<ApiResponse<void>>(
+        `/gym-class/${id}/restore?restoreSeries=${restoreSeries}`,
+        {},
       );
       return res.data;
     } catch (error) {

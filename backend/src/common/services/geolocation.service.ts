@@ -1,4 +1,7 @@
-import { SupportedCurrency, DEFAULT_REGION } from '@ahmedrioueche/gympro-client';
+import {
+  SupportedCurrency,
+  DEFAULT_REGION,
+} from '@ahmedrioueche/gympro-client';
 import { Injectable, Logger } from '@nestjs/common';
 
 export interface RegionDetectionResult {
