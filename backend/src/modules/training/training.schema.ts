@@ -159,6 +159,7 @@ export class ProgramDayProgressModel implements ProgramDayProgress {
   @Prop() submissionId?: string;
   @Prop({ required: true }) dayName: string;
   @Prop({ type: Date, required: true }) date: Date | string;
+  @Prop() durationMinutes?: number;
   @Prop({ type: [ExerciseProgressModel], required: true })
   exercises: ExerciseProgressModel[];
   @Prop() notes?: string;

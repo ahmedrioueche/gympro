@@ -65,6 +65,7 @@ export class CoachService {
         bio: coach.coachingInfo?.bio,
         specializations: coach.coachingInfo?.specializations,
         yearsOfExperience: coach.coachingInfo?.yearsOfExperience,
+        gender: coach.profile.gender,
         location: {
           city: coach.profile.city,
           state: coach.profile.state,
@@ -130,6 +131,11 @@ export class CoachService {
         matchQuery['coachingInfo.specializations'] = query.specialization;
       }
 
+      // Gender filter
+      if (query?.gender) {
+        matchQuery['profile.gender'] = query.gender;
+      }
+
       const limit = query?.limit || 20;
       const offset = query?.offset || 0;
 
@@ -147,6 +153,7 @@ export class CoachService {
         bio: coach.coachingInfo?.bio,
         specializations: coach.coachingInfo?.specializations,
         yearsOfExperience: coach.coachingInfo?.yearsOfExperience,
+        gender: coach.profile.gender,
         location: {
           city: coach.profile.city,
           state: coach.profile.state,

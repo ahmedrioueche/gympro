@@ -21,7 +21,7 @@ export default function GeneralTab({
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.member.general.description",
-            "Configure your basic gym preferences"
+            "Configure your basic gym preferences",
           )}
         </p>
 
@@ -37,13 +37,13 @@ export default function GeneralTab({
                   <p className="text-sm font-medium text-text-primary">
                     {t(
                       "settings.member.general.weightUnitLabel",
-                      "Measurement Unit"
+                      "Measurement Unit",
                     )}
                   </p>
                   <p className="text-xs text-text-secondary">
                     {t(
                       "settings.member.general.weightUnitDesc",
-                      "Choose kg or lbs for your workouts"
+                      "Choose kg or lbs for your workouts",
                     )}
                   </p>
                 </div>

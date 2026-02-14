@@ -22,7 +22,7 @@ export default function PrivacyTab({
       title: t("settings.member.privacy.publicProfile", "Public Profile (Gym)"),
       description: t(
         "settings.member.privacy.publicProfileDesc",
-        "Allow other gym members to see your profile"
+        "Allow other gym members to see your profile",
       ),
       icon: UserCheck,
       checked: publicProfile,
@@ -33,7 +33,7 @@ export default function PrivacyTab({
       title: t("settings.member.privacy.shareProgress", "Share Progress"),
       description: t(
         "settings.member.privacy.shareProgressDesc",
-        "Allow gym coaches to see your workout history"
+        "Allow gym coaches to see your workout history",
       ),
       icon: ShieldCheck,
       checked: shareProgress,
@@ -50,7 +50,7 @@ export default function PrivacyTab({
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.member.privacy.description",
-            "Control your data and visibility within the gym"
+            "Control your data and visibility within the gym",
           )}
         </p>
 
@@ -104,7 +104,7 @@ export default function PrivacyTab({
           <p className="text-xs text-text-secondary mt-1">
             {t(
               "settings.member.privacy.tipDesc",
-              "These settings are gym-specific. You can have different privacy settings for each gym you follow."
+              "These settings are gym-specific. You can have different privacy settings for each gym you follow.",
             )}
           </p>
         </div>

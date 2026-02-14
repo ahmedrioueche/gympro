@@ -60,11 +60,8 @@ export class ProgressService {
             });
           });
 
-          // Estimate duration (rough estimate: 1 min per set + 2 min rest)
-          // Ideally this should be stored in the log if we monitored it
-          // For now, let's just create a placeholder or aggregate if we had it
-          // defaulting to 45 mins per workout if not tracked
-          totalDurationMinutes += 45;
+          // Use actual duration if tracked, otherwise default to 45 mins
+          totalDurationMinutes += log.durationMinutes || 45;
         });
       }
     });
@@ -106,7 +103,7 @@ export class ProgressService {
           }
 
           activity.workoutCount += 1;
-          activity.durationMinutes += 45; // Placeholder
+          activity.durationMinutes += log.durationMinutes || 45; // Actual or fallback
 
           log.exercises.forEach((ex) => {
             ex.sets.forEach((set) => {

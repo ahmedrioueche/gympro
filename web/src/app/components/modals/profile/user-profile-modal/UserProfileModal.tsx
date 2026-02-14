@@ -1,11 +1,12 @@
 import type { User } from "@ahmedrioueche/gympro-client";
-import { Info } from "lucide-react";
+import { CreditCard, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../../store/modal";
 import {
   CustomizableProfileTemplateModal,
   type ProfileModalAction,
 } from "../CustomizableProfileTemplateModal";
+import { MemberSubscriptionsTable } from "../member-profile-modal/MemberSubscriptionTable";
 
 export default function UserProfileModal() {
   const { t } = useTranslation();
@@ -87,6 +88,19 @@ export default function UserProfileModal() {
         </div>
       ),
     },
+    ...(user.subscriptionHistory && user.subscriptionHistory.length > 0
+      ? [
+          {
+            id: "subscriptions",
+            label: t("sidebar.subscriptions"),
+            icon: CreditCard,
+            count: user.subscriptionHistory.length,
+            content: (
+              <MemberSubscriptionsTable history={user.subscriptionHistory} />
+            ),
+          },
+        ]
+      : []),
   ];
 
   const actions: ProfileModalAction[] = [];

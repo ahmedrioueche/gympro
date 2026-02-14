@@ -2,8 +2,8 @@ import { ChevronLeft, ChevronRight, CreditCard } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
+import SearchFilterBar from "../../../../../components/ui/SearchFilterBar";
 import PageHeader from "../../../../components/PageHeader";
-import { SubscriptionsControls } from "./components/SubscriptionsControls";
 import { SubscriptionsTable } from "./components/SubscriptionsTable";
 import { useMySubscriptions } from "./hooks/useMySubscriptions";
 
@@ -44,7 +44,7 @@ function SubscriptionsPage() {
   const totalPages = Math.ceil(totalSubscriptions / ITEMS_PER_PAGE) || 1;
   const paginatedSubscriptions = filteredSubscriptions.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   const handleSearchChange = (query: string) => {
@@ -96,17 +96,26 @@ function SubscriptionsPage() {
         title={t("mySubscriptions.title", "My Subscriptions")}
         subtitle={t(
           "mySubscriptions.subtitle",
-          "Manage your gym memberships and subscriptions"
+          "Manage your gym memberships and subscriptions",
         )}
         icon={CreditCard}
       />
 
       {/* Controls */}
-      <SubscriptionsControls
+      <SearchFilterBar
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
-        filterStatus={filterStatus}
-        onFilterStatusChange={handleFilterStatusChange}
+        searchPlaceholder={t(
+          "mySubscriptions.searchPlaceholder",
+          "Search by gym name...",
+        )}
+        filterValue={filterStatus}
+        onFilterChange={handleFilterStatusChange as any}
+        filterOptions={[
+          { value: "all", label: t("common.all", "All") },
+          { value: "active", label: t("common.status_active", "Active") },
+          { value: "expired", label: t("common.status_expired", "Expired") },
+        ]}
       />
 
       {/* Content */}
@@ -122,7 +131,7 @@ function SubscriptionsPage() {
           <p className="text-text-secondary">
             {t(
               "mySubscriptions.emptyDesc",
-              "Join a gym to see your subscriptions here."
+              "Join a gym to see your subscriptions here.",
             )}
           </p>
         </div>
@@ -136,7 +145,7 @@ function SubscriptionsPage() {
           <p className="text-text-secondary">
             {t(
               "mySubscriptions.noResultsDesc",
-              "Try adjusting your search or filter criteria."
+              "Try adjusting your search or filter criteria.",
             )}
           </p>
         </div>
@@ -188,7 +197,7 @@ function SubscriptionsPage() {
                 >
                   {page}
                 </button>
-              )
+              ),
             )}
 
             <button

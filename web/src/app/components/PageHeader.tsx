@@ -1,6 +1,5 @@
 import { ChevronDown, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Button from "../../components/ui/Button";
 import Dropdown, { DropdownItem } from "../../components/ui/Dropdown";
 
 interface Action {
@@ -18,17 +17,18 @@ interface PageHeaderProps {
   subtitle: string;
   actionButton?: Action;
   actions?: Action[];
+  extra?: React.ReactNode;
   gradientFrom?: string;
   gradientTo?: string;
 }
 
-// PageHeader Component
 function PageHeader({
   icon: Icon,
   title,
   subtitle,
   actionButton = null,
   actions = [],
+  extra,
 }: PageHeaderProps) {
   const { t } = useTranslation();
   const allActions = actionButton ? [actionButton, ...actions] : actions;
@@ -36,94 +36,84 @@ function PageHeader({
 
   const renderAction = (action: Action) => {
     const ActionIcon = action.icon;
+    const hasLabel = !!action.label;
+
     return (
-      <Button
+      <button
         onClick={action.onClick}
-        loading={action.loading}
-        disabled={action.disabled}
-        className="group/btn relative inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 hover:from-blue-600 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-purple-500/15 overflow-hidden"
+        disabled={action.disabled || action.loading}
+        title={action.label}
+        className={`flex items-center justify-center gap-2 rounded-2xl transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none group h-[46px] 
+          ${
+            hasLabel
+              ? "px-5 bg-primary text-white text-sm font-black uppercase tracking-wider hover:bg-primary-hover shadow-lg shadow-primary/20"
+              : "w-[46px] bg-surface-secondary text-text-secondary border border-border hover:bg-primary hover:text-white hover:border-primary shadow-sm"
+          }`}
       >
-        <span className="relative z-10">{action.label}</span>
+        {hasLabel && <span>{action.label}</span>}
         {ActionIcon && (
-          <ActionIcon className="relative z-10 w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" />
+          <ActionIcon
+            className={`w-5 h-5 transition-transform ${hasLabel ? "group-hover:translate-x-0.5" : "group-hover:scale-110"}`}
+          />
         )}
-        <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-      </Button>
+      </button>
     );
   };
+
   return (
-    <div className="relative mb-12 group">
-      {/* Main container */}
-      <div className="relative overflow-hidden rounded-3xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-800/95 to-slate-900 shadow-sm backdrop-blur-xl">
-        {/* Subtle grid pattern overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+    <div className="flex flex-col items-center text-center md:flex-row md:items-center md:text-left justify-between gap-6 mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
+      <div className="flex flex-col items-center md:flex-row md:items-start gap-5">
+        {Icon && (
+          <div className="hidden sm:flex p-4 rounded-3xl bg-primary/5 text-primary border border-primary/10 shadow-sm flex-shrink-0">
+            <Icon size={32} strokeWidth={2.5} />
+          </div>
+        )}
+        <div>
+          <h1 className="text-3xl md:text-4xl font-black text-text-primary tracking-tight">
+            {title}
+          </h1>
+          <p className="text-text-secondary font-medium mt-1 max-w-2xl text-sm md:text-base">
+            {subtitle}
+          </p>
+        </div>
+      </div>
 
-        {/* Accent gradient bar */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-
-        {/* Content */}
-        <div className="relative p-6 md:p-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            {/* Left */}
-            <div className="flex items-start sm:items-center gap-4">
-              <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-                {/* Icon glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl blur-md opacity-50"></div>
-                {Icon && (
-                  <Icon className="relative w-7 h-7 md:w-8 md:h-8 text-white" />
+      <div className="flex items-center justify-center md:justify-end gap-3 w-full md:w-auto">
+        {extra}
+        {visibleActions.length > 0 && (
+          <div className="flex items-center gap-2">
+            {visibleActions.length === 1 ? (
+              renderAction(visibleActions[0])
+            ) : (
+              <Dropdown
+                trigger={
+                  <button className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-surface-secondary text-text-secondary border border-border text-sm font-black uppercase tracking-wider hover:bg-surface-hover transition-all group h-[46px]">
+                    <span>{t("common.actions", "Actions")}</span>
+                    <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+                  </button>
+                }
+              >
+                {(closeDropdown) => (
+                  <div className="p-1.5 w-48 bg-surface border border-border rounded-2xl shadow-xl">
+                    {visibleActions.map((action, idx) => (
+                      <DropdownItem
+                        key={idx}
+                        label={action.label}
+                        icon={
+                          action.icon && <action.icon className="w-4 h-4" />
+                        }
+                        onClick={() => {
+                          action.onClick();
+                          closeDropdown();
+                        }}
+                      />
+                    ))}
+                  </div>
                 )}
-              </div>
-
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent mb-1">
-                  {title}
-                </h1>
-                <p className="text-slate-400 text-sm md:text-base">
-                  {subtitle}
-                </p>
-              </div>
-            </div>
-
-            {/* Right CTA */}
-            {visibleActions.length > 0 && (
-              <div className="w-full sm:w-auto flex justify-center sm:justify-end">
-                {visibleActions.length === 1 ? (
-                  renderAction(visibleActions[0])
-                ) : (
-                  <Dropdown
-                    trigger={
-                      <Button className="group/btn mb-1 relative inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 hover:from-blue-600 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-purple-500/15 overflow-hidden">
-                        <span className="relative z-10">
-                          {t?.("common.actions", "Actions") || "Actions"}
-                        </span>
-                        <ChevronDown className="relative z-10 w-4 h-4 transition-transform group-hover/btn:translate-y-0.5" />
-                        <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                      </Button>
-                    }
-                  >
-                    {(closeDropdown) => (
-                      <div className="flex flex-col ">
-                        {visibleActions.map((action, idx) => (
-                          <DropdownItem
-                            key={idx}
-                            label={action.label}
-                            icon={
-                              action.icon && <action.icon className="w-4 h-4" />
-                            }
-                            onClick={() => {
-                              action.onClick();
-                              closeDropdown();
-                            }}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </Dropdown>
-                )}
-              </div>
+              </Dropdown>
             )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

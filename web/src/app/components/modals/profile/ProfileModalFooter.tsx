@@ -1,13 +1,12 @@
-import type { LucideIcon } from "lucide-react";
+import { Loader, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Button from "../../../../components/ui/Button";
+import { cn } from "../../../../utils/helper";
 
 export interface ProfileModalAction {
   label: string;
   onClick: () => void;
   icon?: LucideIcon;
-  variant?: "filled" | "outline" | "ghost";
-  color?: "primary" | "secondary" | "accent" | "success" | "warning" | "danger";
+  variant?: "primary" | "default" | "danger" | "ghost" | "success";
   loading?: boolean;
   disabled?: boolean;
 }
@@ -25,27 +24,89 @@ export function ProfileModalFooter({
 }: ProfileModalFooterProps) {
   const { t } = useTranslation();
 
+  const getButtonClasses = (
+    variant: ProfileModalAction["variant"] = "default",
+    disabled?: boolean,
+    loading?: boolean,
+    className?: string,
+  ) => {
+    const baseClasses =
+      "px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 text-sm";
+
+    if (disabled || loading) {
+      return cn(
+        baseClasses,
+        "bg-gray-400 cursor-not-allowed opacity-50 shadow-none ring-0 text-white",
+        className,
+      );
+    }
+
+    switch (variant) {
+      case "primary":
+        return cn(
+          baseClasses,
+          "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white ring-1 ring-blue-500/30 hover:shadow-xl hover:shadow-purple-500/20",
+          className,
+        );
+      case "danger":
+        return cn(
+          baseClasses,
+          "bg-red-500 hover:bg-red-600 text-white shadow-sm hover:shadow-md",
+          className,
+        );
+      case "success":
+        return cn(
+          baseClasses,
+          "bg-emerald-500 hover:bg-emerald-600 text-white shadow-sm hover:shadow-md",
+          className,
+        );
+      case "ghost":
+        return cn(
+          baseClasses,
+          "bg-transparent hover:bg-surface-hover text-text-secondary hover:text-text-primary",
+          className,
+        );
+      case "default":
+      default:
+        return cn(
+          baseClasses,
+          "text-text-secondary bg-surface hover:bg-surface/50 border-2 border-border hover:border-primary/30",
+          className,
+        );
+    }
+  };
+
   return (
-    <div className="flex justify-end gap-3 w-full">
-      <Button variant="outline" color="secondary" onClick={onClose}>
+    <div className="flex justify-end items-center gap-3 w-full">
+      <button
+        type="button"
+        onClick={onClose}
+        className={getButtonClasses("default")}
+      >
         {closeLabel || t("common.close")}
-      </Button>
+      </button>
 
       {actions.map((action, index) => {
         const Icon = action.icon;
         return (
-          <Button
+          <button
             key={index}
-            variant={action.variant || "filled"}
-            color={action.color || "primary"}
+            type="button"
             onClick={action.onClick}
-            loading={action.loading}
-            disabled={action.disabled}
-            icon={Icon ? <Icon className="w-4 h-4" /> : undefined}
-            className="group/btn relative inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 hover:from-blue-600 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-purple-500/15 overflow-hidden"
+            disabled={action.disabled || action.loading}
+            className={getButtonClasses(
+              action.variant || "primary",
+              action.disabled,
+              action.loading,
+            )}
           >
+            {action.loading ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              Icon && <Icon className="w-4 h-4" />
+            )}
             {action.label}
-          </Button>
+          </button>
         );
       })}
     </div>

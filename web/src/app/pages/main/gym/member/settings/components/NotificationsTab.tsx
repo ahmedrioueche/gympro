@@ -25,11 +25,11 @@ export default function NotificationsTab({
       id: "classReminders",
       title: t(
         "settings.member.notifications.classReminders",
-        "Class Reminders"
+        "Class Reminders",
       ),
       description: t(
         "settings.member.notifications.classRemindersDesc",
-        "Get notified before your scheduled classes"
+        "Get notified before your scheduled classes",
       ),
       icon: Calendar,
       checked: classReminders,
@@ -39,11 +39,11 @@ export default function NotificationsTab({
       id: "subscriptionRenewal",
       title: t(
         "settings.member.notifications.subscriptionRenewal",
-        "Renewal Alerts"
+        "Renewal Alerts",
       ),
       description: t(
         "settings.member.notifications.subscriptionRenewalDesc",
-        "Notified when your subscription is about to expire"
+        "Notified when your subscription is about to expire",
       ),
       icon: RefreshCw,
       checked: subscriptionRenewal,
@@ -53,11 +53,11 @@ export default function NotificationsTab({
       id: "announcements",
       title: t(
         "settings.member.notifications.announcements",
-        "Gym Announcements"
+        "Gym Announcements",
       ),
       description: t(
         "settings.member.notifications.announcementsDesc",
-        "Stay updated with important gym news"
+        "Stay updated with important gym news",
       ),
       icon: Megaphone,
       checked: announcements,
@@ -74,7 +74,7 @@ export default function NotificationsTab({
         <p className="text-sm text-text-secondary mb-4">
           {t(
             "settings.member.notifications.description",
-            "Choose how and when you want to be notified"
+            "Choose how and when you want to be notified",
           )}
         </p>
 

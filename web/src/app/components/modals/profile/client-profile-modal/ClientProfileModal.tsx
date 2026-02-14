@@ -35,8 +35,7 @@ export default function ClientProfileModal() {
       label: t("coach.clients.activeClients.assignProgram"),
       onClick: handleAssignProgram,
       icon: UserCog,
-      variant: "filled",
-      color: "primary",
+      variant: "primary",
     },
   ];
 
@@ -49,6 +48,7 @@ export default function ClientProfileModal() {
       title={client?.fullName || t("role.member") + " Details"}
       tabs={tabs}
       actions={actions}
+      showContactInfo={true}
     />
   );
 }

@@ -23,6 +23,7 @@ const getStorageKey = (programId: string, dayName: string) =>
 interface StoredSession {
   exercises: ExerciseProgress[];
   sessionDate: string;
+  durationMinutes?: number;
   timestamp: number;
   mode: "new" | "edit";
   serverSessionId?: string;
@@ -48,6 +49,9 @@ export const useSessionForm = ({
       ? new Date(initialSession.date).toISOString().split("T")[0]
       : new Date().toISOString().split("T")[0],
   );
+  const [durationMinutes, setDurationMinutes] = useState<number>(
+    initialSession?.durationMinutes || 45,
+  );
   const [exercises, setExercises] = useState<ExerciseProgress[]>([]);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [serverSessionId, setServerSessionId] = useState<string | undefined>(
@@ -71,6 +75,7 @@ export const useSessionForm = ({
           ? new Date(initialSession.date).toISOString().split("T")[0]
           : new Date().toISOString().split("T")[0],
       );
+      setDurationMinutes(initialSession?.durationMinutes || 45);
       setServerSessionId(
         (initialSession as any)?._id || (initialSession as any)?.id,
       );
@@ -263,6 +268,7 @@ export const useSessionForm = ({
         programId: program._id,
         dayName: selectedDayName,
         date: sessionDate,
+        durationMinutes,
         exercises,
         sessionId: serverSessionId,
         submissionId: submissionId, // Send robust ID
@@ -303,6 +309,7 @@ export const useSessionForm = ({
     const data: StoredSession = {
       exercises,
       sessionDate,
+      durationMinutes,
       timestamp: Date.now(),
       mode,
       serverSessionId, // Persist ID so crash recovery works with proper UPDATE
@@ -587,6 +594,8 @@ export const useSessionForm = ({
     setSelectedDayName,
     sessionDate,
     setSessionDate,
+    durationMinutes,
+    setDurationMinutes,
     exercises,
     updateSet,
     addSet,

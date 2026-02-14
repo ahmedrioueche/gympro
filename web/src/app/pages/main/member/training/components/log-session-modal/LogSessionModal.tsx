@@ -86,6 +86,7 @@ export const LogSessionModal = () => {
         programId: program._id!,
         dayName: form.selectedDayName,
         date: form.sessionDate,
+        durationMinutes: form.durationMinutes,
         exercises: form.exercises,
         sessionId:
           mode === "edit"
@@ -147,6 +148,24 @@ export const LogSessionModal = () => {
               type="date"
               value={form.sessionDate}
               onChange={(e) => form.setSessionDate(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-text-secondary mb-2">
+              {t("training.logSession.duration")}
+            </label>
+            <InputField
+              type="number"
+              placeholder="45"
+              value={form.durationMinutes}
+              onChange={(e) =>
+                form.setDurationMinutes(parseInt(e.target.value) || 0)
+              }
+              rightIcon={
+                <span className="text-xs font-bold text-text-secondary uppercase">
+                  min
+                </span>
+              }
             />
           </div>
         </div>

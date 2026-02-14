@@ -197,6 +197,7 @@ export interface ProgramDayProgress {
   submissionId?: string;
   dayName: string; // matches ProgramDay.name
   date: string | Date;
+  durationMinutes?: number;
   exercises: ExerciseProgress[];
   notes?: string; // optional overall day notes
 }

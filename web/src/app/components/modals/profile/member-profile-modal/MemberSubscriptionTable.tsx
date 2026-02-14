@@ -61,7 +61,9 @@ export const MemberSubscriptionsTable = ({
       header: t("memberProfile.subscription.type"),
       render: (record) => (
         <span className="font-bold text-white uppercase tracking-wide">
-          {record.subscription.typeId || "Regular"}
+          {record.subscription.typeDetails?.customName ||
+            record.subscription.typeId ||
+            "Regular"}
         </span>
       ),
     },
@@ -164,7 +166,9 @@ export const MemberSubscriptionsTable = ({
             </span>
             <div>
               <p className="font-bold text-white uppercase tracking-wide">
-                {record.subscription.typeId || "Regular"}
+                {record.subscription.typeDetails?.customName ||
+                  record.subscription.typeId ||
+                  "Regular"}
               </p>
               <p className="text-xs text-zinc-400">
                 {new Date(record.subscription.endDate).toLocaleDateString()}

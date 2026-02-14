@@ -13,7 +13,7 @@ import {
 } from "../../../hooks/queries/useGymCoach";
 import { useModalStore } from "../../../store/modal";
 import { getMessage, showStatusToast } from "../../../utils/statusMessage";
-import CoachCard from "../cards/CoachCard";
+import { MinimalCoachCard } from "../ui/MinimalCoachCard";
 
 export default function InviteCoachModal() {
   const { t } = useTranslation();
@@ -28,16 +28,22 @@ export default function InviteCoachModal() {
   const inviteCoach = useInviteCoach();
 
   // Map of coachId -> affiliation status
-  const affiliationStatusMap = affiliations.reduce((acc, aff) => {
-    acc[aff.coachId] = aff.status;
-    return acc;
-  }, {} as Record<string, string>);
-
-  const filteredCoaches = coaches.filter((coach) =>
-    (coach.fullName || coach.username || "")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+  const affiliationStatusMap = affiliations.reduce(
+    (acc, aff) => {
+      acc[aff.coachId] = aff.status;
+      return acc;
+    },
+    {} as Record<string, string>,
   );
+
+  const filteredCoaches = coaches.filter((coach) => {
+    // Hide coaches who are already affiliated (active, pending, etc.)
+    if (affiliationStatusMap[coach.userId]) return false;
+
+    return (coach.fullName || coach.username || "")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+  });
 
   const handleInvite = async (coachId: string) => {
     if (!inviteCoachProps?.gymId) return;
@@ -84,16 +90,34 @@ export default function InviteCoachModal() {
         ) : (
           <div className="space-y-3 max-h-[400px] overflow-y-auto">
             {filteredCoaches.map((coach: CoachProfile) => (
-              <CoachCard
+              <div
                 key={coach.userId}
-                coach={coach}
-                onViewDetails={() => {
-                  openModal("coach_profile", { coachId: coach.userId });
-                }}
-                onInvite={() => handleInvite(coach.userId)}
-                isInviting={invitingCoachId === coach.userId}
-                affiliationStatus={affiliationStatusMap[coach.userId]}
-              />
+                className="flex items-center justify-between gap-4 p-1 bg-surface-secondary/30 rounded-2xl border border-border/50 hover:bg-surface-secondary/50 transition-all group"
+              >
+                <MinimalCoachCard
+                  coach={{
+                    _id: coach.userId,
+                    fullName: coach.fullName,
+                    username: coach.username,
+                    profileImageUrl: coach.profileImageUrl,
+                  }}
+                  className="flex-1 bg-transparent border-none backdrop-blur-none p-3"
+                />
+                <div className="pr-4">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleInvite(coach.userId);
+                    }}
+                    disabled={invitingCoachId === coach.userId}
+                    className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary/90 transition-all disabled:opacity-50"
+                  >
+                    {invitingCoachId === coach.userId
+                      ? t("common.loading")
+                      : t("coaching.inviteCoach")}
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         )}

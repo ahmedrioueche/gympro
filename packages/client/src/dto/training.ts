@@ -51,6 +51,7 @@ export interface LogSessionDto {
   programId: string;
   dayName: string;
   date: string;
+  durationMinutes?: number;
   exercises: ExerciseProgress[];
   notes?: string;
 }

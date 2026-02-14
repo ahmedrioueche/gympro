@@ -180,6 +180,7 @@ export interface ClientProfileModalProps {
 export interface CoachProfileModalProps {
   coachId?: string;
   coach?: CoachProfile;
+  onRemove?: () => void;
 }
 
 export interface CoachPricingModalProps {

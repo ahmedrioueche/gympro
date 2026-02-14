@@ -3,6 +3,7 @@ import { Mail, MapPin, Phone, User as UserIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
+import { useUserStore } from "../../../../store/user";
 import { openGmail, openWhatsApp } from "../../../../utils/contact";
 import { cn } from "../../../../utils/helper";
 import {
@@ -30,6 +31,8 @@ interface CustomizableProfileTemplateModalProps {
   isLoading?: boolean;
   /** Custom close button label */
   closeLabel?: string;
+  /** Whether to show contact info. If not provided, defaults to manager/coach/self check */
+  showContactInfo?: boolean;
 }
 
 export function CustomizableProfileTemplateModal({
@@ -42,15 +45,32 @@ export function CustomizableProfileTemplateModal({
   title,
   isLoading,
   closeLabel,
+  showContactInfo,
 }: CustomizableProfileTemplateModalProps) {
   const { t } = useTranslation();
+  const { user: currentUser, activeDashboard } = useUserStore();
+
   const [activeTabId, setActiveTabId] = useState<string>(
-    tabs[0]?.id || "overview"
+    tabs[0]?.id || "overview",
   );
 
   const activeTabContent = tabs.find((t) => t.id === activeTabId)?.content;
 
   if (!user && !isLoading) return null;
+
+  const isSelf = currentUser?._id === user?._id;
+  const isManager =
+    activeDashboard === "manager" || activeDashboard === "admin";
+
+  // Check if current user is a coach and viewing one of their clients
+  const isTheirCoach =
+    activeDashboard === "coach" &&
+    (currentUser as any)?.coachingInfo?.coachedMembers?.includes(user?._id);
+
+  // The caller (like ClientProfileModal) can explicitly set showContactInfo to true
+  // If not provided, we fall back to manager, self, or coach-client check.
+  const canSeeContact =
+    showContactInfo ?? (isManager || isSelf || isTheirCoach);
 
   return (
     <BaseModal
@@ -59,7 +79,7 @@ export function CustomizableProfileTemplateModal({
       title={
         title || user?.profile?.fullName || t("memberProfile.unknownMember")
       }
-      subtitle={user?.profile.email || ""}
+      subtitle={canSeeContact ? user?.profile.email || "" : ""}
       icon={UserIcon}
       maxWidth="max-w-5xl"
       showFooter={true}
@@ -121,76 +141,91 @@ export function CustomizableProfileTemplateModal({
                   </div>
 
                   {/* Contact Infos */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                    {(() => {
-                      const isEmailContactable =
-                        user?.profile?.email &&
-                        !user.profile.email.startsWith("no_contact");
-                      return (
-                        <div
-                          onClick={() =>
-                            isEmailContactable && openGmail(user.profile.email)
-                          }
-                          className={cn(
-                            "flex items-center gap-3 transition-colors",
-                            isEmailContactable
-                              ? "text-text-secondary cursor-pointer hover:text-primary"
-                              : "text-text-secondary opacity-50 cursor-auto"
-                          )}
-                        >
-                          <Mail className="w-4 h-4" />
-                          <span className="text-sm font-medium truncate">
-                            {isEmailContactable
-                              ? user.profile.email
-                              : t("memberProfile.noEmail")}
-                          </span>
-                        </div>
-                      );
-                    })()}
+                  {canSeeContact ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                      {(() => {
+                        const isEmailContactable =
+                          user?.profile?.email &&
+                          !user.profile.email.startsWith("no_contact");
+                        return (
+                          <div
+                            onClick={() =>
+                              isEmailContactable &&
+                              openGmail(user.profile.email)
+                            }
+                            className={cn(
+                              "flex items-center gap-3 transition-colors",
+                              isEmailContactable
+                                ? "text-text-secondary cursor-pointer hover:text-primary"
+                                : "text-text-secondary opacity-50 cursor-auto",
+                            )}
+                          >
+                            <Mail className="w-4 h-4" />
+                            <span className="text-sm font-medium truncate">
+                              {isEmailContactable
+                                ? user.profile.email
+                                : t("memberProfile.noEmail")}
+                            </span>
+                          </div>
+                        );
+                      })()}
 
-                    {(() => {
-                      const isPhoneContactable = !!user?.profile?.phoneNumber;
-                      return (
-                        <div
-                          onClick={() =>
-                            isPhoneContactable &&
-                            openWhatsApp(user.profile.phoneNumber)
-                          }
-                          className={cn(
-                            "flex items-center gap-3 transition-colors",
-                            isPhoneContactable
-                              ? "text-text-secondary cursor-pointer hover:text-primary"
-                              : "text-text-secondary opacity-50 cursor-auto"
-                          )}
-                        >
-                          <Phone className="w-4 h-4" />
+                      {(() => {
+                        const isPhoneContactable = !!user?.profile?.phoneNumber;
+                        return (
+                          <div
+                            onClick={() =>
+                              isPhoneContactable &&
+                              openWhatsApp(user.profile.phoneNumber)
+                            }
+                            className={cn(
+                              "flex items-center gap-3 transition-colors",
+                              isPhoneContactable
+                                ? "text-text-secondary cursor-pointer hover:text-primary"
+                                : "text-text-secondary opacity-50 cursor-auto",
+                            )}
+                          >
+                            <Phone className="w-4 h-4" />
+                            <span className="text-sm font-medium">
+                              {isPhoneContactable
+                                ? user.profile.phoneNumber
+                                : t("memberProfile.noPhone")}
+                            </span>
+                          </div>
+                        );
+                      })()}
+
+                      {/* Location */}
+                      {(user?.profile?.city ||
+                        user?.profile?.state ||
+                        user?.profile?.country) && (
+                        <div className="flex items-center gap-3 text-text-secondary lg:col-span-2">
+                          <MapPin className="w-4 h-4" />
                           <span className="text-sm font-medium">
-                            {isPhoneContactable
-                              ? user.profile.phoneNumber
-                              : t("memberProfile.noPhone")}
+                            {[
+                              user?.profile?.city,
+                              user?.profile?.state,
+                              user?.profile?.country,
+                            ]
+                              .filter(Boolean)
+                              .join(", ")}
                           </span>
                         </div>
-                      );
-                    })()}
-
-                    {/* Location */}
-                    {(user?.profile?.city ||
-                      user?.profile?.state ||
-                      user?.profile?.country) && (
-                      <div className="flex items-center gap-3 text-text-secondary lg:col-span-2">
-                        <MapPin className="w-4 h-4" />
-                        <span className="text-sm font-medium">
-                          {[
-                            user?.profile?.city,
-                            user?.profile?.state,
-                            user?.profile?.country,
-                          ]
-                            .filter(Boolean)
-                            .join(", ")}
-                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 p-3 bg-surface-secondary/50 rounded-xl border border-dashed border-border w-fit">
+                      <div className="w-8 h-8 rounded-full bg-surface-hover flex items-center justify-center">
+                        <UserIcon className="w-4 h-4 text-text-secondary/60" />
                       </div>
-                    )}
-                  </div>
+                      <p className="text-xs text-text-secondary/70 italic px-2">
+                        {t(
+                          "memberProfile.contactHidden",
+                          "Contact information is hidden for privacy",
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -214,7 +249,7 @@ export function CustomizableProfileTemplateModal({
                     "px-6 py-3 text-sm font-semibold relative transition-colors whitespace-nowrap flex items-center gap-2",
                     activeTabId === tab.id
                       ? "text-primary"
-                      : "text-text-secondary hover:text-text-primary"
+                      : "text-text-secondary hover:text-text-primary",
                   )}
                 >
                   {tab.icon && <tab.icon className="w-4 h-4" />}
@@ -225,7 +260,7 @@ export function CustomizableProfileTemplateModal({
                         "px-1.5 py-0.5 rounded-md text-[10px]",
                         activeTabId === tab.id
                           ? "bg-primary/10"
-                          : "bg-surface-hover"
+                          : "bg-surface-hover",
                       )}
                     >
                       {tab.count}

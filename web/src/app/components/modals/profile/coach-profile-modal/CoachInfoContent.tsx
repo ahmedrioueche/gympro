@@ -1,5 +1,5 @@
 import type { CoachProfile } from "@ahmedrioueche/gympro-client";
-import { Award, Briefcase, Dumbbell, Star } from "lucide-react";
+import { Award, Briefcase, Dumbbell, Star, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface CoachInfoContentProps {
@@ -12,7 +12,7 @@ export function CoachInfoContent({ coach }: CoachInfoContentProps) {
   return (
     <div className="space-y-4">
       {/* Stats Row */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="bg-surface-hover border border-border rounded-xl p-4 text-center">
           <Star className="w-5 h-5 mx-auto text-warning mb-2" />
           <p className="text-xl font-bold text-text-primary">
@@ -29,6 +29,15 @@ export function CoachInfoContent({ coach }: CoachInfoContentProps) {
           </p>
           <p className="text-xs text-text-secondary uppercase tracking-wider">
             {t("common.years")}
+          </p>
+        </div>
+        <div className="bg-surface-hover border border-border rounded-xl p-4 text-center">
+          <Users className="w-5 h-5 mx-auto text-accent mb-2" />
+          <p className="text-xl font-bold text-text-primary capitalize">
+            {coach.gender ? t(`common.${coach.gender}`) : "N/A"}
+          </p>
+          <p className="text-xs text-text-secondary uppercase tracking-wider">
+            {t("common.gender")}
           </p>
         </div>
         <div className="bg-surface-hover border border-border rounded-xl p-4 text-center">

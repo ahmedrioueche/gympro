@@ -65,7 +65,7 @@ export default function SettingsPage() {
         title={t("settings.pageTitle", "Settings")}
         subtitle={t(
           "settings.pageSubtitle",
-          "Manage your application preferences"
+          "Manage your application preferences",
         )}
         icon={Settings}
         actionButton={{
@@ -110,7 +110,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-text-secondary mb-4">
                   {t(
                     "settings.general.layoutDesc",
-                    "Choose how your data lists are displayed by default"
+                    "Choose how your data lists are displayed by default",
                   )}
                 </p>
 
@@ -160,7 +160,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-text-secondary mb-4">
                   {t(
                     "settings.general.appearanceDesc",
-                    "Customize how GymPro looks"
+                    "Customize how GymPro looks",
                   )}
                 </p>
                 <div className="bg-primary/5 rounded-xl p-4 border border-primary/20 flex items-start gap-3">
@@ -172,7 +172,7 @@ export default function SettingsPage() {
                     <p className="text-xs text-text-secondary mt-1">
                       {t(
                         "settings.general.darkOnlyNote",
-                        "GymPro currently defaults to a premium dark aesthetic for the best experience."
+                        "GymPro currently defaults to a premium dark aesthetic for the best experience.",
                       )}
                     </p>
                   </div>
@@ -190,7 +190,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-text-secondary mb-4">
                   {t(
                     "settings.notifications.alertsDesc",
-                    "Configure how early you want to be notified of events"
+                    "Configure how early you want to be notified of events",
                   )}
                 </p>
 
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                     type="number"
                     label={t(
                       "settings.notifications.reminderMinutes",
-                      "Default Reminder (minutes)"
+                      "Default Reminder (minutes)",
                     )}
                     value={reminderMinutes}
                     onChange={(e) =>
@@ -220,7 +220,7 @@ export default function SettingsPage() {
                   <p className="text-xs text-text-secondary mt-1">
                     {t(
                       "settings.notifications.noteDesc",
-                      "Notifications are delivered instantly via WebSockets when you are online."
+                      "Notifications are delivered instantly via WebSockets when you are online.",
                     )}
                   </p>
                 </div>
@@ -237,7 +237,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-text-secondary mb-6">
                   {t(
                     "settings.locale.desc",
-                    "Set your preferred language and timezone"
+                    "Set your preferred language and timezone",
                   )}
                 </p>
 
@@ -294,14 +294,14 @@ export default function SettingsPage() {
                     <h4 className="text-base font-semibold text-text-primary">
                       {t(
                         "settings.locale.contactSupportTitle",
-                        "Need a change?"
+                        "Need a change?",
                       )}
                     </h4>
                   </div>
                   <p className="text-sm text-text-secondary mb-6 leading-relaxed">
                     {t(
                       "settings.locale.contactSupportDesc",
-                      "To ensure billing accuracy, business region and currency settings are managed by our support team. We're here to help you scaling your business!"
+                      "To ensure billing accuracy, business region and currency settings are managed by our support team. We're here to help you scaling your business!",
                     )}
                   </p>
                   <Button

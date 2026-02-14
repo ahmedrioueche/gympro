@@ -83,6 +83,7 @@ export interface CoachProfile {
   bio?: string;
   specializations?: string[];
   yearsOfExperience?: number;
+  gender?: string;
   location?: {
     city?: string;
     state?: string;

@@ -15,6 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useModalStore } from "../../../store/modal";
 
 interface CoachCardProps {
   coach: CoachProfile;
@@ -50,6 +51,7 @@ export default function CoachCard({
   onSelect,
 }: CoachCardProps) {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
   const displayName = coach.fullName || coach.username;
   const location = [
     coach.location?.city,
@@ -59,11 +61,22 @@ export default function CoachCard({
     .filter(Boolean)
     .join(", ");
 
+  const handleViewProfile = () => {
+    if (onViewDetails) {
+      onViewDetails(coach);
+    } else {
+      openModal("coach_profile", {
+        coach,
+        onRemove: isActive && onRemove ? onRemove : undefined,
+      });
+    }
+  };
+
   const handleCardClick = () => {
     if (selectable && onSelect) {
       onSelect();
-    } else if (onViewDetails) {
-      onViewDetails(coach);
+    } else {
+      handleViewProfile();
     }
   };
 
@@ -123,24 +136,13 @@ export default function CoachCard({
       );
     }
 
-    // Remove action for active coaches
-    if (isActive && onRemove) {
-      return (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove();
-          }}
-          className="w-full px-4 py-2.5 rounded-xl bg-surface-secondary border border-border text-text-secondary text-sm font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all flex items-center justify-center gap-2"
-        >
-          <UserMinus className="w-4 h-4" />
-          {t("coaching.removeCoach")}
-        </button>
-      );
-    }
+    // View Profile action for active coaches (remove has moved to profile)
 
-    // Affiliation status badge
-    if (affiliationStatus) {
+    // Affiliation status badge (only for active/pending)
+    if (
+      affiliationStatus &&
+      (affiliationStatus === "active" || affiliationStatus === "pending")
+    ) {
       return (
         <div
           className={`w-full cursor-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm ${
@@ -237,6 +239,16 @@ export default function CoachCard({
                 <Award className="w-4 h-4 text-blue-500" />
                 <span className="text-[10px] font-black text-blue-600 uppercase tracking-wider">
                   {t("coaches.verified")}
+                </span>
+              </div>
+            )}
+
+            {/* Gender Badge */}
+            {coach.gender && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-accent/5 border border-accent/10 backdrop-blur-md">
+                <Users className="w-4 h-4 text-accent" />
+                <span className="text-[10px] font-black text-accent uppercase tracking-wider">
+                  {t(`common.${coach.gender}`)}
                 </span>
               </div>
             )}

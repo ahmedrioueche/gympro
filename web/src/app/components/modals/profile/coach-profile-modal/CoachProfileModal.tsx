@@ -1,4 +1,4 @@
-import { Award, UserPlus } from "lucide-react";
+import { Award, UserMinus, UserPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   CustomizableProfileTemplateModal,
@@ -23,6 +23,7 @@ export default function CoachProfileModal() {
     handleRequestCoaching,
     handleInviteToGym,
     handleClose,
+    onRemove,
   } = useCoachProfileModal();
 
   if (!isOpen) return null;
@@ -46,8 +47,7 @@ export default function CoachProfileModal() {
         label: t("coaches.alreadyCoached"),
         onClick: () => {},
         icon: UserPlus,
-        variant: "filled",
-        color: "success",
+        variant: "success",
         disabled: true,
       });
     } else {
@@ -55,8 +55,7 @@ export default function CoachProfileModal() {
         label: t("coaches.requestCoaching"),
         onClick: handleRequestCoaching,
         icon: UserPlus,
-        variant: "filled",
-        color: "primary",
+        variant: "primary",
       });
     }
   }
@@ -67,8 +66,17 @@ export default function CoachProfileModal() {
       label: t("coaching.inviteCoach"),
       onClick: handleInviteToGym,
       icon: UserPlus,
-      variant: "filled",
-      color: "primary",
+      variant: "primary",
+    });
+  }
+
+  // Manager: Remove Coach
+  if (isManagerDashboard && onRemove) {
+    actions.push({
+      label: t("coaching.removeCoach"),
+      onClick: onRemove,
+      icon: UserMinus,
+      variant: "danger",
     });
   }
 

@@ -544,6 +544,41 @@ export class MembershipService {
       }
     }
 
+    // Sanitize user before returning to get a plain object
+    const sanitizedUser = this.sanitizeUser(user);
+
+    // Populate subscription type details for history records on the plain object
+    if (
+      sanitizedUser.subscriptionHistory &&
+      Array.isArray(sanitizedUser.subscriptionHistory)
+    ) {
+      const typeIds = sanitizedUser.subscriptionHistory
+        .map((h: any) => h.subscription?.typeId)
+        .filter(Boolean);
+
+      if (typeIds.length > 0) {
+        try {
+          const types = await this.subscriptionTypeModel
+            .find({ _id: { $in: typeIds } })
+            .lean()
+            .exec();
+          const typesMap = new Map(types.map((t) => [t._id.toString(), t]));
+
+          sanitizedUser.subscriptionHistory.forEach((h: any) => {
+            if (h.subscription?.typeId) {
+              h.subscription.typeDetails = typesMap.get(
+                h.subscription.typeId.toString(),
+              );
+            }
+          });
+        } catch (err) {
+          this.logger.warn(
+            `Failed to populate history type details: ${err.message}`,
+          );
+        }
+      }
+    }
+
     // Payment history not yet implemented for gym subscriptions
     // Will return empty array for now
     const payments: any[] = [];
@@ -556,7 +591,7 @@ export class MembershipService {
         roles: membership.roles,
         subscription: membership.subscription,
       },
-      user: this.sanitizeUser(user),
+      user: sanitizedUser,
       payments,
       subscriptionType,
     };

@@ -24,8 +24,10 @@ export default function CoachListTab() {
   const queryClient = useQueryClient();
 
   const handleViewDetails = (coach: CoachProfile) => {
-    console.log("handleViewDetails");
-    openModal("coach_profile", { coach });
+    openModal("coach_profile", {
+      coach,
+      onRemove: () => handleRemoveCoach(coach.userId),
+    });
   };
 
   const { mutate: removeCoach } = useMutation({

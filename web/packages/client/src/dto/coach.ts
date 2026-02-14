@@ -9,6 +9,7 @@ export interface CoachQueryDto {
   state?: string;
   country?: string;
   specialization?: string;
+  gender?: string;
   limit?: number;
   offset?: number;
 }

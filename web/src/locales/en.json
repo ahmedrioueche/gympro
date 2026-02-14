@@ -39,6 +39,9 @@
     "next": "Next",
     "gyms": "Gyms",
     "members": "Members",
+    "gender": "Gender",
+    "male": "Male",
+    "female": "Female",
     "viewDetails": "View Details",
     "capacity": "Capacity",
     "gems": "Gems",
@@ -1081,6 +1084,7 @@
     "genderNotSpecified": "Not specified",
     "noEmail": "No email provided",
     "noPhone": "No phone provided",
+    "contactHidden": "Contact information is hidden for privacy",
     "transactionLedger": "Transaction Ledger",
     "subscription": {
       "title": "Subscription Status",
@@ -2846,7 +2850,8 @@
       "workoutName": "Workout Name",
       "selectDay": "Select Day",
       "day": "Day",
-      "date": "Date",
+      "date": "Workout Date",
+      "duration": "Duration",
       "exercises": "Exercises",
       "exerciseName": "Exercise Name",
       "addExercise": "Add Exercise",
@@ -2885,16 +2890,31 @@
     "subtitle": "Track your fitness journey and achievements",
     "stats": {
       "totalWorkouts": "Total Workouts",
+      "workoutsDesc": "Total training sessions",
       "totalVolume": "Total Volume",
+      "volumeDesc": "Total weight lifted",
       "currentStreak": "Current Streak",
-      "bestStreak": "Best Streak"
+      "streakDesc": "Consecutive training days",
+      "bestStreak": "Best Streak",
+      "bestStreakDesc": "Your all-time record",
+      "trend": "+{{percent}}%"
+    },
+    "streakBadge": "{{count}} Day Streak",
+    "motivation": {
+      "title": "Keep Pushing, You're Doing Great!",
+      "subtitle": "\"The only bad workout is the one that didn't happen.\" You've completed {{count}} workouts so far. Your next milestone is just around the corner!"
     },
     "calendar": {
-      "title": "Activity (Last 14 Days)"
+      "title": "Activity Heatmap",
+      "subtitle": "Consistency is key to success",
+      "less": "Less",
+      "more": "More",
+      "today": "Today"
     },
     "recent": {
       "title": "Recent Workouts",
-      "viewAll": "View All",
+      "subtitle": "Your latest training sessions",
+      "viewAll": "View All Training",
       "noWorkouts": "No workouts logged yet. Start training to see your progress!"
     }
   },

@@ -1,3 +1,4 @@
+import { useGymCoaches } from "../../../../../hooks/queries/useGymCoach";
 import { useGymStore } from "../../../../../store/gym";
 import { useModalStore } from "../../../../../store/modal";
 import { useUserStore } from "../../../../../store/user";
@@ -9,7 +10,7 @@ export function useCoachProfileModal() {
   const { activeDashboard, user } = useUserStore();
   const { currentGym } = useGymStore();
 
-  const { coachId, coach: coachFromProps } = coachProfileProps || {};
+  const { coachId, coach: coachFromProps, onRemove } = coachProfileProps || {};
   const { data: fetchedCoach, isLoading: isFetching } = useCoachProfile(
     coachFromProps ? undefined : coachId,
   );
@@ -26,7 +27,15 @@ export function useCoachProfileModal() {
     (user as any)?.coachingInfo?.coachId === coach?.userId;
 
   // Check if coach is already affiliated with current gym
-  const isAlreadyAffiliated = false; // TODO: Check gym affiliations
+  const { data: affiliations = [] } = useGymCoaches(
+    isManagerDashboard ? currentGym?._id : undefined,
+  );
+
+  const isAlreadyAffiliated = affiliations.some(
+    (a: any) =>
+      a.coachId === coach?.userId &&
+      (a.status === "active" || a.status === "pending"),
+  );
 
   // Build mock user for template
   const mockUser = coach
@@ -79,5 +88,6 @@ export function useCoachProfileModal() {
     handleRequestCoaching,
     handleInviteToGym,
     handleClose,
+    onRemove,
   };
 }

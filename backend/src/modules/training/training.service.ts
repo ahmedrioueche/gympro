@@ -277,6 +277,7 @@ export class TrainingService {
       history.progress.dayLogs.push({
         dayName: dto.dayName,
         date: dto.date,
+        durationMinutes: dto.durationMinutes,
         exercises: dto.exercises,
         notes: dto.notes,
         submissionId: submissionId,
