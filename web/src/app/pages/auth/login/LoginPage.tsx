@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Hero from "../../../../components/Hero";
-import { bgGradient } from "../../../../constants/styles";
+import { BG_GRADIENT } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
 import AuthHeader from "../components/AuthHeader";
 import LoginForm from "./components/LoginForm";
@@ -15,7 +15,7 @@ function LoginPage() {
   return (
     <div
       className={`min-h-screen ${
-        isDark ? bgGradient : "bg-background"
+        isDark ? BG_GRADIENT : "bg-background"
       } flex flex-col lg:flex-row overflow-x-hidden`}
     >
       {/* Left Side - Login Form */}

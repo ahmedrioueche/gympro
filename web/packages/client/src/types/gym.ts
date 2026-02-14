@@ -131,4 +131,5 @@ export interface GymClass extends AuditInfo {
   };
   seriesId?: string; // To link recurring classes
   isSeries?: boolean; // If true, this is a template for recurring classes
+  equipment?: { itemId: string | any; quantity: number }[];
 }

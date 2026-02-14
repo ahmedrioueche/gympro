@@ -9,7 +9,7 @@ import Button from "../../../../components/ui/Button";
 import Confetti from "../../../../components/ui/Confetti";
 import CustomSelect from "../../../../components/ui/CustomSelect";
 import InputField from "../../../../components/ui/InputField";
-import { bgGradient } from "../../../../constants/styles";
+import { BG_GRADIENT } from "../../../../constants/styles";
 import { useTheme } from "../../../../context/ThemeContext";
 import {
   formatPhoneDigitsForInput,
@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
     try {
       const response = await authApi.verifyForgotPasswordOtp(
         submittedIdentifier,
-        verificationCode
+        verificationCode,
       );
 
       if (response.success && response.data?.resetToken) {
@@ -133,7 +133,7 @@ export default function ForgotPasswordPage() {
   return (
     <div
       className={`min-h-screen flex items-center justify-center p-4 ${
-        isDark ? bgGradient : "bg-background"
+        isDark ? BG_GRADIENT : "bg-background"
       } `}
     >
       <div className="max-w-md w-full">
@@ -144,7 +144,7 @@ export default function ForgotPasswordPage() {
 
         <div
           className={`bg-background rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden ${
-            isDark ? bgGradient : "bg-background"
+            isDark ? BG_GRADIENT : "bg-background"
           }`}
         >
           {step === "success" ? (
@@ -213,7 +213,7 @@ export default function ForgotPasswordPage() {
                   <p className="text-text-primary leading-relaxed">
                     {t(
                       "auth.forgot_password_success",
-                      "If the email exists, a reset link has been sent."
+                      "If the email exists, a reset link has been sent.",
                     )}
                   </p>
 
@@ -227,7 +227,7 @@ export default function ForgotPasswordPage() {
                         <p className="text-xs text-text-primary">
                           {t(
                             "auth.email_sent.description",
-                            "We've sent a verification link to your email address."
+                            "We've sent a verification link to your email address.",
                           )}
                         </p>
                       </div>
@@ -267,7 +267,7 @@ export default function ForgotPasswordPage() {
                 <p className="text-text-primary">
                   {t(
                     "auth.enter_code_sent_to",
-                    "Enter the verification code sent to"
+                    "Enter the verification code sent to",
                   )}{" "}
                   <span className="font-semibold">{submittedIdentifier}</span>
                 </p>
@@ -282,7 +282,7 @@ export default function ForgotPasswordPage() {
                     value={verificationCode}
                     onChange={(e) =>
                       setVerificationCode(
-                        e.target.value.replace(/\D/g, "").slice(0, 6)
+                        e.target.value.replace(/\D/g, "").slice(0, 6),
                       )
                     }
                     placeholder="000000"
@@ -387,7 +387,7 @@ export default function ForgotPasswordPage() {
                               type="tel"
                               required
                               value={formatPhoneDigitsForInput(
-                                formData.phoneNumber
+                                formData.phoneNumber,
                               )}
                               onChange={handleChange}
                               placeholder={getExampleNumber(countryCode)}

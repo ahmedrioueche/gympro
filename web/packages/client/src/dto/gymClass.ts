@@ -12,8 +12,8 @@ export interface CreateGymClassDto {
     type: "none" | "daily" | "weekly" | "biweekly" | "monthly" | "custom";
     endDate?: string | Date;
     days?: number[]; // For custom recurrence
-    count?: number; // Optional: Create X occurrences
   };
+  equipment?: { itemId: string; quantity: number }[];
 }
 
 export interface UpdateGymClassDto {
@@ -29,6 +29,7 @@ export interface UpdateGymClassDto {
     endDate?: string | Date;
     days?: number[];
   };
+  equipment?: { itemId: string; quantity: number }[];
 }
 
 export interface CreateClassBookingDto {

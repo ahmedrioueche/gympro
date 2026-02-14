@@ -1,5 +1,6 @@
 import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
+import { GymCardMedia } from "./GymCardMedia";
 
 interface GymCardHeaderProps {
   gym: Gym;
@@ -12,22 +13,13 @@ export function GymCardHeader({ gym, displayRole }: GymCardHeaderProps) {
   return (
     <div
       className={`relative overflow-hidden border-b border-border/50 transition-all duration-300 ${
-        gym.bannerUrl ? "h-48 md:h-56" : "h-32 md:h-38"
+        gym.bannerUrl || (gym.media && gym.media.length > 0)
+          ? "h-48 md:h-56"
+          : "h-32 md:h-38"
       }`}
     >
-      {/* Background Image or Gradient */}
-      {gym.bannerUrl ? (
-        <div className="absolute inset-0">
-          <img
-            src={gym.bannerUrl}
-            alt={gym.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        </div>
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20" />
-      )}
+      {/* Media Carousel or Banner */}
+      <GymCardMedia gym={gym} />
 
       <div className="relative h-full p-6 md:p-8 flex flex-col justify-end">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

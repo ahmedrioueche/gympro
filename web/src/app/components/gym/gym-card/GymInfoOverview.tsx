@@ -3,9 +3,7 @@ import { CircleDollarSign, Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCoachAffiliations } from "../../../../hooks/queries/useGymCoach";
 import { useGymSubscriptionTypes } from "../../../../hooks/queries/useGymSubscriptionTypes";
-import { useRequestGymAccess } from "../../../../hooks/queries/useGyms";
 import { useLanguageStore } from "../../../../store/language";
-import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
 import { capitalize, formatDuration } from "../../../../utils/helper";
 
@@ -27,10 +25,7 @@ export function GymInfoOverview({
   const { t } = useTranslation();
   const { user } = useUserStore();
   const { language } = useLanguageStore();
-  const { openModal } = useModalStore();
-  const requestAccess = useRequestGymAccess();
 
-  // Fetch gym plans for pricing
   const { data: plans = [] } = useGymSubscriptionTypes(gym._id);
 
   // Check if user has an existing membership for status display
@@ -58,30 +53,6 @@ export function GymInfoOverview({
       typeof membership !== "string" &&
       membership.membershipStatus === "active") ||
     coachAffiliation?.status === "active";
-
-  // Also check if we just started a request
-  const isRequesting = requestAccess.isPending;
-
-  const handleJoinClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (isPending || isJoined || requestAccess.isPending) return;
-
-    if (onJoin) {
-      onJoin();
-      return;
-    }
-
-    openModal("confirm", {
-      title: t("gyms.join_confirm_title", { name: gym.name }),
-      text: t("gyms.join_confirm_text"),
-      confirmText: t("common.confirm"),
-      confirmVariant: "primary",
-      onConfirm: () => {
-        requestAccess.mutate(gym._id);
-      },
-    });
-  };
 
   const isStaff = ["Owner", "Manager", "Staff"].includes(displayRole || "");
 
@@ -332,36 +303,36 @@ export function GymInfoOverview({
         }}
         className="flex flex-col sm:flex-row gap-4"
       >
-        <button
-          onClick={
-            isStaff
-              ? (e) => {
-                  e.stopPropagation();
-                  onSelect();
-                }
-              : handleJoinClick
-          }
-          disabled={
-            !isStaff && (isPending || isJoined || requestAccess.isPending)
-          }
-          className={`flex-1 py-4 px-6 text-center rounded-xl font-semibold text-lg transition-all duration-300 active:scale-95 ${
-            isStaff
-              ? "bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:scale-105"
+        {!isStaff && !isJoined && !isPending ? null : (
+          <button
+            onClick={
+              isStaff
+                ? (e) => {
+                    e.stopPropagation();
+                    onSelect();
+                  }
+                : undefined
+            }
+            disabled={!isStaff && (isPending || isJoined)}
+            className={`flex-1 py-4 px-6 text-center rounded-xl font-semibold text-lg transition-all duration-300 active:scale-95 ${
+              isStaff
+                ? "bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:scale-105"
+                : isJoined
+                  ? "bg-success/20 text-success border-2 border-success/30 cursor-default"
+                  : isPending
+                    ? "bg-warning/20 text-warning border-2 border-warning/30 cursor-wait"
+                    : "hidden"
+            }`}
+          >
+            {isStaff
+              ? t("gymCard.manageGym", "Manage Gym")
               : isJoined
-                ? "bg-success/20 text-success border-2 border-success/30 cursor-default"
-                : isPending || requestAccess.isPending
-                  ? "bg-warning/20 text-warning border-2 border-warning/30 cursor-wait"
-                  : "bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:scale-105"
-          }`}
-        >
-          {isStaff
-            ? t("gymCard.manageGym", "Manage Gym")
-            : isJoined
-              ? t("gyms.status_joined", "Joined")
-              : isPending || isRequesting
-                ? t("gyms.status_pending", "Pending")
-                : t("gymCard.joinGym", "Join Gym")}
-        </button>
+                ? t("gyms.status_joined", "Joined")
+                : isPending
+                  ? t("gyms.status_pending", "Pending")
+                  : null}
+          </button>
+        )}
 
         <button
           onClick={(e) => {

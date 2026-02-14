@@ -13,7 +13,9 @@ import {
   WalletCards,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../constants/navigation";
+import { PAGE_CLASSES } from "../../../../constants/styles";
 import Nav from "../../../components/nav/Nav";
+import { RestTimer } from "../../../components/timer/rest-timer/RestTimer";
 
 const sidebarLinks = [
   {
@@ -90,14 +92,10 @@ const sidebarLinks = [
   },
 ];
 
-import { RestTimer } from "../../../components/timer/rest-timer/RestTimer";
-
-// ... imports
-
 function MemberPage() {
   return (
     <Nav sidebarLinks={sidebarLinks}>
-      <div className="min-h-screen max-w-7xl mx-auto p-3 md:p-6 lg:p-8">
+      <div className={PAGE_CLASSES}>
         <Outlet />
       </div>
       <RestTimer />

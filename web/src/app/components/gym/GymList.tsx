@@ -2,7 +2,6 @@ import { type Gym } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import NoData from "../../../components/ui/NoData";
-import { useRequestGymAccess } from "../../../hooks/queries/useGyms";
 import { useGymAccess } from "../../../hooks/useGymAccess";
 import { useGymStore } from "../../../store/gym";
 import { useModalStore } from "../../../store/modal";
@@ -30,7 +29,6 @@ export default function GymList({
   const { activeDashboard } = useUserStore();
   const { hasAccess, isPending, user } = useGymAccess();
   const { openModal } = useModalStore();
-  const requestAccess = useRequestGymAccess();
 
   if (isLoading) {
     return <GymCardSkeleton />;
@@ -79,16 +77,7 @@ export default function GymList({
               return;
             }
 
-            // Otherwise, show join confirmation
-            openModal("confirm", {
-              title: t("gyms.join_confirm_title", { name: gym.name }),
-              text: t("gyms.join_confirm_text"),
-              confirmText: t("common.confirm"),
-              confirmVariant: "primary",
-              onConfirm: () => {
-                requestAccess.mutate(gym._id);
-              },
-            });
+            return;
           }}
           key={gym._id}
           gym={gym}

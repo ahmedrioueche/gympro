@@ -1,6 +1,6 @@
 import { Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { bgGradient } from "./constants/styles";
+import { BG_GRADIENT } from "./constants/styles";
 import { useTheme } from "./context/ThemeContext";
 import Modals from "./modals";
 import { useLanguageStore } from "./store/language";
@@ -22,7 +22,7 @@ const App = () => {
   return (
     <div
       className={`font-primary
-     ${isDark ? bgGradient : "bg-background"}`}
+     ${isDark ? BG_GRADIENT : "bg-background"}`}
     >
       <Outlet />
       <Modals />

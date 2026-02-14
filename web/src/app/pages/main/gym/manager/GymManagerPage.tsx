@@ -19,6 +19,7 @@ import {
   Users,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../../constants/navigation";
+import { PAGE_CLASSES } from "../../../../../constants/styles";
 import { usePermissions } from "../../../../../hooks/usePermissions";
 import Nav from "../../../../components/nav/Nav";
 
@@ -169,7 +170,7 @@ function GymManagerPage() {
 
   return (
     <Nav sidebarLinks={filteredSidebarLinks}>
-      <div className="min-h-screen max-w-8xl mx-auto p-5 md:p-6 lg:p-8">
+      <div className={PAGE_CLASSES}>
         <Outlet />
       </div>
     </Nav>

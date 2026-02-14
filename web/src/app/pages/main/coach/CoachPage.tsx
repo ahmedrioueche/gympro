@@ -87,7 +87,7 @@ const sidebarLinks = [
 function CoachPage() {
   return (
     <Nav sidebarLinks={sidebarLinks}>
-      <div className="min-h-screen max-w-8xl mx-auto p-5 md:p-6 lg:p-8">
+      <div className={PAGE_CLASSES}>
         <Outlet />
       </div>
     </Nav>
