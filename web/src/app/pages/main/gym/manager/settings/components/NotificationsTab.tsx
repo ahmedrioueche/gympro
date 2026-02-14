@@ -1,19 +1,19 @@
-import { Bell } from "lucide-react";
+import { type GymSettings } from "@ahmedrioueche/gympro-client";
+import { Bell, Calendar, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import InputField from "../../../../../../../components/ui/InputField";
 
 interface NotificationsTabProps {
   notificationsEnabled: boolean;
   setNotificationsEnabled: (value: boolean) => void;
-  renewalReminderDays: number;
-  setRenewalReminderDays: (value: number) => void;
+  reminderSettings?: GymSettings["reminderSettings"];
+  setReminderSettings: (settings: GymSettings["reminderSettings"]) => void;
 }
 
 export default function NotificationsTab({
   notificationsEnabled,
   setNotificationsEnabled,
-  renewalReminderDays,
-  setRenewalReminderDays,
+  reminderSettings,
+  setReminderSettings,
 }: NotificationsTabProps) {
   const { t } = useTranslation();
 
@@ -66,46 +66,105 @@ export default function NotificationsTab({
           </div>
           <Bell className="w-5 h-5 text-primary" />
         </div>
-
-        <div className="max-w-xs">
-          <InputField
-            type="number"
-            label={t(
-              "settings.gym.notifications.renewalReminder",
-              "Renewal Reminder",
-            )}
-            value={renewalReminderDays}
-            onChange={(e) =>
-              setRenewalReminderDays(parseInt(e.target.value) || 0)
-            }
-            min={0}
-            max={30}
-            placeholder={t(
-              "settings.gym.notifications.reminderDaysPlaceholder",
-              "e.g., 7",
-            )}
-          />
-          <p className="text-xs text-text-secondary mt-2">
-            {t(
-              "settings.gym.notifications.renewalReminderDesc",
-              "Days before subscription expiry to notify members",
-            )}
-          </p>
-        </div>
       </div>
 
-      <div className="p-4 bg-surface-hover rounded-xl border border-border flex items-start gap-3">
-        <Bell className="w-5 h-5 text-primary mt-0.5" />
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t(
+            "settings.gym.notifications.remindersTitle",
+            "Subscription Reminders",
+          )}
+        </h4>
+        <p className="text-sm text-text-secondary mb-4">
+          {t(
+            "settings.gym.notifications.remindersDesc",
+            "Configure which reminders are sent to members.",
+          )}
+        </p>
+
+        {/* Pre-Expiration */}
+        <div className="mb-6">
+          <h5 className="text-sm font-medium text-text-primary mb-3 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-primary" />
+            {t("settings.gym.notifications.preExpiry", "Before Expiration")}
+          </h5>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { key: "day3", label: "3 Days Before" },
+              { key: "day1", label: "1 Day Before (Tomorrow)" },
+              { key: "today", label: "On Expiration Date" },
+            ].map(({ key, label }) => (
+              <label
+                key={key}
+                className="flex items-center gap-3 p-3 bg-surface-hover rounded-lg border border-border cursor-pointer hover:border-primary/50 transition-colors"
+              >
+                <input
+                  type="checkbox"
+                  checked={
+                    reminderSettings?.preExpiry?.[
+                      key as keyof typeof reminderSettings.preExpiry
+                    ] !== false
+                  }
+                  onChange={(e) =>
+                    setReminderSettings({
+                      ...reminderSettings,
+                      preExpiry: {
+                        ...reminderSettings?.preExpiry,
+                        [key]: e.target.checked,
+                      },
+                    })
+                  }
+                  className="w-4 h-4 rounded border-border text-primary focus:ring-primary focus:ring-offset-0"
+                />
+                <span className="text-sm text-text-secondary">{label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Post-Expiration */}
         <div>
-          <h4 className="text-sm font-medium text-text-primary">
-            {t("settings.gym.notifications.note", "Automated Reminders")}
-          </h4>
-          <p className="text-xs text-text-secondary mt-1">
+          <h5 className="text-sm font-medium text-text-primary mb-3 flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-primary" />
             {t(
-              "settings.gym.notifications.noteDesc",
-              "Members will receive automatic notifications before their subscriptions expire.",
+              "settings.gym.notifications.postExpiry",
+              "After Expiration (Win-back)",
             )}
-          </p>
+          </h5>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {[
+              { key: "day3", label: "3 Days After" },
+              { key: "day7", label: "7 Days After" },
+              { key: "day30", label: "30 Days After" },
+              { key: "day60", label: "60 Days After" },
+              { key: "day90", label: "90 Days After" },
+            ].map(({ key, label }) => (
+              <label
+                key={key}
+                className="flex items-center gap-3 p-3 bg-surface-hover rounded-lg border border-border cursor-pointer hover:border-primary/50 transition-colors"
+              >
+                <input
+                  type="checkbox"
+                  checked={
+                    reminderSettings?.postExpiry?.[
+                      key as keyof typeof reminderSettings.postExpiry
+                    ] !== false
+                  }
+                  onChange={(e) =>
+                    setReminderSettings({
+                      ...reminderSettings,
+                      postExpiry: {
+                        ...reminderSettings?.postExpiry,
+                        [key]: e.target.checked,
+                      },
+                    })
+                  }
+                  className="w-4 h-4 rounded border-border text-primary focus:ring-primary focus:ring-offset-0"
+                />
+                <span className="text-sm text-text-secondary">{label}</span>
+              </label>
+            ))}
+          </div>
         </div>
       </div>
     </div>

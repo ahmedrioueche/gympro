@@ -42,8 +42,8 @@ export default function SettingsPage() {
     setFemaleOnlyHours,
     notificationsEnabled,
     setNotificationsEnabled,
-    renewalReminderDays,
-    setRenewalReminderDays,
+    reminderSettings,
+    setReminderSettings,
     paymentMethods,
     setPaymentMethods,
     allowCustomSubscriptions,
@@ -211,8 +211,8 @@ export default function SettingsPage() {
             <NotificationsTab
               notificationsEnabled={notificationsEnabled}
               setNotificationsEnabled={setNotificationsEnabled}
-              renewalReminderDays={renewalReminderDays}
-              setRenewalReminderDays={setRenewalReminderDays}
+              reminderSettings={reminderSettings}
+              setReminderSettings={setReminderSettings}
             />
           )}
 

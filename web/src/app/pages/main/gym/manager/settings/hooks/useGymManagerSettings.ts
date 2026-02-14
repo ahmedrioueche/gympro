@@ -1,6 +1,7 @@
 import type {
   Currency,
   GymService,
+  GymSettings,
   TemporaryClosure,
   WeeklyTimeRange,
 } from "@ahmedrioueche/gympro-client";
@@ -42,7 +43,6 @@ export function useGymManagerSettings() {
   const [isMixed, setIsMixed] = useState(false);
   const [femaleOnlyHours, setFemaleOnlyHours] = useState<WeeklyTimeRange[]>([]);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [renewalReminderDays, setRenewalReminderDays] = useState(7);
   const [paymentMethods, setPaymentMethods] = useState<string[]>(["cash"]);
   const [servicesOffered, setServicesOffered] = useState<GymService[]>([]);
   const [allowCustomSubscriptions, setAllowCustomSubscriptions] =
@@ -57,6 +57,18 @@ export function useGymManagerSettings() {
   const [workingDays, setWorkingDays] = useState<number[]>([
     0, 1, 2, 3, 4, 5, 6,
   ]);
+  const [reminderSettings, setReminderSettings] = useState<
+    GymSettings["reminderSettings"]
+  >({
+    preExpiry: { day3: true, day1: true, today: true },
+    postExpiry: {
+      day3: true,
+      day7: true,
+      day30: true,
+      day60: true,
+      day90: true,
+    },
+  });
 
   // Location State (gym-level fields, not settings)
   const [address, setAddress] = useState("");
@@ -103,9 +115,6 @@ export function useGymManagerSettings() {
         if (settings.notificationsEnabled !== undefined) {
           setNotificationsEnabled(settings.notificationsEnabled);
         }
-        if (settings.subscriptionRenewalReminderDays !== undefined) {
-          setRenewalReminderDays(settings.subscriptionRenewalReminderDays);
-        }
 
         if (settings.paymentMethods && settings.paymentMethods.length > 0) {
           setPaymentMethods(settings.paymentMethods);
@@ -136,6 +145,9 @@ export function useGymManagerSettings() {
           setWorkingDays(settings.workingDays);
         } else {
           setWorkingDays([0, 1, 2, 3, 4, 5, 6]);
+        }
+        if (settings.reminderSettings) {
+          setReminderSettings(settings.reminderSettings);
         }
       }
     }
@@ -170,7 +182,6 @@ export function useGymManagerSettings() {
         isMixed,
         femaleOnlyHours: !isMixed ? femaleOnlyHours : [],
         notificationsEnabled,
-        subscriptionRenewalReminderDays: renewalReminderDays,
         paymentMethods,
         servicesOffered,
         allowCustomSubscriptions,
@@ -179,6 +190,7 @@ export function useGymManagerSettings() {
         rules,
         temporaryClosures,
         workingDays,
+        reminderSettings,
       };
 
       const settingsResult = await updateSettings.mutateAsync({
@@ -248,8 +260,8 @@ export function useGymManagerSettings() {
       JSON.stringify(currentGym?.settings?.femaleOnlyHours || []) ||
     notificationsEnabled !==
       (currentGym?.settings?.notificationsEnabled ?? true) ||
-    renewalReminderDays !==
-      (currentGym?.settings?.subscriptionRenewalReminderDays ?? 7) ||
+    JSON.stringify(reminderSettings) !==
+      JSON.stringify(currentGym?.settings?.reminderSettings) ||
     JSON.stringify(paymentMethods) !==
       JSON.stringify(currentGym?.settings?.paymentMethods || ["cash"]) ||
     JSON.stringify(servicesOffered) !==
@@ -297,8 +309,6 @@ export function useGymManagerSettings() {
     setFemaleOnlyHours,
     notificationsEnabled,
     setNotificationsEnabled,
-    renewalReminderDays,
-    setRenewalReminderDays,
     paymentMethods,
     setPaymentMethods,
     servicesOffered,
@@ -316,6 +326,8 @@ export function useGymManagerSettings() {
     handleUpdateClosures,
     workingDays,
     setWorkingDays,
+    reminderSettings,
+    setReminderSettings,
     addRule: (rule: string) => {
       if (rule.trim()) {
         setRules((prev) => [...prev, rule.trim()]);

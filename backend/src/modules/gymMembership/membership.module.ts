@@ -14,6 +14,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { SmsModule } from '../sms/sms.module';
 import { UsersModule } from '../users/users.module';
 import { MembershipController } from './membership.controller';
+import { MembershipCronService } from './membership.cron';
 import { GymMembershipSchema } from './membership.schema';
 import { MembershipService } from './membership.service';
 
@@ -35,7 +36,12 @@ import { MembershipService } from './membership.service';
     UsersModule,
   ],
   controllers: [MembershipController],
-  providers: [MembershipService, MemberInvitationService, MailerService],
+  providers: [
+    MembershipService,
+    MembershipCronService,
+    MemberInvitationService,
+    MailerService,
+  ],
   exports: [MembershipService],
 })
 export class MembershipModule {}

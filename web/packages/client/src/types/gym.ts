@@ -76,6 +76,21 @@ export interface GymSettings {
   defaultCurrency?: Currency; // For subscription/payment display (e.g., "DZD")
   allowCustomSubscriptions?: boolean; // Can owner create custom subscription types?
   notificationsEnabled?: boolean; // Enable gym-wide notifications
+  notifyExpiringMembers?: boolean; // Enable manager notifications for expiring members
+  reminderSettings?: {
+    preExpiry?: {
+      day3?: boolean;
+      day1?: boolean; // Tomorrow
+      today?: boolean; // Expires Today
+    };
+    postExpiry?: {
+      day3?: boolean;
+      day7?: boolean;
+      day30?: boolean;
+      day60?: boolean;
+      day90?: boolean;
+    };
+  };
   subscriptionRenewalReminderDays?: number; // Days before expiry to notify members
   workingHours?: TimeRange; // Default gym hours (mixed or general)
   isMixed?: boolean; // Can males and females train toghether at the same time?

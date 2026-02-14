@@ -22,11 +22,57 @@ export class FacilityModel {
 export const FacilitySchema = SchemaFactory.createForClass(FacilityModel);
 
 @Schema({ _id: false })
+export class ReminderIntervalsModel {
+  @Prop({ default: true }) day3?: boolean;
+  @Prop({ default: true }) day1?: boolean;
+  @Prop({ default: true }) today?: boolean;
+  @Prop({ default: true }) day7?: boolean;
+  @Prop({ default: true }) day30?: boolean;
+  @Prop({ default: true }) day60?: boolean;
+  @Prop({ default: true }) day90?: boolean;
+}
+
+@Schema({ _id: false })
+export class ReminderSettingsModel {
+  @Prop({ type: Object, default: { day3: true, day1: true, today: true } })
+  preExpiry?: {
+    day3?: boolean;
+    day1?: boolean;
+    today?: boolean;
+  };
+
+  @Prop({
+    type: Object,
+    default: {
+      day3: true,
+      day7: true,
+      day30: true,
+      day60: true,
+      day90: true,
+    },
+  })
+  postExpiry?: {
+    day3?: boolean;
+    day7?: boolean;
+    day30?: boolean;
+    day60?: boolean;
+    day90?: boolean;
+  };
+}
+const ReminderSettingsSchema = SchemaFactory.createForClass(
+  ReminderSettingsModel,
+);
+
+@Schema({ _id: false })
 export class GymSettingsModel implements GymSettings {
   @Prop() paymentMethods: PaymentMethod[];
   @Prop() allowCustomSubscriptions?: boolean;
   @Prop() notificationsEnabled?: boolean;
-  @Prop() subscriptionRenewalReminderDays?: number;
+  @Prop({ type: ReminderSettingsSchema, default: () => ({}) })
+  reminderSettings?: ReminderSettingsModel;
+
+  @Prop({ type: Number })
+  subscriptionRenewalReminderDays?: number;
   @Prop({ type: Object }) workingHours?: TimeRange;
   @Prop() isMixed?: boolean;
   @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
