@@ -185,6 +185,9 @@ export class UsersService {
     Object.assign(user, updateData);
     await user.save();
 
+    // Ensure population before returning
+    await user.populate(['memberships', 'currentProgram', 'notifications']);
+
     return this.sanitizeUser(user);
   }
 
@@ -235,6 +238,9 @@ export class UsersService {
     Object.assign(user.profile, profileData);
     await user.save();
 
+    // Ensure population before returning
+    await user.populate(['memberships', 'currentProgram', 'notifications']);
+
     return this.sanitizeUser(user);
   }
 
@@ -267,6 +273,9 @@ export class UsersService {
     user.role = newRole;
     await user.save();
 
+    // Ensure population before returning
+    await user.populate(['memberships', 'currentProgram', 'notifications']);
+
     return this.sanitizeUser(user);
   }
 
@@ -289,6 +298,9 @@ export class UsersService {
 
     user.profile.isActive = true;
     await user.save();
+
+    // Ensure population before returning
+    await user.populate(['memberships', 'currentProgram', 'notifications']);
 
     return this.sanitizeUser(user);
   }
@@ -320,6 +332,9 @@ export class UsersService {
 
     user.profile.isActive = false;
     await user.save();
+
+    // Ensure population before returning
+    await user.populate(['memberships', 'currentProgram', 'notifications']);
 
     return this.sanitizeUser(user);
   }
@@ -457,6 +472,9 @@ export class UsersService {
     // Mark as onboarded
     user.profile.isOnBoarded = true;
     await user.save();
+
+    // Ensure population before returning
+    await user.populate(['memberships', 'currentProgram', 'notifications']);
 
     // Only auto-subscribe to free plan for owners (trial is for owners only)
     if (user.role === UserRole.Owner) {

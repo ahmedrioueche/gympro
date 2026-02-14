@@ -66,6 +66,10 @@ export function GymInfoOverview({
     sauna: t("settings.gym.services.sauna", "Sauna & Spa"),
     massage: t("settings.gym.services.massage", "Massage Therapy"),
     shower: t("settings.gym.services.shower", "Showers"),
+    coaching: t(
+      "settings.gym.services.coaching",
+      "Coaching & Personal Training",
+    ),
   };
 
   const SHORT_SERVICE_LABELS: Record<string, string> = {
@@ -78,6 +82,7 @@ export function GymInfoOverview({
     sauna: t("settings.gym.services.sauna", "Sauna"),
     massage: t("settings.gym.services.massage", "Massage"),
     shower: t("settings.gym.services.shower", "Showers"),
+    coaching: t("settings.gym.services.coaching", "Coaching"),
   };
 
   return (
@@ -155,7 +160,9 @@ export function GymInfoOverview({
                     key={idx}
                     className={`px-3 py-1 rounded-lg text-xs font-bold border capitalize ${COLORS[idx % COLORS.length]}`}
                   >
-                    {SERVICE_LABELS[service.name] || service.name}
+                    {typeof service === "string"
+                      ? SERVICE_LABELS[service] || service
+                      : SERVICE_LABELS[service.name] || service.name}
                   </span>
                 ))}
               </div>

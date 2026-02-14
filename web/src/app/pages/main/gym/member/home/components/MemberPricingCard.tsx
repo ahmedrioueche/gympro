@@ -38,6 +38,7 @@ export const MemberPricingCard = ({ plan }: MemberPricingCardProps) => {
                       yoga: t("settings.gym.services.yoga", "Yoga"),
                       sauna: t("settings.gym.services.sauna", "Sauna"),
                       massage: t("settings.gym.services.massage", "Massage"),
+                      coaching: t("settings.gym.services.coaching", "Coaching"),
                     };
                     return SERVICE_LABELS[s] || s;
                   })

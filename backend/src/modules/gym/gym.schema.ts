@@ -68,6 +68,7 @@ export class GymSettingsModel implements GymSettings {
   @Prop() paymentMethods: PaymentMethod[];
   @Prop() allowCustomSubscriptions?: boolean;
   @Prop() notificationsEnabled?: boolean;
+  @Prop() notifyExpiringMembers?: boolean;
   @Prop({ type: ReminderSettingsSchema, default: () => ({}) })
   reminderSettings?: ReminderSettingsModel;
 

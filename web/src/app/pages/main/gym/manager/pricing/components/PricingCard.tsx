@@ -45,6 +45,7 @@ export const PricingCard = ({ plan, onEdit, onDelete }: PricingCardProps) => {
                       yoga: t("settings.gym.services.yoga", "Yoga"),
                       sauna: t("settings.gym.services.sauna", "Sauna"),
                       massage: t("settings.gym.services.massage", "Massage"),
+                      coaching: t("settings.gym.services.coaching", "Coaching"),
                     };
                     return SERVICE_LABELS[s] || s;
                   })
@@ -65,6 +66,7 @@ export const PricingCard = ({ plan, onEdit, onDelete }: PricingCardProps) => {
                 yoga: t("settings.gym.services.yoga", "Yoga"),
                 sauna: t("settings.gym.services.sauna", "Sauna"),
                 massage: t("settings.gym.services.massage", "Massage"),
+                coaching: t("settings.gym.services.coaching", "Coaching"),
               };
               const label = SERVICE_LABELS[service] || service;
               const colors = [

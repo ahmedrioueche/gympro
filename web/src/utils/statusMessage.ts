@@ -179,6 +179,7 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.COACH_NOT_AVAILABLE]: "status.error.class.coach_not_available",
   [ErrorCode.CLASS_ALREADY_PASSED]: "status.error.class.already_passed",
   [ErrorCode.PLAN_ACCESS_DENIED]: "status.error.class.plan_access_denied",
+  [ErrorCode.COACHING_SERVICE_REQUIRED]: "status.error.coaching.required",
 };
 
 /**

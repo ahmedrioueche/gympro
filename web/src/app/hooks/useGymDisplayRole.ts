@@ -11,16 +11,39 @@ import { useUserStore } from "../../store/user";
 export function useGymDisplayRole(gym: Gym | undefined): string | undefined {
   const { user, activeDashboard } = useUserStore();
 
-  if (!user || !user.memberships || !gym) return undefined;
+  if (!user || !gym) return undefined;
 
-  // Find membership for this gym
+  // 1. Check direct ownership if on manager dashboard
+  if (
+    activeDashboard === "manager" &&
+    (user.role === UserRole.Owner || user.role === UserRole.Manager)
+  ) {
+    const ownerId = typeof gym.owner === "object" ? gym.owner?._id : gym.owner;
+    if (String(ownerId) === String(user._id)) return "Owner";
+  }
+
+  // 2. Check memberships (even if they are just strings/IDs)
+  if (!user.memberships) return undefined;
+
   const membership = user.memberships.find((m) => {
-    if (typeof m === "string") return false;
-    const gId = typeof m.gym === "string" ? m.gym : m.gym._id;
-    return gId === gym._id;
+    const mGymId =
+      typeof m === "string"
+        ? m
+        : typeof m.gym === "string"
+          ? m.gym
+          : m.gym?._id || (m as any).gymId;
+    return String(mGymId) === String(gym._id);
   });
 
-  if (!membership || typeof membership === "string") return undefined;
+  if (!membership) return undefined;
+
+  // If membership is just a string, and we are on manager dashboard as owner/manager, allow identifying as Owner/Manager
+  if (typeof membership === "string") {
+    if (activeDashboard === "manager") {
+      return user.role === UserRole.Owner ? "Owner" : "Manager";
+    }
+    return undefined;
+  }
 
   const roles = membership.roles || [];
 

@@ -63,7 +63,7 @@ export default function GymList({
             }
 
             // Verify access
-            if (hasAccess(gym._id)) {
+            if (hasAccess(gym)) {
               setGym(gym);
               if (user) {
                 const route = getGymRouteForDashboard(activeDashboard);

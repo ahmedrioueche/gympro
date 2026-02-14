@@ -378,6 +378,34 @@ export class GymCoachService {
             $addToSet: { memberships: newMembership._id },
           });
         }
+
+        // Add 'coaching' to gym services if not already present
+        const gym = await this.gymModel.findById(affiliation.gymId);
+        if (gym) {
+          // Ensure settings exists
+          if (!gym.settings) {
+            (gym as any).settings = { servicesOffered: [] };
+          }
+
+          // Ensure servicesOffered is an array
+          if (!gym.settings?.servicesOffered) {
+            (gym.settings as any).servicesOffered = [];
+          }
+
+          const hasCoaching = gym.settings?.servicesOffered?.some((s) =>
+            typeof s === 'string' ? s === 'coaching' : s.name === 'coaching',
+          );
+
+          if (!hasCoaching) {
+            (gym.settings?.servicesOffered as any[]).push({
+              _id: new Types.ObjectId().toString(),
+              name: 'coaching',
+              createdAt: new Date(),
+            });
+            gym.markModified('settings');
+            await gym.save();
+          }
+        }
       }
       await affiliation.save();
 

@@ -15,6 +15,8 @@ import {
   GymCoachPaymentType,
 } from '../gym-coach-payment/schemas/gym-coach-payment.schema';
 import { GymCoachService } from '../gym-coach/gym-coach.service';
+import { GymMembershipModel } from '../gymMembership/membership.schema';
+import { SubscriptionTypeModel } from '../gymSubscription/gymSubscription.schema';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { SessionModel } from './schemas/session.schema';
@@ -24,6 +26,10 @@ export class SessionsService {
   constructor(
     @InjectModel(SessionModel.name) private sessionModel: Model<SessionModel>,
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel('GymMembership')
+    private membershipModel: Model<GymMembershipModel>,
+    @InjectModel(SubscriptionTypeModel.name)
+    private subscriptionTypeModel: Model<SubscriptionTypeModel>,
     private gymCoachService: GymCoachService,
     private paymentService: GymCoachPaymentService,
   ) {}
@@ -40,6 +46,39 @@ export class SessionsService {
           errorCode: ErrorCode.USER_NOT_FOUND,
           message: 'Member not found',
         };
+      }
+
+      // Check if member has coaching service in their subscription
+      if (dto.gymId) {
+        const membership = await this.membershipModel.findOne({
+          user: dto.memberId,
+          gym: dto.gymId,
+          membershipStatus: 'active',
+        });
+
+        if (
+          !membership ||
+          !membership.subscription ||
+          membership.subscription.status !== 'active'
+        ) {
+          return {
+            success: false,
+            errorCode: ErrorCode.NO_ACTIVE_SUBSCRIPTION,
+            message: 'Member does not have an active subscription at this gym',
+          };
+        }
+
+        const subType = await this.subscriptionTypeModel.findById(
+          membership.subscription.typeId,
+        );
+        if (!subType || !subType.services?.includes('coaching')) {
+          return {
+            success: false,
+            errorCode: ErrorCode.COACHING_SERVICE_REQUIRED,
+            message:
+              'Member subscription does not include the coaching service',
+          };
+        }
       }
 
       if (dto.facilityId && dto.gymId) {

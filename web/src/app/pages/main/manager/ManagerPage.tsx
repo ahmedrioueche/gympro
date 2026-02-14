@@ -9,8 +9,10 @@ import {
   Settings,
   WalletCards,
 } from "lucide-react";
+import { useEffect } from "react";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { PAGE_CLASSES } from "../../../../constants/styles";
+import { useUserStore } from "../../../../store/user";
 import Nav from "../../../components/nav/Nav";
 
 const sidebarLinks = [
@@ -65,6 +67,12 @@ const sidebarLinks = [
 ];
 
 function ManagerPage() {
+  const setActiveDashboard = useUserStore((state) => state.setActiveDashboard);
+
+  useEffect(() => {
+    setActiveDashboard("manager");
+  }, [setActiveDashboard]);
+
   return (
     <Nav sidebarLinks={sidebarLinks}>
       <div className={PAGE_CLASSES}>

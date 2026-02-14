@@ -86,6 +86,10 @@ export const PricingForm = ({
     yoga: t("settings.gym.services.yoga", "Yoga & Pilates"),
     sauna: t("settings.gym.services.sauna", "Sauna & Spa"),
     massage: t("settings.gym.services.massage", "Massage Therapy"),
+    coaching: t(
+      "settings.gym.services.coaching",
+      "Coaching & Personal Training",
+    ),
   };
 
   useEffect(() => {

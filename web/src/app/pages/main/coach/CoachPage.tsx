@@ -11,8 +11,10 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+import { useEffect } from "react";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { PAGE_CLASSES } from "../../../../constants/styles";
+import { useUserStore } from "../../../../store/user";
 import Nav from "../../../components/nav/Nav";
 
 const sidebarLinks = [
@@ -86,6 +88,12 @@ const sidebarLinks = [
 ];
 
 function CoachPage() {
+  const setActiveDashboard = useUserStore((state) => state.setActiveDashboard);
+
+  useEffect(() => {
+    setActiveDashboard("coach");
+  }, [setActiveDashboard]);
+
   return (
     <Nav sidebarLinks={sidebarLinks}>
       <div className={PAGE_CLASSES}>

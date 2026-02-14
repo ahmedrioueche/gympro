@@ -12,8 +12,10 @@ import {
   UserCheck,
   WalletCards,
 } from "lucide-react";
+import { useEffect } from "react";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { PAGE_CLASSES } from "../../../../constants/styles";
+import { useUserStore } from "../../../../store/user";
 import Nav from "../../../components/nav/Nav";
 import { RestTimer } from "../../../components/timer/rest-timer/RestTimer";
 
@@ -93,6 +95,12 @@ const sidebarLinks = [
 ];
 
 function MemberPage() {
+  const setActiveDashboard = useUserStore((state) => state.setActiveDashboard);
+
+  useEffect(() => {
+    setActiveDashboard("member");
+  }, [setActiveDashboard]);
+
   return (
     <Nav sidebarLinks={sidebarLinks}>
       <div className={PAGE_CLASSES}>

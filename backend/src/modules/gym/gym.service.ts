@@ -87,9 +87,13 @@ export class GymService {
     });
     await ownerMembership.save();
 
-    // Add membership to user's memberships array
+    // Add membership to user's memberships array and update role/dashboard access
     await this.userModel.findByIdAndUpdate(createGymDto.owner, {
-      $addToSet: { memberships: ownerMembership._id },
+      $addToSet: {
+        memberships: ownerMembership._id,
+        dashboardAccess: 'manager',
+      },
+      $set: { role: UserRole.Owner },
     });
 
     // Populate the owner field before returning
@@ -111,7 +115,7 @@ export class GymService {
         console.error(`Failed to notify staff about gym creation: ${err}`);
       });
 
-    return createdGym;
+    return this.normalizeGym(createdGym);
   }
 
   async findAll(
@@ -201,7 +205,7 @@ export class GymService {
       .exec();
 
     return {
-      data: gyms,
+      data: gyms.map((gym) => this.normalizeGym(gym)),
       total,
       page,
       limit,
@@ -237,7 +241,7 @@ export class GymService {
     });
 
     await Promise.all(updatePromises);
-    return gyms;
+    return gyms.map((gym) => this.normalizeGym(gym));
   }
 
   /**
@@ -316,7 +320,7 @@ export class GymService {
       })
       .filter((gym: any) => gym !== null);
 
-    return gyms;
+    return gyms.map((gym) => this.normalizeGym(gym));
   }
 
   async findAllForUser(userId: string, populate = true) {
@@ -335,7 +339,7 @@ export class GymService {
       new Map(allGyms.map((gym) => [gym._id.toString(), gym])).values(),
     );
 
-    return uniqueGyms;
+    return uniqueGyms.map((gym) => this.normalizeGym(gym));
   }
 
   /**
@@ -359,7 +363,7 @@ export class GymService {
       .populate('owner')
       .exec();
 
-    return gyms;
+    return gyms.map((gym) => this.normalizeGym(gym));
   }
 
   async getGymMembers(
@@ -442,7 +446,7 @@ export class GymService {
     if (!gym) {
       throw new NotFoundException(`Gym with ID ${id} not found`);
     }
-    return gym;
+    return this.normalizeGym(gym);
   }
 
   async setBanner(id: string, banner: { url: string; publicId: string }) {
@@ -459,7 +463,7 @@ export class GymService {
       throw new Error('Gym not found');
     }
 
-    return gym;
+    return this.normalizeGym(gym);
   }
 
   async update(id: string, updateGymDto: any) {
@@ -470,7 +474,7 @@ export class GymService {
     if (!updatedGym) {
       throw new NotFoundException(`Gym with ID ${id} not found`);
     }
-    return updatedGym;
+    return this.normalizeGym(updatedGym);
   }
 
   async updateSettings(id: string, updateSettingsDto: any, userId: string) {
@@ -551,7 +555,7 @@ export class GymService {
       this.notificationsService.notifyGymClosureChange(id, closure, 'deleted');
     });
 
-    return updatedGym;
+    return this.normalizeGym(updatedGym);
   }
 
   async remove(id: string) {
@@ -574,7 +578,7 @@ export class GymService {
     if (!updatedGym) {
       throw new NotFoundException(`Gym with ID ${id} not found`);
     }
-    return updatedGym;
+    return this.normalizeGym(updatedGym);
   }
 
   async removeMedia(id: string, publicId: string) {
@@ -585,7 +589,7 @@ export class GymService {
     if (!updatedGym) {
       throw new NotFoundException(`Gym with ID ${id} not found`);
     }
-    return updatedGym;
+    return this.normalizeGym(updatedGym);
   }
 
   async addFacility(gymId: string, facility: any) {
@@ -607,7 +611,7 @@ export class GymService {
     if (!updatedGym) {
       throw new NotFoundException(`Gym with ID ${gymId} not found`);
     }
-    return updatedGym;
+    return this.normalizeGym(updatedGym);
   }
 
   async updateFacility(gymId: string, facilityId: string, facility: any) {
@@ -621,7 +625,7 @@ export class GymService {
     if (!updatedGym) {
       throw new NotFoundException(`Facility or Gym not found`);
     }
-    return updatedGym;
+    return this.normalizeGym(updatedGym);
   }
 
   async removeFacility(gymId: string, facilityId: string) {
@@ -633,9 +637,9 @@ export class GymService {
       )
       .exec();
     if (!updatedGym) {
-      throw new NotFoundException(`Gym with ID ${gymId} not found`);
+      throw new NotFoundException(`Gym not found`);
     }
-    return updatedGym;
+    return this.normalizeGym(updatedGym);
   }
 
   async validateFacility(gymId: string, facilityId: string) {
@@ -644,5 +648,29 @@ export class GymService {
       'facilities._id': facilityId,
     });
     return !!gym;
+  }
+
+  private normalizeGym(gym: any) {
+    if (!gym) return gym;
+
+    // Convert to plain object if it's a mongoose document
+    const gymObj = gym.toObject ? gym.toObject() : gym;
+
+    if (gymObj.settings && gymObj.settings.servicesOffered) {
+      gymObj.settings.servicesOffered = gymObj.settings.servicesOffered.map(
+        (service: any) => {
+          if (typeof service === 'string') {
+            return {
+              _id: new Types.ObjectId().toString(),
+              name: service,
+              createdAt: new Date(),
+            };
+          }
+          return service;
+        },
+      );
+    }
+
+    return gymObj;
   }
 }

@@ -17,21 +17,52 @@ export function useGymAccess() {
    * Admins have global access. Other users must have an active membership or coach affiliation.
    */
   const hasAccess = useCallback(
-    (gymId?: string) => {
+    (gymIdOrGym?: string | any) => {
+      const gymId =
+        typeof gymIdOrGym === "string" ? gymIdOrGym : gymIdOrGym?._id;
       if (!user || !gymId) return false;
 
-      // Admin bypass
-      if (isAdmin) return true;
+      // Admin/AppEditor global bypass
+      if (isAdmin || user.role === UserRole.AppEditor) return true;
 
-      // Check memberships (Only Active)
+      // Owner/Manager bypass for gyms they own/manage (based on gym object if provided)
+      if (typeof gymIdOrGym === "object" && gymIdOrGym.owner) {
+        const ownerId =
+          typeof gymIdOrGym.owner === "object"
+            ? gymIdOrGym.owner?._id
+            : gymIdOrGym.owner;
+        if (String(ownerId) === String(user._id)) {
+          if (user.role === UserRole.Owner || user.role === UserRole.Manager)
+            return true;
+        }
+      }
+
+      // Check memberships
       const hasActiveMembership =
         user.memberships?.some((m) => {
-          if (typeof m === "string") return false;
           const mGymId =
-            typeof m.gym === "string" ? m.gym : m.gym?._id || (m as any).gymId;
-          return (
-            String(mGymId) === String(gymId) && m.membershipStatus === "active"
-          );
+            typeof m === "string"
+              ? m
+              : typeof m.gym === "string"
+                ? m.gym
+                : m.gym?._id || (m as any).gymId;
+          const isMatch = String(mGymId) === String(gymId);
+          if (!isMatch) return false;
+
+          // If it's a string, we don't know the status, but if they are Owner/Manager globally,
+          // and they have a membership record for this gym, we should probably let them in.
+          if (typeof m === "string") {
+            return (
+              user.role === UserRole.Owner || user.role === UserRole.Manager
+            );
+          }
+
+          // Owners and Managers have access to their gyms regardless of status
+          if (user.role === UserRole.Owner || user.role === UserRole.Manager) {
+            return true;
+          }
+
+          return m.membershipStatus === "active";
         }) ?? false;
 
       if (hasActiveMembership) return true;

@@ -13,6 +13,7 @@
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
+  --color-error: #ef4444;
 
   /* === SURFACE COLORS === */
   --color-background: #e8e8e8;
@@ -41,6 +42,7 @@
   --color-success: #34d399;
   --color-warning: #fbbf24;
   --color-danger: #f87171;
+  --color-error: #f87171;
 
   /* Surface colors */
   --color-background: rgb(9, 17, 26);

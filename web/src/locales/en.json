@@ -992,6 +992,7 @@
         "massage": "Massage",
         "boxing": "Boxing",
         "yoga": "Yoga",
+        "coaching": "Coaching & Personal Training",
         "sona": "Sona",
         "customSubscriptions": "Custom Subscriptions",
         "customSubscriptionsDesc": "Allow creation of custom subscription types",
@@ -1112,7 +1113,11 @@
       "regular": "Regular Membership",
       "premium": "Premium Membership",
       "remaining": "Remaining",
-      "addSubscription": "Add Subscription"
+      "addSubscription": "Add Subscription",
+      "expirestoday": "Expires today",
+      "expiresTomorrow": "Expires tomorrow",
+      "expiredYesterday": "Expired yesterday",
+      "expiresInDays": "Expires in {{days}} days"
     },
     "payments": {
       "title": "Payment History",

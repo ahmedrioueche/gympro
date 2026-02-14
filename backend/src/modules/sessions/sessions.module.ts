@@ -7,11 +7,19 @@ import { SessionModel, SessionSchema } from './schemas/session.schema';
 import { SessionsController } from './sessions.controller';
 import { SessionsService } from './sessions.service';
 
+import { GymMembershipSchema } from '../gymMembership/membership.schema';
+import {
+  SubscriptionTypeModel,
+  SubscriptionTypeSchema,
+} from '../gymSubscription/gymSubscription.schema';
+
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: SessionModel.name, schema: SessionSchema },
       { name: User.name, schema: UserSchema },
+      { name: 'GymMembership', schema: GymMembershipSchema },
+      { name: SubscriptionTypeModel.name, schema: SubscriptionTypeSchema },
     ]),
     GymCoachModule,
     GymCoachPaymentModule,

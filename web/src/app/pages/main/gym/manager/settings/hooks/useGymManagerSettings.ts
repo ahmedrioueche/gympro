@@ -120,7 +120,7 @@ export function useGymManagerSettings() {
           setPaymentMethods(settings.paymentMethods);
         }
         if (settings.servicesOffered && settings.servicesOffered.length > 0) {
-          setServicesOffered(settings.servicesOffered);
+          setServicesOffered(settings.servicesOffered as GymService[]);
         }
         if (settings.allowCustomSubscriptions !== undefined) {
           setAllowCustomSubscriptions(settings.allowCustomSubscriptions);

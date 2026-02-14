@@ -147,7 +147,12 @@ export class MembershipCronService {
 
         // Notify Manager
         if (gym.settings?.notifyExpiringMembers !== false) {
-          await this.notifyManagers(gym, user, 'expired');
+          await this.notifyManagers(
+            gym,
+            user,
+            membership._id.toString(),
+            'expired',
+          );
         }
       }
     }
@@ -223,10 +228,23 @@ export class MembershipCronService {
       // We can add granular manager notifications later if requested.
       // Existing logic only handled 'expiring' and 'expired'.
       if (
-        keySuffix === 'membership_expiring_soon' &&
+        (keySuffix === 'membership_expiring_soon' ||
+          keySuffix === 'membership_expiring_tomorrow' ||
+          keySuffix === 'membership_expiring_today') &&
         gym.settings?.notifyExpiringMembers !== false
       ) {
-        await this.notifyManagers(gym, user, 'expiring');
+        let managerNotifType: 'expiring' | 'expired' | 'expiring_today' =
+          'expiring';
+        if (keySuffix === 'membership_expiring_today') {
+          managerNotifType = 'expiring_today';
+        }
+
+        await this.notifyManagers(
+          gym,
+          user,
+          membership._id.toString(),
+          managerNotifType,
+        );
       }
     }
   }
@@ -255,9 +273,11 @@ export class MembershipCronService {
   private async notifyManagers(
     gym: GymModel,
     member: User,
+    membershipId: string,
     type: 'expiring' | 'expired' | 'expiring_today',
   ) {
-    const managers = await this.membershipModel
+    // 1. Get managers from membership collection
+    const managersFromMembership = await this.membershipModel
       .find({
         gym: gym._id,
         roles: { $in: [UserRole.Owner, UserRole.Manager] },
@@ -266,41 +286,59 @@ export class MembershipCronService {
       .populate('user')
       .exec();
 
-    for (const managerMembership of managers) {
-      const manager = managerMembership.user as unknown as User;
-      if (!manager) continue;
+    // 2. Identify all users to notify (Owner from Gym model + Managers/Owners from Membership)
+    // Map to user ID string for easy deduplication
+    const usersMap = new Map<string, User>();
 
-      let title = '';
-      let message = '';
-
-      switch (type) {
-        case 'expiring':
-          title = 'Member Expiring Soon';
-          message = `${member.profile?.fullName || 'A member'}'s subscription expires in 3 days.`;
-          break;
-        case 'expiring_today': // Kept for completeness, though not triggered in main loop above currently
-          title = 'Member Expires Today';
-          message = `${member.profile?.fullName || 'A member'}'s subscription expires today.`;
-          break;
-        case 'expired':
-          title = 'Member Expired';
-          message = `${member.profile?.fullName || 'A member'}'s subscription has expired.`;
-          break;
+    // Add owner if present on gym model
+    if (gym.owner) {
+      // In processReminder/handleExpiredStatus we populated or cast gym as GymModel.
+      // We need to make sure we have the User object for the owner.
+      // If gym.owner is just an ID, we might need to fetch him.
+      // But usually it's populated in handleMembershipCron loops if needed.
+      // To be safe, let's check if it's a full user object or just an ID.
+      let ownerUser: User | null = null;
+      if ((gym.owner as any).profile) {
+        ownerUser = gym.owner as unknown as User;
+      } else {
+        ownerUser = await (this.membershipModel.db.model('User') as Model<User>)
+          .findById(gym.owner)
+          .exec();
       }
 
+      if (ownerUser) {
+        usersMap.set(ownerUser._id.toString(), ownerUser);
+      }
+    }
+
+    // Add others from membership
+    for (const m of managersFromMembership) {
+      const u = m.user as unknown as User;
+      if (u) {
+        usersMap.set(u._id.toString(), u);
+      }
+    }
+
+    for (const manager of usersMap.values()) {
       await this.notificationsService.notifyUser(manager, {
         key: `subscription.manager_member_${type}`,
-        title,
-        message,
         vars: {
           memberName: member.profile?.fullName || 'Member',
           gymName: gym.name,
         },
-        type: 'info' as NotificationType,
+        type: 'subscription' as NotificationType,
         priority: 'low' as NotificationPriority,
         relatedId: member._id.toString(),
-        skipExternal: true,
+        skipExternal: true, // Internal only for managers to avoid spam
         gymId: gym._id.toString(),
+        action: {
+          type: 'modal',
+          payload: 'member_profile',
+          data: {
+            memberId: member._id.toString(),
+            membershipId,
+          },
+        },
       });
     }
   }

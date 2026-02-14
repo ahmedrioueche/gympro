@@ -938,9 +938,18 @@ export class MembershipService {
             vars: {
               memberName: user.profile?.fullName || 'A member',
             },
-            type: 'membership',
+            type: 'subscription',
             priority: 'low',
             relatedId: user._id.toString(),
+            gymId: gymObjectId.toString(),
+            action: {
+              type: 'modal',
+              payload: 'member_profile',
+              data: {
+                memberId: user._id.toString(),
+                membershipId: membership._id.toString(),
+              },
+            },
             skipExternal: true, // Internal alert only
           });
         }
