@@ -21,28 +21,34 @@ export default function ClientsPage() {
 
   // Get IDs of people who already have a pending/active relationship
   const excludedUserIds = useMemo(() => {
-    const activeIds = activeClients.map((c) => c.userId);
-    const pendingIds = pendingRequests.map((r) => r.memberId);
+    const activeIds = (Array.isArray(activeClients) ? activeClients : []).map(
+      (c) => c.userId,
+    );
+    const pendingIds = (
+      Array.isArray(pendingRequests) ? pendingRequests : []
+    ).map((r) => r.memberId);
     return new Set([...activeIds, ...pendingIds]);
   }, [activeClients, pendingRequests]);
 
   // Filtered prospective members
   const filteredProspective = useMemo(() => {
-    return prospectiveMembers.filter((m) => !excludedUserIds.has(m.userId));
+    return (Array.isArray(prospectiveMembers) ? prospectiveMembers : []).filter(
+      (m) => !excludedUserIds.has(m.userId),
+    );
   }, [prospectiveMembers, excludedUserIds]);
 
   const tabs = [
     {
       id: 0,
-      label: `${t("coach.clients.tabs.active")} (${activeClients.length})`,
+      label: `${t("coach.clients.tabs.active")} (${(Array.isArray(activeClients) ? activeClients : []).length})`,
     },
     {
       id: 1,
-      label: `${t("coach.clients.tabs.pending")} (${pendingRequests.length})`,
+      label: `${t("coach.clients.tabs.pending")} (${(Array.isArray(pendingRequests) ? pendingRequests : []).length})`,
     },
     {
       id: 2,
-      label: `${t("coach.clients.tabs.prospective")} (${filteredProspective.length})`,
+      label: `${t("coach.clients.tabs.prospective")} (${(filteredProspective || []).length})`,
     },
   ];
 

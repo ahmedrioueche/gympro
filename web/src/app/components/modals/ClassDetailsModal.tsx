@@ -1,6 +1,14 @@
 import type { GymClass } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
-import { Calendar, Clock, Info, Star, User, Users } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Info,
+  Package,
+  Star,
+  User,
+  Users,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
 import { useModalStore } from "../../../store/modal";
@@ -255,6 +263,51 @@ export default function ClassDetailsModal() {
             )}
           </div>
         </div>
+
+        {/* Equipment Section */}
+        {gymClass.equipment && gymClass.equipment.length > 0 && (
+          <div className="space-y-4">
+            <label className="text-[11px] uppercase tracking-widest font-bold text-white/30 ml-1">
+              {t("classes.details.equipment", "Required Equipment")}
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {gymClass.equipment.map((item: any, idx: number) => {
+                const equipment = item.itemId;
+                const name =
+                  typeof equipment === "object"
+                    ? equipment.name
+                    : t("inventory.item", "Equipment Item");
+                const category =
+                  typeof equipment === "object" ? equipment.category : null;
+
+                return (
+                  <div
+                    key={
+                      typeof equipment === "object"
+                        ? equipment._id
+                        : equipment + idx
+                    }
+                    className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-xl group hover:bg-white/10 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Package className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-white truncate">
+                        {item.quantity}x {name}
+                      </p>
+                      {category && (
+                        <p className="text-[10px] text-white/40 uppercase tracking-wider">
+                          {t(`inventory.categories.${category}`)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Note / Tip */}
         {isMemberView && (

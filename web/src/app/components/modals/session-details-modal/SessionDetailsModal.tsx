@@ -1,6 +1,6 @@
 import { SessionStatus } from "@ahmedrioueche/gympro-client";
 import { format, parseISO } from "date-fns";
-import { Calendar, Clock, MapPin } from "lucide-react";
+import { Calendar, Clock, MapPin, Package } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import TextArea from "../../../../components/ui/TextArea";
@@ -144,6 +144,51 @@ export const SessionDetailsModal = () => {
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-3">
               <MapPin className="w-4 h-4 text-white/40" />
               <p className="text-sm text-white/80">{session.location}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Equipment Section */}
+        {session.equipment && session.equipment.length > 0 && (
+          <div className="space-y-3">
+            <label className="text-[11px] uppercase tracking-widest font-bold text-white/30 ml-1">
+              {t("classes.details.equipment", "Required Equipment")}
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {session.equipment.map((item: any, idx: number) => {
+                const equipment = item.itemId;
+                const name =
+                  typeof equipment === "object"
+                    ? equipment.name
+                    : t("inventory.item", "Equipment Item");
+                const category =
+                  typeof equipment === "object" ? equipment.category : null;
+
+                return (
+                  <div
+                    key={
+                      typeof equipment === "object"
+                        ? equipment._id
+                        : equipment + idx
+                    }
+                    className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-xl group hover:bg-white/10 transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Package className="w-4 h-4 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-white truncate">
+                        {item.quantity}x {name}
+                      </p>
+                      {category && (
+                        <p className="text-[10px] text-white/40 uppercase tracking-wider">
+                          {t(`inventory.categories.${category}`)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

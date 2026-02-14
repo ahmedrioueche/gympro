@@ -137,11 +137,11 @@ export default function ConfirmModal() {
               className={cn(
                 "px-6 py-2.5 rounded-xl font-medium transition-all hover:scale-[1.02] w-full sm:w-auto",
                 confirmModalProps.secondaryAction.variant === "danger"
-                  ? "text-red-500 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30"
+                  ? "text-white bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20"
                   : confirmModalProps.secondaryAction.variant === "success"
-                    ? "text-green-500 bg-green-500/10 hover:bg-green-500/20 border border-green-500/30"
+                    ? "text-white bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/20"
                     : confirmModalProps.secondaryAction.variant === "primary"
-                      ? "text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20"
+                      ? "text-white bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
                       : "text-text-secondary bg-surface-secondary/50 hover:bg-surface-secondary border border-border/50",
               )}
             >

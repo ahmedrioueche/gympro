@@ -35,6 +35,7 @@ export interface Session {
     endDate?: string | Date;
     days?: number[];
   };
+  equipment?: { itemId: string | any; quantity: number }[];
   createdAt: Date | string;
   updatedAt: Date | string;
 
@@ -68,6 +69,7 @@ export interface CreateSessionDto {
     endDate?: string | Date;
     days?: number[];
   };
+  equipment?: { itemId: string; quantity: number }[];
 }
 
 export interface UpdateSessionDto {
@@ -78,6 +80,7 @@ export interface UpdateSessionDto {
   meetingLink?: string;
   location?: string;
   facilityId?: string;
+  equipment?: { itemId: string; quantity: number }[];
 }
 
 export interface SessionQueryDto {

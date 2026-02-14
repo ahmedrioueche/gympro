@@ -3,6 +3,7 @@ import {
   type CreateSessionDto,
 } from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
+import { EquipmentSelector } from "../../../../app/components/ui/EquipmentSelector";
 import CustomSelect from "../../../../components/ui/CustomSelect";
 import InputField from "../../../../components/ui/InputField";
 import { cn } from "../../../../utils/helper";
@@ -15,6 +16,7 @@ interface SessionFormProps {
   ) => void;
   clients: any[];
   facilities?: any[];
+  gymId?: string;
 }
 
 export const SessionForm = ({
@@ -22,6 +24,7 @@ export const SessionForm = ({
   updateField,
   clients,
   facilities = [],
+  gymId,
 }: SessionFormProps) => {
   const { t } = useTranslation();
 
@@ -246,6 +249,15 @@ export const SessionForm = ({
           placeholder={t("schedule.form.notesPlaceholder")}
           rows={3}
           className="w-full px-4 py-3 rounded-xl border border-border bg-surface text-text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none"
+        />
+      </div>
+
+      {/* Equipment Selection */}
+      <div className="pt-4 border-t border-border">
+        <EquipmentSelector
+          gymId={gymId || ""}
+          selectedItems={data.equipment || []}
+          onChange={(items) => updateField("equipment" as any, items)}
         />
       </div>
     </div>

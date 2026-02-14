@@ -112,6 +112,7 @@ export const useCreateSessionModal = () => {
     handleClose,
     clients,
     facilities,
+    gymId,
     isPending: createSession.isPending,
   };
 };

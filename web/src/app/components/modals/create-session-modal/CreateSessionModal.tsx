@@ -13,6 +13,7 @@ export const CreateSessionModal = () => {
     handleClose,
     clients,
     facilities,
+    gymId,
     isPending,
   } = useCreateSessionModal();
 
@@ -38,6 +39,7 @@ export const CreateSessionModal = () => {
           updateField={updateSessionField}
           clients={clients}
           facilities={facilities}
+          gymId={gymId}
         />
       </form>
     </BaseModal>

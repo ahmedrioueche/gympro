@@ -67,6 +67,21 @@ export class SessionModel extends Document implements Session {
   @Prop({ type: String, index: true })
   seriesId?: string;
 
+  @Prop({
+    type: [
+      {
+        itemId: {
+          type: Types.ObjectId,
+          ref: 'EquipmentItemModel',
+          required: true,
+        },
+        quantity: { type: Number, required: true },
+      },
+    ],
+    default: [],
+  })
+  equipment?: { itemId: string; quantity: number }[];
+
   @Prop()
   createdAt: Date;
 

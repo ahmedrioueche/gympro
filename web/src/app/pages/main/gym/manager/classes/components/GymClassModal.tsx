@@ -1,9 +1,10 @@
 import type { CoachProfile } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
-import { Briefcase, Calendar, Info, User } from "lucide-react";
+import { Briefcase, Calendar, Info, Package, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { EquipmentSelector } from "../../../../../../../app/components/ui/EquipmentSelector";
 import { MinimalCoachCard } from "../../../../../../../app/components/ui/MinimalCoachCard";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import CustomSelect from "../../../../../../../components/ui/CustomSelect";
@@ -49,6 +50,7 @@ export default function GymClassModal() {
       noEndDate: false,
       days: [] as number[],
     },
+    equipment: [] as { itemId: string; quantity: number }[],
   });
 
   const isOpen = currentModal === "gym_class";
@@ -82,6 +84,7 @@ export default function GymClassModal() {
             gymClass.recurrence?.type !== "none",
           days: gymClass.recurrence?.days || [],
         },
+        equipment: gymClass.equipment || [],
       });
     } else {
       setFormData({
@@ -98,6 +101,7 @@ export default function GymClassModal() {
           noEndDate: false,
           days: [],
         },
+        equipment: [],
       });
     }
   }, [gymClass]);
@@ -542,6 +546,28 @@ export default function GymClassModal() {
                 </p>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Equipment Section */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 px-1">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Package className="w-4 h-4 text-primary" />
+            </div>
+            <h3 className="text-sm font-bold text-white uppercase tracking-widest">
+              {t("classes.form.sections.equipment", "Required Equipment")}
+            </h3>
+          </div>
+
+          <div className=" border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
+            <EquipmentSelector
+              gymId={gymId}
+              selectedItems={formData.equipment}
+              onChange={(items) =>
+                setFormData({ ...formData, equipment: items })
+              }
+            />
           </div>
         </div>
       </form>

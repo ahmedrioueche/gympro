@@ -150,6 +150,7 @@ export class SessionsService {
 
       const sessions = await this.sessionModel
         .find(filter)
+        .populate('equipment.itemId', 'name category images quantity')
         .sort({ startTime: 1 })
         .lean();
 
@@ -217,6 +218,7 @@ export class SessionsService {
           'memberId',
           'profile.fullName profile.username profile.profileImageUrl',
         )
+        .populate('equipment.itemId', 'name category images quantity')
         .lean();
 
       if (!session) {

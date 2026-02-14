@@ -55,16 +55,15 @@ export class GymClassService {
         ? new Types.ObjectId().toString()
         : undefined;
 
-      // Validate coach availability for the INITIAL date
-      if (dto.coachId) {
-        await this.validateCoachAvailability(
-          dto.coachId,
-          new Date(dto.scheduledAt),
-          dto.duration,
-          undefined,
-          seriesId,
-        );
-      }
+      // Validate availability for the INITIAL date
+      await this.validateAvailability(
+        dto.coachId,
+        dto.facilityId,
+        new Date(dto.scheduledAt),
+        dto.duration,
+        undefined,
+        seriesId,
+      );
 
       const createdClass = await this.gymClassModel.create({
         ...baseData,
@@ -294,8 +293,9 @@ export class GymClassService {
         const duration = dto.duration || existingClass.duration;
 
         if (coachId) {
-          await this.validateCoachAvailability(
-            String(coachId),
+          await this.validateAvailability(
+            coachId ? String(coachId) : undefined,
+            dto.facilityId || existingClass.facilityId,
             scheduledAt,
             duration,
             id,
@@ -523,6 +523,7 @@ export class GymClassService {
           'coachId',
           'profile.fullName profile.username profile.profileImageUrl',
         )
+        .populate('equipment.itemId', 'name category images quantity')
         .lean();
 
       const persistentInstances = await this.gymClassModel
@@ -535,6 +536,7 @@ export class GymClassService {
           'coachId',
           'profile.fullName profile.username profile.profileImageUrl',
         )
+        .populate('equipment.itemId', 'name category images quantity')
         .lean();
 
       let allInstances: GymClass[] = [];
@@ -614,6 +616,7 @@ export class GymClassService {
           'coachId',
           'profile.fullName profile.username profile.profileImageUrl',
         )
+        .populate('equipment.itemId', 'name category images quantity')
         .lean();
 
       const persistentInstances = await this.gymClassModel
@@ -627,6 +630,7 @@ export class GymClassService {
           'coachId',
           'profile.fullName profile.username profile.profileImageUrl',
         )
+        .populate('equipment.itemId', 'name category images quantity')
         .lean();
 
       let allInstances: GymClass[] = [];
@@ -695,6 +699,7 @@ export class GymClassService {
           'coachId',
           'profile.fullName profile.username profile.profileImageUrl',
         )
+        .populate('equipment.itemId', 'name category images quantity')
         .sort({ scheduledAt: 1 })
         .lean();
 
@@ -719,6 +724,7 @@ export class GymClassService {
           'coachId',
           'profile.fullName profile.username profile.profileImageUrl',
         )
+        .populate('equipment.itemId', 'name category images quantity')
         .lean();
 
       if (!gymClass) {
@@ -940,8 +946,9 @@ export class GymClassService {
     }
   }
 
-  private async validateCoachAvailability(
-    coachId: string,
+  private async validateAvailability(
+    coachId: string | undefined, // Coach is optional for classes (e.g. open gym)
+    facilityId: string | undefined,
     start: Date,
     duration: number,
     excludeClassId?: string,
@@ -949,46 +956,95 @@ export class GymClassService {
   ): Promise<void> {
     const end = new Date(start.getTime() + duration * 60000);
 
-    // 1. Check for conflicting sessions
-    const conflictingSession = await this.sessionModel.findOne({
-      coachId: new Types.ObjectId(coachId),
-      startTime: { $lt: end },
-      endTime: { $gt: start },
-      status: { $ne: 'cancelled' },
-    });
+    // 1. Check Coach Availability
+    if (coachId) {
+      // Check conflicting sessions
+      const conflictingSession = await this.sessionModel.findOne({
+        coachId: new Types.ObjectId(coachId),
+        startTime: { $lt: end },
+        endTime: { $gt: start },
+        status: { $ne: 'cancelled' },
+      });
 
-    if (conflictingSession) {
-      throw new Error('Coach has a conflicting session at this time');
-    }
-
-    // 2. Check for conflicting classes (logical check)
-    // Fetch classes in a window of +/- 4 hours to check overlaps
-    const windowStart = new Date(start.getTime() - 4 * 60 * 60 * 1000);
-    const windowEnd = new Date(start.getTime() + 4 * 60 * 60 * 1000);
-
-    const nearbyClasses = await this.gymClassModel.find({
-      coachId: new Types.ObjectId(coachId),
-      _id: { $ne: excludeClassId },
-      scheduledAt: { $gte: windowStart, $lte: windowEnd },
-      status: { $ne: 'cancelled' },
-    });
-
-    for (const cls of nearbyClasses) {
-      // If we're validating an instance, ignore the parent template of the same series
-      // This allows promoting virtual instances at the template's start time.
-      if (
-        seriesId &&
-        String(cls.seriesId) === String(seriesId) &&
-        cls.isSeries
-      ) {
-        continue;
+      if (conflictingSession) {
+        throw new Error(
+          `Coach has a conflicting session at ${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+        );
       }
 
-      const clsStart = new Date(cls.scheduledAt as Date);
-      const clsEnd = new Date(clsStart.getTime() + cls.duration * 60000);
+      // Check conflicting classes
+      const lookback = new Date(start.getTime() - 4 * 60 * 60 * 1000);
+      const nearbyClasses = await this.gymClassModel.find({
+        coachId: new Types.ObjectId(coachId),
+        _id: { $ne: excludeClassId },
+        scheduledAt: { $gte: lookback, $lte: end },
+        status: { $ne: 'cancelled' },
+      });
 
-      if (clsStart < end && clsEnd > start) {
-        throw new Error('Coach has another class at this time');
+      for (const cls of nearbyClasses) {
+        if (
+          seriesId &&
+          cls.seriesId &&
+          String(cls.seriesId) === String(seriesId) &&
+          cls.isSeries
+        ) {
+          continue;
+        }
+
+        const clsStart = new Date(cls.scheduledAt as Date);
+        const clsEnd = new Date(clsStart.getTime() + cls.duration * 60000);
+
+        if (clsStart < end && clsEnd > start) {
+          throw new Error(
+            `Coach has another class (${cls.name}) at ${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+          );
+        }
+      }
+    }
+
+    // 2. Check Facility Availability
+    if (facilityId) {
+      // Check sessions in this facility
+      const facilitySession = await this.sessionModel.findOne({
+        facilityId,
+        startTime: { $lt: end },
+        endTime: { $gt: start },
+        status: { $ne: 'cancelled' },
+      });
+
+      if (facilitySession) {
+        throw new Error(
+          `Facility is already booked by a session at ${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+        );
+      }
+
+      // Check classes in this facility
+      const lookback = new Date(start.getTime() - 4 * 60 * 60 * 1000);
+      const facilityClasses = await this.gymClassModel.find({
+        facilityId,
+        _id: { $ne: excludeClassId },
+        scheduledAt: { $gte: lookback, $lte: end },
+        status: { $ne: 'cancelled' },
+      });
+
+      for (const cls of facilityClasses) {
+        if (
+          seriesId &&
+          cls.seriesId &&
+          String(cls.seriesId) === String(seriesId) &&
+          cls.isSeries
+        ) {
+          continue;
+        }
+
+        const clsStart = new Date(cls.scheduledAt as Date);
+        const clsEnd = new Date(clsStart.getTime() + cls.duration * 60000);
+
+        if (clsStart < end && clsEnd > start) {
+          throw new Error(
+            `Facility is already booked by class (${cls.name}) at ${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+          );
+        }
       }
     }
   }
