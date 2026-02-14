@@ -1131,13 +1131,73 @@ export class MembershipService {
       history = [];
     }
 
+    // 3. Populate Subscription Details (New Logic)
+    const typeIds = new Set<string>();
+
+    // Collect IDs from memberships
+    memberships.forEach((m: any) => {
+      if (m.subscription?.typeId) {
+        typeIds.add(m.subscription.typeId);
+      }
+    });
+
+    // Collect IDs from history
+    history.forEach((h: any) => {
+      if (h.subscription?.typeId) {
+        typeIds.add(h.subscription.typeId);
+      }
+    });
+
+    if (typeIds.size > 0) {
+      try {
+        const ids = Array.from(typeIds);
+        const objectIds = ids.filter((id) => /^[0-9a-fA-F]{24}$/.test(id));
+        const names = ids.filter((id) => !/^[0-9a-fA-F]{24}$/.test(id));
+
+        const types = await this.subscriptionTypeModel
+          .find({
+            $or: [
+              { _id: { $in: objectIds } },
+              { name: { $in: names }, gym: null }, // Base types have gym: null
+            ],
+          })
+          .lean()
+          .exec();
+
+        const typeMap = new Map<string, any>();
+        types.forEach((t: any) => {
+          typeMap.set(t._id.toString(), t);
+          if (t.name) typeMap.set(t.name, t);
+        });
+
+        // Attach details to memberships
+        memberships.forEach((m: any) => {
+          if (m.subscription?.typeId) {
+            m.subscription.typeDetails = typeMap.get(m.subscription.typeId);
+          }
+        });
+
+        // Attach details to history
+        history.forEach((h: any) => {
+          if (h.subscription?.typeId) {
+            h.subscription.typeDetails = typeMap.get(h.subscription.typeId);
+          }
+        });
+      } catch (err) {
+        this.logger.error(
+          `[MembershipService] Error fetching subscription types: ${err.message}`,
+        );
+        // Continue without populating if error occurs
+      }
+    }
+
     this.logger.log('=== DEBUG END ===');
     this.logger.log(
       `[MembershipService] Returning ${memberships.length} memberships and ${history.length} history records`,
     );
 
     return {
-      membership,
+      membership, // This is a reference to an object inside `memberships`, so it gets the update too
       memberships,
       history,
     };

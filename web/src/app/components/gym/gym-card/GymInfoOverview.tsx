@@ -19,7 +19,6 @@ export function GymInfoOverview({
   gym,
   displayRole,
   onSelect,
-  onJoin,
   onToggleSettings,
 }: GymInfoOverviewProps) {
   const { t } = useTranslation();
@@ -55,6 +54,31 @@ export function GymInfoOverview({
     coachAffiliation?.status === "active";
 
   const isStaff = ["Owner", "Manager", "Staff"].includes(displayRole || "");
+
+  // Pre-compute labels to avoid recreation in loops
+  const SERVICE_LABELS: Record<string, string> = {
+    gym: t("settings.gym.services.gym", "General Gym Access"),
+    cardio: t("settings.gym.services.cardio", "Cardio Training"),
+    crossfit: t("settings.gym.services.crossfit", "CrossFit"),
+    swimming: t("settings.gym.services.swimming", "Swimming Pool"),
+    boxing: t("settings.gym.services.boxing", "Boxing / MMA"),
+    yoga: t("settings.gym.services.yoga", "Yoga & Pilates"),
+    sauna: t("settings.gym.services.sauna", "Sauna & Spa"),
+    massage: t("settings.gym.services.massage", "Massage Therapy"),
+    shower: t("settings.gym.services.shower", "Showers"),
+  };
+
+  const SHORT_SERVICE_LABELS: Record<string, string> = {
+    gym: t("settings.gym.services.gym", "Gym"),
+    cardio: t("settings.gym.services.cardio", "Cardio"),
+    crossfit: t("settings.gym.services.crossfit", "CrossFit"),
+    swimming: t("settings.gym.services.swimming", "Swimming"),
+    boxing: t("settings.gym.services.boxing", "Boxing"),
+    yoga: t("settings.gym.services.yoga", "Yoga"),
+    sauna: t("settings.gym.services.sauna", "Sauna"),
+    massage: t("settings.gym.services.massage", "Massage"),
+    shower: t("settings.gym.services.shower", "Showers"),
+  };
 
   return (
     <div className="p-6 md:p-8 lg:p-10">
@@ -126,45 +150,14 @@ export function GymInfoOverview({
                 {t("gymCard.servicesOffered", "Services Offered")}
               </h4>
               <div className="flex flex-wrap gap-2">
-                {gym.settings.servicesOffered.map((service, idx) => {
-                  const colors = [
-                    "bg-blue-500/10 text-blue-500 border-blue-500/20",
-                    "bg-purple-500/10 text-purple-500 border-purple-500/20",
-                    "bg-orange-500/10 text-orange-500 border-orange-500/20",
-                    "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-                  ];
-
-                  const SERVICE_LABELS: Record<string, string> = {
-                    gym: t("settings.gym.services.gym", "General Gym Access"),
-                    cardio: t(
-                      "settings.gym.services.cardio",
-                      "Cardio Training",
-                    ),
-                    crossfit: t("settings.gym.services.crossfit", "CrossFit"),
-                    swimming: t(
-                      "settings.gym.services.swimming",
-                      "Swimming Pool",
-                    ),
-                    boxing: t("settings.gym.services.boxing", "Boxing / MMA"),
-                    yoga: t("settings.gym.services.yoga", "Yoga & Pilates"),
-                    sauna: t("settings.gym.services.sauna", "Sauna & Spa"),
-                    massage: t(
-                      "settings.gym.services.massage",
-                      "Massage Therapy",
-                    ),
-                  };
-
-                  const label = SERVICE_LABELS[service.name] || service.name;
-
-                  return (
-                    <span
-                      key={idx}
-                      className={`px-3 py-1 rounded-lg text-xs font-bold border capitalize ${colors[idx % colors.length]}`}
-                    >
-                      {label}
-                    </span>
-                  );
-                })}
+                {gym.settings.servicesOffered.map((service, idx) => (
+                  <span
+                    key={idx}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold border capitalize ${COLORS[idx % COLORS.length]}`}
+                  >
+                    {SERVICE_LABELS[service.name] || service.name}
+                  </span>
+                ))}
               </div>
             </div>
           )}
@@ -200,44 +193,9 @@ export function GymInfoOverview({
                         {(plan.customName && capitalize(plan.customName)) ||
                           (plan.services && plan.services.length > 0
                             ? plan.services
-                                .map((s: string) => {
-                                  const SERVICE_LABELS: Record<string, string> =
-                                    {
-                                      gym: t(
-                                        "settings.gym.services.gym",
-                                        "Gym",
-                                      ),
-                                      cardio: t(
-                                        "settings.gym.services.cardio",
-                                        "Cardio",
-                                      ),
-                                      crossfit: t(
-                                        "settings.gym.services.crossfit",
-                                        "CrossFit",
-                                      ),
-                                      swimming: t(
-                                        "settings.gym.services.swimming",
-                                        "Swimming",
-                                      ),
-                                      boxing: t(
-                                        "settings.gym.services.boxing",
-                                        "Boxing",
-                                      ),
-                                      yoga: t(
-                                        "settings.gym.services.yoga",
-                                        "Yoga",
-                                      ),
-                                      sauna: t(
-                                        "settings.gym.services.sauna",
-                                        "Sauna",
-                                      ),
-                                      massage: t(
-                                        "settings.gym.services.massage",
-                                        "Massage",
-                                      ),
-                                    };
-                                  return SERVICE_LABELS[s] || s;
-                                })
+                                .map(
+                                  (s: string) => SHORT_SERVICE_LABELS[s] || s,
+                                )
                                 .join(" + ")
                             : t("pricing.form.regularPlan", "Regular Plan"))}
                       </span>
@@ -347,3 +305,10 @@ export function GymInfoOverview({
     </div>
   );
 }
+
+const COLORS = [
+  "bg-blue-500/10 text-blue-500 border-blue-500/20",
+  "bg-purple-500/10 text-purple-500 border-purple-500/20",
+  "bg-orange-500/10 text-orange-500 border-orange-500/20",
+  "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+];

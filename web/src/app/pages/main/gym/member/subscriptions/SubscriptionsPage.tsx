@@ -13,9 +13,14 @@ function SubscriptionsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-20">
+      <>
+        <PageHeader
+          title={t("gymMember.subscriptions.title")}
+          subtitle={t("gymMember.subscriptions.subtitle")}
+          icon={CreditCard}
+        />
         <Loading />
-      </div>
+      </>
     );
   }
 
@@ -32,7 +37,7 @@ function SubscriptionsPage() {
         title={t("gymMember.subscriptions.title", "My Subscriptions")}
         subtitle={t(
           "gymMember.subscriptions.subtitle",
-          "Manage your memberships and subscription history for this gym"
+          "Manage your memberships and subscription history for this gym",
         )}
         icon={CreditCard}
       />
@@ -49,7 +54,7 @@ function SubscriptionsPage() {
             <p className="text-text-secondary max-w-sm mx-auto mt-2">
               {t(
                 "gymMember.subscriptions.noRecords.desc",
-                "We couldn't find any membership records for you in this gym."
+                "We couldn't find any membership records for you in this gym.",
               )}
             </p>
           </div>
@@ -73,7 +78,7 @@ function SubscriptionsPage() {
               <h3 className="text-lg font-semibold text-text-primary px-1">
                 {t(
                   "gymMember.subscriptions.allRecords",
-                  "Subscription Records"
+                  "Subscription Records",
                 )}
               </h3>
               <SubscriptionsTable subscriptions={allMemberships} />

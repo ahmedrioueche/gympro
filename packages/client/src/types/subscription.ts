@@ -30,6 +30,7 @@ export interface SubscriptionInfo {
   endDate: string | Date;
   status: SubscriptionStatus;
   paymentMethod?: PaymentMethod;
+  typeDetails?: SubscriptionType;
 }
 
 export interface PricingTier {

@@ -41,13 +41,13 @@ export function CurrentSubscriptionCard({
           <h3 className="text-xl font-semibold text-text-primary mb-2">
             {t(
               "gymMember.subscriptions.noActive.title",
-              "No Active Subscription"
+              "No Active Subscription",
             )}
           </h3>
           <p className="text-text-secondary max-w-md">
             {t(
               "gymMember.subscriptions.noActive.desc",
-              "You don't have an active subscription for this gym. Please contact the front desk to purchase one."
+              "You don't have an active subscription for this gym. Please contact the front desk to purchase one.",
             )}
           </p>
         </div>
@@ -62,14 +62,16 @@ export function CurrentSubscriptionCard({
           <div>
             <div className="flex items-center gap-3 mb-2">
               <h2 className="text-2xl font-bold text-text-primary">
-                {capitalize(subscription.typeId)}
+                {subscription.typeDetails?.customName
+                  ? capitalize(subscription.typeDetails.customName)
+                  : capitalize(subscription.typeId)}
               </h2>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                  status
+                  status,
                 )}`}
               >
-                {t(`common.status.${status}`, status)}
+                {t(`common.status_${status}`, status)}
               </span>
             </div>
             <p className="text-text-secondary">

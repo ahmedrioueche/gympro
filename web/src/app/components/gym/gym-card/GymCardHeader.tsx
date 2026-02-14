@@ -19,7 +19,7 @@ export function GymCardHeader({ gym, displayRole }: GymCardHeaderProps) {
       }`}
     >
       {/* Media Carousel or Banner */}
-      <GymCardMedia gym={gym} />
+      <GymCardMedia gym={gym} canViewMedia={!displayRole} />
 
       <div className="relative h-full p-6 md:p-8 flex flex-col justify-end">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

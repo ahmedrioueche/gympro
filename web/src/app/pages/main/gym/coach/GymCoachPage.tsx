@@ -13,6 +13,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { APP_PAGES } from "../../../../../constants/navigation";
+import { PAGE_CLASSES } from "../../../../../constants/styles";
 import Nav from "../../../../components/nav/Nav";
 
 const sidebarLinks = [

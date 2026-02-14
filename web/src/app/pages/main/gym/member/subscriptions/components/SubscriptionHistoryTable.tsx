@@ -6,6 +6,7 @@ import {
   type TableColumn,
 } from "../../../../../../../components/ui/Table";
 import { formatDate } from "../../../../../../../utils/date";
+import { capitalize } from "../../../../../../../utils/helper";
 
 interface SubscriptionHistoryTableProps {
   history: any[];
@@ -19,7 +20,7 @@ export function SubscriptionHistoryTable({
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -29,7 +30,9 @@ export function SubscriptionHistoryTable({
       header: t("common.plan", "Plan"),
       render: (record) => (
         <span className="text-sm font-medium text-text-primary capitalize">
-          {record.subscription.typeId}
+          {record.subscription.typeDetails?.customName
+            ? capitalize(record.subscription.typeDetails.customName)
+            : capitalize(record.subscription.typeId)}
         </span>
       ),
     },
@@ -57,7 +60,7 @@ export function SubscriptionHistoryTable({
         >
           {t(
             `common.${record.subscription.status}`,
-            record.subscription.status as string
+            record.subscription.status as string,
           )}
         </span>
       ),
