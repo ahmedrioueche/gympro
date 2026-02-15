@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Calendar, ChevronRight, Clock, Dumbbell, History } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
+import useWeightUnit from "../../../../../../hooks/useWeightUnit";
 
 interface RecentWorkoutsProps {
   history?: ProgressHistory[];
@@ -10,6 +11,7 @@ interface RecentWorkoutsProps {
 
 export const RecentWorkouts = ({ history }: RecentWorkoutsProps) => {
   const { t } = useTranslation();
+  const { unit: weightUnit } = useWeightUnit();
   const navigate = useNavigate();
 
   // Get last 5 activities
@@ -78,7 +80,7 @@ export const RecentWorkouts = ({ history }: RecentWorkoutsProps) => {
                     <span className="w-1 h-1 rounded-full bg-border" />
                     <span className="flex items-center gap-1 text-[10px] font-bold text-text-secondary uppercase tracking-wider">
                       <Dumbbell size={10} className="text-accent" />
-                      {activity.volumeKg} kg
+                      {activity.volumeKg} {weightUnit}
                     </span>
                   </div>
                 </div>

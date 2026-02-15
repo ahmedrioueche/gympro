@@ -33,9 +33,12 @@ export function useAdminSettings() {
   const [addPhoneMode, setAddPhoneMode] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  // Preferences (Language) state
+  // Preferences (Language & Weight Unit) state
   const [language, setLanguage] = useState<AppLanguage>(
     user?.appSettings?.locale?.language || "en",
+  );
+  const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">(
+    user?.appSettings?.locale?.weightUnit || "kg",
   );
 
   // Security (Password) state
@@ -52,7 +55,8 @@ export function useAdminSettings() {
     addPhoneMode;
 
   const hasPreferenceChanges =
-    language !== (user?.appSettings?.locale?.language || "en");
+    language !== (user?.appSettings?.locale?.language || "en") ||
+    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg");
 
   const hasSecurityChanges =
     currentPassword.length > 0 ||
@@ -131,6 +135,7 @@ export function useAdminSettings() {
         locale: {
           ...user?.appSettings?.locale,
           language,
+          weightUnit,
         },
       };
 
@@ -214,6 +219,8 @@ export function useAdminSettings() {
     // Preferences
     language,
     setLanguage,
+    weightUnit,
+    setWeightUnit,
     // Security
     currentPassword,
     setCurrentPassword,

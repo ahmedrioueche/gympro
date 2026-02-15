@@ -7,20 +7,19 @@ import {
 } from "../../../../../../../hooks/queries/useMembership";
 import { useGymStore } from "../../../../../../../store/gym";
 
-export type TabType = "general" | "notifications" | "privacy";
+export type TabType = "notifications" | "privacy";
 
 export function useSettingsPage() {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
-  const [activeTab, setActiveTab] = useState<TabType>("general");
+  const [activeTab, setActiveTab] = useState<TabType>("notifications");
 
   const { data: membershipData, isLoading } = useMyMembershipInGym(
-    currentGym?._id || ""
+    currentGym?._id || "",
   );
   const updateSettingsMutation = useUpdateMembershipSettings();
 
   // Settings State
-  const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">("kg");
   const [classReminders, setClassReminders] = useState(true);
   const [subscriptionRenewal, setSubscriptionRenewal] = useState(true);
   const [announcements, setAnnouncements] = useState(true);
@@ -31,12 +30,10 @@ export function useSettingsPage() {
   useEffect(() => {
     if (membershipData?.data?.membership?.settings) {
       const settings = membershipData.data.membership.settings;
-      if (settings.general?.weightUnit)
-        setWeightUnit(settings.general.weightUnit);
       if (settings.notifications) {
         setClassReminders(settings.notifications.classReminders ?? true);
         setSubscriptionRenewal(
-          settings.notifications.subscriptionRenewal ?? true
+          settings.notifications.subscriptionRenewal ?? true,
         );
         setAnnouncements(settings.notifications.announcements ?? true);
       }
@@ -51,7 +48,6 @@ export function useSettingsPage() {
     if (!currentGym?._id) return;
 
     const settings = {
-      general: { weightUnit },
       notifications: {
         classReminders,
         subscriptionRenewal,
@@ -69,7 +65,7 @@ export function useSettingsPage() {
         settings,
       });
       toast.success(
-        t("settings.member.saveSuccess", "Settings updated successfully")
+        t("settings.member.saveSuccess", "Settings updated successfully"),
       );
     } catch (error) {
       toast.error(t("settings.member.saveError", "Failed to update settings"));
@@ -77,9 +73,6 @@ export function useSettingsPage() {
   };
 
   const hasChanges =
-    weightUnit !==
-      (membershipData?.data?.membership?.settings?.general?.weightUnit ||
-        "kg") ||
     classReminders !==
       (membershipData?.data?.membership?.settings?.notifications
         ?.classReminders ?? true) ||
@@ -104,8 +97,6 @@ export function useSettingsPage() {
     handleSave,
     hasChanges,
     // State
-    weightUnit,
-    setWeightUnit,
     classReminders,
     setClassReminders,
     subscriptionRenewal,

@@ -1,5 +1,6 @@
 import {
   authApi,
+  settingsApi,
   uploadApi,
   type EditUserDto,
 } from "@ahmedrioueche/gympro-client";
@@ -18,9 +19,17 @@ export type CoachSettingsTabType =
 
 export function useCoachSettings() {
   const { t } = useTranslation();
-  const { user } = useUserStore();
+  const { user, updateSettings } = useUserStore();
   const updateProfile = useUpdateProfile();
-  const { language, setLanguage } = useLanguageStore();
+  const { language: globalLanguage, setLanguage: setGlobalLanguage } =
+    useLanguageStore();
+
+  const [language, setLanguage] = useState(
+    user?.appSettings?.locale?.language || globalLanguage || "en",
+  );
+  const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">(
+    user?.appSettings?.locale?.weightUnit || "kg",
+  );
 
   const [activeTab, setActiveTab] = useState<CoachSettingsTabType>("profile");
 
@@ -65,6 +74,10 @@ export function useCoachSettings() {
     addEmailMode ||
     addPhoneMode;
 
+  const hasPreferenceChanges =
+    language !== (user?.appSettings?.locale?.language || "en") ||
+    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg");
+
   const hasCoachingChanges =
     bio !== (coachingInfo?.bio || "") ||
     JSON.stringify(specializations) !==
@@ -83,7 +96,7 @@ export function useCoachSettings() {
         ? hasCoachingChanges
         : activeTab === "security"
           ? hasSecurityChanges
-          : false;
+          : hasPreferenceChanges;
 
   const handleAvatarUpload = async (file: File) => {
     if (file.size > 5 * 1024 * 1024) {
@@ -263,17 +276,31 @@ export function useCoachSettings() {
   };
 
   const handleSavePreferences = async () => {
-    // Language is usually saved instantly via useLanguageStore.
-    // If we need to persist it to user profile settings?
-    // It's already done in App.tsx via useEffect? Or we should call updateProfile?
-    // Let's assume setLanguage updates the store, and we might want to sync:
-    /*
-    await updateProfile.mutateAsync({
-      appSettings: { ...user?.appSettings, locale: { language } }
-    });
-    */
-    // For now, no-op or explicit sync:
-    toast.success(t("settings.preferences.success", "Preferences saved"));
+    try {
+      const updates = {
+        locale: {
+          ...user?.appSettings?.locale,
+          language,
+          weightUnit,
+        },
+      };
+
+      const res = await settingsApi.updateSettings(updates);
+      if (res.success) {
+        updateSettings(updates as any);
+        setGlobalLanguage(language as any);
+        toast.success(
+          t("settings.saveSuccess", "Settings updated successfully"),
+        );
+      } else {
+        toast.error(
+          res.message || t("settings.saveError", "Failed to update settings"),
+        );
+      }
+    } catch (error) {
+      console.error("Failed to save preferences:", error);
+      toast.error(t("settings.saveError", "Failed to update settings"));
+    }
   };
 
   const handleSave = async () => {
@@ -334,5 +361,7 @@ export function useCoachSettings() {
     // Preferences
     language,
     setLanguage,
+    weightUnit,
+    setWeightUnit,
   };
 }

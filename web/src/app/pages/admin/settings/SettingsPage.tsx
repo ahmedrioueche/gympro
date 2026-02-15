@@ -34,6 +34,8 @@ export default function SettingsPage() {
     // Preferences
     language,
     setLanguage,
+    weightUnit,
+    setWeightUnit,
     // Security
     currentPassword,
     setCurrentPassword,
@@ -105,7 +107,12 @@ export default function SettingsPage() {
           />
         )}
         {activeTab === "preferences" && (
-          <PreferencesSettings language={language} onUpdate={setLanguage} />
+          <PreferencesSettings
+            language={language}
+            onUpdate={setLanguage}
+            weightUnit={weightUnit}
+            setWeightUnit={setWeightUnit}
+          />
         )}
         {activeTab === "security" && (
           <SecuritySettings

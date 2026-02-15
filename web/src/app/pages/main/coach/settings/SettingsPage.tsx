@@ -65,6 +65,8 @@ export default function SettingsPage() {
     // Preferences
     language,
     setLanguage,
+    weightUnit,
+    setWeightUnit,
   } = useCoachSettings();
 
   const tabs = [
@@ -94,7 +96,8 @@ export default function SettingsPage() {
   const showSaveButton =
     activeTab === "profile" ||
     activeTab === "coaching" ||
-    activeTab === "security";
+    activeTab === "security" ||
+    activeTab === "preferences";
 
   return (
     <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
@@ -159,7 +162,12 @@ export default function SettingsPage() {
           />
         )}
         {activeTab === "preferences" && (
-          <PreferencesSettings language={language} onUpdate={setLanguage} />
+          <PreferencesSettings
+            language={language}
+            onUpdate={setLanguage}
+            weightUnit={weightUnit}
+            setWeightUnit={setWeightUnit}
+          />
         )}
         {activeTab === "security" && (
           <SecuritySettings

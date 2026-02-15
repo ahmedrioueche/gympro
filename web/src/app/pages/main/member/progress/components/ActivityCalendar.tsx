@@ -1,6 +1,7 @@
 import { type ProgressHistory } from "@ahmedrioueche/gympro-client";
 import { Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import useWeightUnit from "../../../../../../hooks/useWeightUnit";
 
 interface ActivityCalendarProps {
   history?: ProgressHistory[];
@@ -8,6 +9,7 @@ interface ActivityCalendarProps {
 
 export const ActivityCalendar = ({ history }: ActivityCalendarProps) => {
   const { t } = useTranslation();
+  const { unit: weightUnit } = useWeightUnit();
 
   // Generate last 12 weeks of data (84 days)
   const daysToShow = 84;
@@ -95,7 +97,8 @@ export const ActivityCalendar = ({ history }: ActivityCalendarProps) => {
                     </span>
                     {level > 0 && (
                       <span className="text-primary-light">
-                        {history?.find((h) => h.date === dateStr)?.volumeKg} kg
+                        {history?.find((h) => h.date === dateStr)?.volumeKg}{" "}
+                        {weightUnit}
                       </span>
                     )}
                   </div>

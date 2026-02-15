@@ -5,6 +5,7 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { Check, Split, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { useTimerStore } from "../../../../../../../store/timer";
 import { useUserStore } from "../../../../../../../store/user";
 
@@ -84,6 +85,8 @@ export const SessionSupersetCard = ({
   const handleRowRemove = (setIndex: number) => {
     exIndices.forEach((idx) => onRemoveSet(idx, setIndex));
   };
+
+  const { unit: weightUnit } = useWeightUnit();
 
   return (
     <div className="bg-surface border-2 border-primary/20 rounded-xl overflow-hidden shadow-sm">
@@ -192,10 +195,10 @@ export const SessionSupersetCard = ({
                               )
                             }
                             className="w-full px-2 py-1.5 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary text-sm"
-                            placeholder="kg"
+                            placeholder={weightUnit}
                           />
                           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-text-secondary pointer-events-none">
-                            kg
+                            {weightUnit}
                           </span>
                         </div>
                         <div className="relative flex-1">

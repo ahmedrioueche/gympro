@@ -5,6 +5,7 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { Check, CornerDownRight, PlayCircle, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { useTimerStore } from "../../../../../../../store/timer";
 import { useUserStore } from "../../../../../../../store/user";
 
@@ -51,6 +52,7 @@ export const SessionExerciseCard = ({
   onViewVideo,
 }: SessionExerciseCardProps) => {
   const { t } = useTranslation();
+  const { unit: weightUnit } = useWeightUnit();
 
   const exerciseName =
     originalExercise?.name || t("training.logSession.unknownExercise");
@@ -84,9 +86,7 @@ export const SessionExerciseCard = ({
         {/* Header Row */}
         <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2 px-1">
           <div className="col-span-1 text-center">#</div>
-          <div className="col-span-4 text-center">
-            {t("training.logSession.kg")}
-          </div>
+          <div className="col-span-4 text-center">{weightUnit}</div>
           <div className="col-span-4 text-center">
             {t("training.logSession.reps")}
           </div>
@@ -237,7 +237,7 @@ export const SessionExerciseCard = ({
                           )
                         }
                         className="w-full px-2 py-1.5 bg-background-secondary border border-border rounded-lg text-center text-sm text-text-primary focus:outline-none focus:border-primary"
-                        placeholder="kg"
+                        placeholder={weightUnit}
                       />
                     </div>
                     <div className="col-span-4">

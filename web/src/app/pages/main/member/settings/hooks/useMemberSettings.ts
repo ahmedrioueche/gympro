@@ -38,9 +38,12 @@ export function useMemberSettings() {
   const [addPhoneMode, setAddPhoneMode] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  // Preferences (Language) state
+  // Preferences (Language & Weight Unit) state
   const [language, setLanguage] = useState<AppLanguage>(
     user?.appSettings?.locale?.language || "en",
+  );
+  const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">(
+    user?.appSettings?.locale?.weightUnit || "kg",
   );
 
   // Training (Timer) state
@@ -66,7 +69,8 @@ export function useMemberSettings() {
     addPhoneMode;
 
   const hasPreferenceChanges =
-    language !== (user?.appSettings?.locale?.language || "en");
+    language !== (user?.appSettings?.locale?.language || "en") ||
+    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg");
 
   const hasTrainingChanges =
     JSON.stringify(timerSettings) !==
@@ -158,6 +162,7 @@ export function useMemberSettings() {
         locale: {
           ...user?.appSettings?.locale,
           language,
+          weightUnit,
         },
       };
 
@@ -265,6 +270,8 @@ export function useMemberSettings() {
     // Preferences
     language,
     setLanguage,
+    weightUnit,
+    setWeightUnit,
     // Training
     timerSettings,
     setTimerSettings,

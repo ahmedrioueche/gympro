@@ -26,6 +26,9 @@ export class LocaleSettingsModel implements LocaleSettings {
   @Prop({ required: true, default: DEFAULT_LANGUAGE }) language: AppLanguage;
   @Prop({ required: true, default: DEFAULT_CURRENCY })
   currency: string;
+  @Prop({ type: String, enum: ['kg', 'lbs'], default: 'kg' }) weightUnit:
+    | 'kg'
+    | 'lbs';
   @Prop() timezone?: string;
   @Prop() region?: string;
   @Prop() regionName?: string;

@@ -4,6 +4,7 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { Dumbbell, PlayCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { useModalStore } from "../../../../../../../store/modal";
 import { useSessionExercises } from "./useSessionExercises";
 
@@ -19,6 +20,7 @@ export const SessionExerciseList = ({
   notes,
 }: SessionExerciseListProps) => {
   const { t } = useTranslation();
+  const { unit: weightUnit } = useWeightUnit();
   const { openModal } = useModalStore();
   const { getExerciseName, getExercise } = useSessionExercises(program);
 
@@ -65,7 +67,7 @@ export const SessionExerciseList = ({
                         {set.reps} {t("training.page.sessionList.reps")}
                       </span>
                       <span>
-                        {set.weight} {t("training.page.sessionList.kg")}
+                        {set.weight} {weightUnit}
                       </span>
                     </div>
                     {/* Drop Sets */}
@@ -86,7 +88,7 @@ export const SessionExerciseList = ({
                               </span>
                             </div>
                             <span>
-                              {drop.weight} {t("training.page.sessionList.kg")}
+                              {drop.weight} {weightUnit}
                             </span>
                           </div>
                         ))}

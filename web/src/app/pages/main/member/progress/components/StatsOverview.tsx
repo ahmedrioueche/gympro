@@ -1,6 +1,7 @@
 import { type ProgressStats } from "@ahmedrioueche/gympro-client";
 import { Award, Dumbbell, Flame, Scale, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import useWeightUnit from "../../../../../../hooks/useWeightUnit";
 
 interface StatsOverviewProps {
   stats?: ProgressStats;
@@ -8,6 +9,12 @@ interface StatsOverviewProps {
 
 export const StatsOverview = ({ stats }: StatsOverviewProps) => {
   const { t } = useTranslation();
+  const { formatWeight, unit } = useWeightUnit();
+
+  const totalVolumeValue =
+    unit === "kg"
+      ? `${((stats?.totalVolumeKg || 0) / 1000).toFixed(1)}t`
+      : `${((stats?.totalVolumeKg || 0) * 2.20462).toFixed(0)} lbs`;
 
   const statItems = [
     {
@@ -19,7 +26,7 @@ export const StatsOverview = ({ stats }: StatsOverviewProps) => {
     },
     {
       label: t("progress.stats.totalVolume"),
-      value: `${((stats?.totalVolumeKg || 0) / 1000).toFixed(1)}t`,
+      value: totalVolumeValue,
       icon: Scale,
       color: "from-purple-500 to-pink-600",
       description: t("progress.stats.volumeDesc", "Total weight lifted"),

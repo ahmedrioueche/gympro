@@ -1,5 +1,5 @@
 import { type AppLanguage } from "@ahmedrioueche/gympro-client";
-import { Globe } from "lucide-react";
+import { Globe, Scale } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../components/ui/CustomSelect";
 import SettingsTab from "./SettingsTab";
@@ -19,42 +19,117 @@ const LANGUAGES: LanguageOption[] = [
 interface PreferencesSettingsProps {
   language: AppLanguage;
   onUpdate: (lang: AppLanguage) => void;
+  weightUnit: "kg" | "lbs";
+  setWeightUnit: (unit: "kg" | "lbs") => void;
 }
 
 export default function PreferencesSettings({
   language,
   onUpdate,
+  weightUnit,
+  setWeightUnit,
 }: PreferencesSettingsProps) {
   const { t } = useTranslation();
 
   return (
     <SettingsTab
-      title={t("member.settings.preferences.title")}
-      description={t("member.settings.preferences.subtitle")}
+      title={t("member.settings.preferences.title", "General Preferences")}
+      description={t(
+        "member.settings.preferences.subtitle",
+        "Configure your app experience and units",
+      )}
       icon={Globe}
     >
-      <div className="space-y-6 max-w-2xl">
+      <div className="space-y-8 max-w-2xl">
         {/* Language Selection */}
-        <div className="bg-background border border-border rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-surface border border-border text-text-secondary">
-              <Globe className="w-5 h-5" />
+        <div>
+          <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+            {t("member.settings.preferences.languageTitle", "Language")}
+          </h4>
+          <p className="text-sm text-text-secondary mb-4">
+            {t(
+              "member.settings.preferences.languageDesc",
+              "Select your preferred language for the interface",
+            )}
+          </p>
+          <div className="bg-surface-hover/50 border border-border/50 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-2.5 rounded-xl bg-white shadow-sm border border-border/50 text-primary">
+                <Globe className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="font-semibold text-text-primary">
+                  {t(
+                    "member.settings.preferences.language",
+                    "Display Language",
+                  )}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-text-primary">
-                {t("member.settings.preferences.language")}
-              </p>
-              <p className="text-sm text-text-secondary">
-                {t("member.settings.preferences.languageDesc")}
-              </p>
+
+            <CustomSelect
+              selectedOption={language}
+              onChange={(val) => onUpdate(val as AppLanguage)}
+              options={LANGUAGES}
+            />
+          </div>
+        </div>
+
+        {/* Weight Unit Selection */}
+        <div className="pt-8 border-t border-border">
+          <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+            {t("settings.member.general.weightUnit", "Preferred Weight Unit")}
+          </h4>
+          <p className="text-sm text-text-secondary mb-4">
+            {t(
+              "settings.member.general.weightUnitDesc",
+              "Choose kg or lbs for your weight measurements",
+            )}
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 p-5 bg-surface-hover/50 rounded-2xl border border-border/50 items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-2.5 rounded-xl bg-white shadow-sm border border-border/50 text-primary">
+                <Scale className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-text-primary">
+                  {t(
+                    "settings.member.general.weightUnitLabel",
+                    "Measurement Unit",
+                  )}
+                </p>
+                <p className="text-xs text-text-secondary">
+                  {t(
+                    "settings.member.general.weightUnitTypeDesc",
+                    "Used for exercises and progress tracking",
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex bg-surface border border-border/50 rounded-xl p-1.5 w-full sm:w-auto">
+              <button
+                onClick={() => setWeightUnit("kg")}
+                className={`flex-1 sm:flex-none px-6 py-2 text-sm font-semibold rounded-lg transition-all ${
+                  weightUnit === "kg"
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                kg
+              </button>
+              <button
+                onClick={() => setWeightUnit("lbs")}
+                className={`flex-1 sm:flex-none px-6 py-2 text-sm font-semibold rounded-lg transition-all ${
+                  weightUnit === "lbs"
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                lbs
+              </button>
             </div>
           </div>
-
-          <CustomSelect
-            selectedOption={language}
-            onChange={(val) => onUpdate(val as AppLanguage)}
-            options={LANGUAGES}
-          />
         </div>
       </div>
     </SettingsTab>

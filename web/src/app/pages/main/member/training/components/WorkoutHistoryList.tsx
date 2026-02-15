@@ -5,6 +5,7 @@ import {
 import { Calendar, ChevronDown, Dumbbell, Edit2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import useWeightUnit from "../../../../../../hooks/useWeightUnit";
 
 interface WorkoutSession {
   id: string;
@@ -95,6 +96,7 @@ interface WorkoutCardProps {
 
 const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
   const { t } = useTranslation();
+  const { unit: weightUnit } = useWeightUnit();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatDate = (dateString: string) => {
@@ -192,7 +194,8 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
             </div>
             {totalVolume > 0 && (
               <div className="text-xs text-text-secondary">
-                {totalVolume.toFixed(0)} kg {t("training.page.volume", "total")}
+                {totalVolume.toFixed(0)} {weightUnit}{" "}
+                {t("training.page.volume", "total")}
               </div>
             )}
           </div>
@@ -251,7 +254,7 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
                         }
                         return acc + setVol;
                       }, 0)
-                      .toFixed(0)}kg`}
+                      .toFixed(0)}${weightUnit}`}
                 </div>
               </div>
 
@@ -263,7 +266,8 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
                       <div className="flex items-center justify-between text-text-secondary">
                         <span className="font-medium">Set {setIdx + 1}</span>
                         <span className="font-mono">
-                          {set.weight}kg × {set.reps}
+                          {set.weight}
+                          {weightUnit} × {set.reps}
                         </span>
                       </div>
                       {/* Drop Sets */}
@@ -276,7 +280,8 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
                             >
                               <span className="font-bold">DROP</span>
                               <span className="font-mono text-text-secondary">
-                                {drop.weight}kg × {drop.reps}
+                                {drop.weight}
+                                {weightUnit} × {drop.reps}
                               </span>
                             </div>
                           ))}

@@ -1,9 +1,8 @@
-import { Bell, Save, Scale, Settings, Shield } from "lucide-react";
+import { Bell, Save, Settings, Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../../components/ui/Loading";
 import PageHeader from "../../../../../components/PageHeader";
 import SettingsContainer from "../../../../../components/settings/SettingsContainer";
-import GeneralTab from "./components/GeneralTab";
 import NotificationsTab from "./components/NotificationsTab";
 import PrivacyTab from "./components/PrivacyTab";
 import { useSettingsPage, type TabType } from "./hooks/useSettingsPage";
@@ -17,8 +16,6 @@ export default function SettingsPage() {
     isSaving,
     handleSave,
     hasChanges,
-    weightUnit,
-    setWeightUnit,
     classReminders,
     setClassReminders,
     subscriptionRenewal,
@@ -33,11 +30,6 @@ export default function SettingsPage() {
   } = useSettingsPage();
 
   const tabs = [
-    {
-      id: "general" as TabType,
-      label: t("settings.member.tabs.general", "General"),
-      icon: Scale,
-    },
     {
       id: "notifications" as TabType,
       label: t("settings.member.tabs.notifications", "Notifications"),
@@ -81,13 +73,6 @@ export default function SettingsPage() {
           </div>
         ) : (
           <>
-            {activeTab === "general" && (
-              <GeneralTab
-                weightUnit={weightUnit}
-                setWeightUnit={setWeightUnit}
-              />
-            )}
-
             {activeTab === "notifications" && (
               <NotificationsTab
                 classReminders={classReminders}

@@ -13,6 +13,7 @@ export interface NotificationSettings {
 export interface LocaleSettings {
   language: AppLanguage;
   currency: string;
+  weightUnit?: "kg" | "lbs";
   timezone?: string;
   region?: string;
   regionName?: string;

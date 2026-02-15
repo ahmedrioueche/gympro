@@ -35,6 +35,8 @@ export default function SettingsPage() {
     // Preferences
     language,
     setLanguage,
+    weightUnit,
+    setWeightUnit,
     // Training
     timerSettings,
     setTimerSettings,
@@ -114,7 +116,12 @@ export default function SettingsPage() {
           />
         )}
         {activeTab === "preferences" && (
-          <PreferencesSettings language={language} onUpdate={setLanguage} />
+          <PreferencesSettings
+            language={language}
+            onUpdate={setLanguage}
+            weightUnit={weightUnit}
+            setWeightUnit={setWeightUnit}
+          />
         )}
         {activeTab === "security" && (
           <SecuritySettings

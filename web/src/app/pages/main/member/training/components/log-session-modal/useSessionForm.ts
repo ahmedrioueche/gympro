@@ -41,6 +41,8 @@ export const useSessionForm = ({
   const program = activeHistory?.program;
   const progress = activeHistory?.progress;
 
+  const { t } = useTranslation();
+
   const [selectedDayName, setSelectedDayName] = useState<string>(
     initialSession?.dayName || program?.days?.[0]?.name || "",
   );
@@ -347,8 +349,6 @@ export const useSessionForm = ({
     clearStorage();
     setIsDirty(false); // Reset dirty state on manual save/completion
   }, [clearStorage]);
-
-  const { t } = useTranslation();
 
   const validateSet = (weight: number, reps: number) => {
     if (weight <= 0) return t("training.logSession.validation.weightPositive");
