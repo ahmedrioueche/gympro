@@ -94,6 +94,7 @@ type ModalType =
   | "create_member"
   | "class_details"
   | "coaching_offer"
+  | "create_gym"
   | null;
 
 interface ModalState {
@@ -417,6 +418,11 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "coaching_offer",
           coachingOfferProps: props,
+        };
+      }
+      if (modal === "create_gym") {
+        return {
+          currentModal: "create_gym",
         };
       }
       return { currentModal: null };

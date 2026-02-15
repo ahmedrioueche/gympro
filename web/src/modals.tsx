@@ -216,6 +216,10 @@ const CoachingOfferModal = lazy(
   () => import("./app/components/modals/CoachingOfferModal"),
 );
 
+const CreateGymModal = lazy(
+  () => import("./app/components/modals/create-gym-modal/CreateGymModal"),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -263,7 +267,9 @@ function modals() {
       <ServiceModal />
       <PricingModal />
       <CreateMemberModal />
+      <CreateMemberModal />
       <ClassDetailsModal />
+      <CreateGymModal />
     </Suspense>
   );
 }

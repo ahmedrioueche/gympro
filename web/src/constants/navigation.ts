@@ -40,10 +40,7 @@ export const APP_PAGES = {
       name: "pages.manager.gyms",
       link: "/manager/gyms",
     },
-    createGym: {
-      name: "pages.manager.create_gym",
-      link: "/manager/gyms/create",
-    },
+
     subscriptions: {
       name: "pages.manager.subscriptions",
       link: "/manager/subscriptions",
@@ -90,10 +87,7 @@ export const APP_PAGES = {
         name: "pages.gym.members",
         link: "/gym/manager/members",
       },
-      create_member: {
-        name: "pages.gym.create_member",
-        link: "/gym/manager/members/create",
-      },
+
       pricing: {
         name: "pages.gym.pricing",
         link: "/gym/manager/pricing",

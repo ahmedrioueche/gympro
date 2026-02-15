@@ -2,15 +2,17 @@ import { Link } from "@tanstack/react-router";
 import { DollarSign, PlusCircle, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../../constants/navigation";
+import { useModalStore } from "../../../../../../../store/modal";
 
 export function QuickActions() {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
 
   const quickActions = [
     {
       icon: <PlusCircle className="w-8 h-8 md:w-10 md:h-10" />,
       label: t("home.gym.actions.enroll"),
-      link: APP_PAGES.gym.manager.create_member.link,
+      action: () => openModal("create_member"),
       gradient: "from-blue-500 to-blue-600",
       bgHover: "hover:from-blue-600 hover:to-blue-700",
     },
@@ -37,18 +39,31 @@ export function QuickActions() {
           {t("home.gym.actions.title")}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {quickActions.map((action, idx) => (
-            <Link
-              key={idx}
-              to={action.link}
-              className={`bg-gradient-to-br ${action.gradient} ${action.bgHover} p-6 rounded-2xl text-white font-bold text-center hover:scale-[1.03] hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 group`}
-            >
-              <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
-                {action.icon}
+          {quickActions.map((action, idx) =>
+            action.link ? (
+              <Link
+                key={idx}
+                to={action.link}
+                className={`bg-gradient-to-br ${action.gradient} ${action.bgHover} p-6 rounded-2xl text-white font-bold text-center hover:scale-[1.03] hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 group cursor-pointer`}
+              >
+                <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
+                  {action.icon}
+                </div>
+                <span className="text-sm md:text-base">{action.label}</span>
+              </Link>
+            ) : (
+              <div
+                key={idx}
+                onClick={action.action}
+                className={`bg-gradient-to-br ${action.gradient} ${action.bgHover} p-6 rounded-2xl text-white font-bold text-center hover:scale-[1.03] hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-4 group cursor-pointer`}
+              >
+                <div className="p-3 bg-white/20 rounded-2xl group-hover:scale-110 transition-transform">
+                  {action.icon}
+                </div>
+                <span className="text-sm md:text-base">{action.label}</span>
               </div>
-              <span className="text-sm md:text-base">{action.label}</span>
-            </Link>
-          ))}
+            ),
+          )}
         </div>
       </div>
     </div>

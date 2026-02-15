@@ -2,12 +2,11 @@ import {
   formatPrice,
   type SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
-import { Link } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import GradientCard from "../../../../../../components/ui/GradientCard";
-import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useLanguageStore } from "../../../../../../store/language";
+import { useModalStore } from "../../../../../../store/modal";
 import { useUserStore } from "../../../../../../store/user";
 
 interface BusinessMetrics {
@@ -30,6 +29,7 @@ function BusinessOverview({ metrics }: BusinessOverviewProps) {
   const { user } = useUserStore();
   const { language } = useLanguageStore();
   const hasBusinessData = metrics.totalGyms > 0;
+  const { openModal } = useModalStore();
 
   return (
     <GradientCard>
@@ -176,13 +176,13 @@ function BusinessOverview({ metrics }: BusinessOverviewProps) {
           <p className="text-slate-600 dark:text-slate-400 mb-6">
             {t("home.manager.businessOverview.noDataDescription")}
           </p>
-          <Link
-            to={APP_PAGES.manager.createGym.link}
+          <div
+            onClick={() => openModal("create_gym")}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
             <PlusIcon className="w-5 h-5" />
             {t("home.manager.businessOverview.createFirstGym")}
-          </Link>
+          </div>
         </div>
       )}
     </GradientCard>

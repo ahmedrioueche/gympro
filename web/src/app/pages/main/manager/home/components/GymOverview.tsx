@@ -6,6 +6,7 @@ import Button from "../../../../../../components/ui/Button";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 
 import GradientCard from "../../../../../../components/ui/GradientCard";
+import { useModalStore } from "../../../../../../store/modal";
 
 interface GymOverviewProps {
   gyms: Gym[];
@@ -19,6 +20,7 @@ function GymOverview({
   onGymAccessed,
 }: GymOverviewProps) {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
 
   return (
     <GradientCard className="h-full">
@@ -116,13 +118,13 @@ function GymOverview({
           <p className="text-text-secondary mb-6">
             {t("home.manager.gymOverview.noGymDescription")}
           </p>
-          <Link
-            to={APP_PAGES.manager.createGym.link}
+          <div
+            onClick={() => openModal("create_gym")}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-lg"
           >
             <PlusIcon className="w-5 h-5" />
             {t("home.manager.gymOverview.createGym")}
-          </Link>
+          </div>
         </div>
       )}
     </GradientCard>

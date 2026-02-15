@@ -1,7 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../../../../../constants/navigation";
+import { useModalStore } from "../../../../../../../store/modal";
 
 interface MembersEmptyStateProps {
   type?: "no-members" | "no-results";
@@ -11,6 +10,7 @@ export function MembersEmptyState({
   type = "no-members",
 }: MembersEmptyStateProps) {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
 
   const isNoMembers = type === "no-members";
   const emoji = isNoMembers ? "👥" : "🔍";
@@ -32,13 +32,13 @@ export function MembersEmptyState({
         </h3>
         <p className="text-text-secondary mb-6">{t(descriptionKey)}</p>
         {isNoMembers ? (
-          <Link
-            to={APP_PAGES.gym.manager.create_member.link}
+          <div
+            onClick={() => openModal("create_member")}
             className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
           >
             <Plus />
             {t("members.empty.action")}
-          </Link>
+          </div>
         ) : (
           <button
             onClick={() => window.location.reload()}

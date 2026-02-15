@@ -4,22 +4,24 @@ import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 
 import GradientCard from "../../../../../../components/ui/GradientCard";
+import { useModalStore } from "../../../../../../store/modal";
 
 function QuickActions() {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
 
   const quickActions = [
     {
       icon: <PlusIcon className="w-10 h-10" />,
       label: t("home.manager.quickActions.createGym"),
-      link: APP_PAGES.manager.createGym.link,
+      action: () => openModal("create_gym"),
       gradient: "from-blue-500 to-blue-600",
       bgHover: "hover:from-blue-600 hover:to-blue-700",
     },
     {
       icon: "👥",
       label: t("home.manager.quickActions.addStaff"),
-      link: "#",
+      action: () => openModal("staff_modal"),
       gradient: "from-purple-500 to-purple-600",
       bgHover: "hover:from-purple-600 hover:to-purple-700",
     },
@@ -53,18 +55,31 @@ function QuickActions() {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {quickActions.map((action, index) => (
-          <Link
-            key={index}
-            to={action.link}
-            className={`bg-gradient-to-br ${action.gradient} ${action.bgHover} p-6 rounded-xl text-white font-semibold text-center hover:scale-105 hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-3 group`}
-          >
-            <span className="text-4xl group-hover:scale-110 transition-transform duration-300">
-              {action.icon}
-            </span>
-            <span className="text-sm leading-tight">{action.label}</span>
-          </Link>
-        ))}
+        {quickActions.map((action, index) =>
+          action.link ? (
+            <Link
+              key={index}
+              to={action.link}
+              className={`bg-gradient-to-br ${action.gradient} ${action.bgHover} p-6 rounded-xl text-white font-semibold text-center hover:scale-105 hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-3 group`}
+            >
+              <span className="text-4xl group-hover:scale-110 transition-transform duration-300">
+                {action.icon}
+              </span>
+              <span className="text-sm leading-tight">{action.label}</span>
+            </Link>
+          ) : (
+            <button
+              key={index}
+              onClick={action.action}
+              className={`bg-gradient-to-br ${action.gradient} ${action.bgHover} p-6 rounded-xl text-white font-semibold text-center hover:scale-105 hover:shadow-xl transition-all duration-300 flex flex-col items-center gap-3 group w-full`}
+            >
+              <span className="text-4xl group-hover:scale-110 transition-transform duration-300">
+                {action.icon}
+              </span>
+              <span className="text-sm leading-tight">{action.label}</span>
+            </button>
+          ),
+        )}
       </div>
     </GradientCard>
   );

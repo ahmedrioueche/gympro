@@ -2,9 +2,9 @@ import type { Gym, UserRole } from "@ahmedrioueche/gympro-client";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { Building2, Home, Plus, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../../constants/navigation";
 import useScreen from "../../../../hooks/useScreen";
 import { useGymStore } from "../../../../store/gym";
+import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
 import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
 import GymListItem from "./GymListItem";
@@ -30,7 +30,7 @@ export default function GymSelectorDropdown({
   const { user } = useUserStore();
   const { clearGym } = useGymStore();
   const { isMobile } = useScreen();
-
+  const { openModal } = useModalStore();
   const isOnGymDashboard = routerState.location.pathname.startsWith("/gym");
 
   return (
@@ -116,7 +116,7 @@ export default function GymSelectorDropdown({
           <button
             onClick={() => {
               onClose();
-              navigate({ to: APP_PAGES.manager.createGym.link });
+              openModal("create_gym");
             }}
             className={`w-full flex items-center justify-center gap-2.5 ${
               isMobile ? "px-4 py-3" : "px-5 py-3.5"

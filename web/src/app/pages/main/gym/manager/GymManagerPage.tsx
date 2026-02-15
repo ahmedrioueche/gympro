@@ -34,10 +34,7 @@ const sidebarLinks = [
     label: "members",
     icon: <Users className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.members.link,
-    matchPaths: [
-      APP_PAGES.gym.manager.members.link,
-      APP_PAGES.gym.manager.create_member.link,
-    ],
+    matchPaths: [APP_PAGES.gym.manager.members.link],
   },
   {
     label: "pricing",

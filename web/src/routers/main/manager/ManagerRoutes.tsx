@@ -1,7 +1,6 @@
 import { createRoute } from "@tanstack/react-router";
 import CoachingPage from "../../../app/pages/main/gym/manager/coaching/CoachingPage";
 import AnalyticsPage from "../../../app/pages/main/manager/analytics/AnalyticsPage";
-import CreateGymPage from "../../../app/pages/main/manager/createGym/CreateGymPage";
 import GymsPage from "../../../app/pages/main/manager/gyms/GymsPage";
 import HomePage from "../../../app/pages/main/manager/home/HomePage";
 import NotificationsPage from "../../../app/pages/main/manager/notifications/NotificationsPage";
@@ -23,11 +22,11 @@ export const gymsRoute = createRoute({
   component: () => <GymsPage />,
 });
 
-export const createGymRoute = createRoute({
-  getParentRoute: () => ManagerRootRoute,
-  path: "/gyms/create",
-  component: () => <CreateGymPage />,
-});
+// export const createGymRoute = createRoute({
+//   getParentRoute: () => ManagerRootRoute,
+//   path: "/gyms/create",
+//   component: () => <CreateGymPage />,
+// });
 
 export const subscriptionRoute = createRoute({
   getParentRoute: () => ManagerRootRoute,

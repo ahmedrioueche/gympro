@@ -26,7 +26,7 @@ const sidebarLinks = [
     label: "gyms",
     icon: <Dumbbell className="w-5 h-5" />,
     path: APP_PAGES.manager.gyms.link,
-    matchPaths: [APP_PAGES.manager.gyms.link, APP_PAGES.manager.createGym.link],
+    matchPaths: [APP_PAGES.manager.gyms.link],
   },
   {
     label: "subscription",

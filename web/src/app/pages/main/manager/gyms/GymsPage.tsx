@@ -1,15 +1,17 @@
 import { useNavigate } from "@tanstack/react-router";
 import { Dumbbell, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { APP_PAGES } from "../../../../../constants/navigation";
 import { useAllMyGyms } from "../../../../../hooks/queries/useGyms";
 import PageHeader from "../../../../components/PageHeader";
 import GymList from "../../../../components/gym/GymList";
+
+import { useModalStore } from "../../../../../store/modal";
 
 export default function GymsPage() {
   const { t } = useTranslation();
   const { data: gyms = [], isLoading } = useAllMyGyms();
   const navigate = useNavigate();
+  const { openModal } = useModalStore();
   return (
     <div>
       <PageHeader
@@ -18,7 +20,7 @@ export default function GymsPage() {
         actionButton={{
           icon: Plus,
           label: t("gyms.create_button"),
-          onClick: () => navigate({ to: APP_PAGES.manager.createGym.link }),
+          onClick: () => openModal("create_gym"),
         }}
         icon={Dumbbell}
       />
