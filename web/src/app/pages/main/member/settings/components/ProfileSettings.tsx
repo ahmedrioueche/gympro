@@ -3,6 +3,7 @@ import { Mail, Phone, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../../../store/modal";
 import AvatarUploader from "../../../../../components/AvatarUploader";
+import SettingsTab from "../../../../../components/settings/SettingsTab";
 
 interface ProfileSettingsProps {
   user: User;
@@ -39,16 +40,11 @@ export default function ProfileSettings({
   const { openModal } = useModalStore();
 
   return (
-    <div className="space-y-6">
-      <div className="border-b border-border pb-4">
-        <h3 className="text-lg font-semibold text-text-primary">
-          {t("member.settings.profile.title")}
-        </h3>
-        <p className="text-sm text-text-secondary">
-          {t("member.settings.profile.subtitle")}
-        </p>
-      </div>
-
+    <SettingsTab
+      title={t("member.settings.profile.title")}
+      description={t("member.settings.profile.subtitle")}
+      icon={UserIcon}
+    >
       <div className="space-y-6 max-w-2xl">
         <div className="space-y-4">
           <AvatarUploader
@@ -189,6 +185,6 @@ export default function ProfileSettings({
             </div>
           )}
       </div>
-    </div>
+    </SettingsTab>
   );
 }

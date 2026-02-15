@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../../components/PageHeader";
+import SettingsContainer from "../../../../../components/settings/SettingsContainer";
 import ClosuresTab from "./components/ClosuresTab";
 import FacilitiesTab from "./components/FacilitiesTab";
 import GeneralTab from "./components/GeneralTab";
@@ -145,110 +146,90 @@ export default function SettingsPage() {
         }}
       />
 
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar Tabs */}
-        <div className="w-full md:w-64 space-y-1">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as TabType)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? "bg-primary text-white shadow-lg shadow-primary/20"
-                    : "text-text-secondary hover:bg-surface hover:text-text-primary"
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="font-medium">{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      <SettingsContainer
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={(id) => setActiveTab(id as TabType)}
+      >
+        {activeTab === "general" && (
+          <GeneralTab
+            workingHoursStart={workingHoursStart}
+            setWorkingHoursStart={setWorkingHoursStart}
+            workingHoursEnd={workingHoursEnd}
+            setWorkingHoursEnd={setWorkingHoursEnd}
+            isMixed={isMixed}
+            setIsMixed={setIsMixed}
+            femaleOnlyHours={femaleOnlyHours}
+            setFemaleOnlyHours={setFemaleOnlyHours}
+            accessControlType={accessControlType}
+            setAccessControlType={setAccessControlType}
+            defaultCurrency={defaultCurrency}
+            setDefaultCurrency={setDefaultCurrency}
+            workingDays={workingDays}
+            setWorkingDays={setWorkingDays}
+          />
+        )}
 
-        {/* Main Content */}
-        <div className="flex-1 bg-surface border border-border rounded-2xl p-6 shadow-sm min-h-[400px]">
-          {activeTab === "general" && (
-            <GeneralTab
-              workingHoursStart={workingHoursStart}
-              setWorkingHoursStart={setWorkingHoursStart}
-              workingHoursEnd={workingHoursEnd}
-              setWorkingHoursEnd={setWorkingHoursEnd}
-              isMixed={isMixed}
-              setIsMixed={setIsMixed}
-              femaleOnlyHours={femaleOnlyHours}
-              setFemaleOnlyHours={setFemaleOnlyHours}
-              accessControlType={accessControlType}
-              setAccessControlType={setAccessControlType}
-              defaultCurrency={defaultCurrency}
-              setDefaultCurrency={setDefaultCurrency}
-              workingDays={workingDays}
-              setWorkingDays={setWorkingDays}
-            />
-          )}
+        {activeTab === "location" && (
+          <LocationTab
+            address={address}
+            setAddress={setAddress}
+            city={city}
+            setCity={setCity}
+            state={state}
+            setState={setState}
+            country={country}
+            setCountry={setCountry}
+            phone={phone}
+            setPhone={setPhone}
+            email={email}
+            setEmail={setEmail}
+            website={website}
+            setWebsite={setWebsite}
+          />
+        )}
 
-          {activeTab === "location" && (
-            <LocationTab
-              address={address}
-              setAddress={setAddress}
-              city={city}
-              setCity={setCity}
-              state={state}
-              setState={setState}
-              country={country}
-              setCountry={setCountry}
-              phone={phone}
-              setPhone={setPhone}
-              email={email}
-              setEmail={setEmail}
-              website={website}
-              setWebsite={setWebsite}
-            />
-          )}
+        {activeTab === "notifications" && (
+          <NotificationsTab
+            notificationsEnabled={notificationsEnabled}
+            setNotificationsEnabled={setNotificationsEnabled}
+            reminderSettings={reminderSettings}
+            setReminderSettings={setReminderSettings}
+          />
+        )}
 
-          {activeTab === "notifications" && (
-            <NotificationsTab
-              notificationsEnabled={notificationsEnabled}
-              setNotificationsEnabled={setNotificationsEnabled}
-              reminderSettings={reminderSettings}
-              setReminderSettings={setReminderSettings}
-            />
-          )}
+        {activeTab === "rules" && (
+          <RulesTab rules={rules} addRule={addRule} removeRule={removeRule} />
+        )}
+        {activeTab === "closures" && (
+          <ClosuresTab
+            closures={temporaryClosures}
+            setClosures={setTemporaryClosures}
+            onSave={handleUpdateClosures}
+            workingHoursStart={workingHoursStart}
+            isSaving={isSaving}
+          />
+        )}
 
-          {activeTab === "rules" && (
-            <RulesTab rules={rules} addRule={addRule} removeRule={removeRule} />
-          )}
-          {activeTab === "closures" && (
-            <ClosuresTab
-              closures={temporaryClosures}
-              setClosures={setTemporaryClosures}
-              onSave={handleUpdateClosures}
-              workingHoursStart={workingHoursStart}
-              isSaving={isSaving}
-            />
-          )}
+        {activeTab === "payments" && (
+          <PaymentsTab
+            paymentMethods={paymentMethods}
+            togglePaymentMethod={togglePaymentMethod}
+            addPaymentMethod={addPaymentMethod}
+            removePaymentMethod={removePaymentMethod}
+          />
+        )}
 
-          {activeTab === "payments" && (
-            <PaymentsTab
-              paymentMethods={paymentMethods}
-              togglePaymentMethod={togglePaymentMethod}
-              addPaymentMethod={addPaymentMethod}
-              removePaymentMethod={removePaymentMethod}
-            />
-          )}
-
-          {activeTab === "facilities" && (
-            <FacilitiesTab
-              facilities={facilities}
-              onAdd={handleAddFacility}
-              onUpdate={handleUpdateFacility}
-              onRemove={handleRemoveFacility}
-              isLoading={isFacilityLoading}
-            />
-          )}
-        </div>
-      </div>
+        {activeTab === "facilities" && (
+          <FacilitiesTab
+            facilities={facilities}
+            onAdd={handleAddFacility}
+            onUpdate={handleUpdateFacility}
+            onRemove={handleRemoveFacility}
+            isLoading={isFacilityLoading}
+          />
+        )}
+      </SettingsContainer>
     </div>
   );
 }

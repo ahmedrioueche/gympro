@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../../components/ui/Button";
 import InputField from "../../../../../../../components/ui/InputField";
+import SettingsTab from "../../../../../../components/settings/SettingsTab";
 
 interface FacilitiesTabProps {
   facilities: Facility[];
@@ -66,27 +67,16 @@ export default function FacilitiesTab({
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-primary/10">
-            <Building2 className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-text-primary">
-              {t("settings.gym.facilities.title", "Gym Facilities")}
-            </h3>
-            <p className="text-sm text-text-secondary mt-1">
-              {t(
-                "settings.gym.facilities.description",
-                "Add and manage rooms, zones, or specific areas in your gym.",
-              )}
-            </p>
-          </div>
-        </div>
-
-        {!isAdding && !editingId && (
+    <SettingsTab
+      title={t("settings.gym.tabs.facilities", "Facilities Settings")}
+      description={t(
+        "settings.gym.facilities.description",
+        "Add and manage rooms, zones, or specific areas in your gym.",
+      )}
+      icon={Building2}
+      headerAction={
+        !isAdding &&
+        !editingId && (
           <Button
             onClick={handleStartAdd}
             icon={<Plus className="w-4 h-4" />}
@@ -94,9 +84,9 @@ export default function FacilitiesTab({
           >
             {t("settings.gym.facilities.add", "Add Facility")}
           </Button>
-        )}
-      </div>
-
+        )
+      }
+    >
       {/* Form Card */}
       {(isAdding || editingId) && (
         <div className="p-6 bg-surface-hover rounded-2xl border-2 border-primary/20 space-y-4">
@@ -261,6 +251,6 @@ export default function FacilitiesTab({
           </div>
         )}
       </div>
-    </div>
+    </SettingsTab>
   );
 }

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../../../../../../components/ui/Button";
 import InputField from "../../../../../../components/ui/InputField";
 import AvatarUploader from "../../../../../components/AvatarUploader";
+import SettingsTab from "../../../../../components/settings/SettingsTab";
 
 interface ProfileSettingsProps {
   user: User;
@@ -55,12 +56,16 @@ export default function ProfileSettings({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-8">
+    <SettingsTab
+      title={t("coach.settings.tabs.profile")}
+      description={t("coach.settings.pageSubtitle")}
+      icon={UserIcon}
+    >
       {/* Avatar Section */}
       <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
+        <h4 className="text-lg font-semibold text-text-primary mb-4">
           {t("settings.coach.profile.avatar")}
-        </h3>
+        </h4>
         <AvatarUploader
           currentAvatar={user.profile.profileImageUrl}
           userName={user.profile.fullName || user.profile.username}
@@ -194,6 +199,6 @@ export default function ProfileSettings({
           />
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }

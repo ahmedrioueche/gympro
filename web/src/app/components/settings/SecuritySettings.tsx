@@ -1,5 +1,7 @@
+import { Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import InputField from "../../../components/ui/InputField";
+import SettingsTab from "./SettingsTab";
 
 interface SecuritySettingsProps {
   currentPassword: string;
@@ -21,16 +23,11 @@ export default function SecuritySettings({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-6">
-      <div className="border-b border-border pb-4">
-        <h3 className="text-lg font-semibold text-text-primary">
-          {t("member.settings.security.title")}
-        </h3>
-        <p className="text-sm text-text-secondary">
-          {t("member.settings.security.subtitle")}
-        </p>
-      </div>
-
+    <SettingsTab
+      title={t("member.settings.security.title")}
+      description={t("member.settings.security.subtitle")}
+      icon={Lock}
+    >
       <form className="space-y-6 max-w-2xl">
         <div className="space-y-4">
           <InputField
@@ -70,6 +67,6 @@ export default function SecuritySettings({
           />
         </div>
       </form>
-    </div>
+    </SettingsTab>
   );
 }

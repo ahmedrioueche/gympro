@@ -1,8 +1,9 @@
-import { X } from "lucide-react";
+import { Award, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../components/ui/Button";
 import InputField from "../../../../../../components/ui/InputField";
 import TextArea from "../../../../../../components/ui/TextArea";
+import SettingsTab from "../../../../../components/settings/SettingsTab";
 
 interface CoachingSettingsProps {
   bio: string;
@@ -47,12 +48,19 @@ export default function CoachingSettings({
   };
 
   return (
-    <div className="space-y-8">
+    <SettingsTab
+      title={t("coach.settings.tabs.coaching")}
+      description={t(
+        "coach.settings.coaching.description",
+        "Share your professional background and expertise.",
+      )}
+      icon={Award}
+    >
       {/* Bio */}
       <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
+        <h4 className="text-lg font-semibold text-text-primary mb-4">
           {t("settings.coach.coaching.bio")}
-        </h3>
+        </h4>
         <TextArea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
@@ -127,6 +135,6 @@ export default function CoachingSettings({
           ))}
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../../../../../../../components/ui/Button";
 import { Card } from "../../../../../../../components/ui/Card";
 import InputField from "../../../../../../../components/ui/InputField";
+import SettingsTab from "../../../../../../components/settings/SettingsTab";
 
 declare global {
   interface Window {
@@ -190,58 +191,54 @@ export default function LocationTab({
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-primary/10">
-          <MapPin className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-text-primary">
-            {t("gym.settings.location.title", "Location & Contact")}
-          </h3>
-          <p className="text-sm text-text-secondary mt-1">
-            {t(
-              "gym.settings.location.description",
-              "Update your gym's address and contact information.",
-            )}
-          </p>
-        </div>
-      </div>
-
-      {/* Map Toggle */}
-      <div
-        onClick={() => setUseMap(!useMap)}
-        className="flex cursor-pointer items-center justify-between p-4 bg-surface-hover rounded-xl border border-border"
-      >
-        <div className="flex items-center gap-3">
-          <span className={`text-2xl ${useMap ? "" : "grayscale opacity-50"}`}>
-            🗺️
-          </span>
-          <div>
-            <p className="text-sm font-semibold text-text-primary">
-              {t("gym.settings.location.useMap", "Use Interactive Map")}
-            </p>
-            <p className="text-xs text-text-secondary">
-              {t(
-                "gym.settings.location.mapHint",
-                "Click on the map to set location",
-              )}
-            </p>
-          </div>
-        </div>
-        <button
-          type="button"
-          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-            useMap ? "bg-primary" : "bg-border"
-          }`}
+    <SettingsTab
+      title={t("settings.gym.tabs.location", "Location Settings")}
+      description={t(
+        "settings.gym.location.description",
+        "Manage your gym's physical address and contact information.",
+      )}
+      icon={MapPin}
+    >
+      {/* Map Toggle Section */}
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-4 uppercase tracking-wider opacity-70">
+          {t("settings.gym.location.interactiveMap", "Interactive Map")}
+        </h4>
+        <div
+          onClick={() => setUseMap(!useMap)}
+          className="flex cursor-pointer items-center justify-between p-5 bg-surface-hover/50 rounded-2xl border border-border/50 hover:bg-surface-hover transition-all"
         >
-          <span
-            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-              useMap ? "translate-x-6" : "translate-x-1"
+          <div className="flex items-center gap-4">
+            <div
+              className={`p-3 rounded-xl bg-white shadow-sm border border-border/50 transition-all ${useMap ? "scale-110" : "grayscale opacity-50"}`}
+            >
+              <span className="text-2xl">🗺️</span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-text-primary">
+                {t("gym.settings.location.useMap", "Use Interactive Map")}
+              </p>
+              <p className="text-xs text-text-secondary">
+                {t(
+                  "gym.settings.location.mapHint",
+                  "Click on the map to set location",
+                )}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              useMap ? "bg-primary" : "bg-border"
             }`}
-          />
-        </button>
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                useMap ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Map Section */}
@@ -301,8 +298,8 @@ export default function LocationTab({
       {/* Address Section (Manual) */}
       {!useMap && (
         <Card className="p-6 space-y-5">
-          <h4 className="font-semibold text-text-primary">
-            {t("gym.settings.location.addressSection", "Address")}
+          <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+            {t("gym.settings.location.addressSection", "Manual Address")}
           </h4>
 
           <div className="space-y-4">
@@ -387,6 +384,6 @@ export default function LocationTab({
           />
         </div>
       </Card>
-    </div>
+    </SettingsTab>
   );
 }

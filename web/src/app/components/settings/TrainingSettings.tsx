@@ -2,10 +2,11 @@ import {
   type TimerSettings,
   TIMER_SOUND_TRACKS,
 } from "@ahmedrioueche/gympro-client";
-import { Play, Square, Timer } from "lucide-react";
+import { Dumbbell, Play, Square, Timer } from "lucide-react";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import InputField from "../../../components/ui/InputField";
+import SettingsTab from "./SettingsTab";
 
 interface TrainingSettingsProps {
   timerSettings: TimerSettings;
@@ -42,21 +43,16 @@ export default function TrainingSettings({
   };
 
   return (
-    <div className="space-y-6">
+    <SettingsTab
+      title={t("member.settings.training.title", "Training Settings")}
+      description={t(
+        "member.settings.training.subtitle",
+        "Manage your training preferences",
+      )}
+      icon={Dumbbell}
+    >
       {/* Hidden audio element for preview */}
       <audio ref={previewAudioRef} preload="none" />
-
-      <div className="border-b border-border pb-4">
-        <h3 className="text-lg font-semibold text-text-primary">
-          {t("member.settings.training.title", "Training Settings")}
-        </h3>
-        <p className="text-sm text-text-secondary">
-          {t(
-            "member.settings.training.subtitle",
-            "Manage your training preferences",
-          )}
-        </p>
-      </div>
 
       <div className="space-y-6 max-w-2xl">
         {/* Timer Settings */}
@@ -297,6 +293,6 @@ export default function TrainingSettings({
           </div>
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }

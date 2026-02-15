@@ -2,6 +2,7 @@ import { type AppLanguage } from "@ahmedrioueche/gympro-client";
 import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../components/ui/CustomSelect";
+import SettingsTab from "./SettingsTab";
 
 interface LanguageOption {
   value: AppLanguage;
@@ -27,16 +28,11 @@ export default function PreferencesSettings({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-6">
-      <div className="border-b border-border pb-4">
-        <h3 className="text-lg font-semibold text-text-primary">
-          {t("member.settings.preferences.title")}
-        </h3>
-        <p className="text-sm text-text-secondary">
-          {t("member.settings.preferences.subtitle")}
-        </p>
-      </div>
-
+    <SettingsTab
+      title={t("member.settings.preferences.title")}
+      description={t("member.settings.preferences.subtitle")}
+      icon={Globe}
+    >
       <div className="space-y-6 max-w-2xl">
         {/* Language Selection */}
         <div className="bg-background border border-border rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -61,6 +57,6 @@ export default function PreferencesSettings({
           />
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }

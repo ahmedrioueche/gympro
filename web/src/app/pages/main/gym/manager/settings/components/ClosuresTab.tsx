@@ -7,6 +7,7 @@ import Button from "../../../../../../../components/ui/Button";
 import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
 import { useModalStore } from "../../../../../../../store/modal";
+import SettingsTab from "../../../../../../components/settings/SettingsTab";
 
 interface ClosuresTabProps {
   closures: TemporaryClosure[];
@@ -165,25 +166,14 @@ export default function ClosuresTab({
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-primary/10">
-          <Calendar className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-text-primary">
-            {t("marketing.closures.title", "Temporary Closures")}
-          </h3>
-          <p className="text-sm text-text-secondary mt-1">
-            {t(
-              "marketing.closures.description",
-              "Manage scheduled closures or shut down the gym immediately.",
-            )}
-          </p>
-        </div>
-      </div>
-
+    <SettingsTab
+      title={t("settings.gym.tabs.closures", "Closures Settings")}
+      description={t(
+        "marketing.closures.description",
+        "Manage scheduled closures or shut down the gym immediately.",
+      )}
+      icon={Calendar}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* SECTION: Close Now */}
         <div className="bg-surface-hover rounded-2xl border border-border p-5 flex flex-col h-full transform transition-transform hover:scale-[1.01]">
@@ -192,10 +182,10 @@ export default function ClosuresTab({
               <Clock className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <h4 className="font-bold text-text-primary">
+              <h4 className="text-[0.7rem] font-bold text-text-primary uppercase tracking-widest opacity-60">
                 {t("marketing.closures.closeNow")}
               </h4>
-              <p className="text-xs text-text-secondary">
+              <p className="text-xs text-text-secondary font-medium">
                 {t("marketing.closures.closeNowDesc")}
               </p>
             </div>
@@ -250,10 +240,10 @@ export default function ClosuresTab({
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="font-bold text-text-primary">
+              <h4 className="text-[0.7rem] font-bold text-text-primary uppercase tracking-widest opacity-60">
                 {t("marketing.closures.planned")}
               </h4>
-              <p className="text-xs text-text-secondary">
+              <p className="text-xs text-text-secondary font-medium">
                 {t("marketing.closures.plannedDesc")}
               </p>
             </div>
@@ -422,6 +412,6 @@ export default function ClosuresTab({
           </div>
         )}
       </div>
-    </div>
+    </SettingsTab>
   );
 }

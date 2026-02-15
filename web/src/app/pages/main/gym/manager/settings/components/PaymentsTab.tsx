@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../../components/ui/Button";
 import InputField from "../../../../../../../components/ui/InputField";
+import SettingsTab from "../../../../../../components/settings/SettingsTab";
 
 interface PaymentsTabProps {
   paymentMethods: string[];
@@ -34,25 +35,14 @@ export default function PaymentsTab({
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-primary/10">
-          <CreditCard className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-text-primary">
-            {t("settings.gym.tabs.payments", "Payment Methods")}
-          </h3>
-          <p className="text-sm text-text-secondary mt-1">
-            {t(
-              "settings.gym.payments.description",
-              "Configure and manage the payment options available for your members.",
-            )}
-          </p>
-        </div>
-      </div>
-
+    <SettingsTab
+      title={t("settings.gym.tabs.payments", "Payments Settings")}
+      description={t(
+        "settings.gym.payments.description",
+        "Configure and manage the payment options available for your members.",
+      )}
+      icon={CreditCard}
+    >
       {/* Standard Methods Container */}
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
@@ -163,6 +153,6 @@ export default function PaymentsTab({
           )}
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }

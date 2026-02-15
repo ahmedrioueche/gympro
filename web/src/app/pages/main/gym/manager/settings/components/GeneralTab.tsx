@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../../../../../../../components/ui/Button";
 import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
+import SettingsTab from "../../../../../../components/settings/SettingsTab";
 
 interface GeneralTabProps {
   workingHoursStart: string;
@@ -124,25 +125,14 @@ export default function GeneralTab({
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-primary/10">
-          <Clock className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-text-primary">
-            {t("settings.gym.tabs.general", "General Settings")}
-          </h3>
-          <p className="text-sm text-text-secondary mt-1">
-            {t(
-              "settings.gym.general.description",
-              "Configure your gym's basic operating rules and preferences.",
-            )}
-          </p>
-        </div>
-      </div>
-
+    <SettingsTab
+      title={t("settings.gym.tabs.general", "General Settings")}
+      description={t(
+        "settings.gym.general.description",
+        "Configure your gym's basic operating rules and preferences.",
+      )}
+      icon={Clock}
+    >
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
           {t("settings.gym.general.currency", "Currency")}
@@ -272,8 +262,8 @@ export default function GeneralTab({
           <Users className="w-5 h-5 text-primary" />
         </div>
 
-        <div className="mt-6">
-          <h4 className="text-sm font-medium text-text-primary mb-3">
+        <div className="mt-8 pt-8 border-t border-border">
+          <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
             {t(
               "settings.gym.general.accessControlTitle",
               "Access Control Mode",
@@ -340,10 +330,10 @@ export default function GeneralTab({
 
         {/* Female-Only Hours - Only show when not mixed */}
         {!isMixed && (
-          <div className="mt-6 space-y-4">
+          <div className="mt-8 pt-8 border-t border-border space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-sm font-medium text-text-primary">
+                <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
                   {t(
                     "settings.gym.general.femaleOnlyHours",
                     "Female-Only Hours",
@@ -531,6 +521,6 @@ export default function GeneralTab({
           </div>
         )}
       </div>
-    </div>
+    </SettingsTab>
   );
 }

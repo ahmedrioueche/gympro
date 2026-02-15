@@ -1,6 +1,7 @@
 import { type GymSettings } from "@ahmedrioueche/gympro-client";
 import { Bell, Calendar, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import SettingsTab from "../../../../../../components/settings/SettingsTab";
 
 interface NotificationsTabProps {
   notificationsEnabled: boolean;
@@ -18,25 +19,14 @@ export default function NotificationsTab({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <div className="p-3 rounded-xl bg-primary/10">
-          <Bell className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-text-primary">
-            {t("settings.gym.notifications.title", "Notification Settings")}
-          </h3>
-          <p className="text-sm text-text-secondary mt-1">
-            {t(
-              "settings.gym.notifications.description",
-              "Manage how and when your members receive automated alerts.",
-            )}
-          </p>
-        </div>
-      </div>
-
+    <SettingsTab
+      title={t("settings.gym.notifications.title", "Notification Settings")}
+      description={t(
+        "settings.gym.notifications.description",
+        "Manage how and when your members receive automated alerts.",
+      )}
+      icon={Bell}
+    >
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
           {t("settings.gym.notifications.status", "System Notifications")}
@@ -167,6 +157,6 @@ export default function NotificationsTab({
           </div>
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }
