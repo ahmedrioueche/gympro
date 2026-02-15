@@ -1,5 +1,6 @@
-import { Eye, ShieldCheck, UserCheck } from "lucide-react";
+import { Eye, Shield, ShieldCheck, UserCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import SettingsTab from "../../../../../../components/settings/SettingsTab";
 
 interface PrivacyTabProps {
   publicProfile: boolean;
@@ -42,15 +43,22 @@ export default function PrivacyTab({
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-1">
-          {t("settings.member.privacy.title", "Privacy Settings")}
-        </h3>
-        <p className="text-sm text-text-secondary mb-4">
+    <SettingsTab
+      title={t("settings.member.privacy.title", "Privacy Settings")}
+      description={t(
+        "settings.member.privacy.description",
+        "Control your data and visibility within the gym",
+      )}
+      icon={Shield}
+    >
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("settings.member.privacy.visibility", "Visibility Control")}
+        </h4>
+        <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.member.privacy.description",
-            "Control your data and visibility within the gym",
+            "settings.member.privacy.visibilityDesc",
+            "Manage who can see your activity details",
           )}
         </p>
 
@@ -58,13 +66,13 @@ export default function PrivacyTab({
           {settings.map((setting) => (
             <div
               key={setting.id}
-              className="flex items-center gap-4 p-4 bg-surface-hover rounded-xl border border-border"
+              className="flex items-center gap-4 p-4 bg-surface-hover/50 rounded-2xl border border-border/50 hover:bg-surface-hover transition-colors"
             >
               <div
-                className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
                   setting.checked
-                    ? "bg-primary/10 text-primary"
-                    : "bg-surface text-text-secondary border border-border"
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    : "bg-surface text-text-secondary border border-border/50"
                 }`}
               >
                 <setting.icon className="w-5 h-5" />
@@ -72,7 +80,7 @@ export default function PrivacyTab({
               <div className="flex-1">
                 <label
                   htmlFor={setting.id}
-                  className="text-sm font-medium text-text-primary cursor-pointer block"
+                  className="text-sm font-semibold text-text-primary cursor-pointer block"
                 >
                   {setting.title}
                 </label>
@@ -80,35 +88,41 @@ export default function PrivacyTab({
                   {setting.description}
                 </p>
               </div>
-              <div className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                <input
-                  type="checkbox"
-                  id={setting.id}
-                  checked={setting.checked}
-                  onChange={(e) => setting.onChange(e.target.checked)}
-                  className="sr-only peer"
+              <button
+                onClick={() => setting.onChange(!setting.checked)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  setting.checked ? "bg-primary" : "bg-border/60"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    setting.checked ? "translate-x-6" : "translate-x-1"
+                  }`}
                 />
-                <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-              </div>
+              </button>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="p-4 bg-primary/5 border border-primary/20 rounded-xl flex items-start gap-3">
-        <Eye className="w-5 h-5 text-primary mt-0.5" />
-        <div>
-          <h4 className="text-sm font-medium text-primary">
-            {t("settings.member.privacy.tip", "Privacy Control")}
-          </h4>
-          <p className="text-xs text-text-secondary mt-1">
-            {t(
-              "settings.member.privacy.tipDesc",
-              "These settings are gym-specific. You can have different privacy settings for each gym you follow.",
-            )}
-          </p>
+      <div className="pt-10 border-t border-border">
+        <div className="p-5 bg-primary/5 rounded-[2rem] border border-primary/10 flex items-start gap-4">
+          <div className="p-2.5 bg-primary/10 rounded-xl">
+            <Eye className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h4 className="text-base font-semibold text-text-primary">
+              {t("settings.member.privacy.tip", "Privacy Control")}
+            </h4>
+            <p className="text-sm text-text-secondary mt-1 max-w-lg">
+              {t(
+                "settings.member.privacy.tipDesc",
+                "These settings are gym-specific. You can have different privacy settings for each gym you follow.",
+              )}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }

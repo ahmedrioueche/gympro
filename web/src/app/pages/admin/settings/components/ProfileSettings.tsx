@@ -1,7 +1,10 @@
 import type { User } from "@ahmedrioueche/gympro-client";
 import { Mail, Phone, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import Button from "../../../../../components/ui/Button";
+import InputField from "../../../../../components/ui/InputField";
 import AvatarUploader from "../../../../components/AvatarUploader";
+import SettingsTab from "../../../../components/settings/SettingsTab";
 
 interface ProfileSettingsProps {
   user: User;
@@ -37,133 +40,133 @@ export default function ProfileSettings({
   const { t } = useTranslation();
 
   return (
-    <div className="space-y-6">
-      <div className="border-b border-border pb-4">
-        <h3 className="text-lg font-semibold text-text-primary">
-          {t("member.settings.profile.title")}
-        </h3>
-        <p className="text-sm text-text-secondary">
-          {t("member.settings.profile.subtitle")}
+    <SettingsTab
+      title={t("member.settings.profile.title", "Profile Settings")}
+      description={t(
+        "member.settings.profile.subtitle",
+        "Manage your personal information and account details",
+      )}
+      icon={UserIcon}
+    >
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("member.settings.profile.avatar", "Profile Picture")}
+        </h4>
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "member.settings.profile.avatarDesc",
+            "This will be displayed across the admin dashboard",
+          )}
         </p>
+        <AvatarUploader
+          currentAvatar={user.profile.profileImageUrl}
+          userName={user.profile.fullName || user.profile.username}
+          uploading={uploading}
+          onUpload={handleAvatarUpload}
+        />
       </div>
 
-      <div className="space-y-6 max-w-2xl">
+      <div className="pt-10 border-t border-border mt-10">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("member.settings.profile.basicInfo", "Account Information")}
+        </h4>
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "member.settings.profile.basicInfoDesc",
+            "Update your contact details and full name",
+          )}
+        </p>
+
         <div className="space-y-4">
-          <AvatarUploader
-            currentAvatar={user.profile.profileImageUrl}
-            userName={user.profile.fullName || user.profile.username}
-            uploading={uploading}
-            onUpload={handleAvatarUpload}
+          <InputField
+            label={t("member.settings.profile.fullName")}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            leftIcon={<UserIcon className="w-5 h-5" />}
+            placeholder={t("member.settings.profile.fullNamePlaceholder")}
           />
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-text-secondary">
-                {t("member.settings.profile.fullName")}
-              </label>
-              <div className="relative">
-                <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-text-primary focus:ring-1 focus:ring-primary focus:outline-none"
+            {/* Email Section */}
+            <div>
+              {user.profile.email && !addEmailMode ? (
+                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
+                      <Mail className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
+                        {t("member.settings.profile.email")}
+                      </p>
+                      <p className="font-semibold text-text-primary">
+                        {user.profile.email}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-primary/5 text-primary font-bold"
+                    onClick={() => setAddEmailMode(true)}
+                  >
+                    {t("common.change")}
+                  </Button>
+                </div>
+              ) : (
+                <InputField
+                  label={t("member.settings.profile.email")}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  leftIcon={<Mail className="w-5 h-5" />}
+                  placeholder={t("member.settings.profile.emailPlaceholder")}
+                  disabled={!!user.profile.email}
                 />
-              </div>
+              )}
             </div>
 
-            {/* Email Section */}
-            {(user.profile.email || addEmailMode) && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-text-secondary">
-                  {t("member.settings.profile.email")}
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={!!user.profile.email}
-                    placeholder={t(
-                      "member.settings.profile.emailPlaceholder",
-                      "Enter your email",
-                    )}
-                    className={`w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-text-primary focus:ring-1 focus:ring-primary focus:outline-none ${
-                      user.profile.email
-                        ? "bg-background/50 cursor-not-allowed text-text-secondary"
-                        : ""
-                    }`}
-                  />
-                </div>
-              </div>
-            )}
-
-            {!user.profile.email && !addEmailMode && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-text-secondary">
-                  {t("member.settings.profile.email")}
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setAddEmailMode(true)}
-                  className="w-full pl-4 pr-4 py-2 text-left bg-surface border border-dashed border-border rounded-xl text-text-secondary hover:text-primary hover:border-primary hover:bg-primary/5 transition-all flex items-center gap-2"
-                >
-                  <Mail className="w-4 h-4" />
-                  <span>
-                    + {t("member.settings.profile.addEmail", "Add Email")}
-                  </span>
-                </button>
-              </div>
-            )}
-
             {/* Phone Section */}
-            {(user.profile.phoneNumber || addPhoneMode) && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-text-secondary">
-                  {t("member.settings.profile.phone")}
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
-                  <input
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    disabled={!!user.profile.phoneNumber}
-                    placeholder={t(
-                      "member.settings.profile.phonePlaceholder",
-                      "Enter phone number",
-                    )}
-                    className={`w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-text-primary focus:ring-1 focus:ring-primary focus:outline-none ${
-                      user.profile.phoneNumber
-                        ? "bg-background/50 cursor-not-allowed text-text-secondary"
-                        : ""
-                    }`}
-                  />
+            <div>
+              {user.profile.phoneNumber && !addPhoneMode ? (
+                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
+                      <Phone className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
+                        {t("member.settings.profile.phone")}
+                      </p>
+                      <p className="font-semibold text-text-primary">
+                        {user.profile.phoneNumber}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-primary/5 text-primary font-bold"
+                    onClick={() => setAddPhoneMode(true)}
+                  >
+                    {t("common.change")}
+                  </Button>
                 </div>
-              </div>
-            )}
-
-            {!user.profile.phoneNumber && !addPhoneMode && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-text-secondary">
-                  {t("member.settings.profile.phone")}
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setAddPhoneMode(true)}
-                  className="w-full pl-4 pr-4 py-2 text-left bg-surface border border-dashed border-border rounded-xl text-text-secondary hover:text-primary hover:border-primary hover:bg-primary/5 transition-all flex items-center gap-2"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>
-                    +{" "}
-                    {t("member.settings.profile.addPhone", "Add Phone Number")}
-                  </span>
-                </button>
-              </div>
-            )}
+              ) : (
+                <InputField
+                  label={t("member.settings.profile.phone")}
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  leftIcon={<Phone className="w-5 h-5" />}
+                  placeholder={t("member.settings.profile.phonePlaceholder")}
+                  disabled={!!user.profile.phoneNumber}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }

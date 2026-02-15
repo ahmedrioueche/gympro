@@ -97,10 +97,13 @@ export default function SettingsPage() {
     activeTab === "security";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
       <PageHeader
-        title={t("coach.settings.pageTitle")}
-        subtitle={t("coach.settings.pageSubtitle")}
+        title={t("coach.settings.pageTitle", "Coach Profile")}
+        subtitle={t(
+          "coach.settings.pageSubtitle",
+          "Manage your professional presence and coaching availability",
+        )}
         icon={SettingsIcon}
         actionButton={
           showSaveButton

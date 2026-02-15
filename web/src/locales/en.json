@@ -879,6 +879,7 @@
     "pageSubtitle": "Manage your application preferences",
     "saveSuccess": "Settings updated successfully",
     "saveError": "Failed to update settings",
+    "dangerZone": "Danger Zone",
     "tabs": {
       "general": "General",
       "notifications": "Notifications",

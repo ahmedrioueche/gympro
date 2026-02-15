@@ -62,10 +62,16 @@ export default function ProfileSettings({
       icon={UserIcon}
     >
       {/* Avatar Section */}
-      <div>
-        <h4 className="text-lg font-semibold text-text-primary mb-4">
-          {t("settings.coach.profile.avatar")}
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("settings.coach.profile.avatar", "Profile Picture")}
         </h4>
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "settings.coach.profile.avatarDesc",
+            "This will be displayed on your public coach profile",
+          )}
+        </p>
         <AvatarUploader
           currentAvatar={user.profile.profileImageUrl}
           userName={user.profile.fullName || user.profile.username}
@@ -75,10 +81,17 @@ export default function ProfileSettings({
       </div>
 
       {/* Basic Info */}
-      <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
-          {t("settings.coach.profile.basicInfo")}
-        </h3>
+      <div className="pt-10 border-t border-border mt-10">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("settings.coach.profile.basicInfo", "Personal Information")}
+        </h4>
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "settings.coach.profile.basicInfoDesc",
+            "Update your contact details and full name",
+          )}
+        </p>
+
         <div className="space-y-4">
           <InputField
             label={t("settings.coach.profile.fullName")}
@@ -88,95 +101,107 @@ export default function ProfileSettings({
             placeholder={t("settings.coach.profile.fullNamePlaceholder")}
           />
 
-          {/* Email */}
-          <div>
-            {user.profile.email && !addEmailMode ? (
-              <div className="flex items-center justify-between p-4 bg-surface-hover rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-text-secondary" />
-                  <div>
-                    <p className="text-sm text-text-secondary">
-                      {t("settings.coach.profile.email")}
-                    </p>
-                    <p className="font-medium text-text-primary">
-                      {user.profile.email}
-                    </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Email */}
+            <div>
+              {user.profile.email && !addEmailMode ? (
+                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
+                      <Mail className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
+                        {t("settings.coach.profile.email")}
+                      </p>
+                      <p className="font-semibold text-text-primary">
+                        {user.profile.email}
+                      </p>
+                    </div>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-primary/5 text-primary font-bold"
+                    onClick={() => setAddEmailMode(true)}
+                  >
+                    {t("common.change")}
+                  </Button>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setAddEmailMode(true)}
-                >
-                  {t("common.change")}
-                </Button>
-              </div>
-            ) : (
-              <InputField
-                label={t("settings.coach.profile.email")}
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                leftIcon={<Mail className="w-5 h-5" />}
-                placeholder={t("settings.coach.profile.emailPlaceholder")}
-              />
-            )}
-          </div>
+              ) : (
+                <InputField
+                  label={t("settings.coach.profile.email")}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  leftIcon={<Mail className="w-5 h-5" />}
+                  placeholder={t("settings.coach.profile.emailPlaceholder")}
+                />
+              )}
+            </div>
 
-          {/* Phone */}
-          <div>
-            {user.profile.phoneNumber && !addPhoneMode ? (
-              <div className="flex items-center justify-between p-4 bg-surface-hover rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-text-secondary" />
-                  <div>
-                    <p className="text-sm text-text-secondary">
-                      {t("settings.coach.profile.phone")}
-                    </p>
-                    <p className="font-medium text-text-primary">
-                      {user.profile.phoneNumber}
-                    </p>
+            {/* Phone */}
+            <div>
+              {user.profile.phoneNumber && !addPhoneMode ? (
+                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
+                      <Phone className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
+                        {t("settings.coach.profile.phone")}
+                      </p>
+                      <p className="font-semibold text-text-primary">
+                        {user.profile.phoneNumber}
+                      </p>
+                    </div>
                   </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hover:bg-primary/5 text-primary font-bold"
+                    onClick={() => setAddPhoneMode(true)}
+                  >
+                    {t("common.change")}
+                  </Button>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setAddPhoneMode(true)}
-                >
-                  {t("common.change")}
-                </Button>
-              </div>
-            ) : (
-              <InputField
-                label={t("settings.coach.profile.phone")}
-                type="tel"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                leftIcon={<Phone className="w-5 h-5" />}
-                placeholder={t("settings.coach.profile.phonePlaceholder")}
-              />
-            )}
+              ) : (
+                <InputField
+                  label={t("settings.coach.profile.phone")}
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  leftIcon={<Phone className="w-5 h-5" />}
+                  placeholder={t("settings.coach.profile.phonePlaceholder")}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Location Section */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-text-primary">
-            {t("settings.coach.location.title")}
-          </h3>
+      <div className="pt-10 border-t border-border mt-10">
+        <div className="flex items-center justify-between mb-1">
+          <h4 className="text-sm font-semibold text-text-primary uppercase tracking-wider opacity-70">
+            {t("settings.coach.location.title", "Local Information")}
+          </h4>
           <Button
             variant="ghost"
             size="sm"
+            className="hover:bg-primary/5 text-primary font-bold"
             onClick={handleGetLocation}
             loading={gettingLocation}
           >
             {t("settings.coach.location.detect")}
           </Button>
         </div>
-        <p className="text-sm text-text-secondary mb-4">
-          {t("settings.coach.location.description")}
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "settings.coach.location.description",
+            "This helps clients find you in their area",
+          )}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputField

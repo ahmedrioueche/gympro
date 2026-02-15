@@ -74,10 +74,13 @@ export default function SettingsPage() {
   const isSaveDisabled = isSaving || !hasChanges;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
       <PageHeader
-        title={t("member.settings.pageTitle")}
-        subtitle={t("member.settings.pageSubtitle")}
+        title={t("member.settings.pageTitle", "Member Settings")}
+        subtitle={t(
+          "member.settings.pageSubtitle",
+          "Manage your account, preferences and training settings",
+        )}
         icon={Settings}
         actionButton={{
           label: t("common.saveChanges", "Save Changes"),

@@ -1,5 +1,6 @@
-import { Calendar, Megaphone, RefreshCw } from "lucide-react";
+import { Bell, Calendar, Megaphone, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import SettingsTab from "../../../../../../components/settings/SettingsTab";
 
 interface NotificationsTabProps {
   classReminders: boolean;
@@ -66,15 +67,22 @@ export default function NotificationsTab({
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-      <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-1">
-          {t("settings.member.notifications.title", "Notifications")}
-        </h3>
-        <p className="text-sm text-text-secondary mb-4">
+    <SettingsTab
+      title={t("settings.member.notifications.title", "Notification Settings")}
+      description={t(
+        "settings.member.notifications.description",
+        "Choose how and when you want to be notified",
+      )}
+      icon={Bell}
+    >
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("settings.member.notifications.preferences", "Alert Preferences")}
+        </h4>
+        <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.member.notifications.description",
-            "Choose how and when you want to be notified",
+            "settings.member.notifications.preferencesDesc",
+            "Configure your notification channels",
           )}
         </p>
 
@@ -82,13 +90,13 @@ export default function NotificationsTab({
           {settings.map((setting) => (
             <div
               key={setting.id}
-              className="flex items-center gap-4 p-4 bg-surface-hover rounded-xl border border-border"
+              className="flex items-center gap-4 p-4 bg-surface-hover/50 rounded-2xl border border-border/50 hover:bg-surface-hover transition-colors"
             >
               <div
-                className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
                   setting.checked
-                    ? "bg-primary/10 text-primary"
-                    : "bg-surface text-text-secondary border border-border"
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    : "bg-surface text-text-secondary border border-border/50"
                 }`}
               >
                 <setting.icon className="w-5 h-5" />
@@ -96,7 +104,7 @@ export default function NotificationsTab({
               <div className="flex-1">
                 <label
                   htmlFor={setting.id}
-                  className="text-sm font-medium text-text-primary cursor-pointer block"
+                  className="text-sm font-semibold text-text-primary cursor-pointer block"
                 >
                   {setting.title}
                 </label>
@@ -104,20 +112,22 @@ export default function NotificationsTab({
                   {setting.description}
                 </p>
               </div>
-              <div className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                <input
-                  type="checkbox"
-                  id={setting.id}
-                  checked={setting.checked}
-                  onChange={(e) => setting.onChange(e.target.checked)}
-                  className="sr-only peer"
+              <button
+                onClick={() => setting.onChange(!setting.checked)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  setting.checked ? "bg-primary" : "bg-border/60"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    setting.checked ? "translate-x-6" : "translate-x-1"
+                  }`}
                 />
-                <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-              </div>
+              </button>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </SettingsTab>
   );
 }

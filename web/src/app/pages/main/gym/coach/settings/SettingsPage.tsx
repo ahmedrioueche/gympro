@@ -1,12 +1,10 @@
 import { Building2, Settings } from "lucide-react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../../components/ui/Loading";
 import { useModalStore } from "../../../../../../store/modal";
 import PageHeader from "../../../../../components/PageHeader";
-import { ActivePermissions } from "./components/ActivePermissions";
-import { AffiliationDetails } from "./components/AffiliationDetails";
-import { DangerZone } from "./components/DangerZone";
+import SettingsContainer from "../../../../../components/settings/SettingsContainer";
+import AffiliationTab from "./components/AffiliationTab";
 import { useGymCoachSettings } from "./hooks/useGymCoachSettings";
 
 export default function SettingsPage() {
@@ -15,7 +13,7 @@ export default function SettingsPage() {
   const { affiliation, isLoading, isLeaving, handleLeaveGym } =
     useGymCoachSettings();
 
-  const [activeTab] = useState("affiliation");
+  const activeTab = "affiliation";
 
   if (isLoading) return <Loading className="py-20" />;
 
@@ -49,37 +47,38 @@ export default function SettingsPage() {
     });
   };
 
+  const tabs = [
+    {
+      id: "affiliation",
+      label: t("coach.settings.tabs.affiliation", "Affiliation"),
+      icon: Building2,
+    },
+  ];
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
       <PageHeader
-        title={t("settings.pageTitle", "Settings")}
+        title={t("settings.pageTitle", "Gym Settings")}
         subtitle={t(
           "coach.settings.gym.subtitle",
-          "Manage your gym affiliation",
+          "Manage your affiliation with this gym",
         )}
         icon={Settings}
       />
 
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar Tabs (Single Tab for now) */}
-        <div className="w-full md:w-64 space-y-1">
-          <button
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 bg-primary text-white shadow-lg shadow-primary/20`}
-          >
-            <Building2 className="w-5 h-5" />
-            <span className="font-medium">
-              {t("coach.settings.tabs.affiliation", "Affiliation")}
-            </span>
-          </button>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 space-y-6">
-          <AffiliationDetails affiliation={affiliation} />
-          <ActivePermissions affiliation={affiliation} />
-          <DangerZone onLeave={handleConfirmLeave} isLeaving={isLeaving} />
-        </div>
-      </div>
+      <SettingsContainer
+        activeTab={activeTab}
+        onTabChange={() => {}}
+        tabs={tabs}
+      >
+        {activeTab === "affiliation" && (
+          <AffiliationTab
+            affiliation={affiliation}
+            onLeave={handleConfirmLeave}
+            isLeaving={isLeaving}
+          />
+        )}
+      </SettingsContainer>
     </div>
   );
 }

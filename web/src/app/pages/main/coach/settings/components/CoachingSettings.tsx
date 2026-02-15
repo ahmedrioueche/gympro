@@ -1,6 +1,5 @@
 import { Award, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Button from "../../../../../../components/ui/Button";
 import InputField from "../../../../../../components/ui/InputField";
 import TextArea from "../../../../../../components/ui/TextArea";
 import SettingsTab from "../../../../../components/settings/SettingsTab";
@@ -57,10 +56,16 @@ export default function CoachingSettings({
       icon={Award}
     >
       {/* Bio */}
-      <div>
-        <h4 className="text-lg font-semibold text-text-primary mb-4">
-          {t("settings.coach.coaching.bio")}
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("settings.coach.coaching.bio", "Professional Bio")}
         </h4>
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "settings.coach.coaching.bioDesc",
+            "Tell your potential clients about yourself",
+          )}
+        </p>
         <TextArea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
@@ -68,46 +73,62 @@ export default function CoachingSettings({
           rows={5}
           maxLength={500}
         />
-        <p className="text-sm text-text-secondary mt-2">
-          {bio.length}/500 {t("common.characters")}
-        </p>
+        <div className="flex justify-end mt-2">
+          <p className="text-[10px] font-bold text-text-secondary bg-surface px-2 py-1 rounded-md border border-border/50">
+            {bio.length} / 500 {t("common.characters")}
+          </p>
+        </div>
       </div>
 
       {/* Years of Experience */}
-      <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
-          {t("settings.coach.coaching.experience")}
-        </h3>
-        <InputField
-          type="number"
-          value={yearsOfExperience}
-          onChange={(e) => setYearsOfExperience(e.target.value)}
-          placeholder={t("settings.coach.coaching.experiencePlaceholder")}
-          min="0"
-          max="50"
-        />
+      <div className="pt-10 border-t border-border mt-10">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("settings.coach.coaching.experience", "Coaching Experience")}
+        </h4>
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "settings.coach.coaching.experienceDesc",
+            "How many years have you been coaching professionally?",
+          )}
+        </p>
+        <div className="max-w-[200px]">
+          <InputField
+            type="number"
+            value={yearsOfExperience}
+            onChange={(e) => setYearsOfExperience(e.target.value)}
+            placeholder={t("settings.coach.coaching.experiencePlaceholder")}
+            min="0"
+            max="50"
+          />
+        </div>
       </div>
 
       {/* Specializations */}
-      <div>
-        <h3 className="text-lg font-semibold text-text-primary mb-4">
-          {t("settings.coach.coaching.specializations")}
-        </h3>
+      <div className="pt-10 border-t border-border mt-10">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("settings.coach.coaching.specializations", "Areas of Expertise")}
+        </h4>
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "settings.coach.coaching.specializationsDesc",
+            "Select the areas you specialize in to help clients find you",
+          )}
+        </p>
 
         {/* Selected Specializations */}
         {specializations.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-2 mb-8 p-4 bg-primary/5 rounded-2xl border border-primary/10">
             {specializations.map((spec) => (
               <div
                 key={spec}
-                className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full"
+                className="flex items-center gap-2 px-4 py-2 bg-white text-primary rounded-xl shadow-sm border border-primary/20"
               >
-                <span className="text-sm font-medium">{spec}</span>
+                <span className="text-sm font-bold">{spec}</span>
                 <button
                   onClick={() => handleRemoveSpecialization(spec)}
-                  className="hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+                  className="hover:bg-primary/10 rounded-lg p-0.5 transition-colors"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             ))}
@@ -115,24 +136,27 @@ export default function CoachingSettings({
         )}
 
         {/* Common Specializations */}
-        <p className="text-sm text-text-secondary mb-3">
-          {t("settings.coach.coaching.specializationsHint")}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {COMMON_SPECIALIZATIONS.map((spec) => (
-            <Button
-              key={spec}
-              variant={specializations.includes(spec) ? "filled" : "ghost"}
-              size="sm"
-              onClick={() =>
-                specializations.includes(spec)
-                  ? handleRemoveSpecialization(spec)
-                  : handleAddSpecialization(spec)
-              }
-            >
-              {spec}
-            </Button>
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+          {COMMON_SPECIALIZATIONS.map((spec) => {
+            const isSelected = specializations.includes(spec);
+            return (
+              <button
+                key={spec}
+                onClick={() =>
+                  isSelected
+                    ? handleRemoveSpecialization(spec)
+                    : handleAddSpecialization(spec)
+                }
+                className={`px-4 py-2.5 text-xs font-bold rounded-xl border transition-all ${
+                  isSelected
+                    ? "bg-primary text-white border-primary shadow-lg shadow-primary/25 translate-y-[-2px]"
+                    : "bg-surface border-border/60 text-text-secondary hover:border-primary/40 hover:text-text-primary"
+                }`}
+              >
+                {spec}
+              </button>
+            );
+          })}
         </div>
       </div>
     </SettingsTab>
