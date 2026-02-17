@@ -5,7 +5,7 @@ import {
   SessionQueryDto,
   SessionStatus,
 } from '@ahmedrioueche/gympro-client';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
@@ -23,6 +23,8 @@ import { SessionModel } from './schemas/session.schema';
 
 @Injectable()
 export class SessionsService {
+  private readonly logger = new Logger(SessionsService.name);
+
   constructor(
     @InjectModel(SessionModel.name) private sessionModel: Model<SessionModel>,
     @InjectModel(User.name) private userModel: Model<User>,
@@ -147,7 +149,7 @@ export class SessionsService {
         data: (createdSessions[0] as any).toObject(),
       };
     } catch (error) {
-      console.error('Create session error:', error);
+      this.logger.error('Create session error:', error);
       return {
         success: false,
         errorCode: ErrorCode.SESSION_CREATE_ERROR,
@@ -240,7 +242,7 @@ export class SessionsService {
         data: mappedSessions,
       };
     } catch (error) {
-      console.error('Find sessions error:', error);
+      this.logger.error('Find sessions error:', error);
       return {
         success: false,
         errorCode: ErrorCode.SESSION_FETCH_ERROR,
@@ -427,7 +429,7 @@ export class SessionsService {
         data: updated?.toObject(),
       };
     } catch (error) {
-      console.error('Update session error:', error);
+      this.logger.error('Update session error:', error);
       return {
         success: false,
         errorCode: ErrorCode.SESSION_UPDATE_ERROR,
@@ -470,7 +472,7 @@ export class SessionsService {
       }
       return { success: true };
     } catch (error) {
-      console.error('Delete session error:', error);
+      this.logger.error('Delete session error:', error);
       return {
         success: false,
         errorCode: ErrorCode.SESSION_DELETE_ERROR,

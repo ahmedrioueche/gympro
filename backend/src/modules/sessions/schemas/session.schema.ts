@@ -89,6 +89,7 @@ export class SessionModel extends Document implements Session {
   updatedAt: Date;
 }
 
+export type SessionDocument = SessionModel & Document;
 export const SessionSchema = SchemaFactory.createForClass(SessionModel);
 
 // Indexes for efficient querying by date range and user

@@ -11,6 +11,7 @@ import {
 import { GymModel } from '../gym/gym.schema';
 import { GymMembershipModel } from '../gymMembership/membership.schema';
 import { SubscriptionHistoryModel } from '../gymSubscription/gymSubscription.schema';
+import { SessionDocument } from '../sessions/schemas/session.schema';
 @Injectable()
 export class AnalyticsService {
   constructor(
@@ -24,6 +25,7 @@ export class AnalyticsService {
     private historyModel: Model<SubscriptionHistoryModel>,
     @InjectModel(GymCoachAffiliation.name)
     private affiliationModel: Model<GymCoachAffiliationDocument>,
+    @InjectModel('Session') private sessionModel: Model<SessionDocument>,
   ) {}
 
   async getGlobalStats(managerId: string): Promise<GlobalAnalytics> {
@@ -74,30 +76,96 @@ export class AnalyticsService {
     // Monthly Revenue (Current Month)
     const now = new Date();
     const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthlyRevenueStats = await this.historyModel.aggregate([
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    const [currentMonthRevenue, lastMonthRevenue] = await Promise.all([
+      this.historyModel.aggregate([
+        {
+          $match: {
+            'gym._id': { $in: gymIds },
+            createdAt: { $gte: currentMonthStart },
+          },
+        },
+        { $group: { _id: null, total: { $sum: '$pricePaid' } } },
+      ]),
+      this.historyModel.aggregate([
+        {
+          $match: {
+            'gym._id': { $in: gymIds },
+            createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd },
+          },
+        },
+        { $group: { _id: null, total: { $sum: '$pricePaid' } } },
+      ]),
+    ]);
+
+    const currentRevenue = currentMonthRevenue[0]?.total || 0;
+    const lastRevenue = lastMonthRevenue[0]?.total || 0;
+    const revenueTrend =
+      lastRevenue === 0
+        ? currentRevenue > 0
+          ? 100
+          : 0
+        : ((currentRevenue - lastRevenue) / lastRevenue) * 100;
+
+    // Members Trend (Active members added this month vs last month)
+    // Note: detailed member history tracking would be better, but we can approximate with createdAt
+    const [currentMonthMembers, lastMonthMembers] = await Promise.all([
+      this.membershipModel.countDocuments({
+        gym: { $in: gymIds },
+        roles: 'member',
+        createdAt: { $gte: currentMonthStart },
+      }),
+      this.membershipModel.countDocuments({
+        gym: { $in: gymIds },
+        roles: 'member',
+        createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd },
+      }),
+    ]);
+
+    const membersTrend =
+      lastMonthMembers === 0
+        ? currentMonthMembers > 0
+          ? 100
+          : 0
+        : ((currentMonthMembers - lastMonthMembers) / lastMonthMembers) * 100;
+
+    // Revenue Breakdown by Gym
+    const revenueByGymStats = await this.historyModel.aggregate([
+      { $match: { 'gym._id': { $in: gymIds } } },
       {
-        $match: {
-          'gym._id': { $in: gymIds },
-          createdAt: { $gte: currentMonthStart },
+        $group: {
+          _id: '$gym._id',
+          name: { $first: '$gym.name' },
+          total: { $sum: '$pricePaid' },
+          currency: { $first: '$currency' },
         },
       },
-      { $group: { _id: null, total: { $sum: '$pricePaid' } } },
+      { $sort: { total: -1 } },
     ]);
+
+    const revenueByGym = revenueByGymStats.map((s) => ({
+      gymId: s._id.toString(),
+      gymName: s.name || 'Unknown Gym',
+      revenue: s.total,
+      currency: s.currency || 'DZD',
+    }));
 
     return {
       metrics: {
         totalRevenue: revenueStats[0]?.total || 0,
-        monthlyRevenue: monthlyRevenueStats[0]?.total || 0,
+        monthlyRevenue: currentRevenue,
         totalMembers: membershipStats.reduce(
           (acc, curr) => acc + curr.count,
           0,
         ),
         activeMembers: dist.active,
         totalGyms: gyms.length,
-        revenueTrend: 0, // TODO: Calculate actual trend
-        membersTrend: 0, // TODO: Calculate actual trend
+        revenueTrend: Number(revenueTrend.toFixed(1)),
+        membersTrend: Number(membersTrend.toFixed(1)),
       },
-      revenueByGym: [], // TODO: Group by gym._id
+      revenueByGym,
       membershipDistribution: dist,
       revenueTrendData,
       memberTrendData: [],
@@ -183,6 +251,40 @@ export class AnalyticsService {
       { $group: { _id: null, total: { $sum: '$pricePaid' } } },
     ]);
 
+    // 5. Attendance Trend (Session attendance last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const attendanceStats = await this.sessionModel.aggregate([
+      {
+        $match: {
+          gymId: gymObjectId,
+          startTime: { $gte: sevenDaysAgo },
+          status: { $in: ['completed', 'confirmed'] },
+        },
+      },
+      {
+        $project: {
+          scannedAt: {
+            $dateToString: { format: '%Y-%m-%d', date: '$startTime' },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$scannedAt',
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const attendanceTrend = attendanceStats.map((s) => ({
+      date: s._id,
+      count: s.count,
+    }));
+
     return {
       gymId,
       metrics: {
@@ -196,11 +298,7 @@ export class AnalyticsService {
       },
       membershipDistribution: dist,
       genderDistribution: genderDist,
-      attendanceTrend: [
-        { date: 'Today', count: 12 },
-        { date: 'Yesterday', count: 18 },
-        { date: '2 days ago', count: 15 },
-      ], // Mocked trend
+      attendanceTrend,
     };
   }
 

@@ -194,7 +194,7 @@ export default function ProfileSettings({
                 onClick={() => openModal("request_coach_access")}
                 className="font-bold px-8 shadow-lg shadow-primary/20"
               >
-                {t("member.settings.profile.becomeCoach", "Become a Coach")}
+                {t("member.settings.profile.becomeCoach")}
               </Button>
             </div>
           </div>

@@ -12,6 +12,7 @@ import {
 import { GymSchema } from '../gym/gym.schema';
 import { GymMembershipSchema } from '../gymMembership/membership.schema';
 import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
+import { SessionSchema } from '../sessions/schemas/session.schema';
 import { UsersModule } from '../users/users.module';
 import { AnalyticsController } from './analytics.controller';
 import { AnalyticsService } from './analytics.service';
@@ -25,6 +26,7 @@ import { AnalyticsService } from './analytics.service';
       { name: User.name, schema: UserSchema },
       { name: 'SubscriptionHistory', schema: SubscriptionHistorySchema },
       { name: GymCoachAffiliation.name, schema: GymCoachAffiliationSchema },
+      { name: 'Session', schema: SessionSchema },
     ]),
     UsersModule,
   ],

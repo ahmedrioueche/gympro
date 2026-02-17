@@ -516,7 +516,6 @@ export class UsersService {
   private async autoSubscribeToFreePlan(userId: string) {
     try {
       const user = await this.userModel.findById(userId);
-      console.log({ user });
       const currency =
         (user?.appSettings?.locale?.currency as SupportedCurrency) ||
         DEFAULT_CURRENCY;

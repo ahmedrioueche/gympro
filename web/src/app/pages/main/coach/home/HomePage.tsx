@@ -99,18 +99,13 @@ export default function HomePage() {
       // Ensure time is formatted correctly if needed, or pass as is if component handles it
     })) || [];
 
-  // Keep mocked todaySessions for now as we didn't implement that endpoint yet in this pass
-  // or simple mock empty if preferred. User asked to "get real data".
-  // Plan didn't explicitly include todaySessions endpoint, but let's keep the mock
-  // or empty to avoid breaking UI until next step.
-  const todaySessions = [
-    {
-      time: "09:00 AM",
-      client: "John Doe",
-      type: t("home.coach.sessionTypes.training"),
-      status: "upcoming",
-    },
-  ];
+  const todaySessions =
+    stats?.todaySessions?.map((session: any) => ({
+      time: format(new Date(session.startTime), "hh:mm a"),
+      client: session.member?.fullName || "Unknown",
+      type: t(`home.coach.sessionTypes.${session.type}`),
+      status: session.status,
+    })) || [];
 
   const quickActions = [
     {

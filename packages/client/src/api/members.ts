@@ -1,4 +1,5 @@
 import { CreateMemberDto } from "../dto/users";
+import { MemberDashboardStats } from "../types/analytics";
 import { ApiResponse } from "../types/api";
 import { User } from "../types/user";
 import { apiClient, handleApiError } from "./helper";
@@ -27,7 +28,7 @@ export const membersApi = {
     try {
       const res = await apiClient.post<ApiResponse<User>>(
         "/membership/create",
-        data
+        data,
       );
       return res.data;
     } catch (error) {
@@ -38,11 +39,11 @@ export const membersApi = {
   /** Get Member by membership ID */
   getMember: async (
     gymId: string,
-    membershipId: string
+    membershipId: string,
   ): Promise<ApiResponse<MemberResponse>> => {
     try {
       const res = await apiClient.get<ApiResponse<MemberResponse>>(
-        `/membership/${gymId}/${membershipId}`
+        `/membership/${gymId}/${membershipId}`,
       );
       return res.data;
     } catch (error) {
@@ -54,12 +55,12 @@ export const membersApi = {
   updateMember: async (
     gymId: string,
     membershipId: string,
-    data: UpdateMemberDto
+    data: UpdateMemberDto,
   ): Promise<ApiResponse<MemberResponse>> => {
     try {
       const res = await apiClient.patch<ApiResponse<MemberResponse>>(
         `/membership/${gymId}/${membershipId}`,
-        data
+        data,
       );
       return res.data;
     } catch (error) {
@@ -70,12 +71,24 @@ export const membersApi = {
   /** Delete Member */
   deleteMember: async (
     gymId: string,
-    membershipId: string
+    membershipId: string,
   ): Promise<ApiResponse<{ deleted: boolean; membershipId: string }>> => {
     try {
       const res = await apiClient.delete<
         ApiResponse<{ deleted: boolean; membershipId: string }>
       >(`/membership/${gymId}/${membershipId}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Get Member Dashboard Stats */
+  getDashboardStats: async (): Promise<ApiResponse<MemberDashboardStats>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<MemberDashboardStats>>(
+        "/members/analytics/dashboard",
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

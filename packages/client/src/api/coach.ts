@@ -15,6 +15,7 @@ import type {
   CoachRequestWithDetails,
   ProspectiveMember,
 } from "../types/coach";
+import { CoachDashboardStats } from "../types/coach-analytics";
 import { getApiClient } from "./config";
 
 export const coachApi = {
@@ -366,9 +367,11 @@ export const coachApi = {
   /**
    * Get coach dashboard statistics
    */
-  getDashboardStats: async (): Promise<ApiResponse<any>> => {
+  getDashboardStats: async (): Promise<ApiResponse<CoachDashboardStats>> => {
     try {
-      const response = await getApiClient().get("/coaches/dashboard/stats");
+      const response = await getApiClient().get<
+        ApiResponse<CoachDashboardStats>
+      >("/coaches/dashboard/stats");
       return response.data;
     } catch (error: any) {
       return {

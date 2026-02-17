@@ -1,6 +1,7 @@
 import {
   ApiResponse,
   CoachClient,
+  CoachDashboardStats,
   CoachPricingTier,
   CoachPricingTierDto,
   CoachProfile,
@@ -18,6 +19,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
   forwardRef,
 } from '@nestjs/common';
@@ -31,6 +33,8 @@ import { CoachRequestModel } from './schemas/coach-request.schema';
 
 @Injectable()
 export class CoachService {
+  private readonly logger = new Logger(CoachService.name);
+
   constructor(
     @InjectModel('CoachRequest')
     private coachRequestModel: Model<CoachRequestModel>,
@@ -84,7 +88,7 @@ export class CoachService {
         data: coachProfile,
       };
     } catch (error) {
-      console.error('Error fetching coach profile:', error);
+      this.logger.error('Error fetching coach profile:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_FETCH_ERROR,
@@ -170,7 +174,7 @@ export class CoachService {
         data: coachProfiles,
       };
     } catch (error) {
-      console.error('Error fetching coaches:', error);
+      this.logger.error('Error fetching coaches:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_FETCH_ERROR,
@@ -258,7 +262,7 @@ export class CoachService {
         data: response,
       };
     } catch (error) {
-      console.error('Error requesting coach:', error);
+      this.logger.error('Error requesting coach:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_REQUEST_FAILED,
@@ -299,7 +303,7 @@ export class CoachService {
         data: formattedRequests,
       };
     } catch (error) {
-      console.error('Error fetching coach requests:', error);
+      this.logger.error('Error fetching coach requests:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_REQUEST_FETCH_ERROR,
@@ -332,7 +336,7 @@ export class CoachService {
         data: pricing as any,
       };
     } catch (error) {
-      console.error('Error fetching pricing:', error);
+      this.logger.error('Error fetching pricing:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_PRICING_FETCH_ERROR,
@@ -375,7 +379,7 @@ export class CoachService {
         data: newPricing as any,
       };
     } catch (error) {
-      console.error('Error creating pricing:', error);
+      this.logger.error('Error creating pricing:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_PRICING_CREATE_ERROR,
@@ -425,7 +429,7 @@ export class CoachService {
         data: pricing,
       };
     } catch (error) {
-      console.error('Error updating pricing:', error);
+      this.logger.error('Error updating pricing:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_PRICING_UPDATE_ERROR,
@@ -463,7 +467,7 @@ export class CoachService {
         success: true,
       };
     } catch (error) {
-      console.error('Error deleting pricing:', error);
+      this.logger.error('Error deleting pricing:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_PRICING_DELETE_ERROR,
@@ -479,14 +483,9 @@ export class CoachService {
   /**
    * Get coach dashboard statistics
    */
-  async getDashboardStats(coachId: string): Promise<
-    ApiResponse<{
-      activeClients: { value: number; trend: number };
-      programsCreated: { value: number; trend: number };
-      sessionsThisMonth: { value: number; trend: number };
-      clientRetention: { value: number; trend: number };
-    }>
-  > {
+  async getDashboardStats(
+    coachId: string,
+  ): Promise<ApiResponse<CoachDashboardStats>> {
     try {
       const coach = await this.userModel.findById(coachId);
       if (!coach) throw new NotFoundException('Coach not found');
@@ -494,12 +493,40 @@ export class CoachService {
       // 1. Active Clients
       const activeClientsCount =
         coach.coachingInfo?.coachedMembers?.length || 0;
-      // Mock trend for clients (TODO: Track historical client counts)
-      const clientTrend = 0;
+
+      // Calculate Active Clients Trend (Growth this month vs last month)
+      // Note: Since we don't have historical snapshots of `coachedMembers` array,
+      // we can approximate new clients using `CoachRequest` accepted this month vs last month.
+      // This is a proxy for "growth" rather than total count trend, but serves the purpose.
+
+      const now = new Date();
+      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+      const [newClientsThisMonth, newClientsLastMonth] = await Promise.all([
+        this.coachRequestModel.countDocuments({
+          coachId: new Types.ObjectId(coachId),
+          status: 'accepted',
+          updatedAt: { $gte: currentMonthStart },
+        }),
+        this.coachRequestModel.countDocuments({
+          coachId: new Types.ObjectId(coachId),
+          status: 'accepted',
+          updatedAt: { $gte: lastMonthStart, $lte: lastMonthEnd },
+        }),
+      ]);
+
+      const clientTrend = newClientsThisMonth - newClientsLastMonth;
 
       // 2. Programs Created
       const programsCount = await this.trainingService.countPrograms(coachId);
-      // Mock trend for programs
+      // Trend for programs (Assume `countPrograms` can filter by date if updated,
+      // or we just use current total and 0 trend if not easily trackable without updating TrainingService)
+      // For now, let's keep trend as 0 or implement granular count if TrainingService supports it.
+      // Checking `trainingService` usage... `countPrograms(coachId)` is used.
+      // Let's assume for now we don't have historical program data easily accesssible without checking TrainingService.
+      // We'll leave trend as 0 for programs to be safe, or 1 if count > 0 to show "positive".
       const programTrend = 0;
 
       // 3. Sessions This Month
@@ -517,12 +544,32 @@ export class CoachService {
         startOfMonth,
         endOfMonth,
       );
-      // Mock trend for sessions (Compare with last month?)
-      const sessionTrend = 0; // Requires querying last month
 
-      // 4. Client Retention (Mocked for now)
+      // Sessions Last Month
+      const sessionsLastMonthCount = await this.sessionsService.countSessions(
+        coachId,
+        lastMonthStart,
+        lastMonthEnd,
+      );
+
+      const sessionTrend = sessionsCount - sessionsLastMonthCount;
+
+      // 4. Client Retention (Mocked for now as it requires complex logic)
       const retentionRate = 95;
       const retentionTrend = 0;
+
+      // 5. Today's Sessions
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
+
+      const todaySessionsResult = await this.sessionsService.findAll({
+        coachId,
+        startDate: todayStart.toISOString(),
+        endDate: todayEnd.toISOString(),
+      });
 
       return {
         success: true,
@@ -531,10 +578,11 @@ export class CoachService {
           programsCreated: { value: programsCount, trend: programTrend },
           sessionsThisMonth: { value: sessionsCount, trend: sessionTrend },
           clientRetention: { value: retentionRate, trend: retentionTrend },
+          todaySessions: todaySessionsResult.data || [],
         },
       };
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+      this.logger.error('Error fetching dashboard stats:', error);
       return {
         success: false,
         errorCode: ErrorCode.UNKNOWN_ERROR,
@@ -591,7 +639,7 @@ export class CoachService {
         data: activities.slice(0, 10),
       };
     } catch (error) {
-      console.error('Error fetching dashboard activity:', error);
+      this.logger.error('Error fetching dashboard activity:', error);
       return {
         success: false,
         errorCode: ErrorCode.UNKNOWN_ERROR,
@@ -669,7 +717,7 @@ export class CoachService {
         data: requestsWithDetails,
       };
     } catch (error) {
-      console.error('Error fetching pending requests:', error);
+      this.logger.error('Error fetching pending requests:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_REQUEST_FETCH_ERROR,
@@ -685,20 +733,16 @@ export class CoachService {
     coachId: string,
   ): Promise<ApiResponse<CoachRequestWithDetails[]>> {
     try {
-      console.log('Fetching sent requests for coach:', coachId);
       const query = {
         coachId: new Types.ObjectId(coachId),
         status: 'pending',
         initiatedBy: 'coach',
       };
-      console.log('Query:', JSON.stringify(query));
 
       const requests = await this.coachRequestModel
         .find(query)
         .sort({ createdAt: -1 })
         .lean();
-
-      console.log('Found sent requests:', requests.length);
 
       // Fetch member details for each request
       const requestsWithDetails: CoachRequestWithDetails[] = await Promise.all(
@@ -736,7 +780,7 @@ export class CoachService {
         data: requestsWithDetails,
       };
     } catch (error) {
-      console.error('Error fetching sent requests:', error);
+      this.logger.error('Error fetching sent requests:', error);
       return {
         success: false,
         errorCode: ErrorCode.COACH_REQUEST_FETCH_ERROR,

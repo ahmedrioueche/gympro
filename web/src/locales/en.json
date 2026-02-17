@@ -790,6 +790,10 @@
         "label": "Memberships",
         "description": "View your gym memberships"
       },
+      "becomeCoach": {
+        "label": "Become a Coach",
+        "description": "Request coach access"
+      },
       "logout": "Logout"
     },
     "edit": {
@@ -2447,7 +2451,8 @@
         "fullName": "Full Name",
         "email": "Email Address",
         "phone": "Phone Number",
-        "save": "Save Changes"
+        "save": "Save Changes",
+        "phonePlaceholder": "Enter phone number"
       },
       "preferences": {
         "title": "App Preferences",

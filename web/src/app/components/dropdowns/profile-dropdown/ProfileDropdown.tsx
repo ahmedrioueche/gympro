@@ -68,11 +68,8 @@ export default function ProfileDropdown({
         user.role !== UserRole.Admin && (
           <DropdownItem
             icon="🎓"
-            label={t("profile.menu.becomeCoach", "Become a Coach")}
-            description={t(
-              "profile.menu.becomeCoachDesc",
-              "Request coach access",
-            )}
+            label={t("profile.menu.becomeCoach.label")}
+            description={t("profile.menu.becomeCoach.description")}
             onClick={() => {
               import("../../../../store/modal").then(({ useModalStore }) => {
                 useModalStore.getState().openModal("request_coach_access");

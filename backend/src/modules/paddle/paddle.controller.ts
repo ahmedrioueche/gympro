@@ -12,6 +12,7 @@ import {
   Get,
   Headers,
   HttpCode,
+  Logger,
   Param,
   Post,
   RawBodyRequest,
@@ -25,11 +26,15 @@ import { PaddleService } from './paddle.service';
 
 @Controller('paddle')
 export class PaddleController {
+  private readonly logger = new Logger(PaddleController.name);
+
   constructor(
     private readonly paddleService: PaddleService,
     private readonly appPlanService: AppPlansService,
   ) {
-    console.log('[PaddleController] Initialized and ready to receive webhooks');
+    this.logger.log(
+      '[PaddleController] Initialized and ready to receive webhooks',
+    );
   }
 
   @Post('checkout')
@@ -267,23 +272,25 @@ export class PaddleController {
     @Body() event: any,
   ) {
     try {
-      console.log('--- PADDLE WEBHOOK ENDPOINT HIT ---');
-      console.log('Headers:', JSON.stringify(req.headers));
-      console.log('Body type:', typeof event);
+      this.logger.log('--- PADDLE WEBHOOK ENDPOINT HIT ---');
+      this.logger.log(`Headers: ${JSON.stringify(req.headers)}`);
+      this.logger.log(`Body type: ${typeof event}`);
 
       if (!signature) {
-        console.error('Paddle-Signature header is missing');
+        this.logger.error('Paddle-Signature header is missing');
         throw new BadRequestException('Paddle-Signature header is missing');
       }
 
       const rawBody = req.rawBody;
       if (!rawBody) {
-        console.error('Raw body is missing! Check main.ts for rawBody: true');
+        this.logger.error(
+          'Raw body is missing! Check main.ts for rawBody: true',
+        );
         throw new BadRequestException('Raw body is missing');
       }
 
-      console.log(`Raw body length: ${rawBody.length} bytes`);
-      console.log(
+      this.logger.log(`Raw body length: ${rawBody.length} bytes`);
+      this.logger.log(
         `Raw body preview: ${rawBody.toString().substring(0, 50)}...`,
       );
 
@@ -294,7 +301,7 @@ export class PaddleController {
       );
 
       if (!isValid) {
-        console.error('Invalid signature for webhook event');
+        this.logger.error('Invalid signature for webhook event');
         throw new ForbiddenException('Invalid signature');
       }
 
@@ -302,7 +309,7 @@ export class PaddleController {
       await this.paddleService.handleWebhook(event);
       return { received: true };
     } catch (error) {
-      console.error('CRITICAL WEBHOOK ERROR:', error.message);
+      this.logger.error(`CRITICAL WEBHOOK ERROR: ${error.message}`);
       return { received: true, error: error.message };
     }
   }

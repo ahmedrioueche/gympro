@@ -1095,8 +1095,6 @@ export class AppSubscriptionService {
       throw new NotFoundException('User not found');
     }
 
-    console.log('---------renewSubscription called-----------');
-
     // Find existing subscription
     const subscription = await this.subscriptionModel
       .findOne({ userId, status: { $in: ['active', 'trialing', 'past_due'] } })

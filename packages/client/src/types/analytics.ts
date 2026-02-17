@@ -52,3 +52,10 @@ export interface GymAnalytics {
   };
   attendanceTrend: { date: string; count: number }[];
 }
+
+export interface MemberDashboardStats {
+  activeSubscriptions: number;
+  checkIns: number;
+  nextClass: any | null; // using any to avoid circular dependency
+  daysStreak: number;
+}

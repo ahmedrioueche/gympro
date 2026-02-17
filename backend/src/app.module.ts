@@ -30,6 +30,7 @@ import { GymClassModule } from './modules/gymClass/gymClass.module';
 import { MembershipModule } from './modules/gymMembership/membership.module';
 import { GymSubscriptionModule } from './modules/gymSubscription/gymSubscription.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
+import { MemberAnalyticsModule } from './modules/member-analytics/member-analytics.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PaddleModule } from './modules/paddle/paddle.module';
 import { ProgressModule } from './modules/progress/progress.module';
@@ -114,6 +115,7 @@ import { UsersModule } from './modules/users/users.module';
     CompetitionModule,
     StoreModule,
     GymClassModule,
+    MemberAnalyticsModule,
   ],
   controllers: [AppController],
   providers: [

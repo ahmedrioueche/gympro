@@ -13,6 +13,7 @@ import {
   Headers,
   HttpCode,
   HttpStatus,
+  Logger,
   Param,
   Post,
   RawBodyRequest,
@@ -27,6 +28,7 @@ import { ChargilyService } from './chargily.service';
 
 @Controller('chargily')
 export class ChargilyController {
+  private readonly logger = new Logger(ChargilyController.name);
   private readonly frontendUrl: string | undefined;
 
   constructor(
@@ -39,7 +41,7 @@ export class ChargilyController {
         ? this.configService.get('PROD_FRONTEND_URL')
         : this.configService.get('DEV_FRONTEND_URL') || 'localhost:3000';
 
-    console.log(
+    this.logger.log(
       '[ChargilyController] Initialized and ready to receive webhooks',
     );
   }
@@ -237,22 +239,22 @@ export class ChargilyController {
     @Headers('signature') signature: string,
     @Body() event: any,
   ) {
-    console.log('--- CHARGILY WEBHOOK ENDPOINT HIT ---');
-    console.log('Headers:', JSON.stringify(req.headers));
+    this.logger.log('--- CHARGILY WEBHOOK ENDPOINT HIT ---');
+    this.logger.log(`Headers: ${JSON.stringify(req.headers)}`);
 
     if (!signature) {
-      console.error('Signature header is missing');
+      this.logger.error('Signature header is missing');
       throw new BadRequestException('Signature header is missing');
     }
 
     const payload = req.rawBody;
 
     if (!payload) {
-      console.error('Raw body is missing! Check main.ts for rawBody: true');
+      this.logger.error('Raw body is missing! Check main.ts for rawBody: true');
       throw new BadRequestException('Raw body is missing');
     }
 
-    console.log(`Raw body length: ${payload.length} bytes`);
+    this.logger.log(`Raw body length: ${payload.length} bytes`);
 
     const apiKey = this.configService.get<string>('CHARGILY_SECRET_KEY') || '';
 
@@ -260,18 +262,18 @@ export class ChargilyController {
       const isValid = verifySignature(payload, signature, apiKey);
 
       if (!isValid) {
-        console.error('Invalid signature for webhook event');
+        this.logger.error('Invalid signature for webhook event');
         throw new ForbiddenException('Invalid signature');
       }
 
-      console.log('✅ Signature verified successfully');
+      this.logger.log('✅ Signature verified successfully');
     } catch (error) {
-      console.error('Signature verification failed:', error.message);
+      this.logger.error(`Signature verification failed: ${error.message}`);
       throw new ForbiddenException('Signature verification failed');
     }
 
     // Handle different event types
-    console.log('Webhook event received:', event.type);
+    this.logger.log(`Webhook event received: ${event.type}`);
 
     try {
       switch (event.type) {
@@ -282,12 +284,12 @@ export class ChargilyController {
           await this.chargilyService.handleCheckoutFailed(event.data);
           break;
         default:
-          console.log('Unhandled event type:', event.type);
+          this.logger.warn(`Unhandled event type: ${event.type}`);
       }
 
       return { received: true };
     } catch (error) {
-      console.error('CRITICAL WEBHOOK ERROR:', error.message);
+      this.logger.error(`CRITICAL WEBHOOK ERROR: ${error.message}`);
       // Return 200 to prevent Chargily from retrying
       return { received: true, error: error.message };
     }
