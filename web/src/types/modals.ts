@@ -1,5 +1,6 @@
 import type {
   Alert,
+  AppFeaturePackage,
   AppPlan,
   CoachProfile,
   Competition,
@@ -13,6 +14,10 @@ import type {
   TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
 import type { Product } from "@ahmedrioueche/gympro-client/dist/types/product";
+
+export interface FeaturePackageModalProps {
+  pkg?: AppFeaturePackage | null;
+}
 
 export interface GymClassModalProps {
   gymId: string;

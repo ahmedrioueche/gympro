@@ -71,7 +71,11 @@ export class AppPlansService {
     if (!includeInactive) {
       filter.isActive = { $ne: false };
     }
-    return this.appPlanModel.find(filter).sort({ level: 1, type: 1 }).exec();
+    return this.appPlanModel
+      .find(filter)
+      .populate(['featurePackages', 'publicFeaturePackages'])
+      .sort({ level: 1, type: 1 })
+      .exec();
   }
 
   async getPlansByLevel(level: AppPlanLevel, includeInactive = false) {
@@ -83,7 +87,10 @@ export class AppPlansService {
   }
 
   async getPlanByLevelAndType(level: AppPlanLevel) {
-    const plan = await this.appPlanModel.findOne({ level }).exec();
+    const plan = await this.appPlanModel
+      .findOne({ level })
+      .populate(['featurePackages', 'publicFeaturePackages'])
+      .exec();
     if (!plan) {
       throw new NotFoundException(`Plan not found for level: ${level}`);
     }
@@ -91,7 +98,10 @@ export class AppPlansService {
   }
 
   async getPlanById(planId: string) {
-    const plan = await this.appPlanModel.findById(planId).exec();
+    const plan = await this.appPlanModel
+      .findById(planId)
+      .populate(['featurePackages', 'publicFeaturePackages'])
+      .exec();
     if (!plan) {
       throw new NotFoundException(`Plan with ID ${planId} not found`);
     }
@@ -100,11 +110,15 @@ export class AppPlansService {
 
   async getPlanByPlanId(planId: string): Promise<AppPlan | null> {
     try {
-      const plan = await this.appPlanModel.findOne({ planId }).lean().exec();
+      const plan = await this.appPlanModel
+        .findOne({ planId })
+        .populate(['featurePackages', 'publicFeaturePackages'])
+        .lean()
+        .exec();
       if (!plan) {
         throw new NotFoundException(`Plan with planId ${planId} not found`);
       }
-      return plan;
+      return plan as unknown as AppPlan;
     } catch (error) {
       throw new NotFoundException(`Plan with planId ${planId} not found`);
     }
@@ -119,11 +133,27 @@ export class AppPlansService {
     const updatedPricing =
       updates.pricing?.[DEFAULT_CURRENCY] || plan.pricing[DEFAULT_CURRENCY];
 
-    if (updates.pricing) {
-      const hasPricing = updatedPricing?.monthly || updatedPricing?.yearly;
-      if (!hasPricing) {
+    if (updates.pricing && (updates.level || plan.level) !== 'free') {
+      const hasMonthly =
+        updatedPricing?.monthly !== undefined &&
+        updatedPricing?.monthly !== null;
+      const hasYearly =
+        updatedPricing?.yearly !== undefined && updatedPricing?.yearly !== null;
+
+      if (!hasMonthly && !hasYearly) {
         throw new BadRequestException(
           'Subscription plans must have monthly or yearly pricing',
+        );
+      }
+
+      if (
+        hasMonthly &&
+        updatedPricing.monthly === 0 &&
+        hasYearly &&
+        updatedPricing.yearly === 0
+      ) {
+        throw new BadRequestException(
+          'Subscription plans must have at least one non-zero price',
         );
       }
     }

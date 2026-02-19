@@ -1,12 +1,12 @@
-import type {
-  AppPlan,
-  AppSubscriptionBillingCycle,
-  SupportedCurrency,
+import {
+  type AppPlan,
+  type AppSubscriptionBillingCycle,
+  type SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
 import { CreditCard } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import NoData from "../../../../../../components/ui/NoData";
-import PlanCard from "../../../../../components/PlanCard";
+import PlanCard from "../../../../../components/cards/PlanCard";
 
 interface PlansGridProps {
   plans: any[];
@@ -44,18 +44,34 @@ function PlansGrid({
 
   return (
     <div className={`grid ${gridClass} gap-8 mb-12`}>
-      {plans.map((plan: any) => (
-        <PlanCard
-          key={plan.planId}
-          plan={plan}
-          currency={currency}
-          isCurrentPlan={isCurrentPlan(plan)}
-          billingCycle={billingCycle}
-          onSelect={() => onSelect(plan.planId)}
-          currentSubscription={currentSubscription}
-          disabled={isProcessing}
-        />
-      ))}
+      {plans.map((plan: any, index: number) => {
+        const previousPlan = index > 0 ? plans[index - 1] : null;
+        const previousPlanName = previousPlan?.name || "";
+
+        // Accumulate ALL packages from all preceding plans
+        const cumulativePreviousPackages = plans
+          .slice(0, index)
+          .flatMap((p: any) =>
+            p.publicFeaturePackages?.length > 0
+              ? p.publicFeaturePackages
+              : p.featurePackages || [],
+          );
+
+        return (
+          <PlanCard
+            key={plan.planId}
+            plan={plan}
+            currency={currency}
+            isCurrentPlan={isCurrentPlan(plan)}
+            billingCycle={billingCycle}
+            onSelect={() => onSelect(plan.planId)}
+            currentSubscription={currentSubscription}
+            disabled={isProcessing}
+            previousPlanName={previousPlanName}
+            previousPlanPackages={cumulativePreviousPackages}
+          />
+        );
+      })}
     </div>
   );
 }

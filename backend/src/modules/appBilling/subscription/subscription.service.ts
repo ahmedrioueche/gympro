@@ -63,6 +63,7 @@ export class AppSubscriptionService {
     // Find plan by planId field (not _id)
     const plan = await this.appPlanModel
       .findOne({ planId: sub.planId })
+      .populate(['featurePackages', 'publicFeaturePackages'])
       .lean()
       .exec();
 

@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
+import { format } from "date-fns";
 import {
   BarChart3,
   Calendar,
@@ -30,8 +31,6 @@ export default function HomePage() {
   const { openModal } = useModalStore();
   const { data: subscription } = useMySubscription();
 
-  // ... existing stats definition
-  /* import { useCoachHome } from "./hooks/useCoachHome"; */
   const { stats, activity, isLoading } = useCoachHome();
 
   const quickStats = [

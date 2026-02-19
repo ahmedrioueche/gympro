@@ -67,6 +67,7 @@ export * from "./types/coach-analytics";
 export * from "./types/common";
 export * from "./types/competition";
 export * from "./types/error";
+export * from "./types/features";
 export * from "./types/gym";
 export * from "./types/gym-coach-affiliation";
 export * from "./types/gym-coach-payment";

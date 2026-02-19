@@ -10,6 +10,7 @@ import {
   AppSubscriptionModel,
   AppSubscriptionSchema,
 } from './appBilling.schema';
+import { AppFeaturePackageModule } from './featurePackage/feature-package.module';
 import { AppPaymentController } from './payment/appPayment.controller';
 import { AppPaymentModel, AppPaymentSchema } from './payment/appPayment.schema';
 import { AppPaymentService } from './payment/appPayment.service';
@@ -22,6 +23,7 @@ import { AppSubscriptionService } from './subscription/subscription.service';
 @Module({
   imports: [
     forwardRef(() => PaddleModule),
+    AppFeaturePackageModule,
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: AppPlanModel.name, schema: AppPlanSchema },

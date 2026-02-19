@@ -1,8 +1,8 @@
 import type { CreateAppPlanDto } from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
-import Checkbox from "../../../../../../../components/ui/Checkbox";
-import CustomSelect from "../../../../../../../components/ui/CustomSelect";
-import InputField from "../../../../../../../components/ui/InputField";
+import Checkbox from "../../../../../../components/ui/Checkbox";
+import CustomSelect from "../../../../../../components/ui/CustomSelect";
+import InputField from "../../../../../../components/ui/InputField";
 
 interface PlanBasicInfoProps {
   formData: CreateAppPlanDto;

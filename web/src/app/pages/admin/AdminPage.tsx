@@ -1,19 +1,24 @@
 import { Outlet } from "@tanstack/react-router";
 import {
+  AlertCircle,
   BarChart3,
   Bell,
   CreditCard,
   DollarSign,
   Dumbbell,
+  FileText,
   Home,
   Settings,
   UserCheck,
+  UserCircle,
   Users,
   Wallet,
 } from "lucide-react";
+import { useEffect } from "react";
 import { APP_PAGES } from "../../../constants/navigation";
 import { PAGE_CLASSES } from "../../../constants/styles";
 import { useAppPermissions } from "../../../hooks/useAppPermissions";
+import { useUserStore } from "../../../store/user";
 import Nav from "../../components/nav/Nav";
 
 const sidebarLinks = [
@@ -55,13 +60,13 @@ const sidebarLinks = [
   },
   {
     label: "coaching",
-    icon: <Dumbbell className="w-5 h-5" />,
+    icon: <UserCheck className="w-5 h-5" />,
     path: APP_PAGES.admin.coaching.link,
     matchPaths: [APP_PAGES.admin.coaching.link],
   },
   {
     label: "staff",
-    icon: <UserCheck className="w-5 h-5" />,
+    icon: <UserCircle className="w-5 h-5" />,
     path: APP_PAGES.admin.staff.link,
     matchPaths: [APP_PAGES.admin.staff.link],
   },
@@ -73,13 +78,13 @@ const sidebarLinks = [
   },
   {
     label: "reports",
-    icon: <BarChart3 className="w-5 h-5" />,
+    icon: <FileText className="w-5 h-5" />,
     path: APP_PAGES.admin.reports.link,
     matchPaths: [APP_PAGES.admin.reports.link],
   },
   {
     label: "alerts",
-    icon: <BarChart3 className="w-5 h-5" />,
+    icon: <AlertCircle className="w-5 h-5" />,
     path: APP_PAGES.admin.alerts.link,
     matchPaths: [APP_PAGES.admin.alerts.link],
   },
@@ -99,6 +104,11 @@ const sidebarLinks = [
 
 function AdminPage() {
   const { hasAppPermission, APP_PERMISSIONS } = useAppPermissions();
+  const setActiveDashboard = useUserStore((state) => state.setActiveDashboard);
+
+  useEffect(() => {
+    setActiveDashboard("admin");
+  }, [setActiveDashboard]);
 
   const filteredSidebarLinks = sidebarLinks.filter((link) => {
     switch (link.label) {

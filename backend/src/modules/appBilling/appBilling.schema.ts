@@ -6,6 +6,7 @@ import type {
   AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
   AutoRenewType,
+  GymManagerFeature,
   PaymentMethod,
   SupportedCurrency,
   WarningEmailType,
@@ -73,6 +74,8 @@ const AppPlanPricingSchema = new MongooseSchema(
 
 @Schema({ timestamps: true })
 export class AppPlanModel extends Document implements AppPlan {
+  features: GymManagerFeature[];
+  publicFeatures: GymManagerFeature[];
   declare _id: string;
 
   @Prop({ required: true, unique: true, type: String })
@@ -111,8 +114,17 @@ export class AppPlanModel extends Document implements AppPlan {
   @Prop({ type: AppPlanLimits, required: true })
   limits: AppPlanLimits;
 
-  @Prop({ type: [MongooseSchema.Types.Mixed], required: true })
-  features: any[];
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: 'AppFeaturePackageModel' }],
+    default: [],
+  })
+  featurePackages: any[];
+
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: 'AppFeaturePackageModel' }],
+    default: [],
+  })
+  publicFeaturePackages: any[];
 
   @Prop({ required: true })
   createdAt: Date;

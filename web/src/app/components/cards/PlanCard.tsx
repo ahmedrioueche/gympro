@@ -1,4 +1,5 @@
 import {
+  adminApi,
   formatPrice,
   resolveLocalizedString,
   type AppPlan,
@@ -6,12 +7,14 @@ import {
   type GetSubscriptionDto,
   type SupportedCurrency,
 } from "@ahmedrioueche/gympro-client";
+import { useQuery } from "@tanstack/react-query";
+import { Check } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "../../context/ThemeContext";
-import { useSubscriptionStatus } from "../../hooks/useSubscriptionStatus";
-import { useLanguageStore } from "../../store/language";
-import { getPlanChangeType } from "../pages/main/manager/subscription/utils/subscription.util";
+import { useTheme } from "../../../context/ThemeContext";
+import { useSubscriptionStatus } from "../../../hooks/useSubscriptionStatus";
+import { useLanguageStore } from "../../../store/language";
+import { getPlanChangeType } from "../../pages/main/manager/subscription/utils/subscription.util";
 
 interface PlanCardProps {
   plan: AppPlan;
@@ -21,6 +24,8 @@ interface PlanCardProps {
   onSelect: () => void;
   currentSubscription?: GetSubscriptionDto | null;
   disabled?: boolean;
+  previousPlanName?: string;
+  previousPlanPackages?: any[]; // Now features or packages depending on logic
 }
 
 export default function PlanCard({
@@ -31,11 +36,22 @@ export default function PlanCard({
   onSelect,
   currentSubscription,
   disabled,
+  previousPlanName,
+  previousPlanPackages = [],
 }: PlanCardProps) {
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const { isDark } = useTheme();
   const { language } = useLanguageStore();
+
+  // Fetch active feature packages
+  const { data: packages = [] } = useQuery({
+    queryKey: ["adminFeaturePackages", "active"],
+    queryFn: async () => {
+      const res = await adminApi.getFeaturePackages(true);
+      return res.data;
+    },
+  });
 
   // ✅ Use the availability checker
   const { isPlanAvailable } = useSubscriptionStatus(
@@ -176,6 +192,21 @@ export default function PlanCard({
     isCurrentPlan ||
     isUnavailable ||
     (hasPendingChange && !isCurrentPlan && !isUpgrade);
+
+  // Determine which packages to display
+  // Use explicitly selected public packages, fallback to all feature packages if none specified
+  const currentPackages =
+    plan.publicFeaturePackages && plan.publicFeaturePackages.length > 0
+      ? (plan.publicFeaturePackages as any[])
+      : (plan.featurePackages as any[]) || [];
+
+  // Filter out packages already present in previous tiers
+  const filteredPackages = currentPackages.filter(
+    (pkg) =>
+      !previousPlanPackages.some((p) =>
+        typeof p === "string" ? p === pkg._id : p._id === pkg._id,
+      ),
+  );
 
   return (
     <div className="relative pt-4">
@@ -326,40 +357,43 @@ export default function PlanCard({
 
           {/* Features */}
           <ul className="space-y-4 mb-8 flex-1">
-            {plan.features.map((feature, i) => (
+            {previousPlanName && (
               <li
-                key={i}
                 className={`flex items-start gap-3 text-sm ${
                   isDark ? "text-gray-300" : "text-gray-700"
                 } group/item`}
               >
                 <div
-                  className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                    isDark
-                      ? "bg-blue-900 group-hover/item:bg-blue-600"
-                      : "bg-blue-100 group-hover/item:bg-blue-500"
-                  }`}
+                  className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors duration-300 bg-blue-500 hover:bg-blue-600`}
                 >
-                  <svg
-                    className={`w-4 h-4 ${
-                      isDark
-                        ? "text-blue-300 group-hover/item:text-white"
-                        : "text-blue-600 group-hover/item:text-white"
-                    } transition-colors duration-300`}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={3}
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
+                  <Check className="w-4 h-4 text-white" />
                 </div>
                 <span className="leading-relaxed">
-                  {resolveLocalizedString(feature as any, language, t)}
+                  {t("plans.everything_in", "Everything in {{name}}", {
+                    name: resolveLocalizedString(previousPlanName, language, t),
+                  })}
+                </span>
+              </li>
+            )}
+
+            {filteredPackages.map((pkg) => (
+              <li
+                key={pkg._id}
+                className={`flex items-start gap-3 text-sm ${
+                  isDark ? "text-gray-300" : "text-gray-700"
+                } group/item`}
+              >
+                <div
+                  className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors duration-300 bg-blue-500 hover:bg-blue-600`}
+                >
+                  <Check className="w-4 h-4 text-white" />
+                </div>
+                <span className="leading-relaxed">
+                  {resolveLocalizedString(
+                    pkg.localizedName?.[language] || pkg.name,
+                    language,
+                    t,
+                  )}
                 </span>
               </li>
             ))}

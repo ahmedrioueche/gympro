@@ -1,3 +1,5 @@
+import { Session } from "./session";
+
 export interface CoachAnalytics {
   metrics: CoachMetrics;
   sessionTrendData: TrendDataPoint[];
@@ -41,4 +43,12 @@ export interface RecentActivity {
   date: string | Date;
   clientName?: string;
   clientAvatar?: string;
+}
+
+export interface CoachDashboardStats {
+  activeClients: { value: number; trend: number };
+  programsCreated: { value: number; trend: number };
+  sessionsThisMonth: { value: number; trend: number };
+  clientRetention: { value: number; trend: number };
+  todaySessions: Session[];
 }

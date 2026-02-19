@@ -125,6 +125,11 @@ const EditPlanModal = lazy(
     import("./app/pages/admin/pricing/components/edit-plan-modal/EditPlanModal"),
 );
 
+const FeaturePackageModal = lazy(
+  () =>
+    import("./app/pages/admin/pricing/components/feature-packages-modal/FeaturePackageModal"),
+);
+
 const AdminCreateEditorModal = lazy(() =>
   import("./app/pages/admin/staff/components/AdminCreateEditorModal").then(
     (module) => ({ default: module.AdminCreateEditorModal }),
@@ -250,6 +255,7 @@ function modals() {
       <LogSessionModal />
       <ReviewCoachRequestModal />
       <EditPlanModal />
+      <FeaturePackageModal />
       <AdminCreateEditorModal />
       <AdminManagePermissionsModal />
       <AlertDetailsModal />

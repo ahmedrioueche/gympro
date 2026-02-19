@@ -5,10 +5,31 @@ import {
   AppSubscriptionBillingCycle,
   AppSubscriptionStatus,
   AutoRenewType,
-  LocalizedFeature,
   WarningEmailType,
 } from "../types/appSubscription";
 import { PaymentMethod } from "../types/common";
+import { GymManagerFeature } from "../types/features";
+
+export interface AppFeaturePackage {
+  _id: string;
+  name: string;
+  localizedName?: Record<string, string>;
+  features: GymManagerFeature[];
+  order: number;
+  isActive: boolean;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+}
+
+export interface CreateAppFeaturePackageDto {
+  name: string;
+  localizedName?: Record<string, string>;
+  features: GymManagerFeature[];
+  order?: number;
+  isActive?: boolean;
+}
+
+export interface UpdateAppFeaturePackageDto extends Partial<CreateAppFeaturePackageDto> {}
 
 export interface CreateAppPlanDto {
   planId: string;
@@ -31,7 +52,8 @@ export interface CreateAppPlanDto {
     maxMembers?: number;
     maxGems?: number;
   };
-  features: LocalizedFeature[];
+  featurePackages?: string[];
+  publicFeaturePackages?: string[];
   createdAt?: Date;
 }
 
@@ -56,7 +78,8 @@ export interface UpdateAppPlanDto {
     maxMembers?: number;
     maxGems?: number;
   };
-  features?: LocalizedFeature[];
+  featurePackages?: string[];
+  publicFeaturePackages?: string[];
 }
 
 export interface PlanPricingDto {
@@ -83,7 +106,8 @@ export interface PlanDto {
   pricing: AppPlanPricing;
   trialDays?: number;
   limits: PlanLimitsDto;
-  features: LocalizedFeature[];
+  featurePackages?: AppFeaturePackage[];
+  publicFeaturePackages?: AppFeaturePackage[];
   createdAt: string;
   updatedAt: string;
   __v: number;

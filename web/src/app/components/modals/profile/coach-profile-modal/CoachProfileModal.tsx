@@ -17,6 +17,7 @@ export default function CoachProfileModal() {
     mockUser,
     isMemberDashboard,
     isManagerDashboard,
+    isAdminDashboard,
     isAlreadyCoached,
     isAlreadyAffiliated,
     hasCurrentGym,
@@ -70,8 +71,8 @@ export default function CoachProfileModal() {
     });
   }
 
-  // Manager: Remove Coach
-  if (isManagerDashboard && onRemove) {
+  // Manager/Admin: Remove Coach
+  if ((isManagerDashboard || isAdminDashboard) && onRemove) {
     actions.push({
       label: t("coaching.removeCoach"),
       onClick: onRemove,
@@ -89,6 +90,7 @@ export default function CoachProfileModal() {
       title={coach?.fullName || t("role.coach") + " Profile"}
       tabs={tabs}
       actions={actions}
+      showContactInfo={isAdminDashboard || isManagerDashboard}
     />
   );
 }

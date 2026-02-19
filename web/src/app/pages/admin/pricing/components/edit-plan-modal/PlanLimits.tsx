@@ -1,6 +1,6 @@
 import type { CreateAppPlanDto } from "@ahmedrioueche/gympro-client";
 import { useTranslation } from "react-i18next";
-import InputField from "../../../../../../../components/ui/InputField";
+import InputField from "../../../../../../components/ui/InputField";
 
 interface PlanLimitsProps {
   formData: CreateAppPlanDto;

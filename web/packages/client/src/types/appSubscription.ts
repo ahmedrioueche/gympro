@@ -92,7 +92,8 @@ export interface AppPlan extends AuditInfo {
     maxGems?: number;
   };
 
-  features: LocalizedFeature[];
+  featurePackages?: import("../dto/appSubscription").AppFeaturePackage[];
+  publicFeaturePackages?: import("../dto/appSubscription").AppFeaturePackage[];
 }
 
 export const APP_SUBSCRIPTION_AUTO_RENEW_TYPES = ["auto", "manual"] as const;
@@ -103,6 +104,7 @@ export interface AppSubscription extends AuditInfo {
   _id: string;
   userId: string;
   planId: string;
+  plan?: AppPlan;
   startDate: string | Date;
   endDate?: string | Date;
   currentPeriodStart: string | Date;

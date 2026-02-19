@@ -1,10 +1,10 @@
 import { Edit } from "lucide-react";
 import BaseModal from "../../../../../../components/ui/BaseModal";
-import { PlanBasicInfo } from "./components/PlanBasicInfo";
-import { PlanFeatures } from "./components/PlanFeatures";
-import { PlanLimits } from "./components/PlanLimits";
-import { PlanPricing } from "./components/PlanPricing";
-import { useEditPlanForm } from "./hooks/useEditPlanForm";
+import { PlanBasicInfo } from "./PlanBasicInfo";
+import { PlanFeatures } from "./PlanFeatures";
+import { PlanLimits } from "./PlanLimits";
+import { PlanPricing } from "./PlanPricing";
+import { useEditPlanForm } from "./useEditPlanForm";
 
 export default function EditPlanModal() {
   const {
@@ -13,21 +13,14 @@ export default function EditPlanModal() {
     closeModal,
     formData,
     setFormData,
-    newFeature,
-    setNewFeature,
     savePlan,
     isPending,
     isDeleting,
     handleDelete,
     handlePricingChange,
     handleLimitChange,
-    addFeature,
-    removeFeature,
-    startEditFeature,
-    cancelEdit,
-    editingIndex,
-    handleAutoTranslate,
-    isTranslating,
+    togglePackage,
+    togglePackageVisibility,
     t,
   } = useEditPlanForm();
 
@@ -43,6 +36,7 @@ export default function EditPlanModal() {
           ? t("admin.pricing.editPlan", "Edit Plan")
           : t("admin.pricing.createPlan", "Create New Plan")
       }
+      subtitle={isEdit ? formData.name : " "}
       primaryButton={{
         label: isPending ? t("common.saving") : t("common.save"),
         onClick: () => savePlan(formData),
@@ -77,15 +71,8 @@ export default function EditPlanModal() {
         <PlanLimits formData={formData} handleLimitChange={handleLimitChange} />
         <PlanFeatures
           formData={formData}
-          newFeature={newFeature}
-          setNewFeature={setNewFeature}
-          addFeature={addFeature}
-          removeFeature={removeFeature}
-          startEditFeature={startEditFeature}
-          cancelEdit={cancelEdit}
-          editingIndex={editingIndex}
-          handleAutoTranslate={handleAutoTranslate}
-          isTranslating={isTranslating}
+          togglePackage={togglePackage}
+          togglePackageVisibility={togglePackageVisibility}
         />
       </div>
     </BaseModal>

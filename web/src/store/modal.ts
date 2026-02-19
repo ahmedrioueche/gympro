@@ -95,6 +95,7 @@ type ModalType =
   | "class_details"
   | "coaching_offer"
   | "create_gym"
+  | "feature_package"
   | null;
 
 interface ModalState {
@@ -143,6 +144,7 @@ interface ModalState {
   createMemberProps?: CreateMemberModalProps;
   classDetailsProps?: ClassDetailsModalProps;
   coachingOfferProps?: import("../types/modals").CoachingOfferModalProps;
+  featurePackageProps?: import("../types/modals").FeaturePackageModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -423,6 +425,12 @@ export const useModalStore = create<ModalState>((set) => ({
       if (modal === "create_gym") {
         return {
           currentModal: "create_gym",
+        };
+      }
+      if (modal === "feature_package") {
+        return {
+          currentModal: "feature_package",
+          featurePackageProps: props,
         };
       }
       return { currentModal: null };

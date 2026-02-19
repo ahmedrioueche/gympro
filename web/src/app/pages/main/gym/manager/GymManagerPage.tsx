@@ -1,4 +1,7 @@
-import { GYM_PERMISSIONS } from "@ahmedrioueche/gympro-client";
+import {
+  GYM_PERMISSIONS,
+  GymManagerFeature,
+} from "@ahmedrioueche/gympro-client";
 import { Outlet } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -20,6 +23,7 @@ import {
 } from "lucide-react";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import { PAGE_CLASSES } from "../../../../../constants/styles";
+import { useFeatureAccess } from "../../../../../hooks/useFeatureAccess";
 import { usePermissions } from "../../../../../hooks/usePermissions";
 import Nav from "../../../../components/nav/Nav";
 
@@ -37,7 +41,7 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.gym.manager.members.link],
   },
   {
-    label: "pricing",
+    label: "services_pricing",
     icon: <DollarSign className="w-5 h-5" />,
     path: APP_PAGES.gym.manager.pricing.link,
     matchPaths: [APP_PAGES.gym.manager.pricing.link],
@@ -131,33 +135,70 @@ const sidebarLinks = [
 
 function GymManagerPage() {
   const { hasPermission } = usePermissions();
+  const { hasFeature } = useFeatureAccess();
 
   const filteredSidebarLinks = sidebarLinks.filter((link) => {
     switch (link.label) {
       case "members":
-        return hasPermission(GYM_PERMISSIONS.members.view);
-      case "pricing":
-        return hasPermission(GYM_PERMISSIONS.pricing.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.members.view) &&
+          hasFeature(GymManagerFeature.MEMBERS)
+        );
+      case "services_pricing":
+        return hasFeature(GymManagerFeature.SERVICES_PRICING);
+      case "subscriptions":
+        return hasFeature(GymManagerFeature.SUBSCRIPTIONS);
+      case "access":
+        return hasFeature(GymManagerFeature.ACCESS_CONTROL_QR);
       case "staff":
-        return hasPermission(GYM_PERMISSIONS.staff.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.staff.view) &&
+          hasFeature(GymManagerFeature.STAFF)
+        );
       case "attendance":
-        return hasPermission(GYM_PERMISSIONS.attendance.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.attendance.view) &&
+          hasFeature(GymManagerFeature.ATTENDANCE)
+        );
+      case "coaching":
+        return hasFeature(GymManagerFeature.COACHING);
       case "analytics":
-        return hasPermission(GYM_PERMISSIONS.analytics.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.analytics.view) &&
+          hasFeature(GymManagerFeature.ANALYTICS)
+        );
       case "settings":
         return hasPermission(GYM_PERMISSIONS.settings.view);
       case "announcements":
-        return hasPermission(GYM_PERMISSIONS.communication.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.communication.view) &&
+          hasFeature(GymManagerFeature.ANNOUNCEMENTS)
+        );
       case "marketing":
-        return hasPermission(GYM_PERMISSIONS.marketing.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.marketing.view) &&
+          hasFeature(GymManagerFeature.MARKETING)
+        );
       case "inventory":
-        return hasPermission(GYM_PERMISSIONS.inventory.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.inventory.view) &&
+          hasFeature(GymManagerFeature.INVENTORY)
+        );
       case "store":
-        return hasPermission(GYM_PERMISSIONS.store.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.store.view) &&
+          hasFeature(GymManagerFeature.STORE)
+        );
       case "competitions":
-        return hasPermission(GYM_PERMISSIONS.competitions.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.competitions.view) &&
+          hasFeature(GymManagerFeature.COMPETITIONS)
+        );
       case "classes":
-        return hasPermission(GYM_PERMISSIONS.schedules.view);
+        return (
+          hasPermission(GYM_PERMISSIONS.schedules.view) &&
+          hasFeature(GymManagerFeature.CLASSES)
+        );
       default:
         // Home, subscriptions (?), access (?), notifications are always visible for now
         // or check logic later

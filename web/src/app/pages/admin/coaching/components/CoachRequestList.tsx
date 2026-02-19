@@ -148,6 +148,9 @@ export default function CoachRequestList({ requests }: CoachRequestListProps) {
         data={filteredRequests}
         keyExtractor={(user) => user._id}
         emptyState={emptyState}
+        onRowClick={(user) =>
+          openModal("admin_review_coach_request", { request: user })
+        }
       />
     </div>
   );

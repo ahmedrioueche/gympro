@@ -1,4 +1,10 @@
-import { CreateAppPlanDto, UpdateAppPlanDto } from "../dto/appSubscription";
+import {
+  AppFeaturePackage,
+  CreateAppFeaturePackageDto,
+  CreateAppPlanDto,
+  UpdateAppFeaturePackageDto,
+  UpdateAppPlanDto,
+} from "../dto/appSubscription";
 import { CreateEditorDto } from "../dto/user";
 import { ApiResponse } from "../types/api";
 import { AdminPaymentView } from "../types/appPayment";
@@ -287,6 +293,74 @@ export const adminApi = {
       const res = await apiClient.post<ApiResponse<Report>>(
         `/reports/${reportId}/response`,
         data,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Admin: Feature Packages */
+  getFeaturePackages: async (
+    activeOnly = false,
+  ): Promise<ApiResponse<AppFeaturePackage[]>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<AppFeaturePackage[]>>(
+        `/admin/feature-packages`,
+        { params: { activeOnly } },
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  getFeaturePackage: async (
+    id: string,
+  ): Promise<ApiResponse<AppFeaturePackage>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<AppFeaturePackage>>(
+        `/admin/feature-packages/${id}`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  createFeaturePackage: async (
+    data: CreateAppFeaturePackageDto,
+  ): Promise<ApiResponse<AppFeaturePackage>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<AppFeaturePackage>>(
+        `/admin/feature-packages`,
+        data,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  updateFeaturePackage: async (
+    id: string,
+    data: UpdateAppFeaturePackageDto,
+  ): Promise<ApiResponse<AppFeaturePackage>> => {
+    try {
+      const res = await apiClient.put<ApiResponse<AppFeaturePackage>>(
+        `/admin/feature-packages/${id}`,
+        data,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  deleteFeaturePackage: async (id: string): Promise<ApiResponse<void>> => {
+    try {
+      const res = await apiClient.delete<ApiResponse<void>>(
+        `/admin/feature-packages/${id}`,
       );
       return res.data;
     } catch (error) {

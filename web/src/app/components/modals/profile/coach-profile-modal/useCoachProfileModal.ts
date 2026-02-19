@@ -21,6 +21,7 @@ export function useCoachProfileModal() {
   const isOpen = currentModal === "coach_profile";
   const isMemberDashboard = activeDashboard === "member";
   const isManagerDashboard = activeDashboard === "manager";
+  const isAdminDashboard = activeDashboard === "admin";
 
   // Check if user is already being coached by this coach
   const isAlreadyCoached =
@@ -82,6 +83,7 @@ export function useCoachProfileModal() {
     mockUser,
     isMemberDashboard,
     isManagerDashboard,
+    isAdminDashboard,
     isAlreadyCoached,
     isAlreadyAffiliated,
     hasCurrentGym: !!currentGym,
