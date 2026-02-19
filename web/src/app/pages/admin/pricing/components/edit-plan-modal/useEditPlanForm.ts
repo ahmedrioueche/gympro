@@ -28,6 +28,11 @@ const initialPlanState: CreateAppPlanDto = {
   },
   featurePackages: [],
   publicFeaturePackages: [],
+  paddleProductId: "",
+  paddlePriceIds: {
+    monthly: "",
+    yearly: "",
+  },
 };
 
 export function useEditPlanForm() {
@@ -57,6 +62,11 @@ export function useEditPlanForm() {
         publicFeaturePackages: (plan.publicFeaturePackages || []).map(
           (p: any) => (typeof p === "string" ? p : p._id),
         ),
+        paddleProductId: plan.paddleProductId || "",
+        paddlePriceIds: {
+          monthly: plan.paddlePriceIds?.monthly || "",
+          yearly: plan.paddlePriceIds?.yearly || "",
+        },
       } as CreateAppPlanDto);
     } else if (isOpen) {
       setFormData(initialPlanState);
