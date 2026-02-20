@@ -6,9 +6,9 @@ import BaseModal from "../../../../components/ui/BaseModal";
 import { useCreateGym, useMyGyms } from "../../../../hooks/queries/useGyms";
 import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
-import StepBasicInfo from "./components/StepBasicInfo";
-import StepContact from "./components/StepContact";
-import StepLocation from "./components/StepLocation";
+import StepBasicInfo from "./StepBasicInfo";
+import StepContact from "./StepContact";
+import StepLocation from "./StepLocation";
 
 export const CreateGymModal = () => {
   const { t } = useTranslation();
@@ -120,7 +120,7 @@ export const CreateGymModal = () => {
     <BaseModal
       isOpen={isOpen}
       onClose={handleClose}
-      title={t("create_gym.page_title")}
+      title={t("create_gym.title")}
       subtitle={steps[step - 1].description}
       maxWidth="max-w-2xl"
       icon={Plus}

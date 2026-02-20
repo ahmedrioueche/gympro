@@ -1,6 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../common/schemas/user.schema';
+import { AppBillingModule } from '../appBilling/appBilling.module';
 import { DashboardModule } from '../dashboard/dashboard.module';
 import {
   GymCoachAffiliation,
@@ -22,6 +23,7 @@ import { GymService } from './gym.service';
     ]),
     forwardRef(() => DashboardModule),
     forwardRef(() => UsersModule),
+    forwardRef(() => AppBillingModule),
   ],
   controllers: [GymController],
   providers: [GymService],

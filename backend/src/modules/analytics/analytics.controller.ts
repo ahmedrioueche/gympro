@@ -1,4 +1,9 @@
+import { GymManagerFeature } from '@ahmedrioueche/gympro-client';
 import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
+import {
+  GymFeatureGuard,
+  RequireFeature,
+} from '../../common/guards/gym-feature.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   GymPermissionsGuard,
@@ -23,8 +28,9 @@ export class AnalyticsController {
   }
 
   @Get(':gymId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('analytics:view')
+  @RequireFeature(GymManagerFeature.ANALYTICS)
   async getGymStats(@Param('gymId') gymId: string) {
     const stats = await this.analyticsService.getGymStats(gymId);
     return {

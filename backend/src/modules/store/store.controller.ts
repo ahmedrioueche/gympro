@@ -1,6 +1,7 @@
 import {
   ApiResponse,
   CreateProductDto,
+  GymManagerFeature,
   Product,
   UpdateProductDto,
 } from '@ahmedrioueche/gympro-client';
@@ -15,6 +16,10 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import {
+  GymFeatureGuard,
+  RequireFeature,
+} from '../../common/guards/gym-feature.guard';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
@@ -24,7 +29,8 @@ import {
 import { StoreService } from './store.service';
 
 @Controller('gyms/:gymId/store')
-@UseGuards(JwtAuthGuard, GymPermissionsGuard)
+@UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
+@RequireFeature(GymManagerFeature.STORE)
 export class StoreController {
   constructor(private readonly storeService: StoreService) {}
 

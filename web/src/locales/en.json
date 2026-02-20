@@ -160,6 +160,12 @@
     },
     "per_month": "/ month"
   },
+  "billing": {
+    "limits": {
+      "gym_creation_limit_reached": "You have reached your gym creation limit ({{limit}}). Please upgrade your plan to create more gyms.",
+      "member_limit_reached": "This gym has reached its member limit ({{limit}}). Please upgrade the plan to add more members."
+    }
+  },
   "confirm": {
     "default": {
       "title": "Are you sure?",

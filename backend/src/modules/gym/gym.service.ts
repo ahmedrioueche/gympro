@@ -11,6 +11,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
+import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
+import { calculateSubscriptionLimits } from '../appBilling/subscription/subscription.util';
 import {
   AffiliationStatus,
   GymCoachAffiliation,
@@ -30,9 +32,27 @@ export class GymService {
     @InjectModel(GymCoachAffiliation.name)
     private affiliationModel: Model<GymCoachAffiliationDocument>,
     private readonly notificationsService: NotificationsService,
+    private readonly appSubscriptionService: AppSubscriptionService,
   ) {}
 
   async create(createGymDto: CreateGymDto) {
+    // 1. Check gym creation limits based on owner's subscription
+    const subscription = await this.appSubscriptionService.getMySubscription(
+      createGymDto.owner,
+    );
+    const limits = calculateSubscriptionLimits(subscription);
+
+    const currentGymsCount = await this.gymModel.countDocuments({
+      owner: createGymDto.owner,
+    });
+
+    if (currentGymsCount >= limits.maxGyms) {
+      throw new ConflictException({
+        message: 'billing.limits.gym_creation_limit_reached',
+        vars: { limit: limits.maxGyms },
+      });
+    }
+
     // Check if a gym with the same name and owner already exists
     const existingGym = await this.gymModel.findOne({
       name: createGymDto.name,

@@ -4,17 +4,23 @@ import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../../constants/navigation";
 
 import GradientCard from "../../../../../../components/ui/GradientCard";
+import { useSubscriptionLimits } from "../../../../../../hooks/useSubscriptionLimits";
 import { useModalStore } from "../../../../../../store/modal";
 
 function QuickActions() {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
+  const { checkGymLimit } = useSubscriptionLimits();
 
   const quickActions = [
     {
       icon: <PlusIcon className="w-10 h-10" />,
       label: t("home.manager.quickActions.createGym"),
-      action: () => openModal("create_gym"),
+      action: () => {
+        if (checkGymLimit()) {
+          openModal("create_gym");
+        }
+      },
       gradient: "from-blue-500 to-blue-600",
       bgHover: "hover:from-blue-600 hover:to-blue-700",
     },

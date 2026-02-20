@@ -309,6 +309,7 @@ export class AuthService {
     if (sanitizedUser.appSubscription?.planId) {
       const plan = await this.appPlanModel
         .findOne({ planId: sanitizedUser.appSubscription.planId })
+        .populate(['featurePackages', 'publicFeaturePackages'])
         .lean()
         .exec();
       sanitizedUser.appSubscription.plan = plan;

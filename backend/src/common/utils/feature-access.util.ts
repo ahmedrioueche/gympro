@@ -2,16 +2,25 @@ import { AppFeature, UserRole } from '@ahmedrioueche/gympro-client';
 import { User } from '../schemas/user.schema';
 
 /**
- * Utility to check if a user has access to a specific application feature.
- * Currently focuses on gym management features.
+ * Utility to check if a user has access to a specific application feature
+ * within a gym context. Features are determined by the gym's effective
+ * subscription (synced from the owner's plan).
+ *
+ * @param user - The authenticated user
+ * @param feature - The feature to check access for
+ * @param gym - The gym document with populated appSubscription
  */
-export function checkFeatureAccess(user: User, feature: AppFeature): boolean {
+export function checkFeatureAccess(
+  user: User,
+  feature: AppFeature,
+  gym?: any,
+): boolean {
   // Admins and App Editors have full access
   if (user.role === UserRole.Admin || user.dashboardAccess?.includes('admin')) {
     return true;
   }
 
-  // Only gym management roles are restricted by app subscription features for now
+  // Only gym management roles are restricted by app subscription features
   const isGymStaff =
     user.role === UserRole.Owner ||
     user.role === UserRole.Manager ||
@@ -21,9 +30,8 @@ export function checkFeatureAccess(user: User, feature: AppFeature): boolean {
     return true;
   }
 
-  // Check if the user has an active subscription and if it includes the feature
-  // Note: appSubscription and its plan should be populated for this check to work
-  const subscription = user.appSubscription as any;
+  // Check from gym's synced subscription (covers all staff roles)
+  const subscription = gym?.appSubscription;
   const featurePackages = subscription?.plan?.featurePackages || [];
 
   // Flatten all features from all assigned packages

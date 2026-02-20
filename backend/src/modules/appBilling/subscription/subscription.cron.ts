@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { User } from 'src/common/schemas/user.schema';
 import { NotificationsService } from 'src/modules/notifications/notifications.service';
 import { AppPlanModel, AppSubscriptionModel } from '../appBilling.schema';
+import { AppSubscriptionService } from './subscription.service';
 
 @Injectable()
 export class SubscriptionCronService {
@@ -18,6 +19,7 @@ export class SubscriptionCronService {
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     private readonly notificationsService: NotificationsService,
+    private readonly appSubscriptionService: AppSubscriptionService,
   ) {}
 
   /**
@@ -26,7 +28,7 @@ export class SubscriptionCronService {
    * - Notify when subscription expired
    * - Notify when downgrade will apply soon
    */
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_9AM)
   async handleSubscriptionsCron() {
     this.logger.log('⏰ Subscription cron started');
 
@@ -122,6 +124,11 @@ export class SubscriptionCronService {
 
       sub.status = 'cancelled';
       await sub.save();
+
+      // Sync cancelled status to owner's gyms
+      await this.appSubscriptionService.syncSubscriptionToGyms(
+        sub.userId.toString(),
+      );
 
       await this.notificationsService.notifyUser(user, {
         key: 'subscription.expired',

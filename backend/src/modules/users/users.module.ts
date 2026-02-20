@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GeolocationService } from 'src/common/services/geolocation.service';
+import { GymFeatureGuard } from '../../common/guards/gym-feature.guard';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import { AppBillingModule } from '../appBilling/appBilling.module';
 import {
@@ -60,12 +61,13 @@ import { UsersService } from './users.service';
     UsersService,
     RolesGuard,
     PermissionsGuard,
-    GymPermissionsGuard, // Add new guard
+    GymPermissionsGuard,
+    GymFeatureGuard,
     GeolocationService,
     AppSubscriptionService,
     AppPlansService,
     PaddleService,
   ],
-  exports: [UsersService, GymPermissionsGuard, MongooseModule], // Export for use in other modules
+  exports: [UsersService, GymPermissionsGuard, GymFeatureGuard, MongooseModule],
 })
 export class UsersModule {}

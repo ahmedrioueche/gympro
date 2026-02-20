@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Dumbbell, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAllMyGyms } from "../../../../../hooks/queries/useGyms";
+import { useSubscriptionLimits } from "../../../../../hooks/useSubscriptionLimits";
 import PageHeader from "../../../../components/PageHeader";
 import GymList from "../../../../components/gym/GymList";
 
@@ -12,6 +13,7 @@ export default function GymsPage() {
   const { data: gyms = [], isLoading } = useAllMyGyms();
   const navigate = useNavigate();
   const { openModal } = useModalStore();
+  const { checkGymLimit } = useSubscriptionLimits();
   return (
     <div>
       <PageHeader
@@ -20,7 +22,11 @@ export default function GymsPage() {
         actionButton={{
           icon: Plus,
           label: t("gyms.create_button"),
-          onClick: () => openModal("create_gym"),
+          onClick: () => {
+            if (checkGymLimit()) {
+              openModal("create_gym");
+            }
+          },
         }}
         icon={Dumbbell}
       />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import InputField from "../../../../../components/ui/InputField";
+import InputField from "../../../../components/ui/InputField";
 import StepHeader from "./StepHeader";
 
 declare global {

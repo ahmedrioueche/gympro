@@ -5,6 +5,7 @@ import {
 import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import GradientCard from "../../../../../../components/ui/GradientCard";
+import { useSubscriptionLimits } from "../../../../../../hooks/useSubscriptionLimits";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useModalStore } from "../../../../../../store/modal";
 import { useUserStore } from "../../../../../../store/user";
@@ -30,6 +31,7 @@ function BusinessOverview({ metrics }: BusinessOverviewProps) {
   const { language } = useLanguageStore();
   const hasBusinessData = metrics.totalGyms > 0;
   const { openModal } = useModalStore();
+  const { checkGymLimit } = useSubscriptionLimits();
 
   return (
     <GradientCard>
@@ -177,7 +179,11 @@ function BusinessOverview({ metrics }: BusinessOverviewProps) {
             {t("home.manager.businessOverview.noDataDescription")}
           </p>
           <div
-            onClick={() => openModal("create_gym")}
+            onClick={() => {
+              if (checkGymLimit()) {
+                openModal("create_gym");
+              }
+            }}
             className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
           >
             <PlusIcon className="w-5 h-5" />

@@ -1,6 +1,7 @@
 import {
   ApiResponse,
   CreateSubscriptionTypeDto,
+  GymManagerFeature,
   SubscriptionType,
   UpdateSubscriptionTypeDto,
 } from '@ahmedrioueche/gympro-client';
@@ -12,10 +13,18 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import {
+  GymFeatureGuard,
+  RequireFeature,
+} from '../../common/guards/gym-feature.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GymSubscriptionService } from './gymSubscription.service';
 
 @Controller('gyms/:gymId/subscription-types')
+@UseGuards(JwtAuthGuard, GymFeatureGuard)
+@RequireFeature(GymManagerFeature.SUBSCRIPTIONS)
 export class GymSubscriptionController {
   constructor(private readonly service: GymSubscriptionService) {}
 

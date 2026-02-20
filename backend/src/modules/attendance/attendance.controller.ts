@@ -1,3 +1,4 @@
+import { GymManagerFeature } from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -7,6 +8,10 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import {
+  GymFeatureGuard,
+  RequireFeature,
+} from '../../common/guards/gym-feature.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   GymPermissionsGuard,
@@ -25,16 +30,18 @@ export class AttendanceController {
   }
 
   @Get('access-token/:gymId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('attendance:view')
+  @RequireFeature(GymManagerFeature.ATTENDANCE)
   async getAccessToken(@Param('gymId') gymId: string, @Request() req: any) {
     const memberId = req.user.sub;
     return this.attendanceService.generateAccessToken(memberId, gymId);
   }
 
   @Get('logs/:gymId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('attendance:view')
+  @RequireFeature(GymManagerFeature.ATTENDANCE)
   async getLogs(@Param('gymId') gymId: string) {
     return this.attendanceService.getAttendanceLogs(gymId);
   }

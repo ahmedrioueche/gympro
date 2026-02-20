@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GymSchema } from '../gym/gym.schema';
 import { GymMembershipSchema } from '../gymMembership/membership.schema';
+import { UsersModule } from '../users/users.module';
 import { InventoryController } from './inventory.controller';
 import { EquipmentItemModel, EquipmentItemSchema } from './inventory.schema';
 import { InventoryService } from './inventory.service';
@@ -13,6 +14,7 @@ import { InventoryService } from './inventory.service';
       { name: 'GymMembership', schema: GymMembershipSchema },
       { name: 'GymModel', schema: GymSchema },
     ]),
+    UsersModule,
   ],
   controllers: [InventoryController],
   providers: [InventoryService],

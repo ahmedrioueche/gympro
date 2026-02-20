@@ -3,6 +3,7 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { Building2, Home, Plus, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useScreen from "../../../../hooks/useScreen";
+import { useSubscriptionLimits } from "../../../../hooks/useSubscriptionLimits";
 import { useGymStore } from "../../../../store/gym";
 import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
@@ -31,6 +32,7 @@ export default function GymSelectorDropdown({
   const { clearGym } = useGymStore();
   const { isMobile } = useScreen();
   const { openModal } = useModalStore();
+  const { checkGymLimit } = useSubscriptionLimits();
   const isOnGymDashboard = routerState.location.pathname.startsWith("/gym");
 
   return (
@@ -115,8 +117,10 @@ export default function GymSelectorDropdown({
         <div className="relative border-t border-white/5 p-3 bg-gradient-to-b from-transparent to-black/5 dark:to-white/5">
           <button
             onClick={() => {
-              onClose();
-              openModal("create_gym");
+              if (checkGymLimit()) {
+                onClose();
+                openModal("create_gym");
+              }
             }}
             className={`w-full flex items-center justify-center gap-2.5 ${
               isMobile ? "px-4 py-3" : "px-5 py-3.5"

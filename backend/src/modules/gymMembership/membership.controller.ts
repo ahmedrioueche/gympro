@@ -1,5 +1,9 @@
 import type { ApiResponse } from '@ahmedrioueche/gympro-client';
-import { apiResponse, ErrorCode } from '@ahmedrioueche/gympro-client';
+import {
+  apiResponse,
+  ErrorCode,
+  GymManagerFeature,
+} from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -12,6 +16,10 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  GymFeatureGuard,
+  RequireFeature,
+} from '../../common/guards/gym-feature.guard';
 import { CreateMemberDto } from '../auth/auth.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GymService } from '../gym/gym.service';
@@ -154,8 +162,9 @@ export class MembershipController {
   }
 
   @Post('create')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('members:create')
+  @RequireFeature(GymManagerFeature.MEMBERS)
   async createMember(
     @Body() dto: CreateMemberDto,
     @Req() req: any,
@@ -240,8 +249,9 @@ export class MembershipController {
   }
 
   @Get(':gymId/:membershipId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('members:view')
+  @RequireFeature(GymManagerFeature.MEMBERS)
   async getMember(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -263,8 +273,9 @@ export class MembershipController {
   }
 
   @Get(':gymId/:membershipId/profile')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('members:view')
+  @RequireFeature(GymManagerFeature.MEMBERS)
   async getMemberProfile(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -286,8 +297,9 @@ export class MembershipController {
   }
 
   @Patch(':gymId/:membershipId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('members:edit')
+  @RequireFeature(GymManagerFeature.MEMBERS)
   async updateMember(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -316,8 +328,9 @@ export class MembershipController {
   }
 
   @Post(':gymId/:membershipId/reactivate')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('members:edit')
+  @RequireFeature(GymManagerFeature.MEMBERS)
   async reactivateSubscription(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -355,8 +368,9 @@ export class MembershipController {
   }
 
   @Delete(':gymId/:membershipId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('members:delete')
+  @RequireFeature(GymManagerFeature.MEMBERS)
   async deleteMember(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -385,8 +399,9 @@ export class MembershipController {
   // ==================== STAFF ENDPOINTS ====================
 
   @Get('gym/:gymId/staff')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('staff:view')
+  @RequireFeature(GymManagerFeature.STAFF)
   async getGymStaff(
     @Param('gymId') gymId: string,
   ): Promise<ApiResponse<any[]>> {
@@ -404,8 +419,9 @@ export class MembershipController {
   }
 
   @Post('gym/:gymId/staff')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('staff:manage')
+  @RequireFeature(GymManagerFeature.STAFF)
   async addStaff(
     @Param('gymId') gymId: string,
     @Body()
@@ -483,8 +499,9 @@ export class MembershipController {
   }
 
   @Patch('gym/:gymId/staff/:membershipId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('staff:manage')
+  @RequireFeature(GymManagerFeature.STAFF)
   async updateStaff(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,
@@ -520,8 +537,9 @@ export class MembershipController {
   }
 
   @Delete('gym/:gymId/staff/:membershipId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('staff:manage')
+  @RequireFeature(GymManagerFeature.STAFF)
   async removeStaff(
     @Param('gymId') gymId: string,
     @Param('membershipId') membershipId: string,

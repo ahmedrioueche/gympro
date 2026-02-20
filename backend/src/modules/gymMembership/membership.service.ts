@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
+import { calculateSubscriptionLimits } from '../appBilling/subscription/subscription.util';
 import { CreateMemberDto } from '../auth/auth.dto';
 import { GymModel } from '../gym/gym.schema';
 import {
@@ -54,6 +55,25 @@ export class MembershipService {
 
   async createMember(dto: CreateMemberDto, createdBy: string) {
     const { email, phoneNumber, gymId, fullName, gender, age } = dto;
+
+    // 1. Check member limits for this gym based on synced appSubscription
+    const gym = await this.gymModel
+      .findById(gymId)
+      .select('appSubscription memberStats')
+      .lean()
+      .exec();
+
+    if (gym) {
+      const limits = calculateSubscriptionLimits(gym.appSubscription);
+      const currentMembers = gym.memberStats?.total || 0;
+
+      if (currentMembers >= limits.maxMembers) {
+        throw new BadRequestException({
+          message: 'billing.limits.member_limit_reached',
+          vars: { limit: limits.maxMembers },
+        });
+      }
+    }
 
     // Validate that at least one contact method is provided or generate dummy ones
     let finalEmail = email;

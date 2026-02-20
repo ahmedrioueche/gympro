@@ -228,5 +228,11 @@
       "offer_respond_decline_title": "Offer Declined",
       "offer_respond_decline_body": "{{memberName}} declined your coaching offer."
     }
+  },
+  "billing": {
+    "limits": {
+      "gym_creation_limit_reached": "You have reached your gym creation limit ({{limit}}). Please upgrade your plan to create more gyms.",
+      "member_limit_reached": "This gym has reached its member limit ({{limit}}). Please upgrade the plan to add more members."
+    }
   }
 }

@@ -59,6 +59,12 @@
     "years": "ans",
     "amount": "Montant"
   },
+  "billing": {
+    "limits": {
+      "gym_creation_limit_reached": "Vous avez atteint votre limite de création de salles ({{limit}}). Veuillez mettre à jour votre abonnement pour créer plus de salles.",
+      "member_limit_reached": "Cette salle a atteint sa limite de membres ({{limit}}). Veuillez mettre à jour l'abonnement pour ajouter plus de membres."
+    }
+  },
   "confirm": {
     "default": {
       "title": "Êtes-vous sûr ?",

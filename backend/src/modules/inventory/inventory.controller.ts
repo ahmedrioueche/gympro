@@ -1,6 +1,7 @@
 import {
   CreateEquipmentDto,
   GYM_PERMISSIONS,
+  GymManagerFeature,
   UpdateEquipmentDto,
 } from '@ahmedrioueche/gympro-client';
 import {
@@ -14,6 +15,10 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import {
+  GymFeatureGuard,
+  RequireFeature,
+} from '../../common/guards/gym-feature.guard';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
@@ -23,7 +28,8 @@ import {
 import { InventoryService } from './inventory.service';
 
 @Controller('gyms/:gymId/inventory')
-@UseGuards(JwtAuthGuard, GymPermissionsGuard)
+@UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
+@RequireFeature(GymManagerFeature.INVENTORY)
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 

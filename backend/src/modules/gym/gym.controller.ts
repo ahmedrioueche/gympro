@@ -1,4 +1,8 @@
-import { apiResponse, ErrorCode } from '@ahmedrioueche/gympro-client';
+import {
+  apiResponse,
+  ErrorCode,
+  GymManagerFeature,
+} from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -11,6 +15,10 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  GymFeatureGuard,
+  RequireFeature,
+} from '../../common/guards/gym-feature.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DashboardService } from '../dashboard/dashboard.service';
 import {
@@ -246,8 +254,9 @@ export class GymController {
   }
 
   @Post(':id/media')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('marketing:manage')
+  @RequireFeature(GymManagerFeature.MARKETING)
   async addMedia(@Param('id') id: string, @Body() mediaItem: any) {
     console.log(`AddMedia request for gym ${id}:`, mediaItem);
     try {
@@ -267,8 +276,9 @@ export class GymController {
   }
 
   @Delete(':id/media/:publicId')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('marketing:manage')
+  @RequireFeature(GymManagerFeature.MARKETING)
   async removeMedia(
     @Param('id') id: string,
     @Param('publicId') publicId: string,
@@ -287,8 +297,9 @@ export class GymController {
   }
 
   @Post(':id/banner')
-  @UseGuards(JwtAuthGuard, GymPermissionsGuard)
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('marketing:manage')
+  @RequireFeature(GymManagerFeature.MARKETING)
   async setBanner(@Param('id') id: string, @Body() banner: any) {
     try {
       const gym = await this.gymService.setBanner(id, banner);

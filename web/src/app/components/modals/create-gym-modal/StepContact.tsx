@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import InputField from "../../../../../components/ui/InputField";
+import InputField from "../../../../components/ui/InputField";
 import StepHeader from "./StepHeader";
 
 function StepContact({ formData, handleChange, steps }) {

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import InputField from "../../../../../components/ui/InputField";
-import TextArea from "../../../../../components/ui/TextArea";
+import InputField from "../../../../components/ui/InputField";
+import TextArea from "../../../../components/ui/TextArea";
 import StepHeader from "./StepHeader";
 
 function StepBasicInfo({ formData, handleChange, steps, duplicateGymName }) {

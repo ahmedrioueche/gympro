@@ -20,6 +20,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MAX_DAILY_CANCELLATIONS } from 'src/common/constants/subscription.constants';
 import { User } from 'src/common/schemas/user.schema';
+import { GymModel } from 'src/modules/gym/gym.schema';
 import { NotificationsService } from 'src/modules/notifications/notifications.service';
 import { PaddleService } from 'src/modules/paddle/paddle.service';
 import {
@@ -41,6 +42,8 @@ export class AppSubscriptionService {
     private readonly appPlanModel: Model<AppPlanModel>,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
+    @InjectModel(GymModel.name)
+    private readonly gymModel: Model<GymModel>,
     private readonly notificationsService: NotificationsService,
     @Inject(forwardRef(() => PaddleService))
     private readonly paddleService: PaddleService,
@@ -51,6 +54,52 @@ export class AppSubscriptionService {
     )
     private readonly paymentService: any,
   ) {}
+
+  /**
+   * Sync the subscription data to all gyms owned by this user.
+   * This ensures staff members (managers, receptionists) can access
+   * the owner's plan features via the gym document.
+   */
+  async syncSubscriptionToGyms(userId: string) {
+    try {
+      const sub = await this.subscriptionModel
+        .findOne({ userId })
+        .lean()
+        .exec();
+
+      if (!sub) {
+        // No subscription — clear appSubscription on all owner's gyms
+        await this.gymModel.updateMany(
+          { owner: userId },
+          { $unset: { appSubscription: 1 } },
+        );
+        return;
+      }
+
+      const plan = await this.appPlanModel
+        .findOne({ planId: sub.planId })
+        .populate(['featurePackages', 'publicFeaturePackages'])
+        .lean()
+        .exec();
+
+      const subscriptionData = {
+        ...sub,
+        plan,
+      };
+
+      await this.gymModel.updateMany(
+        { owner: userId },
+        { appSubscription: subscriptionData },
+      );
+
+      this.logger.log(`✅ Synced subscription to gyms for user ${userId}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to sync subscription to gyms for user ${userId}`,
+        error,
+      );
+    }
+  }
 
   async getMySubscription(userId: string) {
     const sub = await this.subscriptionModel
@@ -285,6 +334,9 @@ export class AppSubscriptionService {
       prorationCredit,
       paymentMetadata,
     );
+
+    // Sync subscription to owner's gyms
+    await this.syncSubscriptionToGyms(userId);
 
     return saved;
   }
@@ -613,6 +665,9 @@ export class AppSubscriptionService {
     });
     await history.save();
 
+    // Sync subscription to owner's gyms
+    await this.syncSubscriptionToGyms(userId);
+
     return currentSub;
   }
 
@@ -711,6 +766,9 @@ export class AppSubscriptionService {
     });
     await history.save();
 
+    // Sync subscription to owner's gyms
+    await this.syncSubscriptionToGyms(userId);
+
     return updatedSub || sub;
   }
 
@@ -801,6 +859,9 @@ export class AppSubscriptionService {
     const updatedSub = await this.subscriptionModel
       .findOne({ _id: sub._id })
       .exec();
+
+    // Sync subscription to owner's gyms
+    await this.syncSubscriptionToGyms(userId);
 
     return updatedSub || sub;
   }
@@ -1075,6 +1136,9 @@ export class AppSubscriptionService {
         `✅ [SYNC] Subscription synced: ${paddleData.paddleSubscriptionId}`,
       );
 
+      // Sync subscription to owner's gyms
+      await this.syncSubscriptionToGyms(sub.userId);
+
       return sub;
     } catch (error) {
       this.logger.error('❌ [SYNC] Failed to sync subscription', error);
@@ -1218,6 +1282,8 @@ export class AppSubscriptionService {
         this.logger.error('Failed to create payment record for renewal', error);
       }
     }
+    // Sync subscription to owner's gyms
+    await this.syncSubscriptionToGyms(userId);
 
     return subscription;
   }

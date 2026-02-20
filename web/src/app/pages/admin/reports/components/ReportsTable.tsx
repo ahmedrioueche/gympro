@@ -130,7 +130,9 @@ export default function ReportsTable({
       header: t("admin.reports.table.reporter"),
       render: (report: Report) => (
         <div className="flex items-center gap-2">
-          {typeof report.reporter !== "string" && report.reporter.profile ? (
+          {report.reporter &&
+          typeof report.reporter !== "string" &&
+          report.reporter.profile ? (
             <>
               <div className="w-6 h-6 rounded-full bg-surface-secondary flex items-center justify-center text-xs text-text-primary font-bold">
                 {report.reporter.profile.fullName?.[0]}
@@ -189,6 +191,90 @@ export default function ReportsTable({
     },
   ];
 
+  const renderMobileCard = (report: Report) => {
+    const reporterName =
+      report.reporter &&
+      typeof report.reporter !== "string" &&
+      report.reporter.profile
+        ? report.reporter.profile.fullName
+        : t("common.unknown");
+
+    return (
+      <div className="p-4 space-y-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-2 bg-surface-secondary rounded-lg shrink-0">
+              {getTypeIcon(report.type)}
+            </div>
+            <div className="min-w-0">
+              <span className="font-medium text-text-primary block truncate">
+                {report.subject}
+              </span>
+              <span className="text-xs text-text-secondary">
+                {t(`admin.reports.type.${report.type}`)}
+              </span>
+            </div>
+          </div>
+          <span
+            className={`shrink-0 px-2 py-1 rounded-full text-[10px] font-bold uppercase ${getStatusColor(report.status)}`}
+          >
+            {t(`admin.reports.status.${report.status}`)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-surface-secondary border border-border/50">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full bg-surface flex items-center justify-center text-[10px] text-text-primary font-bold">
+              {reporterName?.[0] || "?"}
+            </div>
+            <span className="text-xs text-text-secondary">{reporterName}</span>
+          </div>
+          <span
+            className={`text-xs font-bold ${getPriorityColor(report.priority)}`}
+          >
+            {t(`admin.reports.priority.${report.priority}`)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] text-text-secondary">
+            {format(new Date(report.createdAt), "PP")}
+          </span>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              openModal("report_details", { report });
+            }}
+            className="flex items-center gap-1 text-xs font-medium text-text-primary hover:text-text-primary/80 transition-colors"
+          >
+            {t("common.view")}
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderMobileLoadingSkeleton = () => (
+    <div className="p-4 space-y-3 animate-pulse">
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 bg-border rounded-lg" />
+          <div className="space-y-1.5">
+            <div className="h-3.5 bg-border rounded w-32" />
+            <div className="h-3 bg-border rounded w-16" />
+          </div>
+        </div>
+        <div className="h-5 bg-border rounded-full w-16" />
+      </div>
+      <div className="h-10 bg-border rounded-xl" />
+      <div className="flex justify-between">
+        <div className="h-3 bg-border rounded w-20" />
+        <div className="h-3 bg-border rounded w-12" />
+      </div>
+    </div>
+  );
+
   return (
     <Table
       data={reports}
@@ -198,6 +284,8 @@ export default function ReportsTable({
       onRowClick={(report) => {
         openModal("report_details", { report });
       }}
+      renderMobileCard={renderMobileCard}
+      renderMobileLoadingSkeleton={renderMobileLoadingSkeleton}
       emptyState={
         <NoData
           title={t("admin.reports.empty")}
