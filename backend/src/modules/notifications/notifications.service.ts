@@ -171,6 +171,7 @@ export class NotificationsService {
 
           return this.send(user, {
             key: 'gym.schedule_updated',
+            gymId: gymId, // Pass gymId for filtering
             vars: {
               gymName: gym.name,
               changes: translatedChanges.join(', '),
@@ -245,6 +246,7 @@ export class NotificationsService {
         usersToNotify.map((user) =>
           this.send(user, {
             key: `gym.closure_${type}`,
+            gymId: gymId, // Pass gymId for filtering
             vars: {
               gymName: gym.name,
               reason: closure.reason || 'Temporary Closure',

@@ -4,6 +4,7 @@ import type {
   Currency,
   GymService,
   GymSettings,
+  GymStats,
   PaymentMethod,
   TimeRange,
   WeeklyTimeRange,

@@ -37,7 +37,8 @@ export const getGymStatusStyles = (status?: GymStatus) => {
 export const getGymStatusText = (status: GymStatus, t: any) => {
   if (status.isTemporaryClosure)
     return status.nextStatusChange || t("home.gym.status.closed", "Closed");
-  if (!status.isOpen) return t("home.gym.status.closed", "Closed");
+  if (!status.isOpen)
+    return status.nextStatusChange || t("home.gym.status.closed", "Closed");
   if (status.isWomenOnly)
     return t("home.gym.status.womenOnly", "Women Only Now");
   if (status.currentSession === "menOnly")
