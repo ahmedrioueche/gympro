@@ -153,7 +153,9 @@ export default function GymHeroSection({
                 <div className="text-sm font-bold text-text-secondary uppercase tracking-wider">
                   {status.isTemporaryClosure
                     ? t("home.gym.temporaryClosure", "Closure Active")
-                    : t("home.gym.workingHours", "Operating Hours")}
+                    : gym.settings.useAdvancedHours
+                      ? t("home.gym.advancedSchedule", "Advanced Schedule")
+                      : t("home.gym.workingHours", "Operating Hours")}
                 </div>
               </div>
 
@@ -192,15 +194,67 @@ export default function GymHeroSection({
                   </>
                 ) : (
                   <>
-                    <div className="text-2xl md:text-3xl font-black text-text-primary mb-1">
-                      {gym.settings.workingHours.start} —{" "}
-                      {gym.settings.workingHours.end}
+                    <div className="flex flex-col gap-1">
+                      {gym.settings.useAdvancedHours &&
+                      gym.settings.customWorkingHours ? (
+                        gym.settings.customWorkingHours
+                          .filter((slot) =>
+                            slot.days.some(
+                              (day) =>
+                                day.toLowerCase() ===
+                                new Date()
+                                  .toLocaleDateString("en-US", {
+                                    weekday: "long",
+                                  })
+                                  .toLowerCase(),
+                            ),
+                          )
+                          .map((slot, index) => (
+                            <div
+                              key={index}
+                              className="text-xl md:text-2xl font-black text-text-primary leading-none"
+                            >
+                              {slot.range.start} — {slot.range.end}
+                            </div>
+                          ))
+                      ) : (
+                        <div className="text-2xl md:text-3xl font-black text-text-primary mb-1">
+                          {status.isOpen
+                            ? status.nextStatusChange?.startsWith("Closes at")
+                              ? status.nextStatusChange.replace(
+                                  "Closes at ",
+                                  "",
+                                )
+                              : `${gym.settings.workingHours.start} — ${gym.settings.workingHours.end}`
+                            : t("common.closed", "Closed")}
+                        </div>
+                      )}
+                      {!status.isOpen &&
+                        gym.settings.useAdvancedHours &&
+                        gym.settings.customWorkingHours?.filter((slot) =>
+                          slot.days.some(
+                            (day) =>
+                              day.toLowerCase() ===
+                              new Date()
+                                .toLocaleDateString("en-US", {
+                                  weekday: "long",
+                                })
+                                .toLowerCase(),
+                          ),
+                        ).length === 0 && (
+                          <div className="text-2xl md:text-3xl font-black text-text-primary mb-1">
+                            {t("common.closed", "Closed")}
+                          </div>
+                        )}
                     </div>
                     <div className="text-sm font-bold text-text-secondary opacity-70">
-                      {formatWorkingDays(
-                        gym.settings?.workingDays || [0, 1, 2, 3, 4, 5, 6],
-                        t,
-                      )}
+                      {gym.settings.useAdvancedHours
+                        ? status.nextStatusChange ||
+                          t("home.gym.checkSchedule", "No slots today")
+                        : formatWorkingDays(
+                            gym.settings?.workingDays || [0, 1, 2, 3, 4, 5, 6],
+                            t,
+                          )}
                     </div>
                   </>
                 )}

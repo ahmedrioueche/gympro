@@ -8,6 +8,8 @@ interface NotificationsTabProps {
   setNotificationsEnabled: (value: boolean) => void;
   reminderSettings?: GymSettings["reminderSettings"];
   setReminderSettings: (settings: GymSettings["reminderSettings"]) => void;
+  notifyScheduleChanges?: boolean;
+  setNotifyScheduleChanges: (value: boolean) => void;
 }
 
 export default function NotificationsTab({
@@ -15,6 +17,8 @@ export default function NotificationsTab({
   setNotificationsEnabled,
   reminderSettings,
   setReminderSettings,
+  notifyScheduleChanges,
+  setNotifyScheduleChanges,
 }: NotificationsTabProps) {
   const { t } = useTranslation();
 
@@ -155,6 +159,43 @@ export default function NotificationsTab({
               </label>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="pt-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t(
+            "settings.gym.notifications.scheduleUpdatesTitle",
+            "Schedule Updates",
+          )}
+        </h4>
+        <p className="text-sm text-text-secondary mb-4">
+          {t(
+            "settings.gym.notifications.scheduleUpdatesDesc",
+            "Automatically notify members when opening hours or working days change.",
+          )}
+        </p>
+
+        <div className="flex items-center gap-3 p-4 bg-surface-hover rounded-xl border border-border">
+          <input
+            type="checkbox"
+            id="notifyScheduleChanges"
+            checked={!!notifyScheduleChanges}
+            onChange={(e) => setNotifyScheduleChanges(e.target.checked)}
+            className="w-5 h-5 rounded border-border text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+          />
+          <div className="flex-1">
+            <label
+              htmlFor="notifyScheduleChanges"
+              className="text-sm font-medium text-text-primary cursor-pointer"
+            >
+              {t(
+                "settings.gym.notifications.notifyScheduleChangesEnabled",
+                "Enable Automatic Notifications",
+              )}
+            </label>
+          </div>
+          <Clock className="w-5 h-5 text-primary" />
         </div>
       </div>
     </SettingsTab>

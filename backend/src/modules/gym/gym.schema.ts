@@ -2,8 +2,8 @@ import type {
   AccessControlType,
   AppSubscription,
   Currency,
+  GymService,
   GymSettings,
-  GymStats,
   PaymentMethod,
   TimeRange,
   WeeklyTimeRange,
@@ -75,9 +75,12 @@ export class GymSettingsModel implements GymSettings {
   @Prop({ type: Number })
   subscriptionRenewalReminderDays?: number;
   @Prop({ type: Object }) workingHours?: TimeRange;
+  @Prop() useAdvancedHours?: boolean;
+  @Prop({ type: [Object] }) customWorkingHours?: WeeklyTimeRange[];
   @Prop() isMixed?: boolean;
   @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
-  @Prop({ type: [Object], default: [] }) servicesOffered?: any[];
+  @Prop() notifyScheduleChanges?: boolean;
+  @Prop({ type: [Object], default: [] }) servicesOffered?: GymService[];
   @Prop({ default: 'flexible' }) accessControlType?: AccessControlType;
   @Prop() defaultCurrency?: Currency;
   @Prop({ type: [String], default: [] }) rules?: string[];

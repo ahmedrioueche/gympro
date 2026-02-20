@@ -86,10 +86,18 @@
     "gym_announcement_subject": "Announcement: {{title}}",
     "gym_announcement_body": "<div style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;\"><div style=\"text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; margin-bottom: 24px;\"><h1 style=\"color: #111827; font-size: 24px; margin: 0; letter-spacing: -0.025em;\">{{gymName}}</h1><p style=\"color: #6b7280; margin: 4px 0 0 0; font-size: 14px;\">Announcement</p></div><div style=\"margin-bottom: 32px;\"><p style=\"color: #374151; font-size: 16px; margin-bottom: 24px;\">Hello {{name}},</p><h2 style=\"color: #2563eb; font-size: 20px; margin: 0 0 16px 0; font-weight: 600;\">{{title}}</h2><div style=\"color: #4b5563; font-size: 16px; line-height: 1.6; background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #f3f4f6;\">{{message}}</div></div><div style=\"border-top: 1px solid #f3f4f6; padding-top: 24px; text-align: center;\"><p style=\"color: #9ca3af; font-size: 12px; margin: 0 0 8px 0;\">You are receiving this notification because you are a member of {{gymName}}.</p><p style=\"color: #6b7280; font-size: 14px; font-weight: 500; margin: 0;\">The {{gymName}} Team</p></div></div>",
     "gym": {
+      "schedule": {
+        "working_days": "Working Days",
+        "standard_hours": "Opening Hours",
+        "advanced_hours": "Advanced Schedule (Custom Slots)",
+        "female_only_hours": "Female-Only Hours"
+      },
       "closure_added_subject": "{{gymName}}: Gym Closure Update",
       "closure_added_body": "<p>Hello {{name}},</p><p>Please be informed that <strong>{{gymName}}</strong> will be temporarily closed for: <strong>{{reason}}</strong>.</p><p><strong>Closure Period:</strong><br>From: {{start}}<br>Until: {{end}}</p><p>We apologize for any inconvenience.</p><p>Best regards,<br>The {{gymName}} Team</p>",
       "closure_deleted_subject": "{{gymName}}: Gym Reopening Update",
-      "closure_deleted_body": "<p>Hello {{name}},</p><p>Great news! The previously scheduled closure for <strong>{{gymName}}</strong> has been cancelled or the gym has reopened early.</p><p>The gym is now following its regular working hours.</p><p>See you at the gym!</p><p>Best regards,<br>The {{gymName}} Team</p>"
+      "closure_deleted_body": "<p>Hello {{name}},</p><p>Great news! The previously scheduled closure for <strong>{{gymName}}</strong> has been cancelled or the gym has reopened early.</p><p>The gym is now following its regular working hours.</p><p>See you at the gym!</p><p>Best regards,<br>The {{gymName}} Team</p>",
+      "schedule_updated_subject": "Schedule Update: {{gymName}}",
+      "schedule_updated_body": "<p>Hello {{name}},</p><p>Please be informed that the schedule for <strong>{{gymName}}</strong> has been updated.</p><p><strong>Changes:</strong><br>{{changes}}</p><p>Check the app for the full updated schedule.</p><p>Best regards,<br>The {{gymName}} Team</p>"
     },
     "coach": {
       "request_subject": "New Coaching Request",
@@ -125,7 +133,9 @@
       "closure_added_title": "Gym Closure: {{gymName}}",
       "closure_added_body": "{{gymName}} will be closed from {{start}} to {{end}} due to {{reason}}.",
       "closure_deleted_title": "Gym Reopened: {{gymName}}",
-      "closure_deleted_body": "The closure for {{gymName}} has been cancelled. We are open!"
+      "closure_deleted_body": "The closure for {{gymName}} has been cancelled. We are open!",
+      "schedule_updated_title": "Schedule Update: {{gymName}}",
+      "schedule_updated_body": "The schedule for {{gymName}} has been updated: {{changes}}"
     },
     "admin": {
       "coach_approved_title": "Coach Request Approved",

@@ -40,6 +40,10 @@ export function useGymManagerSettings() {
   // Settings State - Initialize with proper defaults
   const [workingHoursStart, setWorkingHoursStart] = useState("06:00");
   const [workingHoursEnd, setWorkingHoursEnd] = useState("22:00");
+  const [customWorkingHours, setCustomWorkingHours] = useState<
+    WeeklyTimeRange[]
+  >([]);
+  const [useAdvancedHours, setUseAdvancedHours] = useState(false);
   const [isMixed, setIsMixed] = useState(false);
   const [femaleOnlyHours, setFemaleOnlyHours] = useState<WeeklyTimeRange[]>([]);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -69,6 +73,7 @@ export function useGymManagerSettings() {
       day90: true,
     },
   });
+  const [notifyScheduleChanges, setNotifyScheduleChanges] = useState(true);
 
   // Location State (gym-level fields, not settings)
   const [address, setAddress] = useState("");
@@ -100,6 +105,20 @@ export function useGymManagerSettings() {
         }
         if (settings.workingHours?.end) {
           setWorkingHoursEnd(settings.workingHours.end);
+        }
+        if (settings.customWorkingHours) {
+          setCustomWorkingHours(settings.customWorkingHours);
+        } else {
+          setCustomWorkingHours([]);
+        }
+
+        if (settings.useAdvancedHours !== undefined) {
+          setUseAdvancedHours(settings.useAdvancedHours);
+        } else {
+          setUseAdvancedHours(
+            settings.customWorkingHours &&
+              settings.customWorkingHours.length > 0,
+          );
         }
 
         if (settings.isMixed !== undefined) {
@@ -149,12 +168,136 @@ export function useGymManagerSettings() {
         if (settings.reminderSettings) {
           setReminderSettings(settings.reminderSettings);
         }
+        if (settings.notifyScheduleChanges !== undefined) {
+          setNotifyScheduleChanges(settings.notifyScheduleChanges);
+        }
       }
     }
   }, [currentGym]);
 
+  const validateSchedule = () => {
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+
+    // 1. Working Days Check
+    if (workingDays.length === 0) {
+      toast.error(
+        t(
+          "settings.gym.general.errors.noWorkingDays",
+          "Please select at least one working day.",
+        ),
+      );
+      return false;
+    }
+
+    if (useAdvancedHours) {
+      // Check for custom slots on non-working days
+      for (const slot of customWorkingHours) {
+        for (const day of slot.days) {
+          const dayIdx = dayNames.indexOf(day);
+          if (!workingDays.includes(dayIdx)) {
+            toast.error(
+              t(
+                "settings.gym.general.errors.slotOnNonWorkingDay",
+                `Conflict: Slot detected for {{day}}, which is not marked as a working day.`,
+                { day },
+              ),
+            );
+            return false;
+          }
+        }
+      }
+
+      // Check for working days without slots
+      for (const dayIdx of workingDays) {
+        const dayName = dayNames[dayIdx];
+        const hasSlot = customWorkingHours.some((slot) =>
+          slot.days.includes(dayName as any),
+        );
+        if (!hasSlot) {
+          toast.error(
+            t(
+              "settings.gym.general.errors.missingSlot",
+              `Conflict: {{day}} is a working day but has no time slots configured.`,
+              { day: dayName },
+            ),
+          );
+          return false;
+        }
+      }
+    }
+
+    // 2. Female-Only Hours Check
+    if (!isMixed && femaleOnlyHours.length > 0) {
+      for (const fSlot of femaleOnlyHours) {
+        for (const day of fSlot.days) {
+          const dayIdx = dayNames.indexOf(day);
+
+          // Must be a working day
+          if (!workingDays.includes(dayIdx)) {
+            toast.error(
+              t(
+                "settings.gym.general.errors.femaleSlotOnNonWorkingDay",
+                `Conflict: Female-only slot for {{day}} is on a non-working day.`,
+                { day },
+              ),
+            );
+            return false;
+          }
+
+          if (useAdvancedHours) {
+            // Must be within a custom slot for that day
+            const daySlots = customWorkingHours.filter((s) =>
+              s.days.includes(day),
+            );
+            const isContained = daySlots.some(
+              (s) =>
+                fSlot.range.start >= s.range.start &&
+                fSlot.range.end <= s.range.end,
+            );
+            if (!isContained) {
+              toast.error(
+                t(
+                  "settings.gym.general.errors.femaleSlotOutsideRange",
+                  `Conflict: Female-only hours for {{day}} must be within the regular opening hours for that day.`,
+                  { day },
+                ),
+              );
+              return false;
+            }
+          } else {
+            // Must be within standard hours
+            if (
+              fSlot.range.start < workingHoursStart ||
+              fSlot.range.end > workingHoursEnd
+            ) {
+              toast.error(
+                t(
+                  "settings.gym.general.errors.femaleSlotOutsideStandardRange",
+                  `Conflict: Female-only hours for {{day}} must be within {{start}} — {{end}}.`,
+                  { day, start: workingHoursStart, end: workingHoursEnd },
+                ),
+              );
+              return false;
+            }
+          }
+        }
+      }
+    }
+
+    return true;
+  };
+
   const handleSave = async () => {
     if (!currentGym) return;
+    if (!validateSchedule()) return;
 
     try {
       // Update gym-level fields (location/contact)
@@ -179,6 +322,8 @@ export function useGymManagerSettings() {
           start: workingHoursStart,
           end: workingHoursEnd,
         },
+        useAdvancedHours,
+        customWorkingHours,
         isMixed,
         femaleOnlyHours: !isMixed ? femaleOnlyHours : [],
         notificationsEnabled,
@@ -191,6 +336,7 @@ export function useGymManagerSettings() {
         temporaryClosures,
         workingDays,
         reminderSettings,
+        notifyScheduleChanges,
       };
 
       const settingsResult = await updateSettings.mutateAsync({
@@ -255,6 +401,9 @@ export function useGymManagerSettings() {
     workingHoursStart !==
       (currentGym?.settings?.workingHours?.start || "06:00") ||
     workingHoursEnd !== (currentGym?.settings?.workingHours?.end || "22:00") ||
+    useAdvancedHours !== (currentGym?.settings?.useAdvancedHours ?? false) ||
+    JSON.stringify(customWorkingHours) !==
+      JSON.stringify(currentGym?.settings?.customWorkingHours || []) ||
     isMixed !== (currentGym?.settings?.isMixed ?? false) ||
     JSON.stringify(femaleOnlyHours) !==
       JSON.stringify(currentGym?.settings?.femaleOnlyHours || []) ||
@@ -262,6 +411,8 @@ export function useGymManagerSettings() {
       (currentGym?.settings?.notificationsEnabled ?? true) ||
     JSON.stringify(reminderSettings) !==
       JSON.stringify(currentGym?.settings?.reminderSettings) ||
+    notifyScheduleChanges !==
+      (currentGym?.settings?.notifyScheduleChanges ?? true) ||
     JSON.stringify(paymentMethods) !==
       JSON.stringify(currentGym?.settings?.paymentMethods || ["cash"]) ||
     JSON.stringify(servicesOffered) !==
@@ -303,6 +454,10 @@ export function useGymManagerSettings() {
     setWorkingHoursStart,
     workingHoursEnd,
     setWorkingHoursEnd,
+    useAdvancedHours,
+    setUseAdvancedHours,
+    customWorkingHours,
+    setCustomWorkingHours,
     isMixed,
     setIsMixed,
     femaleOnlyHours,
@@ -328,6 +483,8 @@ export function useGymManagerSettings() {
     setWorkingDays,
     reminderSettings,
     setReminderSettings,
+    notifyScheduleChanges,
+    setNotifyScheduleChanges,
     addRule: (rule: string) => {
       if (rule.trim()) {
         setRules((prev) => [...prev, rule.trim()]);

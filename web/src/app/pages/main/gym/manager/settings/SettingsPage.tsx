@@ -37,6 +37,8 @@ export default function SettingsPage() {
     setWorkingHoursStart,
     workingHoursEnd,
     setWorkingHoursEnd,
+    useAdvancedHours,
+    setUseAdvancedHours,
     isMixed,
     setIsMixed,
     femaleOnlyHours,
@@ -46,9 +48,8 @@ export default function SettingsPage() {
     reminderSettings,
     setReminderSettings,
     paymentMethods,
-    setPaymentMethods,
-    allowCustomSubscriptions,
-    setAllowCustomSubscriptions,
+    customWorkingHours,
+    setCustomWorkingHours,
     accessControlType,
     setAccessControlType,
     defaultCurrency,
@@ -76,6 +77,8 @@ export default function SettingsPage() {
     handleUpdateClosures,
     workingDays,
     setWorkingDays,
+    notifyScheduleChanges,
+    setNotifyScheduleChanges,
     addPaymentMethod,
     removePaymentMethod,
     togglePaymentMethod,
@@ -157,6 +160,10 @@ export default function SettingsPage() {
             setWorkingHoursStart={setWorkingHoursStart}
             workingHoursEnd={workingHoursEnd}
             setWorkingHoursEnd={setWorkingHoursEnd}
+            useAdvancedHours={useAdvancedHours}
+            setUseAdvancedHours={setUseAdvancedHours}
+            customWorkingHours={customWorkingHours}
+            setCustomWorkingHours={setCustomWorkingHours}
             isMixed={isMixed}
             setIsMixed={setIsMixed}
             femaleOnlyHours={femaleOnlyHours}
@@ -195,6 +202,8 @@ export default function SettingsPage() {
             setNotificationsEnabled={setNotificationsEnabled}
             reminderSettings={reminderSettings}
             setReminderSettings={setReminderSettings}
+            notifyScheduleChanges={notifyScheduleChanges}
+            setNotifyScheduleChanges={setNotifyScheduleChanges}
           />
         )}
 

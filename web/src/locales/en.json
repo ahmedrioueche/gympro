@@ -959,6 +959,8 @@
         "title": "General Settings",
         "workingHours": "Working Hours",
         "workingHoursDesc": "Set your gym's operating hours",
+        "advancedHours": "Advanced Mode",
+        "advancedHoursNote": "Configure multiple time slots per day.",
         "startTime": "Opening Time",
         "endTime": "Closing Time",
         "genderPolicy": "Gender Policy",
@@ -982,7 +984,24 @@
         "accessFlexible": "Flexible",
         "accessFlexibleDesc": "Members are allowed in even if expired, but both they and the manager receive a warning.",
         "accessStrict": "Strict",
-        "accessStrictDesc": "Expired subscriptions strictly block entry. Physical access hardware will deny passage."
+        "accessStrictDesc": "Expired subscriptions strictly block entry. Physical access hardware will deny passage.",
+        "errors": {
+          "noWorkingDays": "Please select at least one working day.",
+          "slotOnNonWorkingDay": "Conflict: Slot detected for {{day}}, which is not marked as a working day.",
+          "slotOnNonWorkingDayDesc": "Please remove the slot or enable {{day}} as a working day.",
+          "slotOnNonWorkingDayTitle": "Schedule Conflict",
+          "slotOnNonWorkingDayAction": "Fix Schedule",
+          "missingSlot": "Conflict: {{day}} is a working day but has no time slots configured.",
+          "missingSlotDesc": "Please add a time slot for {{day}} or mark it as a non-working day.",
+          "femaleSlotOnNonWorkingDay": "Conflict: Female-only slot for {{day}} is on a non-working day.",
+          "femaleSlotOnNonWorkingDayDesc": "Please remove the slot or enable {{day}} as a working day.",
+          "femaleSlotOnNonWorkingDayTitle": "Schedule Conflict",
+          "femaleSlotOnNonWorkingDayAction": "Fix Schedule",
+          "femaleSlotOutsideRange": "Conflict: Female-only hours for {{day}} must be within the regular opening hours for that day.",
+          "femaleSlotOutsideRangeDesc": "Adjust the female-only session to fit within the gym's opening hours.",
+          "femaleSlotOutsideStandardRange": "Conflict: Female-only hours for {{day}} must be within {{start}} — {{end}}.",
+          "femaleSlotOutsideStandardRangeDesc": "Adjust the session range to fit within the standard working hours."
+        }
       },
       "notifications": {
         "title": "Notification Settings",

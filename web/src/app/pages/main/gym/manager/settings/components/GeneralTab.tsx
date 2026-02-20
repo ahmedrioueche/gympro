@@ -27,6 +27,10 @@ interface GeneralTabProps {
   setWorkingHoursStart: (value: string) => void;
   workingHoursEnd: string;
   setWorkingHoursEnd: (value: string) => void;
+  useAdvancedHours: boolean;
+  setUseAdvancedHours: (value: boolean) => void;
+  customWorkingHours: WeeklyTimeRange[];
+  setCustomWorkingHours: (value: WeeklyTimeRange[]) => void;
   isMixed: boolean;
   setIsMixed: (value: boolean) => void;
   femaleOnlyHours: WeeklyTimeRange[];
@@ -44,6 +48,10 @@ export default function GeneralTab({
   setWorkingHoursStart,
   workingHoursEnd,
   setWorkingHoursEnd,
+  useAdvancedHours,
+  setUseAdvancedHours,
+  customWorkingHours,
+  setCustomWorkingHours,
   isMixed,
   setIsMixed,
   femaleOnlyHours,
@@ -58,9 +66,20 @@ export default function GeneralTab({
   const { t } = useTranslation();
   const [isAddingSlot, setIsAddingSlot] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  const [isAddingCustomSlot, setIsAddingCustomSlot] = useState(false);
+  const [editingCustomIndex, setEditingCustomIndex] = useState<number | null>(
+    null,
+  );
+
   const [newSlot, setNewSlot] = useState<WeeklyTimeRange>({
     days: ["Monday"],
     range: { start: "09:00", end: "12:00" },
+  });
+
+  const [newCustomSlot, setNewCustomSlot] = useState<WeeklyTimeRange>({
+    days: ["Monday"],
+    range: { start: "06:00", end: "22:00" },
   });
 
   const startAddingSlot = () => {
@@ -121,6 +140,59 @@ export default function GeneralTab({
     setNewSlot({
       ...newSlot,
       range: { ...newSlot.range, [field]: value },
+    });
+  };
+
+  // Custom Hours specific functions
+  const startAddingCustomSlot = () => {
+    setNewCustomSlot({
+      days: ["Monday"],
+      range: { start: "06:00", end: "22:00" },
+    });
+    setIsAddingCustomSlot(true);
+  };
+
+  const cancelAddingCustomSlot = () => setIsAddingCustomSlot(false);
+
+  const confirmAddCustomSlot = () => {
+    if (newCustomSlot.days.length === 0) return;
+    setCustomWorkingHours([...customWorkingHours, newCustomSlot]);
+    setIsAddingCustomSlot(false);
+  };
+
+  const startEditingCustomSlot = (index: number) => {
+    setNewCustomSlot({ ...customWorkingHours[index] });
+    setEditingCustomIndex(index);
+  };
+
+  const cancelEditingCustomSlot = () => setEditingCustomIndex(null);
+
+  const confirmEditCustomSlot = () => {
+    if (editingCustomIndex === null || newCustomSlot.days.length === 0) return;
+    const updated = [...customWorkingHours];
+    updated[editingCustomIndex] = newCustomSlot;
+    setCustomWorkingHours(updated);
+    setEditingCustomIndex(null);
+  };
+
+  const removeCustomSlot = (index: number) => {
+    setCustomWorkingHours(customWorkingHours.filter((_, i) => i !== index));
+  };
+
+  const toggleCustomDay = (day: (typeof WEEK_DAYS)[number]) => {
+    const isSelected = newCustomSlot.days.includes(day);
+    setNewCustomSlot({
+      ...newCustomSlot,
+      days: isSelected
+        ? newCustomSlot.days.filter((d) => d !== day)
+        : [...newCustomSlot.days, day],
+    });
+  };
+
+  const updateCustomTime = (field: "start" | "end", value: string) => {
+    setNewCustomSlot({
+      ...newCustomSlot,
+      range: { ...newCustomSlot.range, [field]: value },
     });
   };
 
@@ -200,30 +272,202 @@ export default function GeneralTab({
       </div>
 
       <div className="pt-6 border-t border-border">
-        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.gym.general.workingHours", "Working Hours")}
-        </h4>
-        <p className="text-sm text-text-secondary mb-4">
-          {t(
-            "settings.gym.general.workingHoursDesc",
-            "Set your gym's operating hours",
-          )}
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md">
-          <InputField
-            type="time"
-            label={t("settings.gym.general.startTime", "Opening Time")}
-            value={workingHoursStart}
-            onChange={(e) => setWorkingHoursStart(e.target.value)}
-          />
-          <InputField
-            type="time"
-            label={t("settings.gym.general.endTime", "Closing Time")}
-            value={workingHoursEnd}
-            onChange={(e) => setWorkingHoursEnd(e.target.value)}
-          />
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+              {t("settings.gym.general.workingHours", "Working Hours")}
+            </h4>
+            <p className="text-sm text-text-secondary">
+              {t(
+                "settings.gym.general.workingHoursDesc",
+                "Set your gym's operating hours",
+              )}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-surface-hover rounded-xl border border-border">
+            <input
+              type="checkbox"
+              id="useAdvancedHours"
+              checked={useAdvancedHours}
+              onChange={(e) => {
+                setUseAdvancedHours(e.target.checked);
+              }}
+              className="w-4 h-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+            />
+            <label
+              htmlFor="useAdvancedHours"
+              className="text-xs font-bold text-text-primary cursor-pointer"
+            >
+              {t("settings.gym.general.advancedHours", "Advanced Mode")}
+            </label>
+          </div>
         </div>
+
+        {!useAdvancedHours ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md">
+            <InputField
+              type="time"
+              label={t("settings.gym.general.startTime", "Opening Time")}
+              value={workingHoursStart}
+              onChange={(e) => setWorkingHoursStart(e.target.value)}
+            />
+            <InputField
+              type="time"
+              label={t("settings.gym.general.endTime", "Closing Time")}
+              value={workingHoursEnd}
+              onChange={(e) => setWorkingHoursEnd(e.target.value)}
+            />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-text-secondary">
+                {t(
+                  "settings.gym.general.advancedHoursNote",
+                  "Configure multiple time slots per day.",
+                )}
+              </span>
+              {!isAddingCustomSlot && editingCustomIndex === null && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={startAddingCustomSlot}
+                  icon={<Plus className="w-4 h-4" />}
+                >
+                  {t("settings.gym.general.addTimeSlot", "Add Slot")}
+                </Button>
+              )}
+            </div>
+
+            {/* Display existing custom slots */}
+            {customWorkingHours.length > 0 && (
+              <div className="space-y-3">
+                {customWorkingHours.map((slot, index) => (
+                  <div
+                    key={index}
+                    className="p-4 bg-surface-hover rounded-xl border border-border"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-text-primary">
+                            {t("settings.gym.general.slot", "Slot")} {index + 1}
+                          </span>
+                          <span className="text-xs text-text-secondary">
+                            {slot.range.start} - {slot.range.end}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {slot.days.map((day) => (
+                            <span
+                              key={day}
+                              className="px-2 py-1 text-xs font-medium rounded-md bg-primary/10 text-primary border border-primary/20"
+                            >
+                              {t(
+                                `common.weekDays.${day.toLowerCase()}`,
+                                day.slice(0, 3),
+                              )}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => startEditingCustomSlot(index)}
+                          className="p-2 text-text-secondary hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => removeCustomSlot(index)}
+                          className="p-2 text-text-secondary hover:text-danger hover:bg-danger/10 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Add/Edit Custom Form */}
+            {(isAddingCustomSlot || editingCustomIndex !== null) && (
+              <div className="p-4 bg-surface rounded-xl border-2 border-primary/30 space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-text-secondary mb-2">
+                    {t("settings.gym.general.day", "Days")} *
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {WEEK_DAYS.map((day) => {
+                      const isSelected = newCustomSlot.days.includes(day);
+                      return (
+                        <button
+                          key={day}
+                          onClick={() => toggleCustomDay(day)}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-lg border-2 transition-all ${
+                            isSelected
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border text-text-secondary hover:border-primary/50"
+                          }`}
+                        >
+                          {t(
+                            `common.weekDays.${day.toLowerCase()}`,
+                            day.slice(0, 3),
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <InputField
+                    type="time"
+                    label={t("settings.gym.general.startTime", "Start Time")}
+                    value={newCustomSlot.range.start}
+                    onChange={(e) => updateCustomTime("start", e.target.value)}
+                  />
+                  <InputField
+                    type="time"
+                    label={t("settings.gym.general.endTime", "End Time")}
+                    value={newCustomSlot.range.end}
+                    onChange={(e) => updateCustomTime("end", e.target.value)}
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                  <Button
+                    size="sm"
+                    onClick={
+                      editingCustomIndex !== null
+                        ? confirmEditCustomSlot
+                        : confirmAddCustomSlot
+                    }
+                    icon={<Check className="w-4 h-4" />}
+                    disabled={newCustomSlot.days.length === 0}
+                  >
+                    {editingCustomIndex !== null
+                      ? t("common.save", "Save")
+                      : t("common.add", "Add")}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={
+                      editingCustomIndex !== null
+                        ? cancelEditingCustomSlot
+                        : cancelAddingCustomSlot
+                    }
+                    icon={<X className="w-4 h-4" />}
+                  >
+                    {t("common.cancel", "Cancel")}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="pt-6 border-t border-border">
@@ -260,72 +504,6 @@ export default function GeneralTab({
             </p>
           </div>
           <Users className="w-5 h-5 text-primary" />
-        </div>
-
-        <div className="mt-8 pt-8 border-t border-border">
-          <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-            {t(
-              "settings.gym.general.accessControlTitle",
-              "Access Control Mode",
-            )}
-          </h4>
-          <div className="grid text-primary grid-cols-1 sm:grid-cols-2 gap-4">
-            <button
-              onClick={() => setAccessControlType("flexible")}
-              className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all ${
-                accessControlType === "flexible"
-                  ? "border-primary bg-primary/5 ring-1 ring-primary"
-                  : "border-border bg-surface-hover hover:border-primary/30"
-              }`}
-            >
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm font-semibold">
-                  {t("settings.gym.general.accessFlexible", "Flexible")}
-                </span>
-                <ShieldOff
-                  className={`w-5 h-5 ${
-                    accessControlType === "flexible"
-                      ? "text-primary"
-                      : "text-text-secondary"
-                  }`}
-                />
-              </div>
-              <p className="text-xs text-text-secondary text-left">
-                {t(
-                  "settings.gym.general.accessFlexibleDesc",
-                  "Members are allowed in even if expired, but both they and the manager receive a warning.",
-                )}
-              </p>
-            </button>
-
-            <button
-              onClick={() => setAccessControlType("strict")}
-              className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all ${
-                accessControlType === "strict"
-                  ? "border-primary bg-primary/5 ring-1 ring-primary"
-                  : "border-border bg-surface-hover hover:border-primary/30"
-              }`}
-            >
-              <div className="flex items-center justify-between w-full">
-                <span className="text-sm font-semibold">
-                  {t("settings.gym.general.accessStrict", "Strict")}
-                </span>
-                <ShieldCheck
-                  className={`w-5 h-5 ${
-                    accessControlType === "strict"
-                      ? "text-primary"
-                      : "text-text-secondary"
-                  }`}
-                />
-              </div>
-              <p className="text-xs text-text-secondary text-left">
-                {t(
-                  "settings.gym.general.accessStrictDesc",
-                  "Expired subscriptions strictly block entry. Physical access hardware will deny passage.",
-                )}
-              </p>
-            </button>
-          </div>
         </div>
 
         {/* Female-Only Hours - Only show when not mixed */}
@@ -520,6 +698,71 @@ export default function GeneralTab({
             )}
           </div>
         )}
+        <div className="mt-8 pt-8 border-t border-border">
+          <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+            {t(
+              "settings.gym.general.accessControlTitle",
+              "Access Control Mode",
+            )}
+          </h4>
+          <div className="grid text-primary grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              onClick={() => setAccessControlType("flexible")}
+              className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all ${
+                accessControlType === "flexible"
+                  ? "border-primary bg-primary/5 ring-1 ring-primary"
+                  : "border-border bg-surface-hover hover:border-primary/30"
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-sm font-semibold">
+                  {t("settings.gym.general.accessFlexible", "Flexible")}
+                </span>
+                <ShieldOff
+                  className={`w-5 h-5 ${
+                    accessControlType === "flexible"
+                      ? "text-primary"
+                      : "text-text-secondary"
+                  }`}
+                />
+              </div>
+              <p className="text-xs text-text-secondary text-left">
+                {t(
+                  "settings.gym.general.accessFlexibleDesc",
+                  "Members are allowed in even if expired, but both they and the manager receive a warning.",
+                )}
+              </p>
+            </button>
+
+            <button
+              onClick={() => setAccessControlType("strict")}
+              className={`flex flex-col gap-2 p-4 rounded-xl border-2 transition-all ${
+                accessControlType === "strict"
+                  ? "border-primary bg-primary/5 ring-1 ring-primary"
+                  : "border-border bg-surface-hover hover:border-primary/30"
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span className="text-sm font-semibold">
+                  {t("settings.gym.general.accessStrict", "Strict")}
+                </span>
+                <ShieldCheck
+                  className={`w-5 h-5 ${
+                    accessControlType === "strict"
+                      ? "text-primary"
+                      : "text-text-secondary"
+                  }`}
+                />
+              </div>
+              <p className="text-xs text-text-secondary text-left">
+                {t(
+                  "settings.gym.general.accessStrictDesc",
+                  "Expired subscriptions strictly block entry. Physical access hardware will deny passage.",
+                )}
+              </p>
+            </button>
+          </div>
+        </div>
       </div>
     </SettingsTab>
   );

@@ -561,6 +561,47 @@ export class GymService {
         ),
     );
 
+    // Detect schedule changes for notifications
+    const scheduleChanges: string[] = [];
+
+    // 1. Working Days
+    if (
+      updateSettingsDto.workingDays &&
+      JSON.stringify(currentSettings.workingDays) !==
+        JSON.stringify(updateSettingsDto.workingDays)
+    ) {
+      scheduleChanges.push('working_days');
+    }
+
+    // 2. Standard Working Hours
+    if (
+      updateSettingsDto.workingHours &&
+      (currentSettings.workingHours?.start !==
+        updateSettingsDto.workingHours.start ||
+        currentSettings.workingHours?.end !==
+          updateSettingsDto.workingHours.end)
+    ) {
+      scheduleChanges.push('standard_hours');
+    }
+
+    // 3. Custom Working Hours (Advanced Mode)
+    if (
+      updateSettingsDto.customWorkingHours &&
+      JSON.stringify(currentSettings.customWorkingHours) !==
+        JSON.stringify(updateSettingsDto.customWorkingHours)
+    ) {
+      scheduleChanges.push('advanced_hours');
+    }
+
+    // 4. Female-Only Hours
+    if (
+      updateSettingsDto.femaleOnlyHours !== undefined &&
+      JSON.stringify(currentSettings.femaleOnlyHours) !==
+        JSON.stringify(updateSettingsDto.femaleOnlyHours)
+    ) {
+      scheduleChanges.push('female_only_hours');
+    }
+
     // Update the gym with new settings
     const updatedGym = await this.gymModel
       .findByIdAndUpdate(id, { settings: updatedSettings }, { new: true })
@@ -568,6 +609,10 @@ export class GymService {
       .exec();
 
     // Trigger notifications asynchronously
+    if (updatedSettings.notifyScheduleChanges && scheduleChanges.length > 0) {
+      this.notificationsService.notifyScheduleChange(id, scheduleChanges);
+    }
+
     addedClosures.forEach((closure) => {
       this.notificationsService.notifyGymClosureChange(id, closure, 'added');
     });

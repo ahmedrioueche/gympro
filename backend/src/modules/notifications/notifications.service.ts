@@ -113,6 +113,80 @@ export class NotificationsService {
   }
 
   /**
+   * Notify all members and coaches about a gym schedule change
+   */
+  async notifyScheduleChange(gymId: string, changes: string[]) {
+    try {
+      const gym = await this.userModel.db.model('GymModel').findById(gymId);
+      if (!gym) return;
+
+      const members = await this.userModel.find({
+        memberships: {
+          $in: await this.userModel.db
+            .model('GymMembership')
+            .find({
+              gym: new Types.ObjectId(gymId),
+              membershipStatus: 'active',
+            })
+            .distinct('_id'),
+        },
+      });
+
+      const coaches = await this.userModel.find({
+        _id: {
+          $in: await this.userModel.db
+            .model('GymCoachAffiliation')
+            .find({
+              gymId: new Types.ObjectId(gymId),
+              status: 'active',
+            })
+            .distinct('coachId'),
+        },
+      });
+
+      const usersToNotify = [...members, ...coaches];
+
+      this.logger.log(
+        `Notifying ${usersToNotify.length} users about schedule changes for gym ${gym.name}`,
+      );
+
+      // Map technical change keys to translation keys
+      const changeLabels: Record<string, string> = {
+        working_days: 'gym.schedule.working_days',
+        standard_hours: 'gym.schedule.standard_hours',
+        advanced_hours: 'gym.schedule.advanced_hours',
+        female_only_hours: 'gym.schedule.female_only_hours',
+      };
+
+      await Promise.all(
+        usersToNotify.map(async (user) => {
+          const lang = user.appSettings?.locale?.language || DEFAULT_LANGUAGE;
+
+          // Translate the changes for this specific user's language
+          const translatedChanges = await Promise.all(
+            changes.map((change) =>
+              this.i18nService.t(changeLabels[change] || change, lang, {}),
+            ),
+          );
+
+          return this.send(user, {
+            key: 'gym.schedule_updated',
+            vars: {
+              gymName: gym.name,
+              changes: translatedChanges.join(', '),
+            },
+          });
+        }),
+      );
+    } catch (error) {
+      this.logger.error(
+        'Failed to notify users about schedule change',
+        error.stack,
+      );
+    }
+  }
+
+  /**
    * Notify all members and coaches about a gym closure or reopening
    */
   async notifyGymClosureChange(
@@ -167,15 +241,19 @@ export class NotificationsService {
         `Notifying ${usersToNotify.length} users about closure ${type} for gym ${gym.name}`,
       );
 
-      await this.externalService.notifyUsers(usersToNotify, {
-        key: `gym.closure_${type}`,
-        vars: {
-          gymName: gym.name,
-          reason: closure.reason || 'Temporary Closure',
-          start: startDate,
-          end: endDate,
-        },
-      });
+      await Promise.all(
+        usersToNotify.map((user) =>
+          this.send(user, {
+            key: `gym.closure_${type}`,
+            vars: {
+              gymName: gym.name,
+              reason: closure.reason || 'Temporary Closure',
+              start: startDate,
+              end: endDate,
+            },
+          }),
+        ),
+      );
     } catch (error) {
       this.logger.error(
         'Failed to notify users about gym closure change',

@@ -78,8 +78,56 @@ export function useGymMemberHome(settings?: GymSettings) {
       };
     }
 
-    // Check if gym is open
-    const isOpen = currentTime >= start && currentTime < end;
+    // Check for today's working hours
+    let isOpen = false;
+    let currentSession: GymStatus["currentSession"] = "closed";
+    let nextStatusChange: string | null = null;
+    let appliedStart = settings.workingHours.start;
+    let appliedEnd = settings.workingHours.end;
+
+    if (settings.useAdvancedHours && settings.customWorkingHours?.length) {
+      // Advanced Mode: Check custom slots
+      const todaySlots = settings.customWorkingHours.filter((slot) =>
+        slot.days.some((day) => day.toLowerCase() === currentDay),
+      );
+
+      if (todaySlots.length > 0) {
+        // Find if we are in any slot
+        const currentSlot = todaySlots.find(
+          (slot) =>
+            currentTime >= slot.range.start && currentTime < slot.range.end,
+        );
+
+        if (currentSlot) {
+          isOpen = true;
+          appliedStart = currentSlot.range.start;
+          appliedEnd = currentSlot.range.end;
+        } else {
+          // Find next opening today
+          const nextSlot = todaySlots
+            .filter((slot) => slot.range.start > currentTime)
+            .sort((a, b) => a.range.start.localeCompare(b.range.start))[0];
+
+          if (nextSlot) {
+            nextStatusChange = `Opens at ${nextSlot.range.start}`;
+          } else {
+            nextStatusChange = "Closed for today";
+          }
+        }
+      } else {
+        nextStatusChange = "Closed Today";
+      }
+    } else {
+      // Standard Mode
+      isOpen =
+        currentTime >= settings.workingHours.start &&
+        currentTime < settings.workingHours.end;
+      if (!isOpen) {
+        nextStatusChange = `Opens at ${settings.workingHours.start}`;
+      } else {
+        nextStatusChange = `Closes at ${settings.workingHours.end}`;
+      }
+    }
 
     // Check for women-only hours
     let isWomenOnly = false;
@@ -100,7 +148,6 @@ export function useGymMemberHome(settings?: GymSettings) {
     }
 
     // Determine current session type
-    let currentSession: GymStatus["currentSession"] = "closed";
     if (isOpen) {
       if (settings.isMixed) {
         currentSession = "mixed";
@@ -111,12 +158,9 @@ export function useGymMemberHome(settings?: GymSettings) {
       }
     }
 
-    // Calculate next status change
-    let nextStatusChange: string | null = null;
-    if (!isOpen) {
-      nextStatusChange = `Opens at ${start}`;
-    } else {
-      nextStatusChange = `Closes at ${end}`;
+    // Calculate next status change if not already set (for closed state)
+    if (isOpen && !nextStatusChange) {
+      nextStatusChange = `Closes at ${appliedEnd}`;
     }
 
     return {
