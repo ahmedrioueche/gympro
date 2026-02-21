@@ -63,6 +63,20 @@ export function PlanBasicInfo({
           onChange={(e) => setFormData({ ...formData, planId: e.target.value })}
           placeholder="subscription-starter"
         />
+        {formData.level === "free" && (
+          <InputField
+            label={t("admin.pricing.planDurationDays", "Plan Duration (Days)")}
+            type="number"
+            value={formData.trialDays || 0}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                trialDays: parseInt(e.target.value) || 0,
+              })
+            }
+            placeholder="30"
+          />
+        )}
         <div className="col-span-1 md:col-span-2">
           <Checkbox
             id="is-active"
@@ -80,66 +94,71 @@ export function PlanBasicInfo({
       </div>
 
       {/* Paddle Integration */}
-      <div className="border border-border rounded-xl overflow-hidden">
-        <button
-          type="button"
-          onClick={() => setShowPaddle(!showPaddle)}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-text-secondary hover:bg-surface-hover transition-colors"
-        >
-          <span className="flex items-center gap-2">
-            <CreditCard className="w-4 h-4" />
-            {t("admin.pricing.paddleIntegration", "Paddle Integration")}
-          </span>
-          <span
-            className={`transform transition-transform ${showPaddle ? "rotate-180" : ""}`}
+      {formData.level !== "free" && (
+        <div className="border border-border rounded-xl overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowPaddle(!showPaddle)}
+            className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-text-secondary hover:bg-surface-hover transition-colors"
           >
-            ▾
-          </span>
-        </button>
-        {showPaddle && (
-          <div className="px-4 pb-4 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-border pt-4">
-            <InputField
-              label={t("admin.pricing.paddleProductId", "Product ID")}
-              value={formData.paddleProductId || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, paddleProductId: e.target.value })
-              }
-              placeholder="pro_01kcmb7nfehz..."
-            />
-            <InputField
-              label={t(
-                "admin.pricing.paddleMonthlyPriceId",
-                "Monthly Price ID",
-              )}
-              value={formData.paddlePriceIds?.monthly || ""}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  paddlePriceIds: {
-                    ...formData.paddlePriceIds,
-                    monthly: e.target.value,
-                  },
-                })
-              }
-              placeholder="pri_01kcmbm4wfpq..."
-            />
-            <InputField
-              label={t("admin.pricing.paddleYearlyPriceId", "Yearly Price ID")}
-              value={formData.paddlePriceIds?.yearly || ""}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  paddlePriceIds: {
-                    ...formData.paddlePriceIds,
-                    yearly: e.target.value,
-                  },
-                })
-              }
-              placeholder="pri_01kcmc2fbgxq..."
-            />
-          </div>
-        )}
-      </div>
+            <span className="flex items-center gap-2">
+              <CreditCard className="w-4 h-4" />
+              {t("admin.pricing.paddleIntegration", "Paddle Integration")}
+            </span>
+            <span
+              className={`transform transition-transform ${showPaddle ? "rotate-180" : ""}`}
+            >
+              ▾
+            </span>
+          </button>
+          {showPaddle && (
+            <div className="px-4 pb-4 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-border pt-4">
+              <InputField
+                label={t("admin.pricing.paddleProductId", "Product ID")}
+                value={formData.paddleProductId || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, paddleProductId: e.target.value })
+                }
+                placeholder="pro_01kcmb7nfehz..."
+              />
+              <InputField
+                label={t(
+                  "admin.pricing.paddleMonthlyPriceId",
+                  "Monthly Price ID",
+                )}
+                value={formData.paddlePriceIds?.monthly || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    paddlePriceIds: {
+                      ...formData.paddlePriceIds,
+                      monthly: e.target.value,
+                    },
+                  })
+                }
+                placeholder="pri_01kcmbm4wfpq..."
+              />
+              <InputField
+                label={t(
+                  "admin.pricing.paddleYearlyPriceId",
+                  "Yearly Price ID",
+                )}
+                value={formData.paddlePriceIds?.yearly || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    paddlePriceIds: {
+                      ...formData.paddlePriceIds,
+                      yearly: e.target.value,
+                    },
+                  })
+                }
+                placeholder="pri_01kcmc2fbgxq..."
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -28,6 +28,7 @@ const initialPlanState: CreateAppPlanDto = {
   },
   featurePackages: [],
   publicFeaturePackages: [],
+  trialDays: 0,
   paddleProductId: "",
   paddlePriceIds: {
     monthly: "",
@@ -62,6 +63,7 @@ export function useEditPlanForm() {
         publicFeaturePackages: (plan.publicFeaturePackages || []).map(
           (p: any) => (typeof p === "string" ? p : p._id),
         ),
+        trialDays: plan.trialDays || 0,
         paddleProductId: plan.paddleProductId || "",
         paddlePriceIds: {
           monthly: plan.paddlePriceIds?.monthly || "",

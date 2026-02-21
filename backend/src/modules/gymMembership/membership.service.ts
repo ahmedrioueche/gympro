@@ -67,7 +67,7 @@ export class MembershipService {
       const limits = calculateSubscriptionLimits(gym.appSubscription);
       const currentMembers = gym.memberStats?.total || 0;
 
-      if (currentMembers >= limits.maxMembers) {
+      if (limits.maxMembers !== 0 && currentMembers >= limits.maxMembers) {
         throw new BadRequestException({
           message: 'billing.limits.member_limit_reached',
           vars: { limit: limits.maxMembers },

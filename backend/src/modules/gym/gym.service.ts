@@ -46,7 +46,7 @@ export class GymService {
       owner: createGymDto.owner,
     });
 
-    if (currentGymsCount >= limits.maxGyms) {
+    if (limits.maxGyms !== 0 && currentGymsCount >= limits.maxGyms) {
       throw new ConflictException({
         message: 'billing.limits.gym_creation_limit_reached',
         vars: { limit: limits.maxGyms },

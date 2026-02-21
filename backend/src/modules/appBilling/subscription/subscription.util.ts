@@ -17,16 +17,19 @@ export function calculateSubscriptionLimits(
   const addOns = subscription?.addOns || [];
 
   const totalLimits = {
-    maxGyms: baseLimits.maxGyms || 1,
-    maxMembers: baseLimits.maxMembers || 50,
-    maxGems: baseLimits.maxGems || 0,
+    maxGyms: baseLimits.maxGyms === 0 ? 0 : baseLimits.maxGyms || 1,
+    maxMembers: baseLimits.maxMembers === 0 ? 0 : baseLimits.maxMembers || 50,
+    maxGems: baseLimits.maxGems === 0 ? 0 : baseLimits.maxGems || 0,
   };
 
-  // Add up all add-ons
+  // Add up all add-ons, but skip if limit is already 0 (Infinity)
   for (const addOn of addOns) {
-    if (addOn.gyms) totalLimits.maxGyms += addOn.gyms;
-    if (addOn.members) totalLimits.maxMembers += addOn.members;
-    if (addOn.gems) totalLimits.maxGems += addOn.gems;
+    if (totalLimits.maxGyms !== 0 && addOn.gyms)
+      totalLimits.maxGyms += addOn.gyms;
+    if (totalLimits.maxMembers !== 0 && addOn.members)
+      totalLimits.maxMembers += addOn.members;
+    if (totalLimits.maxGems !== 0 && addOn.gems)
+      totalLimits.maxGems += addOn.gems;
   }
 
   return totalLimits;

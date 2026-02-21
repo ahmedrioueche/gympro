@@ -1984,6 +1984,11 @@
     "confirm_cancel_request_text": "Are you sure you want to cancel this pending change? You will remain on your current plan.",
     "unavailable": "Unavailable",
     "not_available": "This plan is not available",
+    "unlimited_members": "Unlimited members",
+    "unlimited_gems": "Unlimited gems",
+    "infinite_gyms": "Infinite Gyms",
+    "infinite_members": "Infinite Members",
+    "infinite_gems": "Infinite Gems",
     "lifetime_to_subscription_error": "You have lifetime access. Cannot switch to subscription plans without refund.",
     "lifetime_downgrade_error": "Cannot downgrade from your current lifetime plan."
   },
@@ -2005,6 +2010,9 @@
       "durationUnit": "Duration Unit",
       "addTier": "Add tier",
       "pricingTiers": "Pricing Tiers",
+      "zeroIsInfinity": "Setting 0 means unlimited (infinity)",
+      "freePlanDuration": "Free ({{days}} days)",
+      "infinite": "Infinite",
       "units": {
         "day": "Days",
         "week": "Weeks",

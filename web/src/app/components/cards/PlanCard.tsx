@@ -114,15 +114,23 @@ export default function PlanCard({
   };
 
   const formatGymLimit = (maxGyms?: number) => {
-    if (!maxGyms) return t("plans.unlimited_gyms");
+    if (maxGyms === 0) return t("plans.unlimited_gyms");
+    if (!maxGyms) return null;
     return maxGyms === 1
       ? `1 ${t("plans.gym")}`
       : `${maxGyms} ${t("plans.gyms")}`;
   };
 
   const formatMemberLimit = (maxMembers?: number) => {
-    if (!maxMembers) return t("plans.unlimited_members");
+    if (maxMembers === 0) return t("plans.unlimited_members");
+    if (!maxMembers) return null;
     return t("plans.up_to_members_each", { number: maxMembers });
+  };
+
+  const formatGemsLimit = (maxGems?: number) => {
+    if (maxGems === 0) return t("plans.unlimited_gems");
+    if (!maxGems) return null;
+    return `${maxGems} ${t("common.gems")}`;
   };
 
   // ✅ Determine button state with availability check
@@ -343,7 +351,7 @@ export default function PlanCard({
               >
                 {formatGymLimit(plan.limits?.maxGyms)}
               </p>
-              {plan.limits?.maxMembers && (
+              {plan.limits?.maxMembers !== undefined && (
                 <p
                   className={`text-sm font-medium ${
                     isDark ? "text-gray-500" : "text-gray-500"
@@ -352,6 +360,15 @@ export default function PlanCard({
                   {formatMemberLimit(plan.limits.maxMembers)}
                 </p>
               )}
+              {/*  {plan.limits?.maxGems !== undefined && (
+                <p
+                  className={`text-sm font-medium ${
+                    isDark ? "text-gray-500" : "text-gray-500"
+                  }`}
+                >
+                  {formatGemsLimit(plan.limits.maxGems)}
+                </p>
+              )} */}
             </div>
           </div>
 

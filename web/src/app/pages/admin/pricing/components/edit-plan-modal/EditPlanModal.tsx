@@ -64,10 +64,12 @@ export default function EditPlanModal() {
           setFormData={setFormData}
           isEdit={isEdit}
         />
-        <PlanPricing
-          formData={formData}
-          handlePricingChange={handlePricingChange}
-        />
+        {formData.level !== "free" && (
+          <PlanPricing
+            formData={formData}
+            handlePricingChange={handlePricingChange}
+          />
+        )}
         <PlanLimits formData={formData} handleLimitChange={handleLimitChange} />
         <PlanFeatures
           formData={formData}

@@ -60,9 +60,14 @@ export default function PlansTable() {
       render: (plan) => (
         <div>
           <div className="text-sm text-text-primary font-medium">
-            {plan.pricing?.[DEFAULT_CURRENCY]?.monthly
-              ? `${plan.pricing[DEFAULT_CURRENCY]?.monthly} ${DEFAULT_CURRENCY}/mo`
-              : "Free"}
+            {plan.level === "free"
+              ? t("admin.pricing.freePlanDuration", {
+                  days: plan.trialDays || 30,
+                  defaultValue: "Free ({{days}} days)",
+                })
+              : plan.pricing?.[DEFAULT_CURRENCY]?.monthly
+                ? `${plan.pricing[DEFAULT_CURRENCY]?.monthly} ${DEFAULT_CURRENCY}/mo`
+                : "Free"}
           </div>
           {!!plan.pricing?.[DEFAULT_CURRENCY]?.yearly && (
             <div className="text-xs text-text-secondary">
@@ -80,16 +85,29 @@ export default function PlansTable() {
           <div className="flex items-center gap-1.5">
             <Home className="w-3.5 h-3.5 text-text-secondary/50" />
             <span className="font-medium text-text-primary">
-              {plan.limits.maxGyms}
+              {plan.limits.maxGyms === 0 ? "∞" : plan.limits.maxGyms}
             </span>{" "}
-            {t("common.gyms")}
+            {plan.limits.maxGyms === 0
+              ? t("plans.infinite_gyms", "Infinite Gyms")
+              : t("common.gyms")}
           </div>
           <div className="flex items-center gap-1.5">
             <Users className="w-3.5 h-3.5 text-text-secondary/50" />
             <span className="font-medium text-text-primary">
-              {plan.limits.maxMembers}
+              {plan.limits.maxMembers === 0 ? "∞" : plan.limits.maxMembers}
             </span>{" "}
-            {t("common.members")}
+            {plan.limits.maxMembers === 0
+              ? t("plans.infinite_members", "Infinite Members")
+              : t("common.members")}
+          </div>
+          <div className="flex items-center gap-1.5">
+            <DollarSign className="w-3.5 h-3.5 text-text-secondary/50" />
+            <span className="font-medium text-text-primary">
+              {plan.limits.maxGems === 0 ? "∞" : plan.limits.maxGems}
+            </span>{" "}
+            {plan.limits.maxGems === 0
+              ? t("plans.infinite_gems", "Infinite Gems")
+              : t("common.gems")}
           </div>
         </div>
       ),
@@ -132,9 +150,14 @@ export default function PlansTable() {
         </div>
         <div className="text-right shrink-0">
           <div className="text-sm font-black text-primary">
-            {plan.pricing?.[DEFAULT_CURRENCY]?.monthly
-              ? `${plan.pricing[DEFAULT_CURRENCY]?.monthly} ${DEFAULT_CURRENCY}`
-              : "Free"}
+            {plan.level === "free"
+              ? t("admin.pricing.freePlanDuration", {
+                  days: plan.trialDays || 30,
+                  defaultValue: "Free ({{days}} days)",
+                })
+              : plan.pricing?.[DEFAULT_CURRENCY]?.monthly
+                ? `${plan.pricing[DEFAULT_CURRENCY]?.monthly} ${DEFAULT_CURRENCY}`
+                : "Free"}
           </div>
           <div className="text-[10px] text-text-secondary font-medium">
             {plan.pricing?.[DEFAULT_CURRENCY]?.monthly
@@ -153,7 +176,7 @@ export default function PlansTable() {
             </span>
           </div>
           <div className="text-sm font-black text-text-primary">
-            {plan.limits.maxGyms}
+            {plan.limits.maxGyms === 0 ? "∞" : plan.limits.maxGyms}
           </div>
         </div>
         <div className="space-y-1 border-l border-border/50 pl-3">
@@ -164,7 +187,18 @@ export default function PlansTable() {
             </span>
           </div>
           <div className="text-sm font-black text-text-primary">
-            {plan.limits.maxMembers}
+            {plan.limits.maxMembers === 0 ? "∞" : plan.limits.maxMembers}
+          </div>
+        </div>
+        <div className="space-y-1 border-l border-border/50 pl-3">
+          <div className="flex items-center gap-1.5 text-text-secondary">
+            <DollarSign className="w-3.5 h-3.5" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">
+              {t("common.gems")}
+            </span>
+          </div>
+          <div className="text-sm font-black text-text-primary">
+            {plan.limits.maxGems === 0 ? "∞" : plan.limits.maxGems}
           </div>
         </div>
       </div>

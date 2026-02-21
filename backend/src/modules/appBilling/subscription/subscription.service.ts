@@ -486,17 +486,20 @@ export class AppSubscriptionService {
     let nextPaymentDate: Date | undefined;
 
     if (billingCycle === 'monthly') {
-      currentPeriodEnd = new Date(startDate);
-      currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
+      currentPeriodEnd = new Date(
+        startDate.getTime() + 30 * 24 * 60 * 60 * 1000,
+      );
       nextPaymentDate = new Date(currentPeriodEnd);
     } else if (billingCycle === 'yearly') {
-      currentPeriodEnd = new Date(startDate);
-      currentPeriodEnd.setFullYear(currentPeriodEnd.getFullYear() + 1);
+      currentPeriodEnd = new Date(
+        startDate.getTime() + 365 * 24 * 60 * 60 * 1000,
+      );
       nextPaymentDate = new Date(currentPeriodEnd);
     } else {
       // Default fallback
-      currentPeriodEnd = new Date(startDate);
-      currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
+      currentPeriodEnd = new Date(
+        startDate.getTime() + 30 * 24 * 60 * 60 * 1000,
+      );
     }
 
     return { endDate, currentPeriodEnd, nextPaymentDate };

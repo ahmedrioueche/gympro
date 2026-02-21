@@ -31,10 +31,10 @@ import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 
 @Schema({ _id: false })
 class AppPlanLimits {
-  @Prop({ min: 1 })
+  @Prop({ min: 0 })
   maxGyms?: number;
 
-  @Prop({ min: 1 })
+  @Prop({ min: 0 })
   maxMembers?: number;
 
   @Prop({ min: 0 })
