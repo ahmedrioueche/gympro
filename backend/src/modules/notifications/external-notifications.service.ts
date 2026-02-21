@@ -1,8 +1,15 @@
-import { AppLanguage, DEFAULT_LANGUAGE } from '@ahmedrioueche/gympro-client';
+import {
+  AppLanguage,
+  DEFAULT_LANGUAGE,
+  GymManagerFeature,
+} from '@ahmedrioueche/gympro-client';
 import { Injectable, Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { I18nService } from '../../common/i18n/i18n.service';
 import { User } from '../../common/schemas/user.schema';
 import { MailerService } from '../../common/services/mailer.service';
+import { GymModel } from '../gym/gym.schema';
 import { SmsService } from '../sms/sms.service';
 
 export interface NotificationOptions {
@@ -28,6 +35,8 @@ export interface NotificationOptions {
   sendEmail?: boolean;
   /** Send via SMS (default: true) */
   sendSms?: boolean;
+  /** Optional gymId to check for feature permissions */
+  gymId?: string;
 }
 
 @Injectable()
@@ -38,6 +47,8 @@ export class ExternalNotificationService {
     private readonly mailerService: MailerService,
     private readonly smsService: SmsService,
     private readonly i18nService: I18nService,
+    @InjectModel(GymModel.name)
+    private readonly gymModel: Model<GymModel>,
   ) {}
 
   /**
@@ -52,8 +63,42 @@ export class ExternalNotificationService {
       ...options.vars,
     };
 
-    const shouldSendEmail = options.sendEmail !== false;
-    const shouldSendSms = options.sendSms !== false;
+    let shouldSendEmail = options.sendEmail !== false;
+    let shouldSendSms = options.sendSms !== false;
+
+    // Check gym plan permissions if gymId is provided
+    if (options.gymId) {
+      const gym = await this.gymModel.findById(options.gymId).lean().exec();
+      if (gym) {
+        const subscription = gym.appSubscription as any;
+        const featurePackages = subscription?.plan?.featurePackages || [];
+        const allFeatures: string[] = featurePackages.reduce(
+          (acc: string[], pkg: any) => [...acc, ...(pkg.features || [])],
+          [],
+        );
+
+        const hasEmailFeature = allFeatures.includes(
+          GymManagerFeature.EMAIL_NOTIFICATIONS,
+        );
+        const hasSmsFeature = allFeatures.includes(
+          GymManagerFeature.SMS_NOTIFICATIONS,
+        );
+
+        if (!hasEmailFeature && shouldSendEmail) {
+          this.logger.log(
+            `Skipping email: Gym ${gym.name} (${options.gymId}) does not have EMAIL_NOTIFICATIONS feature`,
+          );
+          shouldSendEmail = false;
+        }
+
+        if (!hasSmsFeature && shouldSendSms) {
+          this.logger.log(
+            `Skipping SMS: Gym ${gym.name} (${options.gymId}) does not have SMS_NOTIFICATIONS feature`,
+          );
+          shouldSendSms = false;
+        }
+      }
+    }
 
     // Determine keys to use
     let emailSubjectKey: string;
@@ -83,8 +128,6 @@ export class ExternalNotificationService {
       `Resolving keys: subject=${emailSubjectKey}, body=${emailBodyKey}`,
     );
     this.logger.log(`Language: ${language}`);
-    const subject = this.i18nService.t(emailSubjectKey, language, commonVars);
-    this.logger.log(`Resolved subject: ${subject}`);
 
     // Send Email
     if (shouldSendEmail) {

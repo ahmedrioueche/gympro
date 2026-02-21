@@ -142,6 +142,7 @@ export class MembershipCronService {
             type: 'subscription',
             priority: 'high',
             relatedId: gym._id.toString(),
+            gymId: gym._id.toString(),
           });
         }
 
@@ -221,6 +222,7 @@ export class MembershipCronService {
         type: 'subscription',
         priority: type === 'pre' ? 'high' : 'medium', // Post notices are less urgent
         relatedId: gym._id.toString(),
+        gymId: gym._id.toString(),
       });
 
       // Notify Managers (Use existing logic: only for specific types or if they want all?)

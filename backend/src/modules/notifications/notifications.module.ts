@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import { MailerService } from '../../common/services/mailer.service';
+import { GymModel, GymSchema } from '../gym/gym.schema';
 import { SmsModule } from '../sms/sms.module';
 import { ExternalNotificationService } from './external-notifications.service';
 import { NotificationsController } from './notifications.controller';
@@ -27,6 +28,7 @@ import { NotificationsService } from './notifications.service';
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
+      { name: GymModel.name, schema: GymSchema },
       {
         name: BaseNotification.name,
         schema: BaseNotificationSchema,

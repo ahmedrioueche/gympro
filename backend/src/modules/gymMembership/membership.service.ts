@@ -956,6 +956,7 @@ export class MembershipService {
           type: 'subscription',
           priority: 'high',
           relatedId: gymId,
+          gymId: gymId, // Pass gymId for feature check
         });
       }
     } catch (notifError) {
@@ -1715,6 +1716,7 @@ export class MembershipService {
             type: 'info' as NotificationType,
             priority: 'medium',
             relatedId: gymId,
+            gymId: gymId, // Pass gymId for feature check
           });
         }
       } catch (notifError) {

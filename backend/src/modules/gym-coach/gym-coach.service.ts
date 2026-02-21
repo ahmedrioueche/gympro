@@ -211,6 +211,7 @@ export class GymCoachService {
         priority: 'high',
         relatedId: affiliation?._id?.toString(),
         skipExternal: true,
+        gymId: gymId, // Pass gymId for feature check
         action: {
           type: 'modal',
           payload: 'gym_invitation',
@@ -289,6 +290,7 @@ export class GymCoachService {
           priority: 'high',
           relatedId: affiliation?._id?.toString(),
           skipExternal: true,
+          gymId: gymId, // Pass gymId for feature check
         });
       }
 
@@ -431,6 +433,7 @@ export class GymCoachService {
               type: 'alert',
               priority: 'high',
               skipExternal: true,
+              gymId: gym._id.toString(), // Pass gymId for feature check
             },
           );
         }
@@ -446,6 +449,7 @@ export class GymCoachService {
             type: 'alert',
             priority: 'medium',
             skipExternal: true,
+            gymId: gym?._id?.toString(), // Pass gymId for feature check
           },
         );
       }
