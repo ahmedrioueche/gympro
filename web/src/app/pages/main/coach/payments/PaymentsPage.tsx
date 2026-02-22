@@ -38,7 +38,18 @@ function PaymentsPage() {
   };
 
   if (isLoading) {
-    return <Loading />;
+    <>
+      <PageHeader
+        title={t("coach.payments.title", "Payments")}
+        subtitle={t(
+          "coach.payments.subtitle",
+          "Manage your earnings and payout history",
+        )}
+        icon={Wallet}
+      />
+      <Loading />;
+    </>;
+    return;
   }
 
   // Define table columns

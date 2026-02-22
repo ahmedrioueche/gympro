@@ -1,7 +1,11 @@
 import { formatPrice, type Gym } from "@ahmedrioueche/gympro-client";
 import { CircleDollarSign, Flame } from "lucide-react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { useCoachAffiliations } from "../../../../hooks/queries/useGymCoach";
+import {
+  useCoachAffiliations,
+  useRequestGymAffiliation,
+} from "../../../../hooks/queries/useGymCoach";
 import { useGymSubscriptionTypes } from "../../../../hooks/queries/useGymSubscriptionTypes";
 import { useLanguageStore } from "../../../../store/language";
 import { useUserStore } from "../../../../store/user";
@@ -24,6 +28,29 @@ export function GymInfoOverview({
   const { t } = useTranslation();
   const { user } = useUserStore();
   const { language } = useLanguageStore();
+
+  const { mutate: requestAffiliation, isPending: isJoining } =
+    useRequestGymAffiliation();
+
+  const handleJoin = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    requestAffiliation(
+      { gymId: gym._id },
+      {
+        onSuccess: () => {
+          toast.success(
+            t("gyms.request_success", "Join request submitted successfully!"),
+          );
+        },
+        onError: (error: any) => {
+          toast.error(
+            error.message ||
+              t("gyms.request_error", "Failed to submit join request"),
+          );
+        },
+      },
+    );
+  };
 
   const { data: plans = [] } = useGymSubscriptionTypes(gym._id);
 
@@ -261,14 +288,8 @@ export function GymInfoOverview({
       )}
 
       {/* Buttons */}
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          onSelect();
-        }}
-        className="flex flex-col sm:flex-row gap-4"
-      >
-        {!isStaff && !isJoined && !isPending ? null : (
+      <div className="flex flex-col sm:flex-row gap-4">
+        {isStaff || isJoined || isPending || user?.role === "coach" ? (
           <button
             onClick={
               isStaff
@@ -276,28 +297,30 @@ export function GymInfoOverview({
                     e.stopPropagation();
                     onSelect();
                   }
-                : undefined
+                : user?.role === "coach" && !isJoined && !isPending
+                  ? handleJoin
+                  : undefined
             }
-            disabled={!isStaff && (isPending || isJoined)}
+            disabled={(!isStaff && (isPending || isJoined)) || isJoining}
             className={`flex-1 py-4 px-6 text-center rounded-xl font-semibold text-lg transition-all duration-300 active:scale-95 ${
               isStaff
                 ? "bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:scale-105"
                 : isJoined
                   ? "bg-success/20 text-success border-2 border-success/30 cursor-default"
-                  : isPending
+                  : isPending || isJoining
                     ? "bg-warning/20 text-warning border-2 border-warning/30 cursor-wait"
-                    : "hidden"
+                    : "bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:scale-105"
             }`}
           >
             {isStaff
               ? t("gymCard.manageGym", "Manage Gym")
               : isJoined
                 ? t("gyms.status_joined", "Joined")
-                : isPending
+                : isPending || isJoining
                   ? t("gyms.status_pending", "Pending")
-                  : null}
+                  : t("gymCard.joinGym", "Join Gym")}
           </button>
-        )}
+        ) : null}
 
         <button
           onClick={(e) => {

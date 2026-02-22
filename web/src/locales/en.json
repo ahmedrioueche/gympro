@@ -695,6 +695,7 @@
     "activeMembers": "active members",
     "website": "Website",
     "manageGym": "Manage Gym",
+    "joinGym": "Join Gym",
     "viewSettings": "View Settings",
     "back": "← Back to Overview",
     "settingsTitle": "Gym Details & Settings",
@@ -3245,12 +3246,17 @@
     "noDataDesc": "Start coaching clients to see your analytics",
     "noRecentActivity": "No recent activity",
     "recentActivity": "Recent Activity",
+    "recentActivityDesc": "Latest updates from your coaching business",
     "stats": {
       "activeClients": "Active Clients",
       "totalSessions": "Total Sessions",
       "completionRate": "Completion Rate",
       "totalHours": "Total Hours",
-      "vsLastMonth": "vs. last month"
+      "vsLastMonth": "vs. last month",
+      "sessionsDone": "Sessions completed",
+      "hoursTaught": "Hours taught",
+      "weeklyAvg": "Weekly Average",
+      "avgSessions": "Sessions per week"
     },
     "charts": {
       "sessionTrend": "Session Activity",

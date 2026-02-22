@@ -93,6 +93,8 @@ export interface GymSettings {
   };
   subscriptionRenewalReminderDays?: number; // Days before expiry to notify members
   workingHours?: TimeRange; // Default gym hours (mixed or general)
+  useAdvancedHours?: boolean; // If true, customWorkingHours are used instead of workingHours
+  customWorkingHours?: WeeklyTimeRange[]; // Advanced/dynamic gym hours with multiple slots
   isMixed?: boolean; // Can males and females train toghether at the same time?
   femaleOnlyHours?: WeeklyTimeRange[]; // Specific time ranges reserved for female members
   servicesOffered?: GymService[]; // List of services offered at the gym
@@ -100,6 +102,7 @@ export interface GymSettings {
   rules?: string[]; // List of gym rules
   temporaryClosures?: TemporaryClosure[];
   workingDays?: number[]; // 0-6 (Sunday to Saturday)
+  notifyScheduleChanges?: boolean; // Automatically notify members of schedule changes
 }
 
 export interface TemporaryClosure {

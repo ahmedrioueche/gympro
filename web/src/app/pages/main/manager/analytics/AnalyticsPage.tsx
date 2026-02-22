@@ -47,30 +47,39 @@ export default function AnalyticsPage() {
         <AnalyticsEmptyState />
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
               title={t("analytics.stats.revenue", "Total Revenue")}
               value={`$${analytics.metrics.totalRevenue.toLocaleString()}`}
               icon={DollarSign}
               trend={analytics.metrics.revenueTrend}
-              trendLabel={t("analytics.stats.vsLastMonth", "vs. last month")}
+              description={t("analytics.stats.vsLastMonth", "vs. last month")}
+              color="from-blue-500 to-indigo-600"
             />
             <StatCard
               title={t("analytics.stats.members", "Total Members")}
               value={analytics.metrics.totalMembers.toLocaleString()}
               icon={Users}
               trend={analytics.metrics.membersTrend}
-              trendLabel={t("analytics.stats.vsLastMonth", "vs. last month")}
+              description={t("analytics.stats.vsLastMonth", "vs. last month")}
+              color="from-purple-500 to-pink-600"
             />
             <StatCard
               title={t("analytics.stats.active", "Active Members")}
               value={analytics.metrics.activeMembers.toLocaleString()}
               icon={Activity}
+              description={t(
+                "analytics.stats.activeDesc",
+                "Currently subscribed",
+              )}
+              color="from-emerald-500 to-teal-600"
             />
             <StatCard
               title={t("analytics.stats.gyms", "Total Gyms")}
               value={analytics.metrics.totalGyms}
               icon={LayoutGrid}
+              description={t("analytics.stats.gymsDesc", "Active locations")}
+              color="from-orange-500 to-red-600"
             />
           </div>
 

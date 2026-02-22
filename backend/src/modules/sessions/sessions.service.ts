@@ -5,7 +5,13 @@ import {
   SessionQueryDto,
   SessionStatus,
 } from '@ahmedrioueche/gympro-client';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
@@ -32,6 +38,7 @@ export class SessionsService {
     private membershipModel: Model<GymMembershipModel>,
     @InjectModel(SubscriptionTypeModel.name)
     private subscriptionTypeModel: Model<SubscriptionTypeModel>,
+    @Inject(forwardRef(() => GymCoachService))
     private gymCoachService: GymCoachService,
     private paymentService: GymCoachPaymentService,
   ) {}

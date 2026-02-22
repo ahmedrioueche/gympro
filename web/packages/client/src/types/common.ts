@@ -240,6 +240,12 @@ export interface WeeklyTimeRange {
   range: TimeRange;
 }
 
+export interface NotificationChannels {
+  email?: boolean;
+  sms?: boolean;
+  inApp?: boolean;
+}
+
 export interface AuditInfo {
   createdAt: string | Date;
   createdBy?: string;

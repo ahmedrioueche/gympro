@@ -5,10 +5,10 @@ import Loading from "../../../../../components/ui/Loading";
 import NoData from "../../../../../components/ui/NoData";
 import { useCoachAnalytics } from "../../../../../hooks/queries/useCoaches";
 import PageHeader from "../../../../components/PageHeader";
-import { RecentActivity } from "./components/RecentActivity";
-import { SessionTrendChart } from "./components/SessionTrendChart";
-import { SessionTypeDistribution } from "./components/SessionTypeDistribution";
-import { StatsGrid } from "./components/StatsGrid";
+import { ActivityFeed } from "../../../../components/analytics/ActivityFeed";
+import { SessionDistribution } from "../../../../components/analytics/SessionDistribution";
+import { SessionTrend } from "../../../../components/analytics/SessionTrend";
+import { StatsOverview } from "../../../../components/analytics/StatsOverview";
 
 export default function AnalyticsPage() {
   const { t } = useTranslation();
@@ -22,8 +22,11 @@ export default function AnalyticsPage() {
     return (
       <div className="space-y-8">
         <PageHeader
-          title={t("coachAnalytics.title")}
-          subtitle={t("coachAnalytics.subtitle")}
+          title={t("coachAnalytics.title", "Coach Analytics")}
+          subtitle={t(
+            "coachAnalytics.subtitle",
+            "Track your coaching performance and client growth",
+          )}
           icon={BarChart3}
         />
         <div className="py-20">
@@ -37,38 +40,44 @@ export default function AnalyticsPage() {
     return (
       <div className="space-y-8">
         <PageHeader
-          title={t("coachAnalytics.title")}
-          subtitle={t("coachAnalytics.subtitle")}
+          title={t("coachAnalytics.title", "Coach Analytics")}
+          subtitle={t(
+            "coachAnalytics.subtitle",
+            "Track your coaching performance and client growth",
+          )}
           icon={BarChart3}
         />
         <NoData
           emoji="📊"
-          title={t("coachAnalytics.noData")}
-          description={t("coachAnalytics.noDataDesc")}
+          title={t("coachAnalytics.noData", "No analytics data available")}
+          description={t(
+            "coachAnalytics.noDataDesc",
+            "Start coaching to see your business growth metrics here",
+          )}
         />
       </div>
     );
   }
 
-  const { metrics, sessionTrendData, sessionDistribution, recentActivity } =
-    analytics;
-
   return (
     <div className="space-y-8">
       <PageHeader
-        title={t("coachAnalytics.title")}
-        subtitle={t("coachAnalytics.subtitle")}
+        title={t("coachAnalytics.title", "Coach Analytics")}
+        subtitle={t(
+          "coachAnalytics.subtitle",
+          "Track your coaching performance and client growth",
+        )}
         icon={BarChart3}
       />
 
-      <StatsGrid metrics={metrics} />
+      <StatsOverview metrics={analytics.metrics} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SessionTrendChart data={sessionTrendData} />
-        <SessionTypeDistribution distribution={sessionDistribution} />
+        <SessionTrend data={analytics.sessionTrendData} />
+        <SessionDistribution distribution={analytics.sessionDistribution} />
       </div>
 
-      <RecentActivity activities={recentActivity} />
+      <ActivityFeed activities={analytics.recentActivity} />
     </div>
   );
 }

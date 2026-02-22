@@ -4,10 +4,10 @@ import ErrorComponent from "../../../../../../components/ui/Error";
 import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
 import PageHeader from "../../../../../components/PageHeader";
-import { RecentActivity } from "../../../coach/analytics/components/RecentActivity";
-import { SessionTrendChart } from "../../../coach/analytics/components/SessionTrendChart";
-import { SessionTypeDistribution } from "../../../coach/analytics/components/SessionTypeDistribution";
-import { StatsGrid } from "../../../coach/analytics/components/StatsGrid";
+import { ActivityFeed as RecentActivity } from "../../../../../components/analytics/ActivityFeed";
+import { SessionDistribution as SessionTypeDistribution } from "../../../../../components/analytics/SessionDistribution";
+import { SessionTrend as SessionTrendChart } from "../../../../../components/analytics/SessionTrend";
+import { StatsOverview as StatsGrid } from "../../../../../components/analytics/StatsOverview";
 import { useGymCoachAnalytics } from "./hooks/useGymCoachAnalytics";
 
 export default function AnalyticsPage() {

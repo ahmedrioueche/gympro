@@ -1,5 +1,6 @@
 import type {
   Alert,
+  AppEditorUser,
   AppFeaturePackage,
   AppPlan,
   CoachProfile,
@@ -11,7 +12,11 @@ import type {
   GymService,
   ProgramDayProgress,
   ProgramHistory,
+  Report,
+  Session,
+  SubscriptionType,
   TrainingProgram,
+  User,
 } from "@ahmedrioueche/gympro-client";
 import type { Product } from "@ahmedrioueche/gympro-client/dist/types/product";
 
@@ -151,7 +156,7 @@ export interface CreateSessionModalProps {
 }
 
 export interface SessionDetailsModalProps {
-  session: import("@ahmedrioueche/gympro-client").Session;
+  session: Session;
 }
 
 export interface InviteCoachModalProps {
@@ -210,15 +215,18 @@ export interface LogSessionModalProps {
 }
 
 export interface ReviewCoachRequestModalProps {
-  request: import("@ahmedrioueche/gympro-client").User;
+  request: User;
+  affiliationId?: string;
+  gymId?: string;
+  message?: string;
 }
 
 export interface EditAppPlanModalProps {
-  plan?: import("@ahmedrioueche/gympro-client").AppPlan | null;
+  plan?: AppPlan | null;
 }
 
 export interface AdminManagePermissionsModalProps {
-  editor: import("@ahmedrioueche/gympro-client").AppEditorUser;
+  editor: AppEditorUser;
 }
 
 export interface AdminCreateEditorModalProps {
@@ -226,7 +234,7 @@ export interface AdminCreateEditorModalProps {
 }
 
 export interface ReportDetailsModalProps {
-  report: import("@ahmedrioueche/gympro-client").Report;
+  report: Report;
 }
 
 export interface AlertDetailsModalProps {
@@ -252,7 +260,7 @@ export interface GymMediaModalProps {
 }
 
 export interface UserProfileModalProps {
-  user: import("@ahmedrioueche/gympro-client").User;
+  user: User;
 }
 
 export interface ProductDetailsModalProps {
@@ -260,12 +268,12 @@ export interface ProductDetailsModalProps {
 }
 
 export interface CompetitionDetailsModalProps {
-  competition: import("@ahmedrioueche/gympro-client").Competition;
+  competition: Competition;
   gymId?: string;
 }
 
 export interface SetWinnersModalProps {
-  competition: import("@ahmedrioueche/gympro-client").Competition;
+  competition: Competition;
   onSuccess?: () => void;
 }
 
@@ -281,7 +289,7 @@ export interface ServiceModalProps {
 
 export interface PricingModalProps {
   mode: "create" | "edit";
-  plan?: import("@ahmedrioueche/gympro-client").SubscriptionType;
+  plan?: SubscriptionType;
   onSuccess?: () => void;
 }
 

@@ -273,7 +273,6 @@ function modals() {
       <ServiceModal />
       <PricingModal />
       <CreateMemberModal />
-      <CreateMemberModal />
       <ClassDetailsModal />
       <CreateGymModal />
     </Suspense>

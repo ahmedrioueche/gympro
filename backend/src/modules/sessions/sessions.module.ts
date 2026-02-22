@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import { GymCoachPaymentModule } from '../gym-coach-payment/gym-coach-payment.module';
@@ -21,7 +21,7 @@ import {
       { name: 'GymMembership', schema: GymMembershipSchema },
       { name: SubscriptionTypeModel.name, schema: SubscriptionTypeSchema },
     ]),
-    GymCoachModule,
+    forwardRef(() => GymCoachModule),
     GymCoachPaymentModule,
   ],
   controllers: [SessionsController],

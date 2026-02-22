@@ -6,9 +6,10 @@ interface StatCardProps {
   icon: LucideIcon;
   trend?: number;
   trendLabel?: string;
+  description?: string;
   isLoading?: boolean;
   loading?: boolean;
-  color?: "primary" | "success" | "warning" | "danger" | "secondary";
+  color?: string; // Expecting "from-X to-Y" gradient classes
 }
 
 export default function StatCard({
@@ -17,15 +18,16 @@ export default function StatCard({
   icon: Icon,
   trend,
   trendLabel,
+  description,
   isLoading,
   loading,
-  color = "primary",
+  color = "from-primary/20 to-primary/10",
 }: StatCardProps) {
   const isActuallyLoading = isLoading || loading;
 
   if (isActuallyLoading) {
     return (
-      <div className="bg-surface border border-border p-6 rounded-2xl animate-pulse">
+      <div className="bg-surface border border-border p-6 rounded-3xl animate-pulse">
         <div className="w-10 h-10 bg-border rounded-xl mb-4" />
         <div className="h-4 w-24 bg-border rounded mb-2" />
         <div className="h-8 w-16 bg-border rounded" />
@@ -33,45 +35,51 @@ export default function StatCard({
     );
   }
 
-  const isPositive = trend && trend > 0;
-
-  const colorStyles = {
-    primary: "bg-primary/10 text-primary",
-    success: "bg-success/10 text-success",
-    warning: "bg-warning/10 text-warning",
-    danger: "bg-danger/10 text-danger",
-    secondary: "bg-secondary/10 text-secondary",
-  };
+  const isPositive = trend !== undefined && trend > 0;
 
   return (
-    <div className="bg-surface border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-xl ${colorStyles[color]}`}>
-          <Icon className="w-6 h-6" />
-        </div>
-        {trend !== undefined && (
+    <div className="group relative overflow-hidden rounded-3xl border border-border/50 bg-surface p-6 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 cursor-default">
+      {/* Background Gradient Glow */}
+      <div
+        className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${color} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`}
+      />
+
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
           <div
-            className={`flex items-center gap-1 text-sm font-medium ${
-              isPositive ? "text-green-500" : "text-red-500"
-            }`}
+            className={`p-3 rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg shadow-primary/10 transition-transform group-hover:scale-110 duration-500`}
           >
-            {isPositive ? (
-              <TrendingUp className="w-4 h-4" />
-            ) : (
-              <TrendingDown className="w-4 h-4" />
-            )}
-            <span>{Math.abs(trend)}%</span>
+            <Icon size={24} />
           </div>
-        )}
-      </div>
-      <div>
-        <p className="text-sm font-medium text-text-secondary mb-1">{title}</p>
-        <h3 className="text-3xl font-bold text-text-primary tracking-tight">
-          {value}
-        </h3>
-        {trendLabel && (
-          <p className="text-xs text-text-secondary mt-2">{trendLabel}</p>
-        )}
+          {trend !== undefined && (
+            <div
+              className={`flex items-center gap-1 text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider ${
+                isPositive
+                  ? "text-emerald-500 bg-emerald-500/10"
+                  : "text-red-500 bg-red-500/10"
+              }`}
+            >
+              {isPositive ? (
+                <TrendingUp size={12} />
+              ) : (
+                <TrendingDown size={12} />
+              )}
+              <span>{Math.abs(trend)}%</span>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <h3 className="text-3xl font-black text-text-primary tracking-tight">
+            {value}
+          </h3>
+          <p className="text-sm font-bold text-text-secondary mt-1">{title}</p>
+          {(description || trendLabel) && (
+            <p className="text-[10px] text-text-secondary/60 mt-1 uppercase tracking-wider font-medium">
+              {description || trendLabel}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
