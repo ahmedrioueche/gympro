@@ -113,7 +113,9 @@ export default function Nav({ children, sidebarLinks = null }) {
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col h-screen">
         {/* Top Bar: Menu button + GymSelector left, controls right */}
-        <div className={`flex items-center justify-between min-h-[80px]`}>
+        <div
+          className={`flex items-center justify-between min-h-[64px] md:min-h-[80px] px-4`}
+        >
           <div className="flex items-center gap-3 flex-1">
             {/* Show logo when no sidebar */}
             {!sidebarLinks && !isMobile && (

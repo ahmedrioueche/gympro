@@ -27,12 +27,12 @@ function ProfileHeader({ user, subscription, action }: ProfileHeaderProps) {
   return (
     <GradientCard header={true} contentClassName="p-6">
       {/* Header Section */}
-      <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-6">
+      <div className="flex flex-col lg:flex-row lg:items-start items-center gap-6 mb-6">
         {/* Avatar & Primary Info */}
-        <div className="flex items-start gap-4">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-left w-full">
           <ProfileAvatar user={user} />
 
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 w-full">
             <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-1">
               {user.profile.fullName || user.profile.username}
             </h1>
@@ -41,7 +41,7 @@ function ProfileHeader({ user, subscription, action }: ProfileHeaderProps) {
                 @{user.profile.username}
               </p>
             )}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-hover text-text-secondary text-xs font-semibold rounded-lg border border-border">
                 <Shield className="w-3.5 h-3.5" />
                 {roleDisplay}
@@ -57,7 +57,11 @@ function ProfileHeader({ user, subscription, action }: ProfileHeaderProps) {
         </div>
 
         {/* Action Button */}
-        {action && <div className="lg:ml-auto">{action}</div>}
+        {action && (
+          <div className="flex justify-center md:justify-start lg:ml-auto w-full lg:w-auto">
+            {action}
+          </div>
+        )}
       </div>
 
       {/* Contact & Additional Info Grid */}

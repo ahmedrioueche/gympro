@@ -35,8 +35,14 @@ export class GymController {
   ) {}
 
   @Post()
-  async create(@Body() createGymDto: any) {
+  @UseGuards(JwtAuthGuard)
+  async create(@Body() createGymDto: any, @Req() req: any) {
     try {
+      // Ensure owner is set
+      if (!createGymDto.owner) {
+        createGymDto.owner = req.user?.sub;
+      }
+
       const gym = await this.gymService.create(createGymDto);
 
       // Grant manager dashboard access to the owner

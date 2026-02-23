@@ -63,7 +63,8 @@ export class AppSubscriptionService {
   async syncSubscriptionToGyms(userId: string) {
     try {
       const sub = await this.subscriptionModel
-        .findOne({ userId })
+        .findOne({ userId, status: { $in: ['active', 'trialing'] } })
+        .sort({ createdAt: -1 })
         .lean()
         .exec();
 

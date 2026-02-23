@@ -1,19 +1,28 @@
 import { useTranslation } from "react-i18next";
-import { useUserStore } from "../store/user";
-import { calculateSubscriptionLimits } from "../utils/subscription";
 import { useMyGyms } from "./queries/useGyms";
+import { useMySubscription } from "./queries/useSubscription";
 import { useToast } from "./useToast";
 
 export const useSubscriptionLimits = () => {
   const { t } = useTranslation();
   const { error } = useToast();
-  const { user } = useUserStore();
+  const { data: mySubscription } = useMySubscription();
   const { data: gyms = [] } = useMyGyms();
 
-  const limits = calculateSubscriptionLimits(user?.appSubscription);
+  // Get limits directly from the subscription's plan
+  const plan = mySubscription?.plan;
+  const baseLimits = plan?.limits || { maxGyms: 1, maxMembers: 50 };
+
+  const limits = {
+    maxGyms: typeof baseLimits.maxGyms === "number" ? baseLimits.maxGyms : 1,
+    maxMembers:
+      typeof baseLimits.maxMembers === "number" ? baseLimits.maxMembers : 50,
+  };
 
   const currentGymsCount = (gyms || []).length;
-  const isGymLimitReached = currentGymsCount >= limits.maxGyms;
+  // maxGyms === 0 means unlimited
+  const isGymLimitReached =
+    limits.maxGyms > 0 && currentGymsCount >= limits.maxGyms;
 
   const checkGymLimit = () => {
     if (isGymLimitReached) {

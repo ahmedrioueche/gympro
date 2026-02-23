@@ -87,24 +87,24 @@ export function SearchFilterBar<T extends string = string>({
   }, []);
 
   return (
-    <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-5 w-full">
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+    <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-2.5 md:p-5 w-full">
+      <div className="flex items-center gap-2 md:gap-3">
         {/* Search Input - Flex Grow */}
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-0">
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={localSearchValue}
             onChange={(e) => handleSearchInput(e.target.value)}
-            className="w-full px-4 py-2.5 pl-10 md:pl-11 pr-10 focus:ring-1 focus:ring-primary bg-background border border-border rounded-xl text-text-primary placeholder-text-secondary focus:outline-none transition-all text-sm md:text-base"
+            className="w-full px-3.5 md:px-4 py-2 md:py-2.5 pl-9 md:pl-11 pr-8 md:pr-10 focus:ring-1 focus:ring-primary bg-background border border-border rounded-xl text-text-primary placeholder-text-secondary focus:outline-none transition-all text-sm md:text-base"
           />
-          <span className="absolute left-3 md:left-3.5 top-1/2 -translate-y-1/2 text-base md:text-lg">
+          <span className="absolute left-3 md:left-3.5 top-1/2 -translate-y-1/2 text-sm md:text-lg">
             🔍
           </span>
           {localSearchValue && (
             <button
               onClick={handleClearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-danger w-6 h-6 flex items-center justify-center rounded-full hover:bg-danger/10 transition-colors"
+              className="absolute right-2.5 md:right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-danger w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full hover:bg-danger/10 transition-colors"
             >
               ✕
             </button>
@@ -112,7 +112,7 @@ export function SearchFilterBar<T extends string = string>({
         </div>
 
         {/* Filter Dropdowns - Multi-filter support */}
-        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+        <div className="flex items-center gap-1.5 md:gap-3 flex-shrink-0">
           {filters?.map((filter, index) => (
             <FilterDropdown
               key={index}
@@ -174,7 +174,7 @@ function FilterDropdown<T extends string>({
     <div ref={ref} className="relative flex-shrink-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-2.5 bg-background border border-border rounded-xl text-sm transition-all ${
+        className={`flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-2 md:py-2.5 bg-background border border-border rounded-xl text-sm transition-all ${
           isOpen
             ? "border-primary ring-1 ring-primary/20"
             : "hover:border-primary"

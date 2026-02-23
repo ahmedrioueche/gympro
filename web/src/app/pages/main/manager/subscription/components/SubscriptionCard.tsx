@@ -292,7 +292,9 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                         : t("subscription.gyms_allowed")}
                     </p>
                     <p className="text-2xl font-bold text-text-primary">
-                      {mySubscription.plan?.limits?.maxGyms || 1}
+                      {mySubscription.plan?.limits?.maxGyms === 0
+                        ? t("subscription.unlimited")
+                        : mySubscription.plan?.limits?.maxGyms || 1}
                     </p>
                   </div>
                 </div>
@@ -323,7 +325,9 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
                         : t("subscription.members_allowed")}
                     </p>
                     <p className="text-2xl font-bold text-text-primary">
-                      {mySubscription.plan?.limits?.maxMembers || 50}
+                      {mySubscription.plan?.limits?.maxMembers === 0
+                        ? t("subscription.unlimited")
+                        : mySubscription.plan?.limits?.maxMembers || 50}
                     </p>
                   </div>
                 </div>

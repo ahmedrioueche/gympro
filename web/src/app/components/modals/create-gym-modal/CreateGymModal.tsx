@@ -86,7 +86,13 @@ export const CreateGymModal = () => {
     if (duplicateGymName) return;
 
     try {
-      await createGymMutation.mutateAsync(formData);
+      // Ensure owner is set from latest user state
+      const submissionData = {
+        ...formData,
+        owner: formData.owner || user?._id || "",
+      };
+
+      await createGymMutation.mutateAsync(submissionData);
       handleClose();
     } catch (error) {
       console.error("Failed to create gym:", error);

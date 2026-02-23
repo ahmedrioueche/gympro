@@ -2160,6 +2160,7 @@
   "subscription": {
     "title": "Subscriptions",
     "subtitle": "Manage your app subscription and billing",
+    "unlimited": "Unlimited",
     "footer_info": "Need help? \n Contact us",
     "current_subscription": "Current Subscription",
     "no_subscription": "No active subscription",

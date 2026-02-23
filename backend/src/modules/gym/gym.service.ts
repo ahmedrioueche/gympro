@@ -40,13 +40,14 @@ export class GymService {
     const subscription = await this.appSubscriptionService.getMySubscription(
       createGymDto.owner,
     );
+
     const limits = calculateSubscriptionLimits(subscription);
 
     const currentGymsCount = await this.gymModel.countDocuments({
       owner: createGymDto.owner,
     });
 
-    if (limits.maxGyms !== 0 && currentGymsCount >= limits.maxGyms) {
+    if (limits.maxGyms > 0 && currentGymsCount >= limits.maxGyms) {
       throw new ConflictException({
         message: 'billing.limits.gym_creation_limit_reached',
         vars: { limit: limits.maxGyms },
