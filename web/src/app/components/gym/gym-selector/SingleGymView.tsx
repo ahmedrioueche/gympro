@@ -55,14 +55,12 @@ export default function SingleGymView({
               defaultValue: `Access ${gym.name}`,
             })
       }
-      className={`group flex items-center gap-3 px-2 py-2 rounded-2xl transition-all duration-300 hover:bg-surface-hover/40 ${
-        isMobile ? "scale-90 -ml-2" : ""
-      }`}
+      className={`group flex items-center gap-2 md:gap-3 px-1.5 md:px-2 py-2 rounded-2xl transition-all duration-300 hover:bg-surface-hover/40 min-w-0 max-w-full`}
     >
       {/* Left Icon: Changes based on location */}
       <div className="relative flex-shrink-0">
         <div
-          className={`${isMobile ? "w-11 h-11" : "w-14 h-14"} rounded-2xl ${
+          className={`${isMobile ? "w-10 h-10" : "w-14 h-14"} rounded-2xl ${
             isSelected
               ? `bg-gradient-to-br ${styles.gradient} ${styles.glow}`
               : "bg-gradient-to-br from-primary via-primary to-secondary shadow-primary/20"
@@ -78,33 +76,35 @@ export default function SingleGymView({
             ) : (
               <Dumbbell
                 className={`${
-                  isMobile ? "w-6 h-6" : "w-7 h-7"
+                  isMobile ? "w-5 h-5" : "w-7 h-7"
                 } text-white drop-shadow-lg`}
               />
             )
           ) : (
             <Home
               className={`${
-                isMobile ? "w-6 h-6" : "w-7 h-7"
+                isMobile ? "w-5 h-5" : "w-7 h-7"
               } text-white drop-shadow-lg`}
             />
           )}
         </div>
         <div
           className={`absolute ${
-            isMobile ? "-top-1 -right-1 w-4 h-4" : "-top-1.5 -right-1.5 w-5 h-5"
+            isMobile
+              ? "-top-0.5 -right-0.5 w-3.5 h-3.5"
+              : "-top-1.5 -right-1.5 w-5 h-5"
           } rounded-full ${
             gym.isActive !== false ? "bg-success" : "bg-warning"
-          } ring-4 ring-background shadow-lg animate-pulse`}
+          } ring-3 md:ring-4 ring-background shadow-lg animate-pulse`}
         ></div>
       </div>
 
       {/* Gym Name with truncation */}
       <div className="flex-1 text-left min-w-0">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           <div
             className={`${
-              isMobile ? "text-base max-w-[140px]" : "text-xl max-w-[280px]"
+              isMobile ? "text-sm" : "text-xl"
             } font-bold text-text-primary truncate leading-tight tracking-tight`}
           >
             {gym.name}
@@ -122,21 +122,21 @@ export default function SingleGymView({
 
       {/* Right Icon: Changes based on location */}
       <div
-        className={`${isMobile ? "w-8 h-8" : "w-10 h-10"} rounded-xl ${
+        className={`${isMobile ? "w-7 h-7" : "w-10 h-10"} rounded-xl ${
           isSelected
             ? `bg-gradient-to-br ${styles.gradient} group-hover:brightness-110`
             : "bg-primary/10 group-hover:bg-primary"
-        } flex items-center justify-center transition-all duration-300 group-hover:scale-110`}
+        } flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110`}
       >
         {isOnGymDashboard ? (
           <Home
-            className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} ${
+            className={`${isMobile ? "w-3.5 h-3.5" : "w-5 h-5"} ${
               isSelected ? "text-white" : "text-primary"
             } group-hover:text-white transition-colors`}
           />
         ) : (
           <Dumbbell
-            className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} ${
+            className={`${isMobile ? "w-3.5 h-3.5" : "w-5 h-5"} ${
               isSelected ? "text-white" : "text-primary"
             } group-hover:text-white transition-colors`}
           />

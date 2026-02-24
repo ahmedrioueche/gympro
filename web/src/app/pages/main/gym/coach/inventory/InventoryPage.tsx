@@ -7,9 +7,9 @@ import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
 import Pagination from "../../../../../../components/ui/Pagination";
 import { useGymStore } from "../../../../../../store/gym";
+import { CoachEquipmentCard } from "../../../../../components/coach/CoachEquipmentCard";
+import { CoachInventoryControls } from "../../../../../components/coach/CoachInventoryControls";
 import PageHeader from "../../../../../components/PageHeader";
-import { CoachEquipmentCard } from "./components/CoachEquipmentCard";
-import { CoachInventoryControls } from "./components/CoachInventoryControls";
 import { useCoachInventory } from "./hooks/useCoachInventory";
 
 const ITEMS_PER_PAGE = 12;

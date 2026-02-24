@@ -132,7 +132,7 @@ export function CustomizableProfileTemplateModal({
                           {user.profile.age} {t("common.years")}
                         </span>
                       )}
-                      {user?._id && (
+                      {user?._id && typeof user._id === "string" && (
                         <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider rounded-lg border border-primary/20">
                           ID: {user._id.slice(-8)}
                         </span>

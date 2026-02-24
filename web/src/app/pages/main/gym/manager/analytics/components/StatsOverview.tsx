@@ -11,7 +11,7 @@ export const StatsOverview = ({ metrics }: StatsOverviewProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
       <StatCard
         title={t("analytics.gym.stats.totalMembers", "Total Members")}
         value={metrics.totalMembers.toLocaleString()}

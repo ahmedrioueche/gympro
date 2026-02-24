@@ -5,45 +5,42 @@ import {
 import { ArrowUpDown, ChevronDown, Filter } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { SearchInput } from "../../../../../../../components/ui/SearchInput";
-
 import {
   ListActionRow,
   ViewModeToggle,
-  type ViewMode,
-} from "../../../../../../../components/ui/ListViewControls";
+} from "../../../components/ui/ListViewControls";
+import { SearchInput } from "../../../components/ui/SearchInput";
+import type { ViewMode } from "../../../types/common";
 
-export type { ViewMode };
 export type SortBy = "name" | "quantity" | "condition" | "createdAt";
 
-interface InventoryControlsProps {
+interface CoachInventoryControlsProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
   selectedCategory: EquipmentCategory | "all";
   onCategoryChange: (category: EquipmentCategory | "all") => void;
-  sortBy: SortBy;
-  onSortChange: (sort: SortBy) => void;
-  viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
+  sortBy?: SortBy;
+  onSortChange?: (sort: SortBy) => void;
+  viewMode?: ViewMode;
+  onViewModeChange?: (mode: ViewMode) => void;
 }
 
-export function InventoryControls({
+export function CoachInventoryControls({
   searchQuery,
   onSearchChange,
   selectedCategory,
   onCategoryChange,
-  sortBy,
+  sortBy = "name",
   onSortChange,
-  viewMode,
+  viewMode = "cards",
   onViewModeChange,
-}: InventoryControlsProps) {
+}: CoachInventoryControlsProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-5 w-full max-w-full relative z-0">
+    <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-5 w-full">
       {/* Desktop Layout */}
       <div className="hidden lg:flex items-center gap-3">
-        {/* Search Input */}
         <SearchInput
           value={searchQuery}
           onChange={onSearchChange}
@@ -52,24 +49,23 @@ export function InventoryControls({
           })}
           className="w-80"
         />
-
-        {/* Filters and Sort */}
         <div className="flex items-center gap-2 flex-1 justify-end">
           <CategoryDropdown
             current={selectedCategory}
             onChange={onCategoryChange}
-            t={t}
           />
-          <SortDropdown current={sortBy} onChange={onSortChange} t={t} />
+          {onSortChange && (
+            <SortDropdown current={sortBy} onChange={onSortChange} />
+          )}
         </div>
-
-        {/* View Toggle */}
-        <ViewModeToggle
-          viewMode={viewMode}
-          onViewModeChange={onViewModeChange}
-          showText
-          className="ml-auto"
-        />
+        {onViewModeChange && (
+          <ViewModeToggle
+            viewMode={viewMode}
+            onViewModeChange={onViewModeChange}
+            showText
+            className="ml-3"
+          />
+        )}
       </div>
 
       {/* Mobile Layout */}
@@ -82,14 +78,17 @@ export function InventoryControls({
           })}
           className="w-full"
         />
-
-        <ListActionRow viewMode={viewMode} onViewModeChange={onViewModeChange}>
+        <ListActionRow
+          viewMode={viewMode}
+          onViewModeChange={onViewModeChange || (() => {})}
+        >
           <CategoryDropdown
             current={selectedCategory}
             onChange={onCategoryChange}
-            t={t}
           />
-          <SortDropdown current={sortBy} onChange={onSortChange} t={t} />
+          {onSortChange && (
+            <SortDropdown current={sortBy} onChange={onSortChange} />
+          )}
         </ListActionRow>
       </div>
     </div>
@@ -99,12 +98,11 @@ export function InventoryControls({
 function CategoryDropdown({
   current,
   onChange,
-  t,
 }: {
   current: EquipmentCategory | "all";
   onChange: (cat: EquipmentCategory | "all") => void;
-  t: any;
 }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -121,25 +119,22 @@ function CategoryDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all whitespace-nowrap ${
+        className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-background border border-border rounded-xl text-xs md:text-sm transition-all whitespace-nowrap ${
           isOpen
-            ? "border-primary ring-1 ring-primary/20"
-            : "hover:border-primary"
+            ? "border-primary ring-2 ring-primary/20"
+            : "hover:border-primary hover:bg-primary/5"
         }`}
       >
         <Filter
-          className={`w-4 h-4 ${current !== "all" ? "text-primary" : "text-text-secondary"}`}
+          className={`w-3.5 h-3.5 md:w-4 md:h-4 ${current !== "all" ? "text-primary" : "text-text-secondary"}`}
         />
-        <span className="capitalize font-medium text-text-primary hidden sm:inline-block">
+        <span className="font-medium text-text-primary capitalize">
           {current === "all"
             ? t("common.filters.all", { defaultValue: "All" })
             : t(`inventory.categories.${current}`, { defaultValue: current })}
         </span>
-        <span className="capitalize font-medium text-text-primary sm:hidden">
-          {t("common.filters.label", { defaultValue: "Filter" })}
-        </span>
         <ChevronDown
-          className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 md:w-4 md:h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -191,12 +186,11 @@ function CategoryDropdown({
 function SortDropdown({
   current,
   onChange,
-  t,
 }: {
   current: SortBy;
   onChange: (sort: SortBy) => void;
-  t: any;
 }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -215,28 +209,25 @@ function SortDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all whitespace-nowrap ${
+        className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-background border border-border rounded-xl text-xs md:text-sm transition-all whitespace-nowrap ${
           isOpen
-            ? "border-primary ring-1 ring-primary/20"
-            : "hover:border-primary"
+            ? "border-primary ring-2 ring-primary/20"
+            : "hover:border-primary hover:bg-primary/5"
         }`}
       >
         <ArrowUpDown
-          className={`w-4 h-4 ${current !== "name" ? "text-primary" : "text-text-secondary"}`}
+          className={`w-3.5 h-3.5 md:w-4 md:h-4 ${current !== "name" ? "text-primary" : "text-text-secondary"}`}
         />
-        <span className="capitalize font-medium text-text-primary hidden sm:inline-block">
+        <span className="font-medium text-text-primary capitalize">
           {t(`inventory.sort.${current}`, { defaultValue: current })}
         </span>
-        <span className="capitalize font-medium text-text-primary sm:hidden">
-          {t("common.sort", { defaultValue: "Sort" })}
-        </span>
         <ChevronDown
-          className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 md:w-4 md:h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+        <div className="absolute top-full right-0 mt-2 w-48 max-w-[calc(100vw-2rem)] bg-surface border border-border rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
           <div className="p-1">
             {options.map((opt) => (
               <button

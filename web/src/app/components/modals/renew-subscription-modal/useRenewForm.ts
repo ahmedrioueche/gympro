@@ -10,7 +10,7 @@ export interface FormData {
 
 export function calculateEndDate(startDate: string, duration: string): string {
   const start = new Date(startDate);
-  const parts = duration.split("_");
+  const parts = duration.split(" ");
   if (parts.length !== 2) return startDate;
 
   const count = parseInt(parts[0]) || 1;
@@ -52,7 +52,7 @@ export function useRenewForm() {
   const [formData, setFormData] = useState<FormData>({
     subscriptionTypeId: "regular",
     startDate: format(new Date(), "yyyy-MM-dd"),
-    duration: "1_month",
+    duration: "1 month",
     paymentMethod: "cash",
   });
 
@@ -63,7 +63,7 @@ export function useRenewForm() {
         subscriptionTypeId:
           renewSubscriptionProps.currentSubscription?.typeId || "regular",
         startDate: getDefaultStartDate(),
-        duration: "1_month",
+        duration: "1 month",
         paymentMethod: "cash",
       });
     }

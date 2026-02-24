@@ -1,16 +1,17 @@
-import { Users } from "lucide-react";
+import { Sparkles, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import TrendChart from "../../../../components/analytics/TrendChart";
 
 interface UserGrowthChartProps {
-  data: { date: string; count: number }[];
+  data?: { date: string; count: number }[];
 }
 
-export default function UserGrowthChart({ data }: UserGrowthChartProps) {
+export default function UserGrowthChart({ data = [] }: UserGrowthChartProps) {
   const { t } = useTranslation();
+  const safeData = Array.isArray(data) ? data : [];
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
+    <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm overflow-hidden relative group">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-text-primary">
@@ -25,15 +26,34 @@ export default function UserGrowthChart({ data }: UserGrowthChartProps) {
         </div>
         <Users className="w-5 h-5 text-primary" />
       </div>
-      <div className="h-[250px] w-full mt-4">
-        <TrendChart
-          data={data.map((item) => ({
-            date: item.date,
-            amount: item.count,
-          }))}
-          color="#8b5cf6"
-          height={250}
-        />
+
+      <div className="h-[250px] w-full mt-4 flex flex-col items-center justify-center">
+        {safeData.length > 0 ? (
+          <TrendChart
+            data={safeData.map((item) => ({
+              date: item.date,
+              amount: item.count,
+            }))}
+            color="#8b5cf6"
+            height={250}
+          />
+        ) : (
+          <div className="text-center py-10 animate-in fade-in zoom-in duration-500 flex flex-col items-center">
+            <div className="w-16 h-16 rounded-[2rem] bg-surface flex items-center justify-center mb-4 border border-border shadow-inner relative group/icon mx-auto">
+              <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover/icon:opacity-100 transition-opacity" />
+              <Sparkles className="w-8 h-8 text-primary/30 relative z-10" />
+            </div>
+            <p className="text-sm font-black text-text-secondary uppercase tracking-[0.15em]">
+              {t("admin.analytics.charts.usersPending", "User Growth Pending")}
+            </p>
+            <p className="text-[10px] text-text-secondary/60 uppercase mt-1.5 font-bold tracking-wider max-w-[200px] leading-relaxed mx-auto">
+              {t(
+                "admin.analytics.charts.usersPendingDesc",
+                "Member activity will appear here once onboarding begins",
+              )}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

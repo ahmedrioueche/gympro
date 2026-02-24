@@ -5,6 +5,7 @@ import {
   Instagram,
   Link as LinkIcon,
   MapPin,
+  UserCheck,
   X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -98,6 +99,7 @@ export default function ReviewCoachRequestModal() {
     <BaseModal
       isOpen={isOpen}
       onClose={closeModal}
+      icon={UserCheck}
       title={t("admin.coaching.reviewModal.title")}
       subtitle={t("admin.coaching.reviewModal.subtitle")}
       primaryButton={
@@ -143,7 +145,7 @@ export default function ReviewCoachRequestModal() {
               {profile.fullName}
             </h3>
             <p className="text-sm text-text-secondary">@{profile.username}</p>
-            <div className="flex items-center gap-4 mt-2 text-sm text-text-secondary">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4 mt-2 text-sm text-text-secondary">
               <span className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
                 {profile.city ||

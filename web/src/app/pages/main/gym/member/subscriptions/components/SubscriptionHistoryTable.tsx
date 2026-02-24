@@ -127,9 +127,69 @@ export function SubscriptionHistoryTable({
                 {record.subscription.paymentMethod || "-"}
               </p>
             </div>
-            {/* Add more details here if available, e.g. price, staff */}
           </div>
         )}
+        renderMobileCard={(record) => {
+          const isExpanded = expandedIds.includes(record._id);
+          return (
+            <div className="p-4 bg-surface border-b border-border last:border-0">
+              <div
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => toggleExpand(record._id)}
+              >
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-bold text-text-primary capitalize">
+                    {record.subscription.typeDetails?.customName
+                      ? capitalize(record.subscription.typeDetails.customName)
+                      : capitalize(record.subscription.typeId)}
+                  </span>
+                  <span className="text-xs text-text-secondary">
+                    {formatDate(record.subscription.startDate)} -{" "}
+                    {formatDate(record.subscription.endDate)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider
+                    ${
+                      record.subscription.status === "active"
+                        ? "bg-green-500/10 text-green-500"
+                        : "bg-surface-hover text-text-secondary"
+                    }`}
+                  >
+                    {t(
+                      `common.${record.subscription.status}`,
+                      record.subscription.status as string,
+                    )}
+                  </span>
+                  {isExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-text-secondary" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-text-secondary" />
+                  )}
+                </div>
+              </div>
+              {isExpanded && (
+                <div className="mt-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2">
+                  <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold mb-1">
+                    {t("common.paymentMethod", "Payment Method")}
+                  </p>
+                  <p className="text-sm text-text-primary capitalize font-medium">
+                    {record.subscription.paymentMethod || "-"}
+                  </p>
+                  <div className="mt-3">
+                    <p className="text-[10px] text-text-secondary uppercase tracking-widest font-bold mb-1">
+                      {t("common.date", "Date Added")}
+                    </p>
+                    <p className="text-sm text-text-primary font-medium">
+                      {formatDate(record.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        }}
       />
     </div>
   );

@@ -6,10 +6,9 @@ import { SearchInput } from "../../../../../../../components/ui/SearchInput";
 import {
   ListActionRow,
   ViewModeToggle,
-  type ViewMode,
 } from "../../../../../../../components/ui/ListViewControls";
+import type { ViewMode } from "../../../../../../../types/common";
 
-export type { ViewMode };
 export type FilterStatus = "all" | "active" | "pending" | "expired" | "banned";
 export type SortBy = "name" | "joinDate" | "status";
 

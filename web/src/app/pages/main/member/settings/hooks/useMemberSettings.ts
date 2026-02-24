@@ -33,8 +33,7 @@ export function useMemberSettings() {
   const [phoneNumber, setPhoneNumber] = useState(
     user?.profile.phoneNumber || "",
   );
-  const [email, setEmail] = useState(user?.profile.email || "");
-  const [addEmailMode, setAddEmailMode] = useState(false);
+  const [email] = useState(user?.profile.email || "");
   const [addPhoneMode, setAddPhoneMode] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -64,8 +63,6 @@ export function useMemberSettings() {
   const hasProfileChanges =
     fullName !== (user?.profile.fullName || "") ||
     phoneNumber !== (user?.profile.phoneNumber || "") ||
-    email !== (user?.profile.email || "") ||
-    addEmailMode ||
     addPhoneMode;
 
   const hasPreferenceChanges =
@@ -142,11 +139,9 @@ export function useMemberSettings() {
       const updates: EditUserDto = {
         fullName,
         phoneNumber: phoneNumber || undefined,
-        email: email || undefined,
       };
 
       await updateProfile.mutateAsync(updates);
-      setAddEmailMode(false);
       setAddPhoneMode(false);
       toast.success(
         t("settings.member.success", "Profile updated successfully"),
@@ -260,9 +255,6 @@ export function useMemberSettings() {
     phoneNumber,
     setPhoneNumber,
     email,
-    setEmail,
-    addEmailMode,
-    setAddEmailMode,
     addPhoneMode,
     setAddPhoneMode,
     uploading,

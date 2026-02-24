@@ -60,7 +60,18 @@ export class GymCoachService {
 
       return {
         success: true,
-        data: affiliations as any,
+        data: affiliations.map((a: any) => ({
+          ...a,
+          coach: a.coachId
+            ? {
+                _id: a.coachId._id,
+                fullName: a.coachId.profile?.fullName,
+                username: a.coachId.profile?.username,
+                profileImageUrl: a.coachId.profile?.profileImageUrl,
+                specializations: a.coachId.coachingInfo?.specializations,
+              }
+            : null,
+        })) as any,
       };
     } catch (error) {
       this.logger.error('Error fetching gym coaches:', error);
@@ -86,7 +97,10 @@ export class GymCoachService {
 
       return {
         success: true,
-        data: affiliations as any,
+        data: affiliations.map((a: any) => ({
+          ...a,
+          gym: a.gymId,
+        })) as any,
       };
     } catch (error) {
       this.logger.error('Error fetching coach affiliations:', error);
@@ -148,8 +162,13 @@ export class GymCoachService {
         priority: 'high',
         relatedId: (affiliation as any)._id.toString(),
         action: {
-          type: 'link',
-          payload: '/coach/affiliations',
+          type: 'modal',
+          payload: 'gym_invitation',
+          data: {
+            invitationId: (affiliation as any)._id.toString(),
+            gymName: gym?.name || 'A Gym',
+            gymId: gymId,
+          },
         },
       });
 

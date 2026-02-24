@@ -32,7 +32,7 @@ export default function SchedulePage() {
   } = scheduleUtils;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <PageHeader
         title={t("schedule.title", "My Schedule")}
         subtitle={t("schedule.memberSubtitle")}
@@ -47,7 +47,7 @@ export default function SchedulePage() {
         ]}
       />
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 md:gap-6">
         {view === "calendar" && (
           <CalendarHeader
             dateHeader={formatDateHeader()}
@@ -71,7 +71,7 @@ export default function SchedulePage() {
                 onClassClick={handleClassClick}
               />
             ) : (
-              <div className="space-y-10">
+              <div className="space-y-6 md:space-y-10">
                 <ScheduleTimeline
                   groupedItems={groupedItems}
                   handleClassClick={handleClassClick}

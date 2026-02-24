@@ -125,11 +125,91 @@ export const StaffTable = ({ staff }: StaffTableProps) => {
     },
   ];
 
+  const renderMobileCard = (editor: AppEditorUser) => {
+    return (
+      <div className="p-4 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <UserAvatar
+              avatar={editor.profile.profileImageUrl}
+              className="w-10 h-10 border-2 border-background shadow-sm"
+            />
+            <div className="flex flex-col">
+              <span className="font-semibold text-text-primary">
+                {editor.profile.fullName || editor.profile.username}
+              </span>
+              <span className="text-xs text-text-secondary">
+                @{editor.profile.username}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleManagePermissions(editor);
+              }}
+              className="p-2 rounded-lg text-primary hover:bg-primary/10 transition-all"
+              title={t("admin.staff.manage_permissions", "Manage Permissions")}
+            >
+              <Key className="w-5 h-5" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemove(editor);
+              }}
+              disabled={isRemoving}
+              className="p-2 rounded-lg text-red-500 hover:bg-red-500/10 transition-all"
+              title={t("common.remove")}
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+            {t("admin.staff.table.permissions")}
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {(editor.appPermissions || []).length > 0 ? (
+              editor.appPermissions?.map((perm) => (
+                <span
+                  key={perm}
+                  className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-bold uppercase"
+                >
+                  {perm.replace("_", " ")}
+                </span>
+              ))
+            ) : (
+              <span className="text-xs text-text-secondary italic">
+                {t("admin.staff.no_permissions", "No permissions")}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-2 border-t border-white/5">
+          <span className="text-xs text-text-secondary">
+            {t("admin.staff.table.joined")}
+          </span>
+          <span className="text-xs text-text-primary font-medium">
+            {editor.createdAt
+              ? format(new Date(editor.createdAt), "MMM dd, yyyy")
+              : "N/A"}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Table<AppEditorUser>
       columns={columns}
       data={staff}
       keyExtractor={(item) => item._id}
+      renderMobileCard={renderMobileCard}
       emptyState={
         <NoData
           icon={Shield}

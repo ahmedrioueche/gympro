@@ -1,8 +1,3 @@
-import {
-  AlertPriority,
-  AlertSource,
-  AlertType,
-} from '@ahmedrioueche/gympro-client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectModel } from '@nestjs/mongoose';
@@ -33,19 +28,6 @@ export class ReportsService {
       status: ReportStatus.OPEN,
     });
     const savedReport = await report.save();
-
-    // Trigger an alert for high priority reports
-    this.eventEmitter.emit('alert.create', {
-      title: `New Report: ${savedReport.subject}`,
-      message: savedReport.description,
-      type: AlertType.INFO,
-      priority:
-        savedReport.priority === 'high'
-          ? AlertPriority.HIGH
-          : AlertPriority.MEDIUM,
-      source: AlertSource.INTERNAL,
-      metadata: { reportId: savedReport._id },
-    });
 
     // Notify staff about new report
     this.notificationsService
@@ -107,16 +89,6 @@ export class ReportsService {
       throw new NotFoundException(`Report with ID ${id} not found`);
     }
 
-    // Trigger alert for status change
-    this.eventEmitter.emit('alert.create', {
-      title: `Report Updated: ${report.subject}`,
-      message: `Status changed to ${updateReportStatusDto.status}`,
-      type: AlertType.INFO,
-      priority: AlertPriority.MEDIUM,
-      source: AlertSource.INTERNAL,
-      metadata: { reportId: report._id },
-    });
-
     // Get reporter ID for notifications
     const reporterId =
       typeof report.reporter === 'string'
@@ -175,16 +147,6 @@ export class ReportsService {
     if (!report) {
       throw new NotFoundException(`Report with ID ${id} not found`);
     }
-
-    // Trigger alert for new response
-    this.eventEmitter.emit('alert.create', {
-      title: `New Response on Report: ${report.subject}`,
-      message: addResponseDto.message.substring(0, 100),
-      type: AlertType.INFO,
-      priority: AlertPriority.MEDIUM,
-      source: AlertSource.INTERNAL,
-      metadata: { reportId: report._id },
-    });
 
     // Determine who to notify
     const reporterId =

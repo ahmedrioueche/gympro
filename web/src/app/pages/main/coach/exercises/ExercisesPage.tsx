@@ -8,10 +8,9 @@ import {
 import { Dumbbell, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import CustomSelect from "../../../../../components/ui/CustomSelect";
 import Loading from "../../../../../components/ui/Loading";
 import NoData from "../../../../../components/ui/NoData";
-import { SearchInput } from "../../../../../components/ui/SearchInput";
+import SearchFilterBar from "../../../../../components/ui/SearchFilterBar";
 import {
   useDeleteExercise,
   useExercises,
@@ -97,50 +96,30 @@ export default function ExercisesPage() {
       />
 
       {/* Filters & Search */}
-      <div className="bg-surface border border-border rounded-2xl p-4 md:p-6 shadow-sm space-y-4">
-        <div className="flex flex-col lg:flex-row gap-4 justify-between">
-          {/* Search */}
-          <div className="w-full lg:w-1/3">
-            <SearchInput
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder={t("training.exercises.search")}
-            />
-          </div>
-
-          {/* Filters Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full lg:w-2/3">
-            <CustomSelect
-              title=""
-              options={muscleOptions}
-              selectedOption={filters.targetMuscle || ""}
-              onChange={(val) =>
-                setFilters({ ...filters, targetMuscle: val as any })
-              }
-              placeholder={t("training.exercises.filters.targetMuscle")}
-              marginTop="mt-0"
-            />
-            <CustomSelect
-              title=""
-              options={difficultyOptions}
-              selectedOption={filters.difficulty || ""}
-              onChange={(val) =>
-                setFilters({ ...filters, difficulty: val as any })
-              }
-              placeholder={t("training.exercises.filters.difficulty")}
-              marginTop="mt-0"
-            />
-            <CustomSelect
-              title=""
-              options={typeOptions}
-              selectedOption={filters.type || ""}
-              onChange={(val) => setFilters({ ...filters, type: val as any })}
-              placeholder={t("training.exercises.filters.type")}
-              marginTop="mt-0"
-            />
-          </div>
-        </div>
-      </div>
+      <SearchFilterBar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder={t("training.exercises.search")}
+        filters={[
+          {
+            value: filters.targetMuscle || "",
+            onChange: (val) =>
+              setFilters({ ...filters, targetMuscle: val as any }),
+            options: muscleOptions as any,
+          },
+          {
+            value: filters.difficulty || "",
+            onChange: (val) =>
+              setFilters({ ...filters, difficulty: val as any }),
+            options: difficultyOptions as any,
+          },
+          {
+            value: filters.type || "",
+            onChange: (val) => setFilters({ ...filters, type: val as any }),
+            options: typeOptions as any,
+          },
+        ]}
+      />
 
       {/* Content */}
       {isLoading ? (

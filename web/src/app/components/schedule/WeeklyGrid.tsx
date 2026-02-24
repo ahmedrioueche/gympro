@@ -23,7 +23,7 @@ export const WeeklyGrid = ({
   onClassClick,
 }: WeeklyGridProps) => {
   return (
-    <div className="bg-surface border border-border rounded-2xl overflow-hidden">
+    <div className="bg-surface border border-border rounded-xl md:rounded-2xl overflow-hidden">
       <div className="flex flex-col md:flex-row md:overflow-x-auto">
         {weekDays.map((day) => (
           <DayColumn

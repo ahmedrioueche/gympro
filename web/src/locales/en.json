@@ -24,6 +24,7 @@
     "save": "Save",
     "select": "Select",
     "saving": "Saving...",
+    "gym": "Gym",
     "trialing": "Trialing",
     "go": "Go",
     "markAsDone": "Mark as Done",
@@ -1588,6 +1589,7 @@
       "todaySessions": {
         "title": "Today's Sessions",
         "empty": "No sessions scheduled for today",
+        "emptyDesc": "Enjoy your free time!",
         "viewSchedule": "View Full Schedule"
       },
       "quickActions": {
@@ -1600,7 +1602,8 @@
       "recentActivity": {
         "title": "Recent Activity",
         "viewAll": "View All",
-        "empty": "No recent activity"
+        "empty": "Feed is quiet",
+        "emptyDesc": "Events will appear here"
       },
       "activity": {
         "workoutCompleted": "{{client}} completed a workout",
@@ -1615,9 +1618,11 @@
       },
       "pendingCheckIns": {
         "title": "Pending Check-Ins",
-        "awaiting": "Clients awaiting review",
+        "awaiting": "{{count}} clients awaiting review",
         "description": "Review progress updates from your clients",
-        "review": "Review Now"
+        "review": "Review Now",
+        "empty": "Everything is clear",
+        "emptyDesc": "No pending client requests"
       }
     }
   },
@@ -2013,6 +2018,7 @@
       "pricingTiers": "Pricing Tiers",
       "zeroIsInfinity": "Setting 0 means unlimited (infinity)",
       "freePlanDuration": "Free ({{days}} days)",
+      "linkedServices": "Included Services",
       "infinite": "Infinite",
       "units": {
         "day": "Days",
@@ -3036,15 +3042,18 @@
     "calculatedEndDate": "Calculated End Date",
     "duration": {
       "label": "Duration",
-      "1_session": "1 Session (1 Day)",
-      "1_week": "1 Week",
-      "2_weeks": "2 Weeks",
-      "3_weeks": "3 Weeks",
-      "1_month": "1 Month",
-      "2_months": "2 Months",
-      "3_months": "3 Months",
-      "6_months": "6 Months",
-      "1_year": "1 Year"
+      "1 session": "1 session (1 day)",
+      "1 week": "1 week",
+      "2 weeks": "2 weeks",
+      "3 weeks": "3 weeks",
+      "4 weeks": "4 weeks",
+      "1 month": "1 month",
+      "2 months": "2 months",
+      "3 months": "3 months",
+      "6 months": "6 months",
+      "12 months": "12 months",
+      "24 months": "24 months",
+      "1 year": "1 year"
     },
     "extendTitle": "Extend Subscription",
     "extendSubmit": "Extend Subscription",
@@ -3261,9 +3270,11 @@
     },
     "charts": {
       "sessionTrend": "Session Activity",
-      "sessionTrendDesc": "Monthly sessions over time",
+      "sessionTrendDesc": "Training sessions performed over time",
       "sessionTypes": "Session Types",
-      "sessionTypesDesc": "Distribution by session type"
+      "sessionTypesDesc": "Distribution by session type",
+      "noTrend": "Growth Trend Pending",
+      "noTrendDesc": "Complete sessions to track your performance growth"
     }
   },
   "coaching": {
@@ -3864,7 +3875,13 @@
         "topGyms": "Top Performing Gyms",
         "topGymsDesc": "Highest revenue contributors",
         "distribution": "Membership Health",
-        "distributionDesc": "Status of all memberships on the platform"
+        "distributionDesc": "Status of all memberships on the platform",
+        "revenuePending": "Revenue Pending",
+        "revenuePendingDesc": "Waiting for platform transactions to begin",
+        "usersPending": "User Growth Pending",
+        "usersPendingDesc": "Member activity will appear here once onboarding begins",
+        "gymRankingsPending": "Gym Rankings Pending",
+        "gymRankingsPendingDesc": "Top performing gyms will be listed here"
       }
     },
     "coaching": {
@@ -3876,8 +3893,8 @@
       "reviewModal": {
         "title": "Review Coach Request",
         "subtitle": "Verify coach qualifications and certifications",
-        "approve": "Approve Request",
-        "reject": "Reject Request",
+        "approve": "Approve",
+        "reject": "Reject",
         "close": "Close",
         "certificationDetails": "Certification Details",
         "noCertificationDetails": "No details provided.",

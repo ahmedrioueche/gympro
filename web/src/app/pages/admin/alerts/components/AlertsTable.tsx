@@ -143,8 +143,65 @@ export default function AlertsTable({ alerts, isLoading }: AlertsTableProps) {
     },
   ];
 
+  const renderMobileCard = (alert: Alert) => {
+    return (
+      <div className="p-4 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-surface-secondary rounded-lg">
+              {getTypeIcon(alert.type)}
+            </div>
+            <div className="flex flex-col">
+              <span className="font-semibold text-text-primary block truncate max-w-[150px]">
+                {alert.title}
+              </span>
+              <div className="flex items-center gap-1.5 px-1.5 py-0.5 rounded-md bg-surface-secondary border border-border-subtle w-fit">
+                {getSourceIcon(alert.source)}
+                <span className="text-[10px] font-medium text-text-secondary uppercase tracking-wider">
+                  {t(`admin.alerts.source.${alert.source}`)}
+                </span>
+              </div>
+            </div>
+          </div>
+          <span
+            className={`px-2 py-1 rounded-full text-[10px] font-medium ${getStatusColor(
+              alert.status,
+            )}`}
+          >
+            {t(`admin.alerts.status.${alert.status}`)}
+          </span>
+        </div>
+
+        <p className="text-xs text-text-secondary line-clamp-2">
+          {alert.message}
+        </p>
+
+        <div className="flex items-center justify-between pt-2 border-t border-white/5">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              {t("admin.alerts.table.priority")}
+            </span>
+            <span
+              className={`text-xs font-semibold ${getPriorityColor(alert.priority)}`}
+            >
+              {t(`admin.alerts.priority.${alert.priority}`)}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1 items-end">
+            <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              {t("admin.alerts.table.date")}
+            </span>
+            <span className="text-[10px] text-text-primary font-medium text-right">
+              {format(new Date(alert.createdAt), "PPp")}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <Table
+    <Table<Alert>
       data={alerts}
       columns={columns}
       isLoading={isLoading}
@@ -152,6 +209,7 @@ export default function AlertsTable({ alerts, isLoading }: AlertsTableProps) {
       onRowClick={(alert) => {
         openModal("alert_details", { alert });
       }}
+      renderMobileCard={renderMobileCard}
       emptyState={
         <NoData
           title={t("admin.alerts.empty")}

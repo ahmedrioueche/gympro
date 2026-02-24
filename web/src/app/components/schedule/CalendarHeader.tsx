@@ -17,30 +17,44 @@ export const CalendarHeader = ({
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onPrevWeek}
-            className="p-2 rounded-lg bg-surface hover:bg-surface-hover border border-border transition-colors"
-          >
-            <ChevronLeft className="w-5 h-5 text-text-primary" />
-          </button>
-          <button
-            onClick={onNextWeek}
-            className="p-2 rounded-lg bg-surface hover:bg-surface-hover border border-border transition-colors"
-          >
-            <ChevronRight className="w-5 h-5 text-text-primary" />
-          </button>
-        </div>
-        <h2 className="text-xl font-semibold text-text-primary">
+    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-y-4 gap-x-6 mb-8 mt-2">
+      {/* Date Information */}
+      <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+        <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">
+          {t("schedule.viewingRange", "Viewing Week")}
+        </span>
+        <h2 className="text-xl md:text-2xl font-black text-text-primary tracking-tight">
           {dateHeader}
         </h2>
+      </div>
+
+      {/* Navigation Controls */}
+      <div className="flex items-center gap-1 p-1 bg-surface border border-border rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+        <button
+          onClick={onPrevWeek}
+          aria-label={t("common.previous", "Previous")}
+          className="p-2.5 rounded-lg hover:bg-primary/5 text-text-secondary hover:text-primary transition-all active:scale-90"
+        >
+          <ChevronLeft size={20} className="stroke-[2.5]" />
+        </button>
+
+        <div className="w-px h-6 bg-border mx-1" />
+
         <button
           onClick={onToday}
-          className="px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors"
+          className="px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] text-text-primary hover:bg-primary/5 hover:text-primary rounded-lg transition-all"
         >
           {t("schedule.today")}
+        </button>
+
+        <div className="w-px h-6 bg-border mx-1" />
+
+        <button
+          onClick={onNextWeek}
+          aria-label={t("common.next", "Next")}
+          className="p-2.5 rounded-lg hover:bg-primary/5 text-text-secondary hover:text-primary transition-all active:scale-90"
+        >
+          <ChevronRight size={20} className="stroke-[2.5]" />
         </button>
       </div>
     </div>

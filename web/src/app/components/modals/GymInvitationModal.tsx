@@ -95,7 +95,7 @@ export default function GymInvitationModal() {
           </div>
         ) : gym ? (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <GymCard gym={gym} onSelect={() => {}} />
+            <GymCard gym={gym} onSelect={() => {}} hideActions={true} />
           </div>
         ) : null}
       </div>

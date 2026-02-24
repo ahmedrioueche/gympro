@@ -114,12 +114,12 @@ export default function Nav({ children, sidebarLinks = null }) {
       <div className="flex-1 flex flex-col h-screen">
         {/* Top Bar: Menu button + GymSelector left, controls right */}
         <div
-          className={`flex items-center justify-between min-h-[64px] md:min-h-[80px] px-4`}
+          className={`flex items-center justify-between min-h-[64px] md:min-h-[80px] px-2 md:px-4 gap-1 md:gap-3`}
         >
-          <div className="flex items-center gap-3 flex-1">
+          <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
             {/* Show logo when no sidebar */}
             {!sidebarLinks && !isMobile && (
-              <div className="flex items-center mr-6 ">
+              <div className="flex items-center mr-6">
                 <SidebarAnimatedLogo
                   collapsed={false}
                   onClick={navigateToHome}
@@ -131,14 +131,14 @@ export default function Nav({ children, sidebarLinks = null }) {
             {sidebarLinks && isMobile && (
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2.5 rounded-xl bg-background shadow-lg border border-border hover:bg-surface-hover transition-all duration-300 hover:scale-110"
+                className="p-2 flex-shrink-0 rounded-xl bg-background shadow-lg border border-border hover:bg-surface-hover transition-all duration-300 hover:scale-110"
               >
-                <Menu className="w-6 h-6 text-text-primary" />
+                <Menu className="w-5 h-5 text-text-primary" />
               </button>
             )}
             <div
-              className={`${
-                sidebarLinks ? " md:px-10" : " md:px-[61px] md:-mt-2"
+              className={`flex-1 min-w-0 ${
+                sidebarLinks ? "md:px-10" : "md:px-[61px] md:-mt-2"
               }`}
             >
               {user?.role === "admin" ||
@@ -150,7 +150,7 @@ export default function Nav({ children, sidebarLinks = null }) {
               )}
             </div>
           </div>
-          <div className={`${sidebarLinks ? "" : "md:-mt-2"}`}>
+          <div className={`flex-shrink-0 ${sidebarLinks ? "" : "md:-mt-2"}`}>
             <TopRightControls
               onProfileClick={handleProfileClick}
               onSettingsClick={handleSettingsClick}

@@ -17,14 +17,13 @@ import {
 import { useGymStore } from "../../../../../../store/gym";
 import { useModalStore } from "../../../../../../store/modal";
 import { useUserStore } from "../../../../../../store/user";
-import PageHeader from "../../../../../components/PageHeader";
+import type { ViewMode } from "../../../../../../types/common";
 import {
-  InventoryCard,
-  InventoryControls,
-  InventoryTable,
+  CoachInventoryControls,
   type SortBy,
-  type ViewMode,
-} from "./components";
+} from "../../../../../components/coach/CoachInventoryControls";
+import PageHeader from "../../../../../components/PageHeader";
+import { InventoryCard, InventoryTable } from "./components";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -144,7 +143,7 @@ function InventoryPage() {
         }}
       />
 
-      <InventoryControls
+      <CoachInventoryControls
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         selectedCategory={selectedCategory}

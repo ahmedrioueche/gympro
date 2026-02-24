@@ -41,17 +41,19 @@ export function CoachList({
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {coaches.map((affiliation) => {
-        const affiliationCoach = affiliation.coach;
+        const affiliationCoach = affiliation.coach || affiliation.coachId;
         const coachName =
-          affiliationCoach?.fullName || affiliationCoach?.username || "Coach";
+          (affiliationCoach as any)?.fullName ||
+          (affiliationCoach as any)?.username ||
+          "Coach";
 
         // Map affiliation.coach to CoachProfile format
         const coachProfile: CoachProfile = {
-          userId: affiliationCoach?._id || affiliation.coachId,
-          fullName: affiliationCoach?.fullName || "Unknown Coach",
-          username: affiliationCoach?.username || "unknown",
-          profileImageUrl: affiliationCoach?.profileImageUrl,
-          specializations: affiliationCoach?.specializations,
+          userId: (affiliationCoach as any)?._id || affiliation.coachId,
+          fullName: (affiliationCoach as any)?.fullName || "Unknown Coach",
+          username: (affiliationCoach as any)?.username || "unknown",
+          profileImageUrl: (affiliationCoach as any)?.profileImageUrl,
+          specializations: (affiliationCoach as any)?.specializations,
         };
 
         return (

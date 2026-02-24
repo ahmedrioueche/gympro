@@ -53,18 +53,22 @@ export const MembershipStatus = ({
   const total = Math.max(1, totalMembers);
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-border/50 bg-surface p-6 transition-all hover:shadow-xl hover:shadow-primary/5">
+    <div className="group relative overflow-hidden rounded-2xl md:rounded-3xl border border-border/50 bg-surface p-4 md:p-6 transition-all hover:shadow-xl hover:shadow-primary/5">
       {/* Background Glow */}
       <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl group-hover:bg-primary/10 transition-colors" />
 
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-8">
-          <div className="space-y-1">
-            <h3 className="text-xl font-black text-text-primary tracking-tight flex items-center gap-2">
-              <PieChartIcon size={20} className="text-primary" />
+        <div className="flex items-center justify-between mb-4 md:mb-8">
+          <div className="space-y-0.5 md:space-y-1">
+            <h3 className="text-base md:text-xl font-black text-text-primary tracking-tight flex items-center gap-2">
+              <PieChartIcon size={18} className="text-primary md:hidden" />
+              <PieChartIcon
+                size={20}
+                className="text-primary hidden md:block"
+              />
               {t("analytics.charts.distribution", "Membership Status")}
             </h3>
-            <p className="text-sm font-medium text-text-secondary/80">
+            <p className="text-xs md:text-sm font-medium text-text-secondary/80">
               {t(
                 "analytics.charts.distributionDesc",
                 "Overview of current membership health",
@@ -73,11 +77,11 @@ export const MembershipStatus = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:gap-6">
           {statusItems.map((item, idx) => {
             const percentage = (item.value / total) * 100;
             return (
-              <div key={idx} className="space-y-3">
+              <div key={idx} className="space-y-2 md:space-y-3">
                 <div className="flex justify-between items-center text-sm">
                   <div className="flex items-center gap-2">
                     <div
@@ -96,7 +100,7 @@ export const MembershipStatus = ({
                     </span>
                   </span>
                 </div>
-                <div className="h-3 w-full bg-border/30 rounded-full overflow-hidden">
+                <div className="h-2.5 md:h-3 w-full bg-border/30 rounded-full overflow-hidden">
                   <div
                     className={`h-full bg-gradient-to-r ${item.color} transition-all duration-1000 rounded-full shadow-lg shadow-primary/5`}
                     style={{ width: `${percentage}%` }}

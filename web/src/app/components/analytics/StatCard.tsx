@@ -27,10 +27,10 @@ export default function StatCard({
 
   if (isActuallyLoading) {
     return (
-      <div className="bg-surface border border-border p-6 rounded-3xl animate-pulse">
-        <div className="w-10 h-10 bg-border rounded-xl mb-4" />
-        <div className="h-4 w-24 bg-border rounded mb-2" />
-        <div className="h-8 w-16 bg-border rounded" />
+      <div className="bg-surface border border-border p-4 md:p-6 rounded-2xl md:rounded-3xl animate-pulse">
+        <div className="w-8 h-8 md:w-10 md:h-10 bg-border rounded-xl mb-3 md:mb-4" />
+        <div className="h-3 md:h-4 w-20 md:w-24 bg-border rounded mb-2" />
+        <div className="h-6 md:h-8 w-14 md:w-16 bg-border rounded" />
       </div>
     );
   }
@@ -38,18 +38,19 @@ export default function StatCard({
   const isPositive = trend !== undefined && trend > 0;
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-border/50 bg-surface p-6 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 cursor-default">
+    <div className="group relative overflow-hidden rounded-2xl md:rounded-3xl border border-border/50 bg-surface p-4 md:p-6 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 cursor-default">
       {/* Background Gradient Glow */}
       <div
         className={`absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${color} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`}
       />
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 md:gap-4">
         <div className="flex items-center justify-between">
           <div
-            className={`p-3 rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg shadow-primary/10 transition-transform group-hover:scale-110 duration-500`}
+            className={`p-2 md:p-3 rounded-xl md:rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg shadow-primary/10 transition-transform group-hover:scale-110 duration-500`}
           >
-            <Icon size={24} />
+            <Icon size={20} className="md:hidden" />
+            <Icon size={24} className="hidden md:block" />
           </div>
           {trend !== undefined && (
             <div
@@ -70,10 +71,12 @@ export default function StatCard({
         </div>
 
         <div>
-          <h3 className="text-3xl font-black text-text-primary tracking-tight">
+          <h3 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight">
             {value}
           </h3>
-          <p className="text-sm font-bold text-text-secondary mt-1">{title}</p>
+          <p className="text-xs md:text-sm font-bold text-text-secondary mt-0.5 md:mt-1">
+            {title}
+          </p>
           {(description || trendLabel) && (
             <p className="text-[10px] text-text-secondary/60 mt-1 uppercase tracking-wider font-medium">
               {description || trendLabel}

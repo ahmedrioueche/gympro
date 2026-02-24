@@ -9,7 +9,6 @@ import {
   CheckCircle,
   Clock,
   CreditCard,
-  Info,
   RefreshCw,
   XCircle,
 } from "lucide-react";
@@ -257,13 +256,6 @@ export function SubscriptionStatusCard({
               </span>
             </span>
           </div>
-
-          {/* Handled By if available */}
-          {subscription.typeId && (
-            <div className="flex items-center gap-1 group">
-              <Info className="w-3 h-3 text-text-tertiary group-hover:text-primary transition-colors cursor-help" />
-            </div>
-          )}
         </div>
       )}
 

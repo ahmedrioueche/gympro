@@ -1,6 +1,6 @@
 import { AlertStatus } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
-import { Terminal } from "lucide-react";
+import { AlertCircle, Terminal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../components/ui/BaseModal";
 import CustomSelect from "../../../../../components/ui/CustomSelect";
@@ -39,6 +39,7 @@ export default function AlertDetailsModal() {
       isOpen={true}
       onClose={closeModal}
       title={t("admin.alerts.modals.details_title")}
+      icon={AlertCircle}
     >
       <div className="space-y-6">
         {/* Header Info */}

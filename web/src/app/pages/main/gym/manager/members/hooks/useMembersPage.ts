@@ -6,11 +6,11 @@ import { useMembers } from "../../../../../../../hooks/queries/useMembers";
 import { useGymStore } from "../../../../../../../store/gym";
 import { useModalStore } from "../../../../../../../store/modal";
 import { useUserStore } from "../../../../../../../store/user";
+import type { ViewMode } from "../../../../../../../types/common";
 import {
   getMemberDisplay,
   type FilterStatus,
   type SortBy,
-  type ViewMode,
 } from "../components";
 
 export const ITEMS_PER_PAGE = 12;

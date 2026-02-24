@@ -60,7 +60,7 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 md:space-y-8">
       <PageHeader
         title={t("coachAnalytics.title", "Coach Analytics")}
         subtitle={t(
@@ -72,12 +72,14 @@ export default function AnalyticsPage() {
 
       <StatsOverview metrics={analytics.metrics} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SessionTrend data={analytics.sessionTrendData} />
-        <SessionDistribution distribution={analytics.sessionDistribution} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
+        <SessionTrend data={analytics.sessionTrendData || []} />
+        <SessionDistribution
+          distribution={analytics.sessionDistribution || []}
+        />
       </div>
 
-      <ActivityFeed activities={analytics.recentActivity} />
+      <ActivityFeed activities={analytics.recentActivity || []} />
     </div>
   );
 }

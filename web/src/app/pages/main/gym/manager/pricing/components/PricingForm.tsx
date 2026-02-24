@@ -229,7 +229,7 @@ export const PricingForm = ({
               DURATION_PRESETS.find(
                 (p) =>
                   p.duration === tier.duration && p.unit === tier.durationUnit,
-              )?.value || "1_month";
+              )?.value || "1 month";
 
             return (
               <div

@@ -10,19 +10,19 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="p-6 md:p-8 lg:p-10">
-      <h3 className="text-2xl font-bold text-text-primary mb-6">
+    <div className="p-4 md:p-8 lg:p-10">
+      <h3 className="text-lg md:text-2xl font-bold text-text-primary mb-4 md:mb-6">
         {t("gymCard.settingsTitle", "Gym Details & Settings")}
       </h3>
 
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {/* Basic Information */}
-        <div className="bg-surface/50 rounded-xl p-5 border border-border/50">
-          <h4 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
+        <div className="bg-surface/50 rounded-xl p-3.5 md:p-5 border border-border/50">
+          <h4 className="text-sm md:text-lg font-semibold text-text-primary mb-3 md:mb-4 flex items-center gap-2">
             <span>ℹ️</span>
             {t("gymCard.basicInfo", "Basic Information")}
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             <div>
               <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
                 {t("gymCard.ownerName")}
@@ -56,8 +56,8 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
 
         {/* Settings */}
         {gym.settings && (
-          <div className="bg-surface/50 rounded-xl p-5 border border-border/50">
-            <h4 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
+          <div className="bg-surface/50 rounded-xl p-3.5 md:p-5 border border-border/50">
+            <h4 className="text-sm md:text-lg font-semibold text-text-primary mb-3 md:mb-4 flex items-center gap-2">
               <span>⚙️</span>
               {t("gymCard.settings", "Settings")}
             </h4>
@@ -81,7 +81,7 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
                   </div>
                 )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div>
                   <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
                     {t("gymCard.customSubscriptions", "Custom Subscriptions")}
@@ -183,8 +183,8 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
 
         {/* App Subscription */}
         {gym.appSubscription && (
-          <div className="bg-surface/50 rounded-xl p-5 border border-border/50">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-surface/50 rounded-xl p-3.5 md:p-5 border border-border/50">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
                   {t("gymCard.subscriptionStatus", "Status")}
@@ -199,13 +199,13 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
       </div>
 
       {/* Back Button */}
-      <div className="mt-8">
+      <div className="mt-5 md:mt-8">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onBack();
           }}
-          className="w-full py-4 px-6 text-center rounded-xl bg-surface border-2 border-border text-text-primary font-semibold text-lg hover:bg-surface/50 hover:border-primary hover:text-primary transition-all duration-300 active:scale-95"
+          className="w-full py-3 md:py-4 px-4 md:px-6 text-center rounded-xl bg-surface border-2 border-border text-text-primary font-semibold text-sm md:text-lg hover:bg-surface/50 hover:border-primary hover:text-primary transition-all duration-300 active:scale-95"
         >
           {t("gymCard.back", "← Back to Overview")}
         </button>

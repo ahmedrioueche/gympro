@@ -14,7 +14,7 @@ export const TopRightControls = ({
   onMembershipsClick,
   onLogoutClick,
 }: TopRightControlsProps) => (
-  <div className="flex items-center gap-2 md:gap-4 px-4 py-4">
+  <div className="flex items-center gap-1.5 md:gap-4 px-1 md:px-4 py-4">
     <NotificationsDropdown />
 
     <ProfileDropdown

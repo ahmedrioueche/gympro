@@ -22,9 +22,6 @@ export default function SettingsPage() {
     phoneNumber,
     setPhoneNumber,
     email,
-    setEmail,
-    addEmailMode,
-    setAddEmailMode,
     addPhoneMode,
     setAddPhoneMode,
     uploading,
@@ -106,9 +103,6 @@ export default function SettingsPage() {
             phoneNumber={phoneNumber}
             setPhoneNumber={setPhoneNumber}
             email={email}
-            setEmail={setEmail}
-            addEmailMode={addEmailMode}
-            setAddEmailMode={setAddEmailMode}
             addPhoneMode={addPhoneMode}
             setAddPhoneMode={setAddPhoneMode}
             uploading={uploading}

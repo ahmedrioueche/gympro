@@ -49,6 +49,7 @@ export interface CoachDashboardStats {
   activeClients: { value: number; trend: number };
   programsCreated: { value: number; trend: number };
   sessionsThisMonth: { value: number; trend: number };
-  clientRetention: { value: number; trend: number };
+  clientRetention: { value: number | null; trend: number };
   todaySessions: Session[];
+  pendingRequestsCount: number;
 }

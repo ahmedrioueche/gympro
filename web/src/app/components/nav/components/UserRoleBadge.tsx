@@ -67,7 +67,7 @@ export function UserRoleBadge() {
   return (
     <div
       className={`
-        flex items-center gap-3 px-4 py-2 rounded-xl border transition-all duration-300
+        flex items-center gap-3 px-4 py-2 rounded-xl border transition-all duration-300 w-fit
         backdrop-blur-md bg-white/10
         bg-gradient-to-br ${config.colorClass}
         hover:scale-[1.02] active:scale-[0.98]

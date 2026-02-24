@@ -19,7 +19,6 @@ function MembersPage() {
     filteredMembers,
     totalMembers,
     totalPages,
-    currentGym,
     handleSearchChange,
     handlePageChange,
     handleViewProfile,

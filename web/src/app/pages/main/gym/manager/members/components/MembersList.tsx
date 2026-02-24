@@ -1,11 +1,11 @@
 import { ErrorComponent } from "@tanstack/react-router";
 import Loading from "../../../../../../../components/ui/Loading";
+import type { ViewMode } from "../../../../../../../types/common";
 import {
   MemberCard,
   MembersEmptyState,
   MembersTable,
   type MemberDisplay,
-  type ViewMode,
 } from "./index";
 
 interface MembersListProps {

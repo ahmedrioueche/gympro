@@ -31,7 +31,6 @@ export class AttendanceController {
 
   @Get('access-token/:gymId')
   @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
-  @RequireGymPermission('attendance:view')
   @RequireFeature(GymManagerFeature.ATTENDANCE)
   async getAccessToken(@Param('gymId') gymId: string, @Request() req: any) {
     const memberId = req.user.sub;

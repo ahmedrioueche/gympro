@@ -26,7 +26,7 @@ export default function AnalyticsPage() {
   if (!currentGym || !analytics) return null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 md:space-y-8">
       <PageHeader
         title={t("analytics.gym.title", "Gym Analytics")}
         subtitle={t(
@@ -44,7 +44,7 @@ export default function AnalyticsPage() {
         <>
           <StatsOverview metrics={analytics.metrics} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
             <AttendanceTrend data={analytics.attendanceTrend} />
             <MembershipStatus
               distribution={analytics.membershipDistribution}

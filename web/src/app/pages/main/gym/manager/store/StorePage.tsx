@@ -11,14 +11,11 @@ import Loading from "../../../../../../components/ui/Loading";
 import NoData from "../../../../../../components/ui/NoData";
 import { useGymStore } from "../../../../../../store/gym";
 import { useModalStore } from "../../../../../../store/modal";
+import type { ViewMode } from "../../../../../../types/common";
 import PageHeader from "../../../../../components/PageHeader";
 import { ProductCard } from "./components/ProductCard";
 import { ProductTable } from "./components/ProductTable";
-import {
-  StoreControls,
-  type SortBy,
-  type ViewMode,
-} from "./components/StoreControls";
+import { StoreControls, type SortBy } from "./components/StoreControls";
 import { useDeleteProduct, useStore } from "./hooks/useStore";
 
 export default function StorePage() {

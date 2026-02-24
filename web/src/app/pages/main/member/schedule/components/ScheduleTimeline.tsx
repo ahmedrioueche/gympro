@@ -33,12 +33,12 @@ export const ScheduleTimeline = ({
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-6 md:space-y-12">
       {groupedItems.map((group) => (
-        <div key={group.date.toISOString()} className="space-y-5">
+        <div key={group.date.toISOString()} className="space-y-3 md:space-y-5">
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 rounded-full bg-gradient-to-b from-primary to-primary/50" />
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-base md:text-xl font-bold text-white">
               {format(group.date, "EEEE, MMMM d")}
             </h2>
             {isSameDay(group.date, new Date()) && (
@@ -48,7 +48,7 @@ export const ScheduleTimeline = ({
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
             {group.items.map((item) =>
               item.type === "class" ? (
                 <ClassCard

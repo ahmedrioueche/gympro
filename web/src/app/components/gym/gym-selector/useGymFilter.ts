@@ -1,5 +1,6 @@
 import { UserRole, type Gym } from "@ahmedrioueche/gympro-client";
 import { useMemo } from "react";
+import { useCoachAffiliations } from "../../../../hooks/queries/useGymCoach";
 import { useUserStore } from "../../../../store/user";
 
 /**
@@ -12,9 +13,15 @@ import { useUserStore } from "../../../../store/user";
  */
 export function useGymFilter(gyms: Gym[]) {
   const { user, activeDashboard } = useUserStore();
+  const { data: affiliations = [] } = useCoachAffiliations();
 
   return useMemo(() => {
     if (!gyms || gyms.length === 0) return [];
+
+    // Active coach affiliated gym IDs
+    const activeAffiliatedGymIds = (affiliations as any[])
+      .filter((a) => a.status === "active")
+      .map((a) => (typeof a.gymId === "object" ? a.gymId?._id : a.gymId));
 
     // Admin/AppEditor bypass - see all gyms
     if (user?.role === UserRole.Admin || user?.role === UserRole.AppEditor) {
@@ -42,7 +49,7 @@ export function useGymFilter(gyms: Gym[]) {
 
       // 2. Check memberships (even if they are just strings/IDs)
       if (user?.memberships) {
-        return user.memberships.some((m) => {
+        const hasMembershipMatch = user.memberships.some((m) => {
           const mGymId =
             typeof m === "string"
               ? m
@@ -62,9 +69,16 @@ export function useGymFilter(gyms: Gym[]) {
 
           return m.roles?.some((r) => allowedRoles.includes(r));
         });
+
+        if (hasMembershipMatch) return true;
+      }
+
+      // 3. Check coach affiliations (if on coach dashboard)
+      if (activeDashboard === "coach") {
+        return activeAffiliatedGymIds.includes(String(gym._id));
       }
 
       return false;
     });
-  }, [gyms, user, activeDashboard]);
+  }, [gyms, user, activeDashboard, affiliations]);
 }

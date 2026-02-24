@@ -80,7 +80,7 @@ export function useReportDetailsModal() {
 
   // Derived values
   const currentUserId = user?._id;
-  const reporterId = report
+  const reporterId = report?.reporter
     ? typeof report.reporter === "string"
       ? report.reporter
       : report.reporter._id

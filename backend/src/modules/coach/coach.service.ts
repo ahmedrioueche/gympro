@@ -554,11 +554,35 @@ export class CoachService {
 
       const sessionTrend = sessionsCount - sessionsLastMonthCount;
 
-      // 4. Client Retention (Mocked for now as it requires complex logic)
-      const retentionRate = 95;
-      const retentionTrend = 0;
+      // 4. Client Retention Calculation
+      // Formula: (Current Coached Members / Total Unique Clients Ever Accepted) * 100
+      const totalAcceptedClients = await this.coachRequestModel.distinct(
+        'memberId',
+        {
+          coachId: new Types.ObjectId(coachId),
+          status: 'accepted',
+        },
+      );
 
-      // 5. Today's Sessions
+      const totalAcceptedCount = totalAcceptedClients.length;
+      let retentionRate: number | null = null;
+      if (totalAcceptedCount > 0) {
+        retentionRate = Math.round(
+          (activeClientsCount / totalAcceptedCount) * 100,
+        );
+        // Cap at 100 just in case data inconsistencies occur
+        if (retentionRate > 100) retentionRate = 100;
+      }
+      const retentionTrend = 0; // Requires historical retention snapshots to implement accurately
+
+      // 5. Pending Requests Count (Real data for "Pending Check-Ins" UI)
+      const pendingRequestsCount = await this.coachRequestModel.countDocuments({
+        coachId: new Types.ObjectId(coachId),
+        status: 'pending',
+        initiatedBy: 'member',
+      });
+
+      // 6. Today's Sessions
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
 
@@ -579,6 +603,7 @@ export class CoachService {
           sessionsThisMonth: { value: sessionsCount, trend: sessionTrend },
           clientRetention: { value: retentionRate, trend: retentionTrend },
           todaySessions: todaySessionsResult.data || [],
+          pendingRequestsCount,
         },
       };
     } catch (error) {

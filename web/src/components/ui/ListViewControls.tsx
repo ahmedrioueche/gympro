@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-
-export type ViewMode = "cards" | "table";
+import type { ViewMode } from "../../types/common";
 
 interface ViewModeToggleProps {
   viewMode: ViewMode;
@@ -78,12 +77,10 @@ export function ListActionRow({
   children,
 }: ListActionRowProps) {
   return (
-    <div className="flex items-center justify-between gap-2">
+    <div className="flex items-center justify-between gap-2 flex-wrap">
       <ViewModeToggle viewMode={viewMode} onViewModeChange={onViewModeChange} />
 
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-        {children}
-      </div>
+      <div className="flex items-center gap-1.5 flex-shrink-0">{children}</div>
     </div>
   );
 }

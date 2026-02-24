@@ -222,6 +222,8 @@
     "coach": {
       "request_title": "New Coaching Request",
       "request_body": "{{memberName}} has requested your coaching services.",
+      "invitation_title": "Gym Invitation",
+      "invitation_body": "{{gymName}} has invited you to join their team.",
       "respond_accept_title": "Request Accepted",
       "respond_accept_body": "{{coachName}} accepted your coaching request!",
       "respond_decline_title": "Request Declined",

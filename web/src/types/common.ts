@@ -10,3 +10,5 @@ export interface ScanResult {
   expiry?: string | Date;
   timestamp: Date;
 }
+
+export type ViewMode = "cards" | "table";

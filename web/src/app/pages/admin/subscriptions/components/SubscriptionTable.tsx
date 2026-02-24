@@ -91,11 +91,82 @@ export const SubscriptionTable = ({
     },
   ];
 
+  const renderMobileCard = (sub: AdminSubscriptionView) => {
+    const colors = {
+      active:
+        "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-500",
+      expired: "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-500",
+      cancelled:
+        "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-500",
+      trialing:
+        "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-500",
+    };
+    const status = sub.status as keyof typeof colors;
+
+    return (
+      <div className="p-4 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="font-bold text-text-primary">
+              {sub.userId?.profile?.fullName || t("common.unknown")}
+            </span>
+            <span className="text-xs text-text-secondary">
+              {sub.userId?.profile?.email}
+            </span>
+          </div>
+          <span
+            className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${colors[status] || colors.cancelled}`}
+          >
+            {t(`common.${sub.status}`)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              {t("admin.subscriptions.table.plan")}
+            </span>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-text-primary capitalize">
+                {sub.planName}
+              </span>
+              <span className="text-xs text-text-secondary capitalize">
+                {sub.billingCycle}
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-1 items-end">
+            <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              {t("admin.subscriptions.table.provider")}
+            </span>
+            <span className="text-sm font-medium text-text-primary capitalize">
+              {sub.provider}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1 pt-2 border-t border-white/5">
+          <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+            {t("admin.subscriptions.table.period")}
+          </span>
+          <div className="text-xs text-text-primary font-medium">
+            {sub.currentPeriodStart &&
+              format(new Date(sub.currentPeriodStart), "MMM dd, yyyy")}
+            {" - "}
+            {sub.currentPeriodEnd &&
+              format(new Date(sub.currentPeriodEnd), "MMM dd, yyyy")}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Table<AdminSubscriptionView>
       columns={columns}
       data={subscriptions}
       keyExtractor={(item) => item._id}
+      renderMobileCard={renderMobileCard}
       emptyState={
         <NoData
           icon={CreditCard}

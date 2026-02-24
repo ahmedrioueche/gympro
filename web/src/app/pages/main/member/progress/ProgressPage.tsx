@@ -12,7 +12,7 @@ const ProgressPage = () => {
   const { data: history, isLoading: historyLoading } = useProgressHistory();
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <PageHeader
         icon={TrendingUp}
         title={t("progress.title")}
@@ -29,7 +29,7 @@ const ProgressPage = () => {
 
       <StatsOverview stats={stats} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
         <div className="lg:col-span-2">
           <ActivityCalendar history={history} />
         </div>
@@ -39,15 +39,15 @@ const ProgressPage = () => {
       </div>
 
       {/* Motivational Quote or Hint */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-primary to-indigo-600 text-white shadow-xl shadow-primary/20 relative overflow-hidden group">
+      <div className="p-5 md:p-8 rounded-3xl bg-gradient-to-r from-primary to-indigo-600 text-white shadow-xl shadow-primary/20 relative overflow-hidden group">
         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
-          <TrendingUp size={120} />
+          <TrendingUp size={120} className="w-20 h-20 md:w-32 md:h-32" />
         </div>
         <div className="relative z-10">
-          <h4 className="text-xl font-black tracking-tight">
+          <h4 className="text-lg md:text-xl font-black tracking-tight">
             {t("progress.motivation.title")}
           </h4>
-          <p className="text-white/80 text-sm font-medium mt-1 max-w-md">
+          <p className="text-white/80 text-xs md:text-sm font-medium mt-1 max-w-md">
             {t("progress.motivation.subtitle", {
               count: stats?.totalWorkouts || 0,
             })}

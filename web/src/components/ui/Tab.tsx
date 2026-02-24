@@ -3,19 +3,27 @@ interface TabProps {
   count?: number;
   isActive?: boolean;
   onClick?: () => void;
+  className?: string;
 }
 
-export default function Tab({ label, count, isActive, onClick }: TabProps) {
+export default function Tab({
+  label,
+  count,
+  isActive,
+  onClick,
+  className = "",
+}: TabProps) {
   return (
     <button
       onClick={onClick}
       className={`
-        py-4 px-1 border-b-2 font-medium text-sm transition-colors
+        py-4 px-1 border-b-2 font-medium md:text-sm text-xs transition-colors
         ${
           isActive
             ? "border-primary text-primary"
             : "border-transparent text-text-secondary hover:text-text-primary hover:border-border-hover"
         }
+        ${className}
       `}
     >
       {label}

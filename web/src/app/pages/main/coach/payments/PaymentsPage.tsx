@@ -3,9 +3,10 @@ import {
   GymCoachPaymentStatus,
 } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
-import { Wallet } from "lucide-react";
+import { History, Wallet } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
+import NoData from "../../../../../components/ui/NoData";
 import Table from "../../../../../components/ui/Table";
 import PageHeader from "../../../../components/PageHeader";
 import { RevenueStats } from "../../../../components/cards/RevenueStats";
@@ -13,8 +14,7 @@ import { useCoachPayments } from "./hooks/useCoachPayments";
 
 function PaymentsPage() {
   const { t } = useTranslation();
-  const { stats, payments, isLoading, totalPayments, currentPage } =
-    useCoachPayments();
+  const { stats, payments, isLoading } = useCoachPayments();
 
   const getStatusColor = (status: GymCoachPaymentStatus) => {
     switch (status) {
@@ -38,18 +38,19 @@ function PaymentsPage() {
   };
 
   if (isLoading) {
-    <>
-      <PageHeader
-        title={t("coach.payments.title", "Payments")}
-        subtitle={t(
-          "coach.payments.subtitle",
-          "Manage your earnings and payout history",
-        )}
-        icon={Wallet}
-      />
-      <Loading />;
-    </>;
-    return;
+    return (
+      <div className="space-y-6">
+        <PageHeader
+          title={t("coach.payments.title", "Payments")}
+          subtitle={t(
+            "coach.payments.subtitle",
+            "Manage your earnings and payout history",
+          )}
+          icon={Wallet}
+        />
+        <Loading />
+      </div>
+    );
   }
 
   // Define table columns
@@ -106,6 +107,41 @@ function PaymentsPage() {
     },
   ];
 
+  const renderMobileCard = (item: GymCoachPayment) => (
+    <div className="p-4 space-y-3">
+      <div className="flex justify-between items-start">
+        <div className="space-y-1">
+          <p className="text-xs text-text-secondary">
+            {format(new Date(item.createdAt), "MMM d, yyyy")}
+          </p>
+          <p className="font-bold text-text-primary">
+            {(item.gymId as any)?.name || "N/A"}
+          </p>
+        </div>
+        <span
+          className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${getStatusColor(
+            item.status,
+          )}`}
+        >
+          {item.status.toUpperCase()}
+        </span>
+      </div>
+      <div className="flex justify-between items-end">
+        <p className="text-sm text-text-secondary italic">
+          {item.description || item.category}
+        </p>
+        <p
+          className={`font-black ${
+            item.type === "payout" ? "text-red-400" : "text-green-400"
+          }`}
+        >
+          {item.type === "payout" ? "-" : "+"}
+          {formatCurrency(item.amount, item.currency)}
+        </p>
+      </div>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -132,14 +168,20 @@ function PaymentsPage() {
           {t("coach.payments.history")}
         </h2>
         <Table
-          data={payments}
+          data={payments || []}
           columns={columns}
           keyExtractor={(item) => item._id}
+          renderMobileCard={renderMobileCard}
           emptyState={
-            <div className="flex flex-col items-center gap-2 text-zinc-500">
-              <span className="text-2xl opacity-50">📭</span>
-              <span className="font-medium">{t("coach.payments.noData")}</span>
-            </div>
+            <NoData
+              icon={History}
+              title={t("coach.payments.noData", "No Transactions")}
+              description={t(
+                "coach.payments.noDataDesc",
+                "Your payment history will appear here once you start earning",
+              )}
+              className=""
+            />
           }
         />
       </div>

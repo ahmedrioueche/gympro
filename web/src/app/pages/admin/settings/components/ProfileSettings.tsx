@@ -87,44 +87,16 @@ export default function ProfileSettings({
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Email Section */}
-            <div>
-              {user.profile.email && !addEmailMode ? (
-                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
-                      <Mail className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
-                        {t("member.settings.profile.email")}
-                      </p>
-                      <p className="font-semibold text-text-primary">
-                        {user.profile.email}
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-primary/5 text-primary font-bold"
-                    onClick={() => setAddEmailMode(true)}
-                  >
-                    {t("common.change")}
-                  </Button>
-                </div>
-              ) : (
-                <InputField
-                  label={t("member.settings.profile.email")}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  leftIcon={<Mail className="w-5 h-5" />}
-                  placeholder={t("member.settings.profile.emailPlaceholder")}
-                  disabled={!!user.profile.email}
-                />
-              )}
-            </div>
+            {/* Email */}
+            <InputField
+              label={t("settings.coach.profile.email")}
+              type="email"
+              value={addEmailMode ? email : user.profile.email || email}
+              onChange={(e) => setEmail(e.target.value)}
+              leftIcon={<Mail className="w-5 h-5" />}
+              placeholder={t("settings.coach.profile.emailPlaceholder")}
+              disabled={!!user.profile.email && !addEmailMode}
+            />
 
             {/* Phone Section */}
             <div>

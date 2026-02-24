@@ -25,9 +25,13 @@ export function useCoachGymsPage() {
   );
 
   // Explore count (simplified for tab badge)
-  const affiliatedGymIds = affiliations.map((a) => a.gymId);
+  const activeAffiliatedGymIds = activeAffiliations.map((a: any) =>
+    typeof (a.gym || a.gymId) === "object"
+      ? (a.gym || a.gymId)._id
+      : a.gym || a.gymId,
+  );
   const exploreCount = allGyms.filter(
-    (gym) => !affiliatedGymIds.includes(gym._id),
+    (gym) => !activeAffiliatedGymIds.includes(gym._id),
   ).length;
 
   return {

@@ -148,7 +148,7 @@ export default function ReportDetailsModal() {
         </div>
 
         {/* Reporter - Clickable for admins */}
-        {typeof report.reporter !== "string" && (
+        {report.reporter && typeof report.reporter !== "string" && (
           <button
             onClick={() => {
               if (!isReporter) {
@@ -182,10 +182,10 @@ export default function ReportDetailsModal() {
             )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-text-primary truncate">
-                {report.reporter.profile.fullName}
+                {report.reporter.profile?.fullName || t("support.unknown_user")}
               </p>
               <p className="text-xs text-text-secondary truncate">
-                {report.reporter.profile.email}
+                {report.reporter.profile?.email || ""}
               </p>
             </div>
             {!isReporter && (
@@ -253,8 +253,8 @@ export default function ReportDetailsModal() {
                       <div
                         className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
                           isCurrentUser
-                            ? "bg-brand-primary text-white"
-                            : "bg-surface-tertiary text-text-secondary"
+                            ? "bg-primary text-white"
+                            : "bg-tertiary text-text-secondary"
                         }`}
                       >
                         {initial}

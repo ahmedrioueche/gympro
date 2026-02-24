@@ -30,10 +30,8 @@ const StaffModal = lazy(
   () => import("./app/components/modals/staff-modal/StaffModal"),
 );
 
-const ExerciseDetailModal = lazy(() =>
-  import("./app/components/gym/ExerciseDetailModal").then((module) => ({
-    default: module.ExerciseDetailModal,
-  })),
+const ExerciseDetailModal = lazy(
+  () => import("./app/components/modals/ExerciseDetailModal"),
 );
 
 const RequestCoachModal = lazy(

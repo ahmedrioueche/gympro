@@ -92,11 +92,60 @@ export function TransactionsTable({
     },
   ];
 
+  const renderMobileCard = (payment: GymCoachPayment) => {
+    return (
+      <div className="p-4 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="font-semibold text-foreground">
+              {format(new Date(payment.createdAt), "PPP")}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {payment.description || payment.category}
+            </span>
+          </div>
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border ${getStatusColor(
+              payment.status,
+            )}`}
+          >
+            {payment.status}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between pt-2 border-t border-border">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
+              {t("common.type")}
+            </span>
+            <span className="text-xs text-foreground/80 capitalize">
+              {payment.type}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1 items-end">
+            <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
+              {t("common.amount")}
+            </span>
+            <span className="text-sm font-black text-foreground">
+              {formatPrice(
+                payment.amount,
+                (payment.currency as unknown as Currency) ||
+                  (currency as unknown as Currency),
+                language,
+              )}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <Table
+    <Table<GymCoachPayment>
       data={payments}
       columns={columns}
       keyExtractor={(item) => item._id}
+      renderMobileCard={renderMobileCard}
       emptyState={
         <div className="flex flex-col items-center text-text-secondary justify-center gap-2">
           <div className="p-3 rounded-full bg-muted">

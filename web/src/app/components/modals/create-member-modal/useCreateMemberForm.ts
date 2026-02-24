@@ -51,7 +51,7 @@ const initialFormData: FormData = {
   isContactless: false,
   subscriptionTypeId: "",
   subscriptionStartDate: new Date().toISOString().split("T")[0],
-  subscriptionDuration: "1_month",
+  subscriptionDuration: "1 month",
   paymentMethod: PAYMENT_METHODS[0] || "",
   contactMethod: "email",
   sendWelcomeMessage: true,

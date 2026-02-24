@@ -19,33 +19,43 @@ export const DayColumn = ({
   onClassClick,
 }: DayColumnProps) => {
   const isCurrentDay = isToday(day);
+  const hasItems = gymClasses.length > 0 || sessions.length > 0;
 
   return (
     <div
-      className={`flex-1 w-full md:w-auto md:min-w-[140px] border-b md:border-b-0 md:border-r border-border last:border-0 ${
+      className={`md:min-w-[140px] md:flex-1 border-b md:border-b-0 md:border-r border-border last:border-0 ${
         isCurrentDay ? "bg-primary/5" : ""
       }`}
     >
-      {/* Day Header */}
+      {/* Day Header — horizontal on mobile, centered on desktop */}
       <div
-        className={`p-3 text-center border-b border-border ${
+        className={`px-3 py-2 md:p-3 md:text-center border-b border-border flex items-center gap-2 md:block ${
           isCurrentDay ? "bg-primary/10" : "bg-surface-secondary"
         }`}
       >
-        <p className="text-xs text-text-secondary uppercase tracking-wide">
+        <p className="text-[10px] md:text-xs text-text-secondary uppercase tracking-wide">
           {format(day, "EEE")}
         </p>
         <p
-          className={`text-lg font-semibold ${
+          className={`text-sm md:text-lg font-semibold ${
             isCurrentDay ? "text-primary" : "text-text-primary"
           }`}
         >
           {format(day, "d")}
         </p>
+        {!hasItems && (
+          <span className="text-[10px] text-text-secondary/50 ml-auto md:hidden">
+            —
+          </span>
+        )}
       </div>
 
-      {/* Items */}
-      <div className="p-2 min-h-[150px] md:min-h-[400px] space-y-2">
+      {/* Items — no min-height on mobile so empty days collapse */}
+      <div
+        className={`p-1.5 md:p-2 md:min-h-[400px] space-y-1.5 md:space-y-2 ${
+          !hasItems ? "hidden md:block" : ""
+        }`}
+      >
         {gymClasses.map((gymClass) => (
           <ClassScheduleCard
             key={gymClass._id}

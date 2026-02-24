@@ -86,9 +86,16 @@ export function SearchFilterBar<T extends string = string>({
     };
   }, []);
 
+  const totalFilters = (filters?.length || 0) + (filterOptions ? 1 : 0);
+  const isMultiFilterMobile = totalFilters >= 3;
+
   return (
     <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-2.5 md:p-5 w-full">
-      <div className="flex items-center gap-2 md:gap-3">
+      <div
+        className={`flex ${
+          isMultiFilterMobile ? "flex-col md:flex-row" : "items-center"
+        } gap-2 md:gap-3`}
+      >
         {/* Search Input - Flex Grow */}
         <div className="relative flex-1 min-w-0">
           <input
@@ -98,10 +105,10 @@ export function SearchFilterBar<T extends string = string>({
             onChange={(e) => handleSearchInput(e.target.value)}
             className="w-full px-3.5 md:px-4 py-2 md:py-2.5 pl-9 md:pl-11 pr-8 md:pr-10 focus:ring-1 focus:ring-primary bg-background border border-border rounded-xl text-text-primary placeholder-text-secondary focus:outline-none transition-all text-sm md:text-base"
           />
-          <span className="absolute left-3 md:left-3.5 top-1/2 -translate-y-1/2 text-sm md:text-lg">
+          <span className="absolute left-3 md:left-3.5 top-1/2 -translate-y-1/2 text-sm md:text-lg text-text-secondary">
             🔍
           </span>
-          {localSearchValue && (
+          {localSearchValue && localSearchValue.length > 0 && (
             <button
               onClick={handleClearSearch}
               className="absolute right-2.5 md:right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-danger w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full hover:bg-danger/10 transition-colors"
@@ -112,13 +119,18 @@ export function SearchFilterBar<T extends string = string>({
         </div>
 
         {/* Filter Dropdowns - Multi-filter support */}
-        <div className="flex items-center gap-1.5 md:gap-3 flex-shrink-0">
+        <div
+          className={`flex items-center gap-1.5 md:gap-3 flex-shrink-0 ${
+            isMultiFilterMobile ? "flex-wrap md:flex-nowrap" : ""
+          }`}
+        >
           {filters?.map((filter, index) => (
             <FilterDropdown
               key={index}
               value={filter.value}
               onChange={filter.onChange}
               options={filter.options}
+              align={isMultiFilterMobile ? "left" : "right"}
             />
           ))}
 
@@ -131,6 +143,7 @@ export function SearchFilterBar<T extends string = string>({
                 value={filterValue}
                 onChange={onFilterChange}
                 options={filterOptions}
+                align={isMultiFilterMobile ? "left" : "right"}
               />
             )}
         </div>
@@ -143,12 +156,14 @@ interface FilterDropdownProps<T extends string> {
   value: T;
   onChange: (value: T) => void;
   options: FilterOption<T>[];
+  align?: "left" | "right";
 }
 
 function FilterDropdown<T extends string>({
   value,
   onChange,
   options,
+  align = "right",
 }: FilterDropdownProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -169,6 +184,9 @@ function FilterDropdown<T extends string>({
 
   const selectedOption = options.find((opt) => opt.value === value);
   const isFiltered = options.length > 0 && value !== options[0]?.value;
+
+  const alignClasses =
+    align === "left" ? "left-0 md:left-auto md:right-0" : "right-0";
 
   return (
     <div ref={ref} className="relative flex-shrink-0">
@@ -196,7 +214,9 @@ function FilterDropdown<T extends string>({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 bg-background border border-border rounded-xl shadow-xl overflow-hidden z-50">
+        <div
+          className={`absolute top-full ${alignClasses} mt-2 w-48 bg-background border border-border rounded-xl shadow-xl overflow-hidden z-50`}
+        >
           <div className="p-1">
             {options.map((option) => (
               <button

@@ -46,7 +46,7 @@ function StepSubscriptionInfo({
 
   const calculateTotalPrice = () => {
     if (!selectedPlan || !formData.subscriptionDuration) return 0;
-    const [duration, unit] = formData.subscriptionDuration.split("_");
+    const [duration, unit] = formData.subscriptionDuration.split(" ");
     const count = parseInt(duration);
 
     const tier = selectedPlan.pricingTiers.find(
@@ -128,7 +128,7 @@ function StepSubscriptionInfo({
               {selectedPlan.services && selectedPlan.services.length > 0 && (
                 <div className="pt-4 border-t border-border/30">
                   <p className="text-[10px] uppercase font-black text-text-secondary tracking-[0.2em] mb-3 px-1">
-                    {t("pricing.form.linkedServices", "Included Services")}
+                    {t("pricing.form.linkedServices")}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 px-1">
                     {selectedPlan.services.map((service) => (

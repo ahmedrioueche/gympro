@@ -2,7 +2,6 @@ import { Edit3, X } from "lucide-react";
 import React, { type ElementType, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import useScreen from "../../hooks/useScreen";
 
 interface FooterButton {
   label?: string;
@@ -72,7 +71,6 @@ const BaseModal: React.FC<BaseModalProps> = ({
   maxWidth = "max-w-3xl",
   hideCloseButton = false,
 }) => {
-  const { isMobile } = useScreen();
   const { t } = useTranslation();
 
   if (!isOpen) return null;
@@ -88,7 +86,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
     className?: string,
   ) => {
     const baseClasses =
-      "px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2";
+      "px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 flex items-center justify-center gap-2";
 
     if (disabled || loading) {
       return `${baseClasses} bg-gray-400 cursor-auto opacity-50 shadow-none ring-0 text-white ${className || ""}`;
@@ -144,59 +142,61 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-end md:items-center justify-center p-0 md:p-4"
       onClick={hideCloseButton ? undefined : onClose}
     >
       <div
-        className={`bg-surface rounded-2xl shadow-2xl ${maxWidth} max-h-[99vh] w-full border-2 border-primary/30 overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col`}
-        style={{
-          width: isMobile ? "93vw" : undefined,
-        }}
+        className={`bg-surface shadow-2xl ${maxWidth} w-full border-t-2 md:border-2 border-primary/30 overflow-hidden animate-in fade-in duration-300 flex flex-col
+          rounded-t-2xl md:rounded-2xl
+          max-h-[92vh] md:max-h-[95vh]
+          slide-in-from-bottom-4 md:slide-in-from-bottom-0 md:zoom-in`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary to-secondary p-6 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="bg-gradient-to-r from-primary to-secondary p-4 md:p-6 flex-shrink-0">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 md:gap-4 min-w-0">
               {Icon && (
-                <div className="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
-                  <Icon className="w-7 h-7 text-white" />
+                <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5 md:w-7 md:h-7 text-white" />
                 </div>
               )}
-              <div>
+              <div className="min-w-0">
                 {isEditMode && onTitleChange ? (
                   <input
                     type="text"
                     value={displayTitle}
                     onChange={(e) => onTitleChange(e.target.value)}
-                    className="text-2xl font-bold text-white bg-white/20 rounded-lg px-3 py-1 border border-white/30 outline-none focus:border-white/50 mb-1"
+                    className="text-lg md:text-2xl font-bold text-white bg-white/20 rounded-lg px-2 md:px-3 py-1 border border-white/30 outline-none focus:border-white/50 mb-0.5 md:mb-1 w-full"
                   />
                 ) : (
-                  <h2 className="text-2xl font-bold text-white mb-1">
+                  <h2 className="text-lg md:text-2xl font-bold text-white mb-0.5 md:mb-1 truncate">
                     {displayTitle}
                   </h2>
                 )}
                 {subtitle && (
-                  <p className="text-white/90 text-sm">{subtitle}</p>
+                  <p className="text-white/90 text-xs md:text-sm truncate">
+                    {subtitle}
+                  </p>
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
               {showEditButton && !isEditMode && onEditClick && (
                 <button
                   onClick={onEditClick}
-                  className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
                   title={t("common.edit")}
                 >
-                  <Edit3 className="w-5 h-5 text-white" />
+                  <Edit3 className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </button>
               )}
               {!hideCloseButton && (
                 <button
                   onClick={onClose}
-                  className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
                 >
-                  <X className="w-5 h-5 text-white" />
+                  <X className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </button>
               )}
             </div>
@@ -205,17 +205,17 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto hide-scrollbar">
-          <div className="p-6">{children}</div>
+          <div className="p-4 md:p-6">{children}</div>
         </div>
 
         {/* Footer */}
         {hasFooter && (
-          <div className="p-6 bg-surface-secondary border-t-2 border-border flex-shrink-0">
+          <div className="p-3 md:p-6 bg-surface-secondary border-t-2 border-border flex-shrink-0">
             {footer ? (
               footer
             ) : (
               <div
-                className={`flex gap-3 ${!primaryConfig ? "justify-end" : ""}`}
+                className={`flex gap-2 md:gap-3 ${!primaryConfig ? "justify-end" : ""}`}
               >
                 {showSecondaryButton && (
                   <button
@@ -253,7 +253,9 @@ const BaseModal: React.FC<BaseModalProps> = ({
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        {TertiaryIcon && <TertiaryIcon className="w-5 h-5" />}
+                        {TertiaryIcon && (
+                          <TertiaryIcon className="w-4 h-4 md:w-5 md:h-5" />
+                        )}
                         {tertiaryConfig.label}
                       </>
                     )}
@@ -280,7 +282,9 @@ const BaseModal: React.FC<BaseModalProps> = ({
                       </>
                     ) : (
                       <>
-                        {PrimaryIcon && <PrimaryIcon className="w-5 h-5" />}
+                        {PrimaryIcon && (
+                          <PrimaryIcon className="w-4 h-4 md:w-5 md:h-5" />
+                        )}
                         {primaryConfig.label}
                       </>
                     )}

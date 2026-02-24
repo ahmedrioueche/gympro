@@ -62,7 +62,7 @@ export const AttendanceTable = ({ logs, isLoading }: AttendanceTableProps) => {
               {log.userId?.profile?.fullName || t("common.unknown")}
             </p>
             <p className="text-[10px] text-zinc-500 uppercase tracking-tighter">
-              {log.userId?._id
+              {log.userId?._id && typeof log.userId._id === "string"
                 ? `Member ID: ${log.userId._id.slice(-8)}`
                 : "Invalid QR Code"}
             </p>
@@ -161,7 +161,7 @@ export const AttendanceTable = ({ logs, isLoading }: AttendanceTableProps) => {
                   {log.userId?.profile?.fullName || t("common.unknown")}
                 </h4>
                 <p className="text-xs text-zinc-500 uppercase tracking-tight">
-                  {log.userId?._id
+                  {log.userId?._id && typeof log.userId._id === "string"
                     ? `ID: ${log.userId._id.slice(-8)}`
                     : "Invalid QR"}
                 </p>

@@ -10,9 +10,15 @@ interface GymCardProps {
   gym: Gym;
   onSelect: () => void;
   onJoin?: () => void;
+  hideActions?: boolean;
 }
 
-export default function GymCard({ gym, onSelect, onJoin }: GymCardProps) {
+export default function GymCard({
+  gym,
+  onSelect,
+  onJoin,
+  hideActions = false,
+}: GymCardProps) {
   const [showSettings, setShowSettings] = useState(false);
   const { isDark } = useTheme();
   const displayRole = useGymDisplayRole(gym);
@@ -42,6 +48,7 @@ export default function GymCard({ gym, onSelect, onJoin }: GymCardProps) {
           onSelect={onSelect}
           onJoin={onJoin}
           onToggleSettings={() => setShowSettings(true)}
+          hideActions={hideActions}
         />
       ) : (
         <GymSettingsView gym={gym} onBack={() => setShowSettings(false)} />

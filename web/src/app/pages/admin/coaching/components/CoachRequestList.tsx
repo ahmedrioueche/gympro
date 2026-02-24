@@ -133,6 +133,72 @@ export default function CoachRequestList({ requests }: CoachRequestListProps) {
     </div>
   );
 
+  const renderMobileCard = (user: User) => {
+    return (
+      <div className="p-4 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-surface-hover border border-border flex items-center justify-center flex-shrink-0">
+              {user.profile.profileImageUrl ? (
+                <img
+                  src={user.profile.profileImageUrl}
+                  alt={user.profile.fullName}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <span className="text-sm font-bold text-primary">
+                  {user.profile.fullName.charAt(0)}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className="font-semibold text-text-primary">
+                {user.profile.fullName}
+              </span>
+              <span className="text-xs text-text-secondary">
+                @{user.profile.username}
+              </span>
+            </div>
+          </div>
+          <StatusBadge status={user.coachVerification?.status || "pending"} />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 pt-2 border-t border-white/5">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              {t("admin.coaching.list.location")}
+            </span>
+            <span className="text-xs text-text-primary font-medium">
+              {user.profile.city || "N/A"}
+              {user.profile.country ? `, ${user.profile.country}` : ""}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1 items-end">
+            <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              {t("admin.coaching.list.submitted")}
+            </span>
+            <span className="text-xs text-text-primary font-medium">
+              {new Date(
+                user.coachVerification?.submittedAt || user.createdAt!,
+              ).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            openModal("admin_review_coach_request", { request: user });
+          }}
+          className="w-full py-2 text-xs font-medium bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2"
+        >
+          <Eye className="w-3.5 h-3.5" />
+          {t("admin.coaching.list.review")}
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-4">
       <SearchFilterBar
@@ -143,7 +209,7 @@ export default function CoachRequestList({ requests }: CoachRequestListProps) {
         onFilterChange={setFilterValue}
         filterOptions={filterOptions}
       />
-      <Table
+      <Table<User>
         columns={columns}
         data={filteredRequests}
         keyExtractor={(user) => user._id}
@@ -151,6 +217,7 @@ export default function CoachRequestList({ requests }: CoachRequestListProps) {
         onRowClick={(user) =>
           openModal("admin_review_coach_request", { request: user })
         }
+        renderMobileCard={renderMobileCard}
       />
     </div>
   );

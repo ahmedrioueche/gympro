@@ -60,6 +60,34 @@ export default function Dropdown({
 
     const rect = dropdownRef.current.getBoundingClientRect();
     const top = rect.bottom + window.scrollY;
+    const isMobileView = window.innerWidth < 768;
+
+    // On mobile, use fixed positioning to keep dropdown within viewport
+    if (isMobileView) {
+      return createPortal(
+        <div
+          id="dropdown-portal-root"
+          className={`fixed rounded-xl border border-border bg-background shadow-2xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${className}`}
+          style={{
+            top: `${rect.bottom}px`,
+            left: "8px",
+            right: "8px",
+            width: "auto",
+            maxWidth: "none",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="py-2">
+            {typeof children === "function"
+              ? children(closeDropdown)
+              : children}
+          </div>
+        </div>,
+        document.body,
+      );
+    }
+
+    // Desktop: original positioning logic
     const left = align === "left" ? rect.left + window.scrollX : "auto";
     const right =
       align === "right"

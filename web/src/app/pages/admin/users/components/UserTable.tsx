@@ -39,6 +39,21 @@ export const UserTable = ({ users }: UserTableProps) => {
     });
   };
 
+  const roleColors: Record<string, string> = {
+    [UserRole.Admin]:
+      "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-500",
+    [UserRole.AppEditor]:
+      "bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-500",
+    [UserRole.Coach]:
+      "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-500",
+    [UserRole.Owner]:
+      "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-500",
+    [UserRole.Manager]:
+      "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-500",
+    [UserRole.Member]:
+      "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-500",
+  };
+
   const columns: TableColumn<User>[] = [
     {
       key: "profile",
@@ -63,30 +78,13 @@ export const UserTable = ({ users }: UserTableProps) => {
     {
       key: "role",
       header: t("admin.users.table.role"),
-      render: (user) => {
-        const roleColors: Record<string, string> = {
-          [UserRole.Admin]:
-            "bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-500",
-          [UserRole.AppEditor]:
-            "bg-purple-100 text-purple-700 dark:bg-purple-500/10 dark:text-purple-500",
-          [UserRole.Coach]:
-            "bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-500",
-          [UserRole.Owner]:
-            "bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-500",
-          [UserRole.Manager]:
-            "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-500",
-          [UserRole.Member]:
-            "bg-gray-100 text-gray-700 dark:bg-gray-500/10 dark:text-gray-500",
-        };
-
-        return (
-          <span
-            className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${roleColors[user.role] || roleColors[UserRole.Member]}`}
-          >
-            {user.role}
-          </span>
-        );
-      },
+      render: (user) => (
+        <span
+          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${roleColors[user.role] || roleColors[UserRole.Member]}`}
+        >
+          {user.role}
+        </span>
+      ),
     },
     {
       key: "createdAt",
@@ -127,7 +125,10 @@ export const UserTable = ({ users }: UserTableProps) => {
 
         return (
           <button
-            onClick={() => handleToggleStatus(user)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleToggleStatus(user);
+            }}
             disabled={isPending}
             className={`p-2 rounded-lg transition-all ${
               isActive
@@ -151,12 +152,99 @@ export const UserTable = ({ users }: UserTableProps) => {
     openModal("user_profile", { user });
   };
 
+  const renderMobileCard = (user: User) => {
+    const isProtected =
+      user.role === UserRole.Admin || user.role === UserRole.AppEditor;
+    const isActive = user.profile?.isActive !== false;
+
+    return (
+      <div className="p-4 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <UserAvatar
+              avatar={user.profile?.profileImageUrl}
+              className="w-10 h-10 border-2 border-background shadow-sm"
+            />
+            <div className="flex flex-col">
+              <span className="font-semibold text-text-primary">
+                {user.profile?.fullName || user.profile?.username}
+              </span>
+              <span className="text-xs text-text-secondary">
+                {user.profile?.email}
+              </span>
+            </div>
+          </div>
+          {!isProtected && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggleStatus(user);
+              }}
+              disabled={isPending}
+              className={`p-2 rounded-lg transition-all ${
+                isActive
+                  ? "text-red-500 hover:bg-red-500/10"
+                  : "text-green-500 hover:bg-green-500/10"
+              }`}
+            >
+              {isActive ? (
+                <ShieldAlert className="w-5 h-5" />
+              ) : (
+                <ShieldCheck className="w-5 h-5" />
+              )}
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              {t("admin.users.table.role")}
+            </span>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider w-fit ${roleColors[user.role] || roleColors[UserRole.Member]}`}
+            >
+              {user.role}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1 items-end">
+            <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">
+              {t("admin.users.table.status")}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <div
+                className={`w-2 h-2 rounded-full ${user.profile?.isActive !== false ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]"}`}
+              />
+              <span className="text-xs font-medium text-text-primary">
+                {user.profile?.isActive !== false
+                  ? t("common.active")
+                  : t("common.inactive")}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-2 border-t border-white/5">
+          <span className="text-xs text-text-secondary">
+            {t("admin.users.table.joined")}
+          </span>
+          <span className="text-xs text-text-primary font-medium">
+            {user.createdAt
+              ? format(new Date(user.createdAt), "MMM dd, yyyy")
+              : "N/A"}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Table<User>
       columns={columns}
       data={users}
       keyExtractor={(item) => item._id}
       onRowClick={handleRowClick}
+      renderMobileCard={renderMobileCard}
       emptyState={
         <NoData
           icon={UserIcon}

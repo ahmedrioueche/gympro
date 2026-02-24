@@ -117,8 +117,8 @@ export function Table<T>({
                   col.align === "right"
                     ? "text-right"
                     : col.align === "center"
-                    ? "text-center"
-                    : ""
+                      ? "text-center"
+                      : ""
                 }`}
               >
                 {col.render(item, index)}
@@ -147,7 +147,11 @@ export function Table<T>({
     }
 
     if (data.length === 0 && emptyState) {
-      return emptyState;
+      return (
+        <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+          {emptyState}
+        </div>
+      );
     }
 
     return data.map((item, index) => (
@@ -177,8 +181,8 @@ export function Table<T>({
                     col.align === "right"
                       ? "text-right"
                       : col.align === "center"
-                      ? "text-center"
-                      : "text-left"
+                        ? "text-center"
+                        : "text-left"
                   }`}
                 >
                   {col.header}

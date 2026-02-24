@@ -36,7 +36,7 @@ export const ClassScheduleCard = ({
   return (
     <div
       onClick={onClick}
-      className={`p-3 rounded-lg border cursor-pointer transition-all ${statusStyles}`}
+      className={`p-2 md:p-3 rounded-lg border cursor-pointer transition-all ${statusStyles}`}
     >
       <div className="flex items-center gap-1.5 text-xs mb-2">
         <Clock className="w-3 h-3" />

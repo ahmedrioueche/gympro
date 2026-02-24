@@ -10,10 +10,9 @@ import { SearchInput } from "../../../../../../../components/ui/SearchInput";
 import {
   ListActionRow,
   ViewModeToggle,
-  type ViewMode,
 } from "../../../../../../../components/ui/ListViewControls";
+import type { ViewMode } from "../../../../../../../types/common";
 
-export type { ViewMode };
 export type SortBy = "name" | "price" | "quantity" | "createdAt";
 
 interface StoreControlsProps {
@@ -40,7 +39,7 @@ export function StoreControls({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-5 w-full max-w-full relative z-0">
+    <div className="bg-surface border border-border rounded-xl mb-6 md:rounded-2xl p-3 md:p-5 w-full max-w-full overflow-hidden relative z-0">
       {/* Desktop Layout */}
       <div className="hidden lg:flex items-center gap-3">
         {/* Search Input */}
@@ -117,14 +116,14 @@ function CategoryDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all whitespace-nowrap ${
+        className={`flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 md:py-2 bg-background border border-border rounded-xl text-xs md:text-sm transition-all whitespace-nowrap ${
           isOpen
             ? "border-primary ring-1 ring-primary/20"
             : "hover:border-primary"
         }`}
       >
         <Filter
-          className={`w-4 h-4 ${current !== "all" ? "text-primary" : "text-text-secondary"}`}
+          className={`w-3.5 h-3.5 md:w-4 md:h-4 ${current !== "all" ? "text-primary" : "text-text-secondary"}`}
         />
         <span className="capitalize font-medium text-text-primary hidden sm:inline-block">
           {current === "all"
@@ -135,12 +134,12 @@ function CategoryDropdown({
           {t("common.filters.label")}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`w-3 h-3 md:w-4 md:h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar-thin bg-surface border border-border rounded-xl shadow-xl z-50 animate-in fade-in slide-in-from-top-2">
+        <div className="absolute top-full right-0 mt-2 w-56 max-w-[calc(100vw-2rem)] max-h-[60vh] overflow-y-auto custom-scrollbar-thin bg-surface border border-border rounded-xl shadow-xl z-50 animate-in fade-in slide-in-from-top-2">
           <div className="p-1">
             <button
               onClick={() => {
@@ -216,14 +215,14 @@ function SortDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all whitespace-nowrap ${
+        className={`flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1.5 md:py-2 bg-background border border-border rounded-xl text-xs md:text-sm transition-all whitespace-nowrap ${
           isOpen
             ? "border-primary ring-1 ring-primary/20"
             : "hover:border-primary"
         }`}
       >
         <ArrowUpDown
-          className={`w-4 h-4 ${current !== "name" ? "text-primary" : "text-text-secondary"}`}
+          className={`w-3.5 h-3.5 md:w-4 md:h-4 ${current !== "name" ? "text-primary" : "text-text-secondary"}`}
         />
         <span className="capitalize font-medium text-text-primary hidden sm:inline-block">
           {t(options.find((o) => o.value === current)?.label || current)}
@@ -232,12 +231,12 @@ function SortDropdown({
           {t("common.sort")}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`w-3 h-3 md:w-4 md:h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+        <div className="absolute top-full right-0 mt-2 w-48 max-w-[calc(100vw-2rem)] bg-surface border border-border rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
           <div className="p-1">
             {options.map((opt) => (
               <button

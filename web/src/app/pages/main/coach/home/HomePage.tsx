@@ -4,34 +4,26 @@ import {
   BarChart3,
   Calendar,
   Clipboard,
-  Edit,
   MessageSquare,
   TrendingUp,
   UserPlus,
   Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Button from "../../../../../components/ui/Button";
 import { APP_PAGES } from "../../../../../constants/navigation";
-import { useMySubscription } from "../../../../../hooks/queries/useSubscription";
-import { useModalStore } from "../../../../../store/modal";
-import { useUserStore } from "../../../../../store/user";
-import ProfileHeader from "../../../../components/templates/profile-header/ProfileHeader";
-import PendingCheckIns from "./components/PendingCheckIns";
-import QuickActions from "./components/QuickActions";
-import QuickStatsGrid from "./components/QuickStatsGrid";
-import RecentActivity from "./components/RecentActivity";
-import TodaySessions from "./components/TodaySessions";
+import PageHeader from "../../../../components/PageHeader";
+import PendingCheckIns from "../../../../components/coach/dashboard/PendingCheckIns";
+import QuickActions from "../../../../components/coach/dashboard/QuickActions";
+import QuickStatsGrid from "../../../../components/coach/dashboard/QuickStatsGrid";
+import RecentActivity from "../../../../components/coach/dashboard/RecentActivity";
+import TodaySessions from "../../../../components/coach/dashboard/TodaySessions";
 import { useCoachHome } from "./hooks/useCoachHome";
 
 export default function HomePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useUserStore();
-  const { openModal } = useModalStore();
-  const { data: subscription } = useMySubscription();
 
-  const { stats, activity, isLoading } = useCoachHome();
+  const { stats, activity } = useCoachHome();
 
   const quickStats = [
     {
@@ -39,39 +31,55 @@ export default function HomePage() {
       value: stats?.activeClients?.value.toString() || "0",
       icon: Users,
       color: "text-blue-500",
-      bg: "bg-blue-500/10",
+      gradient: "from-blue-500 to-indigo-600",
       trend:
         stats?.activeClients?.trend > 0 ? `+${stats.activeClients.trend}` : "0",
+      description: t(
+        "home.coach.stats.activeClientsDesc",
+        "Members currently coached",
+      ),
     },
     {
       label: t("home.coach.stats.programsCreated"),
       value: stats?.programsCreated?.value.toString() || "0",
       icon: Clipboard,
       color: "text-purple-500",
-      bg: "bg-purple-500/10",
+      gradient: "from-purple-500 to-pink-600",
       trend:
         stats?.programsCreated?.trend > 0
           ? `+${stats.programsCreated.trend}`
           : "0",
+      description: t("home.coach.stats.programsDesc", "Total training plans"),
     },
     {
       label: t("home.coach.stats.sessionsThisMonth"),
       value: stats?.sessionsThisMonth?.value.toString() || "0",
       icon: Calendar,
       color: "text-green-500",
-      bg: "bg-green-500/10",
+      gradient: "from-green-500 to-emerald-600",
       trend:
         stats?.sessionsThisMonth?.trend > 0
           ? `+${stats.sessionsThisMonth.trend}`
           : "0",
+      description: t(
+        "home.coach.stats.sessionsDesc",
+        "Scheduled meetings this month",
+      ),
     },
     {
       label: t("home.coach.stats.clientRetention"),
-      value: `${stats?.clientRetention?.value || 0}%`,
+      value:
+        stats?.clientRetention?.value !== null
+          ? `${stats?.clientRetention?.value}%`
+          : "—",
       icon: TrendingUp,
       color: "text-orange-500",
-      bg: "bg-orange-500/10",
-      trend: `${stats?.clientRetention?.trend > 0 ? "+" : ""}${stats?.clientRetention?.trend || 0}%`,
+      gradient: "from-orange-500 to-red-600",
+      trend:
+        stats?.clientRetention?.value !== null
+          ? `${stats?.clientRetention?.trend > 0 ? "+" : ""}${stats?.clientRetention?.trend || 0}%`
+          : "—",
+      description: t("home.coach.stats.retentionDesc", "Client loyalty rate"),
     },
   ];
 
@@ -95,7 +103,6 @@ export default function HomePage() {
     activity?.map((act: any) => ({
       ...act,
       icon: getIcon(act.icon),
-      // Ensure time is formatted correctly if needed, or pass as is if component handles it
     })) || [];
 
   const todaySessions =
@@ -142,38 +149,41 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 md:space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
-      {user && (
-        <ProfileHeader
-          user={user}
-          subscription={subscription}
-          action={
-            <Button
-              onClick={() => openModal("edit_user_profile")}
-              className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-11 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md shrink-0"
-            >
-              {t("home.manager.profile.viewProfile")}
-              <Edit className="w-4 h-4" />
-            </Button>
-          }
-        />
-      )}
+      <PageHeader
+        title={t("home.coach.title", "Coach Dashboard")}
+        subtitle={t(
+          "home.coach.subtitle",
+          "Track your clients and manage your sessions",
+        )}
+        icon={TrendingUp}
+      />
 
       {/* Quick Stats Grid */}
       <QuickStatsGrid stats={quickStats} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Today's Sessions & Quick Actions */}
-        <div className="lg:col-span-1 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* Today's Sessions - Left */}
+        <div className="lg:col-span-1 h-full">
           <TodaySessions sessions={todaySessions} />
+        </div>
+
+        {/* Recent Activity - Right */}
+        <div className="lg:col-span-2 h-full">
+          <RecentActivity activities={recentActivity} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* Quick Actions - Left */}
+        <div className="lg:col-span-1 h-full">
           <QuickActions actions={quickActions} />
         </div>
 
-        {/* Right Column - Recent Activity & Pending Check-ins */}
-        <div className="lg:col-span-2 space-y-6">
-          <RecentActivity activities={recentActivity} />
-          <PendingCheckIns />
+        {/* Pending Check-ins - Right */}
+        <div className="lg:col-span-2 h-full">
+          <PendingCheckIns count={(stats as any)?.pendingRequestsCount || 0} />
         </div>
       </div>
     </div>

@@ -86,7 +86,7 @@ export function RevenueStats({ stats, currency }: RevenueStatsProps) {
 
   return (
     <div
-      className={`grid gap-6 md:grid-cols-${cards.length > 3 ? 4 : cards.length} text-text-primary`}
+      className={`grid grid-cols-1 lg:grid-cols-${cards.length > 3 ? 4 : cards.length} gap-6 text-text-primary`}
     >
       {cards.map((card) => {
         const styles = colorStyles[card.color] || colorStyles.primary;

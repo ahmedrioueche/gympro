@@ -57,13 +57,13 @@ export const ActivityCalendar = ({ history }: ActivityCalendarProps) => {
   }
 
   return (
-    <div className="bg-surface rounded-3xl border border-border/50 p-6 h-full flex flex-col">
-      <div className="flex justify-between items-center mb-6">
+    <div className="bg-surface rounded-3xl border border-border/50 p-4 md:p-6 h-full flex flex-col">
+      <div className="flex justify-between items-center mb-4 md:mb-6">
         <div>
-          <h3 className="text-lg font-black text-text-primary tracking-tight">
+          <h3 className="text-base md:text-lg font-black text-text-primary tracking-tight">
             {t("progress.calendar.title", "Activity Heatmap")}
           </h3>
-          <p className="text-xs text-text-secondary font-medium">
+          <p className="text-[10px] md:text-xs text-text-secondary font-medium">
             {t("progress.calendar.subtitle", "Consistency is key to success")}
           </p>
         </div>
@@ -72,58 +72,70 @@ export const ActivityCalendar = ({ history }: ActivityCalendarProps) => {
         </div>
       </div>
 
-      <div className="flex-1 flex items-end overflow-hidden">
-        <div className="grid grid-flow-col grid-rows-7 gap-1.5 w-full">
-          {days.map((dateStr) => {
-            const date = new Date(dateStr);
-            const level = getActivityLevel(dateStr);
-            const isToday = dateStr === today.toISOString().split("T")[0];
+      <div className="flex-1 overflow-x-auto no-scrollbar -mx-1 px-1">
+        <div className="min-w-[500px] md:min-w-0">
+          <div className="grid grid-flow-col grid-rows-7 gap-1 md:gap-1.5 w-full">
+            {days.map((dateStr) => {
+              const date = new Date(dateStr);
+              const level = getActivityLevel(dateStr);
+              const isToday = dateStr === today.toISOString().split("T")[0];
 
-            return (
-              <div
-                key={dateStr}
-                className={`w-full aspect-square rounded-[4px] transition-all cursor-pointer relative group ${getLevelColor(
-                  level,
-                )} ${isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-surface" : ""}`}
-              >
-                {/* Tooltip */}
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-text-primary text-surface text-[10px] font-bold px-2 py-1 rounded shadow-xl pointer-events-none z-20">
-                  <div className="flex flex-col items-center">
-                    <span>
-                      {date.toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
-                    {level > 0 && (
-                      <span className="text-primary-light">
-                        {history?.find((h) => h.date === dateStr)?.volumeKg}{" "}
-                        {weightUnit}
+              return (
+                <div
+                  key={dateStr}
+                  className={`w-full aspect-square rounded-[3px] md:rounded-[4px] transition-all cursor-pointer relative group ${getLevelColor(
+                    level,
+                  )} ${
+                    isToday
+                      ? "ring-2 ring-primary ring-offset-2 ring-offset-surface"
+                      : ""
+                  }`}
+                >
+                  {/* Tooltip */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-text-primary text-surface text-[10px] font-bold px-2 py-1 rounded shadow-xl pointer-events-none z-20">
+                    <div className="flex flex-col items-center">
+                      <span>
+                        {date.toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </span>
-                    )}
+                      {level > 0 && (
+                        <span className="text-primary-light">
+                          {history?.find((h) => h.date === dateStr)?.volumeKg}{" "}
+                          {weightUnit}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      <div className="mt-6 flex items-center justify-between text-[10px] font-bold text-text-secondary/60 uppercase tracking-widest">
+      <div className="mt-4 md:mt-6 flex items-center justify-between text-[9px] md:text-[10px] font-bold text-text-secondary/60 uppercase tracking-widest">
         <span>
           {new Date(days[0]).toLocaleDateString(undefined, { month: "short" })}
         </span>
         <div className="flex items-center gap-1.5">
-          <span>{t("progress.calendar.less")}</span>
+          <span className="hidden sm:inline">
+            {t("progress.calendar.less")}
+          </span>
           <div className="flex gap-1">
             {[0, 1, 2, 3, 4].map((l) => (
               <div
                 key={l}
-                className={`w-2.5 h-2.5 rounded-[2px] ${getLevelColor(l)}`}
+                className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-[2px] ${getLevelColor(
+                  l,
+                )}`}
               />
             ))}
           </div>
-          <span>{t("progress.calendar.more")}</span>
+          <span className="hidden sm:inline">
+            {t("progress.calendar.more")}
+          </span>
         </div>
         <span>{t("progress.calendar.today")}</span>
       </div>

@@ -103,80 +103,30 @@ export default function ProfileSettings({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Email */}
-            <div>
-              {user.profile.email && !addEmailMode ? (
-                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
-                      <Mail className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
-                        {t("settings.coach.profile.email")}
-                      </p>
-                      <p className="font-semibold text-text-primary">
-                        {user.profile.email}
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-primary/5 text-primary font-bold"
-                    onClick={() => setAddEmailMode(true)}
-                  >
-                    {t("common.change")}
-                  </Button>
-                </div>
-              ) : (
-                <InputField
-                  label={t("settings.coach.profile.email")}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  leftIcon={<Mail className="w-5 h-5" />}
-                  placeholder={t("settings.coach.profile.emailPlaceholder")}
-                />
-              )}
-            </div>
+            <InputField
+              label={t("settings.coach.profile.email")}
+              type="email"
+              value={addEmailMode ? email : user.profile.email || email}
+              onChange={(e) => setEmail(e.target.value)}
+              leftIcon={<Mail className="w-5 h-5" />}
+              placeholder={t("settings.coach.profile.emailPlaceholder")}
+              disabled={!!user.profile.email && !addEmailMode}
+            />
 
             {/* Phone */}
-            <div>
-              {user.profile.phoneNumber && !addPhoneMode ? (
-                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
-                      <Phone className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
-                        {t("settings.coach.profile.phone")}
-                      </p>
-                      <p className="font-semibold text-text-primary">
-                        {user.profile.phoneNumber}
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-primary/5 text-primary font-bold"
-                    onClick={() => setAddPhoneMode(true)}
-                  >
-                    {t("common.change")}
-                  </Button>
-                </div>
-              ) : (
-                <InputField
-                  label={t("settings.coach.profile.phone")}
-                  type="tel"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  leftIcon={<Phone className="w-5 h-5" />}
-                  placeholder={t("settings.coach.profile.phonePlaceholder")}
-                />
-              )}
-            </div>
+            <InputField
+              label={t("settings.coach.profile.phone")}
+              type="tel"
+              value={
+                addPhoneMode
+                  ? phoneNumber
+                  : user.profile.phoneNumber || phoneNumber
+              }
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              leftIcon={<Phone className="w-5 h-5" />}
+              placeholder={t("settings.coach.profile.phonePlaceholder")}
+              disabled={!!user.profile.phoneNumber && !addPhoneMode}
+            />
           </div>
         </div>
       </div>

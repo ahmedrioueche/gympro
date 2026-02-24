@@ -54,8 +54,8 @@ export default function GymsPage() {
 
   // Get gyms from affiliations for GymList
   const affiliatedGyms = activeAffiliations
-    .map((a) => a.gym)
-    .filter((g): g is NonNullable<typeof g> => !!g);
+    .map((a: any) => a.gym || a.gymId)
+    .filter((g: any) => !!g);
 
   const isLoading = isAffiliationsLoading;
 

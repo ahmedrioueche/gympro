@@ -25,14 +25,19 @@ export function useGymSubscriptionOptions(selectedPlanId?: string) {
     selectedPlan?.pricingTiers
       .flatMap((tier) => {
         const options = [];
-        const presetValue = `${tier.duration}_${tier.durationUnit}`;
+
+        // Helper to format duration key for translation
+        const formatKey = (d: number, u: string) => {
+          if (d === 1 && u === "day") return "1 session";
+          const unit = d > 1 && !u.endsWith("s") ? `${u}s` : u;
+          return `${d} ${unit}`;
+        };
+
+        const presetValue = formatKey(tier.duration, tier.durationUnit);
 
         options.push({
           value: presetValue,
-          label: t(
-            `renewSubscription.duration.${presetValue}`,
-            presetValue.replace("_", " "),
-          ),
+          label: t(`renewSubscription.duration.${presetValue}`, presetValue),
         });
 
         // Add multiples if it's a base tier (duration 1)
@@ -40,12 +45,14 @@ export function useGymSubscriptionOptions(selectedPlanId?: string) {
           (selectedPlan as any).allowedIntervals
             .filter((i: number) => i > 1)
             .forEach((multiple: number) => {
-              const multipleValue = `${multiple * tier.duration}_${tier.durationUnit}`;
+              const totalDuration = multiple * tier.duration;
+              const multipleValue = formatKey(totalDuration, tier.durationUnit);
+
               // Avoid duplicates if a tier already exists for this duration
               if (
                 !selectedPlan.pricingTiers.some(
                   (t) =>
-                    t.duration === multiple * tier.duration &&
+                    t.duration === totalDuration &&
                     t.durationUnit === tier.durationUnit,
                 )
               ) {
@@ -53,7 +60,7 @@ export function useGymSubscriptionOptions(selectedPlanId?: string) {
                   value: multipleValue,
                   label: t(
                     `renewSubscription.duration.${multipleValue}`,
-                    multipleValue.replace("_", " "),
+                    multipleValue,
                   ),
                 });
               }
@@ -64,8 +71,8 @@ export function useGymSubscriptionOptions(selectedPlanId?: string) {
       })
       .sort((a, b) => {
         // Simple sort by duration if possible
-        const aVal = parseInt(a.value.split("_")[0]);
-        const bVal = parseInt(b.value.split("_")[0]);
+        const aVal = parseInt(a.value.split(" ")[0]);
+        const bVal = parseInt(b.value.split(" ")[0]);
         return aVal - bVal;
       }) || [];
 

@@ -58,7 +58,7 @@ function ProfileHeader({ user, subscription, action }: ProfileHeaderProps) {
 
         {/* Action Button */}
         {action && (
-          <div className="flex justify-center md:justify-start lg:ml-auto w-full lg:w-auto">
+          <div className="flex justify-center md:justify-start lg:ml-auto w-full lg:w-auto md:pr-4">
             {action}
           </div>
         )}

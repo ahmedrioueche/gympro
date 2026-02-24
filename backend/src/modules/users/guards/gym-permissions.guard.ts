@@ -91,12 +91,6 @@ export class GymPermissionsGuard implements CanActivate {
     console.log('[GymPermissionsGuard] Request params:', request.params);
     console.log('[GymPermissionsGuard] Request body:', request.body);
 
-    // If no permissions required, allow access
-    if (!requiredPermissions || requiredPermissions.length === 0) {
-      console.log('[GymPermissionsGuard] ❌ No required permission specified');
-      return true;
-    }
-
     // User must be authenticated
     if (!user) {
       console.log('[GymPermissionsGuard] ❌ No user in request');
@@ -187,6 +181,14 @@ export class GymPermissionsGuard implements CanActivate {
     // Check if user has ANY of the required permissions
     const userPermissions = membership.permissions || [];
     console.log('[GymPermissionsGuard] User permissions:', userPermissions);
+
+    // If no specific permissions are required, membership is enough
+    if (!requiredPermissions || requiredPermissions.length === 0) {
+      console.log(
+        '[GymPermissionsGuard] ✅ Access granted - User has active membership',
+      );
+      return true;
+    }
 
     const hasPermission = requiredPermissions.some((p) =>
       userPermissions.includes(p),
