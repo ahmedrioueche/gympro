@@ -54,7 +54,7 @@ export class GymCoachService {
         .find({ gymId: new Types.ObjectId(gymId) })
         .populate(
           'coachId',
-          'profile.fullName profile.username profile.profileImageUrl coachingInfo',
+          'profile.fullName profile.username profile.profileImageUrl profile.city profile.state profile.country coachingInfo coachVerification',
         )
         .lean();
 
@@ -69,6 +69,10 @@ export class GymCoachService {
                 username: a.coachId.profile?.username,
                 profileImageUrl: a.coachId.profile?.profileImageUrl,
                 specializations: a.coachId.coachingInfo?.specializations,
+                city: a.coachId.profile?.city,
+                state: a.coachId.profile?.state,
+                country: a.coachId.profile?.country,
+                coachVerification: a.coachId.coachVerification,
               }
             : null,
         })) as any,
@@ -133,11 +137,18 @@ export class GymCoachService {
       });
 
       if (existingAffiliation) {
-        return {
-          success: false,
-          errorCode: ErrorCode.AFFILIATION_ALREADY_EXISTS,
-          message: 'Affiliation already exists',
-        };
+        if (
+          existingAffiliation.status === AffiliationStatus.ACTIVE ||
+          existingAffiliation.status === AffiliationStatus.PENDING
+        ) {
+          return {
+            success: false,
+            errorCode: ErrorCode.AFFILIATION_ALREADY_EXISTS,
+            message: 'Affiliation already exists',
+          };
+        }
+        // Remove stale terminated/declined affiliation to allow re-joining
+        await this.affiliationModel.deleteOne({ _id: existingAffiliation._id });
       }
 
       const affiliation = await this.affiliationModel.create({
@@ -161,6 +172,7 @@ export class GymCoachService {
         type: 'alert',
         priority: 'high',
         relatedId: (affiliation as any)._id.toString(),
+        gymId: gymId, // Add gymId for scoping
         action: {
           type: 'modal',
           payload: 'gym_invitation',
@@ -201,11 +213,35 @@ export class GymCoachService {
       });
 
       if (existingAffiliation) {
-        return {
-          success: false,
-          errorCode: ErrorCode.AFFILIATION_ALREADY_EXISTS,
-          message: 'Affiliation already exists',
-        };
+        if (
+          existingAffiliation.status === AffiliationStatus.ACTIVE ||
+          existingAffiliation.status === AffiliationStatus.PENDING
+        ) {
+          return {
+            success: false,
+            errorCode: ErrorCode.AFFILIATION_ALREADY_EXISTS,
+            message: 'Affiliation already exists',
+          };
+        }
+
+        // --- RATE LIMIT CHECK ---
+        const now = new Date();
+        const updatedAt = (existingAffiliation as any).updatedAt || new Date(0);
+        const hoursSinceUpdate =
+          (now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60);
+
+        if (hoursSinceUpdate < 24) {
+          return {
+            success: false,
+            errorCode: ErrorCode.REQUEST_LIMIT_REACHED,
+            message:
+              'You can only request to join this gym once every 24 hours.',
+          };
+        }
+        // -------------------------
+
+        // Remove stale terminated/declined affiliation to allow re-joining
+        await this.affiliationModel.deleteOne({ _id: existingAffiliation._id });
       }
 
       const affiliation = await this.affiliationModel.create({
@@ -230,9 +266,15 @@ export class GymCoachService {
           type: 'alert',
           priority: 'high',
           relatedId: (affiliation as any)._id.toString(),
+          gymId: gymId, // Add gymId for scoping
           action: {
-            type: 'link',
-            payload: `/manager/gyms/${gymId}/settings?tab=coaches`,
+            type: 'modal',
+            payload: 'admin_review_coach_request',
+            data: {
+              request: coach,
+              affiliationId: (affiliation as any)._id.toString(),
+              gymId,
+            },
           },
         });
       }
@@ -288,10 +330,12 @@ export class GymCoachService {
         await this.notificationsService.notifyUser(userToNotify, {
           key: accept ? 'affiliation.accepted' : 'affiliation.declined',
           vars: {
+            gymName: gym.name,
             message: message || '',
           },
           type: 'alert',
           priority: 'medium',
+          gymId: gym._id.toString(), // Add gymId for scoping
         });
       }
 

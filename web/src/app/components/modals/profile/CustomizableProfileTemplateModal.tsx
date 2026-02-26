@@ -109,8 +109,16 @@ export function CustomizableProfileTemplateModal({
                       className="w-24 h-24 lg:w-28 lg:h-28 rounded-2xl object-cover ring-2 ring-border shadow-lg"
                     />
                   ) : (
-                    <div className="w-24 h-24 lg:w-28 lg:h-28 bg-surface-hover flex items-center justify-center rounded-2xl ring-2 ring-border shadow-lg">
-                      <UserIcon className="w-12 h-12 text-text-secondary" />
+                    <div className="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-primary via-primary/80 to-secondary/60 flex items-center justify-center rounded-2xl ring-2 ring-border shadow-lg">
+                      <span className="text-4xl font-black text-white">
+                        {(
+                          user?.profile?.fullName ||
+                          user?.profile?.username ||
+                          "U"
+                        )
+                          .charAt(0)
+                          .toUpperCase()}
+                      </span>
                     </div>
                   )}
                 </div>

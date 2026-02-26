@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
+import { getMessage } from "../../../../utils/statusMessage";
 
 export interface DocumentItem {
   url: string;
@@ -38,11 +39,13 @@ export function useRequestCoachAccess() {
         setSocialMediaLinks([""]);
         setDocuments([]);
       } else {
-        toast.error(data.message || t("common.error"));
+        const statusMessage = getMessage(data, t);
+        toast.error(statusMessage.message);
       }
     },
     onError: (error: any) => {
-      toast.error(error.message || t("common.error"));
+      const statusMessage = getMessage(error.response?.data || error, t);
+      toast.error(statusMessage.message);
     },
   });
 

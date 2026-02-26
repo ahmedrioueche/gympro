@@ -21,8 +21,10 @@ import {
 } from "../../../../hooks/queries/useGymCoach";
 import { useGymSubscriptionTypes } from "../../../../hooks/queries/useGymSubscriptionTypes";
 import { useLanguageStore } from "../../../../store/language";
+import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
 import { capitalize, cn, formatDuration } from "../../../../utils/helper";
+import { getMessage } from "../../../../utils/statusMessage";
 
 interface GymInfoOverviewProps {
   gym: Gym;
@@ -44,34 +46,57 @@ export function GymInfoOverview({
   gym,
   displayRole,
   onSelect,
+  onJoin,
   onToggleSettings,
   hideActions = false,
 }: GymInfoOverviewProps) {
   const { t } = useTranslation();
-  const { user } = useUserStore();
+  const { user, activeDashboard } = useUserStore();
   const { language } = useLanguageStore();
+  const { openModal } = useModalStore();
 
   const { mutate: requestAffiliation, isPending: isJoining } =
     useRequestGymAffiliation();
 
   const handleJoin = (e: React.MouseEvent) => {
     e.stopPropagation();
-    requestAffiliation(
-      { gymId: gym._id },
-      {
-        onSuccess: () => {
-          toast.success(
-            t("gyms.request_success", "Join request submitted successfully!"),
-          );
-        },
-        onError: (error: any) => {
-          toast.error(
-            error.message ||
-              t("gyms.request_error", "Failed to submit join request"),
-          );
-        },
+
+    openModal("confirm", {
+      title: t("coach.gyms.requestJoinTitle", "Join Gym"),
+      text: t("coach.gyms.requestJoinConfirm", {
+        gymName: gym.name,
+        defaultValue: `Are you sure you want to join ${gym.name}?`,
+      }),
+      confirmText: t("coach.gyms.requestJoin", "Join"),
+      onConfirm: () => {
+        requestAffiliation(
+          { gymId: gym._id },
+          {
+            onSuccess: (data) => {
+              if (data.success) {
+                toast.success(
+                  t(
+                    "gyms.request_success",
+                    "Join request submitted successfully!",
+                  ),
+                );
+              } else {
+                const statusMessage = getMessage(data, t);
+                toast.error(statusMessage.message);
+              }
+            },
+            onError: (error: any) => {
+              const statusMessage = getMessage(
+                error.response?.data || error,
+                t,
+              );
+              toast.error(statusMessage.message);
+            },
+          },
+        );
       },
-    );
+      confirmVariant: "primary",
+    });
   };
 
   const { data: plans = [] } = useGymSubscriptionTypes(gym._id);
@@ -148,119 +173,140 @@ export function GymInfoOverview({
   return (
     <div className="p-4 md:p-8 space-y-8">
       {/* Essential Info Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Location Section */}
-        <div className="space-y-4">
-          <SectionHeader
-            icon={<MapPin className="w-5 h-5 text-primary" />}
-            title={t("gymCard.location", "Location")}
-          />
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-              `${gym.address || ""} ${gym.city || ""} ${gym.state || ""} ${gym.country || ""}`.trim(),
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block group p-4 rounded-xl border border-border/50 bg-muted/10 hover:bg-muted/20 transition-all duration-300"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className="text-text-primary font-bold group-hover:text-primary transition-colors">
-              {gym.address || t("gymCard.noAddress", "No address provided")}
-            </p>
-            {(gym.city || gym.state || gym.country) && (
-              <p className="text-sm text-text-secondary mt-1">
-                {gym.city}
-                {gym.state ? `, ${gym.state}` : ""}
-                {gym.country ? ` - ${gym.country}` : ""}
-              </p>
-            )}
-            <div className="mt-3 flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider">
-              <span>{t("common.viewOnMap", "View on map")}</span>
-              <ExternalLink className="w-3 h-3" />
-            </div>
-          </a>
-        </div>
-
-        {/* Contact Information */}
-        <div className="space-y-4">
-          <SectionHeader
-            icon={<Phone className="w-5 h-5 text-primary" />}
-            title={t("gymCard.contact", "Contact")}
-          />
-          <div className="grid grid-cols-1 gap-3">
-            <ContactRow
-              icon={<Phone className="w-4 h-4" />}
-              label={t("common.phone", "Phone")}
-              value={gym.phone || t("common.n_a", "N/A")}
-            />
-            <ContactRow
-              icon={<Mail className="w-4 h-4" />}
-              label={t("common.email", "Email")}
-              value={gym.email || t("common.n_a", "N/A")}
-            />
-            {gym.website && (
-              <ContactRow
-                icon={<Globe className="w-4 h-4" />}
-                label={t("common.website", "Website")}
-                value={gym.website.replace(/^https?:\/\//, "")}
-                isLink
-                href={gym.website}
+      {(gym.address ||
+        gym.city ||
+        gym.state ||
+        gym.country ||
+        gym.phone ||
+        gym.email ||
+        gym.website) && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Location Section */}
+          {(gym.address || gym.city || gym.state || gym.country) && (
+            <div className="space-y-4">
+              <SectionHeader
+                icon={<MapPin className="w-5 h-5 text-primary" />}
+                title={t("gymCard.location", "Location")}
               />
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="h-px bg-border/50" />
-
-      {/* Services and Plans Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-        {/* Services */}
-        <div className="space-y-6">
-          <SectionHeader
-            icon={<Flame className="w-5 h-5 text-orange-500" />}
-            title={t("gymCard.servicesOffered", "Services")}
-          />
-          {gym.settings?.servicesOffered &&
-          gym.settings.servicesOffered.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {gym.settings.servicesOffered.map((service, idx) => (
-                <ServiceTag
-                  key={idx}
-                  label={
-                    typeof service === "string"
-                      ? SERVICE_LABELS[service] || service
-                      : SERVICE_LABELS[service.name] || service.name
-                  }
-                  colorClass={COLORS[idx % COLORS.length]}
-                />
-              ))}
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  `${gym.address || ""} ${gym.city || ""} ${gym.state || ""} ${gym.country || ""}`.trim(),
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group p-4 rounded-xl border border-border/50 bg-muted/10 hover:bg-muted/20 transition-all duration-300"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {gym.address && (
+                  <p className="text-text-primary font-bold group-hover:text-primary transition-colors">
+                    {gym.address}
+                  </p>
+                )}
+                {(gym.city || gym.state || gym.country) && (
+                  <p className="text-sm text-text-secondary mt-1">
+                    {gym.city}
+                    {gym.state ? `, ${gym.state}` : ""}
+                    {gym.country ? ` - ${gym.country}` : ""}
+                  </p>
+                )}
+                <div className="mt-3 flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider">
+                  <span>{t("common.viewOnMap", "View on map")}</span>
+                  <ExternalLink className="w-3 h-3" />
+                </div>
+              </a>
             </div>
-          ) : (
-            <p className="text-sm text-text-secondary italic">
-              {t("gymCard.noServices", "No services listed")}
-            </p>
+          )}
+
+          {/* Contact Information */}
+          {(gym.phone || gym.email || gym.website) && (
+            <div className="space-y-4">
+              <SectionHeader
+                icon={<Phone className="w-5 h-5 text-primary" />}
+                title={t("gymCard.contact", "Contact")}
+              />
+              <div className="grid grid-cols-1 gap-3">
+                {gym.phone && (
+                  <ContactRow
+                    icon={<Phone className="w-4 h-4" />}
+                    label={t("common.phone", "Phone")}
+                    value={gym.phone}
+                  />
+                )}
+                {gym.email && (
+                  <ContactRow
+                    icon={<Mail className="w-4 h-4" />}
+                    label={t("common.email", "Email")}
+                    value={gym.email}
+                  />
+                )}
+                {gym.website && (
+                  <ContactRow
+                    icon={<Globe className="w-4 h-4" />}
+                    label={t("common.website", "Website")}
+                    value={gym.website.replace(/^https?:\/\//, "")}
+                    isLink
+                    href={gym.website}
+                  />
+                )}
+              </div>
+            </div>
           )}
         </div>
+      )}
 
-        {/* Pricing/Plans */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <SectionHeader
-              icon={<CircleDollarSign className="w-5 h-5 text-emerald-500" />}
-              title={t("gymCard.availablePlans", "Plans")}
-            />
-            {plans.length > 2 && (
-              <span className="text-[10px] bg-primary/10 text-primary px-3 py-1 rounded-full font-black uppercase">
-                +{plans.length - 2} {t("common.more", "More")}
-              </span>
+      {(gym.address ||
+        gym.city ||
+        gym.state ||
+        gym.country ||
+        gym.phone ||
+        gym.email ||
+        gym.website) && <div className="h-px bg-border/50" />}
+
+      {/* Services and Plans Section */}
+      {(gym.settings?.servicesOffered?.length || plans.length > 0) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+          {/* Services */}
+          {gym.settings?.servicesOffered &&
+            gym.settings.servicesOffered.length > 0 && (
+              <div className="space-y-6">
+                <SectionHeader
+                  icon={<Flame className="w-5 h-5 text-orange-500" />}
+                  title={t("gymCard.servicesOffered", "Services")}
+                />
+                <div className="flex flex-wrap gap-2">
+                  {gym.settings.servicesOffered.map((service, idx) => (
+                    <ServiceTag
+                      key={idx}
+                      label={
+                        typeof service === "string"
+                          ? SERVICE_LABELS[service] || service
+                          : SERVICE_LABELS[service.name] || service.name
+                      }
+                      colorClass={COLORS[idx % COLORS.length]}
+                    />
+                  ))}
+                </div>
+              </div>
             )}
-          </div>
-          <div className="space-y-3">
-            {plans.length > 0 ? (
-              plans
-                .slice(0, 3)
-                .map((plan: any) => (
+
+          {/* Pricing/Plans */}
+          {plans.length > 0 && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <SectionHeader
+                  icon={
+                    <CircleDollarSign className="w-5 h-5 text-emerald-500" />
+                  }
+                  title={t("gymCard.availablePlans", "Plans")}
+                />
+                {plans.length > 2 && (
+                  <span className="text-[10px] bg-primary/10 text-primary px-3 py-1 rounded-full font-black uppercase">
+                    +{plans.length - 2} {t("common.more", "More")}
+                  </span>
+                )}
+              </div>
+              <div className="space-y-3">
+                {plans.slice(0, 3).map((plan: any) => (
                   <PricingRow
                     key={plan._id}
                     plan={plan}
@@ -269,50 +315,41 @@ export function GymInfoOverview({
                     t={t}
                     shortServiceLabels={SHORT_SERVICE_LABELS}
                   />
-                ))
-            ) : (
-              <p className="text-sm text-text-secondary italic">
-                {t("gymCard.noPlans", "No public plans available")}
-              </p>
-            )}
-          </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
       {/* Action Section */}
       {!hideActions && (
         <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/30">
-          <button
-            onClick={
-              isStaff
-                ? (e) => {
-                    e.stopPropagation();
-                    onSelect();
+          {activeDashboard === "coach" && !isStaff && !isJoined && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isPending && !isJoining) {
+                  if (onJoin) {
+                    onJoin();
+                  } else {
+                    handleJoin(e as any);
                   }
-                : user?.role === "coach" && !isJoined && !isPending
-                  ? handleJoin
-                  : undefined
-            }
-            disabled={(!isStaff && (isPending || isJoined)) || isJoining}
-            className={cn(
-              "flex-[2] py-4 rounded-xl font-black text-lg transition-all active:scale-[0.98] shadow-sm",
-              isStaff
-                ? "bg-primary text-white hover:bg-primary-hover shadow-primary/20"
-                : isJoined
-                  ? "bg-success/10 text-success border border-success/20 cursor-default"
-                  : isPending || isJoining
-                    ? "bg-warning/10 text-warning border border-warning/20 cursor-wait"
-                    : "bg-primary text-white hover:bg-primary-hover shadow-primary/20",
-            )}
-          >
-            {isStaff
-              ? t("gymCard.manageGym", "Manage Gym")
-              : isJoined
-                ? t("gyms.status_joined", "Member")
-                : isPending || isJoining
-                  ? t("gyms.status_pending", "Request Pending")
-                  : t("gymCard.joinGym", "Join Gym")}
-          </button>
+                }
+              }}
+              disabled={isPending || isJoining}
+              className={cn(
+                "flex-[2] py-4 rounded-xl font-black text-lg transition-all active:scale-[0.98] shadow-sm",
+                isPending || isJoining
+                  ? "bg-warning/10 text-warning border border-warning/20 cursor-wait"
+                  : "bg-primary text-white hover:bg-primary-hover shadow-primary/20",
+              )}
+            >
+              {isPending || isJoining
+                ? t("gyms.status_pending", "Request Pending")
+                : t("gymCard.joinGym", "Join Gym")}
+            </button>
+          )}
 
           <button
             onClick={(e) => {
@@ -339,7 +376,7 @@ function SectionHeader({
   title: string;
 }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 ">
       <div className="p-2 bg-muted/20 rounded-lg border border-border/50">
         {icon}
       </div>
@@ -364,7 +401,7 @@ function ContactRow({
   href?: string;
 }) {
   const content = (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/5 border border-border/30 hover:bg-muted/10 hover:border-border/50 transition-all duration-300">
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-surface/50 border border-border/30 hover:bg-muted/10 hover:border-border/50 transition-all duration-300">
       <div className="text-text-secondary">{icon}</div>
       <div className="flex-1 min-w-0">
         <p className="text-[10px] font-black text-text-secondary uppercase tracking-tighter mb-0.5">
@@ -403,7 +440,7 @@ function ServiceTag({
   return (
     <span
       className={cn(
-        "px-4 py-1.5 rounded-full text-[11px] font-bold border uppercase tracking-wide",
+        "px-4 py-1.5 rounded-full text-[11px] bg-surface/50 font-bold border uppercase tracking-wide",
         colorClass,
       )}
     >
@@ -445,7 +482,7 @@ function PricingRow({
       : t("pricing.form.regularPlan", "Regular Plan"));
 
   return (
-    <div className="flex items-center justify-between p-4 rounded-xl bg-muted/10 border border-border/50 hover:border-primary/30 transition-all group">
+    <div className="flex items-center justify-between p-4 rounded-xl bg-surface/50 border border-border/50 hover:border-primary/30 transition-all group">
       <div className="flex-1 min-w-0 pr-4">
         <p className="text-xs font-black text-text-primary uppercase tracking-tight truncate group-hover:text-primary transition-colors">
           {planName}

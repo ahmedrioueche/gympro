@@ -26,7 +26,7 @@ export const SessionClientInfo = ({ member, type }: SessionClientInfoProps) => {
         <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
         <UserAvatar
           avatar={member.profileImageUrl}
-          alt={member.fullName}
+          name={member.fullName || member.username}
           className="w-14 h-14 relative z-10 border-2 border-white/10"
         />
       </div>

@@ -47,6 +47,34 @@ export class DashboardService {
       return { success: true, message: 'Already have coach dashboard access' };
     }
 
+    // --- RATE LIMIT & SPAM CHECK ---
+    if (user.coachVerification) {
+      if (user.coachVerification.status === 'pending') {
+        return {
+          success: false,
+          errorCode: ErrorCode.COACH_REQUEST_ALREADY_EXISTS,
+          message: 'You already have a coach access request pending review.',
+        } as any;
+      }
+
+      if (user.coachVerification.status === 'rejected') {
+        const now = new Date();
+        const submittedAt = user.coachVerification.submittedAt || new Date(0);
+        const hoursSinceSubmission =
+          (now.getTime() - submittedAt.getTime()) / (1000 * 60 * 60);
+
+        if (hoursSinceSubmission < 24) {
+          return {
+            success: false,
+            errorCode: ErrorCode.REQUEST_LIMIT_REACHED,
+            message:
+              'You can only submit one coach access request every 24 hours.',
+          } as any;
+        }
+      }
+    }
+    // ---------------------------------
+
     // Self-certification: now set to pending for admin review
     const coachVerification = {
       status: 'pending' as const,

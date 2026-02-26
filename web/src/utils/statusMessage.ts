@@ -140,6 +140,7 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.COACH_REQUEST_ALREADY_EXISTS]:
     "status.error.coach.request_already_exists",
   [ErrorCode.COACH_ACTION_FAILED]: "status.error.coach.action_failed",
+  [ErrorCode.REQUEST_LIMIT_REACHED]: "status.error.coach.request_limit_reached",
 
   // Coach Pricing errors
   [ErrorCode.COACH_PRICING_FETCH_ERROR]:

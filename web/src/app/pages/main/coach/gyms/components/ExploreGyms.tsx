@@ -59,6 +59,7 @@ export function ExploreGyms({
               key={gym._id}
               gym={gym}
               onSelect={() => handleRequest(gym)}
+              onJoin={() => handleRequest(gym)}
             />
           ))}
         </div>

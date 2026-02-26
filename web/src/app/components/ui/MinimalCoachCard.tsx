@@ -42,7 +42,7 @@ export const MinimalCoachCard = ({
         <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
         <UserAvatar
           avatar={coach.profileImageUrl}
-          alt={coach.fullName}
+          name={coach.fullName || coach.username}
           className="w-14 h-14 relative z-10 border-2 border-white/10 group-hover:border-primary/50 transition-colors"
         />
       </div>

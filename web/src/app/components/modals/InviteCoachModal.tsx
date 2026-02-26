@@ -1,4 +1,7 @@
-import type { CoachProfile } from "@ahmedrioueche/gympro-client";
+import {
+  AffiliationStatus,
+  type CoachProfile,
+} from "@ahmedrioueche/gympro-client";
 import { UserCheck } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -30,7 +33,20 @@ export default function InviteCoachModal() {
   // Map of coachId -> affiliation status
   const affiliationStatusMap = affiliations.reduce(
     (acc, aff) => {
-      acc[aff.coachId] = aff.status;
+      const coachId =
+        typeof aff.coachId === "string"
+          ? aff.coachId
+          : (aff.coachId as any)?._id;
+      if (
+        coachId &&
+        [
+          AffiliationStatus.ACTIVE,
+          AffiliationStatus.PENDING,
+          AffiliationStatus.SUSPENDED,
+        ].includes(aff.status as any)
+      ) {
+        acc[coachId] = aff.status;
+      }
       return acc;
     },
     {} as Record<string, string>,

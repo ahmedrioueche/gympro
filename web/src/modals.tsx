@@ -115,7 +115,8 @@ const CreateAnnouncementModal = lazy(
 );
 
 const ReviewCoachRequestModal = lazy(
-  () => import("./app/pages/admin/coaching/components/ReviewCoachRequestModal"),
+  () =>
+    import("./app/components/modals/review-coach-request-modal/ReviewCoachRequestModal"),
 );
 
 const EditPlanModal = lazy(

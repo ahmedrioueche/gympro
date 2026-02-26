@@ -1,3 +1,4 @@
+import { Key } from "lucide-react";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { CertificationDetailsSection } from "./CertificationDetailsSection";
 import { DocumentUploadSection } from "./DocumentUploadSection";
@@ -29,6 +30,7 @@ export default function RequestCoachAccessModal() {
     <BaseModal
       isOpen={isOpen}
       onClose={closeModal}
+      icon={Key}
       title={t("dashboard.requestCoachAccess", "Request Coach Access")}
       subtitle={t(
         "dashboard.coachAccessDescription",

@@ -1,6 +1,6 @@
 import { Building2, Dumbbell, ShieldCheck, User, UserCog } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useUserStore } from "../../../../store/user";
+import { useUserStore } from "../../../store/user";
 
 export function UserRoleBadge() {
   const { user, activeDashboard } = useUserStore();

@@ -3,6 +3,7 @@ import type {
   GymCoachAffiliation,
 } from "@ahmedrioueche/gympro-client";
 import NoData from "../../../../../../../components/ui/NoData";
+import { useModalStore } from "../../../../../../../store/modal";
 import CoachCard from "../../../../../../components/cards/CoachCard";
 
 interface CoachListProps {
@@ -28,6 +29,8 @@ export function CoachList({
   onDecline,
   onRemove,
 }: CoachListProps) {
+  const { openModal } = useModalStore();
+
   if (coaches.length === 0) {
     return (
       <NoData
@@ -54,12 +57,47 @@ export function CoachList({
           username: (affiliationCoach as any)?.username || "unknown",
           profileImageUrl: (affiliationCoach as any)?.profileImageUrl,
           specializations: (affiliationCoach as any)?.specializations,
+          location: {
+            city: (affiliationCoach as any)?.city,
+            state: (affiliationCoach as any)?.state,
+            country: (affiliationCoach as any)?.country,
+          },
+        };
+
+        const handleReview = () => {
+          // Construct a mock User object from the affiliation data
+          const mockUser = {
+            _id: (affiliationCoach as any)?._id || affiliation.coachId,
+            profile: {
+              fullName: (affiliationCoach as any)?.fullName || "Unknown Coach",
+              username: (affiliationCoach as any)?.username || "unknown",
+              profileImageUrl: (affiliationCoach as any)?.profileImageUrl,
+              specializations: (affiliationCoach as any)?.specializations,
+              city: (affiliationCoach as any)?.city,
+              state: (affiliationCoach as any)?.state,
+              country: (affiliationCoach as any)?.country,
+            },
+            coachVerification:
+              (affiliationCoach as any)?.coachVerification || {},
+            createdAt: affiliation.createdAt,
+          };
+
+          openModal("admin_review_coach_request", {
+            request: mockUser as any,
+            affiliationId: affiliation._id,
+            gymId: affiliation.gymId,
+          });
         };
 
         return (
           <CoachCard
             key={affiliation._id}
             coach={coachProfile}
+            onReview={
+              isPending && affiliation.initiatedBy === "coach"
+                ? handleReview
+                : undefined
+            }
             onAccept={
               isPending && onAccept
                 ? () => onAccept(affiliation._id)

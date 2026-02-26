@@ -405,7 +405,9 @@
         "fetch_error": "Failed to load coaches",
         "request_failed": "Failed to send request to coach",
         "request_fetch_error": "Failed to load your coaching requests",
-        "not_found": "Coach not found"
+        "not_found": "Coach not found",
+        "request_already_exists": "You already have a coach access request pending review.",
+        "request_limit_reached": "You can only submit one coach access request every 24 hours."
       },
       "session": {
         "not_found": "Session not found",
@@ -422,6 +424,7 @@
         "delete_failed": "Failed to delete affiliation",
         "fetch_failed": "Failed to fetch affiliations",
         "already_exists": "Affiliation already exists",
+        "request_limit_reached": "You can only request to join this gym once every 24 hours.",
         "invalid_action": "Invalid action"
       },
       "class": {

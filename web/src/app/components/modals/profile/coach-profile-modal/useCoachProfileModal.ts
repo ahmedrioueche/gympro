@@ -32,11 +32,16 @@ export function useCoachProfileModal() {
     isManagerDashboard ? currentGym?._id : undefined,
   );
 
-  const isAlreadyAffiliated = affiliations.some(
-    (a: any) =>
-      a.coachId === coach?.userId &&
-      (a.status === "active" || a.status === "pending"),
-  );
+  const isAlreadyAffiliated = affiliations.some((a: any) => {
+    const affiliatedCoachId =
+      a.coach?._id?.toString() ||
+      a.coachId?._id?.toString() ||
+      a.coachId?.toString();
+    return (
+      affiliatedCoachId === coach?.userId &&
+      (a.status === "active" || a.status === "pending")
+    );
+  });
 
   // Build mock user for template
   const mockUser = coach

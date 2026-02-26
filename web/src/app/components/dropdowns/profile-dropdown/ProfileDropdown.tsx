@@ -18,6 +18,7 @@ interface ProfileDropdownProps {
 }
 
 export default function ProfileDropdown({
+  onProfileClick,
   onSettingsClick,
   onLogoutClick,
   disabled = false,
@@ -42,50 +43,78 @@ export default function ProfileDropdown({
 
   return (
     <Dropdown trigger={avatarElement} align="right">
-      <ProfileHeader user={user} initials={initials} />
+      {(closeDropdown) => (
+        <>
+          <ProfileHeader user={user} initials={initials} />
 
-      {hasMultipleDashboards &&
-        user.role !== UserRole.Admin &&
-        user.role !== UserRole.AppEditor && (
-          <DashboardSwitcher
-            availableDashboards={availableDashboards}
-            activeDashboard={activeDashboard}
-            onSwitch={handleDashboardSwitch}
-          />
-        )}
-
-      <DropdownItem
-        icon="⚙️"
-        label={t("profile.menu.settings.label")}
-        description={t("profile.menu.settings.description")}
-        onClick={onSettingsClick}
-      />
-
-      {/* Coach Request - Only if not a coach and not an admin */}
-      {!availableDashboards.includes("coach") &&
-        user.role !== UserRole.Coach &&
-        user.coachVerification?.status !== "pending" &&
-        user.role !== UserRole.Admin && (
           <DropdownItem
-            icon="🎓"
-            label={t("profile.menu.becomeCoach.label")}
-            description={t("profile.menu.becomeCoach.description")}
+            icon="👤"
+            label={t("profile.menu.profile.label")}
+            description={t("profile.menu.profile.description")}
             onClick={() => {
-              import("../../../../store/modal").then(({ useModalStore }) => {
-                useModalStore.getState().openModal("request_coach_access");
-              });
+              closeDropdown();
+              onProfileClick?.();
             }}
           />
-        )}
 
-      <DropdownDivider />
+          {hasMultipleDashboards &&
+            user.role !== UserRole.Admin &&
+            user.role !== UserRole.AppEditor && (
+              <DashboardSwitcher
+                availableDashboards={availableDashboards}
+                activeDashboard={activeDashboard}
+                onSwitch={(dashboard) => {
+                  closeDropdown();
+                  handleDashboardSwitch(dashboard);
+                }}
+              />
+            )}
 
-      <DropdownItem
-        icon="🚪"
-        label={t("profile.menu.logout")}
-        variant="danger"
-        onClick={onLogoutClick}
-      />
+          <DropdownItem
+            icon="⚙️"
+            label={t("profile.menu.settings.label")}
+            description={t("profile.menu.settings.description")}
+            onClick={() => {
+              closeDropdown();
+              onSettingsClick?.();
+            }}
+          />
+
+          {/* Coach Request - Only if not a coach and not an admin */}
+          {!availableDashboards.includes("coach") &&
+            user.role !== UserRole.Coach &&
+            user.coachVerification?.status !== "pending" &&
+            user.role !== UserRole.Admin && (
+              <DropdownItem
+                icon="🎓"
+                label={t("profile.menu.becomeCoach.label")}
+                description={t("profile.menu.becomeCoach.description")}
+                onClick={() => {
+                  closeDropdown();
+                  import("../../../../store/modal").then(
+                    ({ useModalStore }) => {
+                      useModalStore
+                        .getState()
+                        .openModal("request_coach_access");
+                    },
+                  );
+                }}
+              />
+            )}
+
+          <DropdownDivider />
+
+          <DropdownItem
+            icon="🚪"
+            label={t("profile.menu.logout")}
+            variant="danger"
+            onClick={() => {
+              closeDropdown();
+              onLogoutClick?.();
+            }}
+          />
+        </>
+      )}
     </Dropdown>
   );
 }

@@ -10,6 +10,7 @@ import {
   Sparkles,
   Star,
   User,
+  UserCheck,
   UserMinus,
   UserPlus,
   Users,
@@ -33,6 +34,7 @@ interface CoachCardProps {
   selectable?: boolean;
   isSelected?: boolean;
   onSelect?: () => void;
+  onReview?: () => void;
 }
 
 export default function CoachCard({
@@ -49,6 +51,7 @@ export default function CoachCard({
   selectable,
   isSelected,
   onSelect,
+  onReview,
 }: CoachCardProps) {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
@@ -104,8 +107,23 @@ export default function CoachCard({
       );
     }
 
-    // Accept/Decline actions for pending
-    if (isPending && (onAccept || onDecline)) {
+    // Accept/Decline or Review actions for pending
+    if (isPending && (onAccept || onDecline || onReview)) {
+      if (onReview) {
+        return (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onReview();
+            }}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-sm hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 transition-all shadow-sm"
+          >
+            <UserCheck className="w-4 h-4" />
+            {t("admin.coaching.reviewModal.title", "Review Request")}
+          </button>
+        );
+      }
+
       return (
         <div className="flex gap-3 w-full">
           {onAccept && (
@@ -220,8 +238,10 @@ export default function CoachCard({
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary to-surface flex items-center justify-center">
-                    <User className="w-10 h-10 text-text-primary opacity-40" />
+                  <div className="w-full h-full bg-gradient-to-br from-primary via-primary/80 to-secondary/60 flex items-center justify-center">
+                    <span className="text-3xl font-black text-white">
+                      {displayName.charAt(0).toUpperCase()}
+                    </span>
                   </div>
                 )}
               </div>

@@ -119,11 +119,19 @@
   "notification": {
     "gym_membership_added_title": "New Gym Membership",
     "gym_membership_added_body": "You have been added to {{gymName}}. Welcome!",
+    "affiliation": {
+      "accepted_title": "Affiliation Accepted",
+      "accepted_body": "Your request to join {{gymName}} has been accepted! {{message}}",
+      "declined_title": "Affiliation Declined",
+      "declined_body": "Your request to join {{gymName}} was not accepted. {{message}}"
+    },
     "gym_announcement_title": "{{title}}",
     "gym_announcement_body": "{{message}}",
     "program_assigned_title": "New Program Assigned",
     "program_assigned_body": "{{coachName}} assigned you a new program",
     "gym": {
+      "coach_request_title": "New Coach Request",
+      "coach_request_body": "{{coachName}} has requested to join your gym.",
       "closure_added_title": "Gym Closure: {{gymName}}",
       "closure_added_body": "{{gymName}} will be closed from {{start}} to {{end}} due to {{reason}}.",
       "closure_deleted_title": "Gym Reopened: {{gymName}}",

@@ -45,6 +45,7 @@ export const StaffTable = ({ staff }: StaffTableProps) => {
         <div className="flex items-center gap-3">
           <UserAvatar
             avatar={editor.profile.profileImageUrl}
+            name={editor.profile.fullName || editor.profile.username}
             className="w-10 h-10 border-2 border-background shadow-sm"
           />
           <div className="flex flex-col">
@@ -132,6 +133,7 @@ export const StaffTable = ({ staff }: StaffTableProps) => {
           <div className="flex items-center gap-3">
             <UserAvatar
               avatar={editor.profile.profileImageUrl}
+              name={editor.profile.fullName || editor.profile.username}
               className="w-10 h-10 border-2 border-background shadow-sm"
             />
             <div className="flex flex-col">

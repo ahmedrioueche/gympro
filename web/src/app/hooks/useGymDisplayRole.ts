@@ -1,4 +1,5 @@
 import { UserRole, type Gym } from "@ahmedrioueche/gympro-client";
+import { useCoachAffiliations } from "../../hooks/queries/useGymCoach";
 import { useUserStore } from "../../store/user";
 
 /**
@@ -10,6 +11,7 @@ import { useUserStore } from "../../store/user";
  */
 export function useGymDisplayRole(gym: Gym | undefined): string | undefined {
   const { user, activeDashboard } = useUserStore();
+  const { data: coachAffiliations = [] } = useCoachAffiliations();
 
   if (!user || !gym) return undefined;
 
@@ -22,7 +24,18 @@ export function useGymDisplayRole(gym: Gym | undefined): string | undefined {
     if (String(ownerId) === String(user._id)) return "Owner";
   }
 
-  // 2. Check memberships (even if they are just strings/IDs)
+  // 2. Check coach affiliations if on coach dashboard
+  if (activeDashboard === "coach") {
+    const isAffiliatedCoach = coachAffiliations.some(
+      (a) =>
+        (String(a.gymId) === String(gym._id) ||
+          String(a.gym?._id) === String(gym._id)) &&
+        a.status === "active",
+    );
+    if (isAffiliatedCoach) return "Coach";
+  }
+
+  // 3. Check memberships (even if they are just strings/IDs)
   if (!user.memberships) return undefined;
 
   const membership = user.memberships.find((m) => {

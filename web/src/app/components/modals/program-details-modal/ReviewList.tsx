@@ -38,7 +38,7 @@ const ReviewList = ({ comments }: ReviewListProps) => {
           >
             <UserAvatar
               avatar={comment.userImage}
-              alt={comment.userName}
+              name={comment.userName}
               className="w-10 h-10"
             />
           </button>

@@ -2,11 +2,11 @@ import { Menu, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import GymSelector from "../gym/gym-selector/GymSelector";
 import SidebarAnimatedLogo from "../SidebarAnimatedLogo";
-import { SidebarFooter } from "./components/SidebarFooter";
-import { SidebarMenuItem } from "./components/SidebarMenuItem";
-import { TopRightControls } from "./components/TopRightControls";
-import { UserRoleBadge } from "./components/UserRoleBadge";
-import { useNav } from "./hooks/useNav";
+import { SidebarFooter } from "./SidebarFooter";
+import { SidebarMenuItem } from "./SidebarMenuItem";
+import { TopRightControls } from "./TopRightControls";
+import { useNav } from "./useNav";
+import { UserRoleBadge } from "./UserRoleBadge";
 
 export default function Nav({ children, sidebarLinks = null }) {
   const { t } = useTranslation();
@@ -114,7 +114,7 @@ export default function Nav({ children, sidebarLinks = null }) {
       <div className="flex-1 flex flex-col h-screen">
         {/* Top Bar: Menu button + GymSelector left, controls right */}
         <div
-          className={`flex items-center justify-between min-h-[64px] md:min-h-[80px] px-2 md:px-4 gap-1 md:gap-3`}
+          className={`flex items-center justify-between min-h-[64px] md:min-h-[80px] pr-2 gap-1 md:gap-3`}
         >
           <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
             {/* Show logo when no sidebar */}

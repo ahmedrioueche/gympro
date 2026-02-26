@@ -344,6 +344,7 @@ export class MembershipService {
             type: 'subscription',
             priority: 'medium',
             relatedId: gymId,
+            gymId: gymId, // Add gymId for scoping
             skipExternal: true, // Controller already sends external invitation email/sms
           });
           this.logger.log(

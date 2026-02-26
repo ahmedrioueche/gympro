@@ -1,13 +1,14 @@
 import { authApi } from "@ahmedrioueche/gympro-client";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { APP_PAGES } from "../../../../constants/navigation";
-import { useAllMyGyms } from "../../../../hooks/queries/useGyms";
-import useScreen from "../../../../hooks/useScreen";
-import { useGymStore } from "../../../../store/gym";
-import { useSidebarStore } from "../../../../store/sidebar";
-import { useUserStore } from "../../../../store/user";
-import { getRoleHomePage } from "../../../../utils/roles";
+import { APP_PAGES } from "../../../constants/navigation";
+import { useAllMyGyms } from "../../../hooks/queries/useGyms";
+import useScreen from "../../../hooks/useScreen";
+import { useGymStore } from "../../../store/gym";
+import { useModalStore } from "../../../store/modal";
+import { useSidebarStore } from "../../../store/sidebar";
+import { useUserStore } from "../../../store/user";
+import { getRoleHomePage } from "../../../utils/roles";
 
 export const useNav = () => {
   const location = useLocation();
@@ -21,6 +22,7 @@ export const useNav = () => {
   const { clearGym } = useGymStore();
   const activeRoute = location.pathname;
   const { data: gyms = [] } = useAllMyGyms();
+  const { openModal } = useModalStore();
 
   // Clear gym selection when navigating away from gym routes
   useEffect(() => {
@@ -48,7 +50,10 @@ export const useNav = () => {
   }, [sidebarOpen, isMobile]);
 
   // Dropdown handlers
-  const handleProfileClick = () => {};
+  const handleProfileClick = () => {
+    openModal("user_profile", { user });
+  };
+
   const handleSettingsClick = () => {
     if (user.role === "manager" || user.role === "owner") {
       navigate({ to: APP_PAGES.manager.settings.link });

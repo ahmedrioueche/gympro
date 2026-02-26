@@ -1,5 +1,5 @@
-import NotificationsDropdown from "../../dropdowns/notifications-dropdown/NotificationsDropdown";
-import ProfileDropdown from "../../dropdowns/profile-dropdown/ProfileDropdown";
+import NotificationsDropdown from "../dropdowns/notifications-dropdown/NotificationsDropdown";
+import ProfileDropdown from "../dropdowns/profile-dropdown/ProfileDropdown";
 
 interface TopRightControlsProps {
   onProfileClick: () => void;
