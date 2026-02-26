@@ -7,6 +7,7 @@ import {
   Medal,
   Trophy,
   Users,
+  X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
@@ -60,7 +61,10 @@ export default function CompetitionDetailsModal() {
       subtitle={t(`competitions.status.${competition.status}`)}
       icon={Trophy}
       maxWidth="max-w-2xl"
-      secondaryButton={{ label: t("common.close") }}
+      secondaryButton={{
+        label: t("common.close"),
+        icon: X,
+      }}
     >
       <div className="space-y-6">
         {/* Banner */}

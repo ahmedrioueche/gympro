@@ -1,3 +1,4 @@
+import { Send, UserSearch, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
@@ -40,10 +41,17 @@ export default function RequestCoachModal() {
       onClose={handleClose}
       title={t("coaches.requestModal.title", { coachName: displayName })}
       subtitle={t("coaches.requestModal.send")}
+      icon={UserSearch}
       primaryButton={{
         label: t("coaches.requestModal.send"),
         onClick: handleSubmit,
         loading: requestCoachMutation.isPending,
+        icon: Send,
+      }}
+      secondaryButton={{
+        label: t("common.cancel"),
+        onClick: handleClose,
+        icon: X,
       }}
     >
       <div className="space-y-4">

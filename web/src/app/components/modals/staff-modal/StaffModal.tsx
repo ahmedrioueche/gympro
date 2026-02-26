@@ -1,4 +1,4 @@
-import { UserCircle } from "lucide-react";
+import { Save, UserCircle, UserPlus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useModalStore } from "../../../../store/modal";
@@ -88,6 +88,12 @@ function StaffModalContent({
         type: "submit",
         form: "staff-form",
         loading: isSubmitting,
+        icon: mode === "add" ? UserPlus : Save,
+      }}
+      secondaryButton={{
+        label: t("common.cancel"),
+        onClick: onClose,
+        icon: X,
       }}
     >
       <form id="staff-form" onSubmit={handleSubmit}>

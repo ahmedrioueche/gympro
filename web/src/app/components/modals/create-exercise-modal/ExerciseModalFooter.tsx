@@ -1,4 +1,4 @@
-import { Save } from "lucide-react";
+import { Save, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface ExerciseModalFooterProps {
@@ -21,8 +21,9 @@ export function ExerciseModalFooter({
       <button
         type="button"
         onClick={onClose}
-        className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all"
+        className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all flex items-center justify-center gap-2"
       >
+        <X className="w-5 h-5" />
         {t("common.cancel")}
       </button>
       <button

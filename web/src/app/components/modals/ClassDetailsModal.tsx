@@ -3,11 +3,16 @@ import { format } from "date-fns";
 import {
   Calendar,
   Clock,
+  Edit,
   Info,
   Package,
+  Plus,
+  RefreshCw,
   Star,
+  Trash2,
   User,
   Users,
+  X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
@@ -104,6 +109,7 @@ export default function ClassDetailsModal() {
               label: t("common.restore", "Restore"),
               onClick: handleRestoreClick,
               variant: "primary",
+              icon: RefreshCw,
             }
           : onBook || onCancel || onCancelClass
             ? {
@@ -131,6 +137,17 @@ export default function ClassDetailsModal() {
                   isBooking,
                 loading: isBooking,
                 variant: onCancel || onCancelClass ? "danger" : "primary",
+                icon: onCancelClass
+                  ? isCancelled
+                    ? Trash2
+                    : X
+                  : onCancel
+                    ? X
+                    : isPassed
+                      ? undefined
+                      : isFull
+                        ? undefined
+                        : Plus,
               }
             : undefined
       }
@@ -142,12 +159,14 @@ export default function ClassDetailsModal() {
                   label: t("common.deletePermanently", "Delete permanently"),
                   onClick: handleCancelClassClick,
                   variant: "danger",
+                  icon: Trash2,
                 }
               : undefined
             : {
                 label: t("common.edit"),
                 onClick: handleEditClick,
                 variant: "default",
+                icon: Edit,
               }
           : undefined
       }

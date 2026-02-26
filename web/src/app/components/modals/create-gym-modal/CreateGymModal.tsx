@@ -1,5 +1,5 @@
 import { type CreateGymDto } from "@ahmedrioueche/gympro-client";
-import { Plus } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Plus, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
@@ -138,10 +138,12 @@ export const CreateGymModal = () => {
           duplicateGymName ||
           createGymMutation.isPending,
         loading: createGymMutation.isPending,
+        icon: step < 3 ? ArrowRight : Check,
       }}
       secondaryButton={{
         label: step === 1 ? t("actions.cancel") : t("actions.back"),
         onClick: step === 1 ? handleClose : handleBack,
+        icon: step === 1 ? X : ArrowLeft,
       }}
     >
       <div className="space-y-6">

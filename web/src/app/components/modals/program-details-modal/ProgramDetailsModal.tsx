@@ -1,5 +1,5 @@
 import { type ProgramComment } from "@ahmedrioueche/gympro-client";
-import { Dumbbell, Save, Star } from "lucide-react";
+import { Dumbbell, Save, Star, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DayCard, ProgramDescription, ProgramForm } from ".";
@@ -65,8 +65,9 @@ const ProgramDetailsModal = ({}) => {
             type="button"
             onClick={handleCancel}
             disabled={updateProgram.isPending}
-            className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all disabled:opacity-50"
+            className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
+            <X className="w-5 h-5" />
             {t("common.cancel")}
           </button>
           <button
@@ -93,8 +94,9 @@ const ProgramDetailsModal = ({}) => {
           <button
             type="button"
             onClick={closeModal}
-            className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all"
+            className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all flex items-center justify-center gap-2"
           >
+            <X className="w-5 h-5" />
             {t("common.close")}
           </button>
           <button

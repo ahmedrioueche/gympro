@@ -2,7 +2,7 @@ import {
   AffiliationStatus,
   type CoachProfile,
 } from "@ahmedrioueche/gympro-client";
-import { UserCheck } from "lucide-react";
+import { UserCheck, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -86,6 +86,11 @@ export default function InviteCoachModal() {
       onClose={closeModal}
       title={t("coaching.inviteCoach")}
       icon={UserCheck}
+      secondaryButton={{
+        label: t("common.close"),
+        onClick: closeModal,
+        icon: X,
+      }}
     >
       <div className="space-y-4">
         <InputField

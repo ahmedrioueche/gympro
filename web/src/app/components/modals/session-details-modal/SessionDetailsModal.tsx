@@ -1,6 +1,16 @@
 import { SessionStatus } from "@ahmedrioueche/gympro-client";
 import { format, parseISO } from "date-fns";
-import { Calendar, Clock, MapPin, Package } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Package,
+  Save,
+  Trash2,
+  UserCheck,
+  UserX,
+  X,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import TextArea from "../../../../components/ui/TextArea";
@@ -52,9 +62,15 @@ export const SessionDetailsModal = () => {
               label: t("common.save"),
               onClick: handleSaveNotes,
               loading: isUpdating,
+              icon: Save,
             }
           : undefined
       }
+      secondaryButton={{
+        label: t("common.close"),
+        onClick: closeModal,
+        icon: X,
+      }}
       tertiaryButton={{
         label: isMemberView
           ? isCancelled && isFuture
@@ -69,6 +85,7 @@ export const SessionDetailsModal = () => {
           : handleDelete,
         variant: isMemberView && isCancelled ? "primary" : "danger",
         disabled: isMemberView && !isFuture, // Disable all actions for members if session is in the past
+        icon: isMemberView ? (isCancelled ? UserCheck : UserX) : Trash2,
       }}
       maxWidth="max-w-2xl"
     >

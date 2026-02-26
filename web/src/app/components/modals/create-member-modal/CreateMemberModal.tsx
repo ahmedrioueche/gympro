@@ -1,4 +1,4 @@
-import { UserPlus } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, UserPlus, X } from "lucide-react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -77,6 +77,12 @@ export default function CreateMemberModal() {
         label: step === 2 ? t("common.submit") : t("common.next"),
         onClick: step === 2 ? () => handleSubmit() : handleNext,
         loading: isSubmitting,
+        icon: step === 2 ? Check : ArrowRight,
+      }}
+      secondaryButton={{
+        label: t("common.cancel"),
+        onClick: closeModal,
+        icon: X,
       }}
       tertiaryButton={
         step > 1
@@ -84,6 +90,7 @@ export default function CreateMemberModal() {
               label: t("common.back"),
               onClick: handleBack,
               variant: "default",
+              icon: ArrowLeft,
             }
           : undefined
       }

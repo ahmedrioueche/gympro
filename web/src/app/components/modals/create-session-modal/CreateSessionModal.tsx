@@ -1,4 +1,4 @@
-import { Calendar } from "lucide-react";
+import { Calendar, Plus, X } from "lucide-react";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { SessionForm } from "./SessionForm";
 import { useCreateSessionModal } from "./useCreateSessionModal";
@@ -31,6 +31,12 @@ export const CreateSessionModal = () => {
         onClick: handleSubmit,
         loading: isPending,
         type: "submit",
+        icon: Plus,
+      }}
+      secondaryButton={{
+        label: t("common.cancel"),
+        onClick: handleClose,
+        icon: X,
       }}
     >
       <form onSubmit={handleSubmit}>

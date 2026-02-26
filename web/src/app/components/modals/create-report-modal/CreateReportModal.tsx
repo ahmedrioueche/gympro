@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   Loader2,
   MessageSquarePlus,
+  Send,
   Upload,
   X,
 } from "lucide-react";
@@ -75,10 +76,12 @@ const CreateReportModal = () => {
         onClick: handleSubmit,
         disabled: !isValid || isPending || isUploading,
         loading: isPending,
+        icon: Send,
       }}
       secondaryButton={{
         label: t("common.cancel"),
         onClick: handleClose,
+        icon: X,
       }}
     >
       <div className="space-y-4">

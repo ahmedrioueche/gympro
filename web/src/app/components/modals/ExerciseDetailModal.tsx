@@ -6,6 +6,7 @@ import {
   PlayCircle,
   Repeat,
   Target,
+  X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
@@ -33,6 +34,7 @@ export default function ExerciseDetailModal() {
       secondaryButton={{
         label: t("common.close"),
         onClick: closeModal,
+        icon: X,
       }}
     >
       <div className="space-y-6">

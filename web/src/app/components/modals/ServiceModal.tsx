@@ -1,4 +1,4 @@
-import { Dumbbell } from "lucide-react";
+import { Dumbbell, Plus, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
@@ -59,6 +59,12 @@ export default function ServiceModal() {
         form: "service-form",
         loading: isUpdating,
         disabled: !serviceName.trim(),
+        icon: isEdit ? Save : Plus,
+      }}
+      secondaryButton={{
+        label: t("common.cancel"),
+        onClick: closeModal,
+        icon: X,
       }}
     >
       <form id="service-form" onSubmit={handleSubmit} className="space-y-4">

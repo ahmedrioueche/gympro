@@ -2500,7 +2500,8 @@
         "email": "Email Address",
         "phone": "Phone Number",
         "save": "Save Changes",
-        "phonePlaceholder": "Enter phone number"
+        "phonePlaceholder": "Enter phone number",
+        "becomeCoach": "Become a coach"
       },
       "preferences": {
         "title": "App Preferences",

@@ -232,7 +232,16 @@ const BaseModal: React.FC<BaseModalProps> = ({
                       secondaryConfig.disabled || secondaryConfig.loading
                     }
                   >
-                    {secondaryConfig.label}
+                    {secondaryConfig.loading ? (
+                      <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        {secondaryConfig.icon && (
+                          <secondaryConfig.icon className="w-4 h-4 md:w-5 md:h-5 " />
+                        )}
+                        {secondaryConfig.label}
+                      </>
+                    )}
                   </button>
                 )}
 

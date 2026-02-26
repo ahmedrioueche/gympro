@@ -1,4 +1,4 @@
-import { Key } from "lucide-react";
+import { Key, Send, X } from "lucide-react";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { CertificationDetailsSection } from "./CertificationDetailsSection";
 import { DocumentUploadSection } from "./DocumentUploadSection";
@@ -42,10 +42,12 @@ export default function RequestCoachAccessModal() {
         loading: isPending || uploading,
         disabled:
           !certificationDetails.trim() || uploading || documents.length === 0,
+        icon: Send,
       }}
       secondaryButton={{
         label: t("common.cancel", "Cancel"),
         onClick: closeModal,
+        icon: X,
       }}
     >
       <div className="space-y-6">

@@ -1,4 +1,4 @@
-import { DollarSign } from "lucide-react";
+import { DollarSign, Plus, Save, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { CoachPricingForm } from "./CoachPricingForm";
@@ -35,6 +35,12 @@ export default function CoachPricingModal() {
         label: isEditMode ? t("common.save") : t("common.create"),
         onClick: handleSubmit,
         loading: isLoading,
+        icon: isEditMode ? Save : Plus,
+      }}
+      secondaryButton={{
+        label: t("common.cancel"),
+        onClick: closeModal,
+        icon: X,
       }}
     >
       <CoachPricingForm

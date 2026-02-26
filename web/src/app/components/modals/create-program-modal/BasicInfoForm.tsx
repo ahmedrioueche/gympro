@@ -126,8 +126,8 @@ export const BasicInfoForm = ({
               "Duration (weeks)",
             )}
           </label>
-          <div className="flex items-center gap-3">
-            {[4, 6, 8, 12].map((weeks) => (
+          <div className="grid grid-cols-3 md:grid-cols-5 items-center gap-3">
+            {[4, 6, 8, 12, 15].map((weeks) => (
               <button
                 key={weeks}
                 type="button"

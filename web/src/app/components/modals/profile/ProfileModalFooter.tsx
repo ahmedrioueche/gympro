@@ -1,4 +1,4 @@
-import { Loader, type LucideIcon } from "lucide-react";
+import { Loader, X, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../../utils/helper";
 
@@ -83,6 +83,7 @@ export function ProfileModalFooter({
         onClick={onClose}
         className={getButtonClasses("default")}
       >
+        <X className="w-4 h-4" />
         {closeLabel || t("common.close")}
       </button>
 

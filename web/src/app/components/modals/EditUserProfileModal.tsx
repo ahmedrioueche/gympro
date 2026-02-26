@@ -1,5 +1,5 @@
 import { usersApi, type EditUserDto } from "@ahmedrioueche/gympro-client";
-import { Edit2, Mail, MapPin, Phone, Save, User } from "lucide-react";
+import { Edit2, Mail, MapPin, Phone, Save, User, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -127,10 +127,12 @@ function EditUserProfileModal() {
           ? {
               label: t("common.cancel", "Cancel"),
               onClick: handleCancel,
+              icon: X,
             }
           : {
               label: t("common.close", "Close"),
               onClick: closeModal,
+              icon: X,
             }
       }
     >
@@ -156,7 +158,7 @@ function EditUserProfileModal() {
               disabled={!isEditMode}
               placeholder={t(
                 "profile.edit.full_name_placeholder",
-                "Enter your full name"
+                "Enter your full name",
               )}
             />
 
@@ -169,7 +171,7 @@ function EditUserProfileModal() {
               disabled={!isEditMode}
               placeholder={t(
                 "profile.edit.username_placeholder",
-                "Enter your username"
+                "Enter your username",
               )}
             />
 
@@ -212,7 +214,7 @@ function EditUserProfileModal() {
               disabled={true}
               placeholder={t(
                 "profile.edit.email_placeholder",
-                "Enter your email"
+                "Enter your email",
               )}
               leftIcon={<Mail className="w-5 h-5" />}
             />
@@ -227,7 +229,7 @@ function EditUserProfileModal() {
               disabled={true}
               placeholder={t(
                 "profile.edit.phone_placeholder",
-                "Enter your phone number"
+                "Enter your phone number",
               )}
               leftIcon={<Phone className="w-5 h-5" />}
             />
@@ -251,7 +253,7 @@ function EditUserProfileModal() {
               disabled={!isEditMode}
               placeholder={t(
                 "profile.edit.address_placeholder",
-                "Enter your address"
+                "Enter your address",
               )}
             />
 
@@ -285,7 +287,7 @@ function EditUserProfileModal() {
                 disabled={!isEditMode}
                 placeholder={t(
                   "profile.edit.country_placeholder",
-                  "Enter country"
+                  "Enter country",
                 )}
               />
             </div>

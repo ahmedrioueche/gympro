@@ -1,4 +1,4 @@
-import { Dumbbell } from "lucide-react";
+import { Check, Dumbbell, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { ProgramList } from "./ProgramList";
@@ -31,10 +31,12 @@ export default function AssignProgramModal() {
         disabled:
           !selectedProgramId ||
           (!!currentProgramId && selectedProgramId === currentProgramId),
+        icon: Check,
       }}
       secondaryButton={{
         label: t("common.cancel"),
         onClick: closeModal,
+        icon: X,
       }}
     >
       <ProgramList

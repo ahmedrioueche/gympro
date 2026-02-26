@@ -2,7 +2,7 @@ import {
   type SubscriptionType,
   formatPrice,
 } from "@ahmedrioueche/gympro-client";
-import { CheckCircle2, RefreshCw, Tag } from "lucide-react";
+import { CheckCircle2, RefreshCw, Tag, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import CustomSelect from "../../../../components/ui/CustomSelect";
@@ -89,6 +89,12 @@ export function RenewSubscriptionModal() {
         type: "submit",
         form: "renew-subscription-form",
         loading: isSubmitting,
+        icon: RefreshCw,
+      }}
+      secondaryButton={{
+        label: t("common.cancel"),
+        onClick: closeModal,
+        icon: X,
       }}
     >
       <form

@@ -56,6 +56,7 @@ export default function ReviewCoachRequestModal() {
       secondaryButton={{
         label: t("admin.coaching.reviewModal.close"),
         onClick: closeModal,
+        icon: X,
       }}
       tertiaryButton={
         isPending

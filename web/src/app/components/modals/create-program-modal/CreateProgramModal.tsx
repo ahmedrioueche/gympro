@@ -1,4 +1,4 @@
-import { Dumbbell, Plus } from "lucide-react";
+import { ArrowLeft, ArrowRight, Dumbbell, Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useModalStore } from "../../../../store/modal";
@@ -32,9 +32,19 @@ export const CreateProgramModal = ({}) => {
         type="button"
         onClick={() => (step === 1 ? closeModal() : setStep(1))}
         disabled={createProgram.isPending}
-        className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all disabled:opacity-50"
+        className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
       >
-        {step === 1 ? t("common.cancel") : t("common.back")}
+        {step === 1 ? (
+          <>
+            <X className="w-5 h-5" />
+            {t("common.cancel")}
+          </>
+        ) : (
+          <>
+            <ArrowLeft className="w-5 h-5" />
+            {t("common.back")}
+          </>
+        )}
       </button>
       <button
         type="button"
@@ -48,7 +58,10 @@ export const CreateProgramModal = ({}) => {
             {t("common.saving")}
           </>
         ) : step === 1 ? (
-          <>{t("training.programs.create.next")}</>
+          <>
+            {t("training.programs.create.next")}
+            <ArrowRight className="w-5 h-5" />
+          </>
         ) : (
           <>
             <Plus className="w-5 h-5" />
