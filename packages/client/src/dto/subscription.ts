@@ -7,6 +7,7 @@ export interface CreateSubscriptionTypeDto {
   isAvailable?: boolean;
   services?: string[];
   allowedIntervals?: number[];
+  allowedDaysPerWeek?: number;
 }
 
 export interface UpdateSubscriptionTypeDto {
@@ -16,4 +17,5 @@ export interface UpdateSubscriptionTypeDto {
   isAvailable?: boolean;
   services?: string[];
   allowedIntervals?: number[];
+  allowedDaysPerWeek?: number;
 }

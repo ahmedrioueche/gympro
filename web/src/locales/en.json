@@ -2032,7 +2032,14 @@
       "visibility": "Visibilty",
       "available": "Available for Purchase",
       "currencyTip": "You can change the currency from Settings > General",
-      "hidden": "Hidden"
+      "hidden": "Hidden",
+      "allowedDaysPerWeek": "Allowed Days Per Week",
+      "allowedDaysTooltip": "Set the maximum number of days a member can access the gym per week. Cannot exceed 7 days. Leave blank for unlimited access.",
+      "max7Days": "Cannot exceed 7 days",
+      "unlimited": "Unlimited",
+      "allowedIntervals": "Allowed Intervals",
+      "allowedIntervalsTip": "Set the maximum number of intervals a member can access the gym per week. Cannot exceed 7 intervals. Leave blank for unlimited access.",
+      "baseInterval": "Base Interval"
     },
     "success": {
       "created": "Plan created successfully",

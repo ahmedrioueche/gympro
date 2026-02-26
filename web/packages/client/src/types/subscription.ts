@@ -48,6 +48,7 @@ export interface SubscriptionType extends AuditInfo {
   isAvailable: boolean;
   services?: string[];
   allowedIntervals?: number[];
+  allowedDaysPerWeek?: number;
 }
 
 import { User } from "./user";

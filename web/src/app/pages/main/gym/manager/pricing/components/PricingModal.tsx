@@ -68,6 +68,7 @@ export const PricingModal = () => {
                 description: plan.description,
                 isAvailable: plan.isAvailable,
                 services: plan.services || [],
+                allowedDaysPerWeek: plan.allowedDaysPerWeek,
               }
             : undefined
         }

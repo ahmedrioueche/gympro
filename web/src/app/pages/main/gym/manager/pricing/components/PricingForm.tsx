@@ -20,6 +20,7 @@ export interface PricingFormData {
   isAvailable: boolean;
   services: string[];
   allowedIntervals?: number[];
+  allowedDaysPerWeek?: number;
 }
 
 interface PricingFormProps {
@@ -51,6 +52,7 @@ export const PricingForm = ({
       isAvailable: true,
       services: [],
       allowedIntervals: [1],
+      allowedDaysPerWeek: undefined,
       ...defaultValues,
     },
   });
@@ -103,6 +105,7 @@ export const PricingForm = ({
             : true,
         services: defaultValues.services || [],
         allowedIntervals: defaultValues.allowedIntervals || [1],
+        allowedDaysPerWeek: defaultValues.allowedDaysPerWeek,
       });
     }
   }, [defaultValues, reset]);
@@ -170,7 +173,7 @@ export const PricingForm = ({
 
       {/* Linked Services */}
       <div className="space-y-3">
-        <label className="text-sm font-medium text-text-secondary">
+        <label className="text-sm font-medium text-text-primary">
           {t("pricing.form.linkedServices", "Included Services")}
         </label>
         {gymServices.length === 0 ? (
@@ -210,7 +213,7 @@ export const PricingForm = ({
       {/* Pricing Tiers */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-text-secondary">
+          <label className="text-sm font-medium text-text-primary">
             {t("pricing.form.pricingTiers")}
           </label>
           <button
@@ -299,7 +302,7 @@ export const PricingForm = ({
         tiers.some((t) => t.duration === 1 && t.durationUnit === "week")) && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-text-secondary">
+            <label className="text-sm font-medium text-text-primary">
               {t("pricing.form.allowedIntervals", "Allowed Intervals")}
             </label>
             <Tooltip
@@ -348,6 +351,37 @@ export const PricingForm = ({
           </div>
         </div>
       )}
+
+      {/* Allowed Days Per Week */}
+      <div className="space-y-1 relative">
+        <div className="flex items-center gap-2 mb-1">
+          <label className="block text-sm font-medium text-text-primary">
+            {t("pricing.form.allowedDaysPerWeek", "Allowed Days Per Week")}
+          </label>
+          <Tooltip
+            content={t(
+              "pricing.form.allowedDaysTooltip",
+              "Set the maximum number of days a member can access the gym per week. Cannot exceed 7 days. Leave blank for unlimited access.",
+            )}
+          >
+            <Info className="w-4 h-4 text-text-secondary cursor-help hover:text-primary transition-colors" />
+          </Tooltip>
+        </div>
+        <InputField
+          type="number"
+          min={1}
+          max={7}
+          {...register("allowedDaysPerWeek", {
+            valueAsNumber: true,
+            max: {
+              value: 7,
+              message: t("pricing.form.max7Days", "Cannot exceed 7 days"),
+            },
+          })}
+          placeholder={t("pricing.form.unlimited", "Unlimited")}
+          error={errors.allowedDaysPerWeek?.message}
+        />
+      </div>
 
       <TextArea
         label={t("pricing.form.description")}

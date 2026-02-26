@@ -105,14 +105,64 @@ export class AttendanceService {
         membership.subscription?.endDate &&
         new Date(membership.subscription.endDate) < now;
 
-      const accessMessage = isExpired
-        ? 'Subscription expired. Please renew.'
-        : 'Check-in successful';
+      let isLimitReached = false;
+      let limitMessage = '';
+
+      // Check allowedDaysPerWeek limit if it exists and subscription is not already expired
+      if (
+        !isExpired &&
+        membership.subscription?.typeDetails?.allowedDaysPerWeek
+      ) {
+        const allowedDays =
+          membership.subscription.typeDetails.allowedDaysPerWeek;
+        if (allowedDays > 0 && allowedDays < 7) {
+          // Calculate start of current week (Monday at 00:00:00)
+          const startOfWeek = new Date(now);
+          const day = startOfWeek.getDay() || 7; // Get current day number, converting Sun(0) to 7
+          if (day !== 1) {
+            startOfWeek.setHours(-24 * (day - 1)); // Step back to Monday
+          }
+          startOfWeek.setHours(0, 0, 0, 0);
+
+          // Get all successful check-ins for this user at this gym since start of week
+          const weeklyAttendances = await this.attendanceModel.find({
+            userId: userObjectId,
+            gymId: gymObjectId,
+            status: 'checked_in',
+            checkIn: { $gte: startOfWeek },
+          });
+
+          // Group by unique date (YYYY-MM-DD)
+          const uniqueDays = new Set(
+            weeklyAttendances.map((a) => {
+              const d = new Date(a.checkIn);
+              return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+            }),
+          );
+
+          // Check if today is already in the unique days list
+          const todayDateString = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+          const isTodayAlreadyCounted = uniqueDays.has(todayDateString);
+
+          // If limit reached and today is not one of the counted days, deny access
+          if (uniqueDays.size >= allowedDays && !isTodayAlreadyCounted) {
+            isLimitReached = true;
+            limitMessage = `Weekly limit reached (${allowedDays} days/week).`;
+          }
+        }
+      }
+
+      let accessMessage = 'Check-in successful';
+      if (isExpired) {
+        accessMessage = 'Subscription expired. Please renew.';
+      } else if (isLimitReached) {
+        accessMessage = limitMessage;
+      }
 
       // 6. Handle strict vs loose behavior for expired subscriptions
-      // 6. Handle strict vs loose behavior for expired subscriptions
       // We don't throw here anymore, we proceed to log the denial and return it
-      const isDenied = isExpired && accessControlType === 'strict';
+      const isDenied =
+        (isExpired && accessControlType === 'strict') || isLimitReached;
 
       // 7. Create attendance record
       const attendance = new this.attendanceModel({
@@ -120,10 +170,10 @@ export class AttendanceService {
         gymId: gymObjectId,
         userId: userObjectId,
         checkIn: now,
-        status: isExpired
+        status: isDenied
           ? ('denied' as AttendanceStatus)
           : ('checked_in' as AttendanceStatus),
-        notes: isExpired ? accessMessage : undefined,
+        notes: isDenied ? accessMessage : undefined,
         expiryDate: membership.subscription?.endDate,
         createdAt: now,
       });
@@ -134,7 +184,6 @@ export class AttendanceService {
         .findById(attendance._id)
         .populate('userId', 'profile.fullName profile.profileImageUrl');
 
-      // Emit real-time event
       // Emit real-time event
       const status = attendance.status === 'checked_in' ? 'granted' : 'denied';
       console.log(

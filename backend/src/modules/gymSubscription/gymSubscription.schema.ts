@@ -65,6 +65,7 @@ export class SubscriptionTypeModel
   @Prop({ type: [PricingTierSchema], required: true })
   pricingTiers: PricingTierModel[];
   @Prop({ type: [Number], default: [] }) allowedIntervals?: number[];
+  @Prop({ type: Number }) allowedDaysPerWeek?: number;
   @Prop({ required: true }) isAvailable: boolean;
   @Prop({ type: [String], default: [] }) services?: string[];
   @Prop() createdAt: Date;
