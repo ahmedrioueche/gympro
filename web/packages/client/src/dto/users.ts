@@ -1,4 +1,4 @@
-import { PaymentMethod, SupportedCurrency } from "../types/common";
+import { PaymentMethod } from "../types/common";
 
 export interface CompleteOnboardingDto {
   role: string;
@@ -12,13 +12,27 @@ export interface CompleteOnboardingDto {
   regionName?: string;
   currency?: string;
   timezone?: string;
-}
 
-export interface RegionDetectionResult {
-  region: string;
-  regionName: string;
-  currency: SupportedCurrency;
-  timezone?: string;
+  // Location
+  address?: string;
+  city?: string;
+  country?: string;
+  latitude?: number;
+  longitude?: number;
+
+  // Coach-specific
+  certifications?: string[];
+  socialMediaLinks?: string[];
+  bio?: string;
+  documents?: { url: string; description: string; type: string }[];
+
+  // Gym Owner-specific
+  gymAddress?: string;
+  gymCity?: string;
+  gymCountry?: string;
+  gymPhone?: string;
+  gymLatitude?: number;
+  gymLongitude?: number;
 }
 
 export interface CreateMemberDto {

@@ -59,6 +59,7 @@ export default function CreateAnnouncementModal() {
         type: "submit",
         form: "create-announcement-form",
         loading: isCreating,
+        icon: Send,
       }}
     >
       <form

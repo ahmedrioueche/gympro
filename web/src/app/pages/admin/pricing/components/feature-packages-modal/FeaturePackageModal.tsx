@@ -1,5 +1,5 @@
 import type { AppLanguage } from "@ahmedrioueche/gympro-client";
-import { Plus } from "lucide-react";
+import { Plus, Save, Trash2 } from "lucide-react";
 import BaseModal from "../../../../../../components/ui/BaseModal";
 import FeaturePackageBasicInfo from "./FeaturePackageBasicInfo";
 import FeaturePackageFeatures from "./FeaturePackageFeatures";
@@ -42,6 +42,7 @@ export default function FeaturePackageModal() {
         label: isPending ? t("common.saving") : t("common.save"),
         onClick: handleSave,
         loading: isPending,
+        icon: Save,
       }}
       tertiaryButton={
         isEdit
@@ -50,6 +51,7 @@ export default function FeaturePackageModal() {
               variant: "danger",
               onClick: handleDelete,
               loading: isDeleting,
+              icon: Trash2,
             }
           : undefined
       }

@@ -1,4 +1,4 @@
-import { Edit } from "lucide-react";
+import { Edit, Plus, Save, Trash2, X } from "lucide-react";
 import BaseModal from "../../../../../../components/ui/BaseModal";
 import { PlanBasicInfo } from "./PlanBasicInfo";
 import { PlanFeatures } from "./PlanFeatures";
@@ -42,10 +42,12 @@ export default function EditPlanModal() {
         onClick: () => savePlan(formData),
         loading: isPending,
         disabled: isPending,
+        icon: isEdit ? Save : Plus,
       }}
       secondaryButton={{
         label: t("common.cancel"),
         onClick: closeModal,
+        icon: X,
       }}
       tertiaryButton={
         isEdit
@@ -54,6 +56,7 @@ export default function EditPlanModal() {
               onClick: handleDelete,
               loading: isDeleting,
               disabled: isDeleting || isPending,
+              icon: Trash2,
             }
           : undefined
       }

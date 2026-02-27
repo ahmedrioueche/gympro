@@ -14,14 +14,11 @@ import useScreen from "../../../../hooks/useScreen";
 import { useUserStore } from "../../../../store/user";
 import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
-import {
-  BaseView,
-  CoachInfoView,
-  InputView,
-  LocationView,
-  QuestionView,
-  SelectionView,
-} from "./components/OnboardingViews";
+import { BaseView } from "./components/views/BaseView";
+import { InputView } from "./components/views/InputView";
+import { LocationView } from "./components/views/LocationView";
+import { QuestionView } from "./components/views/QuestionView";
+import { SelectionView } from "./components/views/SelectionView";
 
 type OnboardingData = {
   role: UserRole | null;
@@ -50,6 +47,7 @@ type OnboardingData = {
 
   gymAddress: string;
   gymCity: string;
+  gymCountry: string;
   gymPhone: string;
   gymLatitude?: number;
   gymLongitude?: number;
@@ -80,6 +78,7 @@ export function OnboardingPage() {
     documents: [],
     gymAddress: "",
     gymCity: "",
+    gymCountry: "",
     gymPhone: "",
   });
   const { isMobile } = useScreen();
@@ -121,6 +120,7 @@ export function OnboardingPage() {
             documents: data.documents,
             gymAddress: data.gymAddress,
             gymCity: data.gymCity,
+            gymCountry: data.gymCountry,
             gymPhone: data.gymPhone,
             gymLatitude: data.gymLatitude,
             gymLongitude: data.gymLongitude,
@@ -167,21 +167,8 @@ export function OnboardingPage() {
       case 2.5: // Gym Location -> Gym Name
         setStep(2);
         break;
-      case 3: // Coach Check -> Owner Check
+      case 5: // Username -> Owner Check
         setStep(1);
-        break;
-      case 4: // Experience -> Coach Check
-        setStep(3);
-        break;
-      case 4.5: // Coach Info -> Experience
-        setStep(4);
-        break;
-      case 5: // Username -> Coach Info/Check
-        if (data.role === "coach") {
-          setStep(4.5);
-        } else {
-          setStep(3);
-        }
         break;
       case 6: // Age -> Username
         setStep(5);
@@ -232,7 +219,8 @@ export function OnboardingPage() {
               setStep(2); // Go to Gym Name
             }}
             onNo={() => {
-              setStep(3); // Go to Coach Check
+              updateData("role", "member" as UserRole);
+              setStep(5); // Go straight to Username
             }}
             yesLabel={t("onboarding.actions.yes")}
             noLabel={t("onboarding.actions.no")}
@@ -257,7 +245,7 @@ export function OnboardingPage() {
             data={{
               address: data.gymAddress,
               city: data.gymCity,
-              country: data.country, // Prefill user country if possible later, or just country
+              country: data.gymCountry || data.country, // Prefill user country if possible later, or just country
               latitude: data.gymLatitude,
               longitude: data.gymLongitude,
             }}
@@ -265,7 +253,7 @@ export function OnboardingPage() {
               if (d.address !== undefined) updateData("gymAddress", d.address);
               if (d.city !== undefined) updateData("gymCity", d.city);
               // Country overlaps with personal but fine for now
-              if (d.country !== undefined) updateData("country", d.country);
+              if (d.country !== undefined) updateData("gymCountry", d.country);
               if (d.latitude !== undefined)
                 updateData("gymLatitude", d.latitude);
               if (d.longitude !== undefined)
@@ -284,51 +272,6 @@ export function OnboardingPage() {
             onNext={handleFinish}
             placeholder={t("onboarding.placeholders.username")}
             buttonLabel={t("onboarding.actions.finish")}
-          />
-        );
-
-      case 3: // Coach Check
-        return (
-          <QuestionView
-            question={t("onboarding.questions.isCoach")}
-            onYes={() => {
-              updateData("role", "coach" as UserRole);
-              setStep(4); // Go to Experience
-            }}
-            onNo={() => {
-              updateData("role", "member" as UserRole);
-              setStep(5); // Go to Username
-            }}
-            yesLabel={t("onboarding.actions.yes")}
-            noLabel={t("onboarding.actions.no")}
-          />
-        );
-
-      case 4: // Experience (Coach)
-        return (
-          <InputView
-            title={t("onboarding.questions.experience")}
-            value={data.experience}
-            onChange={(val) => updateData("experience", val)}
-            onNext={() => setStep(4.5)} // Go to Coach Info
-            placeholder={t("onboarding.placeholders.experience")}
-            type="number"
-            buttonLabel={t("onboarding.actions.next")}
-          />
-        );
-
-      case 4.5: // Coach Info / Documents
-        return (
-          <CoachInfoView
-            bio={data.bio}
-            certifications={data.certifications}
-            socialMediaLinks={data.socialMediaLinks}
-            documents={data.documents}
-            onChange={(key, val) =>
-              updateData(key as keyof OnboardingData, val)
-            }
-            onNext={() => setStep(5)} // Go to Experience
-            onSkip={() => setStep(5)}
           />
         );
 

@@ -1,4 +1,4 @@
-import { DollarSign } from "lucide-react";
+import { DollarSign, Plus, Save, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import { useManageSubscriptionType } from "../../../../../../../hooks/useGymSubscriptionTypes";
@@ -57,6 +57,12 @@ export const PricingModal = () => {
         type: "submit",
         form: "pricing-form",
         loading: isLoading,
+        icon: isEdit ? Save : Plus,
+      }}
+      secondaryButton={{
+        label: t("common.cancel"),
+        onClick: closeModal,
+        icon: X,
       }}
     >
       <PricingForm

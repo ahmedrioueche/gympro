@@ -161,7 +161,11 @@ export class AdminService {
 
   async getCoaches() {
     return this.userModel
-      .find({ role: UserRole.Coach })
+      .find({
+        role: UserRole.Coach,
+        // Exclude pending coaches so they only show up in the requests tab
+        'coachVerification.status': { $ne: 'pending' },
+      })
       .select('-profile.password')
       .sort({ createdAt: -1 });
   }

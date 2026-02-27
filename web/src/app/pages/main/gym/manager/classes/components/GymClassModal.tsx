@@ -1,6 +1,14 @@
 import type { CoachProfile } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
-import { Briefcase, Calendar, Info, Package, User } from "lucide-react";
+import {
+  Briefcase,
+  Calendar,
+  Info,
+  Package,
+  Plus,
+  Save,
+  User,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -208,6 +216,7 @@ export default function GymClassModal() {
         type: "submit",
         form: "gym-class-form",
         loading: isCreating || isUpdating,
+        icon: isEdit ? Save : Plus,
       }}
     >
       <form id="gym-class-form" onSubmit={handleSubmit} className="space-y-8">

@@ -29,6 +29,7 @@ export interface CompleteOnboardingDto {
   // Gym Owner-specific
   gymAddress?: string;
   gymCity?: string;
+  gymCountry?: string;
   gymPhone?: string;
   gymLatitude?: number;
   gymLongitude?: number;

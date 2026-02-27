@@ -473,6 +473,7 @@ export class UsersService {
           owner: user._id.toString(),
           address: data.gymAddress,
           city: data.gymCity,
+          country: data.gymCountry,
           phone: data.gymPhone,
           latitude: data.gymLatitude,
           longitude: data.gymLongitude,

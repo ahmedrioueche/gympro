@@ -1,6 +1,6 @@
 import { adminApi, ALL_APP_PERMISSIONS } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Key } from "lucide-react";
+import { Key, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -58,6 +58,7 @@ export const AdminManagePermissionsModal = () => {
         label: t("common.save"),
         onClick: handleSave,
         loading: isPending,
+        icon: Save,
       }}
       maxWidth="max-w-xl"
     >

@@ -104,10 +104,68 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   );
 };
 
+// Cache the location fetch to avoid redundant network calls
+let _cachedCountryCode: string | null = null;
+let _fetchPromise: Promise<string | null> | null = null;
+
 // Helper hook for managing phone number state
 export const usePhoneNumber = (initialCountryCode = "+213") => {
-  const [countryCode, setCountryCode] = React.useState(initialCountryCode);
+  const [countryCode, setCountryCode] = React.useState(
+    _cachedCountryCode || initialCountryCode,
+  );
   const [phoneNumber, setPhoneNumber] = React.useState("");
+
+  React.useEffect(() => {
+    // If we already have it in cache, and the state hasn't been modified externally,
+    // apply it immediately if we haven't already.
+    if (_cachedCountryCode) {
+      setCountryCode((current) =>
+        current === initialCountryCode ? _cachedCountryCode! : current,
+      );
+      return;
+    }
+
+    let mounted = true;
+
+    if (!_fetchPromise) {
+      _fetchPromise = fetch("https://get.geojs.io/v1/ip/country.json")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.country) {
+            const iso = data.country.toUpperCase();
+            const matched = COUNTRY_CODES.find((c) => {
+              const match = c.flag.match(/\/([A-Z]{2})\.svg$/i);
+              return match && match[1].toUpperCase() === iso;
+            });
+            if (matched) {
+              _cachedCountryCode = matched.code;
+              return matched.code;
+            }
+          }
+          return null;
+        })
+        .catch((err) => {
+          console.error("Failed to detect location for phone prefix", err);
+          return null;
+        });
+    }
+
+    _fetchPromise.then((code) => {
+      if (mounted && code) {
+        setCountryCode((current) => {
+          // Only update if the user hasn't actively changed the country code
+          if (current === initialCountryCode) {
+            return code;
+          }
+          return current;
+        });
+      }
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [initialCountryCode]);
 
   // Get the full formatted phone number
   const getFullPhoneNumber = () => {
@@ -121,7 +179,7 @@ export const usePhoneNumber = (initialCountryCode = "+213") => {
 
   // Reset phone number
   const reset = () => {
-    setCountryCode(initialCountryCode);
+    setCountryCode(_cachedCountryCode || initialCountryCode);
     setPhoneNumber("");
   };
 

@@ -1,6 +1,6 @@
 import { competitionApi } from "@ahmedrioueche/gympro-client";
 import { useQueryClient } from "@tanstack/react-query";
-import { Medal, Trophy } from "lucide-react";
+import { Medal, Save, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -125,6 +125,7 @@ export default function SetWinnersModal() {
         onClick: handleSubmit,
         loading: isSubmitting,
         disabled: participants.length === 0,
+        icon: Save,
       }}
     >
       <div className="space-y-6">

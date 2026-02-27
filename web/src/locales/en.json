@@ -14,6 +14,7 @@
   },
   "common": {
     "all": "All",
+    "orManually": "Or manually",
     "error": "Something went wrong, please try again later",
     "loading": "Loading...",
     "loadingGymDetails": "Loading gym details...",
@@ -648,7 +649,7 @@
       "addressPlaceholder": "Street Address",
       "cityPlaceholder": "City",
       "countryPlaceholder": "Country",
-      "detecting": "Detecting location...",
+      "detecting": "Detecting...",
       "detected": "Location detected successfully!",
       "error": "Could not detect location. Please enter manually.",
       "permissionDenied": "Location permission denied."

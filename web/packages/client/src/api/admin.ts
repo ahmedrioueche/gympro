@@ -123,7 +123,9 @@ export const adminApi = {
 
   removeCoach: async (userId: string): Promise<ApiResponse<void>> => {
     try {
-      const res = await apiClient.delete<ApiResponse<void>>(`/users/${userId}`);
+      const res = await apiClient.delete<ApiResponse<void>>(
+        `/admin/coaches/${userId}`,
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

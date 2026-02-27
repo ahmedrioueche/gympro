@@ -1,12 +1,10 @@
 import { ErrorComponent } from "@tanstack/react-router";
+import { Plus, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import Loading from "../../../../../../../components/ui/Loading";
+import NoData from "../../../../../../../components/ui/NoData";
 import type { ViewMode } from "../../../../../../../types/common";
-import {
-  MemberCard,
-  MembersEmptyState,
-  MembersTable,
-  type MemberDisplay,
-} from "./index";
+import { MemberCard, MembersTable, type MemberDisplay } from "./index";
 
 interface MembersListProps {
   isLoading: boolean;
@@ -17,18 +15,20 @@ interface MembersListProps {
   viewMode: ViewMode;
   onViewProfile: (id: string) => void;
   onDelete: (id: string) => void;
+  handleAddMember: () => void;
 }
 
 export function MembersList({
   isLoading,
   error,
   members,
-  totalMembersCount,
-  searchQuery,
+  handleAddMember,
   viewMode,
   onViewProfile,
   onDelete,
 }: MembersListProps) {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return <Loading className="py-22" />;
   }
@@ -39,10 +39,15 @@ export function MembersList({
 
   if (members.length === 0) {
     return (
-      <MembersEmptyState
-        type={
-          totalMembersCount === 0 && !searchQuery ? "no-members" : "no-results"
-        }
+      <NoData
+        icon={Users}
+        title={t("members.empty.title")}
+        description={t("members.empty.description")}
+        actionButton={{
+          label: t("members.addMember"),
+          onClick: handleAddMember,
+          icon: Plus,
+        }}
       />
     );
   }

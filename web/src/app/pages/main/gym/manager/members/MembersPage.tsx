@@ -61,6 +61,7 @@ function MembersPage() {
         viewMode={viewMode}
         onViewProfile={handleViewProfile}
         onDelete={handleDeleteClick}
+        handleAddMember={handleAddMember}
       />
 
       {/* Pagination Controls */}

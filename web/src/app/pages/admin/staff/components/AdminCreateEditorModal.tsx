@@ -4,7 +4,7 @@ import {
   type CreateEditorDto,
 } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Shield } from "lucide-react";
+import { Shield, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -85,6 +85,7 @@ export const AdminCreateEditorModal = () => {
         onClick: handleSubmit,
         loading: isPending,
         form: "create-editor-form",
+        icon: UserPlus,
       }}
       maxWidth="max-w-xl"
     >
