@@ -4,7 +4,7 @@ import "../../styles/animatedLogo.css";
 
 const AnimatedLogo = ({
   height = "h-16",
-  width = "w-[400px]",
+  width = "w-full max-w-[400px]",
   logoSize = "w-16 h-16",
   textSize = "md:text-3xl text-2xl",
   leftPosition = "50%",
@@ -26,7 +26,7 @@ const AnimatedLogo = ({
   return (
     <div
       onClick={() => {
-        onClick();
+        if (onClick) onClick();
       }}
       className={`flex items-center justify-center mb-3 ${height} relative ${width} ${paddingTop} ${
         onClick ? "cursor-pointer" : " "

@@ -149,7 +149,7 @@ export default function ForgotPasswordPage() {
         >
           {step === "success" ? (
             // Success State with Animations (Email)
-            <div className="p-8 text-center relative overflow-hidden">
+            <div className="p-6 sm:p-8 text-center relative overflow-hidden">
               {/* Confetti Effect */}
               <Confetti />
 
@@ -256,7 +256,7 @@ export default function ForgotPasswordPage() {
             </div>
           ) : step === "code-verification" ? (
             // Code Verification State (Phone)
-            <div className="p-8">
+            <div className="p-6 sm:p-8">
               <div className="text-center mb-8">
                 <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mb-4">
                   <Smartphone className="w-8 h-8 text-white" />
@@ -326,7 +326,7 @@ export default function ForgotPasswordPage() {
             </div>
           ) : (
             // Form State
-            <div className="p-8">
+            <div className="p-6 sm:p-8">
               <div className="text-center mb-8">
                 <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mb-4">
                   {method === "email" ? (
@@ -364,7 +364,7 @@ export default function ForgotPasswordPage() {
                     ) : (
                       <div className="flex gap-2">
                         {/* Country Code Selector */}
-                        <div className="w-32 flex-shrink-0">
+                        <div className="w-24 sm:w-32 flex-shrink-0">
                           <CustomSelect
                             title=""
                             options={countryCodeOptions}

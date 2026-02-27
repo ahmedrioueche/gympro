@@ -4367,5 +4367,6 @@
     "marketing_inventory_store": "Marketing, Inventory & Store",
     "analytics": "Advanced Analytics",
     "communications": "Comms & Engagements"
-  }
+  },
+  "footer": { "copyright": "Copyright © {{year}} GymPro. All rights reserved." }
 }
