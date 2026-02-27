@@ -116,7 +116,7 @@ export default function Nav({ children, sidebarLinks = null }) {
         <div
           className={`flex items-center justify-between min-h-[64px] md:min-h-[80px] pr-2 gap-1 md:gap-3`}
         >
-          <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+          <div className="flex pl-2 md:pl-0 items-center gap-2 md:gap-3 flex-1 min-w-0">
             {/* Show logo when no sidebar */}
             {!sidebarLinks && !isMobile && (
               <div className="flex items-center mr-6">

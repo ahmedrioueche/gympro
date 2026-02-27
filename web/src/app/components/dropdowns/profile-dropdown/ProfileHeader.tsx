@@ -15,7 +15,11 @@ export function ProfileHeader({ user, initials }: ProfileHeaderProps) {
       <ProfileAvatar user={user} initials={initials} />
       <div className="flex flex-col min-w-0">
         <div className="font-semibold text-sm text-text-primary truncate">
-          {user?.profile?.fullName || t("profile.defaultName")}
+          {user?.profile?.fullName ||
+            user?.profile?.email?.split("@")[0] ||
+            user?.profile?.phoneNumber ||
+            user?.profile?.username ||
+            t("profile.defaultName")}
         </div>
         <div className="text-xs text-text-secondary truncate">
           {user?.profile?.email || t("profile.defaultEmail")}

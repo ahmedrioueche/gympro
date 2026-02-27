@@ -45,10 +45,18 @@ export function useProfileDropdown() {
 
   const hasMultipleDashboards = availableDashboards.length > 1;
 
-  const initials = user?.profile?.fullName
-    ?.split(" ")
+  const displayName =
+    user?.profile?.fullName ||
+    user?.profile?.email?.split("@")[0] ||
+    user?.profile?.phoneNumber ||
+    user?.profile?.username ||
+    "User";
+  const initials = displayName
+    .split(/[\s_.-]+/)
     .map((n) => n[0])
+    .filter(Boolean)
     .join("")
+    .slice(0, 2)
     .toUpperCase();
 
   const handleDashboardSwitch = (dashboard: DashboardType) => {

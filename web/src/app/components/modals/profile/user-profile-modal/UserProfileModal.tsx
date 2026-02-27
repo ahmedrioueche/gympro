@@ -111,7 +111,13 @@ export default function UserProfileModal() {
       onClose={closeModal}
       user={user}
       isLoading={false}
-      title={user.profile?.fullName || t("memberProfile.unknownMember")}
+      title={
+        user.profile?.fullName ||
+        user.profile?.email?.split("@")[0] ||
+        user.profile?.phoneNumber ||
+        user.profile?.username ||
+        t("memberProfile.unknownMember")
+      }
       tabs={tabs}
       actions={actions}
     />
