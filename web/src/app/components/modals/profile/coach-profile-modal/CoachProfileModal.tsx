@@ -71,15 +71,15 @@ export default function CoachProfileModal() {
     });
   }
 
-  // Manager/Admin: Remove Coach (only if already affiliated)
-  if (
-    (isManagerDashboard || isAdminDashboard) &&
-    isAlreadyAffiliated &&
-    onRemove
-  ) {
+  // Manager/Admin: Remove Coach
+  const canRemove =
+    (isManagerDashboard && isAlreadyAffiliated && onRemove) ||
+    (isAdminDashboard && onRemove);
+
+  if (canRemove) {
     actions.push({
       label: t("coaching.removeCoach"),
-      onClick: onRemove,
+      onClick: onRemove!,
       icon: UserMinus,
       variant: "danger",
     });

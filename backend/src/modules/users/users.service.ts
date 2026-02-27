@@ -17,7 +17,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 
-import { GeolocationService } from '../../common/services/geolocation.service';
 import { AppPlanModel } from '../appBilling/appBilling.schema';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
 import { GymService } from '../gym/gym.service';
@@ -32,7 +31,7 @@ export class UsersService {
     @InjectModel(AppPlanModel.name) private appPlanModel: Model<AppPlanModel>,
     private readonly subscriptionService: AppSubscriptionService,
     private readonly gymService: GymService,
-    private readonly geolocationService: GeolocationService,
+
     private readonly notificationsService: NotificationsService,
   ) {}
 
@@ -390,22 +389,6 @@ export class UsersService {
     return userObj;
   }
 
-  /**
-   * Detect region from user's IP address
-   */
-  async detectRegion(req: any) {
-    // Extract IP from request
-    const ip =
-      req.headers['x-forwarded-for']?.split(',')[0] ||
-      req.headers['x-real-ip'] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress ||
-      '';
-
-    this.logger.log(`Detecting region for IP: ${ip}`);
-    return this.geolocationService.detectRegionFromIP(ip);
-  }
-
   async completeOnboarding(userId: string, data: any) {
     const user = await this.userModel.findById(userId);
 
@@ -426,6 +409,34 @@ export class UsersService {
     if (data.age) user.profile.age = data.age;
     if (data.gender) user.profile.gender = data.gender;
     if (data.ownerName) user.profile.fullName = data.ownerName;
+
+    // User Location
+    if (data.address) user.profile.address = data.address;
+    if (data.city) user.profile.city = data.city;
+    if (data.country) user.profile.country = data.country;
+
+    // Coaching Info
+    if (user.role === UserRole.Coach) {
+      if (data.bio) {
+        if (!user.coachingInfo) user.coachingInfo = {};
+        user.coachingInfo.bio = data.bio;
+      }
+      if (data.certifications && data.certifications.length > 0) {
+        user.certifications = data.certifications;
+      }
+      if (data.socialMediaLinks && data.socialMediaLinks.length > 0) {
+        if (!user.coachVerification) {
+          user.coachVerification = { status: 'pending' };
+        }
+        user.coachVerification.socialMediaLinks = data.socialMediaLinks;
+      }
+      if (data.documents && data.documents.length > 0) {
+        if (!user.coachVerification) {
+          user.coachVerification = { status: 'pending' };
+        }
+        user.coachVerification.documents = data.documents;
+      }
+    }
 
     // Initialize appSettings if not exists
     if (!user.appSettings) {
@@ -460,6 +471,11 @@ export class UsersService {
         await this.gymService.create({
           name: data.gymName,
           owner: user._id.toString(),
+          address: data.gymAddress,
+          city: data.gymCity,
+          phone: data.gymPhone,
+          latitude: data.gymLatitude,
+          longitude: data.gymLongitude,
         });
       } catch (error) {
         this.logger.error(

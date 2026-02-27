@@ -89,6 +89,12 @@ export class AdminController {
     return { success: true, data: coaches };
   }
 
+  @Delete('coaches/:userId')
+  @AppPermission(APP_PERMISSIONS.MANAGE_COACHES)
+  removeCoach(@Param('userId') userId: string) {
+    return this.adminService.removeCoach(userId);
+  }
+
   @Get('subscriptions')
   @AppPermission(APP_PERMISSIONS.MANAGE_REVENUE)
   async getSubscriptions() {

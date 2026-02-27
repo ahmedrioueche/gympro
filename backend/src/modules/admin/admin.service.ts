@@ -166,6 +166,37 @@ export class AdminService {
       .sort({ createdAt: -1 });
   }
 
+  async removeCoach(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.role !== UserRole.Coach) {
+      throw new BadRequestException('User is not a coach');
+    }
+
+    // Revoke Coach Status
+    user.role = UserRole.Member;
+    user.dashboardAccess = (user.dashboardAccess || []).filter(
+      (r) => r !== 'coach',
+    );
+
+    if (user.coachVerification) {
+      user.coachVerification.status = 'rejected';
+      user.coachVerification.reviewedAt = new Date();
+    }
+
+    await user.save();
+
+    // Optionally notify the coach that access was revoked
+    await this.notificationsService.notifyUser(user, {
+      key: 'admin.coach_rejected',
+      type: 'alert',
+      priority: 'high',
+    });
+
+    return { success: true, message: 'Coach removed successfully' };
+  }
+
   async getSubscriptions() {
     const subscriptions = await this.appSubscriptionModel
       .find()

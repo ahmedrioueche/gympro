@@ -5,22 +5,23 @@ import {
   type UserRole,
 } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
-import { useRegionDetection } from "../../../../hooks/useRegionDetection";
 import useScreen from "../../../../hooks/useScreen";
 import { useUserStore } from "../../../../store/user";
 import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import {
   BaseView,
+  CoachInfoView,
   InputView,
+  LocationView,
   QuestionView,
   SelectionView,
 } from "./components/OnboardingViews";
-import { RegionCurrencyView } from "./components/RegionCurrencyView";
 
 type OnboardingData = {
   role: UserRole | null;
@@ -34,6 +35,24 @@ type OnboardingData = {
   regionName: string;
   currency: SupportedCurrency;
   timezone?: string;
+
+  // New unified fields:
+  address: string;
+  city: string;
+  country: string;
+  latitude?: number;
+  longitude?: number;
+
+  bio: string;
+  certifications: string[];
+  socialMediaLinks: string[];
+  documents: { url: string; description: string; type: string }[];
+
+  gymAddress: string;
+  gymCity: string;
+  gymPhone: string;
+  gymLatitude?: number;
+  gymLongitude?: number;
 };
 
 export function OnboardingPage() {
@@ -52,39 +71,19 @@ export function OnboardingPage() {
     regionName: "Algeria",
     currency: "DZD",
     timezone: "Africa/Algiers",
+    address: "",
+    city: "",
+    country: "",
+    bio: "",
+    certifications: [],
+    socialMediaLinks: [],
+    documents: [],
+    gymAddress: "",
+    gymCity: "",
+    gymPhone: "",
   });
   const { isMobile } = useScreen();
   const { updateProfile, updateUser } = useUserStore();
-
-  // Use the region detection hook
-  const { regionData, isLoading: isDetectingRegion } = useRegionDetection({
-    autoDetect: true,
-    onDetected: (detected) => {
-      setData((prev) => ({
-        ...prev,
-        region: detected?.region?.toUpperCase() || prev.region,
-        regionName: detected.regionName,
-        currency: detected.currency,
-        timezone: detected.timezone,
-      }));
-    },
-    onError: (error) => {
-      console.error("Failed to detect region:", error);
-      // Optionally show a toast notification
-      // toast.error(t("onboarding.errors.regionDetection"));
-    },
-  });
-
-  // Sync regionData to onboarding data whenever it changes
-  useEffect(() => {
-    setData((prev) => ({
-      ...prev,
-      region: regionData.region,
-      regionName: regionData.regionName,
-      currency: regionData.currency,
-      timezone: regionData.timezone,
-    }));
-  }, [regionData]);
 
   const updateData = (key: keyof OnboardingData, value: any) => {
     setData((prev) => ({ ...prev, [key]: value }));
@@ -111,6 +110,20 @@ export function OnboardingPage() {
             regionName: data.regionName,
             currency: data.currency,
             timezone: data.timezone,
+            address: data.address,
+            city: data.city,
+            country: data.country,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            bio: data.bio,
+            certifications: data.certifications,
+            socialMediaLinks: data.socialMediaLinks,
+            documents: data.documents,
+            gymAddress: data.gymAddress,
+            gymCity: data.gymCity,
+            gymPhone: data.gymPhone,
+            gymLatitude: data.gymLatitude,
+            gymLongitude: data.gymLongitude,
           });
           // Update store with new role and onboarded status
           updateUser({
@@ -145,14 +158,14 @@ export function OnboardingPage() {
     switch (step) {
       case 0: // Welcome - No back
         return;
-      case 0.5: // Region/Currency -> Welcome
+      case 1: // Owner Check -> Welcome
         setStep(0);
-        break;
-      case 1: // Owner Check -> Region/Currency
-        setStep(0.5);
         break;
       case 2: // Gym Name -> Owner Check
         setStep(1);
+        break;
+      case 2.5: // Gym Location -> Gym Name
+        setStep(2);
         break;
       case 3: // Coach Check -> Owner Check
         setStep(1);
@@ -160,9 +173,12 @@ export function OnboardingPage() {
       case 4: // Experience -> Coach Check
         setStep(3);
         break;
-      case 5: // Username -> Experience (if coach) or Coach Check (if member)
+      case 4.5: // Coach Info -> Experience
+        setStep(4);
+        break;
+      case 5: // Username -> Coach Info/Check
         if (data.role === "coach") {
-          setStep(4);
+          setStep(4.5);
         } else {
           setStep(3);
         }
@@ -173,8 +189,11 @@ export function OnboardingPage() {
       case 7: // Gender -> Age
         setStep(6);
         break;
-      case 8: // Owner Name -> Gym Name
-        setStep(2);
+      case 8: // Owner Name -> Gym Location
+        setStep(2.5);
+        break;
+      case 9: // Personal Location -> Gender
+        setStep(7);
         break;
       case 10: // Success - No back
         return;
@@ -192,10 +211,14 @@ export function OnboardingPage() {
             subtitle={t("onboarding.welcome.subtitle")}
           >
             <button
-              onClick={() => setStep(0.5)}
-              className="w-full p-4 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25"
+              onClick={() => setStep(1)} // Go straight to Owner Check, skipping Region view
+              className="relative overflow-hidden w-full p-5 rounded-2xl bg-gradient-to-r from-primary to-primary-focus text-white font-bold transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 focus:ring-2 focus:ring-primary outline-none group flex items-center justify-center gap-2"
             >
-              {t("onboarding.welcome.start")}
+              <span className="relative z-10 flex items-center gap-2">
+                {t("onboarding.welcome.start")}
+                <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              </span>
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
             </button>
           </BaseView>
         );
@@ -222,9 +245,33 @@ export function OnboardingPage() {
             title={t("onboarding.questions.gymName")}
             value={data.gymName}
             onChange={(val) => updateData("gymName", val)}
-            onNext={() => setStep(8)} // Go to Owner Name
+            onNext={() => setStep(2.5)} // Go to Gym Location
             placeholder={t("onboarding.placeholders.gymName")}
             buttonLabel={t("onboarding.actions.next")}
+          />
+        );
+
+      case 2.5: // Gym Location (Owner)
+        return (
+          <LocationView
+            data={{
+              address: data.gymAddress,
+              city: data.gymCity,
+              country: data.country, // Prefill user country if possible later, or just country
+              latitude: data.gymLatitude,
+              longitude: data.gymLongitude,
+            }}
+            onChange={(d) => {
+              if (d.address !== undefined) updateData("gymAddress", d.address);
+              if (d.city !== undefined) updateData("gymCity", d.city);
+              // Country overlaps with personal but fine for now
+              if (d.country !== undefined) updateData("country", d.country);
+              if (d.latitude !== undefined)
+                updateData("gymLatitude", d.latitude);
+              if (d.longitude !== undefined)
+                updateData("gymLongitude", d.longitude);
+            }}
+            onNext={() => setStep(8)} // Go to Owner Name
           />
         );
 
@@ -237,19 +284,6 @@ export function OnboardingPage() {
             onNext={handleFinish}
             placeholder={t("onboarding.placeholders.username")}
             buttonLabel={t("onboarding.actions.finish")}
-          />
-        );
-
-      case 0.5: // Region/Currency Selection
-        return (
-          <RegionCurrencyView
-            selectedRegion={data.region}
-            selectedCurrency={data.currency}
-            onRegionChange={(region, regionName, currency) => {
-              setData((prev) => ({ ...prev, region, regionName, currency }));
-            }}
-            onNext={() => setStep(1)}
-            isDetecting={isDetectingRegion}
           />
         );
 
@@ -276,10 +310,25 @@ export function OnboardingPage() {
             title={t("onboarding.questions.experience")}
             value={data.experience}
             onChange={(val) => updateData("experience", val)}
-            onNext={() => setStep(5)} // Go to Username
+            onNext={() => setStep(4.5)} // Go to Coach Info
             placeholder={t("onboarding.placeholders.experience")}
             type="number"
             buttonLabel={t("onboarding.actions.next")}
+          />
+        );
+
+      case 4.5: // Coach Info / Documents
+        return (
+          <CoachInfoView
+            bio={data.bio}
+            certifications={data.certifications}
+            socialMediaLinks={data.socialMediaLinks}
+            documents={data.documents}
+            onChange={(key, val) =>
+              updateData(key as keyof OnboardingData, val)
+            }
+            onNext={() => setStep(5)} // Go to Experience
+            onSkip={() => setStep(5)}
           />
         );
 
@@ -318,9 +367,31 @@ export function OnboardingPage() {
             ]}
             onSelect={(val) => {
               updateData("gender", val);
-              handleFinish();
+              setStep(9); // Go to Personal Location
             }}
             selectedValue={data.gender}
+          />
+        );
+
+      case 9: // Personal Location (All Users)
+        return (
+          <LocationView
+            data={{
+              address: data.address,
+              city: data.city,
+              country: data.country,
+              latitude: data.latitude,
+              longitude: data.longitude,
+            }}
+            onChange={(d) => {
+              if (d.address !== undefined) updateData("address", d.address);
+              if (d.city !== undefined) updateData("city", d.city);
+              if (d.country !== undefined) updateData("country", d.country);
+              if (d.latitude !== undefined) updateData("latitude", d.latitude);
+              if (d.longitude !== undefined)
+                updateData("longitude", d.longitude);
+            }}
+            onNext={handleFinish}
           />
         );
 
@@ -330,7 +401,7 @@ export function OnboardingPage() {
             title={t("onboarding.success.title", "All Set!")}
             subtitle={t(
               "onboarding.success.subtitle",
-              "You are ready to start your journey."
+              "You are ready to start your journey.",
             )}
           >
             <div className="flex justify-center items-center py-8">
@@ -348,7 +419,7 @@ export function OnboardingPage() {
   const totalSteps = 10; // Max possible steps
 
   return (
-    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+    <div className="min-h-screen  flex flex-col relative overflow-hidden">
       {/* Header */}
       <header className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-8 py-4 sm:py-6 gap-3 relative z-10">
         <AnimatedLogo
@@ -366,8 +437,8 @@ export function OnboardingPage() {
                 index === step
                   ? "w-8 bg-primary"
                   : index < step
-                  ? "w-2 bg-primary/50"
-                  : "w-2 bg-border"
+                    ? "w-2 bg-primary/50"
+                    : "w-2 bg-border"
               }`}
             />
           ))}
@@ -376,15 +447,8 @@ export function OnboardingPage() {
 
       {/* Main Content Area - Split Screen */}
       <main className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-center w-full mx-auto  gap-8 lg:gap-16">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 pointer-events-none"
-          style={{
-            backgroundImage: "url(/images/gym_bg.png)",
-            zIndex: 0,
-          }}
-        />
-        <div className="w-full flex justify-center">
-          <div className="w-full max-w-md">{renderStep()}</div>
+        <div className="w-full flex justify-center w-full px-4">
+          {renderStep()}
         </div>
       </main>
 
@@ -393,8 +457,9 @@ export function OnboardingPage() {
         <button
           disabled={step === 0 || step === 10}
           onClick={prevStep}
-          className="px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:bg-surface text-text-primary flex items-center gap-2"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-text-primary transition-all duration-300 hover:bg-surface disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed"
         >
+          <ArrowLeft size={20} />
           {t("onboarding.actions.previous")}
         </button>
       </footer>

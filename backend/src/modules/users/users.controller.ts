@@ -187,12 +187,6 @@ export class UsersController {
     return apiResponse(true, undefined, result, 'User deleted successfully');
   }
 
-  @Post('onboarding/detect-region')
-  async detectRegion(@Req() req: any) {
-    const result = await this.usersService.detectRegion(req);
-    return apiResponse(true, undefined, result, 'Region detected successfully');
-  }
-
   @Post('onboarding/complete')
   async completeOnboarding(@Body() data: any, @Req() req: any) {
     const currentUserId = req.user?.sub;

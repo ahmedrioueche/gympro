@@ -607,13 +607,21 @@
       "experience": "How many years of experience do you have?",
       "username": "How should we call you?",
       "age": "How old are you?",
-      "gender": "What is your gender?"
+      "gender": "What is your gender?",
+      "bio": "Tell us a bit about yourself",
+      "certifications": "What are your certifications?",
+      "socialLinks": "Add your social media links",
+      "gymAddress": "What is the gym's address?"
     },
     "placeholders": {
       "gymName": "Enter gym name",
       "experience": "Enter years of experience",
       "username": "Enter your name",
-      "age": "Enter your age"
+      "age": "Enter your age",
+      "bio": "Keep it short and sweet...",
+      "certifications": "e.g., NASM, ISSA (Press enter to add)",
+      "socialLinks": "https://instagram.com/... (Press enter)",
+      "gymAddress": "123 Fitness St"
     },
     "settings": {
       "name": "pages.admin.settings",
@@ -630,7 +638,20 @@
 
       "next": "Next",
       "previous": "Back",
-      "finish": "Finish"
+      "finish": "Finish",
+      "skip": "Skip for now",
+      "detectLocation": "Detect My Location"
+    },
+    "location": {
+      "title": "Where are you located?",
+      "subtitle": "We use this to connect you with nearby gyms and members.",
+      "addressPlaceholder": "Street Address",
+      "cityPlaceholder": "City",
+      "countryPlaceholder": "Country",
+      "detecting": "Detecting location...",
+      "detected": "Location detected successfully!",
+      "error": "Could not detect location. Please enter manually.",
+      "permissionDenied": "Location permission denied."
     },
     "regionCurrency": {
       "title": "Select Your Region",

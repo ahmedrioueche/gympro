@@ -1,6 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { GeolocationService } from 'src/common/services/geolocation.service';
+
 import { GymFeatureGuard } from '../../common/guards/gym-feature.guard';
 import { User, UserSchema } from '../../common/schemas/user.schema';
 import { AppBillingModule } from '../appBilling/appBilling.module';
@@ -63,7 +63,7 @@ import { UsersService } from './users.service';
     PermissionsGuard,
     GymPermissionsGuard,
     GymFeatureGuard,
-    GeolocationService,
+
     AppSubscriptionService,
     AppPlansService,
     PaddleService,
