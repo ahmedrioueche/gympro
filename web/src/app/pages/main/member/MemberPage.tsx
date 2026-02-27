@@ -46,7 +46,7 @@ const sidebarLinks = [
   },
   {
     label: "training",
-    icon: <CreditCard className="w-5 h-5" />,
+    icon: <Dumbbell className="w-5 h-5" />,
     path: APP_PAGES.member.training.link,
     matchPaths: [APP_PAGES.member.training.link],
   },

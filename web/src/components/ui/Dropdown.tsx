@@ -59,7 +59,7 @@ export default function Dropdown({
     if (!isOpen || !dropdownRef.current) return null;
 
     const rect = dropdownRef.current.getBoundingClientRect();
-    const top = rect.bottom + window.scrollY;
+    const top = rect.bottom + window.scrollY + 2;
     const isMobileView = window.innerWidth < 768;
 
     // On mobile, use fixed positioning to keep dropdown within viewport
@@ -69,7 +69,7 @@ export default function Dropdown({
           id="dropdown-portal-root"
           className={`fixed rounded-xl border border-border bg-background shadow-2xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${className}`}
           style={{
-            top: `${rect.bottom}px`,
+            top: `${rect.bottom + 2}px`,
             left: "8px",
             right: "8px",
             width: "auto",
