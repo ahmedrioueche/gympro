@@ -14,7 +14,7 @@ function SignupPage() {
 
   return (
     <div
-      className={`min-h-screen flex ${isDark ? BG_GRADIENT : "bg-background"}`}
+      className={`min-h-[100dvh] relative overflow-x-hidden flex ${isDark ? BG_GRADIENT : "bg-background"}`}
     >
       <div className="overflow-y-auto flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">

@@ -112,7 +112,7 @@ function SetupPage() {
     try {
       const response = await authApi.setupAccount(
         setupToken,
-        formData.password
+        formData.password,
       );
 
       const statusMessage = getMessage(response, t);
@@ -135,7 +135,9 @@ function SetupPage() {
   const formIsValid = isFormValid();
 
   return (
-    <div className={`min-h-screen flex flex-col lg:flex-row overflow-x-hidden`}>
+    <div
+      className={`min-h-[100dvh] relative flex flex-col lg:flex-row overflow-x-hidden`}
+    >
       {/* Left Side - Setup Form */}
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 lg:py-0">
         <div className="max-w-md w-full space-y-8">

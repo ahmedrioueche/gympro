@@ -132,7 +132,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center p-4 ${
+      className={`min-h-[100dvh] relative overflow-x-hidden flex items-center justify-center p-4 ${
         isDark ? BG_GRADIENT : "bg-background"
       } `}
     >

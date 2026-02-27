@@ -7,9 +7,12 @@ import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
 import Button from "../../../../components/ui/Button";
 import Confetti from "../../../../components/ui/Confetti";
 import InputField from "../../../../components/ui/InputField";
+import { BG_GRADIENT } from "../../../../constants/styles";
+import { useTheme } from "../../../../context/ThemeContext";
 
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
+  const { isDark } = useTheme();
   const search = useSearch({ from: "/auth/reset-password" });
   const router = useRouter();
   const [password, setPassword] = useState("");
@@ -35,7 +38,7 @@ export default function ResetPasswordPage() {
       }, 3000);
     } catch (err: any) {
       setError(
-        t("auth.reset_password_error", "Invalid or expired reset token.")
+        t("auth.reset_password_error", "Invalid or expired reset token."),
       );
     } finally {
       setIsLoading(false);
@@ -44,23 +47,25 @@ export default function ResetPasswordPage() {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div
+        className={`min-h-[100dvh] relative overflow-x-hidden flex items-center justify-center p-4 ${isDark ? BG_GRADIENT : "bg-background"}`}
+      >
         <div className="max-w-md w-full">
           <div className="mb-8">
             <AnimatedLogo />
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-red-100 dark:border-red-800 p-8 text-center">
+          <div className="bg-background rounded-2xl shadow-xl border border-red-100 dark:border-red-800 p-8 text-center">
             <div className="mx-auto w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg mb-4">
               <Shield className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-xl font-bold text-text-primary mb-2">
               {t(
                 "auth.reset_password_error",
-                "Invalid or expired reset token."
+                "Invalid or expired reset token.",
               )}
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-text-secondary mb-6">
               The password reset link has expired or is invalid. Please request
               a new one.
             </p>
@@ -77,14 +82,18 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
+    <div
+      className={`min-h-[100dvh] relative overflow-x-hidden flex items-center justify-center p-4 ${isDark ? BG_GRADIENT : "bg-background"}`}
+    >
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="mb-8">
           <AnimatedLogo />
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div
+          className={`bg-background rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden ${isDark ? BG_GRADIENT : "bg-background"}`}
+        >
           {submitted ? (
             // Success State with Animations
             <div className="p-8 text-center relative overflow-hidden">
@@ -143,15 +152,15 @@ export default function ResetPasswordPage() {
 
               {/* Success Content */}
               <div className="relative z-10 space-y-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-2xl font-bold text-text-primary">
                   {t(
                     "auth.reset_password_success",
-                    "Password Reset Successfully!"
+                    "Password Reset Successfully!",
                   )}
                 </h2>
 
                 <div className="space-y-3">
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  <p className="text-text-secondary leading-relaxed">
                     Your password has been updated successfully. You can now
                     sign in with your new password.
                   </p>
@@ -166,7 +175,7 @@ export default function ResetPasswordPage() {
                         <p className="text-xs text-green-600 dark:text-green-400">
                           {t(
                             "auth.account_secured_desc",
-                            "Your account is now protected with a new password"
+                            "Your account is now protected with a new password",
                           )}
                         </p>
                       </div>
@@ -176,10 +185,10 @@ export default function ResetPasswordPage() {
 
                 {/* Countdown and Action Buttons */}
                 <div className="pt-4 space-y-3">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                  <div className="text-sm text-text-secondary">
                     {t(
                       "auth.redirecting_to_login",
-                      "Redirecting to login page..."
+                      "Redirecting to login page...",
                     )}
                   </div>
 
@@ -202,13 +211,13 @@ export default function ResetPasswordPage() {
                 <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg mb-4">
                   <Lock className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                <h2 className="text-2xl font-bold text-text-primary mb-2">
                   {t("auth.reset_password", "Reset Password")}
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-text-secondary">
                   {t(
                     "auth.enter_new_password",
-                    "Enter your new password below to secure your account"
+                    "Enter your new password below to secure your account",
                   )}
                 </p>
               </div>
@@ -265,7 +274,7 @@ export default function ResetPasswordPage() {
                 <Button
                   onClick={() => router.navigate({ to: "/auth/login" })}
                   variant="ghost"
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                  className="text-text-secondary hover:text-text-primary"
                 >
                   ← {t("auth.sign_in", "Back to Sign in")}
                 </Button>

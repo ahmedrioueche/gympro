@@ -14,7 +14,7 @@ function LoginPage() {
 
   return (
     <div
-      className={`min-h-screen ${
+      className={`min-h-[100dvh] relative ${
         isDark ? BG_GRADIENT : "bg-background"
       } flex flex-col lg:flex-row overflow-x-hidden`}
     >
