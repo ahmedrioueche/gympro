@@ -32,35 +32,35 @@ export class SystemAlertsController {
   // Admin and Super Admin endpoints
   @Post()
   @UseGuards(RolesGuard)
-  @Roles(UserRole.Admin, UserRole.Manager, UserRole.Owner)
+  @Roles(UserRole.Admin, UserRole.AppEditor, UserRole.Manager, UserRole.Owner)
   create(@Body() createDto: CreateAppBannerDto) {
     return this.systemAlertsService.create(createDto);
   }
 
   @Get()
   @UseGuards(RolesGuard)
-  @Roles(UserRole.Admin, UserRole.Manager, UserRole.Owner)
+  @Roles(UserRole.Admin, UserRole.AppEditor, UserRole.Manager, UserRole.Owner)
   findAll() {
     return this.systemAlertsService.findAll();
   }
 
   @Get(':id')
   @UseGuards(RolesGuard)
-  @Roles(UserRole.Admin, UserRole.Manager, UserRole.Owner)
+  @Roles(UserRole.Admin, UserRole.AppEditor, UserRole.Manager, UserRole.Owner)
   findOne(@Param('id') id: string) {
     return this.systemAlertsService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(RolesGuard)
-  @Roles(UserRole.Admin, UserRole.Manager, UserRole.Owner)
+  @Roles(UserRole.Admin, UserRole.AppEditor, UserRole.Manager, UserRole.Owner)
   update(@Param('id') id: string, @Body() updateDto: UpdateAppBannerDto) {
     return this.systemAlertsService.update(id, updateDto);
   }
 
   @Delete(':id')
   @UseGuards(RolesGuard)
-  @Roles(UserRole.Admin, UserRole.Manager, UserRole.Owner)
+  @Roles(UserRole.Admin, UserRole.AppEditor, UserRole.Manager, UserRole.Owner)
   remove(@Param('id') id: string) {
     return this.systemAlertsService.remove(id);
   }

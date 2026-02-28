@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -39,8 +40,9 @@ export class AdminController {
 
   @Get('editors')
   @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
-  async getEditors() {
-    const editors = await this.adminService.getEditors();
+  async getEditors(@Req() req: any) {
+    const userId = req.user?.sub;
+    const editors = await this.adminService.getEditors(userId);
     return { success: true, data: editors };
   }
 
@@ -49,14 +51,17 @@ export class AdminController {
   updateEditorPermissions(
     @Param('id') id: string,
     @Body('permissions') permissions: string[],
+    @Req() req: any,
   ) {
-    return this.adminService.updateEditorPermissions(id, permissions);
+    const userId = req.user?.sub;
+    return this.adminService.updateEditorPermissions(id, permissions, userId);
   }
 
   @Delete('editors/:id')
   @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
-  deleteEditor(@Param('id') id: string) {
-    return this.adminService.deleteEditor(id);
+  deleteEditor(@Param('id') id: string, @Req() req: any) {
+    const userId = req.user?.sub;
+    return this.adminService.deleteEditor(id, userId);
   }
 
   // ============================================

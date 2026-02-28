@@ -6,13 +6,18 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { User } from '../../../common/schemas/user.schema';
 
 @Injectable()
 export class AppPermissionGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    @InjectModel(User.name) private userModel: Model<User>,
+  ) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredPermission = this.reflector.get<string>(
       'app_permission',
       context.getHandler(),
@@ -23,20 +28,31 @@ export class AppPermissionGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user as User;
+    const jwtUser = request.user;
 
-    if (!user) {
+    if (!jwtUser) {
       return false;
     }
 
-    // Admins have full access
-    if (user.role === UserRole.Admin) {
+    // Admins have full access (check JWT role first for speed)
+    if (jwtUser.role === UserRole.Admin) {
       return true;
     }
 
-    // App Editors need the specific permission
-    if (user.role === UserRole.AppEditor) {
-      const hasPermission = user.appPermissions?.includes(requiredPermission);
+    // For App Editors, fetch fresh permissions from DB to avoid stale JWT issues
+    if (jwtUser.role === UserRole.AppEditor) {
+      const freshUser = await this.userModel
+        .findById(jwtUser.sub)
+        .select('appPermissions')
+        .lean()
+        .exec();
+
+      if (!freshUser) {
+        return false;
+      }
+
+      const hasPermission =
+        freshUser.appPermissions?.includes(requiredPermission);
       if (!hasPermission) {
         throw new ForbiddenException(
           `You do not have permission to ${requiredPermission}`,

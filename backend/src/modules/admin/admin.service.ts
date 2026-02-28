@@ -44,7 +44,7 @@ export class AdminService {
 
     const newUser = new this.userModel({
       profile: {
-        username: dto.username,
+        username: dto.username || dto.email.split('@')[0],
         email: dto.email,
         fullName: dto.fullName,
         password: hashedPassword,
@@ -60,15 +60,24 @@ export class AdminService {
     return { success: true, message: 'Editor created successfully' };
   }
 
-  async getEditors() {
+  async getEditors(requestingUserId?: string) {
+    const query: any = { role: UserRole.AppEditor };
+    // Exclude the requesting user from the list
+    if (requestingUserId) {
+      query._id = { $ne: requestingUserId };
+    }
     return this.userModel
-      .find({ role: UserRole.AppEditor })
+      .find(query)
       .select('-profile.password')
       .sort({ createdAt: -1 })
       .lean();
   }
 
-  async deleteEditor(id: string) {
+  async deleteEditor(id: string, requestingUserId?: string) {
+    if (requestingUserId && id === requestingUserId) {
+      throw new BadRequestException('You cannot delete yourself');
+    }
+
     const result = await this.userModel.deleteOne({
       _id: id,
       role: UserRole.AppEditor,
@@ -78,10 +87,18 @@ export class AdminService {
       throw new NotFoundException('Editor not found');
     }
 
-    return { success: true, message: 'Editor remove successfully' };
+    return { success: true, message: 'Editor removed successfully' };
   }
 
-  async updateEditorPermissions(id: string, permissions: string[]) {
+  async updateEditorPermissions(
+    id: string,
+    permissions: string[],
+    requestingUserId?: string,
+  ) {
+    if (requestingUserId && id === requestingUserId) {
+      throw new BadRequestException('You cannot modify your own permissions');
+    }
+
     const result = await this.userModel.updateOne(
       { _id: id, role: UserRole.AppEditor },
       { $set: { appPermissions: permissions } },
