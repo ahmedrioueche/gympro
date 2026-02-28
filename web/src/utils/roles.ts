@@ -8,6 +8,7 @@ export const getRoleHomePage = (role: UserRole): string => {
   switch (role) {
     case UserRole.Owner:
     case UserRole.Manager:
+    case UserRole.Receptionist:
       return APP_PAGES.manager.link;
 
     case UserRole.Coach:
@@ -103,6 +104,15 @@ export const hasRouteAccess = (role: UserRole, route: string): boolean => {
       "/gym",
     ],
     [UserRole.Member]: [
+      "/member",
+      "/dashboard",
+      "/profile",
+      "/settings",
+      "/notifications",
+      "/gym",
+    ],
+    [UserRole.Receptionist]: [
+      "/manager",
       "/member",
       "/dashboard",
       "/profile",

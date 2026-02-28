@@ -61,7 +61,9 @@ const checkDashboardAccess = (
   // 3. Manager/Coach dashboard access via Global Role
   if (
     dashboard === "manager" &&
-    (user.role === "owner" || user.role === "manager")
+    (user.role === "owner" ||
+      user.role === "manager" ||
+      user.role === "receptionist")
   )
     return true;
   if (dashboard === "coach" && user.role === "coach") return true;
@@ -77,6 +79,7 @@ const checkDashboardAccess = (
         dashboard === "manager" &&
         (roles.includes("owner" as UserRole) ||
           roles.includes("manager" as UserRole) ||
+          roles.includes("receptionist" as UserRole) ||
           roles.includes("staff" as UserRole))
       ) {
         return true;

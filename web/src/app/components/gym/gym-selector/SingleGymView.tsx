@@ -1,4 +1,4 @@
-import type { Gym, UserRole } from "@ahmedrioueche/gympro-client";
+import type { Gym } from "@ahmedrioueche/gympro-client";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { Dumbbell, Home } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -6,7 +6,6 @@ import useScreen from "../../../../hooks/useScreen";
 import { useGymStore } from "../../../../store/gym";
 import { useUserStore } from "../../../../store/user";
 import { getGymStatusStyles } from "../../../../utils/gym";
-import { redirectToHomePageAfterTimeout } from "../../../../utils/helper";
 import { useGymDisplayRole } from "../../../hooks/useGymDisplayRole";
 import { useGymMemberHome } from "../../../pages/main/gym/member/home/hooks/useGymMemberHome";
 import RoleBadge from "../RoleBadge";
@@ -38,7 +37,17 @@ export default function SingleGymView({
     if (isOnGymDashboard) {
       // Clear gym before navigating back to account dashboard
       clearGym();
-      redirectToHomePageAfterTimeout(user.role as UserRole, 0, navigate);
+      // Use activeDashboard to navigate to the correct dashboard
+      const { activeDashboard } = useUserStore.getState();
+      if (activeDashboard === "manager") {
+        navigate({ to: "/manager" });
+      } else if (activeDashboard === "coach") {
+        navigate({ to: "/coach" });
+      } else if (activeDashboard === "admin") {
+        navigate({ to: "/admin" });
+      } else {
+        navigate({ to: "/member" });
+      }
     } else {
       onGymChange(gym._id);
     }

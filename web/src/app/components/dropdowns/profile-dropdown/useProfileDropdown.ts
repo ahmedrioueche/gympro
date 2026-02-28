@@ -23,6 +23,7 @@ export function useProfileDropdown() {
       if (
         roles.includes("owner" as UserRole) ||
         roles.includes("manager" as UserRole) ||
+        roles.includes("receptionist" as UserRole) ||
         roles.includes("staff" as UserRole)
       ) {
         dashboards.add("manager");
@@ -33,7 +34,11 @@ export function useProfileDropdown() {
     });
 
     // Add based on role for backwards compatibility (users created before this feature)
-    if (user?.role === "owner" || user?.role === "manager") {
+    if (
+      user?.role === "owner" ||
+      user?.role === "manager" ||
+      user?.role === "receptionist"
+    ) {
       dashboards.add("manager");
     }
     if (user?.role === "coach") {

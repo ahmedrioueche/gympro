@@ -608,12 +608,16 @@ export class AuthService {
     user.setupTokenUsed = true;
     user.profile.accountStatus = 'active';
     user.profile.isValidated = true;
+    user.profile.isActive = true;
 
     if (user.profile.phoneNumber) {
       user.profile.phoneNumberVerified = true;
     }
 
     await user.save();
+
+    // Populate memberships so the frontend gets full data on first login
+    await user.populate('memberships');
 
     const { accessToken, refreshToken } = this.generateTokens(user, false);
 

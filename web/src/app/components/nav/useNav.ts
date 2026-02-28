@@ -73,8 +73,18 @@ export const useNav = () => {
   };
 
   const navigateToHome = () => {
-    const url = getRoleHomePage(user?.role as any);
-    navigate({ to: url });
+    const { activeDashboard } = useUserStore.getState();
+    // Prefer active dashboard for navigation, fallback to role-based
+    if (activeDashboard === "manager") {
+      navigate({ to: APP_PAGES.manager.link });
+    } else if (activeDashboard === "coach") {
+      navigate({ to: APP_PAGES.coach.link });
+    } else if (activeDashboard === "admin") {
+      navigate({ to: APP_PAGES.admin.link });
+    } else {
+      const url = getRoleHomePage(user?.role as any);
+      navigate({ to: url });
+    }
   };
 
   const isCollapsed = !sidebarExpanded && !isMobile && !isPinned;

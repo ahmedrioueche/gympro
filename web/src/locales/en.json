@@ -3000,7 +3000,8 @@
     "coach": "Coach",
     "member": "Member",
     "cleaner": "Cleaner",
-    "maintenance": "Maintenance"
+    "maintenance": "Maintenance",
+    "staff": "Staff"
   },
   "schedule": {
     "title": "Schedule",

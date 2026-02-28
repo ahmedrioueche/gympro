@@ -32,7 +32,16 @@ export function useGymFilter(gyms: Gym[]) {
     const roleMapping: Record<string, string[]> = {
       coach: ["coach"],
       member: ["member"],
-      manager: ["owner", "manager", "staff"],
+      manager: [
+        "owner",
+        "manager",
+        "staff",
+        "receptionist",
+        "coach",
+        "cleaner",
+        "maintenance",
+        "security",
+      ],
     };
     const allowedRoles = roleMapping[activeDashboard] || ["member"];
 

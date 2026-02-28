@@ -1694,35 +1694,49 @@ export class MembershipService {
 
       await membership.save();
       user.memberships.push(membership._id);
+
+      // Grant manager dashboard access for staff roles
+      const managerRoles = [
+        UserRole.Manager,
+        UserRole.Receptionist,
+        UserRole.Admin,
+      ];
+      if (managerRoles.includes(role as UserRole)) {
+        if (!user.dashboardAccess) {
+          user.dashboardAccess = ['member'];
+        }
+        if (!user.dashboardAccess.includes('manager')) {
+          user.dashboardAccess.push('manager');
+        }
+      }
+
       await user.save();
     }
 
-    // Send notification to existing users
-    if (!isNewUser) {
-      try {
-        const gym = await this.gymModel
-          .findById(gymId)
-          .select('name')
-          .lean()
-          .exec();
+    // Send notification to user (both new and existing)
+    try {
+      const gym = await this.gymModel
+        .findById(gymId)
+        .select('name')
+        .lean()
+        .exec();
 
-        if (gym) {
-          await this.notificationsService.notifyUser(user, {
-            key: 'staff_added_to_gym',
-            vars: {
-              name: user.profile?.fullName || 'Staff',
-              gymName: gym.name,
-              role: role,
-            },
-            type: 'info' as NotificationType,
-            priority: 'medium',
-            relatedId: gymId,
-            gymId: gymId, // Pass gymId for feature check
-          });
-        }
-      } catch (notifError) {
-        this.logger.error(`Failed to send staff notification: ${notifError}`);
+      if (gym) {
+        await this.notificationsService.notifyUser(user, {
+          key: 'staff_added_to_gym',
+          vars: {
+            name: user.profile?.fullName || 'Staff',
+            gymName: gym.name,
+            role: role,
+          },
+          type: 'info' as NotificationType,
+          priority: 'medium',
+          relatedId: gymId,
+          gymId: gymId,
+        });
       }
+    } catch (notifError) {
+      this.logger.error(`Failed to send staff notification: ${notifError}`);
     }
 
     this.logger.log(

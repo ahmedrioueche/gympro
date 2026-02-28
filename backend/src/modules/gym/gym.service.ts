@@ -356,8 +356,11 @@ export class GymService {
     // Get gyms where user is an affiliated coach
     const coachGyms = await this.findByCoach(userId);
 
+    // Get gyms where user has a staff role (receptionist, manager, etc.)
+    const staffGyms = await this.findByStaff(userId);
+
     // Combine and deduplicate by _id
-    const allGyms = [...ownedGyms, ...memberGyms, ...coachGyms];
+    const allGyms = [...ownedGyms, ...memberGyms, ...coachGyms, ...staffGyms];
     const uniqueGyms = Array.from(
       new Map(allGyms.map((gym) => [gym._id.toString(), gym])).values(),
     );
@@ -385,6 +388,54 @@ export class GymService {
       .find({ _id: { $in: gymIds } })
       .populate('owner')
       .exec();
+
+    return gyms.map((gym) => this.normalizeGym(gym));
+  }
+
+  /**
+   * Get gyms where user has a staff role (manager, receptionist, etc.) via memberships
+   */
+  async findByStaff(userId: string) {
+    const user = await this.userModel
+      .findById(userId)
+      .populate({
+        path: 'memberships',
+        populate: {
+          path: 'gym',
+          model: 'GymModel',
+          populate: {
+            path: 'owner',
+            model: 'User',
+          },
+        },
+      })
+      .exec();
+
+    if (!user || !user.memberships || user.memberships.length === 0) {
+      return [];
+    }
+
+    const staffRoles = [
+      UserRole.Manager,
+      UserRole.Receptionist,
+      UserRole.Coach,
+      UserRole.Cleaner,
+      UserRole.Maintenance,
+      UserRole.Security,
+    ];
+
+    const gyms = (user.memberships as any[])
+      .map((membership: any) => {
+        if (
+          membership.gym &&
+          ['active', 'pending'].includes(membership.membershipStatus) &&
+          membership.roles.some((r: any) => staffRoles.includes(r))
+        ) {
+          return membership.gym;
+        }
+        return null;
+      })
+      .filter((gym: any) => gym !== null);
 
     return gyms.map((gym) => this.normalizeGym(gym));
   }
