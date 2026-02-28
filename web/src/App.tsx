@@ -1,5 +1,6 @@
 import { Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { TopBanner } from "./components/TopBanner";
 import { BG_GRADIENT } from "./constants/styles";
 import { useTheme } from "./context/ThemeContext";
 import Modals from "./modals";
@@ -21,10 +22,13 @@ const App = () => {
 
   return (
     <div
-      className={`font-primary
+      className={`font-primary flex flex-col min-h-screen
      ${isDark ? BG_GRADIENT : "bg-background"}`}
     >
-      <Outlet />
+      <TopBanner />
+      <div className="flex-1 overflow-auto flex flex-col">
+        <Outlet />
+      </div>
       <Modals />
     </div>
   );

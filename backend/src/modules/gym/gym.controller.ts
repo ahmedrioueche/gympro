@@ -13,6 +13,7 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -104,6 +105,25 @@ export class GymController {
         undefined,
         error.message,
       );
+    }
+  }
+
+  @Get('export')
+  @UseGuards(JwtAuthGuard)
+  async exportData(@Req() req: any, @Res() res: any) {
+    try {
+      await this.gymService.exportManagerData(req.user.sub, res);
+    } catch (error) {
+      res
+        .status(500)
+        .json(
+          apiResponse(
+            false,
+            ErrorCode.FETCH_MY_GYMS_FAILED,
+            undefined,
+            error.message,
+          ),
+        );
     }
   }
 

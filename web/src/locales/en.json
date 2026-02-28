@@ -194,7 +194,6 @@
     "booked": "Booked",
     "viewTraining": "Go to Training"
   },
-
   "auth": {
     "welcome_back": "Welcome back",
     "sign_in_subtitle": "Sign in to your account to continue",
@@ -234,7 +233,6 @@
     "feature_1": "Unified management for gyms, coaches, and members",
     "feature_2": "Training programs, coaching tools & progress tracking",
     "feature_3": "Integrated billing, renewals & smart notifications",
-
     "email_sent": {
       "welcome_title": "🎉 Welcome to GymPro! ",
       "welcome_message": "We're excited to have you on board. You can start enjoying the benefits of GymPro very soon!",
@@ -375,7 +373,6 @@
       "history": {
         "fetch_error": "Failed to fetch history"
       },
-
       "payment": {
         "checkout_creation_failed": "Failed to create checkout. Please try again.",
         "checkout_not_found": "Checkout session not found. Please start a new checkout.",
@@ -628,7 +625,6 @@
       "name": "pages.admin.settings",
       "link": "/admin/settings"
     },
-
     "options": {
       "male": "Male",
       "female": "Female"
@@ -636,7 +632,6 @@
     "actions": {
       "yes": "Yes",
       "no": "No",
-
       "next": "Next",
       "previous": "Back",
       "finish": "Finish",
@@ -751,7 +746,6 @@
     "subscriptionStatus": "Status",
     "viewMoreDetails": "View Details"
   },
-
   "create_gym": {
     "title": "Create Your Gym",
     "subtitle": "Set up your gym in just a few steps and start managing everything in one place",
@@ -809,7 +803,6 @@
       "description": "You can always update these details later from your gym settings. Don't worry about getting everything perfect right now!"
     }
   },
-
   "profile": {
     "defaultName": "User",
     "defaultEmail": "user@example.com",
@@ -913,224 +906,31 @@
     "invitationAccepted": "Invitation accepted successfully",
     "invitationDeclined": "Invitation declined successfully"
   },
-
   "settings": {
-    "pageTitle": "Settings",
-    "pageSubtitle": "Manage your application preferences",
-    "saveSuccess": "Settings updated successfully",
-    "saveError": "Failed to update settings",
-    "dangerZone": "Danger Zone",
-    "tabs": {
-      "general": "General",
-      "notifications": "Notifications",
-      "training": "Training",
-      "locale": "Locale"
-    },
-    "general": {
+    "banners": {
+      "title": "System Announcements",
+      "description": "Manage global banners and alerts displayed to all users.",
+      "empty": "No active banners found.",
+      "emptyDesc": "Create your first banner to display announcements across the application.",
+      "noticeText": "Notice text here",
+      "content": "Content & Translations",
+      "autoTranslate": "Auto Translate",
+      "en": "English (Primary)",
+      "ar": "Arabic (ar)",
+      "fr": "French (fr)",
       "appearance": "Appearance",
-      "appearanceDesc": "Customize how GymPro looks on your device",
-      "layout": "Layout Preference",
-      "layoutDesc": "Choose your preferred data visualization mode",
-      "viewPreference": "Default View Mode",
-      "sidebarInfo": "Dynamic Sidebar",
-      "sidebarInfoDesc": "Your sidebar preference is automatically saved as you browse.",
-      "darkOnlyNote": "GymPro currently defaults to a premium dark aesthetic for the best experience."
-    },
-    "theme": {
-      "light": "Light",
-      "dark": "Dark",
-      "auto": "System",
-      "cards": "Cards View",
-      "table": "Table View"
-    },
-    "notifications": {
-      "alerts": "Reminder Settings",
-      "alertsDesc": "Configure how early you want to be notified of events",
-      "reminderMinutes": "Default Reminder (minutes)",
-      "note": "Real-time delivery",
-      "noteDesc": "Notifications are delivered instantly via WebSockets when you are online."
-    },
-    "locale": {
-      "title": "Regional & Language",
-      "desc": "Set your preferred language, currency and timezone",
-      "language": "Language",
-      "currency": "Preferred Currency",
-      "timezone": "Timezone",
-      "region": "Region",
-      "contactSupportTitle": "Need a change?",
-      "contactSupportDesc": "Please contact our support team to update your business region or currency."
-    },
-    "gym": {
-      "noGym": "No gym selected",
-      "selectGym": "Please select a gym to view details",
-      "noOperatingHours": "No operating hours configured",
-      "location": "Location",
-      "opensAt": "Opens at",
-      "closesAt": "Closes at",
-      "status": {
-        "open": "Open Now",
-        "closed": "Closed",
-        "womenOnly": "Women Only Now",
-        "menOnly": "Men Only Now"
-      },
-      "pageTitle": "Gym Settings",
-      "pageSubtitle": "Configure your gym-specific preferences and policies",
-      "saveSuccess": "Gym settings updated successfully",
-      "saveError": "Failed to update gym settings",
-      "tabs": {
-        "general": "General",
-        "notifications": "Notifications",
-        "services": "Services"
-      },
-      "general": {
-        "title": "General Settings",
-        "workingHours": "Working Hours",
-        "workingHoursDesc": "Set your gym's operating hours",
-        "advancedHours": "Advanced Mode",
-        "advancedHoursNote": "Configure multiple time slots per day.",
-        "startTime": "Opening Time",
-        "endTime": "Closing Time",
-        "genderPolicy": "Gender Policy",
-        "genderPolicyDesc": "Configure mixed or gender-specific training sessions",
-        "isMixed": "Mixed Training",
-        "isMixedDesc": "Allow males and females to train together",
-        "femaleOnlyHours": "Female-Only Hours",
-        "femaleOnlyHoursDesc": "Specify time ranges reserved for female members",
-        "addTimeSlot": "Add Slot",
-        "slot": "Slot",
-        "newTimeSlot": "New Time Slot",
-        "editSlot": "Edit Slot",
-        "day": "Days",
-        "timeRange": "Time Range",
-        "noFemaleHours": "No female-only hours configured",
-        "selectAtLeastOneDay": "Please select at least one day",
-        "saveChanges": "Save Changes",
-        "confirm": "Confirm",
-        "cancel": "Cancel",
-        "accessControlTitle": "Access Control Mode",
-        "accessFlexible": "Flexible",
-        "accessFlexibleDesc": "Members are allowed in even if expired, but both they and the manager receive a warning.",
-        "accessStrict": "Strict",
-        "accessStrictDesc": "Expired subscriptions strictly block entry. Physical access hardware will deny passage.",
-        "errors": {
-          "noWorkingDays": "Please select at least one working day.",
-          "slotOnNonWorkingDay": "Conflict: Slot detected for {{day}}, which is not marked as a working day.",
-          "slotOnNonWorkingDayDesc": "Please remove the slot or enable {{day}} as a working day.",
-          "slotOnNonWorkingDayTitle": "Schedule Conflict",
-          "slotOnNonWorkingDayAction": "Fix Schedule",
-          "missingSlot": "Conflict: {{day}} is a working day but has no time slots configured.",
-          "missingSlotDesc": "Please add a time slot for {{day}} or mark it as a non-working day.",
-          "femaleSlotOnNonWorkingDay": "Conflict: Female-only slot for {{day}} is on a non-working day.",
-          "femaleSlotOnNonWorkingDayDesc": "Please remove the slot or enable {{day}} as a working day.",
-          "femaleSlotOnNonWorkingDayTitle": "Schedule Conflict",
-          "femaleSlotOnNonWorkingDayAction": "Fix Schedule",
-          "femaleSlotOutsideRange": "Conflict: Female-only hours for {{day}} must be within the regular opening hours for that day.",
-          "femaleSlotOutsideRangeDesc": "Adjust the female-only session to fit within the gym's opening hours.",
-          "femaleSlotOutsideStandardRange": "Conflict: Female-only hours for {{day}} must be within {{start}} — {{end}}.",
-          "femaleSlotOutsideStandardRangeDesc": "Adjust the session range to fit within the standard working hours."
-        }
-      },
-      "notifications": {
-        "title": "Notification Settings",
-        "enabled": "Notifications Enabled",
-        "enabledDesc": "Enable or disable gym-wide notifications",
-        "renewalReminder": "Renewal Reminder",
-        "renewalReminderDesc": "Days before subscription expiry to notify members",
-        "reminderDays": "Reminder Days"
-      },
-      "services": {
-        "title": "Services & Payments",
-        "paymentMethods": "Accepted Payment Methods",
-        "paymentMethodsDesc": "Select which payment methods your gym accepts",
-        "cash": "Cash",
-        "card": "Card",
-        "online": "Online Payment",
-        "servicesOffered": "Services Offered",
-        "servicesOfferedDesc": "Select the types of subscriptions available at your gym",
-        "gym": "General Gym Access",
-        "cardio": "Cardio Training",
-        "crossfit": "CrossFit",
-        "swimming": "Swimming",
-        "shower": "Showers",
-        "massage": "Massage",
-        "boxing": "Boxing",
-        "yoga": "Yoga",
-        "coaching": "Coaching & Personal Training",
-        "sona": "Sona",
-        "customSubscriptions": "Custom Subscriptions",
-        "customSubscriptionsDesc": "Allow creation of custom subscription types",
-        "allowCustom": "Allow Custom Subscriptions",
-        "allowCustomDesc": "Enable gym owners to create custom subscription plans"
-      },
-      "member": {
-        "pageTitle": "Gym Settings",
-        "pageSubtitle": "Manage your preferences for this gym",
-        "saveSuccess": "Settings updated successfully",
-        "saveError": "Failed to update settings",
-        "tabs": {
-          "general": "General",
-          "notifications": "Notifications",
-          "privacy": "Privacy"
-        },
-        "general": {
-          "title": "General Settings",
-          "description": "Configure your basic gym preferences",
-          "weightUnit": "Preferred Weight Unit",
-          "weightUnitLabel": "Measurement Unit",
-          "weightUnitDesc": "Choose kg or lbs for your workouts"
-        },
-        "notifications": {
-          "title": "Notifications",
-          "description": "Choose how and when you want to be notified",
-          "classReminders": "Class Reminders",
-          "classRemindersDesc": "Get notified before your scheduled classes",
-          "subscriptionRenewal": "Renewal Alerts",
-          "subscriptionRenewalDesc": "Notified when your subscription is about to expire",
-          "announcements": "Gym Announcements",
-          "announcementsDesc": "Stay updated with important gym news"
-        },
-        "privacy": {
-          "title": "Privacy Settings",
-          "description": "Control your data and visibility within the gym",
-          "publicProfile": "Public Profile (Gym)",
-          "publicProfileDesc": "Allow other gym members to see your profile",
-          "shareProgress": "Share Progress",
-          "shareProgressDesc": "Allow gym coaches to see your workout history",
-          "tip": "Privacy Control",
-          "tipDesc": "These settings are gym-specific. You can have different privacy settings for each gym you follow."
-        }
-      }
-    },
-    "coach": {
-      "profile": {
-        "avatar": "Profile Photo",
-        "basicInfo": "Basic Information",
-        "fullName": "Full Name",
-        "fullNamePlaceholder": "Enter your full name",
-        "email": "Email",
-        "emailPlaceholder": "Enter your email address",
-        "phone": "Phone Number",
-        "phonePlaceholder": "Enter your phone number"
-      },
-      "coaching": {
-        "bio": "Professional Bio",
-        "bioPlaceholder": "Share your coaching philosophy, experience, and what makes you unique...",
-        "experience": "Years of Experience",
-        "experiencePlaceholder": "Enter years of coaching experience",
-        "specializations": "Specializations",
-        "specializationsHint": "Select your areas of expertise"
-      },
-      "location": {
-        "title": "Location",
-        "description": "Help clients find you by sharing your location",
-        "detect": "Detect Location",
-        "city": "City",
-        "cityPlaceholder": "Enter city",
-        "state": "State/Province",
-        "statePlaceholder": "Enter state or province",
-        "country": "Country",
-        "countryPlaceholder": "Enter country"
-      }
+      "variant": "Variant",
+      "customColor": "Custom Color Override",
+      "behavior": "Behavior & Actions",
+      "allowDismissal": "Allow Dismissal",
+      "allowDismissalDesc": "Users can close this banner",
+      "reappearAfter": "Reappear after (hours)",
+      "reappearDesc": "0 means dismissed permanently",
+      "actionType": "Action Type",
+      "activeDesc": "Make this banner visible to users immediately",
+      "deleteTitle": "Delete Banner",
+      "deleteDesc": "Are you sure you want to delete this banner? This action cannot be undone.",
+      "previewDesc": "This is how the banner will appear at the top of the app."
     }
   },
   "memberProfile": {
@@ -1194,7 +994,6 @@
       "failed": "Failed",
       "refunded": "Refunded"
     },
-
     "noBio": "No bio available.",
     "about": "About",
     "location": "Location",
@@ -1313,7 +1112,6 @@
         "lastLogin": "Last Login",
         "viewProfile": "View Profile",
         "editProfile": "Edit Profile",
-
         "email": "Email",
         "phone": "Phone",
         "location": "Location",
@@ -1321,10 +1119,8 @@
         "memberSince": "Member since",
         "activeMemberships": "Active memberships",
         "gyms": "gyms",
-
         "statusActive": "Active",
         "statusPending": "Pending",
-
         "roles": {
           "owner": "Owner",
           "manager": "Manager",
@@ -1334,7 +1130,6 @@
           "undefined": "undefined",
           "unknown": "unknown"
         },
-
         "status": {
           "active": "Active",
           "trial": "Trial",
@@ -1346,7 +1141,6 @@
           "unknown": "Unknown"
         }
       },
-
       "businessOverview": {
         "title": "Business Overview",
         "subtitle": "Your business at a glance",
@@ -1463,7 +1257,6 @@
         "empty": "No announcements at the moment",
         "urgent": "Urgent"
       },
-
       "subscriptions": {
         "history": "Subscription History",
         "allRecords": "Subscription Records",
@@ -1785,7 +1578,6 @@
   "createMember": {
     "title": "Add New Member",
     "subtitle": "Create a new gym membership in just a few steps",
-
     "steps": {
       "step": "Step",
       "general": {
@@ -1801,7 +1593,6 @@
         "description": "Contact preferences and final review"
       }
     },
-
     "form": {
       "contactMethod": {
         "label": "Primary Contact Method",
@@ -1865,14 +1656,12 @@
         "placeholder": "Add any special notes or requirements..."
       }
     },
-
     "review": {
       "title": "Member Summary",
       "name": "Name",
       "contact": "Contact",
       "subscription": "Plan"
     },
-
     "validation": {
       "contactRequired": "Contact information is required",
       "emailInvalid": "Please enter a valid email address",
@@ -1888,7 +1677,6 @@
       "phoneInUse": "This phone number cannot be used to create a member",
       "invalidStartDate": "Start date cannot be in the past"
     },
-
     "actions": {
       "back": "Back",
       "next": "Next Step",
@@ -1897,24 +1685,20 @@
       "cancel": "Cancel",
       "saving": "Saving..."
     },
-
     "success": {
       "title": "Member Created Successfully!",
       "message": "The new member has been added to your gym. They will receive access details shortly.",
       "addAnother": "Add Another Member",
       "viewMembers": "View All Members"
     },
-
     "error": {
       "message": "Failed to create member. Please try again."
     },
-
     "tips": {
       "title": "Access Notification",
       "description": "When you create a member, they will automatically receive a message with their account access details via their chosen contact method (email or SMS)."
     }
   },
-
   "gymMember": {
     "subscriptions": {
       "title": "My Subscriptions",
@@ -1968,7 +1752,6 @@
       }
     }
   },
-
   "plans": {
     "max_gyms": "Max Locations",
     "per_month": "per month",
@@ -2292,34 +2075,26 @@
       "access_suspended": "Your access has been suspended",
       "time_expired": "Expired",
       "time_format": "{{hours}}h {{minutes}}m",
-
       "urgency_title": "Time Remaining",
       "urgency_message": "You have {{hours}} hours before access is blocked",
-
       "after_grace_period": "After the grace period expires:",
       "lose_access": "You'll lose access to all features",
       "data_safe": "Your data will be safe and you can export it anytime",
       "cannot_create": "You won't be able to create or edit content",
-
       "can_continue": "You Can Still Work",
       "grace_period_info": "You have full access during the grace period. Take your time to renew or export your data.",
-
       "blocked_title": "Account Access Blocked",
       "currently_blocked": "What's currently blocked:",
       "blocked_features": "All premium features",
       "blocked_editing": "Creating and editing content",
       "blocked_members": "Managing members and gyms",
       "blocked_reports": "Viewing reports and analytics",
-
       "data_safe_title": "Your Data is Safe",
       "data_safe_message": "All your data is securely stored and will be immediately accessible once you restore your subscription.",
-
       "manual_renewal_title": "Manual Renewal Required",
       "manual_renewal_message": "Your subscription requires manual renewal through Chargily. Click below to complete the payment process.",
-
       "remind_later": "Remind Me Later",
       "need_help": "Need help? ",
-
       "action": {
         "subscribe": "Subscribe Now",
         "renew": "Renew Subscription",
@@ -2328,21 +2103,18 @@
         "export_data": "Export Data",
         "contact_support": "Contact Support"
       },
-
       "trial_expired": {
         "warning_title": "Free Trial Ended",
         "warning_message": "Your free trial has expired. Subscribe now to continue using all features.",
         "blocker_title": "Access Blocked",
         "blocker_message": "Your free trial has ended and the grace period has expired. Subscribe now to restore access."
       },
-
       "manual_expired": {
         "warning_title": "Subscription Expired",
         "warning_message": "Your subscription period has ended. Renew now to maintain access.",
         "blocker_title": "Access Blocked",
         "blocker_message": "Your subscription has expired. Renew your subscription to restore access."
       },
-
       "cancelled_expired": {
         "warning_title": "Subscription Cancelled",
         "warning_message": "Your cancellation has taken effect. Resubscribe to continue.",
@@ -2397,7 +2169,6 @@
         "training_onboarding": "Personal training & onboarding"
       }
     },
-
     "starter_onetime": {
       "name": "Starter (Lifetime)",
       "description": "One-time purchase, yours forever"
@@ -2906,10 +2677,8 @@
         "title": "No exercises found",
         "description": "No exercises found for the selected filters."
       },
-
       "deleteConfirm": "Delete Exercise"
     },
-
     "card": {
       "createdBy": "Created by",
       "viewDetails": "View Details",
@@ -4368,5 +4137,7 @@
     "analytics": "Advanced Analytics",
     "communications": "Comms & Engagements"
   },
-  "footer": { "copyright": "Copyright © {{year}} GymPro. All rights reserved." }
+  "footer": {
+    "copyright": "Copyright © {{year}} GymPro. All rights reserved."
+  }
 }

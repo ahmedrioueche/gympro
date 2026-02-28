@@ -39,6 +39,7 @@ import { SessionsModule } from './modules/sessions/sessions.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { SmsModule } from './modules/sms/sms.module';
 import { StoreModule } from './modules/store/store.module';
+import { SystemAlertsModule } from './modules/system-alerts/system-alerts.module';
 import { TrainingModule } from './modules/training/training.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { UsersModule } from './modules/users/users.module';
@@ -116,6 +117,7 @@ import { UsersModule } from './modules/users/users.module';
     StoreModule,
     GymClassModule,
     MemberAnalyticsModule,
+    SystemAlertsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -50,6 +50,11 @@ import { AppSubscriptionService } from './subscription/subscription.service';
     SubscriptionBlockerService,
     SubscriptionCronService,
   ],
-  exports: [AppPlansService, AppSubscriptionService, AppPaymentService],
+  exports: [
+    AppPlansService,
+    AppSubscriptionService,
+    AppPaymentService,
+    SubscriptionBlockerService,
+  ],
 })
 export class AppBillingModule {}

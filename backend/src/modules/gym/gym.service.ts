@@ -9,6 +9,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as exceljs from 'exceljs';
+import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
@@ -738,5 +740,166 @@ export class GymService {
     }
 
     return gymObj;
+  }
+
+  async exportManagerData(userId: string, res: Response) {
+    const workbook = new exceljs.Workbook();
+    const gymsSheet = workbook.addWorksheet('My Gyms');
+    const membersSheet = workbook.addWorksheet('Members');
+
+    // 1. Configure Columns
+    gymsSheet.columns = [
+      { header: 'Gym Name', key: 'name', width: 30 },
+      { header: 'City', key: 'city', width: 20 },
+      { header: 'Address', key: 'address', width: 30 },
+      { header: 'Workers', key: 'workersCount', width: 15 },
+      { header: 'Members', key: 'membersCount', width: 15 },
+    ];
+    membersSheet.columns = [
+      { header: 'Name', key: 'name', width: 30 },
+      { header: 'Email', key: 'email', width: 30 },
+      { header: 'Phone', key: 'phone', width: 20 },
+      { header: 'Username', key: 'username', width: 20 },
+      { header: 'Gender', key: 'gender', width: 12 },
+      { header: 'Age', key: 'age', width: 8 },
+      { header: 'City', key: 'city', width: 20 },
+      { header: 'Gym', key: 'gymName', width: 20 },
+      { header: 'Status', key: 'status', width: 15 },
+      { header: 'Joined At', key: 'joinedAt', width: 20 },
+      { header: 'Subscription Plan', key: 'subscriptionPlan', width: 25 },
+      { header: 'Subscription Expiry', key: 'subscriptionExpiry', width: 20 },
+    ];
+
+    // 2. Fetch gyms owned by this user (use raw DB query to avoid normalization issues)
+    const ownedGyms = await this.gymModel.find({ owner: userId }).exec();
+
+    // Also find gyms where this user is a staff manager
+    const staffMemberships = await this.membershipModel
+      .find({
+        user: new Types.ObjectId(userId),
+        membershipStatus: { $in: ['active', 'pending'] },
+        roles: {
+          $in: [
+            UserRole.Manager,
+            UserRole.Admin,
+            UserRole.Owner,
+            UserRole.Receptionist,
+          ],
+        },
+      })
+      .exec();
+
+    const staffGymIds = staffMemberships
+      .map((m) => m.gym?.toString())
+      .filter(Boolean);
+
+    // Fetch those additional gyms
+    const staffGyms = await this.gymModel
+      .find({
+        _id: {
+          $in: staffGymIds
+            .filter((id) => !ownedGyms.some((g) => g._id.toString() === id))
+            .map((id) => new Types.ObjectId(id)),
+        },
+      })
+      .exec();
+
+    const allGyms = [...ownedGyms, ...staffGyms];
+
+    for (const gym of allGyms) {
+      const gymId = gym._id;
+
+      // Count workers (staff with non-member roles)
+      const workersCount = await this.membershipModel.countDocuments({
+        gym: gymId,
+        membershipStatus: { $in: ['active', 'pending'] },
+        roles: {
+          $in: [
+            UserRole.Manager,
+            UserRole.Receptionist,
+            UserRole.Coach,
+            UserRole.Cleaner,
+            UserRole.Maintenance,
+            UserRole.Security,
+          ],
+        },
+      });
+
+      // Add Gym Row
+      gymsSheet.addRow({
+        name: gym.name,
+        city: gym.city,
+        address: gym.address,
+        workersCount,
+        membersCount: gym.memberStats?.total || 0,
+      });
+
+      // Directly query memberships for this gym (members only)
+      const memberships = await this.membershipModel
+        .find({
+          gym: gymId,
+          roles: UserRole.Member,
+          membershipStatus: {
+            $in: ['active', 'pending', 'expired', 'banned'],
+          },
+        })
+        .exec();
+
+      const membershipIds = memberships.map((m) => m._id);
+
+      if (membershipIds.length === 0) continue;
+
+      // Fetch users who have these memberships
+      const users = await this.userModel
+        .find({ memberships: { $in: membershipIds } })
+        .populate({
+          path: 'memberships',
+          match: { gym: gymId },
+        })
+        .select(
+          '-profile.password -setupToken -setupTokenExpiry -verificationToken -verificationTokenExpiry -resetPasswordToken -resetPasswordTokenExpiry',
+        )
+        .exec();
+
+      // Add Member Rows
+      for (const user of users) {
+        const userObj = user.toObject ? user.toObject() : user;
+        const membership = (userObj.memberships as any[])?.find(
+          (m: any) =>
+            m.gym?.toString() === gymId.toString() ||
+            m.gym?._id?.toString() === gymId.toString(),
+        );
+
+        membersSheet.addRow({
+          name: userObj.profile?.fullName || '',
+          email: userObj.profile?.email || '',
+          phone: userObj.profile?.phoneNumber || '',
+          username: userObj.profile?.username || '',
+          gender: userObj.profile?.gender || '',
+          age: userObj.profile?.age || '',
+          city: userObj.profile?.city || '',
+          gymName: gym.name,
+          status: membership?.membershipStatus || 'Unknown',
+          joinedAt: membership?.joinedAt || '',
+          subscriptionPlan: membership?.subscription?.planName || '',
+          subscriptionExpiry: membership?.subscription?.endDate
+            ? new Date(membership.subscription.endDate).toLocaleDateString()
+            : '',
+        });
+      }
+    }
+
+    // 3. Set Headers and send response
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=' + 'gym_export.xlsx',
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
   }
 }

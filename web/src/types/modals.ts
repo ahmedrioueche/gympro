@@ -20,6 +20,12 @@ import type {
 } from "@ahmedrioueche/gympro-client";
 import type { Product } from "@ahmedrioueche/gympro-client/dist/types/product";
 
+import type { AppBanner } from "@ahmedrioueche/gympro-client";
+
+export interface BannerFormModalProps {
+  banner?: AppBanner | null;
+}
+
 export interface FeaturePackageModalProps {
   pkg?: AppFeaturePackage | null;
 }

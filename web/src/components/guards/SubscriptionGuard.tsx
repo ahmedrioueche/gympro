@@ -6,15 +6,11 @@ import LoadingPage from "../ui/LoadingPage";
 
 const SubscriptionBlockerModal = lazy(
   () =>
-    import(
-      "../../app/components/modals/subscription-blocker-modal/SubscriptionBlockerModal"
-    )
+    import("../../app/components/modals/subscription-blocker-modal/SubscriptionBlockerModal"),
 );
 const SubscriptionWarningModal = lazy(
   () =>
-    import(
-      "../../app/components/modals/subscription-warning-modal/SubscriptionWarningModal"
-    )
+    import("../../app/components/modals/subscription-warning-modal/SubscriptionWarningModal"),
 );
 
 interface SubscriptionGuardProps {
@@ -28,6 +24,13 @@ const ALLOWED_ROUTES = [
   "/support",
   "/auth/login",
   "/auth/logout",
+  "/auth/setup",
+  "/auth/verify-phone",
+  "/auth/verify-email",
+  "/auth/callback",
+  "/auth/reset-password",
+  "/auth/forgot-password",
+  "/auth/email-sent",
 ];
 
 export const SubscriptionGuard: React.FC<SubscriptionGuardProps> = ({
@@ -38,7 +41,7 @@ export const SubscriptionGuard: React.FC<SubscriptionGuardProps> = ({
 
   // Check if current route is in allowed list
   const isAllowedRoute = ALLOWED_ROUTES.some((route) =>
-    location.pathname.startsWith(route)
+    location.pathname.startsWith(route),
   );
 
   if (isLoading) {

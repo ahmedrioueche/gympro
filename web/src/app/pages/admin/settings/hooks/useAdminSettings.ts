@@ -12,7 +12,11 @@ import { useUpdateProfile } from "../../../../../hooks/queries/useUsers";
 import { useLanguageStore } from "../../../../../store/language";
 import { useUserStore } from "../../../../../store/user";
 
-export type AdminSettingsTabType = "profile" | "preferences" | "security";
+export type AdminSettingsTabType =
+  | "profile"
+  | "preferences"
+  | "security"
+  | "banners";
 
 export function useAdminSettings() {
   const { t } = useTranslation();

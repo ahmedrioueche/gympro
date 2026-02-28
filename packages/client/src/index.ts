@@ -59,6 +59,7 @@ export * from "./types/alert";
 export * from "./types/analytics";
 export * from "./types/announcement";
 export * from "./types/api";
+export * from "./types/appBanner";
 export * from "./types/appPayment";
 export * from "./types/appSubscription";
 export * from "./types/attendance";

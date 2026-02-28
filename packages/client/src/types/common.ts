@@ -252,3 +252,5 @@ export interface AuditInfo {
   updatedAt?: string | Date;
   updatedBy?: string;
 }
+
+export type LanguageMap = Record<string, string>;

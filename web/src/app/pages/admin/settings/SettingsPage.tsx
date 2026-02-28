@@ -1,9 +1,10 @@
-import { Lock, Save, Settings, User } from "lucide-react";
+import { Lock, Megaphone, Save, Settings, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../components/PageHeader";
 import PreferencesSettings from "../../../components/settings/PreferencesSettings";
 import SecuritySettings from "../../../components/settings/SecuritySettings";
 import SettingsContainer from "../../../components/settings/SettingsContainer";
+import BannersSettings from "./components/BannersSettings";
 import ProfileSettings from "./components/ProfileSettings";
 import {
   useAdminSettings,
@@ -60,6 +61,11 @@ export default function SettingsPage() {
       id: "security",
       label: t("member.settings.tabs.security", "Security"),
       icon: Lock,
+    },
+    {
+      id: "banners",
+      label: t("member.settings.tabs.banners", "Announcements"),
+      icon: Megaphone,
     },
   ];
 
@@ -124,6 +130,7 @@ export default function SettingsPage() {
             onConfirmPasswordChange={setConfirmPassword}
           />
         )}
+        {activeTab === "banners" && <BannersSettings />}
       </SettingsContainer>
     </div>
   );

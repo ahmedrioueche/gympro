@@ -96,6 +96,8 @@ type ModalType =
   | "coaching_offer"
   | "create_gym"
   | "feature_package"
+  | "banner_form"
+  | "subscription_warning"
   | null;
 
 interface ModalState {
@@ -145,6 +147,10 @@ interface ModalState {
   classDetailsProps?: ClassDetailsModalProps;
   coachingOfferProps?: import("../types/modals").CoachingOfferModalProps;
   featurePackageProps?: import("../types/modals").FeaturePackageModalProps;
+  bannerFormProps?: import("../types/modals").BannerFormModalProps;
+  subscriptionWarningProps?: {
+    config?: import("@ahmedrioueche/gympro-client").BlockerModalConfig;
+  };
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -431,6 +437,18 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "feature_package",
           featurePackageProps: props,
+        };
+      }
+      if (modal === "banner_form") {
+        return {
+          currentModal: "banner_form",
+          bannerFormProps: props,
+        };
+      }
+      if (modal === "subscription_warning") {
+        return {
+          currentModal: "subscription_warning",
+          subscriptionWarningProps: props,
         };
       }
       return { currentModal: null };

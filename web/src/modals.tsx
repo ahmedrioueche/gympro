@@ -224,6 +224,15 @@ const CreateGymModal = lazy(
   () => import("./app/components/modals/create-gym-modal/CreateGymModal"),
 );
 
+const BannerFormModal = lazy(
+  () => import("./app/pages/admin/settings/components/BannerFormModal"),
+);
+
+const SubscriptionWarningModalWrapper = lazy(
+  () =>
+    import("./app/components/modals/subscription-warning-modal/SubscriptionWarningModalWrapper"),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -274,6 +283,8 @@ function modals() {
       <CreateMemberModal />
       <ClassDetailsModal />
       <CreateGymModal />
+      <BannerFormModal />
+      <SubscriptionWarningModalWrapper />
     </Suspense>
   );
 }

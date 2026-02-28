@@ -267,4 +267,16 @@ export const gymApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Export gym manager data */
+  exportData: async (): Promise<Blob> => {
+    try {
+      const res = await apiClient.get<Blob>("/gyms/export", {
+        responseType: "blob",
+      });
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };
