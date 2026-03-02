@@ -4,3 +4,6 @@ export const BG_GRADIENT =
 //dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900
 
 export const PAGE_CLASSES = "min-h-screen max-w-8xl mx-auto p-5 md:p-6 lg:p-8";
+
+export const LANDING_PAGE_CLASSES =
+  "relative z-10 mt-12 md:mt-24 pb-20 md:pb-40 flex flex-col gap-24 md:gap-24 lg:gap-40";

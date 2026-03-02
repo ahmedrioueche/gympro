@@ -7,7 +7,7 @@ function HeroSection() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative overflow-hidden min-h-[500px] md:min-h-[700px] flex items-center">
+    <section className="relative overflow-hidden min-h-screen flex items-center pt-20">
       {/* Background image — full bleed, fades left */}
       <div className="absolute inset-0 z-0">
         {/* Glow — pulses */}
@@ -43,21 +43,21 @@ function HeroSection() {
           <div className="flex flex-col gap-1">
             {/* UNLEASH — delay 0.1s */}
             <h1
-              className="hero-animate text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter text-outline leading-none"
+              className="hero-animate text-6xl sm:text-7xl md:text-9xl font-black tracking-tighter text-outline leading-none"
               style={{ animation: "heroFadeUp 0.6s ease-out 0.1s forwards" }}
             >
               {t("landing.hero.line1")}
             </h1>
             {/* THE POWER — delay 0.3s */}
             <h1
-              className="hero-animate text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent leading-none"
+              className="hero-animate text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent leading-none"
               style={{ animation: "heroFadeUp 0.6s ease-out 0.3s forwards" }}
             >
               {t("landing.hero.line2")}
             </h1>
             {/* OF YOUR GYM — delay 0.5s */}
             <h1
-              className="hero-animate text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-white leading-tight"
+              className="hero-animate text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-white leading-tight"
               style={{ animation: "heroFadeUp 0.6s ease-out 0.5s forwards" }}
             >
               {t("landing.hero.line3")}
@@ -77,7 +77,7 @@ function HeroSection() {
           >
             <Link
               href={APP_PAGES.signUp.link}
-              className="px-6 md:px-8 py-3 md:py-4 bg-primary text-white font-bold rounded-xl flex items-center gap-2 group shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-[1.02] active:scale-95"
+              className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-primary to-purple-500 text-white font-bold rounded-xl flex items-center gap-2 group shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-[1.02] active:scale-95"
             >
               <span>{t("landing.hero.getStarted")}</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

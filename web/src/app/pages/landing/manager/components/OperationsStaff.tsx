@@ -2,6 +2,7 @@ import { Calendar, Lock, Package, ShieldCheck } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInView } from "../../../../../hooks/useInView";
+import { LandingSectionTitle } from "../../../../components/landing/LandingSectionTitle";
 
 export function OperationsStaff() {
   const { t } = useTranslation();
@@ -10,22 +11,13 @@ export function OperationsStaff() {
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="max-w-7xl mx-auto px-6 py-24 mb-24"
+      className="max-w-7xl mx-auto px-6 md:px-10"
     >
-      <div
-        className="flex items-center gap-4 mb-12 hero-animate"
-        style={
-          inView
-            ? { animation: "heroFadeUp 0.6s ease-out 0.1s forwards" }
-            : undefined
-        }
-      >
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30"></div>
-        <h2 className="text-2xl md:text-3xl font-black px-6 text-white uppercase tracking-tighter">
-          {t("landing.managerPage.operations.title")}
-        </h2>
-        <div className="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30"></div>
-      </div>
+      <LandingSectionTitle
+        title={t("landing.managerPage.operations.title")}
+        Icon={ShieldCheck}
+        inView={inView}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div

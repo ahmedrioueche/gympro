@@ -9,9 +9,9 @@ export function CoachCTA() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="py-24 relative overflow-hidden"
+      className="relative overflow-hidden"
     >
-      <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+      <div className="max-w-5xl mx-auto px-6 md:px-10 text-center relative z-10">
         <div
           className="glass-card glow-border-cyan p-12 lg:p-20 rounded-[2.5rem] hero-animate"
           style={

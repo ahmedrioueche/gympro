@@ -1,4 +1,5 @@
 import { useLayoutEffect } from "react";
+import { LANDING_PAGE_CLASSES } from "../../../../constants/styles";
 import { useLanding } from "../LandingPage";
 import { MemberFeatures } from "./components/MemberFeatures";
 import { MemberHero } from "./components/MemberHero";
@@ -20,11 +21,12 @@ function MemberPage() {
   }, [setNavbarColors]);
   return (
     <>
-      <main className="flex-1 max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-20 flex flex-col gap-24">
-        <MemberHero />
+      <MemberHero />
+
+      <div className={LANDING_PAGE_CLASSES}>
         <MemberFeatures />
         <WorkoutPreview />
-      </main>
+      </div>
     </>
   );
 }

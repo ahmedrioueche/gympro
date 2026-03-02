@@ -1,4 +1,5 @@
 import { useLayoutEffect } from "react";
+import { LANDING_PAGE_CLASSES } from "../../../../constants/styles";
 import { useLanding } from "../LandingPage";
 import { FinancialsGrowth } from "./components/FinancialsGrowth";
 import { ManagerCTA } from "./components/ManagerCTA";
@@ -23,14 +24,15 @@ function ManagerPage() {
   }, [setNavbarColors]);
   return (
     <>
-      <main className="flex-1">
-        <ManagerHero />
+      <ManagerHero />
+
+      <div className={LANDING_PAGE_CLASSES}>
         <MemberLifecycle />
         <FinancialsGrowth />
         <OperationsStaff />
         <ManagerTestimonials />
         <ManagerCTA />
-      </main>
+      </div>
     </>
   );
 }

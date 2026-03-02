@@ -1,4 +1,5 @@
 import { useLayoutEffect } from "react";
+import { LANDING_PAGE_CLASSES } from "../../../../constants/styles";
 import { useLanding } from "../LandingPage";
 import CoachBento from "./components/CoachBento";
 import HeroSection from "./components/HeroSection";
@@ -24,7 +25,7 @@ function HomePage() {
       <HeroSection />
 
       {/* Bento sections */}
-      <div className="relative z-10 px-6 mt-12 md:mt-24  md:px-10 pb-20 md:pb-40 flex flex-col gap-24 md:gap-24 lg:gap-40">
+      <div className={LANDING_PAGE_CLASSES}>
         <ManagerBento />
         <MemberBento />
         <CoachBento />

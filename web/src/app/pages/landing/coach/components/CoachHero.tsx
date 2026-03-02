@@ -1,6 +1,8 @@
-import { ArrowRight, PlayCircle } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../../../constants/navigation";
 import { useInView } from "../../../../../hooks/useInView";
 
 export function CoachHero() {
@@ -10,10 +12,10 @@ export function CoachHero() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative pt-20 pb-32 overflow-hidden"
+      className="relative pt-20 overflow-hidden min-h-screen flex items-center"
     >
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-gradient-to-b from-primary/10 to-transparent blur-[120px] -z-10"></div>
-      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 grid lg:grid-cols-2 gap-16 items-center">
         <div
           className="space-y-8 hero-animate"
           style={
@@ -39,14 +41,13 @@ export function CoachHero() {
             {t("landing.coachPage.hero.description")}
           </p>
           <div className="flex flex-wrap gap-4 pt-4">
-            <button className="h-14 px-8 bg-primary text-[#101f22] font-black rounded-xl hover:scale-105 transition-transform flex items-center gap-2 shadow-xl shadow-primary/20 active:scale-95">
+            <Link
+              href={APP_PAGES.signUp.link}
+              className="h-14 px-8 bg-primary text-[#101f22] font-black rounded-xl hover:scale-105 transition-transform flex items-center gap-2 shadow-xl shadow-primary/20 active:scale-95"
+            >
               {t("landing.coachPage.hero.ctaPrimary")}{" "}
               <ArrowRight className="w-5 h-5" />
-            </button>
-            <button className="h-14 px-8 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-xl flex items-center gap-2 transition-all backdrop-blur-sm">
-              <PlayCircle className="w-5 h-5" />{" "}
-              {t("landing.coachPage.hero.ctaSecondary")}
-            </button>
+            </Link>
           </div>
         </div>
 

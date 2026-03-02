@@ -2,29 +2,21 @@ import { BarChart3, Layout, Users } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInView } from "../../../../../hooks/useInView";
+import { LandingSectionTitle } from "../../../../components/landing/LandingSectionTitle";
 
 export function CoachDashboard() {
   const { t } = useTranslation();
   const { ref, inView } = useInView(0.1);
 
   return (
-    <section ref={ref as React.RefObject<HTMLElement>} className="py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div
-          className="mb-16 text-center max-w-2xl mx-auto hero-animate"
-          style={
-            inView
-              ? { animation: "heroFadeUp 0.6s ease-out 0.1s forwards" }
-              : undefined
-          }
-        >
-          <h2 className="text-3xl lg:text-5xl font-extrabold mb-6 text-white tracking-tight">
-            {t("landing.coachPage.dashboard.title")}
-          </h2>
-          <p className="text-slate-400">
-            {t("landing.coachPage.dashboard.subtitle")}
-          </p>
-        </div>
+    <section ref={ref as React.RefObject<HTMLElement>}>
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+        <LandingSectionTitle
+          title={t("landing.coachPage.dashboard.title")}
+          subtitle={t("landing.coachPage.dashboard.subtitle")}
+          Icon={Layout}
+          inView={inView}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
           {/* Pro Program Builder */}

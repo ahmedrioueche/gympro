@@ -11,6 +11,7 @@ import {
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useInView } from "../../../../../hooks/useInView";
+import { LandingSectionTitle } from "../../../../components/landing/LandingSectionTitle";
 
 function MemberBento() {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ function MemberBento() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="max-w-7xl mx-auto w-full relative"
+      className="max-w-7xl mx-auto w-full relative px-6 md:px-10"
     >
       {/* Side label */}
       <div className="absolute -left-20 top-0 h-full items-center hidden xl:flex">
@@ -34,27 +35,15 @@ function MemberBento() {
         </span>
       </div>
 
-      {/* Header */}
-      <div
-        className="mb-8 md:mb-12 hero-animate"
-        style={
-          inView
-            ? { animation: "heroFadeUp 0.6s ease-out 0.1s forwards" }
-            : undefined
-        }
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <div className="size-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-            <Dumbbell className="w-5 h-5 text-purple-400" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">
-            {t("landing.member.title")}
-          </h2>
-        </div>
-        <p className="text-slate-400 max-w-md">
-          {t("landing.member.subtitle")}
-        </p>
-      </div>
+      <LandingSectionTitle
+        title={t("landing.member.title")}
+        subtitle={t("landing.member.subtitle")}
+        Icon={Dumbbell}
+        colorClassName="text-purple-400"
+        bgClassName="bg-purple-500/10"
+        borderClassName="border-purple-500/20"
+        inView={inView}
+      />
 
       {/* Bento grid */}
       <div className="grid grid-cols-12 gap-3 md:gap-4 auto-rows-auto">

@@ -1,6 +1,5 @@
 /* Animation for the zap icon container */
 @keyframes zap-move {
-
   0%,
   60%,
   100% {
@@ -15,9 +14,15 @@
 
 .zap-container {
   position: absolute;
-  left: 20%;
+  left: var(--mobile-left-position);
   transform: translateX(-50%);
   animation: zap-move 6s ease-in-out infinite;
+}
+
+@media (min-width: 768px) {
+  .zap-container {
+    left: var(--left-position);
+  }
 }
 
 /* Shine effect for zap icon */
@@ -33,10 +38,12 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(to bottom right,
-      rgba(255, 255, 255, 0) 45%,
-      rgba(255, 255, 255, 0.8) 50%,
-      rgba(255, 255, 255, 0) 55%);
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 45%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 55%
+  );
   transform: rotate(30deg);
   animation: shine 4s ease-in-out infinite;
 }
@@ -54,7 +61,6 @@
 
 /* Animation for app name */
 @keyframes app-slide {
-
   0%,
   50%,
   100% {
@@ -71,10 +77,16 @@
 
 .app-name {
   position: absolute;
-  left: 20%;
+  left: var(--mobile-left-position);
   transform: translateX(100%);
   animation: app-slide 6s ease-in-out infinite;
   filter: drop-shadow(0 0 4px rgba(100, 200, 255, 0.7));
+}
+
+@media (min-width: 768px) {
+  .app-name {
+    left: var(--left-position);
+  }
 }
 
 /* Fade in animation */

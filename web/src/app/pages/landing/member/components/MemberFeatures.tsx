@@ -2,30 +2,28 @@ import { CheckCircle, Dumbbell, Map, TrendingUp, Users } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInView } from "../../../../../hooks/useInView";
+import { LandingSectionTitle } from "../../../../components/landing/LandingSectionTitle";
 
 export function MemberFeatures() {
   const { t } = useTranslation();
   const { ref, inView } = useInView(0.1);
 
   return (
-    <section ref={ref as React.RefObject<HTMLElement>} className="mb-24">
-      <div
-        className="text-center mb-16 hero-animate"
-        style={
-          inView
-            ? { animation: "heroFadeUp 0.6s ease-out 0.1s forwards" }
-            : undefined
-        }
-      >
-        <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-          {t("landing.memberPage.features.title")}
-        </h2>
-        <p className="text-slate-400 max-w-2xl mx-auto">
-          {t("landing.memberPage.features.subtitle")}
-        </p>
-      </div>
+    <section
+      ref={ref as React.RefObject<HTMLElement>}
+      className="max-w-7xl mx-auto px-6 md:px-10"
+    >
+      <LandingSectionTitle
+        title={t("landing.memberPage.features.title")}
+        subtitle={t("landing.memberPage.features.subtitle")}
+        Icon={TrendingUp}
+        colorClassName="text-secondary"
+        bgClassName="bg-secondary/10"
+        borderClassName="border-secondary/20"
+        inView={inView}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[240px]">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:auto-rows-[240px]">
         {/* Training & Programs */}
         <div
           className="md:col-span-8 glass-card rounded-3xl p-8 flex flex-col justify-between overflow-hidden relative group hero-animate"

@@ -65,12 +65,13 @@ function LandingNavbar({ colors = DEFAULT_COLORS }: { colors?: NavbarColors }) {
           : "bg-transparent border-transparent"
       }`}
     >
-      <div className="mx-auto  px-6 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
         {/* Logo */}
         <AnimatedLogo
           logoSize="w-11 h-11"
           textSize="text-xl"
           leftPosition="10%"
+          mobileLeftPosition="20%"
           gradientFrom={colors.logoFrom}
           gradientTo={colors.logoTo}
         />
@@ -131,34 +132,50 @@ function LandingNavbar({ colors = DEFAULT_COLORS }: { colors?: NavbarColors }) {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMobileOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+        className={`md:hidden grid transition-all duration-500 ease-in-out ${
+          isMobileOpen
+            ? "grid-rows-[1fr] opacity-100"
+            : "grid-rows-[0fr] opacity-0"
         }`}
       >
-        <div className="bg-landing-bg-dark/95 backdrop-blur-xl border-t border-[#374151] px-6 py-4 space-y-1">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`block px-4 py-3 rounded-xl text-sm font-medium font-primary transition-all duration-200 ${
-                isActive(link.to)
-                  ? `text-transparent bg-clip-text bg-gradient-to-r ${colors.selectionFrom} ${colors.selectionTo}`
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              {t(link.labelKey)}
-            </Link>
-          ))}
-          <div className="pt-3 mt-3 border-t border-white/10">
-            <Link
-              to="/auth/signup"
-              className={`block text-center px-7 py-3 text-sm font-bold bg-gradient-to-r ${colors.buttonFrom} ${colors.buttonTo} text-white rounded-full border border-white/10 font-primary`}
-              style={{
-                boxShadow: `0 0 20px ${colors.glowColor}, inset 0 0 12px rgba(255, 255, 255, 0.2)`,
-              }}
-            >
-              {t("landing.nav.signUp")}
-            </Link>
+        <div className="overflow-hidden bg-landing-bg-dark/95 backdrop-blur-xl border-t border-white/10">
+          <div
+            className={`px-6 py-6 space-y-2 transition-all duration-500 delay-100 ${
+              isMobileOpen
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-4"
+            }`}
+          >
+            {NAV_LINKS.map((link, idx) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`block px-4 py-3 rounded-xl text-base font-medium font-primary transition-all duration-200 ${
+                  isActive(link.to)
+                    ? `text-transparent bg-clip-text bg-gradient-to-r ${colors.selectionFrom} ${colors.selectionTo}`
+                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                }`}
+                style={{
+                  transitionDelay: isMobileOpen ? `${idx * 50 + 150}ms` : "0ms",
+                }}
+              >
+                {t(link.labelKey)}
+              </Link>
+            ))}
+            <div className="pt-4 mt-4 border-t border-white/10">
+              <Link
+                to="/auth/signup"
+                className={`block text-center px-7 py-4 text-base font-bold bg-gradient-to-r ${colors.buttonFrom} ${colors.buttonTo} text-white rounded-2xl border border-white/10 font-primary`}
+                style={{
+                  boxShadow: `0 0 20px ${colors.glowColor}, inset 0 0 12px rgba(255, 255, 255, 0.2)`,
+                  transitionDelay: isMobileOpen
+                    ? `${NAV_LINKS.length * 50 + 200}ms`
+                    : "0ms",
+                }}
+              >
+                {t("landing.nav.signUp")}
+              </Link>
+            </div>
           </div>
         </div>
       </div>

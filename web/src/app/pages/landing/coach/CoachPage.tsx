@@ -1,4 +1,5 @@
 import { useLayoutEffect } from "react";
+import { LANDING_PAGE_CLASSES } from "../../../../constants/styles";
 import { useLanding } from "../LandingPage";
 import { CoachCTA } from "./components/CoachCTA";
 import { CoachDashboard } from "./components/CoachDashboard";
@@ -21,12 +22,13 @@ function CoachPage() {
   }, [setNavbarColors]);
   return (
     <>
-      <main className="flex-1 overflow-hidden">
-        <CoachHero />
+      <CoachHero />
+
+      <div className={LANDING_PAGE_CLASSES}>
         <CoachDashboard />
         <CoachFeatures />
         <CoachCTA />
-      </main>
+      </div>
     </>
   );
 }

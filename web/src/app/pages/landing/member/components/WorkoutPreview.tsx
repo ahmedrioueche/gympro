@@ -1,7 +1,8 @@
-import { History, PlayCircle, Timer } from "lucide-react";
+import { Activity, History, PlayCircle, Timer } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInView } from "../../../../../hooks/useInView";
+import { LandingSectionTitle } from "../../../../components/landing/LandingSectionTitle";
 
 export function WorkoutPreview() {
   const { t } = useTranslation();
@@ -41,22 +42,18 @@ export function WorkoutPreview() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start py-24"
+      className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start"
     >
-      <div
-        className="space-y-6 pt-10 hero-animate"
-        style={
-          inView
-            ? { animation: "heroFadeUp 0.6s ease-out 0.1s forwards" }
-            : undefined
-        }
-      >
-        <h2 className="text-4xl font-bold text-white tracking-tight">
-          {t("landing.memberPage.preview.title")}
-        </h2>
-        <p className="text-slate-400 text-lg leading-relaxed">
-          {t("landing.memberPage.preview.description")}
-        </p>
+      <div className="pt-10">
+        <LandingSectionTitle
+          title={t("landing.memberPage.preview.title")}
+          subtitle={t("landing.memberPage.preview.description")}
+          Icon={Activity}
+          colorClassName="text-secondary"
+          bgClassName="bg-secondary/10"
+          borderClassName="border-secondary/20"
+          inView={inView}
+        />
         <ul className="space-y-6 mt-8">
           <li className="flex items-start gap-4">
             <div className="size-10 rounded-xl bg-secondary/20 flex items-center justify-center text-secondary mt-1 shrink-0">

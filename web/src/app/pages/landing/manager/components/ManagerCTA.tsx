@@ -9,7 +9,7 @@ export function ManagerCTA() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="py-24 px-6 text-center"
+      className="px-6 md:px-10 text-center"
     >
       <div
         className="max-w-4xl mx-auto glass-card glow-border-primary p-12 md:p-20 rounded-[2.5rem] relative overflow-hidden hero-animate"

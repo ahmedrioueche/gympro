@@ -11,6 +11,7 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInView } from "../../../../../hooks/useInView";
+import { LandingSectionTitle } from "../../../../components/landing/LandingSectionTitle";
 
 export function CoachFeatures() {
   const { t } = useTranslation();
@@ -28,26 +29,16 @@ export function CoachFeatures() {
   ];
 
   return (
-    <section ref={ref as React.RefObject<HTMLElement>} className="py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div
-            className="max-w-xl hero-animate"
-            style={
-              inView
-                ? { animation: "heroFadeUp 0.6s ease-out 0.1s forwards" }
-                : undefined
-            }
-          >
-            <h2 className="text-4xl font-extrabold mb-4 text-white tracking-tight">
-              {t("landing.coachPage.features.titlePart1")} <br />
-              <span className="text-primary">
-                {t("landing.coachPage.features.titlePart2")}
-              </span>
-            </h2>
-            <p className="text-slate-400">
-              {t("landing.coachPage.features.subtitle")}
-            </p>
+    <section ref={ref as React.RefObject<HTMLElement>}>
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <div className="max-w-xl">
+            <LandingSectionTitle
+              title={`${t("landing.coachPage.features.titlePart1")} ${t("landing.coachPage.features.titlePart2")}`}
+              subtitle={t("landing.coachPage.features.subtitle")}
+              Icon={Settings}
+              inView={inView}
+            />
           </div>
           <button className="bg-white/5 border border-white/10 px-6 py-3 rounded-lg text-sm font-bold text-white hover:bg-white/10 transition-colors backdrop-blur-sm">
             {t("landing.coachPage.features.cta")}

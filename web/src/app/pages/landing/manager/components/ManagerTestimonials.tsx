@@ -2,6 +2,7 @@ import { Star } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useInView } from "../../../../../hooks/useInView";
+import { LandingSectionTitle } from "../../../../components/landing/LandingSectionTitle";
 
 export function ManagerTestimonials() {
   const { t } = useTranslation();
@@ -10,22 +11,15 @@ export function ManagerTestimonials() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="bg-primary/5 py-24 px-6 border-y border-primary/20"
+      className="bg-primary/5 py-24 px-6 md:px-10 border-y border-primary/20"
     >
-      <div
-        className="max-w-7xl mx-auto text-center mb-16 hero-animate"
-        style={
-          inView
-            ? { animation: "heroFadeUp 0.6s ease-out 0.1s forwards" }
-            : undefined
-        }
-      >
-        <h2 className="text-4xl font-black mb-4 text-white tracking-tight">
-          {t("landing.managerPage.testimonials.title")}
-        </h2>
-        <p className="text-slate-400 text-lg">
-          {t("landing.managerPage.testimonials.subtitle")}
-        </p>
+      <div className="max-w-7xl mx-auto mb-16">
+        <LandingSectionTitle
+          title={t("landing.managerPage.testimonials.title")}
+          subtitle={t("landing.managerPage.testimonials.subtitle")}
+          Icon={Star}
+          inView={inView}
+        />
       </div>
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {[1, 2, 3].map((i) => (
