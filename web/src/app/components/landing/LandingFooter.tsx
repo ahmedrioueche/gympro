@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Dumbbell, Github, Instagram, Twitter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -12,9 +13,9 @@ function LandingFooter() {
   ];
 
   const legalLinks = [
-    { label: t("landing.footer.legal.terms"), href: "/terms" },
-    { label: t("landing.footer.legal.privacy"), href: "/privacy" },
-    { label: t("landing.footer.legal.cookies"), href: "/cookies" },
+    { label: t("landing.footer.legal.terms"), href: "/landing/terms" },
+    { label: t("landing.footer.legal.privacy"), href: "/landing/privacy" },
+    { label: t("landing.footer.legal.cookies"), href: "/landing/cookies" },
   ];
 
   const supportLinks = [
@@ -86,12 +87,12 @@ function LandingFooter() {
           <ul className="flex flex-col gap-3 text-slate-500 text-sm font-medium">
             {legalLinks.map((link) => (
               <li key={link.label}>
-                <a
-                  href={link.href}
+                <Link
+                  to={link.href}
                   className="hover:text-primary transition-colors"
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -128,15 +129,24 @@ function LandingFooter() {
       <div className="max-w-7xl mx-auto px-6 md:px-10 mt-20 md:mt-40 pt-6 md:pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-slate-600 gap-4">
         <span>{t("landing.footer.copyright")}</span>
         <div className="flex gap-6 flex-wrap justify-center text-slate-600">
-          <a href="/terms" className="hover:text-slate-400 transition-colors">
+          <Link
+            to="/landing/terms"
+            className="hover:text-slate-400 transition-colors"
+          >
             {t("landing.footer.legal.terms")}
-          </a>
-          <a href="/privacy" className="hover:text-slate-400 transition-colors">
+          </Link>
+          <Link
+            to="/landing/privacy"
+            className="hover:text-slate-400 transition-colors"
+          >
             {t("landing.footer.legal.privacy")}
-          </a>
-          <a href="/cookies" className="hover:text-slate-400 transition-colors">
+          </Link>
+          <Link
+            to="/landing/cookies"
+            className="hover:text-slate-400 transition-colors"
+          >
             {t("landing.footer.legal.cookies")}
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

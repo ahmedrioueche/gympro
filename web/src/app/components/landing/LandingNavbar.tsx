@@ -1,4 +1,4 @@
-import { Link, useMatches } from "@tanstack/react-router";
+import { Link, useMatches, useNavigate } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -36,6 +36,7 @@ function LandingNavbar({ colors = DEFAULT_COLORS }: { colors?: NavbarColors }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const matches = useMatches();
+  const navigate = useNavigate();
 
   const currentPath = matches[matches.length - 1]?.fullPath ?? "/landing";
 
@@ -74,6 +75,9 @@ function LandingNavbar({ colors = DEFAULT_COLORS }: { colors?: NavbarColors }) {
           mobileLeftPosition="20%"
           gradientFrom={colors.logoFrom}
           gradientTo={colors.logoTo}
+          onClick={() => {
+            navigate({ to: "/landing" });
+          }}
         />
 
         {/* Desktop Navigation — centered */}

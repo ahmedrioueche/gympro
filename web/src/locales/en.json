@@ -4452,6 +4452,85 @@
         "secondary": "Talk to Sales",
         "footer": "No credit card required • 14-day free trial • Cancel anytime"
       }
+    },
+    "legal": {
+      "terms": {
+        "title": "Terms & Conditions",
+        "subtitle": "Last updated: March 2024",
+        "intro": "Welcome to GymPro. By using our platform, you agree to comply with and be bound by the following terms and conditions.",
+        "sections": {
+          "use": {
+            "title": "1. Use of the Platform",
+            "content": "Our platform provides tools for gym management, coaching, and fitness tracking. You agree to use the platform only for lawful purposes."
+          },
+          "accounts": {
+            "title": "2. User Accounts",
+            "content": "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account."
+          },
+          "billing": {
+            "title": "3. Fees & Payments",
+            "content": "Gym owners agree to pay the fees associated with their chosen subscription plan. All payments are processed securely via our payment partners."
+          },
+          "privacy": {
+            "title": "4. Privacy",
+            "content": "Your use of the platform is also governed by our Privacy Policy. Please review it to understand how we handle your data."
+          },
+          "liability": {
+            "title": "5. Limitation of Liability",
+            "content": "GymPro shall not be liable for any indirect, incidental, or consequential damages resulting from your use of the platform."
+          }
+        }
+      },
+      "privacy": {
+        "title": "Privacy Policy",
+        "subtitle": "Last updated: March 2024",
+        "intro": "At GymPro, we are committed to protecting your privacy and ensuring your personal information is handled securely.",
+        "sections": {
+          "collect": {
+            "title": "1. Information We Collect",
+            "content": "We collect information you provide directly to us, such as your name, email, and billing details, as well as usage data when you access our platform."
+          },
+          "usage": {
+            "title": "2. How We Use Information",
+            "content": "We use your information to provide, maintain, and improve our services, process payments, and communicate with you about your account."
+          },
+          "sharing": {
+            "title": "3. Information Sharing",
+            "content": "We do not sell your personal information. We may share data with service providers who help us operate the platform (e.g., payment processors)."
+          },
+          "security": {
+            "title": "4. Data Security",
+            "content": "We implement industry-standard security measures to protect your data from unauthorized access, alteration, or disclosure."
+          },
+          "rights": {
+            "title": "5. Your Rights",
+            "content": "You have the right to access, update, or delete your personal information at any time through your account settings."
+          }
+        }
+      },
+      "cookies": {
+        "title": "Cookie Policy",
+        "subtitle": "Last updated: March 2024",
+        "intro": "This Cookie Policy explains how GymPro uses cookies and similar technologies to recognize you when you visit our website.",
+        "sections": {
+          "what": {
+            "title": "1. What are Cookies?",
+            "content": "Cookies are small data files that are placed on your computer or mobile device when you visit a website. They are widely used by website owners in order to make their websites work, or to work more efficiently, as well as to provide reporting information."
+          },
+          "why": {
+            "title": "2. Why we use Cookies?",
+            "content": "We use first-party and third-party cookies for several reasons. Some cookies are required for technical reasons in order for our website to operate, and we refer to these as 'essential' or 'strictly necessary' cookies."
+          },
+          "types": {
+            "title": "3. Types of Cookies we use",
+            "content": "We use performance and functionality cookies to enhance the performance and functionality of our website but are non-essential to their use. However, without these cookies, certain functionality (like videos) may become unavailable."
+          },
+          "control": {
+            "title": "4. How can I control Cookies?",
+            "content": "You have the right to decide whether to accept or reject cookies. You can set or amend your web browser controls to accept or refuse cookies. If you choose to reject cookies, you may still use our website though your access to some functionality and areas of our website may be restricted."
+          }
+        }
+      }
     }
   }
 }

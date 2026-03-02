@@ -38,7 +38,7 @@ function HeroSection() {
       </div>
 
       {/* Text content — on top of the image */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-20 w-full mt-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 py-12 md:py-20 w-full ">
         <div className="max-w-xl lg:max-w-2xl">
           <div className="flex flex-col gap-1">
             {/* UNLEASH — delay 0.1s */}

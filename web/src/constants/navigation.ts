@@ -424,5 +424,17 @@ export const APP_PAGES = {
       name: "pages.landing.coach",
       link: "/landing/coach",
     },
+    terms: {
+      name: "pages.landing.terms",
+      link: "/landing/terms",
+    },
+    privacy: {
+      name: "pages.landing.privacy",
+      link: "/landing/privacy",
+    },
+    cookies: {
+      name: "pages.landing.cookies",
+      link: "/landing/cookies",
+    },
   },
 };
