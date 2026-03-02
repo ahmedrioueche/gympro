@@ -1,4 +1,4 @@
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { TopBanner } from "./components/TopBanner";
 import { BG_GRADIENT } from "./constants/styles";
@@ -11,6 +11,7 @@ const App = () => {
   const { isDark } = useTheme();
   const { user } = useUserStore();
   const { setLanguage } = useLanguageStore();
+  const { pathname } = useLocation();
 
   // Sync language with user settings
   useEffect(() => {
@@ -19,6 +20,11 @@ const App = () => {
       setLanguage(userLanguage);
     }
   }, [user?.appSettings?.locale?.language, setLanguage]);
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <div

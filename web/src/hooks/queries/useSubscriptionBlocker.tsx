@@ -1,5 +1,6 @@
 import { appSubscriptionsApi } from "@ahmedrioueche/gympro-client";
 import { useQuery } from "@tanstack/react-query";
+import { useUserStore } from "../../store/user";
 
 export const blockerKeys = {
   all: ["blocker"] as const,
@@ -7,6 +8,9 @@ export const blockerKeys = {
 };
 
 export const useSubscriptionBlockerQuery = () => {
+  const isLanding = window.location.pathname.startsWith("/landing");
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+
   return useQuery({
     queryKey: blockerKeys.config(),
     queryFn: async () => {
@@ -14,9 +18,10 @@ export const useSubscriptionBlockerQuery = () => {
       // Return null when there's no blocker config, but never undefined
       return typeof res.data === "undefined" ? null : res.data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
-    refetchOnWindowFocus: true, // Refetch when user returns to tab
-    refetchOnMount: true, // Always refetch on mount
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    enabled: !isLanding && isAuthenticated,
   });
 };

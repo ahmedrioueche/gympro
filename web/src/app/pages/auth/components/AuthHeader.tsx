@@ -13,7 +13,7 @@ const AuthHeader = ({ type = "login" }: { type?: "login" | "signup" }) => {
     type === "login" ? t("auth.sign_in_subtitle") : t("auth.sign_up_subtitle");
 
   return (
-    <div className="text-center overflow-hidden">
+    <div className="text-center overflow-hidden mb-8">
       <AnimatedLogo leftPosition={`${isMobile ? "40%" : "50%"}`} />
       {title && (
         <h2 className="text-xl md:text-3xl font-bold text-text-primary animate-fade-in">

@@ -15,6 +15,8 @@ import { useTranslation } from "react-i18next";
 // We will use standard fetch with credentials or just axios.
 import { getApiClient } from "@ahmedrioueche/gympro-client/dist/api/config";
 
+import { useUserStore } from "../../store/user";
+
 export const bannersApi = {
   getActive: async (): Promise<ApiResponse<AppBanner[]>> => {
     const { data } = await getApiClient().get("/system-alerts/active");
@@ -42,20 +44,27 @@ export const bannersApi = {
 };
 
 export const useActiveBanners = () => {
+  const isLanding = window.location.pathname.startsWith("/landing");
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+
   return useQuery({
     queryKey: ["active_banners"],
     queryFn: bannersApi.getActive,
     refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes
+    enabled: !isLanding && isAuthenticated,
   });
 };
 
 export const useAdminBanners = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const isLanding = window.location.pathname.startsWith("/landing");
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
 
   const bannersQuery = useQuery({
     queryKey: ["admin_banners"],
     queryFn: bannersApi.getAll,
+    enabled: !isLanding && isAuthenticated,
   });
 
   const createMutation = useMutation({

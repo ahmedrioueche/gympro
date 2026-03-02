@@ -4140,5 +4140,318 @@
   },
   "footer": {
     "copyright": "Copyright © {{year}} GymPro. All rights reserved."
+  },
+  "landing": {
+    "nav": {
+      "brand": "GymPro",
+      "home": "Home",
+      "manager": "Manager",
+      "member": "Member",
+      "coach": "Coach",
+      "signIn": "Sign In",
+      "signUp": "Sign Up Free"
+    },
+    "hero": {
+      "line1": "UNLEASH",
+      "line2": "THE POWER",
+      "line3": "OF YOUR GYM",
+      "description": "Experience the digitization of fitness with our high-end 3D management ecosystem. Break free from traditional SaaS constraints.",
+      "getStarted": "Get Started",
+      "watchDemo": "Watch 3D Demo"
+    },
+    "manager": {
+      "sideLabel": "MANAGEMENT",
+      "title": "Complete Gym Control",
+      "subtitle": "Everything you need to manage, grow, and optimize your gym — all in one dashboard.",
+      "revenueAnalytics": "Revenue Analytics",
+      "revenueAnalyticsTag": "Real-time financial overview",
+      "thisMonth": "this month",
+      "subscriptions": "Subscriptions",
+      "mrr": "MRR",
+      "churn": "Churn Rate",
+      "memberManagement": "Member Management",
+      "memberManagementDesc": "Track registrations, manage profiles, monitor attendance, and analyze retention metrics across all your members.",
+      "active": "active",
+      "thisWeek": "this week",
+      "subscriptionPlans": "Subscription & Pricing",
+      "subscriptionPlansDesc": "Create flexible plans, manage billing cycles, and track payment status with automated invoicing.",
+      "staffManagement": "Staff & Coaches",
+      "staffManagementDesc": "Assign roles, manage schedules, and track coach performance.",
+      "gymFacilities": "Gym & Facilities",
+      "gymFacilitiesDesc": "Configure equipment, manage facilities, and set operating hours.",
+      "alertsSettings": "Alerts & Settings",
+      "alertsSettingsDesc": "Custom notifications, reports, and full gym configuration."
+    },
+    "member": {
+      "sideLabel": "TRAINING",
+      "title": "Your Fitness Journey",
+      "subtitle": "Track workouts, follow programs, and crush your goals — everything a member needs to succeed.",
+      "trainingPrograms": "Training Programs",
+      "trainingProgramsTag": "Personalized workout plans",
+      "currentProgram": "Strength Builder Pro",
+      "week": "Week",
+      "complete": "complete",
+      "thisWeekActivity": "This week's activity",
+      "streak": "day streak",
+      "prs": "PRs this month",
+      "exerciseLibrary": "Exercise Library",
+      "exerciseLibraryDesc": "Browse 200+ exercises with HD video demonstrations, muscle maps, and step-by-step instructions.",
+      "exercises": "exercises",
+      "videos": "videos",
+      "progressTracking": "Progress Tracking",
+      "progressTrackingDesc": "Log your lifts, track body measurements, and visualize your strength gains over time with detailed charts.",
+      "classSchedule": "Class Schedule",
+      "classScheduleDesc": "Browse and book group classes, view timetables, and get reminders.",
+      "attendance": "Attendance",
+      "attendanceDesc": "Check in, track gym visits, and view your training history.",
+      "subscriptions": "Subscriptions",
+      "subscriptionsDesc": "Manage your plan, view billing, and upgrade anytime."
+    },
+    "coach": {
+      "sideLabel": "COACHING",
+      "title": "Coach Command Center",
+      "subtitle": "Manage clients, build programs, and grow your coaching business — all from one place.",
+      "clientManagement": "Client Management",
+      "clientManagementTag": "Your full client roster",
+      "activeClients": "active",
+      "clientName": "Client",
+      "lastSession": "Last session",
+      "active": "Active",
+      "pending": "Pending",
+      "sessionsThisWeek": "Sessions this week",
+      "completionRate": "Completion rate",
+      "programBuilder": "Program Builder",
+      "programBuilderDesc": "Design custom training programs with exercises, sets, reps, and rest periods for each client.",
+      "dragDrop": "Drag & Drop",
+      "templates": "Templates",
+      "schedule": "Schedule & Classes",
+      "scheduleDesc": "Manage your availability, book sessions, and run group classes with automatic reminders.",
+      "exerciseLibrary": "Exercise Library",
+      "exerciseLibraryDesc": "Create and assign exercises with video demos.",
+      "analytics": "Performance Analytics",
+      "analyticsDesc": "Track client progress and coaching metrics.",
+      "paymentsMessages": "Payments & Messages",
+      "paymentsMessagesDesc": "Set pricing, track earnings, and communicate with clients."
+    },
+    "footer": {
+      "brand": "GymPro",
+      "description": "The all-in-one platform for gym owners, coaches, and members. Manage your facility, grow your business, and achieve your fitness goals.",
+      "featuresTitle": "Features",
+      "features": {
+        "managers": "For Managers",
+        "members": "For Members",
+        "coaches": "For Coaches",
+        "pricing": "Pricing"
+      },
+      "legalTitle": "Legal",
+      "legal": {
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy",
+        "cookies": "Cookie Policy"
+      },
+      "supportTitle": "Support",
+      "support": {
+        "help": "Help Center",
+        "contact": "Contact Us",
+        "status": "System Status"
+      },
+      "copyright": "© 2025 GymPro. All rights reserved."
+    },
+    "managerPage": {
+      "hero": {
+        "badge": "Manager Suite 2.0",
+        "titlePart1": "The Command Center for",
+        "titlePart2": "Modern Gyms.",
+        "description": "Empower your fitness business with high-fidelity analytics, automated operations, and seamless management tools designed for aggressive growth.",
+        "ctaPrimary": "Get Started Now",
+        "ctaSecondary": "Watch Product Tour"
+      },
+      "lifecycle": {
+        "title": "Member Lifecycle",
+        "onboardingTitle": "Automated Onboarding",
+        "onboardingDesc": "Digital waivers, health assessments, and orientation scheduling triggered instantly upon signup. Reduce manual data entry by 85%.",
+        "onboardingTag1": "Digital Signatures",
+        "onboardingTag2": "Automated Email",
+        "churnTitle": "Churn Prediction",
+        "churnDesc": "AI-driven insights that identify members at risk of leaving based on attendance patterns.",
+        "segmentTitle": "Member Segmentation",
+        "segmentDesc": "Group members by behavior, goals, or plan type for targeted marketing.",
+        "rewardsTitle": "Retention Rewards",
+        "rewardsDesc": "Automated loyalty points and milestone celebrations to keep members engaged.",
+        "pushTitle": "Push Campaigns",
+        "pushDesc": "Direct-to-mobile notifications for class updates and special promotions."
+      },
+      "financials": {
+        "title": "Financials & Growth",
+        "subscriptionsTitle": "Automated Subscriptions",
+        "subscriptionsDesc": "Handle recurring billing, failed payment retries, and prorated memberships without lifting a finger.",
+        "dashboardsTitle": "Revenue Dashboards",
+        "dashboardsDesc": "Real-time visibility into MRR, LTV, and CAC. Export ready for board meetings.",
+        "taxTitle": "Tax Compliance",
+        "taxDesc": "Automated sales tax and end-of-year reporting.",
+        "posTitle": "POS Integration",
+        "posDesc": "Sell merchandise and supplements directly through the app.",
+        "multiTierTitle": "Multi-tier Plans",
+        "multiTierDesc": "Easily create and manage unlimited membership levels.",
+        "expenseTitle": "Expense Tracking",
+        "expenseDesc": "Monitor overhead costs and vendor payments."
+      },
+      "operations": {
+        "title": "Operations & Staff",
+        "permissionsTitle": "Permissions",
+        "permissionsDesc": "Control exactly what your staff can see and do with granular roles.",
+        "schedulingTitle": "Smart Scheduling",
+        "schedulingDesc": "Manage class timetables, PT sessions, and bookings with conflict detection.",
+        "accessTitle": "Access Control",
+        "accessDesc": "Integrate with smart locks and RFID turnstiles for 24/7 access.",
+        "assetsTitle": "Asset & Maintenance Tracking",
+        "assetsDesc": "Log equipment maintenance schedules, report broken machines, and track asset depreciation."
+      },
+      "testimonials": {
+        "title": "Trusted by 2,000+ Gym Owners",
+        "subtitle": "See how GymPro is transforming fitness businesses worldwide.",
+        "quote1": "The revenue dashboards alone paid for the software in the first month. I finally have a clear picture of my growth.",
+        "owner1": "Marcus Chen",
+        "gym1": "Iron Gate Athletics",
+        "quote2": "Automating our member onboarding has saved my front desk staff 20 hours a week. It's a total game changer for operations.",
+        "owner2": "Sarah Jenkins",
+        "gym2": "Elite Performance Studio",
+        "quote3": "The churn prediction tool allowed us to proactively save 15 memberships last month alone. The ROI is incredible.",
+        "owner3": "David Rodriguez",
+        "gym3": "Core Fitness Collective"
+      },
+      "cta": {
+        "title": "Ready to scale your facility?",
+        "subtitle": "Join the elite gyms using GymPro Manager to drive efficiency and profit.",
+        "primary": "Book Your Private Demo",
+        "secondary": "View Pricing Plans"
+      }
+    },
+    "memberPage": {
+      "hero": {
+        "badge": "Member Exclusive",
+        "titlePart1": "Your Fitness",
+        "titlePart2": "Universe",
+        "titlePart3": "in One App.",
+        "description": "Master your training, connect with elite coaches, and track every PR with our premium member suite designed for peak performance.",
+        "ctaPrimary": "Get Started Free",
+        "ctaSecondary": "Watch Demo"
+      },
+      "features": {
+        "title": "Powerful Features for Modern Athletes",
+        "subtitle": "Everything you need to transform your fitness journey, from detailed tracking to community support.",
+        "trainingTitle": "Training & Programs",
+        "training": {
+          "personalized": "Personalized Training",
+          "library": "Exercise Library",
+          "logger": "Workout Logger",
+          "ai": "AI Coach Feedback"
+        },
+        "trackingTitle": "Progress Tracking",
+        "trackingDesc": "Visualize your strength gains with interactive charts and PR heatmaps.",
+        "socialTitle": "Social & Coaching",
+        "social": {
+          "leaderboards": "Community Leaderboards",
+          "messaging": "Direct Coach Messaging",
+          "challenges": "Team Challenges",
+          "form": "Form Correction Video Sync"
+        },
+        "accountTitle": "Account & Booking",
+        "accountDesc": "Book classes, reserve equipment, and find GymPro partner locations worldwide with one tap.",
+        "accountTags": {
+          "discovery": "Gym Discovery",
+          "booking": "Smart Booking",
+          "payments": "Auto-Payments"
+        }
+      },
+      "preview": {
+        "title": "Dynamic Workout Preview",
+        "description": "Experience the interface that keeps you focused. Our minimalist logger reduces distractions while providing all the data points you need for progressive overload.",
+        "restTimers": {
+          "title": "Smart Rest Timers",
+          "desc": "Adaptive rest intervals based on exercise intensity."
+        },
+        "history": {
+          "title": "Previous Set Data",
+          "desc": "Instantly see what you lifted last week to beat your best."
+        },
+        "workout": {
+          "title": "Push Day A",
+          "focus": "Hypertrophy Focus",
+          "duration": "45-60 MIN",
+          "cta": "Start This Session"
+        }
+      }
+    },
+    "coachPage": {
+      "hero": {
+        "badge": "Coach Dashboard 2.0",
+        "titlePart1": "Empower Your Clients.",
+        "titlePart2": "Automate Your Business.",
+        "description": "The next-gen platform for fitness professionals. Build world-class training programs, track progress in real-time, and scale your coaching brand effortlessly.",
+        "ctaPrimary": "Start Free Trial",
+        "ctaSecondary": "Watch Demo"
+      },
+      "dashboard": {
+        "title": "Built for High-Performance Coaching",
+        "subtitle": "Everything you need to manage hundreds of clients without losing the personal touch.",
+        "builderTitle": "Pro Program Builder",
+        "builderDesc": "Create complex periodized programs in minutes. Use our library of 2000+ HD exercise videos or upload your own. Drag-and-drop workout scheduling that syncs instantly.",
+        "crmTitle": "CRM for Coaches",
+        "crmDesc": "Automate check-ins, track nutrition, and keep client data organized in one secure hub.",
+        "heatmapsTitle": "Progress Heatmaps",
+        "heatmapsIndex": "Client Engagement Index",
+        "earningsTitle": "Earnings Tracking",
+        "earningsStat": "Monthly Recurring Revenue"
+      },
+      "features": {
+        "titlePart1": "11 Powerful Features",
+        "titlePart2": "Engineered for Growth",
+        "subtitle": "Stop juggling different apps. GymPro Coach consolidates your entire workflow into one unified cyan-powered ecosystem.",
+        "cta": "Compare All Features",
+        "items": {
+          "multiGym": {
+            "title": "Multi-Gym Support",
+            "desc": "Manage clients across multiple physical locations and virtual studios from one login."
+          },
+          "library": {
+            "title": "Custom Library",
+            "desc": "Create and tag your own proprietary exercise videos and movement cues."
+          },
+          "payments": {
+            "title": "Payment Tracking",
+            "desc": "Integrated Stripe payments with automated invoicing and subscription management."
+          },
+          "nutrition": {
+            "title": "Macro Calculator",
+            "desc": "Advanced nutrition engine with macro splits and meal plan generators."
+          },
+          "messaging": {
+            "title": "In-App Messaging",
+            "desc": "Encrypted chat with voice notes to keep coaching conversations professional."
+          },
+          "biometric": {
+            "title": "Biometric Sync",
+            "desc": "Direct integration with Apple Health, Whoop, Oura, and Garmin devices."
+          },
+          "renewals": {
+            "title": "Auto-Renewals",
+            "desc": "Smart renewal logic to reduce churn and maintain consistent monthly revenue."
+          },
+          "whiteLabel": {
+            "title": "White-Labeling",
+            "desc": "Your logo, your colors, your brand. Fully customized app experience for clients."
+          }
+        }
+      },
+      "cta": {
+        "titlePart1": "Ready to scale your",
+        "titlePart2": "Coaching Empire?",
+        "subtitle": "Join over 5,000+ elite coaches who have transformed their business with GymPro Coach.",
+        "primary": "Get Started for Free",
+        "secondary": "Talk to Sales",
+        "footer": "No credit card required • 14-day free trial • Cancel anytime"
+      }
+    }
   }
 }

@@ -4,21 +4,17 @@ import { ArrowRight, RefreshCw, Smartphone } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import Hero from "../../../../components/Hero";
-import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
 import Button from "../../../../components/ui/Button";
 import InputField from "../../../../components/ui/InputField";
-import { BG_GRADIENT } from "../../../../constants/styles";
-import { useTheme } from "../../../../context/ThemeContext";
 import { useUserStore } from "../../../../store/user";
 import { formatPhoneForDisplay } from "../../../../utils/phone.util";
 import { getRoleHomePage } from "../../../../utils/roles";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
+import AuthLayout from "../components/AuthLayout";
 
 function PhoneVerificationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isDark } = useTheme();
   const { setUser } = useUserStore();
 
   const [otp, setOtp] = useState("");
@@ -26,7 +22,6 @@ function PhoneVerificationPage() {
   const [resendDisabled, setResendDisabled] = useState(true);
   const [countdown, setCountdown] = useState(60);
 
-  // Get phone number from URL query params
   const urlParams = new URLSearchParams(window.location.search);
   const phoneNumber = urlParams.get("phone") || "";
 
@@ -36,7 +31,6 @@ function PhoneVerificationPage() {
       navigate({ to: "/auth/signup" });
     }
 
-    // Start countdown for resend button
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -64,7 +58,6 @@ function PhoneVerificationPage() {
         setUser(user);
 
         const statusMessage = getMessage(response, t);
-
         showStatusToast(
           statusMessage || {
             status: "success",
@@ -73,7 +66,6 @@ function PhoneVerificationPage() {
           toast,
         );
 
-        // Redirect based on user onboarding status
         if (user.profile.isOnBoarded) {
           const url = getRoleHomePage(user.role as UserRole);
           navigate({ to: url });
@@ -99,14 +91,12 @@ function PhoneVerificationPage() {
     setIsLoading(true);
     try {
       const response = await authApi.sendOtp(phoneNumber);
-
       const statusMessage = getMessage(response, t);
       showStatusToast(statusMessage, toast);
 
       if (response.success) {
         setResendDisabled(true);
         setCountdown(60);
-        // Restart timer
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -126,76 +116,69 @@ function PhoneVerificationPage() {
   };
 
   return (
-    <div
-      className={`min-h-[100dvh] relative overflow-x-hidden flex ${isDark ? BG_GRADIENT : "bg-background"}`}
-    >
-      <div className="overflow-y-auto flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <AnimatedLogo />
-            <h2 className="mt-6 text-3xl font-extrabold text-text-primary">
-              {t("auth.verify_phone")}
-            </h2>
-            <p className="mt-2 text-sm text-text-secondary">
-              {t("auth.enter_otp_sent_to")}{" "}
-              <span className="font-semibold text-text-primary">
-                {formatPhoneForDisplay(phoneNumber)}
-              </span>
-            </p>
+    <AuthLayout>
+      <div className="w-full space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-white">
+            {t("auth.verify_phone")}
+          </h2>
+          <p className="mt-2 text-sm text-slate-400">
+            {t("auth.enter_otp_sent_to")}{" "}
+            <span className="font-semibold text-white">
+              {formatPhoneForDisplay(phoneNumber)}
+            </span>
+          </p>
+        </div>
+
+        <form className="space-y-6" onSubmit={handleVerify}>
+          <div>
+            <InputField
+              id="otp"
+              type="text"
+              required
+              value={otp}
+              onChange={(e) =>
+                setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+              }
+              placeholder="000000"
+              className="text-center text-2xl tracking-widest pl-0"
+              maxLength={6}
+              leftIcon={<Smartphone className="h-6 w-6" />}
+            />
           </div>
 
-          <form className="mt-8 space-y-6" onSubmit={handleVerify}>
-            <div>
-              <InputField
-                id="otp"
-                type="text"
-                required
-                value={otp}
-                onChange={(e) =>
-                  setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
-                }
-                placeholder="000000"
-                className="text-center text-2xl tracking-widest pl-0"
-                maxLength={6}
-                leftIcon={<Smartphone className="h-6 w-6" />}
-              />
-            </div>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={otp.length !== 6 || isLoading}
+            className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200"
+            loading={isLoading}
+          >
+            {t("auth.verify")} <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
 
-            <Button
-              type="submit"
-              size="lg"
-              disabled={otp.length !== 6 || isLoading}
-              className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200"
-              loading={isLoading}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={resendDisabled || isLoading}
+              className={`flex items-center justify-center mx-auto text-sm font-medium transition-colors ${
+                resendDisabled
+                  ? "text-slate-500 cursor-not-allowed"
+                  : "text-primary hover:text-secondary cursor-pointer"
+              }`}
             >
-              {t("auth.verify")} <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={handleResendOtp}
-                disabled={resendDisabled || isLoading}
-                className={`flex items-center justify-center mx-auto text-sm font-medium transition-colors ${
-                  resendDisabled
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-primary hover:text-secondary cursor-pointer"
-                }`}
-              >
-                <RefreshCw
-                  className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
-                />
-                {resendDisabled
-                  ? `${t("auth.resend_in")} ${countdown}s`
-                  : t("auth.resend_code")}
-              </button>
-            </div>
-          </form>
-        </div>
+              <RefreshCw
+                className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+              />
+              {resendDisabled
+                ? `${t("auth.resend_in")} ${countdown}s`
+                : t("auth.resend_code")}
+            </button>
+          </div>
+        </form>
       </div>
-
-      <Hero />
-    </div>
+    </AuthLayout>
   );
 }
 

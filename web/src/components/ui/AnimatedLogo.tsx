@@ -11,6 +11,8 @@ const AnimatedLogo = ({
   paddingTop = "pt-0",
   onClick,
   compact = false,
+  gradientFrom = "from-primary",
+  gradientTo = "to-secondary",
 }: {
   height?: string;
   width?: string;
@@ -20,6 +22,8 @@ const AnimatedLogo = ({
   paddingTop?: string;
   onClick?: () => void;
   compact?: boolean;
+  gradientFrom?: string;
+  gradientTo?: string;
 }) => {
   const { t } = useTranslation();
 
@@ -38,7 +42,7 @@ const AnimatedLogo = ({
         style={{ left: leftPosition }}
       >
         <div
-          className={`${logoSize} bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg zap-shine`}
+          className={`${logoSize} bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-xl flex items-center justify-center shadow-lg zap-shine`}
         >
           <Zap className="w-8 h-8 text-white" />
         </div>
@@ -47,7 +51,7 @@ const AnimatedLogo = ({
       {/* App Name with slide-in and shiny effect */}
       {!compact && (
         <span
-          className={`${textSize} app-name animate-app-slide font-bold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary`}
+          className={`${textSize} app-name animate-app-slide font-bold whitespace-nowrap text-transparent bg-clip-text bg-gradient-to-r ${gradientFrom} ${gradientTo}`}
           style={{ left: leftPosition }}
         >
           {t("app.name")}

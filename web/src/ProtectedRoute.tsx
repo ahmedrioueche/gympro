@@ -23,7 +23,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
       const user = await fetchUser();
 
-      if (!user) return router.navigate({ to: "/auth/login" });
+      if (!user) return router.navigate({ to: "/landing" });
       if (!user.profile.isValidated)
         return router.navigate({ to: "/auth/email-sent" });
       if (!user.profile.isOnBoarded)

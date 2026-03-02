@@ -27,7 +27,7 @@ export default function LoginForm() {
   } = useLogin();
 
   return (
-    <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+    <form className="space-y-6" onSubmit={handleLogin}>
       <div className="space-y-4">
         {/* Email or Phone Field with Inline Toggle */}
         <div className="flex items-center gap-3">

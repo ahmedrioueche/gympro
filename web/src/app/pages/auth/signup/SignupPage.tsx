@@ -1,30 +1,13 @@
-import { useEffect } from "react";
-import Hero from "../../../../components/Hero";
-import { BG_GRADIENT } from "../../../../constants/styles";
-import { useTheme } from "../../../../context/ThemeContext";
 import AuthHeader from "../components/AuthHeader";
+import AuthLayout from "../components/AuthLayout";
 import SignupForm from "./components/SignupForm";
 
 function SignupPage() {
-  const { isDark, setMode } = useTheme();
-
-  useEffect(() => {
-    setMode("dark");
-  }, []);
-
   return (
-    <div
-      className={`min-h-[100dvh] relative overflow-x-hidden flex ${isDark ? BG_GRADIENT : "bg-background"}`}
-    >
-      <div className="overflow-y-auto flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          <AuthHeader type="signup" />
-          <SignupForm />
-        </div>
-      </div>
-
-      <Hero />
-    </div>
+    <AuthLayout>
+      <AuthHeader type="signup" />
+      <SignupForm />
+    </AuthLayout>
   );
 }
 

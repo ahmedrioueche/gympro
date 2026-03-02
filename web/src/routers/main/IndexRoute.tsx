@@ -10,7 +10,7 @@ export const IndexRoute = createRoute({
     const { user } = useUserStore();
 
     if (!user) {
-      return <Navigate to="/auth/login" />;
+      return <Navigate to="/landing" />;
     }
 
     const redirectUrl = getRedirectUrl({

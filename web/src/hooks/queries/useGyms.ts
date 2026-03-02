@@ -71,12 +71,16 @@ export const useGym = (id: string, enabled = true) => {
  * Get gyms owned by current user
  */
 export const useMyGyms = () => {
+  const isLanding = window.location.pathname.startsWith("/landing");
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+
   return useQuery({
     queryKey: gymKeys.myGyms(),
     queryFn: async () => {
       const response = await gymApi.findMyGyms();
       return response.data;
     },
+    enabled: !isLanding && isAuthenticated,
   });
 };
 
@@ -84,12 +88,16 @@ export const useMyGyms = () => {
  * Get gyms where current user is a member
  */
 export const useMemberGyms = () => {
+  const isLanding = window.location.pathname.startsWith("/landing");
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+
   return useQuery({
     queryKey: gymKeys.memberGyms(),
     queryFn: async () => {
       const response = await gymApi.findMemberGyms();
       return response.data;
     },
+    enabled: !isLanding && isAuthenticated,
   });
 };
 
@@ -100,6 +108,8 @@ export const useMemberGyms = () => {
  */
 export const useAllMyGyms = () => {
   const activeDashboard = useUserStore((state) => state.activeDashboard);
+  const isLanding = window.location.pathname.startsWith("/landing");
+  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
 
   return useQuery({
     queryKey: gymKeys.allMyGyms(activeDashboard),
@@ -114,6 +124,7 @@ export const useAllMyGyms = () => {
       const response = await gymApi.findAllMyGyms();
       return response.data;
     },
+    enabled: !isLanding && isAuthenticated,
   });
 };
 

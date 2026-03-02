@@ -405,4 +405,24 @@ export const APP_PAGES = {
       link: "/admin/settings",
     },
   },
+  landing: {
+    name: "pages.landing",
+    link: "/landing",
+    home: {
+      name: "pages.landing.home",
+      link: "/landing",
+    },
+    manager: {
+      name: "pages.landing.manager",
+      link: "/landing/manager",
+    },
+    member: {
+      name: "pages.landing.member",
+      link: "/landing/member",
+    },
+    coach: {
+      name: "pages.landing.coach",
+      link: "/landing/coach",
+    },
+  },
 };
