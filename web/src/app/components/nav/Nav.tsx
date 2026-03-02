@@ -1,4 +1,6 @@
+import { useLocation } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import GymSelector from "../gym/gym-selector/GymSelector";
 import SidebarAnimatedLogo from "../SidebarAnimatedLogo";
@@ -8,8 +10,13 @@ import { TopRightControls } from "./TopRightControls";
 import { useNav } from "./useNav";
 import { UserRoleBadge } from "./UserRoleBadge";
 
+import { resetAllScrollers } from "../../../utils/scroll";
+
 export default function Nav({ children, sidebarLinks = null }) {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const {
     sidebarOpen,
     setSidebarOpen,
@@ -29,6 +36,11 @@ export default function Nav({ children, sidebarLinks = null }) {
     handleLogout,
     navigateToHome,
   } = useNav();
+
+  // Reset scroll to top when navigation occurs within the dashboard
+  useEffect(() => {
+    resetAllScrollers();
+  }, [pathname]);
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
@@ -161,7 +173,11 @@ export default function Nav({ children, sidebarLinks = null }) {
         </div>
 
         {/* Page Content Area */}
-        <div className="flex-1 overflow-auto">
+        <div
+          ref={contentRef}
+          id="dashboard-content-scroller"
+          className="flex-1 overflow-auto"
+        >
           {children ? (
             children
           ) : (

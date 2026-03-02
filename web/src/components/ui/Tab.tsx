@@ -6,6 +6,8 @@ interface TabProps {
   className?: string;
 }
 
+import { resetAllScrollers } from "../../utils/scroll";
+
 export default function Tab({
   label,
   count,
@@ -13,9 +15,16 @@ export default function Tab({
   onClick,
   className = "",
 }: TabProps) {
+  const handleClick = () => {
+    resetAllScrollers();
+
+    // 2. User callback
+    onClick?.();
+  };
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       className={`
         py-4 px-1 border-b-2 font-medium md:text-sm text-xs transition-colors
         ${

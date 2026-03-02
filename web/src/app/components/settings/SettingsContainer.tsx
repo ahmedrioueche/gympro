@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import GradientCard from "../../../components/ui/GradientCard";
 
 export interface SettingsTabItem {
@@ -15,12 +15,19 @@ interface SettingsContainerProps {
   children: React.ReactNode;
 }
 
+import { resetAllScrollers } from "../../../utils/scroll";
+
 export default function SettingsContainer({
   tabs,
   activeTab,
   onTabChange,
   children,
 }: SettingsContainerProps) {
+  // Global scroll to top for settings tab changes
+  useEffect(() => {
+    resetAllScrollers();
+  }, [activeTab]);
+
   return (
     <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start relative">
       {/* Sidebar Tabs - Uniform UI, but static on mobile and sticky on desktop */}
