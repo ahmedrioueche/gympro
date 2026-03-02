@@ -56,6 +56,18 @@ export const useMyReports = () => {
   });
 };
 
+export const useReport = (id: string | undefined) => {
+  return useQuery({
+    queryKey: ["reports", id],
+    queryFn: async () => {
+      if (!id) return null;
+      const response = await reportsApi.getReport(id);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+};
+
 export const useCreateReport = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();

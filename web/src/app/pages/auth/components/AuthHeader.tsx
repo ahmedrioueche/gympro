@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import AnimatedLogo from "../../../../components/ui/AnimatedLogo";
 import useScreen from "../../../../hooks/useScreen";
@@ -5,6 +6,7 @@ import useScreen from "../../../../hooks/useScreen";
 const AuthHeader = ({ type = "login" }: { type?: "login" | "signup" }) => {
   const { t } = useTranslation();
   const { isMobile } = useScreen();
+  const navigate = useNavigate();
 
   const title =
     type === "login" ? t("auth.welcome_back") : t("auth.create_account");
@@ -14,7 +16,10 @@ const AuthHeader = ({ type = "login" }: { type?: "login" | "signup" }) => {
 
   return (
     <div className="text-center overflow-hidden mb-8">
-      <AnimatedLogo leftPosition={`${isMobile ? "40%" : "50%"}`} />
+      <AnimatedLogo
+        leftPosition={`${isMobile ? "40%" : "50%"}`}
+        onClick={() => navigate({ to: "/landing" })}
+      />
       {title && (
         <h2 className="text-xl md:text-3xl font-bold text-text-primary animate-fade-in">
           {title}

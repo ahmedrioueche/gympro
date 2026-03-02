@@ -40,6 +40,12 @@ export class ReportsController {
     return { success: true, data: reports };
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const report = await this.reportsService.findOne(id);
+    return { success: true, data: report };
+  }
+
   @Get('admin')
   @UseGuards(AppPermissionGuard)
   @AppPermission(APP_PERMISSIONS.MANAGE_REPORTS)

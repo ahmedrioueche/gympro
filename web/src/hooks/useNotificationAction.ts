@@ -62,6 +62,8 @@ export function useNotificationAction() {
         } else if (activeDashboard === "manager") {
           announcementsPath = APP_PAGES.gym.manager.announcements.link;
           notificationsPath = APP_PAGES.gym.manager.notifications.link;
+        } else if (activeDashboard === "admin") {
+          notificationsPath = APP_PAGES.admin.notifications.link;
         }
 
         if (notification.type === "announcement") {
@@ -69,6 +71,11 @@ export function useNotificationAction() {
         } else {
           navigate({ to: notificationsPath });
         }
+        return true;
+      }
+
+      if (activeDashboard === "admin") {
+        navigate({ to: APP_PAGES.admin.notifications.link });
         return true;
       }
       return false;

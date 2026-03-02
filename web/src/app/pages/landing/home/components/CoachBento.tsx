@@ -31,6 +31,7 @@ function CoachBento() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
+      id="coach"
       className="max-w-7xl mx-auto w-full relative px-6 md:px-10"
     >
       {/* Side label */}

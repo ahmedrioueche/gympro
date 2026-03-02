@@ -37,6 +37,11 @@ export class ReportsService {
         type: 'alert',
         priority: 'medium',
         relatedId: String(savedReport._id),
+        action: {
+          type: 'modal',
+          payload: 'report_details',
+          data: { reportId: String(savedReport._id) },
+        },
       })
       .catch((err) =>
         console.error('Failed to notify staff about report:', err),
@@ -103,6 +108,11 @@ export class ReportsService {
         type: 'alert',
         priority: 'medium',
         relatedId: String(report._id),
+        action: {
+          type: 'modal',
+          payload: 'report_details',
+          data: { report: report }, // Reporter usually has the data or we can pass it
+        },
       });
     }
 
@@ -114,6 +124,11 @@ export class ReportsService {
         type: 'alert',
         priority: 'low',
         relatedId: String(report._id),
+        action: {
+          type: 'modal',
+          payload: 'report_details',
+          data: { reportId: String(report._id) },
+        },
       })
       .catch((err) => console.error('Failed to notify staff:', err));
 
@@ -164,6 +179,11 @@ export class ReportsService {
           type: 'alert',
           priority: 'medium',
           relatedId: String(report._id),
+          action: {
+            type: 'modal',
+            payload: 'report_details',
+            data: { reportId: String(report._id) },
+          },
         })
         .catch((err) => console.error('Failed to notify staff:', err));
     } else {
@@ -175,6 +195,11 @@ export class ReportsService {
           type: 'alert',
           priority: 'medium',
           relatedId: String(report._id),
+          action: {
+            type: 'modal',
+            payload: 'report_details',
+            data: { report: report },
+          },
         });
       }
     }
@@ -193,6 +218,7 @@ export class ReportsService {
       type: 'alert';
       priority: 'low' | 'medium' | 'high';
       relatedId: string;
+      action?: any;
     },
   ): Promise<void> {
     try {

@@ -26,6 +26,7 @@ function MemberBento() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
+      id="member"
       className="max-w-7xl mx-auto w-full relative px-6 md:px-10"
     >
       {/* Side label */}

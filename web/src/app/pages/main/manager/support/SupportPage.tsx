@@ -16,6 +16,7 @@ export default function SupportPage() {
         <PageHeader
           title={t("support.pageTitle")}
           subtitle={t("support.pageSubtitle")}
+          icon={HelpCircle}
         />
         <Loading />
       </>

@@ -1,6 +1,6 @@
 import { ArrowUpDown, ChevronDown, Filter } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Dropdown from "../../../../../../../components/ui/Dropdown";
 import { SearchInput } from "../../../../../../../components/ui/SearchInput";
 
 import {
@@ -117,76 +117,51 @@ function FilterDropdown({
   onChange: (status: FilterStatus) => void;
   t: any;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
   return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all ${
-          isOpen
-            ? "border-primary ring-1 ring-primary/20"
-            : "hover:border-primary"
-        }`}
-      >
-        <Filter
-          className={`w-4 h-4 ${
-            current !== "all" ? "text-primary" : "text-text-secondary"
-          }`}
-        />
-        <span className="capitalize font-medium text-text-primary">
-          {t(`members.filters.${current}`)}
-        </span>
-        <ChevronDown
-          className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-
-      {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-          <div className="p-1">
-            {(["all", "active", "pending", "expired", "banned"] as const).map(
-              (status) => (
-                <button
-                  key={status}
-                  onClick={() => {
-                    onChange(status);
-                    setIsOpen(false);
-                  }}
-                  className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
-                    current === status
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "text-text-secondary hover:bg-muted hover:text-text-primary"
-                  }`}
-                >
-                  {t(`members.filters.${status}`)}
-                  {current === status && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  )}
-                </button>
-              ),
-            )}
-          </div>
+    <Dropdown
+      trigger={
+        <button
+          className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all hover:border-primary`}
+        >
+          <Filter
+            className={`w-4 h-4 ${
+              current !== "all" ? "text-primary" : "text-text-secondary"
+            }`}
+          />
+          <span className="capitalize font-medium text-text-primary">
+            {t(`members.filters.${current}`)}
+          </span>
+          <ChevronDown className="w-4 h-4 text-text-secondary" />
+        </button>
+      }
+      className="!w-48"
+    >
+      {(close) => (
+        <div className="p-1">
+          {(["all", "active", "pending", "expired", "banned"] as const).map(
+            (status) => (
+              <button
+                key={status}
+                onClick={() => {
+                  onChange(status);
+                  close();
+                }}
+                className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
+                  current === status
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "text-text-secondary hover:bg-muted hover:text-text-primary"
+                }`}
+              >
+                {t(`members.filters.${status}`)}
+                {current === status && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                )}
+              </button>
+            ),
+          )}
         </div>
       )}
-    </div>
+    </Dropdown>
   );
 }
 
@@ -199,73 +174,48 @@ function SortDropdown({
   onChange: (sort: SortBy) => void;
   t: any;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
   return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all ${
-          isOpen
-            ? "border-primary ring-1 ring-primary/20"
-            : "hover:border-primary"
-        }`}
-      >
-        <ArrowUpDown
-          className={`w-4 h-4 ${
-            current !== "name" ? "text-primary" : "text-text-secondary"
-          }`}
-        />
-        <span className="capitalize font-medium text-text-primary">
-          {t(`members.sort.${current}`)}
-        </span>
-        <ChevronDown
-          className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-
-      {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-48 bg-surface border border-border rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-          <div className="p-1">
-            {(["name", "joinDate", "status"] as const).map((sortOption) => (
-              <button
-                key={sortOption}
-                onClick={() => {
-                  onChange(sortOption);
-                  setIsOpen(false);
-                }}
-                className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
-                  current === sortOption
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-text-secondary hover:bg-muted hover:text-text-primary"
-                }`}
-              >
-                {t(`members.sort.${sortOption}`)}
-                {current === sortOption && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                )}
-              </button>
-            ))}
-          </div>
+    <Dropdown
+      trigger={
+        <button
+          className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all hover:border-primary`}
+        >
+          <ArrowUpDown
+            className={`w-4 h-4 ${
+              current !== "name" ? "text-primary" : "text-text-secondary"
+            }`}
+          />
+          <span className="capitalize font-medium text-text-primary">
+            {t(`members.sort.${current}`)}
+          </span>
+          <ChevronDown className="w-4 h-4 text-text-secondary" />
+        </button>
+      }
+      className="!w-48"
+    >
+      {(close) => (
+        <div className="p-1">
+          {(["name", "joinDate", "status"] as const).map((sortOption) => (
+            <button
+              key={sortOption}
+              onClick={() => {
+                onChange(sortOption);
+                close();
+              }}
+              className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
+                current === sortOption
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-text-secondary hover:bg-muted hover:text-text-primary"
+              }`}
+            >
+              {t(`members.sort.${sortOption}`)}
+              {current === sortOption && (
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              )}
+            </button>
+          ))}
         </div>
       )}
-    </div>
+    </Dropdown>
   );
 }

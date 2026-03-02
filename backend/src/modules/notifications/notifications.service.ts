@@ -401,14 +401,10 @@ export class NotificationsService {
             }
           }
         } else if (roleType === 'OwnerManagerNotification') {
-          if (!notificationData.gymId) {
-            notificationData.gymId = options.relatedId;
-          }
+          // No automatic mapping of relatedId to gymId here
+          // This was causing report IDs to be treated as gym IDs
         } else {
-          // Fallback: put it in gymId if it's not role-specific
-          if (!notificationData.gymId) {
-            notificationData.gymId = options.relatedId;
-          }
+          // Fallback: only put it in gymId if it's not role-specific and we're sure it's a gym
         }
       }
 

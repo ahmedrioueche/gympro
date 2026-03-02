@@ -1,5 +1,6 @@
 import { ChevronDown, Filter } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Dropdown from "./Dropdown";
 
 export interface FilterOption<T extends string = string> {
   value: T;
@@ -165,82 +166,53 @@ function FilterDropdown<T extends string>({
   options,
   align = "right",
 }: FilterDropdownProps<T>) {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
   const selectedOption = options.find((opt) => opt.value === value);
   const isFiltered = options.length > 0 && value !== options[0]?.value;
 
-  const alignClasses =
-    align === "left" ? "left-0 md:left-auto md:right-0" : "right-0";
-
   return (
-    <div ref={ref} className="relative flex-shrink-0">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-2 md:py-2.5 bg-background border border-border rounded-xl text-sm transition-all ${
-          isOpen
-            ? "border-primary ring-1 ring-primary/20"
-            : "hover:border-primary"
-        }`}
-      >
-        <Filter
-          className={`w-4 h-4 md:w-5 md:h-5 ${
-            isFiltered ? "text-primary" : "text-text-secondary"
-          }`}
-        />
-        <span className="hidden sm:inline capitalize font-medium text-text-primary max-w-[100px] truncate">
-          {selectedOption?.label || value}
-        </span>
-        <ChevronDown
-          className={`w-3.5 h-3.5 md:w-4 md:h-4 text-text-secondary transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-
-      {isOpen && (
-        <div
-          className={`absolute top-full ${alignClasses} mt-2 w-48 bg-background border border-border rounded-xl shadow-xl overflow-hidden z-50`}
+    <Dropdown
+      trigger={
+        <button
+          className={`flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-2 md:py-2.5 bg-background border border-border rounded-xl text-sm transition-all hover:border-primary`}
         >
-          <div className="p-1">
-            {options.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-                className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
-                  value === option.value
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-text-secondary hover:bg-muted hover:text-text-primary"
-                }`}
-              >
-                {option.label}
-                {value === option.value && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                )}
-              </button>
-            ))}
-          </div>
+          <Filter
+            className={`w-4 h-4 md:w-5 md:h-5 ${
+              isFiltered ? "text-primary" : "text-text-secondary"
+            }`}
+          />
+          <span className="hidden sm:inline capitalize font-medium text-text-primary max-w-[100px] truncate">
+            {selectedOption?.label || value}
+          </span>
+          <ChevronDown className="w-3.5 h-3.5 md:w-4 md:h-4 text-text-secondary" />
+        </button>
+      }
+      align={align}
+      className="!w-48"
+    >
+      {(close) => (
+        <div className="p-1">
+          {options.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => {
+                onChange(option.value);
+                close();
+              }}
+              className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
+                value === option.value
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-text-secondary hover:bg-muted hover:text-text-primary"
+              }`}
+            >
+              {option.label}
+              {value === option.value && (
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              )}
+            </button>
+          ))}
         </div>
       )}
-    </div>
+    </Dropdown>
   );
 }
 

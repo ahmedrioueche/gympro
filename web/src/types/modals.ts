@@ -240,7 +240,8 @@ export interface AdminCreateEditorModalProps {
 }
 
 export interface ReportDetailsModalProps {
-  report: Report;
+  report?: Report;
+  reportId?: string;
 }
 
 export interface AlertDetailsModalProps {

@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import {
   useAddAttachments,
   useAddResponse,
+  useReport,
   useUpdateReportStatus,
 } from "../../../../hooks/queries/useReports";
 import { useModalStore } from "../../../../store/modal";
@@ -35,8 +36,15 @@ export function useReportDetailsModal() {
   const [isUploading, setIsUploading] = useState(false);
 
   const isOpen =
-    currentModal === "report_details" && !!reportDetailsProps?.report;
-  const baseReport = reportDetailsProps?.report as Report | undefined;
+    currentModal === "report_details" &&
+    (!!reportDetailsProps?.report || !!reportDetailsProps?.reportId);
+
+  const { data: fetchedReport, isLoading: isFetchingReport } = useReport(
+    reportDetailsProps?.reportId,
+  );
+
+  const baseReport =
+    (reportDetailsProps?.report as Report | undefined) || fetchedReport;
 
   // Initialize local responses and attachments when report changes
   useEffect(() => {

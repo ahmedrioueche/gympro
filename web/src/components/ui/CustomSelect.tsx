@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface CustomSelectProps<T> {
   title?: string;
@@ -17,6 +18,7 @@ interface CustomSelectProps<T> {
   error?: string;
   marginTop?: string;
   placeholder?: string;
+  searchable?: boolean;
 }
 
 const CustomSelect = <T extends string>({
@@ -29,10 +31,9 @@ const CustomSelect = <T extends string>({
   className,
   bgColor,
   error,
-  marginTop = "mt-2",
   placeholder,
   searchable = false,
-}: CustomSelectProps<T> & { searchable?: boolean }) => {
+}: CustomSelectProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const selectRef = useRef<HTMLDivElement>(null);
@@ -46,6 +47,11 @@ const CustomSelect = <T extends string>({
         selectRef.current &&
         !selectRef.current.contains(event.target as Node)
       ) {
+        // If clicking inside the portal, don't close
+        const portal = document.getElementById("select-portal-root");
+        if (portal && portal.contains(event.target as Node)) {
+          return;
+        }
         setIsOpen(false);
       }
     };
@@ -54,7 +60,7 @@ const CustomSelect = <T extends string>({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectRef]);
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -69,10 +75,11 @@ const CustomSelect = <T extends string>({
       if (!isOpen || disabled) return;
 
       const focusedElement = document.activeElement;
-      // If search input is focused, don't interfere with typing unless it's navigation
       const isSearchFocused = focusedElement === searchInputRef.current;
 
-      const items = Array.from(selectRef.current?.querySelectorAll("li") || []);
+      // When using Portal, we might need a different way to find items
+      const portal = document.getElementById("select-portal-root");
+      const items = Array.from(portal?.querySelectorAll("li") || []);
 
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -89,7 +96,6 @@ const CustomSelect = <T extends string>({
         event.preventDefault();
         const currentIndex = items.indexOf(focusedElement as HTMLLIElement);
         if (currentIndex <= 0 && isSearchFocused) {
-          // Already at top or search focused, do nothing or loop to bottom
           const prevIndex = items.length - 1;
           items[prevIndex]?.focus();
         } else if (currentIndex === 0 && searchable) {
@@ -125,6 +131,90 @@ const CustomSelect = <T extends string>({
     option.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  const renderDropdown = () => {
+    if (!isOpen || !selectRef.current) return null;
+
+    const rect = selectRef.current.getBoundingClientRect();
+    const top = rect.bottom + window.scrollY + 4;
+    const left = rect.left + window.scrollX;
+    const width = rect.width;
+
+    return createPortal(
+      <ul
+        id="select-portal-root"
+        ref={listRef}
+        role="listbox"
+        className={`fixed z-[9999] mt-0 rounded-md shadow-2xl bg-background max-h-60 overflow-auto border border-border animate-in fade-in zoom-in-95 duration-200 ${className ?? ""}`}
+        style={{
+          top: `${rect.bottom + 4}px`,
+          left: `${rect.left}px`,
+          width: `${width}px`,
+        }}
+        onScroll={handleListScroll}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {searchable && (
+          <div className="sticky top-0 p-2 bg-background border-b border-border z-20">
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search..."
+              className="w-full px-3 py-1.5 text-sm bg-surface rounded-md border border-border focus:outline-none focus:border-primary text-text-primary placeholder:text-text-secondary"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
+        {filteredOptions.length > 0 ? (
+          filteredOptions.map((option) => (
+            <li
+              key={option.value}
+              role="option"
+              aria-selected={option.value === selectedOption}
+              tabIndex={0}
+              className={`px-4 py-2 text-text-primary hover:bg-primary/30 hover:cursor-pointer focus:bg-primary/30 focus:outline-none transition-colors ${
+                option.value === selectedOption ? "bg-primary/10 font-bold" : ""
+              }`}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }
+              }}
+            >
+              <div className="flex items-center gap-2">
+                {option.flag && (
+                  <img
+                    src={option.flag}
+                    alt=""
+                    className="w-5 h-3.5 object-cover flex-shrink-0"
+                  />
+                )}
+                <span>{option.label}</span>
+                {option.name && (
+                  <span className="text-xs text-text-secondary ml-auto">
+                    {option.name}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))
+        ) : (
+          <li className="px-4 py-2 text-sm text-text-secondary text-center">
+            No results found
+          </li>
+        )}
+      </ul>,
+      document.body,
+    );
+  };
+
   return (
     <div className="relative space-y-2" ref={selectRef}>
       {title && (
@@ -147,11 +237,12 @@ const CustomSelect = <T extends string>({
           focus:border-2
           focus:border-primary
           text-text-primary
-          
-          ${disabled ? "" : "cursor-pointer  hover:bg-surface/60"}
+          shadow-sm
+          ${disabled ? "" : "cursor-pointer hover:bg-surface/60"}
           ${bgColor ?? ""}
           ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-          ${error ? "border-danger" : "border-border"}
+          ${error ? "border-danger" : isOpen ? "border-primary ring-1 ring-primary/20" : "border-border"}
+          transition-all duration-200
         `}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onKeyDown={(e) => {
@@ -160,101 +251,40 @@ const CustomSelect = <T extends string>({
           }
         }}
       >
-        <div className="flex items-center gap-2">
-          {selectedOptionData?.flag && (
-            <img
-              src={selectedOptionData.flag}
-              alt=""
-              className="w-5 h-3.5 object-cover flex-shrink-0"
-            />
-          )}
-          <span>
-            {selectedOptionData?.label || label || selectedOption || (
-              <span className="text-text-secondary">
-                {placeholder || "Select..."}
-              </span>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 truncate">
+            {selectedOptionData?.flag && (
+              <img
+                src={selectedOptionData.flag}
+                alt=""
+                className="w-5 h-3.5 object-cover flex-shrink-0 border border-white/10 rounded-sm"
+              />
             )}
-          </span>
+            <span className="truncate">
+              {selectedOptionData?.label || label || selectedOption || (
+                <span className="text-text-secondary">
+                  {placeholder || "Select..."}
+                </span>
+              )}
+            </span>
+          </div>
+          <svg
+            className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
         </div>
       </div>
 
-      {isOpen && !disabled && (
-        <ul
-          ref={listRef}
-          role="listbox"
-          className={`
-            absolute z-10 mt-1 w-full rounded-md shadow-lg 
-            bg-background
-            max-h-60 overflow-auto backdrop-blur-xl 
-            border border-border
-            ${className ?? ""}
-          `}
-          onScroll={handleListScroll}
-        >
-          {searchable && (
-            <div className="sticky top-0 p-2 bg-background border-b border-border z-20">
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search..."
-                className="w-full px-3 py-1.5 text-sm bg-surface rounded-md border border-border focus:outline-none focus:border-primary text-text-primary placeholder:text-text-secondary"
-                onClick={(e) => e.stopPropagation()}
-                onKeyDown={(e) => e.stopPropagation()} // Stop propagation to prevent selecting parent
-              />
-            </div>
-          )}
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map((option) => (
-              <li
-                key={option.value}
-                role="option"
-                aria-selected={option.value === selectedOption}
-                tabIndex={0}
-                className={`
-                  px-4 py-2 
-                  text-text-primary
-                  hover:bg-primary/30
-                  hover:cursor-pointer
-                  focus:bg-primary/30
-                  focus:outline-none
-                `}
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    onChange(option.value);
-                    setIsOpen(false);
-                  }
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  {option.flag && (
-                    <img
-                      src={option.flag}
-                      alt=""
-                      className="w-5 h-3.5 object-cover flex-shrink-0"
-                    />
-                  )}
-                  <span>{option.label}</span>
-                  {option.name && (
-                    <span className="text-xs text-text-secondary ml-auto">
-                      {option.name}
-                    </span>
-                  )}
-                </div>
-              </li>
-            ))
-          ) : (
-            <li className="px-4 py-2 text-sm text-text-secondary text-center">
-              No results found
-            </li>
-          )}
-        </ul>
-      )}
+      {renderDropdown()}
     </div>
   );
 };

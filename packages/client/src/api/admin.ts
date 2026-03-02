@@ -240,6 +240,15 @@ export const adminApi = {
       throw handleApiError(error);
     }
   },
+
+  getReport: async (id: string): Promise<ApiResponse<Report>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<Report>>(`/reports/${id}`);
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
   /** Admin: Update report status */
   updateReportStatus: async (
     id: string,

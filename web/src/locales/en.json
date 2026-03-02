@@ -4047,6 +4047,7 @@
     }
   },
   "classes": {
+    "pageDesc": "Manage your group workouts and schedules",
     "delete": {
       "title": "Delete Class",
       "message": "This is a recurring class. Would you like to cancel only this specific session or the entire series?",
@@ -4456,7 +4457,7 @@
     "legal": {
       "terms": {
         "title": "Terms & Conditions",
-        "subtitle": "Last updated: March 2024",
+        "subtitle": "Last updated: March 2026",
         "intro": "Welcome to GymPro. By using our platform, you agree to comply with and be bound by the following terms and conditions.",
         "sections": {
           "use": {
@@ -4483,7 +4484,7 @@
       },
       "privacy": {
         "title": "Privacy Policy",
-        "subtitle": "Last updated: March 2024",
+        "subtitle": "Last updated: March 2026",
         "intro": "At GymPro, we are committed to protecting your privacy and ensuring your personal information is handled securely.",
         "sections": {
           "collect": {
@@ -4510,7 +4511,7 @@
       },
       "cookies": {
         "title": "Cookie Policy",
-        "subtitle": "Last updated: March 2024",
+        "subtitle": "Last updated: March 2026",
         "intro": "This Cookie Policy explains how GymPro uses cookies and similar technologies to recognize you when you visit our website.",
         "sections": {
           "what": {

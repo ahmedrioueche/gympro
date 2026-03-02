@@ -50,10 +50,8 @@ export default function ClassesPage() {
       <div className="space-y-6">
         <PageHeader
           title={t("pages.gym.classes", "Gym Classes")}
-          subtitle={t(
-            "classes.pageDesc",
-            "Manage your group workouts and schedules",
-          )}
+          subtitle={t("classes.pageDesc")}
+          icon={CalendarIcon}
         />
         <Loading />
       </div>
@@ -65,10 +63,7 @@ export default function ClassesPage() {
     <div className="space-y-6">
       <PageHeader
         title={t("pages.gym.classes", "Gym Classes")}
-        subtitle={t(
-          "classes.pageDesc",
-          "Manage your group workouts and schedules",
-        )}
+        subtitle={t("classes.pageDesc")}
         icon={CalendarIcon}
         actions={[
           {
