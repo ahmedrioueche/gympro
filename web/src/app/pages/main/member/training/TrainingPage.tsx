@@ -101,7 +101,7 @@ export default function TrainingPage() {
 
       {/* Recent Sessions Section */}
       {!isActiveLoading && activeSessions.length > 0 && activeHistory && (
-        <div className="bg-surface border border-border rounded-2xl p-6 shadow-sm">
+        <div>
           <h3 className="text-lg font-semibold text-text-primary mb-4">
             {t("training.page.recentSessions")}
           </h3>

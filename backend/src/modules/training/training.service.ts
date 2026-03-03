@@ -262,6 +262,12 @@ export class TrainingService {
       // Update existing
       console.log('[LogSession] UPDATING existing log at index', existingIndex);
       history.progress.dayLogs[existingIndex].exercises = dto.exercises;
+      history.progress.dayLogs[existingIndex].date = dto.date;
+      history.progress.dayLogs[existingIndex].dayName = dto.dayName;
+      if (dto.durationMinutes) {
+        history.progress.dayLogs[existingIndex].durationMinutes =
+          dto.durationMinutes;
+      }
       if (dto.notes) history.progress.dayLogs[existingIndex].notes = dto.notes;
       // Update submissionId if not set (migration)
       if (

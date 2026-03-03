@@ -1,5 +1,7 @@
+import { Link } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { APP_PAGES } from "../../../../../constants/navigation";
 import { useInView } from "../../../../../hooks/useInView";
 
 export function CoachCTA() {
@@ -30,16 +32,13 @@ export function CoachCTA() {
             {t("landing.coachPage.cta.subtitle")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-primary text-[#101f22] px-10 py-5 rounded-2xl font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-primary/30 active:scale-95">
+            <Link
+              to={APP_PAGES.signUp.link}
+              className="bg-primary text-[#101f22] px-10 py-5 rounded-2xl font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-primary/30 active:scale-95"
+            >
               {t("landing.coachPage.cta.primary")}
-            </button>
-            <button className="bg-white/10 hover:bg-white/20 text-white px-10 py-5 rounded-2xl font-bold text-lg backdrop-blur-sm transition-all border border-white/10">
-              {t("landing.coachPage.cta.secondary")}
-            </button>
+            </Link>
           </div>
-          <p className="mt-8 text-slate-500 text-sm font-medium uppercase tracking-widest">
-            {t("landing.coachPage.cta.footer")}
-          </p>
         </div>
       </div>
       <div

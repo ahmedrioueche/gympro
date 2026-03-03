@@ -2,6 +2,7 @@ import {
   type ProgramDayProgress,
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
+import { format } from "date-fns";
 import { ChevronDown, Clock, Dumbbell, Edit2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -25,7 +26,7 @@ export const SessionItem = ({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden transition-all">
+    <div className="bg-surface border border-border rounded-xl overflow-hidden transition-all">
       <div className="flex flex-col sm:flex-row">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
@@ -42,7 +43,7 @@ export const SessionItem = ({
               </h4>
               <span className="text-xs text-text-secondary flex items-center gap-1">
                 <Clock size={14} />
-                {new Date(session.date).toLocaleDateString()}
+                {format(new Date(session.date), "MMM d, yyyy - HH:mm")}
               </span>
             </div>
           </div>

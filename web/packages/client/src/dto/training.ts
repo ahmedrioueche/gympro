@@ -54,4 +54,6 @@ export interface LogSessionDto {
   durationMinutes?: number;
   exercises: ExerciseProgress[];
   notes?: string;
+  sessionId?: string;
+  submissionId?: string;
 }

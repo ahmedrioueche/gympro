@@ -31,10 +31,7 @@ export const SessionExerciseList = ({
         const hasVideo = !!exerciseDef?.videoUrl;
 
         return (
-          <div
-            key={idx}
-            className="bg-surface rounded-lg p-3 border border-border/50"
-          >
+          <div key={idx} className="rounded-lg p-3 border border-border/50">
             <div className="flex items-center justify-start gap-2 mb-2">
               <div className="flex items-center gap-2">
                 <Dumbbell size={14} className="text-primary" />

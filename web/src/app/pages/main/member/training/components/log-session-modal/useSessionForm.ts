@@ -4,6 +4,7 @@ import {
   type ProgramDayProgress,
   type ProgramHistory,
 } from "@ahmedrioueche/gympro-client";
+import { format } from "date-fns";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -48,8 +49,8 @@ export const useSessionForm = ({
   );
   const [sessionDate, setSessionDate] = useState(
     initialSession
-      ? new Date(initialSession.date).toISOString().split("T")[0]
-      : new Date().toISOString().split("T")[0],
+      ? format(new Date(initialSession.date), "yyyy-MM-dd'T'HH:mm")
+      : format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
   const [durationMinutes, setDurationMinutes] = useState<number>(
     initialSession?.durationMinutes || 45,
@@ -66,26 +67,8 @@ export const useSessionForm = ({
   const autoSaveTimerRef = useRef<any>(null);
   const prevDayNameRef = useRef<string>("");
 
-  // Reset when modal opens/closes
-  useEffect(() => {
-    if (isOpen && program?.days) {
-      const dayName = initialSession?.dayName || program.days[0]?.name || "";
-      setSelectedDayName(dayName);
-      prevDayNameRef.current = dayName; // Track initial day
-      setSessionDate(
-        initialSession?.date
-          ? new Date(initialSession.date).toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0],
-      );
-      setDurationMinutes(initialSession?.durationMinutes || 45);
-      setServerSessionId(
-        (initialSession as any)?._id || (initialSession as any)?.id,
-      );
-      setIsDirty(false);
-    }
-    // Only reset when the modal OPENS. Ignore updates to program/initialSession while open to preserve state.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  // Logic previously here for manual resets was removed.
+  // The hook now relies on component unmounting for state cleanup.
 
   // Initialize form when Day changes or Edit Session provided
   useEffect(() => {
@@ -101,12 +84,25 @@ export const useSessionForm = ({
     const day = program.days.find((d) => d.name === selectedDayName);
     if (!day) return;
 
+    // Reset IDs initially to prevent "leakage" from previous day selection
+    if (mode === "new") {
+      setServerSessionId(undefined);
+      setSubmissionId(
+        Math.random().toString(36).substring(2) + Date.now().toString(36),
+      );
+      // STRICT RESET: Always default to "Now" when switching days in "new" mode.
+      // This prevents stale times from staying in the form if the modal was open for hours.
+      setSessionDate(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+    }
+
     // EDIT MODE LOGIC ------------------------
     if (mode === "edit" && initialSession) {
-      // If day switched away from initial session day, treat as "new" or fallback?
-      // Assuming user stays on the edit day, or if they switch, they want to log THAT day (which is effectively new/draft).
-      // But let's strictly load initialSession if it matches selectedDayName.
       if (initialSession.dayName === selectedDayName) {
+        setServerSessionId(
+          (initialSession as any)?._id || (initialSession as any)?.id,
+        );
+        setSubmissionId((initialSession as any).submissionId);
+
         const flattenedExercises = day.blocks.flatMap((b) => b.exercises);
         const initialExercises: ExerciseProgress[] = flattenedExercises.map(
           (ex) => {
@@ -157,7 +153,9 @@ export const useSessionForm = ({
         const hoursSinceStored =
           (Date.now() - parsed.timestamp) / (1000 * 60 * 60);
         if (hoursSinceStored < 24 && parsed.exercises.length > 0) {
-          console.log("[useSessionForm] Recovering session from localStorage");
+          console.log(
+            `[useSessionForm] Recovering ${selectedDayName} session from localStorage`,
+          );
 
           // Force uncheck sets if mode is new (User Request: "always uncheck all sets on a new log")
           // This prevents stale drafts from showing completed sets
@@ -167,7 +165,19 @@ export const useSessionForm = ({
           }));
 
           setExercises(exercises);
-          setSessionDate(parsed.sessionDate);
+
+          // SMART DATE RECOVERY:
+          // Recover date only if draft is recent (< 1 hour).
+          // This preserves local time "Now" for old drafts while keeping Gym Bro weights/reps.
+          if (hoursSinceStored < 1) {
+            setSessionDate(
+              format(new Date(parsed.sessionDate), "yyyy-MM-dd'T'HH:mm"),
+            );
+          } else {
+            console.log(
+              "[useSessionForm] Draft is old. Keeping 'Now' time but preserving exercises.",
+            );
+          }
           setLastSavedAt(new Date(parsed.timestamp));
           // Recover server session ID if available
           if (parsed.serverSessionId) {
@@ -241,7 +251,7 @@ export const useSessionForm = ({
     );
 
     setExercises(initialExercises);
-  }, [selectedDayName, isOpen]); // Rerun logic when modal opens!
+  }, [selectedDayName, isOpen, mode, initialSession, program]); // Rerun logic when modal opens or key props change!
 
   // Client-side ID for robust de-duplication
   // This starts as undefined and gets set during initialization
@@ -269,7 +279,7 @@ export const useSessionForm = ({
       const data = {
         programId: program._id,
         dayName: selectedDayName,
-        date: sessionDate,
+        date: new Date(sessionDate).toISOString(), // Export as UTC for consistency
         durationMinutes,
         exercises,
         sessionId: serverSessionId,
@@ -310,7 +320,7 @@ export const useSessionForm = ({
     const storageKey = getStorageKey(program._id, selectedDayName);
     const data: StoredSession = {
       exercises,
-      sessionDate,
+      sessionDate: new Date(sessionDate).toISOString(), // Store as full ISO for cross-timezone recovery
       durationMinutes,
       timestamp: Date.now(),
       mode,
@@ -345,8 +355,12 @@ export const useSessionForm = ({
 
   // Mark as saved (to update lastSavedAt)
   const markAsSaved = useCallback(() => {
+    console.log("[useSessionForm] Marking as saved and CLEARING ID state");
     setLastSavedAt(new Date());
     clearStorage();
+    // CRITICAL: Clear IDs after successful save so the next time the modal opens, it's fresh
+    setServerSessionId(undefined);
+    setSubmissionId(undefined);
     setIsDirty(false); // Reset dirty state on manual save/completion
   }, [clearStorage]);
 
@@ -422,7 +436,14 @@ export const useSessionForm = ({
         // Propagate weight to subsequent sets
         for (let i = setIndex + 1; i < currentSets.length; i++) {
           const nextSetWeight = currentSets[i].weight || 0;
-          if (nextSetWeight === 0) {
+          // PROPAGATION LOGIC:
+          // We propagate if the next set has weight 0 OR if it matches the OLD value of this set.
+          // This allows typing multi-digit numbers (like "15") correctly.
+          // We also only propagate to UNCOMPLETED sets to avoid overwriting manually finished data.
+          if (
+            (nextSetWeight === 0 || nextSetWeight === oldValue) &&
+            !currentSets[i].completed
+          ) {
             currentSets[i] = { ...currentSets[i], weight: weightValue };
           }
         }
@@ -610,5 +631,7 @@ export const useSessionForm = ({
     toggleBlockSplit, // Expose toggler
     toggleSupersetCompletion, // Expose atomic updater
     validateSession,
+    submissionId,
+    serverSessionId,
   };
 };

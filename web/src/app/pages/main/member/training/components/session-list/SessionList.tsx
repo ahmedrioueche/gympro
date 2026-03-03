@@ -33,7 +33,7 @@ export const SessionList = ({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 ">
       {sortedSessions.map((session, index) => (
         <SessionItem
           key={index}

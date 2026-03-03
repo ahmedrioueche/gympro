@@ -13,38 +13,37 @@ import { SessionBlock } from "./SessionBlock";
 import { SessionProgressFooter } from "./SessionProgressFooter";
 import { useSessionForm } from "./useSessionForm";
 
-export const LogSessionModal = () => {
+const LogSessionModalContent = ({
+  activeHistory,
+  initialSession,
+  mode,
+  closeModal,
+}: {
+  activeHistory: any;
+  initialSession: any;
+  mode: "new" | "edit";
+  closeModal: () => void;
+}) => {
   const { t } = useTranslation();
-  const { currentModal, logSessionProps, closeModal, openModal } =
-    useModalStore();
-  const isOpen = currentModal === "log_session";
-  const { activeHistory, initialSession, mode } = logSessionProps || {};
+  const { openModal } = useModalStore();
   const logSession = useLogSession();
   const autoSaveSession = useAutoSaveSession();
 
   const handleAutoSave = async (data: any) => {
     try {
       const result = await autoSaveSession.mutateAsync(data);
-      // If we didn't have a sessionId, finding the new one
       if (!data.sessionId) {
-        // Find the matching log inside result (ProgramHistory)
-        // Access result.data because Axios/API wrapper returns data property.
-        // AND check for 'data' property inside that if apiResponse wrapper is used.
         const responseBody = (result as any).data || result;
-        const historyData = responseBody.data || responseBody; // unwrapping apiResponse { data: ... }
+        const historyData = responseBody.data || responseBody;
 
         if (!historyData?.progress?.dayLogs) {
           console.error("Auto-save: Could not parse history data", historyData);
           return undefined;
         }
 
-        // Since we just PUSHED a new log, it is guaranteed to be the last one in the array.
-        // BUT if we updated an existing one, it might be anywhere.
         const logs = historyData.progress.dayLogs;
-
         let targetLog: any;
 
-        // Priority 1: Match by submissionId
         if (data.submissionId) {
           targetLog = logs.find(
             (l: any) => l.submissionId === data.submissionId,
@@ -61,26 +60,22 @@ export const LogSessionModal = () => {
   };
 
   const form = useSessionForm({
-    isOpen,
+    isOpen: true, // Known true if this component is mounted
     activeHistory: activeHistory!,
     initialSession,
     mode: mode || "new",
     onAutoSave: handleAutoSave,
   });
 
-  if (!isOpen || !activeHistory) return null;
-
   const { program } = activeHistory;
 
   const handleSave = () => {
-    // Validate before saving
     const validationError = form.validateSession();
     if (validationError) {
       toast.error(validationError);
       return;
     }
 
-    // Final save / Done
     logSession.mutate(
       {
         programId: program._id!,
@@ -91,8 +86,9 @@ export const LogSessionModal = () => {
         sessionId:
           mode === "edit"
             ? (initialSession as any)?._id || (initialSession as any)?.id
-            : (form as any).serverSessionId,
-      } as any,
+            : form.serverSessionId,
+        submissionId: form.submissionId,
+      },
       {
         onSuccess: () => {
           form.markAsSaved(); // Clear localStorage after successful save
@@ -111,7 +107,7 @@ export const LogSessionModal = () => {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={true}
       onClose={closeModal}
       title={t("training.logSession.title")}
       subtitle={`${program.name} - ${form.selectedDayName}`}
@@ -127,7 +123,6 @@ export const LogSessionModal = () => {
       }
     >
       <div className="space-y-6">
-        {/* Day and Date Selection */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
@@ -145,7 +140,7 @@ export const LogSessionModal = () => {
               {t("training.logSession.date")}
             </label>
             <InputField
-              type="date"
+              type="datetime-local"
               value={form.sessionDate}
               onChange={(e) => form.setSessionDate(e.target.value)}
             />
@@ -170,7 +165,6 @@ export const LogSessionModal = () => {
           </div>
         </div>
 
-        {/* Exercises */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
             <Dumbbell size={20} className="text-primary" />
@@ -183,8 +177,6 @@ export const LogSessionModal = () => {
               </p>
             ) : (
               currentDay?.blocks.map((block, blockIndex) => {
-                // Determine which exercises belong to this block
-                // We need to calculate the start index based on previous blocks
                 const startIndex = currentDay.blocks
                   .slice(0, blockIndex)
                   .reduce((acc, b) => acc + b.exercises.length, 0);
@@ -223,5 +215,23 @@ export const LogSessionModal = () => {
         </div>
       </div>
     </BaseModal>
+  );
+};
+
+export const LogSessionModal = () => {
+  const { currentModal, logSessionProps, closeModal } = useModalStore();
+  const isOpen = currentModal === "log_session";
+
+  if (!isOpen || !logSessionProps?.activeHistory) return null;
+
+  const { activeHistory, initialSession, mode } = logSessionProps;
+
+  return (
+    <LogSessionModalContent
+      activeHistory={activeHistory}
+      initialSession={initialSession}
+      mode={mode || "new"}
+      closeModal={closeModal}
+    />
   );
 };
