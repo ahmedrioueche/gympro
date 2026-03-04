@@ -76,13 +76,14 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           className="text-sm"
           marginTop="mt-0"
           disabled={disabled}
+          showIcon={!isMobile}
         />
       </div>
 
       {/* Phone Number Input */}
       <div className="flex-1">
         <div className="relative">
-          {showIcon && !isMobile && (
+          {showIcon && (
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Phone className="h-5 w-5 text-text-secondary" />
             </div>

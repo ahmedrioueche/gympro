@@ -19,6 +19,7 @@ interface CustomSelectProps<T> {
   marginTop?: string;
   placeholder?: string;
   searchable?: boolean;
+  showIcon?: boolean;
 }
 
 const CustomSelect = <T extends string>({
@@ -33,6 +34,7 @@ const CustomSelect = <T extends string>({
   error,
   placeholder,
   searchable = false,
+  showIcon = true,
 }: CustomSelectProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -268,19 +270,21 @@ const CustomSelect = <T extends string>({
               )}
             </span>
           </div>
-          <svg
-            className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+          {showIcon && (
+            <svg
+              className={`w-4 h-4 text-text-secondary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          )}
         </div>
       </div>
 
