@@ -36,7 +36,7 @@ export function LandingSectionTitle({
             <Icon className={`w-5 h-5 ${colorClassName}`} />
           </div>
         )}
-        <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white">
+        <h2 className="text-2xl md:text-4xl font-black tracking-tight text-white">
           {title}
         </h2>
       </div>

@@ -1,6 +1,7 @@
 import { Phone } from "lucide-react";
 import React from "react";
 import { COUNTRY_CODES } from "../../../../packages/client/src/constants/countryCodes";
+import useScreen from "../../hooks/useScreen";
 import {
   formatPhoneDigitsForInput,
   getExampleNumber,
@@ -41,9 +42,10 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   placeholder,
   disabled = false,
   className = "",
-  countryCodeWidth = "w-24 md:w-28",
+  countryCodeWidth = "w-24 md:w-32",
   showIcon = true,
 }) => {
+  const { isMobile } = useScreen();
   // Format country code options with flags
   const countryCodeOptions = COUNTRY_CODES.map((country) => ({
     value: country.code,
@@ -80,7 +82,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
       {/* Phone Number Input */}
       <div className="flex-1">
         <div className="relative">
-          {showIcon && (
+          {showIcon && !isMobile && (
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Phone className="h-5 w-5 text-text-secondary" />
             </div>
