@@ -20,7 +20,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { AppPlansService } from '../appBilling/plan/plan.service';
+import { AppPlansService } from '../app-billing/plan/plan.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PaddleService } from './paddle.service';
 

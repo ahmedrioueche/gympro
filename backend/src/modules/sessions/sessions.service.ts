@@ -21,8 +21,8 @@ import {
   GymCoachPaymentType,
 } from '../gym-coach-payment/schemas/gym-coach-payment.schema';
 import { GymCoachService } from '../gym-coach/gym-coach.service';
-import { GymMembershipModel } from '../gymMembership/membership.schema';
-import { SubscriptionTypeModel } from '../gymSubscription/gymSubscription.schema';
+import { GymMembershipModel } from '../gym-membership/membership.schema';
+import { SubscriptionTypeModel } from '../gym-subscription/gymSubscription.schema';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { SessionModel } from './schemas/session.schema';

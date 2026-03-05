@@ -11,13 +11,13 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
-import { calculateSubscriptionLimits } from '../appBilling/subscription/subscription.util';
+import { calculateSubscriptionLimits } from '../app-billing/subscription/subscription.util';
 import { CreateMemberDto } from '../auth/auth.dto';
-import { GymModel } from '../gym/gym.schema';
 import {
   SubscriptionHistoryModel,
   SubscriptionTypeModel,
-} from '../gymSubscription/gymSubscription.schema';
+} from '../gym-subscription/gymSubscription.schema';
+import { GymModel } from '../gym/gym.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { GymMembershipModel } from './membership.schema';
 

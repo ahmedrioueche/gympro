@@ -17,8 +17,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 
-import { AppPlanModel } from '../appBilling/appBilling.schema';
-import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
+import { AppPlanModel } from '../app-billing/appBilling.schema';
+import { AppSubscriptionService } from '../app-billing/subscription/subscription.service';
 import { GymService } from '../gym/gym.service';
 import { NotificationsService } from '../notifications/notifications.service';
 

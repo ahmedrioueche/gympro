@@ -5,8 +5,8 @@ import {
   CoachRequest,
   CoachRequestSchema,
 } from '../coach/schemas/coach-request.schema';
+import { GymMembershipSchema } from '../gym-membership/membership.schema';
 import { GymModel, GymSchema } from '../gym/gym.schema';
-import { GymMembershipSchema } from '../gymMembership/membership.schema';
 import { NotificationsModule } from '../notifications/notifications.module';
 import {
   SessionModel,

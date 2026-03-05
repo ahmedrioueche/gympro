@@ -6,11 +6,11 @@ import {
   AppPlanSchema,
   AppSubscriptionModel,
   AppSubscriptionSchema,
-} from '../appBilling/appBilling.schema';
+} from '../app-billing/appBilling.schema';
 import {
   AppPaymentModel,
   AppPaymentSchema,
-} from '../appBilling/payment/appPayment.schema';
+} from '../app-billing/payment/appPayment.schema';
 import { GymModel, GymSchema } from '../gym/gym.schema';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { AdminController } from './admin.controller';

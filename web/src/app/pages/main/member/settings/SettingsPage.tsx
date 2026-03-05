@@ -22,6 +22,12 @@ export default function SettingsPage() {
     phoneNumber,
     setPhoneNumber,
     email,
+    city,
+    setCity,
+    state,
+    setState,
+    country,
+    setCountry,
     addPhoneMode,
     setAddPhoneMode,
     uploading,
@@ -103,6 +109,12 @@ export default function SettingsPage() {
             phoneNumber={phoneNumber}
             setPhoneNumber={setPhoneNumber}
             email={email}
+            city={city}
+            setCity={setCity}
+            state={state}
+            setState={setState}
+            country={country}
+            setCountry={setCountry}
             addPhoneMode={addPhoneMode}
             setAddPhoneMode={setAddPhoneMode}
             uploading={uploading}

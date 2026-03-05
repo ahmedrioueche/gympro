@@ -6,8 +6,8 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { GymMembershipModel } from '../gymMembership/membership.schema';
-import { SubscriptionHistoryModel } from '../gymSubscription/gymSubscription.schema';
+import { GymMembershipModel } from '../gym-membership/membership.schema';
+import { SubscriptionHistoryModel } from '../gym-subscription/gymSubscription.schema';
 import { SessionDocument } from '../sessions/schemas/session.schema';
 
 @Injectable()

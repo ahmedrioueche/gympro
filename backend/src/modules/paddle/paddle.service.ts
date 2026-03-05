@@ -12,8 +12,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import * as crypto from 'crypto';
-import { AppPlansService } from '../appBilling/plan/plan.service';
-import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
+import { AppPlansService } from '../app-billing/plan/plan.service';
+import { AppSubscriptionService } from '../app-billing/subscription/subscription.service';
 
 interface PaddleCheckoutItem {
   priceId: string;

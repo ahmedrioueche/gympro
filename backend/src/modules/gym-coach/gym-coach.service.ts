@@ -15,8 +15,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
+import { GymMembershipModel } from '../gym-membership/membership.schema';
 import { GymModel } from '../gym/gym.schema';
-import { GymMembershipModel } from '../gymMembership/membership.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SessionModel } from '../sessions/schemas/session.schema';
 import { SessionsService } from '../sessions/sessions.service';

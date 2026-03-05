@@ -1,5 +1,12 @@
 import type { User } from "@ahmedrioueche/gympro-client";
-import { Mail, Phone, Shield, User as UserIcon } from "lucide-react";
+import {
+  Globe,
+  Mail,
+  MapPin,
+  Phone,
+  Shield,
+  User as UserIcon,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../components/ui/Button";
 import InputField from "../../../../../../components/ui/InputField";
@@ -14,6 +21,12 @@ interface ProfileSettingsProps {
   phoneNumber: string;
   setPhoneNumber: (value: string) => void;
   email: string;
+  city: string;
+  setCity: (value: string) => void;
+  state: string;
+  setState: (value: string) => void;
+  country: string;
+  setCountry: (value: string) => void;
   addPhoneMode: boolean;
   setAddPhoneMode: (value: boolean) => void;
   uploading: boolean;
@@ -27,6 +40,12 @@ export default function ProfileSettings({
   phoneNumber,
   setPhoneNumber,
   email,
+  city,
+  setCity,
+  state,
+  setState,
+  country,
+  setCountry,
   addPhoneMode,
   setAddPhoneMode,
   uploading,
@@ -135,6 +154,52 @@ export default function ProfileSettings({
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Location Section */}
+      <div className="pt-10 border-t border-border mt-10">
+        <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
+          {t("member.settings.profile.location", "Location")}
+        </h4>
+        <p className="text-sm text-text-secondary mb-6">
+          {t(
+            "member.settings.profile.locationDesc",
+            "Your location helps us find nearby coaches and gyms",
+          )}
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <InputField
+            label={t("member.settings.profile.city", "City")}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            leftIcon={<MapPin className="w-5 h-5" />}
+            placeholder={t(
+              "member.settings.profile.cityPlaceholder",
+              "Enter your city",
+            )}
+          />
+          <InputField
+            label={t("member.settings.profile.state", "State / Province")}
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            leftIcon={<Globe className="w-5 h-5" />}
+            placeholder={t(
+              "member.settings.profile.statePlaceholder",
+              "Enter your state",
+            )}
+          />
+          <InputField
+            label={t("member.settings.profile.country", "Country")}
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            leftIcon={<Globe className="w-5 h-5" />}
+            placeholder={t(
+              "member.settings.profile.countryPlaceholder",
+              "Enter your country",
+            )}
+          />
         </div>
       </div>
 

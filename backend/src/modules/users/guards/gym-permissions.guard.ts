@@ -33,8 +33,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { GymMembershipModel } from '../../gym-membership/membership.schema';
 import { GymModel } from '../../gym/gym.schema';
-import { GymMembershipModel } from '../../gymMembership/membership.schema';
 
 /**
  * Metadata key for storing required gym permissions

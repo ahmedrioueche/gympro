@@ -12,8 +12,8 @@ import { User } from '../../common/schemas/user.schema';
 import {
   AppPlanModel,
   AppSubscriptionModel,
-} from '../appBilling/appBilling.schema';
-import { AppPaymentModel } from '../appBilling/payment/appPayment.schema';
+} from '../app-billing/appBilling.schema';
+import { AppPaymentModel } from '../app-billing/payment/appPayment.schema';
 import { GymModel } from '../gym/gym.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { CreateEditorDto } from './dto/create-editor.dto';

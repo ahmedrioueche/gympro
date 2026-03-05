@@ -4,14 +4,14 @@ import { User, UserSchema } from 'src/common/schemas/user.schema';
 import {
   AppPaymentModel,
   AppPaymentSchema,
-} from '../appBilling/payment/appPayment.schema';
+} from '../app-billing/payment/appPayment.schema';
 import {
   GymCoachAffiliation,
   GymCoachAffiliationSchema,
 } from '../gym-coach/schemas/gym-coach-affiliation.schema';
+import { GymMembershipSchema } from '../gym-membership/membership.schema';
+import { SubscriptionHistorySchema } from '../gym-subscription/gymSubscription.schema';
 import { GymSchema } from '../gym/gym.schema';
-import { GymMembershipSchema } from '../gymMembership/membership.schema';
-import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
 import { SessionSchema } from '../sessions/schemas/session.schema';
 import { UsersModule } from '../users/users.module';
 import { AnalyticsController } from './analytics.controller';

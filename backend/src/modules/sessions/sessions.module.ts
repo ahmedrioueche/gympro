@@ -7,11 +7,11 @@ import { SessionModel, SessionSchema } from './schemas/session.schema';
 import { SessionsController } from './sessions.controller';
 import { SessionsService } from './sessions.service';
 
-import { GymMembershipSchema } from '../gymMembership/membership.schema';
+import { GymMembershipSchema } from '../gym-membership/membership.schema';
 import {
   SubscriptionTypeModel,
   SubscriptionTypeSchema,
-} from '../gymSubscription/gymSubscription.schema';
+} from '../gym-subscription/gymSubscription.schema';
 
 @Module({
   imports: [

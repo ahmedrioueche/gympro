@@ -34,6 +34,9 @@ export function useMemberSettings() {
     user?.profile.phoneNumber || "",
   );
   const [email] = useState(user?.profile.email || "");
+  const [city, setCity] = useState(user?.profile.city || "");
+  const [state, setState] = useState(user?.profile.state || "");
+  const [country, setCountry] = useState(user?.profile.country || "");
   const [addPhoneMode, setAddPhoneMode] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -63,6 +66,9 @@ export function useMemberSettings() {
   const hasProfileChanges =
     fullName !== (user?.profile.fullName || "") ||
     phoneNumber !== (user?.profile.phoneNumber || "") ||
+    city !== (user?.profile.city || "") ||
+    state !== (user?.profile.state || "") ||
+    country !== (user?.profile.country || "") ||
     addPhoneMode;
 
   const hasPreferenceChanges =
@@ -139,6 +145,9 @@ export function useMemberSettings() {
       const updates: EditUserDto = {
         fullName,
         phoneNumber: phoneNumber || undefined,
+        city: city || undefined,
+        state: state || undefined,
+        country: country || undefined,
       };
 
       await updateProfile.mutateAsync(updates);
@@ -255,6 +264,12 @@ export function useMemberSettings() {
     phoneNumber,
     setPhoneNumber,
     email,
+    city,
+    setCity,
+    state,
+    setState,
+    country,
+    setCountry,
     addPhoneMode,
     setAddPhoneMode,
     uploading,

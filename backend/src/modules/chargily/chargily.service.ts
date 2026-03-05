@@ -21,8 +21,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import 'dotenv/config';
-import { AppPlansService } from '../appBilling/plan/plan.service';
-import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
+import { AppPlansService } from '../app-billing/plan/plan.service';
+import { AppSubscriptionService } from '../app-billing/subscription/subscription.service';
 
 export interface ChargilyCheckoutResult {
   checkout_url: string;

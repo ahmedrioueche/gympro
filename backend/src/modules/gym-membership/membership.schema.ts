@@ -6,7 +6,7 @@ import type {
 } from '@ahmedrioueche/gympro-client';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { SubscriptionInfoSchema } from '../gymSubscription/gymSubscription.schema';
+import { SubscriptionInfoSchema } from '../gym-subscription/gymSubscription.schema';
 
 @Schema({ _id: false })
 export class CustomPermissionsModel implements Partial<RolePermissions> {

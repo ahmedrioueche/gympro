@@ -11,23 +11,11 @@ export default function CoachesPage() {
     setSearchQuery,
     specialization,
     setSpecialization,
-    city,
-    setCity,
-    state,
-    setState,
-    country,
-    setCountry,
     gender,
     setGender,
-    showFilters,
-    setShowFilters,
-    detectingLocation,
     isLoading,
     filteredCoaches,
-    activeFilterCount,
     handleSelectCoach,
-    handleDetectLocation,
-    handleClearFilters,
   } = useCoachesPage();
 
   return (
@@ -43,20 +31,8 @@ export default function CoachesPage() {
         onSearchChange={setSearchQuery}
         specialization={specialization}
         onSpecializationChange={setSpecialization}
-        city={city}
-        onCityChange={setCity}
-        state={state}
-        onStateChange={setState}
-        country={country}
-        onCountryChange={setCountry}
         gender={gender}
         onGenderChange={setGender}
-        showFilters={showFilters}
-        onShowFiltersToggle={() => setShowFilters(!showFilters)}
-        onDetectLocation={handleDetectLocation}
-        detectingLocation={detectingLocation}
-        onClearFilters={handleClearFilters}
-        activeFilterCount={activeFilterCount}
       />
 
       {/* Results Count */}

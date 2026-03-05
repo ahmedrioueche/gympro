@@ -3,14 +3,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from 'src/common/schemas/user.schema';
-import { AppPaymentModel } from '../appBilling/payment/appPayment.schema';
+import { AppPaymentModel } from '../app-billing/payment/appPayment.schema';
 import {
   GymCoachAffiliation,
   GymCoachAffiliationDocument,
 } from '../gym-coach/schemas/gym-coach-affiliation.schema';
+import { GymMembershipModel } from '../gym-membership/membership.schema';
+import { SubscriptionHistoryModel } from '../gym-subscription/gymSubscription.schema';
 import { GymModel } from '../gym/gym.schema';
-import { GymMembershipModel } from '../gymMembership/membership.schema';
-import { SubscriptionHistoryModel } from '../gymSubscription/gymSubscription.schema';
 import { SessionDocument } from '../sessions/schemas/session.schema';
 @Injectable()
 export class AnalyticsService {

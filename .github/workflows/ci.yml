@@ -1,13 +1,20 @@
-name: Monorepo CI
+name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
-  build-and-test:
+  lint-test-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,16 +25,33 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
-      - name: Install dependencies
+      # Backend
+      - name: Install backend dependencies
         run: npm install
+        working-directory: backend
 
-      - name: Lint
-        run: npx turbo lint
+      - name: Lint backend
+        run: npm run lint
+        working-directory: backend
 
-      - name: Test
-        run: npx turbo test
+      - name: Test backend
+        run: npm test
+        working-directory: backend
 
-      - name: Build
-        run: npx turbo build
+      - name: Build backend
+        run: npm run build
+        working-directory: backend
+
+      # Web
+      - name: Install web dependencies
+        run: npm install
+        working-directory: web
+
+      - name: Lint web
+        run: npm run lint
+        working-directory: web
+
+      - name: Build web
+        run: npm run build
+        working-directory: web

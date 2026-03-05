@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { SubscriptionBlockerService } from '../appBilling/subscription/subscription-blocker.service';
+import { SubscriptionBlockerService } from '../app-billing/subscription/subscription-blocker.service';
 import { SystemAlertModel } from './system-alerts.schema';
 
 @Injectable()

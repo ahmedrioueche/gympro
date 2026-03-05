@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../common/schemas/user.schema';
-import { GymModule } from '../gym/gym.module';
-import { MembershipModule } from '../gymMembership/membership.module';
+import { MembershipModule } from '../gym-membership/membership.module';
 import {
   SubscriptionTypeModel,
   SubscriptionTypeSchema,
-} from '../gymSubscription/gymSubscription.schema';
+} from '../gym-subscription/gymSubscription.schema';
+import { GymModule } from '../gym/gym.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { SessionsModule } from '../sessions/sessions.module';
 import { GymClassController } from './gymClass.controller';

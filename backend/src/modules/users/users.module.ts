@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { GymFeatureGuard } from '../../common/guards/gym-feature.guard';
 import { User, UserSchema } from '../../common/schemas/user.schema';
-import { AppBillingModule } from '../appBilling/appBilling.module';
+import { AppBillingModule } from '../app-billing/appBilling.module';
 import {
   AppPlanModel,
   AppPlanSchema,
@@ -11,14 +11,14 @@ import {
   AppSubscriptionHistorySchema,
   AppSubscriptionModel,
   AppSubscriptionSchema,
-} from '../appBilling/appBilling.schema';
-import { AppPlansService } from '../appBilling/plan/plan.service';
-import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
+} from '../app-billing/appBilling.schema';
+import { AppPlansService } from '../app-billing/plan/plan.service';
+import { AppSubscriptionService } from '../app-billing/subscription/subscription.service';
 import { AttendanceRecordSchema } from '../attendance/attendance.schema';
+import { GymMembershipSchema } from '../gym-membership/membership.schema';
+import { SubscriptionHistorySchema } from '../gym-subscription/gymSubscription.schema';
 import { GymModule } from '../gym/gym.module';
 import { GymModel, GymSchema } from '../gym/gym.schema';
-import { GymMembershipSchema } from '../gymMembership/membership.schema';
-import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
 import { BaseNotificationSchema } from '../notifications/notifications.schema';
 import { PaddleService } from '../paddle/paddle.service';
 import {

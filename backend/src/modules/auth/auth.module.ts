@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/common/schemas/user.schema';
 import { MailerService } from 'src/common/services/mailer.service';
-import { AppBillingModule } from '../appBilling/appBilling.module';
+import { AppBillingModule } from '../app-billing/appBilling.module';
 import {
   AppPlanModel,
   AppPlanSchema,
@@ -12,11 +12,11 @@ import {
   AppSubscriptionHistorySchema,
   AppSubscriptionModel,
   AppSubscriptionSchema,
-} from '../appBilling/appBilling.schema';
+} from '../app-billing/appBilling.schema';
 import { AttendanceRecordSchema } from '../attendance/attendance.schema';
+import { GymMembershipSchema } from '../gym-membership/membership.schema';
+import { SubscriptionHistorySchema } from '../gym-subscription/gymSubscription.schema';
 import { GymModel, GymSchema } from '../gym/gym.schema';
-import { GymMembershipSchema } from '../gymMembership/membership.schema';
-import { SubscriptionHistorySchema } from '../gymSubscription/gymSubscription.schema';
 import { BaseNotificationSchema } from '../notifications/notifications.schema';
 import { SmsModule } from '../sms/sms.module';
 import {

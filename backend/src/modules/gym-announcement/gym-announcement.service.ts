@@ -5,8 +5,8 @@ import {
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { MembershipService } from '../gym-membership/membership.service';
 import { GymModel } from '../gym/gym.schema';
-import { MembershipService } from '../gymMembership/membership.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import {
   CreateGymAnnouncementDto,

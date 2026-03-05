@@ -13,14 +13,14 @@ import * as exceljs from 'exceljs';
 import { Response } from 'express';
 import { Model, Types } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
-import { AppSubscriptionService } from '../appBilling/subscription/subscription.service';
-import { calculateSubscriptionLimits } from '../appBilling/subscription/subscription.util';
+import { AppSubscriptionService } from '../app-billing/subscription/subscription.service';
+import { calculateSubscriptionLimits } from '../app-billing/subscription/subscription.util';
 import {
   AffiliationStatus,
   GymCoachAffiliation,
   GymCoachAffiliationDocument,
 } from '../gym-coach/schemas/gym-coach-affiliation.schema';
-import { GymMembershipModel } from '../gymMembership/membership.schema';
+import { GymMembershipModel } from '../gym-membership/membership.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { GymModel } from './gym.schema';
 

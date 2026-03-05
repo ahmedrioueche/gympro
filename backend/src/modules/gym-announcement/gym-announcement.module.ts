@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { MembershipModule } from '../gym-membership/membership.module';
 import { GymSchema } from '../gym/gym.schema';
-import { MembershipModule } from '../gymMembership/membership.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { GymAnnouncementController } from './gym-announcement.controller';
 import { GymAnnouncementService } from './gym-announcement.service';
