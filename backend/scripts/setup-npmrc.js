@@ -6,12 +6,8 @@
  * Only creates/updates .npmrc if token is available (for CI/CD environments)
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const fs = require('fs');
+const path = require('path');
 
 const token = process.env.NPM_TOKEN || process.env.GITHUB_TOKEN;
 const isCI = process.env.CI || process.env.VERCEL || process.env.GITHUB_ACTIONS;
@@ -22,8 +18,7 @@ if (!token) {
     console.error(
       '✗ ERROR: NPM_TOKEN or GITHUB_TOKEN environment variable is required for CI/CD builds',
     );
-    console.error('  Please set NPM_TOKEN in your Vercel project settings:');
-    console.error('  Settings → Environment Variables → Add NPM_TOKEN');
+    console.error('  Please set NPM_TOKEN in your repository secrets.');
     process.exit(1);
   } else {
     // In local dev, developers use their own .npmrc (gitignored)
