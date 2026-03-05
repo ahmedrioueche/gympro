@@ -30,9 +30,10 @@ if (!token) {
 }
 
 const npmrcPath = path.join(__dirname, '..', '.npmrc');
-const npmrcContent = `@ahmedrioueche:registry=https://npm.pkg.github.com/
-//npm.pkg.github.com/:_authToken=${token}
-`;
+const npmrcContent =
+  '@ahmedrioueche:registry=https://npm.pkg.github.com/\n//npm.pkg.github.com/:_authToken=' +
+  token +
+  '\n';
 
 try {
   fs.writeFileSync(npmrcPath, npmrcContent, 'utf8');

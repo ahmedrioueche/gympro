@@ -20,7 +20,7 @@ if (!token) {
   if (isCI) {
     // In CI/CD, we MUST have a token - fail loudly
     console.error(
-      "✗ ERROR: NPM_TOKEN or GITHUB_TOKEN environment variable is required for CI/CD builds"
+      "✗ ERROR: NPM_TOKEN or GITHUB_TOKEN environment variable is required for CI/CD builds",
     );
     console.error("  Please set NPM_TOKEN in your Vercel project settings:");
     console.error("  Settings → Environment Variables → Add NPM_TOKEN");
@@ -28,16 +28,17 @@ if (!token) {
   } else {
     // In local dev, developers use their own .npmrc (gitignored)
     console.log(
-      "ℹ NPM_TOKEN/GITHUB_TOKEN not found. Using existing .npmrc if available."
+      "ℹ NPM_TOKEN/GITHUB_TOKEN not found. Using existing .npmrc if available.",
     );
     process.exit(0);
   }
 }
 
 const npmrcPath = path.join(__dirname, "..", ".npmrc");
-const npmrcContent = `@ahmedrioueche:registry=https://npm.pkg.github.com/
-//npm.pkg.github.com/:_authToken=${token}
-`;
+const npmrcContent =
+  "@ahmedrioueche:registry=https://npm.pkg.github.com/\n//npm.pkg.github.com/:_authToken=" +
+  token +
+  "\n";
 
 try {
   fs.writeFileSync(npmrcPath, npmrcContent, "utf8");
