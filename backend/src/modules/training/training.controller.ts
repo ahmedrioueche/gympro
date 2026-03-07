@@ -87,8 +87,17 @@ export class TrainingController {
   }
 
   @Post('programs/:id/start')
-  async startProgram(@Request() req, @Param('id') id: string) {
-    const history = await this.trainingService.startProgram(id, req.user.sub);
+  async startProgram(
+    @Request() req,
+    @Param('id') id: string,
+    @Query('force') force?: string,
+  ) {
+    const isForce = force === 'true';
+    const history = await this.trainingService.startProgram(
+      id,
+      req.user.sub,
+      isForce,
+    );
     return apiResponse(
       true,
       undefined,
@@ -126,20 +135,14 @@ export class TrainingController {
     );
   }
 
-  @Post('program/pause')
-  async pauseProgram(@Request() req) {
-    const history = await this.trainingService.pauseProgram(req.user.sub);
-    return apiResponse(true, undefined, history, 'Program paused successfully');
-  }
-
-  @Post('program/resume')
-  async resumeProgram(@Request() req) {
-    const history = await this.trainingService.resumeProgram(req.user.sub);
+  @Post('program/abandon')
+  async abandonProgram(@Request() req) {
+    const history = await this.trainingService.abandonProgram(req.user.sub);
     return apiResponse(
       true,
       undefined,
       history,
-      'Program resumed successfully',
+      'Program archived successfully',
     );
   }
 
@@ -151,6 +154,17 @@ export class TrainingController {
       undefined,
       history,
       'Training history retrieved successfully',
+    );
+  }
+
+  @Post('history/:id/resume')
+  async resumeHistory(@Request() req, @Param('id') id: string) {
+    const history = await this.trainingService.resumeHistory(id, req.user.sub);
+    return apiResponse(
+      true,
+      undefined,
+      history,
+      'Program resumed successfully',
     );
   }
 

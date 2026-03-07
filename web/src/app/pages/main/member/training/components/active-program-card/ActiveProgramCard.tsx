@@ -2,7 +2,6 @@ import { type ProgramHistory } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import NoData from "../../../../../../../components/ui/NoData";
-import { PausedOverlay } from "./PausedOverlay";
 import { ProgramHeader } from "./ProgramHeader";
 import { ProgramStats } from "./ProgramStats";
 import { ProgressSection } from "./ProgressSection";
@@ -30,8 +29,7 @@ export const ActiveProgramCard = ({
     totalSets,
     totalExercises,
     sourceConfig,
-    handlePause,
-    handleResume,
+    handleAbandon,
   } = useActiveProgramCard(history);
 
   // Show empty state if no active/paused program
@@ -56,9 +54,6 @@ export const ActiveProgramCard = ({
         className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${sourceConfig.gradient}`}
       />
 
-      {/* Paused overlay */}
-      {isPaused && <PausedOverlay onResume={handleResume} />}
-
       <div className="p-5 md:p-6 flex flex-col gap-6">
         {/* Top Section: Info & Stats */}
         <div className="flex flex-col md:flex-row gap-6 justify-between">
@@ -81,7 +76,7 @@ export const ActiveProgramCard = ({
           totalSets={totalSets}
           gradient={sourceConfig.gradient}
           isPaused={isPaused}
-          onPause={handlePause}
+          onArchive={handleAbandon}
           onLogSession={onLogSession}
         />
       </div>

@@ -26,35 +26,47 @@ export const useProgramsPage = () => {
   const { data: activeProgram } = useActiveProgram();
   const startProgram = useStartProgram();
 
-  const handleUseProgram = (id: string) => {
+  const handleUseProgram = (id: string, force: boolean = false) => {
     // 1. Check if user already has an active program
-    if (activeProgram?.status === "active") {
+    if (
+      !force &&
+      activeProgram &&
+      (activeProgram.status === "active" || activeProgram.status === "paused")
+    ) {
       if (activeProgram.program._id === id) {
         // Already on this program
         navigate({ to: APP_PAGES.member.training.link });
         return;
       }
-      // Different program active -> Block and Alert
-      toast(t("training.page.start.activeCheck"), {
-        icon: "⚠️",
-        duration: 4000,
+
+      // Different program active -> Ask to Archive
+      openModal("confirm", {
+        title: t("training.page.start.activeTitle", "Change active program?"),
+        text: t(
+          "training.page.start.activeDesc",
+          "You already have an active program. Starting this one will archive your current progress. Do you want to continue?",
+        ),
+        confirmText: t("common.continue", "Continue"),
+        confirmVariant: "danger",
+        onConfirm: () => handleUseProgram(id, true),
       });
-      navigate({ to: APP_PAGES.member.training.link });
       return;
     }
 
     // 2. Start program
-    startProgram.mutate(id, {
-      onSuccess: () => {
-        navigate({ to: APP_PAGES.member.training.link });
+    startProgram.mutate(
+      { id, force },
+      {
+        onSuccess: () => {
+          navigate({ to: APP_PAGES.member.training.link });
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message || "Failed to start program",
+          );
+        },
       },
-      onError: (error: any) => {
-        // Backend might also throw if we race condition, show error
-        toast.error(
-          error?.response?.data?.message || "Failed to start program"
-        );
-      },
-    });
+    );
   };
 
   const handleViewDetails = (program: TrainingProgram) => {

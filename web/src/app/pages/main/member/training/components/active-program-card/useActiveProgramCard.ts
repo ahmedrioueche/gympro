@@ -1,12 +1,7 @@
 import { type ProgramHistory } from "@ahmedrioueche/gympro-client";
 import { useMemo } from "react";
-import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import {
-  useActiveProgram,
-  usePauseProgram,
-  useResumeProgram,
-} from "../../../../../../../hooks/queries/useTraining";
+import { useAbandonProgram } from "../../../../../../../hooks/queries/useTraining";
 import { useModalStore } from "../../../../../../../store/modal";
 
 interface SourceConfig {
@@ -28,19 +23,16 @@ export interface UseActiveProgramCardReturn {
   sourceConfig: SourceConfig;
 
   // Actions
-  handlePause: () => void;
-  handleResume: () => void;
-  isPausingOrResuming: boolean;
+  handleAbandon: () => void;
+  isArchiving: boolean;
 }
 
 export const useActiveProgramCard = (
   history: ProgramHistory | null | undefined,
 ): UseActiveProgramCardReturn => {
   const { t } = useTranslation();
-  const pauseProgram = usePauseProgram();
-  const resumeProgram = useResumeProgram();
+  const abandonProgram = useAbandonProgram();
   const { openModal } = useModalStore();
-  const { data: activeProgram } = useActiveProgram();
 
   const isActive =
     !!history && (history.status === "active" || history.status === "paused");
@@ -141,28 +133,13 @@ export const useActiveProgramCard = (
     }
   }, [program?.creationType, t]);
 
-  const handlePause = () => {
+  const handleAbandon = () => {
     openModal("confirm", {
-      title: t("training.page.pause.title"),
-      text: t("training.page.pause.desc"),
+      title: t("training.page.archive.title"),
+      text: t("training.page.archive.desc"),
       confirmVariant: "danger",
-      confirmText: t("training.page.pause.confirm"),
-      onConfirm: () => pauseProgram.mutate(),
-    });
-  };
-
-  const handleResume = () => {
-    if (activeProgram?.status === "active") {
-      toast.error(t("training.page.resume.error"));
-      return;
-    }
-
-    openModal("confirm", {
-      title: t("training.page.resume.title"),
-      text: t("training.page.resume.desc"),
-      confirmVariant: "primary",
-      confirmText: t("training.page.resume.confirm"),
-      onConfirm: () => resumeProgram.mutate(),
+      confirmText: t("training.page.archive.confirm"),
+      onConfirm: () => abandonProgram.mutate(),
     });
   };
 
@@ -176,8 +153,7 @@ export const useActiveProgramCard = (
     totalSets,
     totalExercises,
     sourceConfig,
-    handlePause,
-    handleResume,
-    isPausingOrResuming: pauseProgram.isPending || resumeProgram.isPending,
+    handleAbandon,
+    isArchiving: abandonProgram.isPending,
   };
 };

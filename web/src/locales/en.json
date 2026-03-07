@@ -31,6 +31,7 @@
     "markAsDone": "Mark as Done",
     "done": "Done",
     "restore": "Restore",
+    "restart": "Restart",
     "close": "Close",
     "processing": "Processing...",
     "cancel": "Cancel",
@@ -2429,6 +2430,10 @@
     "page": {
       "title": "My Training",
       "subtitle": "Track your progress and workout history",
+      "tabs": {
+        "current": "Current Program",
+        "history": "History"
+      },
       "recentSessions": "Recent Sessions",
       "workoutHistory": "Workout History",
       "noWorkouts": "No workouts logged yet",
@@ -2445,18 +2450,14 @@
         "start": "Start Logging"
       },
       "start": {
-        "activeCheck": "You have an active program. Please pause it first."
+        "activeCheck": "You have an active program. Please complete or archive it first.",
+        "activeTitle": "Change active program?",
+        "activeDesc": "You already have an active program. Starting this one will archive your current progress. Do you want to continue?"
       },
-      "pause": {
-        "title": "Pause Program?",
-        "desc": "Access to program features will be restricted while paused. You can resume at any time.",
-        "confirm": "Pause Program"
-      },
-      "resume": {
-        "title": "Resume Program?",
-        "desc": "You are about to resume your training program.",
-        "confirm": "Resume Program",
-        "error": "You already have an active program. Please pause or complete the active one first."
+      "archive": {
+        "title": "Archive Program?",
+        "desc": "Are you sure you want to stop this program? It will be moved to your history and you can start a new one.",
+        "confirm": "Archive Program"
       },
       "sessionList": {
         "editSession": "Edit Session",
@@ -2467,6 +2468,7 @@
       },
       "activeProgram": {
         "title": "Active Program",
+        "started": "Program started successfully!",
         "subtitle": "Your current training plan",
         "progress": "Progress",
         "daysCompleted": "{{completed}} / {{total}} Days",
@@ -2500,11 +2502,13 @@
     },
     "history": {
       "title": "Program History",
-      "empty": "No workout history yet.",
+      "empty": "No past programs",
+      "emptyDesc": "Your completed or paused programs will appear here.",
+      "sessions": "{{count}} Sessions",
       "sessions_one": "1 Session",
-      "sessions_other": "{{count}} Sessions",
       "status": {
         "active": "Active",
+        "paused": "Paused",
         "completed": "Completed",
         "abandoned": "Abandoned"
       }

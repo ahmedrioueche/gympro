@@ -84,10 +84,13 @@ export const trainingApi = {
     }
   },
 
-  startProgram: async (id: string): Promise<ApiResponse<ProgramHistory>> => {
+  startProgram: async (
+    id: string,
+    force?: boolean,
+  ): Promise<ApiResponse<ProgramHistory>> => {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(
-        `/training/programs/${id}/start`,
+        `/training/programs/${id}/start${force ? "?force=true" : ""}`,
       );
       return res.data;
     } catch (error) {
@@ -95,10 +98,10 @@ export const trainingApi = {
     }
   },
 
-  pauseProgram: async (): Promise<ApiResponse<ProgramHistory>> => {
+  abandonProgram: async (): Promise<ApiResponse<ProgramHistory>> => {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(
-        "/training/program/pause",
+        "/training/program/abandon",
       );
       return res.data;
     } catch (error) {
@@ -106,10 +109,10 @@ export const trainingApi = {
     }
   },
 
-  resumeProgram: async (): Promise<ApiResponse<ProgramHistory>> => {
+  resumeHistory: async (id: string): Promise<ApiResponse<ProgramHistory>> => {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(
-        "/training/program/resume",
+        `/training/history/${id}/resume`,
       );
       return res.data;
     } catch (error) {

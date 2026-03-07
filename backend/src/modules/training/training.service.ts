@@ -104,20 +104,20 @@ export class TrainingService {
     userId: string,
     force: boolean = false,
   ): Promise<ProgramHistory> {
-    const activeProgram = await this.historyModel
-      .findOne({ userId, status: 'active' })
+    const currentProgram = await this.historyModel
+      .findOne({ userId, status: { $in: ['active', 'paused'] } })
       .exec();
 
-    if (activeProgram) {
+    if (currentProgram) {
       if (!force) {
         throw new BadRequestException(
-          'Cannot start new program while another is active. Please pause the current program first.',
+          'Cannot start new program while another is active or paused. Please complete or archive the current program first.',
         );
       }
       // If forced, abandon previous program
-      activeProgram.status = 'abandoned';
-      activeProgram.progress.endDate = new Date();
-      await activeProgram.save();
+      currentProgram.status = 'abandoned';
+      currentProgram.progress.endDate = new Date();
+      await currentProgram.save();
     }
 
     const program = await this.findProgramById(programId);
@@ -138,65 +138,20 @@ export class TrainingService {
     return history.save();
   }
 
-  async pauseProgram(userId: string): Promise<ProgramHistory> {
-    const activeProgram = await this.historyModel
-      .findOne({ userId, status: 'active' })
+  async abandonProgram(userId: string): Promise<ProgramHistory> {
+    const currentProgram = await this.historyModel
+      .findOne({ userId, status: { $in: ['active', 'paused'] } })
       .exec();
 
-    if (!activeProgram) {
-      throw new BadRequestException('No active program to pause');
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const lastPause = activeProgram.lastPauseDate
-      ? new Date(activeProgram.lastPauseDate)
-      : null;
-    if (lastPause) lastPause.setHours(0, 0, 0, 0);
-
-    let pausesToday = activeProgram.pausesToday || 0;
-
-    // Reset counter if new day
-    if (!lastPause || lastPause.getTime() < today.getTime()) {
-      pausesToday = 0;
-    }
-
-    if (pausesToday >= 2) {
+    if (!currentProgram) {
       throw new BadRequestException(
-        'Daily pause limit reached (2 pauses per day)',
+        'No active or paused program found to archive.',
       );
     }
 
-    activeProgram.status = 'paused';
-    activeProgram.pausesToday = pausesToday + 1;
-    activeProgram.lastPauseDate = new Date();
-
-    return activeProgram.save();
-  }
-
-  async resumeProgram(userId: string): Promise<ProgramHistory> {
-    const pausedProgram = await this.historyModel
-      .findOne({ userId, status: 'paused' })
-      .exec();
-
-    if (!pausedProgram) {
-      throw new BadRequestException('No paused program found');
-    }
-
-    // Ensure no other program is active (though UI should prevent this)
-    const activeProgram = await this.historyModel
-      .findOne({ userId, status: 'active' })
-      .exec();
-
-    if (activeProgram) {
-      throw new BadRequestException(
-        'Cannot resume while another program is active',
-      );
-    }
-
-    pausedProgram.status = 'active';
-    return pausedProgram.save();
+    currentProgram.status = 'abandoned';
+    currentProgram.progress.endDate = new Date();
+    return currentProgram.save();
   }
 
   async getActiveProgram(userId: string): Promise<ProgramHistory | null> {
@@ -206,6 +161,33 @@ export class TrainingService {
       .findOne({ userId, status: { $in: ['active', 'paused'] } })
       .sort({ status: 1, createdAt: -1 }) // 'active' < 'paused', so active comes first
       .exec();
+  }
+
+  async resumeHistory(
+    historyId: string,
+    userId: string,
+  ): Promise<ProgramHistory> {
+    const ongoing = await this.historyModel
+      .findOne({ userId, status: { $in: ['active', 'paused'] } })
+      .exec();
+
+    if (ongoing) {
+      throw new BadRequestException(
+        'Cannot resume a program while another is active. Please archive the current one first.',
+      );
+    }
+
+    const history = await this.historyModel
+      .findOne({ _id: historyId, userId })
+      .exec();
+
+    if (!history) {
+      throw new NotFoundException('Program history not found.');
+    }
+
+    history.status = 'active';
+    history.progress.endDate = undefined;
+    return history.save();
   }
 
   async getHistory(userId: string): Promise<ProgramHistory[]> {

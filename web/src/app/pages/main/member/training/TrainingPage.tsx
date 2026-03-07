@@ -1,21 +1,35 @@
 import { type ProgramDayProgress } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
-import { Dumbbell, TrendingUp } from "lucide-react";
+import { Dumbbell, History, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import NoData from "../../../../../components/ui/NoData";
+import Tab from "../../../../../components/ui/Tab";
 import { APP_PAGES } from "../../../../../constants/navigation";
 import {
   useActiveProgram,
   useDeleteSession,
+  useResumeHistory,
+  useStartProgram,
+  useTrainingHistory,
 } from "../../../../../hooks/queries/useTraining";
 import { useModalStore } from "../../../../../store/modal";
 import PageHeader from "../../../../components/PageHeader";
 import { ActiveProgramCard } from "./components/active-program-card/ActiveProgramCard";
+import { ProgramHistoryList } from "./components/ProgramHistoryList";
 import { SessionList } from "./components/session-list/SessionList";
+
+type TabType = "current" | "history";
 
 export default function TrainingPage() {
   const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState<TabType>("current");
+
   const { data: activeHistory, isLoading: isActiveLoading } =
     useActiveProgram();
+  const { data: fullHistory, isLoading: isHistoryLoading } =
+    useTrainingHistory();
   const deleteSession = useDeleteSession();
   const { openModal } = useModalStore();
   const navigate = useNavigate();
@@ -24,6 +38,26 @@ export default function TrainingPage() {
   const activeSessions = activeHistory?.progress.dayLogs
     ? [...activeHistory.progress.dayLogs].reverse()
     : [];
+
+  const startProgram = useStartProgram();
+  const resumeHistory = useResumeHistory();
+
+  const handleRestartProgram = (historyId: string) => {
+    if (activeHistory) {
+      toast.error(t("training.page.start.activeCheck"));
+      return;
+    }
+
+    resumeHistory.mutate(historyId, {
+      onSuccess: () => {
+        setActiveTab("current");
+      },
+    });
+  };
+
+  // Filter history for the history tab (exclude current active/paused program)
+  const pastPrograms =
+    fullHistory?.filter((h) => h._id !== activeHistory?._id) || [];
 
   const handleEditSession = (session: ProgramDayProgress) => {
     if (!activeHistory) return;
@@ -46,17 +80,15 @@ export default function TrainingPage() {
     if (!activeHistory) return;
 
     openModal("confirm", {
-      title: t("training.logSession.deleteTitle"), // "Delete Session"
-      text: t("training.logSession.deleteMessage"), // "Are you sure you want to delete this session?"
+      title: t("training.logSession.deleteTitle"),
+      text: t("training.logSession.deleteMessage"),
       confirmText: t("common.delete"),
       confirmVariant: "danger",
-      verificationText: t("training.logSession.deleteVerificationText"), // e.g "DELETE"
+      verificationText: t("training.logSession.deleteVerificationText"),
       onConfirm: async () => {
-        console.log("Full session object:", session);
         const sessionId = (session as any)._id || (session as any).id;
         const submissionId = (session as any).submissionId;
         const idToDelete = sessionId || submissionId;
-        console.log(idToDelete);
         if (!idToDelete) return;
 
         await deleteSession.mutateAsync({
@@ -87,30 +119,74 @@ export default function TrainingPage() {
         }
       />
 
-      {/* Active Program Section - Always render to prevent flickering */}
-      <div className="space-y-6">
-        {isActiveLoading ? (
-          <div className="h-48 bg-surface border border-border rounded-2xl animate-pulse" />
-        ) : (
-          <ActiveProgramCard
-            history={activeHistory}
-            onLogSession={handleLogNewSession}
-          />
-        )}
+      {/* Standard Tab Switcher */}
+      <div className="flex items-center gap-8 border-b border-border mb-6">
+        <Tab
+          label={t("training.page.tabs.current")}
+          isActive={activeTab === "current"}
+          onClick={() => setActiveTab("current")}
+        />
+        <Tab
+          label={t("training.page.tabs.history")}
+          isActive={activeTab === "history"}
+          count={pastPrograms.length > 0 ? pastPrograms.length : undefined}
+          onClick={() => setActiveTab("history")}
+        />
       </div>
 
-      {/* Recent Sessions Section */}
-      {!isActiveLoading && activeSessions.length > 0 && activeHistory && (
-        <div>
-          <h3 className="text-lg font-semibold text-text-primary mb-4">
-            {t("training.page.recentSessions")}
-          </h3>
-          <SessionList
-            sessions={activeSessions.slice(0, 10)}
-            program={activeHistory.program}
-            onEditSession={handleEditSession}
-            onDeleteSession={handleDeleteSession}
-          />
+      {activeTab === "current" ? (
+        <div className="space-y-6 animate-in fade-in duration-500">
+          {/* Active Program Section */}
+          <div className="space-y-6">
+            {isActiveLoading ? (
+              <div className="h-48 bg-surface border border-border rounded-2xl animate-pulse" />
+            ) : (
+              <ActiveProgramCard
+                history={activeHistory}
+                onLogSession={handleLogNewSession}
+              />
+            )}
+          </div>
+
+          {/* Recent Sessions Section */}
+          {!isActiveLoading && activeSessions.length > 0 && activeHistory && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">
+                {t("training.page.recentSessions")}
+              </h3>
+              <SessionList
+                sessions={activeSessions.slice(0, 10)}
+                program={activeHistory.program}
+                onEditSession={handleEditSession}
+                onDeleteSession={handleDeleteSession}
+              />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+          {isHistoryLoading ? (
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="h-24 bg-surface border border-border rounded-xl animate-pulse"
+                />
+              ))}
+            </div>
+          ) : pastPrograms.length > 0 ? (
+            <ProgramHistoryList
+              history={pastPrograms}
+              onRestart={handleRestartProgram}
+              isRestarting={startProgram.isPending}
+            />
+          ) : (
+            <NoData
+              icon={History}
+              title={t("training.history.empty")}
+              description={t("training.history.emptyDesc")}
+            />
+          )}
         </div>
       )}
     </div>

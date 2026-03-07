@@ -89,4 +89,24 @@ describe('TrainingService', () => {
       expect(mockHistory.save).toHaveBeenCalled();
     });
   });
+
+  describe('abandonProgram', () => {
+    it('should set status to abandoned and set endDate', async () => {
+      const mockHistory = {
+        status: 'active',
+        progress: { endDate: null },
+        save: jest.fn().mockResolvedValue(true),
+      };
+
+      historyModel.findOne.mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockHistory),
+      });
+
+      await service.abandonProgram('user123');
+
+      expect(mockHistory.status).toBe('abandoned');
+      expect(mockHistory.progress.endDate).toBeInstanceOf(Date);
+      expect(mockHistory.save).toHaveBeenCalled();
+    });
+  });
 });

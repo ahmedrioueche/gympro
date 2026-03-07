@@ -1,4 +1,4 @@
-import { Calendar, ChevronRight, Pause } from "lucide-react";
+import { Archive, Calendar, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface ProgressSectionProps {
@@ -7,7 +7,7 @@ interface ProgressSectionProps {
   totalSets: number;
   gradient: string;
   isPaused: boolean;
-  onPause: () => void;
+  onArchive: () => void;
   onLogSession: () => void;
 }
 
@@ -17,7 +17,7 @@ export const ProgressSection = ({
   totalSets,
   gradient,
   isPaused,
-  onPause,
+  onArchive,
   onLogSession,
 }: ProgressSectionProps) => {
   const { t } = useTranslation();
@@ -58,20 +58,17 @@ export const ProgressSection = ({
 
       {/* Action Buttons */}
       <div className="flex items-center gap-2">
-        {!isPaused && (
-          <button
-            onClick={onPause}
-            className="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-background-secondary transition-colors"
-            title={t("training.programs.card.pause")}
-          >
-            <Pause size={20} />
-          </button>
-        )}
+        <button
+          onClick={onArchive}
+          className="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-background-secondary transition-colors"
+          title={t("training.page.archive.confirm")}
+        >
+          <Archive size={20} />
+        </button>
 
         <button
           onClick={onLogSession}
           className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isPaused}
         >
           <Calendar size={18} />
           {t("training.activeProgram.logWorkout")}

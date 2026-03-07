@@ -25,7 +25,7 @@
     "seed:banner": "ts-node -r tsconfig-paths/register scripts/seed_subscription_banner.ts"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.5.0",
+    "@ahmedrioueche/gympro-client": "0.5.3",
     "@chargily/chargily-pay": "^2.1.0",
     "@google/generative-ai": "^0.24.1",
     "@nestjs/common": "^11.0.1",

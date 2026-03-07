@@ -89,7 +89,8 @@ export const useUpdateProgram = () => {
 export const useStartProgram = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => trainingApi.startProgram(id),
+    mutationFn: ({ id, force }: { id: string; force?: boolean }) =>
+      trainingApi.startProgram(id, force),
     onSuccess: () => {
       toast.success("Program started");
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
@@ -101,32 +102,32 @@ export const useStartProgram = () => {
   });
 };
 
-export const usePauseProgram = () => {
+export const useAbandonProgram = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => trainingApi.pauseProgram(),
+    mutationFn: () => trainingApi.abandonProgram(),
     onSuccess: () => {
-      toast.success("Program paused");
+      toast.success("Program archived");
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to pause program");
+      toast.error(error.message || "Failed to archive program");
     },
   });
 };
 
-export const useResumeProgram = () => {
+export const useResumeHistory = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => trainingApi.resumeProgram(),
+    mutationFn: (id: string) => trainingApi.resumeHistory(id),
     onSuccess: () => {
-      toast.success("Program resumed");
+      toast.success("Program restarted successfully");
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to resume program");
+      toast.error(error.message || "Failed to restart program");
     },
   });
 };
