@@ -21,7 +21,7 @@ describe("useUserStore", () => {
       _id: "u1",
       email: "test@example.com",
       role: "member",
-      profile: { firstName: "Test", lastName: "User" },
+      profile: { fullName: "Test User", username: "testuser" },
     } as any;
 
     act(() => {
@@ -36,17 +36,17 @@ describe("useUserStore", () => {
   it("should update user profile", () => {
     const mockUser = {
       _id: "u1",
-      profile: { firstName: "Test", lastName: "User" },
+      profile: { fullName: "Test User", username: "testuser" },
     } as any;
 
     act(() => {
       useUserStore.getState().setUser(mockUser);
-      useUserStore.getState().updateProfile({ firstName: "Updated" });
+      useUserStore.getState().updateProfile({ fullName: "Updated User" });
     });
 
     const state = useUserStore.getState();
-    expect(state.user?.profile.firstName).toBe("Updated");
-    expect(state.user?.profile.lastName).toBe("User");
+    expect(state.user?.profile.fullName).toBe("Updated User");
+    expect(state.user?.profile.username).toBe("testuser");
   });
 
   it("should clear user on logout", () => {
