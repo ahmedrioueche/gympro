@@ -52,7 +52,11 @@ export class ExerciseModel implements Exercise {
 
 @Schema({ _id: false })
 export class ProgramBlockModel implements ProgramBlock {
-  @Prop({ required: true, enum: ['single', 'superset', 'circuit'] })
+  @Prop({
+    type: String,
+    required: true,
+    enum: ['single', 'superset', 'circuit'],
+  })
   type: 'single' | 'superset' | 'circuit';
 
   @Prop({ type: [ExerciseModel], required: true })
@@ -193,6 +197,7 @@ export class ProgramHistoryModel extends Document {
   @Prop({ type: ProgramProgressSchema, required: true })
   progress: ProgramProgressModel;
   @Prop({
+    type: String,
     required: true,
     enum: ['active', 'paused', 'completed', 'abandoned'],
   })

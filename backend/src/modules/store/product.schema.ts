@@ -20,6 +20,7 @@ export class ProductModel extends Document {
   name: string;
 
   @Prop({
+    type: String,
     required: true,
     enum: PRODUCT_CATEGORIES,
     default: 'other',
@@ -45,6 +46,7 @@ export class ProductModel extends Document {
   images: string[];
 
   @Prop({
+    type: String,
     required: true,
     enum: PRODUCT_STATUS,
     default: 'active',

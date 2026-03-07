@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isLoading, fetchUser } = useUserStore();
+  const { isLoading, fetchUser, user } = useUserStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -45,6 +45,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }, [fetchUser, router]);
 
   if (isLoading) return <LoadingPage />;
+
+  const currentPath = window.location.pathname;
+  if (!user && !currentPath.startsWith("/public")) {
+    return <LoadingPage />;
+  }
 
   return <>{children}</>;
 };

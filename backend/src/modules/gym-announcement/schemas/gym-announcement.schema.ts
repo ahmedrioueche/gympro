@@ -18,13 +18,19 @@ export class GymAnnouncementModel
   content: string;
 
   @Prop({
+    type: String,
     required: true,
     enum: ['normal', 'high', 'critical'],
     default: 'normal',
   })
   priority: 'normal' | 'high' | 'critical';
 
-  @Prop({ required: true, enum: ['all', 'members', 'staff'], default: 'all' })
+  @Prop({
+    type: String,
+    required: true,
+    enum: ['all', 'members', 'staff'],
+    default: 'all',
+  })
   targetAudience: 'all' | 'members' | 'staff';
 
   @Prop({ default: true })

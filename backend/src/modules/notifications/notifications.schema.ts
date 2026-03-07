@@ -26,10 +26,12 @@ export class BaseNotification
   @Prop({ required: true }) title: string;
   @Prop({ required: true }) message: string;
   @Prop({ required: true }) createdAt: string;
-  @Prop({ required: true, enum: ['unread', 'read', 'archived'] })
+  @Prop({ type: String, required: true, enum: ['unread', 'read', 'archived'] })
   status: NotificationStatus;
-  @Prop({ enum: ['low', 'medium', 'high'] }) priority?: NotificationPriority;
+  @Prop({ type: String, enum: ['low', 'medium', 'high'] })
+  priority?: NotificationPriority;
   @Prop({
+    type: String,
     required: true,
     enum: [
       'subscription',
@@ -55,6 +57,7 @@ export class MemberNotification
   implements ClientMemberNotification
 {
   @Prop({
+    type: String,
     required: true,
     enum: ['subscription', 'program', 'reminder', 'alert'],
   })
@@ -68,6 +71,7 @@ export class CoachNotification
   implements ClientCoachNotification
 {
   @Prop({
+    type: String,
     required: true,
     enum: ['program', 'reminder', 'alert', 'announcement'],
   })
@@ -79,7 +83,11 @@ export class StaffNotification
   extends BaseNotification
   implements ClientStaffNotification
 {
-  @Prop({ required: true, enum: ['reminder', 'alert', 'announcement'] })
+  @Prop({
+    type: String,
+    required: true,
+    enum: ['reminder', 'alert', 'announcement'],
+  })
   declare type: 'reminder' | 'alert' | 'announcement';
   @Prop() relatedTaskId?: string;
 }
@@ -89,6 +97,7 @@ export class OwnerManagerNotification
   implements ClientOwnerManagerNotification
 {
   @Prop({
+    type: String,
     required: true,
     enum: ['subscription', 'payment', 'reminder', 'alert', 'announcement'],
   })

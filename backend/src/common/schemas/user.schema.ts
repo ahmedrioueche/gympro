@@ -209,7 +209,12 @@ export class User extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'AttendanceRecord' }] })
   attendanceHistory?: Types.ObjectId[];
 
-  @Prop({ enum: Object.values(UserRole), required: true, index: true })
+  @Prop({
+    type: String,
+    enum: Object.values(UserRole),
+    required: true,
+    index: true,
+  })
   role: UserRole;
 
   // Multi-dashboard access: which dashboards this user can access

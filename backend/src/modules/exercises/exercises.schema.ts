@@ -24,10 +24,11 @@ export class ExerciseModel extends Document {
   @Prop({ type: [String] })
   equipment?: string[];
 
-  @Prop({ enum: ['beginner', 'intermediate', 'expert'] })
+  @Prop({ type: String, enum: ['beginner', 'intermediate', 'expert'] })
   difficulty?: ExerciseDifficulty;
 
   @Prop({
+    type: String,
     enum: EXERCISE_TYPES,
   })
   type?: ExerciseType;

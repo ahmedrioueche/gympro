@@ -23,7 +23,8 @@ export class NotificationSettingsModel implements NotificationSettings {
 
 @Schema({ _id: false })
 export class LocaleSettingsModel implements LocaleSettings {
-  @Prop({ required: true, default: DEFAULT_LANGUAGE }) language: AppLanguage;
+  @Prop({ type: String, required: true, default: DEFAULT_LANGUAGE })
+  language: AppLanguage;
   @Prop({ required: true, default: DEFAULT_CURRENCY })
   currency: string;
   @Prop({ type: String, enum: ['kg', 'lbs'], default: 'kg' }) weightUnit:
@@ -37,7 +38,7 @@ export class LocaleSettingsModel implements LocaleSettings {
 @Schema({ _id: false })
 export class TimerSettingsModel implements TimerSettings {
   @Prop({ required: true, default: 90 }) defaultRestTime: number;
-  @Prop({ required: true, default: 'beep' }) sound:
+  @Prop({ type: String, required: true, default: 'beep' }) sound:
     | 'beep'
     | 'vibrate'
     | 'silent';

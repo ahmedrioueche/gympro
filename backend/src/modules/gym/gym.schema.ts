@@ -1,10 +1,11 @@
-import type {
+import {
   AccessControlType,
   AppSubscription,
   Currency,
   GymService,
   GymSettings,
   GymStats,
+  PAYMENT_METHODS,
   PaymentMethod,
   TimeRange,
   WeeklyTimeRange,
@@ -66,7 +67,8 @@ const ReminderSettingsSchema = SchemaFactory.createForClass(
 
 @Schema({ _id: false })
 export class GymSettingsModel implements GymSettings {
-  @Prop() paymentMethods: PaymentMethod[];
+  @Prop({ type: [String], enum: Object.values(PAYMENT_METHODS), default: [] })
+  paymentMethods: PaymentMethod[];
   @Prop() allowCustomSubscriptions?: boolean;
   @Prop() notificationsEnabled?: boolean;
   @Prop() notifyExpiringMembers?: boolean;
@@ -82,8 +84,10 @@ export class GymSettingsModel implements GymSettings {
   @Prop({ type: [Object] }) femaleOnlyHours?: WeeklyTimeRange[];
   @Prop() notifyScheduleChanges?: boolean;
   @Prop({ type: [Object], default: [] }) servicesOffered?: GymService[];
-  @Prop({ default: 'flexible' }) accessControlType?: AccessControlType;
-  @Prop() defaultCurrency?: Currency;
+  @Prop({ type: String, default: 'flexible' })
+  accessControlType?: AccessControlType;
+  @Prop({ type: String })
+  defaultCurrency?: Currency;
   @Prop({ type: [String], default: [] }) rules?: string[];
   @Prop({ type: [Object], default: [] }) temporaryClosures?: any[];
   @Prop({ type: [Number], default: [0, 1, 2, 3, 4, 5, 6] })

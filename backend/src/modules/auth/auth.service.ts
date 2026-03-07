@@ -668,7 +668,7 @@ export class AuthService {
 
   // --- PRIVATE HELPERS ---
 
-  private sanitizeUser(user: any) {
+  sanitizeUser(user: any) {
     const userObj = user.toObject ? user.toObject() : user;
 
     if (userObj.profile?.password) delete userObj.profile.password;
