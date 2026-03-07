@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { APP_PAGES } from "../../../../constants/navigation";
 import { useUserStore } from "../../../../store/user";
+import { getUserInitials } from "../../../../utils/helper";
 
 export function useProfileDropdown() {
   const navigate = useNavigate();
@@ -57,35 +58,7 @@ export function useProfileDropdown() {
     user?.profile?.phoneNumber ||
     "User";
 
-  const initials = useMemo(() => {
-    // If we have a full name, use its initials
-    if (user?.profile?.fullName) {
-      return user.profile.fullName
-        .split(/[\s_.-]+/)
-        .map((n) => n[0])
-        .filter(Boolean)
-        .join("")
-        .slice(0, 2)
-        .toUpperCase();
-    }
-
-    // If we have a username, use its first letter(s)
-    if (user?.profile?.username) {
-      return user.profile.username.slice(0, 2).toUpperCase();
-    }
-
-    // If we have an email, use its first letter
-    if (user?.profile?.email) {
-      return user.profile.email.charAt(0).toUpperCase();
-    }
-
-    // If we have a phone number, skip the '+' and use first digit
-    if (user?.profile?.phoneNumber) {
-      return user.profile.phoneNumber.replace("+", "").charAt(0);
-    }
-
-    return "U";
-  }, [user?.profile]);
+  const initials = useMemo(() => getUserInitials(user), [user]);
 
   const handleDashboardSwitch = (dashboard: DashboardType) => {
     if (!canAccessDashboard(dashboard)) return;

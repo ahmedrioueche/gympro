@@ -15,6 +15,7 @@ import {
 import { AppPlansService } from '../app-billing/plan/plan.service';
 import { AppSubscriptionService } from '../app-billing/subscription/subscription.service';
 import { AttendanceRecordSchema } from '../attendance/attendance.schema';
+import { AuthModule } from '../auth/auth.module';
 import { GymMembershipSchema } from '../gym-membership/membership.schema';
 import { SubscriptionHistorySchema } from '../gym-subscription/gymSubscription.schema';
 import { GymModule } from '../gym/gym.module';
@@ -55,6 +56,7 @@ import { UsersService } from './users.service';
 
     GymModule,
     forwardRef(() => AppBillingModule),
+    AuthModule,
   ],
   controllers: [UsersController],
   providers: [

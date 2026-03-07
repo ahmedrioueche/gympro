@@ -19,6 +19,7 @@ import { User } from '../../common/schemas/user.schema';
 
 import { AppPlanModel } from '../app-billing/appBilling.schema';
 import { AppSubscriptionService } from '../app-billing/subscription/subscription.service';
+import { OtpService } from '../auth/otp.service';
 import { GymService } from '../gym/gym.service';
 import { NotificationsService } from '../notifications/notifications.service';
 
@@ -33,6 +34,7 @@ export class UsersService {
     private readonly gymService: GymService,
 
     private readonly notificationsService: NotificationsService,
+    private readonly otpService: OtpService,
   ) {}
 
   async findAll(
@@ -200,7 +202,31 @@ export class UsersService {
       });
     }
 
-    // Check if email is being updated and if it's already in use
+    // Enforce email immutability: if user has an email, they can't change it to something else
+    if (
+      profileData.email &&
+      user.profile.email &&
+      profileData.email !== user.profile.email
+    ) {
+      throw new BadRequestException({
+        message: 'Email cannot be changed once set',
+        errorCode: ErrorCode.CANNOT_UPDATE_EMAIL,
+      });
+    }
+
+    // Enforce phone immutability
+    if (
+      profileData.phoneNumber &&
+      user.profile.phoneNumber &&
+      profileData.phoneNumber !== user.profile.phoneNumber
+    ) {
+      throw new BadRequestException({
+        message: 'Phone number cannot be changed once set',
+        errorCode: ErrorCode.CANNOT_UPDATE_EMAIL, // Reuse or use a specific code if available
+      });
+    }
+
+    // Check if email is being updated (only allowed if currently empty) and if it's already in use
     if (profileData.email && profileData.email !== user.profile.email) {
       const existingUser = await this.userModel.findOne({
         'profile.email': profileData.email,
@@ -240,6 +266,86 @@ export class UsersService {
     // Ensure population before returning
     await user.populate(['memberships', 'currentProgram', 'notifications']);
 
+    return this.sanitizeUser(user);
+  }
+
+  // --- Secure Contact Updates ---
+
+  /**
+   * Request verification for adding an email
+   */
+  async requestEmailAddition(userId: string, email: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.profile.email) {
+      throw new BadRequestException(
+        'Email is already set and cannot be changed',
+      );
+    }
+
+    // Check if email is already in use by another account
+    const existing = await this.userModel.findOne({ 'profile.email': email });
+    if (existing) {
+      throw new BadRequestException({
+        message: 'Email is already in use by another account',
+        errorCode: ErrorCode.EMAIL_ALREADY_IN_USE,
+      });
+    }
+
+    return this.otpService.sendEmailOTP(email, userId);
+  }
+
+  /**
+   * Verify and add email to profile
+   */
+  async verifyEmailAddition(userId: string, email: string, code: string) {
+    const result = await this.otpService.verifyEmailOTP(email, code, userId);
+    if (!result.success) return result;
+
+    const user = await this.userModel
+      .findById(userId)
+      .populate(['memberships', 'currentProgram', 'notifications']);
+    return this.sanitizeUser(user);
+  }
+
+  /**
+   * Request verification for adding a phone number
+   */
+  async requestPhoneAddition(userId: string, phoneNumber: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.profile.phoneNumber) {
+      throw new BadRequestException(
+        'Phone number is already set and cannot be changed',
+      );
+    }
+
+    // Check if phone is already in use
+    const existing = await this.userModel.findOne({
+      'profile.phoneNumber': phoneNumber,
+    });
+    if (existing) {
+      throw new BadRequestException({
+        message: 'Phone number is already in use by another account',
+        errorCode: ErrorCode.PHONE_ALREADY_IN_USE,
+      });
+    }
+
+    return this.otpService.sendOTP(phoneNumber, userId);
+  }
+
+  /**
+   * Verify and add phone number to profile
+   */
+  async verifyPhoneAddition(userId: string, phoneNumber: string, code: string) {
+    const result = await this.otpService.verifyOTP(phoneNumber, code);
+    if (!result.success) return result;
+
+    const user = await this.userModel
+      .findById(userId)
+      .populate(['memberships', 'currentProgram', 'notifications']);
     return this.sanitizeUser(user);
   }
 

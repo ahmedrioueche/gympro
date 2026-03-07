@@ -1,5 +1,5 @@
 import type { User } from "@ahmedrioueche/gympro-client";
-
+import { getUserInitials } from "../../../../../utils/helper";
 interface ProfileAvatarProps {
   user: User;
 }
@@ -19,7 +19,7 @@ function ProfileAvatar({ user }: ProfileAvatarProps) {
 
   return (
     <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-2xl font-bold shadow-md">
-      {(user.profile.fullName || user.profile.username).charAt(0).toUpperCase()}
+      {getUserInitials(user)}
     </div>
   );
 }

@@ -4,17 +4,19 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
+import { MailerService } from '../../common/services/mailer.service';
 import { SmsService } from '../sms/sms.service';
 
 @Injectable()
 export class OtpService {
   private readonly logger = new Logger(OtpService.name);
-  private readonly RATE_LIMIT_MINUTES = 1; // Simplify rate limiting as Twilio handles it
+  private readonly RATE_LIMIT_MINUTES = 1;
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     private smsService: SmsService,
     private configService: ConfigService,
+    private mailerService: MailerService,
   ) {}
 
   /**
@@ -202,5 +204,116 @@ export class OtpService {
         otpAttempts: 0,
       },
     });
+  }
+
+  /**
+   * Send OTP to email using Resend
+   */
+  async sendEmailOTP(
+    email: string,
+    userId: string,
+  ): Promise<{ success: boolean; message: string }> {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new BadRequestException({
+          message: 'User not found',
+          errorCode: ErrorCode.USER_NOT_FOUND,
+        });
+      }
+
+      // Generate 6-digit OTP
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiry = new Date();
+      expiry.setMinutes(expiry.getMinutes() + 10); // 10 minutes expiry
+
+      // Save to user
+      user.otpCode = code;
+      user.otpExpiry = expiry;
+      user.otpAttempts = 0;
+      user.otpLastSentAt = new Date();
+      await user.save();
+
+      // Send via Resend
+      const html = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; rounded: 12px;">
+          <h2 style="color: #0f172a; margin-bottom: 16px;">Verify your email</h2>
+          <p style="color: #475569; font-size: 16px; margin-bottom: 24px;">Your verification code is:</p>
+          <div style="background-color: #f8fafc; padding: 16px; text-align: center; border-radius: 8px;">
+            <span style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #3b82f6;">${code}</span>
+          </div>
+          <p style="color: #94a3b8; font-size: 14px; margin-top: 24px;">This code will expire in 10 minutes.</p>
+        </div>
+      `;
+
+      await this.mailerService.sendMail(
+        email,
+        `${code} is your GymPro verification code`,
+        html,
+      );
+
+      return { success: true, message: 'Verification code sent to your email' };
+    } catch (error) {
+      this.logger.error(
+        `Error sending email OTP: ${error.message}`,
+        error.stack,
+      );
+      throw new BadRequestException({
+        message: 'Failed to send verification email',
+        errorCode: ErrorCode.SMS_SEND_FAILED,
+      });
+    }
+  }
+
+  /**
+   * Verify email OTP
+   */
+  async verifyEmailOTP(
+    email: string,
+    code: string,
+    userId: string,
+  ): Promise<{ success: boolean; message: string }> {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new BadRequestException({
+          message: 'User not found',
+          errorCode: ErrorCode.USER_NOT_FOUND,
+        });
+      }
+
+      if (!user.otpCode || user.otpCode !== code) {
+        throw new BadRequestException({
+          message: 'Invalid verification code',
+          errorCode: ErrorCode.INVALID_OTP,
+        });
+      }
+
+      if (user.otpExpiry && new Date() > user.otpExpiry) {
+        throw new BadRequestException({
+          message: 'Verification code has expired',
+          errorCode: ErrorCode.OTP_EXPIRED,
+        });
+      }
+
+      // Success
+      user.profile.email = email;
+      user.profile.isValidated = true; // Mark as validated
+      user.otpCode = undefined;
+      user.otpExpiry = undefined;
+      user.otpAttempts = 0;
+      await user.save();
+
+      return { success: true, message: 'Email verified and added to profile' };
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      this.logger.error(
+        `Error verifying email OTP: ${error.message}`,
+        error.stack,
+      );
+      throw new BadRequestException({
+        message: 'An error occurred during verification',
+      });
+    }
   }
 }

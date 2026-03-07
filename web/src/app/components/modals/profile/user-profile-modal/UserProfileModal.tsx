@@ -69,7 +69,11 @@ export default function UserProfileModal() {
                 <div>
                   <p className="text-text-secondary">{t("common.joined")}</p>
                   <p className="font-medium text-text-primary">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    {new Date(user.createdAt).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
                   </p>
                 </div>
               )}
@@ -113,9 +117,9 @@ export default function UserProfileModal() {
       isLoading={false}
       title={
         user.profile?.fullName ||
+        user.profile?.username ||
         user.profile?.email?.split("@")[0] ||
         user.profile?.phoneNumber ||
-        user.profile?.username ||
         t("memberProfile.unknownMember")
       }
       tabs={tabs}

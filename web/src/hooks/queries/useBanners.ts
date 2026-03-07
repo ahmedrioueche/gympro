@@ -1,8 +1,9 @@
-import type {
-  ApiResponse,
-  AppBanner,
-  CreateAppBannerDto,
-  UpdateAppBannerDto,
+import {
+  UserRole,
+  type ApiResponse,
+  type AppBanner,
+  type CreateAppBannerDto,
+  type UpdateAppBannerDto,
 } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -45,13 +46,19 @@ export const bannersApi = {
 
 export const useActiveBanners = () => {
   const isLanding = window.location.pathname.startsWith("/landing");
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const { isAuthenticated, user } = useUserStore();
+
+  const isAdminRole =
+    user?.role === UserRole.Admin ||
+    user?.role === UserRole.AppEditor ||
+    user?.role === UserRole.Manager ||
+    user?.role === UserRole.Owner;
 
   return useQuery({
     queryKey: ["active_banners"],
     queryFn: bannersApi.getActive,
     refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes
-    enabled: !isLanding && isAuthenticated,
+    enabled: !isLanding && isAuthenticated && isAdminRole,
   });
 };
 
@@ -59,12 +66,18 @@ export const useAdminBanners = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const isLanding = window.location.pathname.startsWith("/landing");
-  const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const { isAuthenticated, user } = useUserStore();
+
+  const isAdminRole =
+    user?.role === UserRole.Admin ||
+    user?.role === UserRole.AppEditor ||
+    user?.role === UserRole.Manager ||
+    user?.role === UserRole.Owner;
 
   const bannersQuery = useQuery({
     queryKey: ["admin_banners"],
     queryFn: bannersApi.getAll,
-    enabled: !isLanding && isAuthenticated,
+    enabled: !isLanding && isAuthenticated && isAdminRole,
   });
 
   const createMutation = useMutation({

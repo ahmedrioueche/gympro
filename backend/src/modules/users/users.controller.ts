@@ -201,4 +201,79 @@ export class UsersController {
       'Onboarding completed successfully',
     );
   }
+
+  // --- Secure Contact Updates ---
+
+  @Post('profile/verify-email/request')
+  async requestEmailAddition(@Body('email') email: string, @Req() req: any) {
+    const currentUserId = req.user?.sub;
+    const result = await this.usersService.requestEmailAddition(
+      currentUserId,
+      email,
+    );
+    return apiResponse(
+      result.success,
+      undefined,
+      result,
+      result.message || 'Verification email sent',
+    );
+  }
+
+  @Post('profile/verify-email/confirm')
+  async verifyEmailAddition(
+    @Body('email') email: string,
+    @Body('code') code: string,
+    @Req() req: any,
+  ) {
+    const currentUserId = req.user?.sub;
+    const result = await this.usersService.verifyEmailAddition(
+      currentUserId,
+      email,
+      code,
+    );
+    return apiResponse(
+      true,
+      undefined,
+      result,
+      'Email verified and added successfully',
+    );
+  }
+
+  @Post('profile/verify-phone/request')
+  async requestPhoneAddition(
+    @Body('phoneNumber') phoneNumber: string,
+    @Req() req: any,
+  ) {
+    const currentUserId = req.user?.sub;
+    const result = await this.usersService.requestPhoneAddition(
+      currentUserId,
+      phoneNumber,
+    );
+    return apiResponse(
+      result.success,
+      undefined,
+      result,
+      result.message || 'Verification SMS sent',
+    );
+  }
+
+  @Post('profile/verify-phone/confirm')
+  async verifyPhoneAddition(
+    @Body('phoneNumber') phoneNumber: string,
+    @Body('code') code: string,
+    @Req() req: any,
+  ) {
+    const currentUserId = req.user?.sub;
+    const result = await this.usersService.verifyPhoneAddition(
+      currentUserId,
+      phoneNumber,
+      code,
+    );
+    return apiResponse(
+      true,
+      undefined,
+      result,
+      'Phone number verified and added successfully',
+    );
+  }
 }

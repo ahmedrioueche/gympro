@@ -21,6 +21,7 @@ interface ProfileSettingsProps {
   phoneNumber: string;
   setPhoneNumber: (value: string) => void;
   email: string;
+  setEmail: (value: string) => void;
   city: string;
   setCity: (value: string) => void;
   state: string;
@@ -31,6 +32,15 @@ interface ProfileSettingsProps {
   setAddPhoneMode: (value: boolean) => void;
   uploading: boolean;
   handleAvatarUpload: (file: File) => Promise<void>;
+  verificationState: {
+    type: "email" | "phone" | null;
+    step: "idle" | "requesting" | "pending" | "verifying";
+    code: string;
+    targetValue: string;
+  };
+  handleRequestVerification: (type: "email" | "phone") => Promise<void>;
+  handleConfirmVerification: () => Promise<void>;
+  setVerificationState: (state: any) => void;
 }
 
 export default function ProfileSettings({
@@ -40,6 +50,7 @@ export default function ProfileSettings({
   phoneNumber,
   setPhoneNumber,
   email,
+  setEmail,
   city,
   setCity,
   state,
@@ -50,9 +61,18 @@ export default function ProfileSettings({
   setAddPhoneMode,
   uploading,
   handleAvatarUpload,
+  verificationState,
+  handleRequestVerification,
+  handleConfirmVerification,
+  setVerificationState,
 }: ProfileSettingsProps) {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
+
+  const isEmailPending =
+    verificationState.type === "email" && verificationState.step === "pending";
+  const isPhonePending =
+    verificationState.type === "phone" && verificationState.step === "pending";
 
   return (
     <SettingsTab
@@ -101,47 +121,70 @@ export default function ProfileSettings({
             placeholder={t("member.settings.profile.fullNamePlaceholder")}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Email Section */}
-            <div>
-              <InputField
-                label={t("member.settings.profile.email")}
-                type="email"
-                value={email}
-                onChange={() => {}}
-                leftIcon={<Mail className="w-5 h-5" />}
-                placeholder={t("member.settings.profile.emailPlaceholder")}
-                disabled={true}
-              />
+            <div className="space-y-3">
+              <div className="relative">
+                <InputField
+                  label={t("member.settings.profile.email")}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  leftIcon={<Mail className="w-5 h-5" />}
+                  placeholder={t("member.settings.profile.emailPlaceholder")}
+                  disabled={
+                    !!(
+                      user.profile.email && user.profile.email.includes("@")
+                    ) || isEmailPending
+                  }
+                />
+                {!user.profile.email &&
+                  email &&
+                  verificationState.step === "idle" && (
+                    <div className="absolute top-[34px] right-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 text-xs font-bold text-primary hover:bg-primary/10"
+                        onClick={() => handleRequestVerification("email")}
+                      >
+                        {t("common.get_code", "Get Code")}
+                      </Button>
+                    </div>
+                  )}
+              </div>
+
+              {isEmailPending && (
+                <div className="flex gap-2 items-end animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="flex-1">
+                    <InputField
+                      label={t("profile.verify.otp_label", "Enter Code")}
+                      placeholder="000000"
+                      value={verificationState.code}
+                      onChange={(e) =>
+                        setVerificationState((prev: any) => ({
+                          ...prev,
+                          code: e.target.value,
+                        }))
+                      }
+                      className="text-center tracking-[0.5em] font-mono font-bold"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleConfirmVerification}
+                    loading={verificationState.step === "verifying"}
+                    disabled={verificationState.code.length < 6}
+                    className="h-[46px] px-6 font-bold"
+                  >
+                    {t("common.confirm", "Confirm")}
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Phone Section */}
-            <div>
-              {user.profile.phoneNumber && !addPhoneMode ? (
-                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
-                      <Phone className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
-                        {t("member.settings.profile.phone")}
-                      </p>
-                      <p className="font-semibold text-text-primary">
-                        {user.profile.phoneNumber}
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-primary/5 text-primary font-bold"
-                    onClick={() => setAddPhoneMode(true)}
-                  >
-                    {t("common.change")}
-                  </Button>
-                </div>
-              ) : (
+            <div className="space-y-3">
+              <div className="relative">
                 <InputField
                   label={t("member.settings.profile.phone")}
                   type="tel"
@@ -149,8 +192,54 @@ export default function ProfileSettings({
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   leftIcon={<Phone className="w-5 h-5" />}
                   placeholder={t("member.settings.profile.phonePlaceholder")}
-                  disabled={!!user.profile.phoneNumber}
+                  disabled={
+                    !!(
+                      user.profile.phoneNumber &&
+                      user.profile.phoneNumber.length > 5
+                    ) || isPhonePending
+                  }
                 />
+                {!user.profile.phoneNumber &&
+                  phoneNumber &&
+                  verificationState.step === "idle" && (
+                    <div className="absolute top-[34px] right-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 text-xs font-bold text-primary hover:bg-primary/10"
+                        onClick={() => handleRequestVerification("phone")}
+                      >
+                        {t("common.get_code", "Get Code")}
+                      </Button>
+                    </div>
+                  )}
+              </div>
+
+              {isPhonePending && (
+                <div className="flex gap-2 items-end animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="flex-1">
+                    <InputField
+                      label={t("profile.verify.otp_label", "Enter Code")}
+                      placeholder="000000"
+                      value={verificationState.code}
+                      onChange={(e) =>
+                        setVerificationState((prev: any) => ({
+                          ...prev,
+                          code: e.target.value,
+                        }))
+                      }
+                      className="text-center tracking-[0.5em] font-mono font-bold"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleConfirmVerification}
+                    loading={verificationState.step === "verifying"}
+                    disabled={verificationState.code.length < 6}
+                    className="h-[46px] px-6 font-bold"
+                  >
+                    {t("common.confirm", "Confirm")}
+                  </Button>
+                </div>
               )}
             </div>
           </div>

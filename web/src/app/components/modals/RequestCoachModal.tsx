@@ -5,6 +5,7 @@ import BaseModal from "../../../components/ui/BaseModal";
 import TextArea from "../../../components/ui/TextArea";
 import { useRequestCoach } from "../../../hooks/mutations/useRequestCoach";
 import { useModalStore } from "../../../store/modal";
+import { getNameInitials } from "../../../utils/helper";
 
 export default function RequestCoachModal() {
   const { t } = useTranslation();
@@ -58,7 +59,7 @@ export default function RequestCoachModal() {
         {/* Coach Info */}
         <div className="flex items-center gap-4 p-4 rounded-xl bg-surface-hover border border-border">
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
-            {displayName.charAt(0).toUpperCase()}
+            {getNameInitials(displayName)}
           </div>
           <div>
             <p className="font-semibold text-text-primary">{displayName}</p>

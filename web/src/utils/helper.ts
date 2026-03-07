@@ -1,4 +1,4 @@
-import type { UserRole } from "@ahmedrioueche/gympro-client";
+import type { User, UserRole } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
 import { getRoleHomePage } from "./roles";
 
@@ -103,3 +103,39 @@ export const getEmbedUrl = (url: string | undefined): string | null => {
   // Allow other URLs (e.g. Vimeo) but standard YouTube links should be caught above
   return url;
 };
+
+export function getNameInitials(name: string | null | undefined): string {
+  if (!name) return "U";
+  const initials = name
+    .split(/[\s_.-]+/)
+    .map((n) => n[0])
+    .filter(Boolean)
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  return initials || "U";
+}
+
+export function getUserInitials(
+  user: Partial<User> | null | undefined,
+): string {
+  if (!user?.profile) return "U";
+
+  if (user.profile.fullName) {
+    return getNameInitials(user.profile.fullName);
+  }
+
+  if (user.profile.username) {
+    return user.profile.username.slice(0, 2).toUpperCase();
+  }
+
+  if (user.profile.email) {
+    return user.profile.email.charAt(0).toUpperCase();
+  }
+
+  if (user.profile.phoneNumber) {
+    return user.profile.phoneNumber.replace("+", "").charAt(0);
+  }
+
+  return "U";
+}

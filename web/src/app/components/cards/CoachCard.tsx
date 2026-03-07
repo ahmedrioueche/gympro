@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../store/modal";
+import { getNameInitials } from "../../../utils/helper";
 
 interface CoachCardProps {
   coach: CoachProfile;
@@ -240,7 +241,7 @@ export default function CoachCard({
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-primary via-primary/80 to-secondary/60 flex items-center justify-center">
                     <span className="text-3xl font-black text-white">
-                      {displayName.charAt(0).toUpperCase()}
+                      {getNameInitials(displayName)}
                     </span>
                   </div>
                 )}

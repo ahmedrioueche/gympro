@@ -1,6 +1,7 @@
 import { Camera, Loader2 } from "lucide-react";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { getNameInitials } from "../../utils/helper";
 
 interface AvatarUploaderProps {
   currentAvatar?: string;
@@ -47,7 +48,7 @@ export default function AvatarUploader({
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
                 <span className="text-2xl font-bold text-white">
-                  {userName.charAt(0).toUpperCase()}
+                  {getNameInitials(userName)}
                 </span>
               </div>
             )}

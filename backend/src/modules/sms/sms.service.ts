@@ -110,6 +110,18 @@ export class SmsService {
       to = '+' + to;
     }
 
+    // Global toggle check (Exclude OTP/Verification which uses sendVerification)
+    const enableGeneralSms = this.configService.get<string | boolean>(
+      'ENABLE_GENERAL_SMS',
+      true,
+    );
+    if (enableGeneralSms === false || enableGeneralSms === 'false') {
+      this.logger.log(
+        `Skipping general SMS to ${to}: ENABLE_GENERAL_SMS is off`,
+      );
+      return { success: true, messageId: 'skipped' };
+    }
+
     try {
       this.logger.log(`Sending general SMS to ${to}`);
       const message = await this.client.messages.create({

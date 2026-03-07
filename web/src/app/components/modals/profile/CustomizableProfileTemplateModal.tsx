@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useUserStore } from "../../../../store/user";
 import { openGmail, openWhatsApp } from "../../../../utils/contact";
-import { cn } from "../../../../utils/helper";
+import { cn, getUserInitials } from "../../../../utils/helper";
 import {
   ProfileModalFooter,
   type ProfileModalAction,
@@ -111,13 +111,7 @@ export function CustomizableProfileTemplateModal({
                   ) : (
                     <div className="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-primary via-primary/80 to-secondary/60 flex items-center justify-center rounded-2xl ring-2 ring-border shadow-lg">
                       <span className="text-4xl font-black text-white">
-                        {(
-                          user?.profile?.fullName ||
-                          user?.profile?.username ||
-                          "U"
-                        )
-                          .charAt(0)
-                          .toUpperCase()}
+                        {getUserInitials(user)}
                       </span>
                     </div>
                   )}
@@ -127,6 +121,9 @@ export function CustomizableProfileTemplateModal({
                   <div>
                     <h1 className="text-2xl lg:text-3xl font-bold text-text-primary mb-2">
                       {user?.profile?.fullName ||
+                        user?.profile?.username ||
+                        user?.profile?.email?.split("@")[0] ||
+                        user?.profile?.phoneNumber ||
                         t("memberProfile.unknownMember")}
                     </h1>
                     <div className="flex flex-wrap gap-2">

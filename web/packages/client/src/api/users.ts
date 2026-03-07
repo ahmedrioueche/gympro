@@ -79,4 +79,64 @@ export const usersApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Request email addition verification */
+  requestEmailAddition: async (email: string): Promise<ApiResponse<any>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<any>>(
+        "/users/profile/verify-email/request",
+        { email },
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Verify and add email */
+  verifyEmailAddition: async (
+    email: string,
+    code: string,
+  ): Promise<ApiResponse<User>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<User>>(
+        "/users/profile/verify-email/confirm",
+        { email, code },
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Request phone addition verification */
+  requestPhoneAddition: async (
+    phoneNumber: string,
+  ): Promise<ApiResponse<any>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<any>>(
+        "/users/profile/verify-phone/request",
+        { phoneNumber },
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Verify and add phone */
+  verifyPhoneAddition: async (
+    phoneNumber: string,
+    code: string,
+  ): Promise<ApiResponse<User>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<User>>(
+        "/users/profile/verify-phone/confirm",
+        { phoneNumber, code },
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };

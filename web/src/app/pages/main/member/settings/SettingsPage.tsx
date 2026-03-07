@@ -22,6 +22,7 @@ export default function SettingsPage() {
     phoneNumber,
     setPhoneNumber,
     email,
+    setEmail,
     city,
     setCity,
     state,
@@ -50,6 +51,11 @@ export default function SettingsPage() {
     setNewPassword,
     confirmPassword,
     setConfirmPassword,
+    // Verification
+    verificationState,
+    handleRequestVerification,
+    handleConfirmVerification,
+    setVerificationState,
   } = useMemberSettings();
 
   const tabs = [
@@ -109,6 +115,7 @@ export default function SettingsPage() {
             phoneNumber={phoneNumber}
             setPhoneNumber={setPhoneNumber}
             email={email}
+            setEmail={setEmail}
             city={city}
             setCity={setCity}
             state={state}
@@ -119,6 +126,10 @@ export default function SettingsPage() {
             setAddPhoneMode={setAddPhoneMode}
             uploading={uploading}
             handleAvatarUpload={handleAvatarUpload}
+            verificationState={verificationState}
+            handleRequestVerification={handleRequestVerification}
+            handleConfirmVerification={handleConfirmVerification}
+            setVerificationState={setVerificationState}
           />
         )}
         {activeTab === "preferences" && (

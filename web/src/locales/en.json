@@ -327,7 +327,9 @@
         "google_user_info_failed": "Failed to get user information from Google",
         "invalid_otp": "Invalid OTP code",
         "unauthorized": "Unauthorized",
-        "sms_send_failed": "Failed to send verification code. Please check your phone number or try again later."
+        "sms_send_failed": "Failed to send verification code. Please check your phone number or try again later.",
+        "otp_expired": "Verification code has expired. Please request a new one",
+        "phone_already_in_use": "This phone number is already registered to another account"
       },
       "user": {
         "not_found": "User not found",
@@ -2299,6 +2301,8 @@
         "title": "Personal Information",
         "subtitle": "Update your personal details",
         "fullName": "Full Name",
+        "fullNamePlaceholder": "Enter your full name",
+        "emailPlaceholder": "Enter email address",
         "email": "Email Address",
         "phone": "Phone Number",
         "save": "Save Changes",

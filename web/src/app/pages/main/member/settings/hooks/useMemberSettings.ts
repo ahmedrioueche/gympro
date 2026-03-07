@@ -1,6 +1,7 @@
 import {
   settingsApi,
   uploadApi,
+  usersApi,
   type AppLanguage,
   type EditUserDto,
   type TimerSettings,
@@ -12,6 +13,10 @@ import { useChangePassword } from "../../../../../../hooks/queries/useAuth";
 import { useUpdateProfile } from "../../../../../../hooks/queries/useUsers";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useUserStore } from "../../../../../../store/user";
+import {
+  getMessage,
+  showStatusToast,
+} from "../../../../../../utils/statusMessage";
 
 export type MemberSettingsTabType =
   | "profile"
@@ -33,7 +38,7 @@ export function useMemberSettings() {
   const [phoneNumber, setPhoneNumber] = useState(
     user?.profile.phoneNumber || "",
   );
-  const [email] = useState(user?.profile.email || "");
+  const [email, setEmail] = useState(user?.profile.email || "");
   const [city, setCity] = useState(user?.profile.city || "");
   const [state, setState] = useState(user?.profile.state || "");
   const [country, setCountry] = useState(user?.profile.country || "");
@@ -61,6 +66,96 @@ export function useMemberSettings() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Verification State
+  const [verificationState, setVerificationState] = useState<{
+    type: "email" | "phone" | null;
+    step: "idle" | "requesting" | "pending" | "verifying";
+    code: string;
+    targetValue: string;
+  }>({
+    type: null,
+    step: "idle",
+    code: "",
+    targetValue: "",
+  });
+
+  const handleRequestVerification = async (type: "email" | "phone") => {
+    const value = type === "email" ? email : phoneNumber;
+    if (!value) {
+      toast.error(
+        t("profile.error.empty_contact", "Please enter a value first"),
+      );
+      return;
+    }
+
+    setVerificationState((prev) => ({ ...prev, type, step: "requesting" }));
+    try {
+      const response =
+        type === "email"
+          ? await usersApi.requestEmailAddition(value)
+          : await usersApi.requestPhoneAddition(value);
+
+      if (response.success) {
+        toast.success(
+          type === "email"
+            ? t(
+                "profile.success.email_sent",
+                "Verification email sent via Resend",
+              )
+            : t("profile.success.sms_sent", "Verification SMS sent via Twilio"),
+        );
+        setVerificationState((prev) => ({
+          ...prev,
+          step: "pending",
+          targetValue: value,
+        }));
+      }
+    } catch (error) {
+      console.error(`Failed to request ${type} verification:`, error);
+      showStatusToast(getMessage(error, t), toast);
+      setVerificationState((prev) => ({ ...prev, step: "idle" }));
+    }
+  };
+
+  const handleConfirmVerification = async () => {
+    const { type, code, targetValue } = verificationState;
+    if (!type || !code) return;
+
+    setVerificationState((prev) => ({ ...prev, step: "verifying" }));
+    try {
+      const response =
+        type === "email"
+          ? await usersApi.verifyEmailAddition(targetValue, code)
+          : await usersApi.verifyPhoneAddition(targetValue, code);
+
+      if (response.success && response.data) {
+        toast.success(
+          t("profile.success.contact_verified", "Verified successfully!"),
+        );
+        // Store is updated automatically by query invalidation or manual update if we return profile
+        // Actually updateProfile in useUserStore updates the local state
+        // and useUpdateProfile (react-query) invalidates.
+        // Let's manually sync if needed, but usersApi.verifyEmailAddition returns the full User object.
+        // We can't call useUserStore's updateProfile directly easily if we don't return it?
+        // Wait, useMemberSettings has updateProfile from useUpdateProfile (which is a mutation).
+        // I'll use the userStore's updateProfile to update the store immediately.
+        const store = useUserStore.getState();
+        store.updateProfile(response.data.profile);
+
+        setVerificationState({
+          type: null,
+          step: "idle",
+          code: "",
+          targetValue: "",
+        });
+      }
+    } catch (error) {
+      console.error(`Failed to verify ${type}:`, error);
+      showStatusToast(getMessage(error, t), toast);
+      setVerificationState((prev) => ({ ...prev, step: "pending" }));
+    }
+  };
 
   // Track if there are unsaved changes
   const hasProfileChanges =
@@ -264,6 +359,7 @@ export function useMemberSettings() {
     phoneNumber,
     setPhoneNumber,
     email,
+    setEmail,
     city,
     setCity,
     state,
@@ -289,6 +385,11 @@ export function useMemberSettings() {
     setNewPassword,
     confirmPassword,
     setConfirmPassword,
+    // Verification
+    verificationState,
+    handleRequestVerification,
+    handleConfirmVerification,
+    setVerificationState,
     // Actions
     handleSave,
     isSaving,

@@ -31,11 +31,107 @@ function EditUserProfileModal() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  // Verification State
+  const [verificationState, setVerificationState] = useState<{
+    type: "email" | "phone" | null;
+    step: "idle" | "requesting" | "pending" | "verifying";
+    code: string;
+    targetValue: string;
+  }>({
+    type: null,
+    step: "idle",
+    code: "",
+    targetValue: "",
+  });
+
   if (currentModal !== "edit_user_profile") return null;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRequestVerification = async (type: "email" | "phone") => {
+    const value = type === "email" ? formData.email : formData.phoneNumber;
+    if (!value) {
+      toast.error(
+        t("profile.error.empty_contact", "Please enter a value first"),
+      );
+      return;
+    }
+
+    setVerificationState((prev) => ({ ...prev, type, step: "requesting" }));
+    try {
+      const response =
+        type === "email"
+          ? await usersApi.requestEmailAddition(value)
+          : await usersApi.requestPhoneAddition(value);
+
+      if (response.success) {
+        toast.custom((t) => (
+          <div
+            className={`${t.visible ? "animate-enter" : "animate-leave"} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+          >
+            <div className="flex-1 w-0 p-4">
+              <div className="flex items-start">
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    {type === "email"
+                      ? "Email verification sent"
+                      : "SMS verification sent"}
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {type === "email"
+                      ? `We've sent a code to ${value} via Resend.`
+                      : `We've sent a code via Twilio to your phone.`}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ));
+        setVerificationState((prev) => ({
+          ...prev,
+          step: "pending",
+          targetValue: value,
+        }));
+      }
+    } catch (error) {
+      console.error(`Failed to request ${type} verification:`, error);
+      showStatusToast(getMessage(error, t), toast);
+      setVerificationState((prev) => ({ ...prev, step: "idle" }));
+    }
+  };
+
+  const handleConfirmVerification = async () => {
+    const { type, code, targetValue } = verificationState;
+    if (!type || !code) return;
+
+    setVerificationState((prev) => ({ ...prev, step: "verifying" }));
+    try {
+      const response =
+        type === "email"
+          ? await usersApi.verifyEmailAddition(targetValue, code)
+          : await usersApi.verifyPhoneAddition(targetValue, code);
+
+      if (response.success && response.data) {
+        toast.success(
+          t("profile.success.contact_verified", "Verified successfully!"),
+        );
+        updateProfile(response.data.profile); // Update global user store
+        setVerificationState({
+          type: null,
+          step: "idle",
+          code: "",
+          targetValue: "",
+        });
+        // We stay in edit mode but the field will now be disabled because user.profile.email is set
+      }
+    } catch (error) {
+      console.error(`Failed to verify ${type}:`, error);
+      showStatusToast(getMessage(error, t), toast);
+      setVerificationState((prev) => ({ ...prev, step: "pending" }));
+    }
   };
 
   const handleGenderChange = (value: string) => {
@@ -51,7 +147,7 @@ function EditUserProfileModal() {
       const msg = getMessage(response, t);
       showStatusToast(msg, toast);
 
-      updateProfile(formData);
+      updateProfile(response.data.profile);
 
       setIsEditMode(false);
     } catch (error) {
@@ -76,6 +172,12 @@ function EditUserProfileModal() {
       city: user?.profile.city || "",
       state: user?.profile.state || "",
       country: user?.profile.country || "",
+    });
+    setVerificationState({
+      type: null,
+      step: "idle",
+      code: "",
+      targetValue: "",
     });
     setIsEditMode(false);
   };
@@ -197,47 +299,161 @@ function EditUserProfileModal() {
         </div>
 
         {/* Contact Information Section */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
             <Mail className="w-5 h-5 text-primary" />
             {t("profile.edit.contact_info", "Contact Information")}
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Email - Always Disabled */}
-            <InputField
-              label={t("profile.edit.email", "Email")}
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              disabled={true}
-              placeholder={t(
-                "profile.edit.email_placeholder",
-                "Enter your email",
-              )}
-              leftIcon={<Mail className="w-5 h-5" />}
-            />
+          <div className="grid grid-cols-1 gap-6">
+            {/* Email Field */}
+            <div className="space-y-2">
+              <div className="flex items-end gap-2">
+                <div className="flex-1">
+                  <InputField
+                    label={t("profile.edit.email", "Email")}
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    disabled={
+                      !!(
+                        user.profile.email && user.profile.email.includes("@")
+                      ) || !isEditMode
+                    }
+                    placeholder={t(
+                      "profile.edit.email_placeholder",
+                      "Enter your email",
+                    )}
+                    leftIcon={<Mail className="w-5 h-5" />}
+                  />
+                </div>
+                {isEditMode &&
+                  !user.profile.email &&
+                  formData.email &&
+                  verificationState.step === "idle" && (
+                    <button
+                      type="button"
+                      onClick={() => handleRequestVerification("email")}
+                      className="h-[44px] px-4 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all flex items-center gap-2"
+                    >
+                      {t("profile.edit.get_code", "Get Code")}
+                    </button>
+                  )}
+              </div>
 
-            {/* Phone Number - Always Disabled */}
-            <InputField
-              label={t("profile.edit.phone", "Phone Number")}
-              type="tel"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-              disabled={true}
-              placeholder={t(
-                "profile.edit.phone_placeholder",
-                "Enter your phone number",
-              )}
-              leftIcon={<Phone className="w-5 h-5" />}
-            />
+              {verificationState.type === "email" &&
+                (verificationState.step === "pending" ||
+                  verificationState.step === "verifying") && (
+                  <div className="flex items-end gap-2 bg-primary/5 p-4 rounded-xl border border-primary/10 animate-fade-in">
+                    <div className="flex-1">
+                      <InputField
+                        label={t("profile.edit.enter_otp", "Verification Code")}
+                        value={verificationState.code}
+                        onChange={(e) =>
+                          setVerificationState((prev) => ({
+                            ...prev,
+                            code: e.target.value.replace(/\D/g, "").slice(0, 6),
+                          }))
+                        }
+                        placeholder="123456"
+                        autoFocus
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleConfirmVerification}
+                      disabled={
+                        verificationState.code.length < 6 ||
+                        verificationState.step === "verifying"
+                      }
+                      className="h-[44px] px-6 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 transition-all"
+                    >
+                      {verificationState.step === "verifying"
+                        ? t("common.verifying", "Verifying...")
+                        : t("common.confirm", "Confirm")}
+                    </button>
+                  </div>
+                )}
+            </div>
+
+            {/* Phone Number Field */}
+            <div className="space-y-2">
+              <div className="flex items-end gap-2">
+                <div className="flex-1">
+                  <InputField
+                    label={t("profile.edit.phone", "Phone Number")}
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    disabled={
+                      !!(
+                        user.profile.phoneNumber &&
+                        user.profile.phoneNumber.length > 5
+                      ) || !isEditMode
+                    }
+                    placeholder={t(
+                      "profile.edit.phone_placeholder",
+                      "Enter your phone number",
+                    )}
+                    leftIcon={<Phone className="w-5 h-5" />}
+                  />
+                </div>
+                {isEditMode &&
+                  !user.profile.phoneNumber &&
+                  formData.phoneNumber &&
+                  verificationState.step === "idle" && (
+                    <button
+                      type="button"
+                      onClick={() => handleRequestVerification("phone")}
+                      className="h-[44px] px-4 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all flex items-center gap-2"
+                    >
+                      {t("profile.edit.get_code", "Get Code")}
+                    </button>
+                  )}
+              </div>
+
+              {/* Phone OTP Flow */}
+              {verificationState.type === "phone" &&
+                (verificationState.step === "pending" ||
+                  verificationState.step === "verifying") && (
+                  <div className="flex items-end gap-2 bg-primary/5 p-4 rounded-xl border border-primary/10 animate-fade-in">
+                    <div className="flex-1">
+                      <InputField
+                        label={t("profile.edit.enter_otp", "Verification Code")}
+                        value={verificationState.code}
+                        onChange={(e) =>
+                          setVerificationState((prev) => ({
+                            ...prev,
+                            code: e.target.value.replace(/\D/g, "").slice(0, 6),
+                          }))
+                        }
+                        placeholder="123456"
+                        autoFocus
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleConfirmVerification}
+                      disabled={
+                        verificationState.code.length < 6 ||
+                        verificationState.step === "verifying"
+                      }
+                      className="h-[44px] px-6 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 transition-all"
+                    >
+                      {verificationState.step === "verifying"
+                        ? t("common.verifying", "Verifying...")
+                        : t("common.confirm", "Confirm")}
+                    </button>
+                  </div>
+                )}
+            </div>
           </div>
         </div>
 
         {/* Address Information Section */}
-        <div className="space-y-4">
+        <div className="space-y-4 pt-2">
           <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
             {t("profile.edit.address_info", "Address Information")}
