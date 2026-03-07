@@ -25,7 +25,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       type,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -72,7 +72,10 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     return (
       <div className="space-y-2" style={{ width }}>
         {label && (
-          <label className="block text-sm font-medium text-text-primary">
+          <label
+            htmlFor={props.id}
+            className="block text-sm font-medium text-text-primary"
+          >
             {label}
           </label>
         )}
@@ -86,6 +89,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
           <input
             ref={ref}
+            id={props.id}
             disabled={disabled}
             type={computedType}
             className={inputClasses}
@@ -117,7 +121,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 InputField.displayName = "InputField";
