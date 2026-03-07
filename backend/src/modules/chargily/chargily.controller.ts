@@ -22,6 +22,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
+import { parseUrls } from '../../common/utils/platform.util';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from '../users/users.service';
 import { ChargilyService } from './chargily.service';
@@ -36,10 +37,16 @@ export class ChargilyController {
     private readonly chargilyService: ChargilyService,
     private readonly configService: ConfigService,
   ) {
+    const prodUrls = parseUrls(
+      this.configService.get('PROD_FRONTEND_URL'),
+      'https://gympro-power.vercel.app',
+    );
+    const devUrls = parseUrls(
+      this.configService.get('DEV_FRONTEND_URL'),
+      'http://localhost:3000',
+    );
     this.frontendUrl =
-      this.configService.get('NODE_ENV') === 'prod'
-        ? this.configService.get('PROD_FRONTEND_URL')
-        : this.configService.get('DEV_FRONTEND_URL') || 'localhost:3000';
+      this.configService.get('NODE_ENV') === 'prod' ? prodUrls[0] : devUrls[0];
 
     this.logger.log(
       '[ChargilyController] Initialized and ready to receive webhooks',

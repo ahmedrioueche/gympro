@@ -18,6 +18,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import {
   PermissionsGuard,
@@ -205,6 +206,10 @@ export class UsersController {
   // --- Secure Contact Updates ---
 
   @Post('profile/verify-email/request')
+  @Throttle({
+    short: { limit: 3, ttl: 60000 },
+    medium: { limit: 10, ttl: 3600000 },
+  }) // 3 per min, 10 per hour
   async requestEmailAddition(@Body('email') email: string, @Req() req: any) {
     const currentUserId = req.user?.sub;
     const result = await this.usersService.requestEmailAddition(
@@ -220,6 +225,7 @@ export class UsersController {
   }
 
   @Post('profile/verify-email/confirm')
+  @Throttle({ short: { limit: 5, ttl: 60000 } }) // 5 attempts per min
   async verifyEmailAddition(
     @Body('email') email: string,
     @Body('code') code: string,
@@ -240,6 +246,10 @@ export class UsersController {
   }
 
   @Post('profile/verify-phone/request')
+  @Throttle({
+    short: { limit: 1, ttl: 60000 },
+    medium: { limit: 3, ttl: 3600000 },
+  }) // VERY STRICT: 1 per min, 3 per hour
   async requestPhoneAddition(
     @Body('phoneNumber') phoneNumber: string,
     @Req() req: any,
@@ -258,6 +268,7 @@ export class UsersController {
   }
 
   @Post('profile/verify-phone/confirm')
+  @Throttle({ short: { limit: 5, ttl: 60000 } }) // 5 attempts per min
   async verifyPhoneAddition(
     @Body('phoneNumber') phoneNumber: string,
     @Body('code') code: string,

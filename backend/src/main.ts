@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { parseUrls } from './common/utils/platform.util';
 
 /**
  * Get all allowed origins based on environment
@@ -14,7 +15,7 @@ const getAllowedOrigins = (): (string | RegExp)[] => {
   if (isDev) {
     // Development origins
     origins.push(
-      process.env.DEV_FRONTEND_URL || 'http://localhost:5173',
+      ...parseUrls(process.env.DEV_FRONTEND_URL, 'http://localhost:5173'),
       process.env.DEV_DESKTOP_URL || 'http://localhost:5174',
       process.env.DEV_MOBILE_URL || 'http://localhost:8081',
       // Allow localhost with any port for development
@@ -30,7 +31,10 @@ const getAllowedOrigins = (): (string | RegExp)[] => {
     );
   }
   origins.push(
-    process.env.PROD_FRONTEND_URL || 'https://gympro-power.vercel.app',
+    ...parseUrls(
+      process.env.PROD_FRONTEND_URL,
+      'https://gympro-power.vercel.app',
+    ),
     process.env.PROD_DESKTOP_URL || 'https://desktop.gympro-power.com',
     // ✅ ADD THIS: Allow ALL Vercel preview deployments
     /^https:\/\/gympro-[a-z0-9]+-ahmeds-projects-[a-z0-9]+\.vercel\.app$/,

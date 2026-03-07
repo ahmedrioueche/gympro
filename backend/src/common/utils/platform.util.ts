@@ -36,33 +36,57 @@ export const detectPlatform = (
   return Platform.WEB;
 };
 
+export const parseUrls = (
+  urlEnvVar: string | undefined,
+  defaultUrl: string,
+): string[] => {
+  if (!urlEnvVar) return [defaultUrl];
+  return urlEnvVar
+    .split(',')
+    .map((url) => url.trim())
+    .filter(Boolean);
+};
+
+export const getPrimaryFrontendUrl = (
+  platform: Platform = Platform.WEB,
+): string => {
+  return getFrontendUrls(platform)[0];
+};
+
 /**
- * Get frontend URL based on platform and environment
+ * Get frontend URLs array based on platform and environment
  */
-export const getFrontendUrl = (platform: Platform = Platform.WEB): string => {
+export const getFrontendUrls = (
+  platform: Platform = Platform.WEB,
+): string[] => {
   const isDev = process.env.NODE_ENV === 'dev';
 
   if (isDev) {
     switch (platform) {
       case Platform.MOBILE:
-        return process.env.DEV_MOBILE_URL || 'http://localhost:8081'; // Expo/React Native dev server
+        return [process.env.DEV_MOBILE_URL || 'http://localhost:8081']; // Expo/React Native dev server
       case Platform.DESKTOP:
-        return process.env.DEV_DESKTOP_URL || 'http://localhost:5174'; // Desktop app dev server
+        return [process.env.DEV_DESKTOP_URL || 'http://localhost:5174']; // Desktop app dev server
       case Platform.WEB:
       default:
-        return process.env.DEV_FRONTEND_URL || 'http://localhost:5173';
+        return parseUrls(process.env.DEV_FRONTEND_URL, 'http://localhost:5173');
     }
   }
 
   // Production
   switch (platform) {
     case Platform.MOBILE:
-      return process.env.PROD_MOBILE_URL || 'gympro://'; // Deep link scheme
+      return [process.env.PROD_MOBILE_URL || 'gympro://']; // Deep link scheme
     case Platform.DESKTOP:
-      return process.env.PROD_DESKTOP_URL || 'https://desktop.gympro-power.com';
+      return [
+        process.env.PROD_DESKTOP_URL || 'https://desktop.gympro-power.com',
+      ];
     case Platform.WEB:
     default:
-      return process.env.PROD_FRONTEND_URL || 'https://gympro-power.vercel.app';
+      return parseUrls(
+        process.env.PROD_FRONTEND_URL,
+        'https://gympro-power.vercel.app',
+      );
   }
 };
 
@@ -74,7 +98,7 @@ export const buildRedirectUrl = (
   path: string,
   params?: Record<string, string>,
 ): string => {
-  const baseUrl = getFrontendUrl(platform);
+  const baseUrl = getPrimaryFrontendUrl(platform);
 
   // For mobile deep links, use custom scheme
   if (platform === Platform.MOBILE && baseUrl.startsWith('gympro://')) {
