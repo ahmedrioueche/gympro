@@ -14,7 +14,7 @@ import type {
   VerifyEmailData,
   VerifyOtpData,
 } from '@ahmedrioueche/gympro-client';
-import { apiResponse, ErrorCode } from '@ahmedrioueche/gympro-client';
+import { apiResponse } from '@ahmedrioueche/gympro-client';
 import {
   Body,
   Controller,
@@ -290,17 +290,6 @@ export class AuthController {
   async sendOtp(@Body() dto: SendOtpDto): Promise<ApiResponse<SendOtpData>> {
     const result = await this.otpService.sendOTP(dto.phoneNumber);
 
-    if (!result.success) {
-      return apiResponse(
-        false,
-        ErrorCode.INVALID_OTP,
-        {
-          remainingTime: result?.remainingTime,
-        },
-        result.message,
-      );
-    }
-
     return apiResponse(
       true,
       undefined,
@@ -316,15 +305,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<ApiResponse<VerifyOtpData | undefined>> {
     const result = await this.otpService.verifyOTP(dto.phoneNumber, dto.code);
-
-    if (!result.success) {
-      return apiResponse(
-        false,
-        ErrorCode.INVALID_OTP,
-        undefined,
-        result.message,
-      );
-    }
 
     const loginResult = await this.authService.loginById(result.userId!);
 
@@ -374,17 +354,6 @@ export class AuthController {
     @Body() dto: VerifyOtpDto,
   ): Promise<ApiResponse<{ resetToken: string }>> {
     const result = await this.otpService.verifyOTP(dto.phoneNumber, dto.code);
-
-    if (!result.success) {
-      return apiResponse(
-        false,
-        undefined,
-        {
-          resetToken: '',
-        },
-        result.message,
-      );
-    }
 
     // Generate a reset token for password reset
     const resetToken = crypto.randomBytes(32).toString('hex');

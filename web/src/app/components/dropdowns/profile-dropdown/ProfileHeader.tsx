@@ -16,13 +16,15 @@ export function ProfileHeader({ user, initials }: ProfileHeaderProps) {
       <div className="flex flex-col min-w-0">
         <div className="font-semibold text-sm text-text-primary truncate">
           {user?.profile?.fullName ||
+            user?.profile?.username ||
             user?.profile?.email?.split("@")[0] ||
             user?.profile?.phoneNumber ||
-            user?.profile?.username ||
             t("profile.defaultName")}
         </div>
         <div className="text-xs text-text-secondary truncate">
-          {user?.profile?.email || t("profile.defaultEmail")}
+          {user?.profile?.email ||
+            user?.profile?.phoneNumber ||
+            t("profile.defaultEmail")}
         </div>
       </div>
     </div>

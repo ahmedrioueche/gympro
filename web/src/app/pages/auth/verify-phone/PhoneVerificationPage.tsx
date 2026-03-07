@@ -74,7 +74,7 @@ function PhoneVerificationPage() {
         }
       }
     } catch (error: any) {
-      if (error?.statusCode) {
+      if (error && typeof error === "object" && "success" in error) {
         const statusMessage = getMessage(error, t);
         showStatusToast(statusMessage, toast);
       } else {

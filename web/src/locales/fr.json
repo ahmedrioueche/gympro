@@ -216,7 +216,8 @@
         "google_auth_failed": "L'authentification Google a échoué. Veuillez réessayer",
         "google_user_info_failed": "Échec de l'obtention des informations utilisateur de Google",
         "invalid_otp": "Code OTP invalide",
-        "unauthorized": "Non autorisé"
+        "unauthorized": "Non autorisé",
+        "sms_send_failed": "Échec de l'envoi du code de vérification. Veuillez vérifier votre numéro ou réessayer plus tard."
       },
       "user": {
         "not_found": "Utilisateur non trouvé",

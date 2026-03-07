@@ -136,12 +136,12 @@ export function useLogin(): UseLoginReturn {
       if (response.success) {
         setUser(response.data.user);
         const redirectUrl = getRoleHomePage(
-          response.data.user.role as UserRole
+          response.data.user.role as UserRole,
         );
         window.location.href = redirectUrl;
       }
     } catch (error: any) {
-      if (error?.statusCode) {
+      if (error && typeof error === "object" && "success" in error) {
         const statusMessage = getMessage(error, t);
         showStatusToast(statusMessage, toast);
       } else {

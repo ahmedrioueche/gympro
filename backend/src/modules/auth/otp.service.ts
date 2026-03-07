@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { ErrorCode } from '@ahmedrioueche/gympro-client';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 import { SmsService } from '../sms/sms.service';
@@ -9,11 +9,7 @@ import { SmsService } from '../sms/sms.service';
 @Injectable()
 export class OtpService {
   private readonly logger = new Logger(OtpService.name);
-  private readonly OTP_LENGTH = 6;
-  private readonly OTP_EXPIRY_MINUTES = 10;
-  private readonly MAX_OTP_ATTEMPTS = 3;
-  private readonly RATE_LIMIT_MINUTES = 15;
-  private readonly MAX_OTP_REQUESTS = 3;
+  private readonly RATE_LIMIT_MINUTES = 1; // Simplify rate limiting as Twilio handles it
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
@@ -22,16 +18,7 @@ export class OtpService {
   ) {}
 
   /**
-   * Generate a 6-digit OTP code
-   */
-  private generateOTP(): string {
-    const min = Math.pow(10, this.OTP_LENGTH - 1);
-    const max = Math.pow(10, this.OTP_LENGTH) - 1;
-    return Math.floor(Math.random() * (max - min + 1) + min).toString();
-  }
-
-  /**
-   * Check if user has exceeded OTP rate limit
+   * Check if user has exceeded OTP rate limit (Local safety check)
    */
   async checkRateLimit(phoneNumber: string): Promise<{
     allowed: boolean;
@@ -51,8 +38,6 @@ export class OtpService {
     const minutesSinceLastSent = timeSinceLastSent / (1000 * 60);
 
     if (minutesSinceLastSent < this.RATE_LIMIT_MINUTES) {
-      // Check how many OTPs were sent in the rate limit window
-      // For simplicity, we'll track this with a counter that resets after the window
       const remainingTime = Math.ceil(
         this.RATE_LIMIT_MINUTES - minutesSinceLastSent,
       );
@@ -66,24 +51,24 @@ export class OtpService {
   }
 
   /**
-   * Send OTP to phone number
+   * Send OTP to phone number using Twilio Verify
    */
   async sendOTP(
     phoneNumber: string,
     userId?: string,
   ): Promise<{ success: boolean; message: string; remainingTime?: number }> {
     try {
-      // Check rate limit
+      // Local rate limit check
       const rateLimit = await this.checkRateLimit(phoneNumber);
       if (!rateLimit.allowed) {
-        return {
-          success: false,
+        throw new BadRequestException({
           message: `Too many OTP requests. Please try again in ${rateLimit.remainingTime} minutes.`,
+          errorCode: ErrorCode.TOO_MANY_REQUESTS,
           remainingTime: rateLimit.remainingTime,
-        };
+        });
       }
 
-      // Find user by phone number or userId
+      // Find user
       let user;
       if (userId) {
         user = await this.userModel.findById(userId);
@@ -94,7 +79,6 @@ export class OtpService {
       }
 
       if (!user) {
-        // For security, don't reveal if phone number exists
         this.logger.warn(
           `OTP requested for non-existent phone: ${phoneNumber}`,
         );
@@ -104,56 +88,44 @@ export class OtpService {
         };
       }
 
-      // Generate OTP
-      const otp = this.generateOTP();
-      const hashedOtp = await bcrypt.hash(otp, 10);
-
-      // Set OTP expiry
-      const otpExpiry = new Date();
-      otpExpiry.setMinutes(otpExpiry.getMinutes() + this.OTP_EXPIRY_MINUTES);
-
-      // Update user with OTP details
-      user.otpCode = hashedOtp;
-      user.otpExpiry = otpExpiry;
-      user.otpAttempts = 0;
+      // Update last sent timestamp for local rate limiting
       user.otpLastSentAt = new Date();
       await user.save();
 
-      // Send OTP via SMS
-      const fromNumber =
-        this.configService.get<string>('VONAGE_FROM_NUMBER') || 'GymPro';
-      const message = `Your GymPro verification code is: ${otp}. Valid for ${this.OTP_EXPIRY_MINUTES} minutes.`;
-
-      const smsResult = await this.smsService.send(
-        phoneNumber,
-        fromNumber,
-        message,
-      );
+      // Start Twilio Verification
+      const smsResult = await this.smsService.sendVerification(phoneNumber);
 
       if (!smsResult.success) {
-        this.logger.error(`Failed to send OTP SMS: ${smsResult.error}`);
-        return {
-          success: false,
-          message: 'Failed to send OTP. Please try again.',
-        };
+        this.logger.error(
+          `Failed to send Twilio Verify SMS: ${smsResult.error}`,
+        );
+        throw new BadRequestException({
+          message: 'Failed to send verification code',
+          errorCode: ErrorCode.SMS_SEND_FAILED,
+        });
       }
 
-      this.logger.log(`OTP sent successfully to ${phoneNumber}`);
+      this.logger.log(
+        `Twilio verification sent successfully to ${phoneNumber}`,
+      );
       return {
         success: true,
-        message: 'OTP sent successfully',
+        message: 'Verification code sent successfully',
       };
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       this.logger.error(`Error sending OTP: ${error.message}`, error.stack);
       return {
         success: false,
-        message: 'An error occurred while sending OTP',
+        message: 'An error occurred while sending verification code',
       };
     }
   }
 
   /**
-   * Verify OTP code
+   * Verify OTP code using Twilio Verify
    */
   async verifyOTP(
     phoneNumber: string,
@@ -162,71 +134,57 @@ export class OtpService {
     success: boolean;
     message: string;
     userId?: string;
-    attemptsRemaining?: number;
   }> {
     try {
       const user = await this.userModel.findOne({
         'profile.phoneNumber': phoneNumber,
       });
 
-      if (!user || !user.otpCode || !user.otpExpiry) {
+      if (!user) {
         return {
           success: false,
-          message: 'No OTP found. Please request a new one.',
+          message: 'User not found.',
         };
       }
 
-      // Check if OTP has expired
-      if (new Date() > new Date(user.otpExpiry)) {
-        return {
-          success: false,
-          message: 'OTP has expired. Please request a new one.',
-        };
+      // Check verification code via Twilio
+      const verifyResult = await this.smsService.checkVerification(
+        phoneNumber,
+        code,
+      );
+
+      if (!verifyResult.success) {
+        this.logger.warn(
+          `Invalid verification code for ${phoneNumber}: ${verifyResult.error}`,
+        );
+        throw new BadRequestException({
+          message: 'Invalid verification code',
+          errorCode: ErrorCode.INVALID_OTP,
+        });
       }
 
-      // Check attempts
-      if ((user.otpAttempts ?? 0) >= this.MAX_OTP_ATTEMPTS) {
-        return {
-          success: false,
-          message:
-            'Maximum verification attempts exceeded. Please request a new OTP.',
-        };
-      }
-
-      // Verify OTP
-      const isValid = await bcrypt.compare(code, user.otpCode);
-
-      if (!isValid) {
-        // Increment attempts
-        user.otpAttempts = (user.otpAttempts ?? 0) + 1;
-        await user.save();
-
-        const remaining = this.MAX_OTP_ATTEMPTS - (user.otpAttempts ?? 0);
-        return {
-          success: false,
-          message: `Invalid OTP code. ${remaining} attempts remaining.`,
-          attemptsRemaining: remaining,
-        };
-      }
-
-      // OTP is valid - mark phone as verified and clear OTP fields
+      // Verification is successful - mark phone as verified
       user.profile.phoneNumberVerified = true;
+      // Clear old manual OTP fields if they exist
       user.otpCode = undefined;
       user.otpExpiry = undefined;
       user.otpAttempts = 0;
       await user.save();
 
-      this.logger.log(`Phone verified successfully: ${phoneNumber}`);
+      this.logger.log(`Phone verified successfully via Twilio: ${phoneNumber}`);
       return {
         success: true,
         message: 'Phone number verified successfully',
         userId: user._id.toString(),
       };
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
       this.logger.error(`Error verifying OTP: ${error.message}`, error.stack);
       return {
         success: false,
-        message: 'An error occurred while verifying OTP',
+        message: 'An error occurred while verifying the code',
       };
     }
   }

@@ -111,7 +111,7 @@ function SetupPage() {
       showStatusToast(statusMessage, toast);
       redirectAfterTimeout(APP_PAGES.member.link, 3000, navigate);
     } catch (error: any) {
-      if (error?.statusCode) {
+      if (error && typeof error === "object" && "success" in error) {
         const statusMessage = getMessage(error, t);
         showStatusToast(statusMessage, toast);
       } else {

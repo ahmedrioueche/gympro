@@ -505,6 +505,7 @@ export class UsersService {
             name: user.profile?.fullName || user.profile?.email || 'User',
             trialDays: DEFAULT_TRIAL_DAYS_NUMBER.toString(),
           },
+          skipExternal: true,
         })
         .catch((error) => {
           this.logger.error(
@@ -519,6 +520,7 @@ export class UsersService {
           vars: {
             name: user.profile?.fullName || user.profile?.email || 'User',
           },
+          skipExternal: true,
         })
         .catch((error) => {
           this.logger.error(

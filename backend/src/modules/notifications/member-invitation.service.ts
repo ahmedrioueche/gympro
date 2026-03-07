@@ -64,7 +64,7 @@ export class MemberInvitationService {
       try {
         const smsText = `Welcome to ${gymName}! You've been added as a member. Set up your account here: ${setupUrl}`;
         const from =
-          this.configService.get<string>('VONAGE_FROM_NUMBER') || 'GymPro';
+          this.configService.get<string>('TWILIO_FROM_NUMBER') || 'GymPro';
 
         const result = await this.smsService.send(phoneNumber, from, smsText);
 
@@ -134,7 +134,7 @@ export class MemberInvitationService {
       try {
         const smsText = `You've been added to ${gymName}! Log in to access your membership: ${loginUrl}`;
         const from =
-          this.configService.get<string>('VONAGE_FROM_NUMBER') || 'GymPro';
+          this.configService.get<string>('TWILIO_FROM_NUMBER') || 'GymPro';
 
         const result = await this.smsService.send(phoneNumber, from, smsText);
 
@@ -228,7 +228,7 @@ export class MemberInvitationService {
       try {
         const smsText = `Welcome to ${gymName}! You've been added as ${roleDisplay}. Set up your staff account: ${setupUrl}`;
         const from =
-          this.configService.get<string>('VONAGE_FROM_NUMBER') || 'GymPro';
+          this.configService.get<string>('TWILIO_FROM_NUMBER') || 'GymPro';
 
         const result = await this.smsService.send(phoneNumber, from, smsText);
 
@@ -314,7 +314,7 @@ export class MemberInvitationService {
       try {
         const smsText = `You've been added as ${roleDisplay} at ${gymName}! Log in to access your staff dashboard: ${loginUrl}`;
         const from =
-          this.configService.get<string>('VONAGE_FROM_NUMBER') || 'GymPro';
+          this.configService.get<string>('TWILIO_FROM_NUMBER') || 'GymPro';
 
         const result = await this.smsService.send(phoneNumber, from, smsText);
 

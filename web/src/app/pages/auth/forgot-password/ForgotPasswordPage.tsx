@@ -2,6 +2,7 @@ import { authApi } from "@ahmedrioueche/gympro-client";
 import { useSearch } from "@tanstack/react-router";
 import { CheckCircle, Mail, Phone, Smartphone, Sparkles } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { COUNTRY_CODES } from "../../../../../../packages/client/src/constants/countryCodes";
 import Button from "../../../../components/ui/Button";
@@ -13,6 +14,7 @@ import {
   getExampleNumber,
   parsePhoneNumber,
 } from "../../../../utils/phone.util";
+import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import AuthLayout from "../components/AuthLayout";
 
 type ForgotPasswordMethod = "email" | "phone";
@@ -83,7 +85,14 @@ export default function ForgotPasswordPage() {
         setStep("success");
       }
     } catch (err: any) {
-      setError(t("status.error.unexpected"));
+      if (err && typeof err === "object" && "success" in err) {
+        const statusMessage = getMessage(err, t);
+        showStatusToast(statusMessage, toast);
+        setError(statusMessage.message);
+      } else {
+        setError(t("status.error.unexpected"));
+        toast.error(t("status.error.unexpected"));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +116,14 @@ export default function ForgotPasswordPage() {
         setError(t("auth.invalid_verification_code"));
       }
     } catch (err: any) {
-      setError(err.message || t("status.error.unexpected"));
+      if (err && typeof err === "object" && "success" in err) {
+        const statusMessage = getMessage(err, t);
+        showStatusToast(statusMessage, toast);
+        setError(statusMessage.message);
+      } else {
+        setError(err.message || t("status.error.unexpected"));
+        toast.error(err.message || t("status.error.unexpected"));
+      }
     } finally {
       setIsLoading(false);
     }

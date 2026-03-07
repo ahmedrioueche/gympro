@@ -121,12 +121,12 @@ export function useSignup(): UseSignupReturn {
           }?email=${encodeURIComponent(formData.email)}`;
         } else {
           window.location.href = `/auth/verify-phone?phone=${encodeURIComponent(
-            parsePhoneNumber(countryCode, formData.phoneNumber)
+            parsePhoneNumber(countryCode, formData.phoneNumber),
           )}`;
         }
       }
     } catch (error: any) {
-      if (error?.statusCode) {
+      if (error && typeof error === "object" && "success" in error) {
         const statusMessage = getMessage(error, t);
         showStatusToast(statusMessage, toast);
       } else {

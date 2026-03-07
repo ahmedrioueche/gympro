@@ -129,45 +129,53 @@ export class AuthService {
 
     await newUser.save();
 
-    // Populate memberships before returning (though it will be empty)
-    await newUser.populate('memberships');
+    try {
+      // Populate memberships before returning (though it will be empty)
+      await newUser.populate('memberships');
 
-    // Send verification email
-    if (email && verificationToken) {
-      const verificationUrl = buildRedirectUrl(platform, '/auth/verify-email', {
-        token: verificationToken,
-      });
-
-      await this.notificationsService.notifyUser(newUser, {
-        key: 'auth.verify',
-        vars: { verifyUrl: verificationUrl },
-        sendSms: false,
-      });
-
-      // Notify Staff (Admins & Editors)
-      this.notificationsService
-        .notifyStaff({
-          key: 'admin.user_signup',
-          vars: {
-            name:
-              newUser.profile?.fullName ||
-              newUser.profile?.username ||
-              newUser.profile?.email ||
-              'A new user',
+      // Send verification email
+      if (email && verificationToken) {
+        const verificationUrl = buildRedirectUrl(
+          platform,
+          '/auth/verify-email',
+          {
+            token: verificationToken,
           },
-        })
-        .catch((err) => {
-          this.logger.error(`Failed to notify staff about signup: ${err}`);
-        });
-    }
+        );
 
-    // Send OTP for phone verification
-    if (phoneNumber) {
-      try {
-        await this.otpService.sendOTP(phoneNumber, newUser._id.toString());
-      } catch (error) {
-        this.logger.error(`Failed to send OTP to ${phoneNumber}: ${error}`);
+        await this.notificationsService.notifyUser(newUser, {
+          key: 'auth.verify',
+          vars: { verifyUrl: verificationUrl },
+          sendSms: false,
+        });
+
+        // Notify Staff (Admins & Editors)
+        this.notificationsService
+          .notifyStaff({
+            key: 'admin.user_signup',
+            vars: {
+              name:
+                newUser.profile?.fullName ||
+                newUser.profile?.username ||
+                newUser.profile?.email ||
+                'A new user',
+            },
+          })
+          .catch((err) => {
+            this.logger.error(`Failed to notify staff about signup: ${err}`);
+          });
       }
+
+      // Send OTP for phone verification
+      if (phoneNumber) {
+        await this.otpService.sendOTP(phoneNumber, newUser._id.toString());
+      }
+    } catch (error) {
+      this.logger.error(
+        `Signup post-creation step failed, rolling back user ${newUser._id}: ${error.message}`,
+      );
+      await this.userModel.findByIdAndDelete(newUser._id);
+      throw error;
     }
 
     // Generate tokens for automatic login
@@ -410,13 +418,7 @@ export class AuthService {
 
     if (isPhone) {
       // Send OTP for phone-based reset
-      try {
-        await this.otpService.sendOTP(identifier, user._id.toString());
-      } catch (error) {
-        this.logger.error(
-          `Failed to send password reset OTP to ${identifier}: ${error}`,
-        );
-      }
+      await this.otpService.sendOTP(identifier, user._id.toString());
     } else {
       // Send reset link for email-based reset
       const resetToken = crypto.randomBytes(32).toString('hex');

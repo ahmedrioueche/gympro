@@ -40,6 +40,7 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
     "status.error.auth.google_user_info_failed",
   [ErrorCode.INVALID_OTP]: "status.error.auth.invalid_otp",
   [ErrorCode.UNAUTHORIZED]: "status.error.auth.unauthorized",
+  [ErrorCode.SMS_SEND_FAILED]: "status.error.auth.sms_send_failed",
 
   // User errors
   [ErrorCode.USER_NOT_FOUND_USER]: "status.error.user.not_found",

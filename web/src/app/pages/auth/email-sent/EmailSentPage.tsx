@@ -61,8 +61,8 @@ const EmailSentPage: React.FC = () => {
       const response = await authApi.resendVerification({ email });
       const statusMessage = getMessage(response, t);
       showStatusToast(statusMessage, toast);
-    } catch (error) {
-      if (error?.statusCode) {
+    } catch (error: any) {
+      if (error && typeof error === "object" && "success" in error) {
         const statusMessage = getMessage(error, t);
         showStatusToast(statusMessage, toast);
       } else {
