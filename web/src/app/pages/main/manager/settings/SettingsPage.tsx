@@ -1,9 +1,8 @@
-import { Bell, Globe, Palette, Save, Settings } from "lucide-react";
+import { Bell, Save, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../components/PageHeader";
 import SettingsContainer from "../../../../components/settings/SettingsContainer";
 import GeneralTab from "./components/GeneralTab";
-import LocaleTab from "./components/LocaleTab";
 import NotificationsTab from "./components/NotificationsTab";
 import { useManagerSettings, type TabType } from "./hooks/useManagerSettings";
 
@@ -31,27 +30,22 @@ export default function SettingsPage() {
   const tabs = [
     {
       id: "general" as TabType,
-      label: t("settings.tabs.general", "General"),
-      icon: Palette,
+      label: t("extra.settings.tabs.general", "General"),
+      icon: Settings,
     },
     {
       id: "notifications" as TabType,
-      label: t("settings.tabs.notifications", "Notifications"),
+      label: t("extra.settings.tabs.notifications", "Notifications"),
       icon: Bell,
-    },
-    {
-      id: "locale" as TabType,
-      label: t("settings.tabs.locale", "Locale"),
-      icon: Globe,
     },
   ];
 
   return (
     <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
       <PageHeader
-        title={t("settings.pageTitle", "Application Settings")}
+        title={t("extra.settings.pageTitle", "Application Settings")}
         subtitle={t(
-          "settings.pageSubtitle",
+          "extra.settings.pageSubtitle",
           "Manage your global preferences, notifications and locale settings.",
         )}
         icon={Settings}
@@ -73,18 +67,6 @@ export default function SettingsPage() {
           <GeneralTab
             viewPreference={viewPreference}
             setViewPreference={setViewPreference}
-          />
-        )}
-
-        {activeTab === "notifications" && (
-          <NotificationsTab
-            reminderMinutes={reminderMinutes}
-            setReminderMinutes={setReminderMinutes}
-          />
-        )}
-
-        {activeTab === "locale" && (
-          <LocaleTab
             language={language}
             setLanguage={setLanguage}
             timezone={timezone}
@@ -92,6 +74,13 @@ export default function SettingsPage() {
             region={region}
             regionName={regionName}
             currency={currency}
+          />
+        )}
+
+        {activeTab === "notifications" && (
+          <NotificationsTab
+            reminderMinutes={reminderMinutes}
+            setReminderMinutes={setReminderMinutes}
           />
         )}
       </SettingsContainer>

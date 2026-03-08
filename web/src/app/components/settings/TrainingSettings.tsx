@@ -61,11 +61,11 @@ export default function TrainingSettings({
           </div>
           <div>
             <p className="font-medium text-text-primary">
-              {t("member.settings.preferences.timer.title", "Smart Rest Timer")}
+              {t("extra.settings.smartRestTimer", "Smart Rest Timer")}
             </p>
             <p className="text-sm text-text-secondary">
               {t(
-                "member.settings.preferences.timer.subtitle",
+                "extra.settings.smartRestTimerDesc",
                 "Customize your workout rest timer",
               )}
             </p>
@@ -75,10 +75,7 @@ export default function TrainingSettings({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-text-secondary">
-              {t(
-                "member.settings.preferences.timer.defaultRest",
-                "Default Rest (seconds)",
-              )}
+              {t("extra.settings.defaultRest", "Default Rest (seconds)")}
             </label>
             <InputField
               type="number"
@@ -95,7 +92,7 @@ export default function TrainingSettings({
           <div className="space-y-2">
             <label className="text-sm font-medium text-text-secondary">
               {t(
-                "member.settings.preferences.timer.alarmDuration",
+                "extra.settings.alarmDuration",
                 "Maximum Alarm Duration (seconds)",
               )}
             </label>
@@ -114,7 +111,7 @@ export default function TrainingSettings({
 
           <div className="col-span-full space-y-2">
             <label className="text-sm font-medium text-text-secondary">
-              {t("member.settings.preferences.timer.sound", "Completion Sound")}
+              {t("extra.settings.completionSound", "Completion Sound")}
             </label>
             <div className="flex gap-2">
               {(["beep", "vibrate", "silent"] as const).map((sound) => (
@@ -137,10 +134,7 @@ export default function TrainingSettings({
           {timerSettings.sound === "beep" && (
             <div className="col-span-full space-y-2">
               <label className="text-sm font-medium text-text-secondary">
-                {t(
-                  "member.settings.preferences.timer.completionSoundTrack",
-                  "Completion Sound",
-                )}
+                {t("extra.settings.completionSound", "Completion Sound")}
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {TIMER_SOUND_TRACKS.map((track) => (
@@ -192,14 +186,11 @@ export default function TrainingSettings({
             <>
               <div className="col-span-full border-t border-border/50 pt-4 mt-2">
                 <p className="text-sm font-medium text-text-primary mb-1">
-                  {t(
-                    "member.settings.preferences.timer.warningCountdown",
-                    "Warning Countdown",
-                  )}
+                  {t("extra.settings.warningCountdown", "Warning Countdown")}
                 </p>
                 <p className="text-xs text-text-secondary">
                   {t(
-                    "member.settings.preferences.timer.warningCountdownDesc",
+                    "extra.settings.warningCountdownDesc",
                     "Play a warning sound before the timer ends",
                   )}
                 </p>
@@ -207,10 +198,7 @@ export default function TrainingSettings({
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-text-secondary">
-                  {t(
-                    "member.settings.preferences.timer.warningSeconds",
-                    "Warning At (seconds)",
-                  )}
+                  {t("extra.settings.warningAt", "Warning At (seconds)")}
                 </label>
                 <InputField
                   type="number"
@@ -227,10 +215,7 @@ export default function TrainingSettings({
 
               <div className="col-span-full space-y-2">
                 <label className="text-sm font-medium text-text-secondary">
-                  {t(
-                    "member.settings.preferences.timer.warningSoundTrack",
-                    "Warning Sound",
-                  )}
+                  {t("extra.settings.warningSound", "Warning Sound")}
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {TIMER_SOUND_TRACKS.map((track) => (

@@ -24,20 +24,23 @@ export default function NotificationsTab({
 
   return (
     <SettingsTab
-      title={t("settings.gym.notifications.title", "Notification Settings")}
+      title={t(
+        "extra.gymSettings.notifications.title",
+        "Notification Settings",
+      )}
       description={t(
-        "settings.gym.notifications.description",
+        "extra.gymSettings.notifications.description",
         "Manage how and when your members receive automated alerts.",
       )}
       icon={Bell}
     >
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.gym.notifications.status", "System Notifications")}
+          {t("extra.gymSettings.notifications.status", "System Notifications")}
         </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
-            "settings.gym.notifications.enabledDesc",
+            "extra.gymSettings.notifications.enabledDesc",
             "Enable or disable gym-wide notifications",
           )}
         </p>
@@ -55,7 +58,10 @@ export default function NotificationsTab({
               htmlFor="notificationsEnabled"
               className="text-sm font-medium text-text-primary cursor-pointer"
             >
-              {t("settings.gym.notifications.enabled", "Notifications Enabled")}
+              {t(
+                "extra.gymSettings.notifications.enabled",
+                "Notifications Enabled",
+              )}
             </label>
           </div>
           <Bell className="w-5 h-5 text-primary" />
@@ -65,13 +71,13 @@ export default function NotificationsTab({
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
           {t(
-            "settings.gym.notifications.remindersTitle",
+            "extra.gymSettings.notifications.remindersTitle",
             "Subscription Reminders",
           )}
         </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
-            "settings.gym.notifications.remindersDesc",
+            "extra.gymSettings.notifications.remindersDesc",
             "Configure which reminders are sent to members.",
           )}
         </p>
@@ -80,7 +86,10 @@ export default function NotificationsTab({
         <div className="mb-6">
           <h5 className="text-sm font-medium text-text-primary mb-3 flex items-center gap-2">
             <Clock className="w-4 h-4 text-primary" />
-            {t("settings.gym.notifications.preExpiry", "Before Expiration")}
+            {t(
+              "extra.gymSettings.notifications.preExpiry",
+              "Before Expiration",
+            )}
           </h5>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
@@ -121,7 +130,7 @@ export default function NotificationsTab({
           <h5 className="text-sm font-medium text-text-primary mb-3 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-primary" />
             {t(
-              "settings.gym.notifications.postExpiry",
+              "extra.gymSettings.notifications.postExpiry",
               "After Expiration (Win-back)",
             )}
           </h5>
@@ -165,13 +174,13 @@ export default function NotificationsTab({
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
           {t(
-            "settings.gym.notifications.scheduleUpdatesTitle",
+            "extra.gymSettings.notifications.scheduleUpdatesTitle",
             "Schedule Updates",
           )}
         </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
-            "settings.gym.notifications.scheduleUpdatesDesc",
+            "extra.gymSettings.notifications.scheduleUpdatesDesc",
             "Automatically notify members when opening hours or working days change.",
           )}
         </p>
@@ -190,7 +199,7 @@ export default function NotificationsTab({
               className="text-sm font-medium text-text-primary cursor-pointer"
             >
               {t(
-                "settings.gym.notifications.notifyScheduleChangesEnabled",
+                "extra.gymSettings.notifications.notifyScheduleChangesEnabled",
                 "Enable Automatic Notifications",
               )}
             </label>

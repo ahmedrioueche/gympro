@@ -71,7 +71,7 @@ function PageHeader({
   };
 
   return (
-    <div className="flex flex-col items-center text-center md:flex-row md:items-center md:text-left justify-between gap-4 md:gap-6 mb-6 md:mb-10 animate-in fade-in slide-in-from-top-4 duration-500 min-w-0 overflow-hidden">
+    <div className="flex flex-col items-center text-center md:flex-row md:items-center md:text-left rtl:md:text-right justify-between gap-4 md:gap-6 mb-6 md:mb-10 animate-in fade-in slide-in-from-top-4 duration-500 min-w-0 overflow-hidden">
       <div className="flex flex-col items-center md:flex-row md:items-start gap-3 md:gap-5 min-w-0">
         {Icon && (
           <div className="hidden sm:flex p-4 rounded-3xl bg-primary/5 text-primary border border-primary/10 shadow-sm flex-shrink-0">

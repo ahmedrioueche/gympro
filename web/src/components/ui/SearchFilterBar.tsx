@@ -121,7 +121,7 @@ export function SearchFilterBar<T extends string = string>({
 
         {/* Filter Dropdowns - Multi-filter support */}
         <div
-          className={`flex items-center gap-1.5 md:gap-3 flex-shrink-0 ${
+          className={`flex items-center gap-1.5 md:gap-3 flex-shrink-0 rtl:-translate-x-2 md:rtl:-translate-x-4 ${
             isMultiFilterMobile ? "flex-wrap md:flex-nowrap" : ""
           }`}
         >
@@ -198,7 +198,7 @@ function FilterDropdown<T extends string>({
                 onChange(option.value);
                 close();
               }}
-              className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
+              className={`w-full text-left rtl:text-right px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
                 value === option.value
                   ? "bg-primary/10 text-primary font-medium"
                   : "text-text-secondary hover:bg-muted hover:text-text-primary"

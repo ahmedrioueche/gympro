@@ -10,7 +10,9 @@
     },
     "onboarding": {
       "completed_subject": "Bienvenue sur GymPro – Commençons !",
-      "completed_body": "<p>Bonjour {{name}},</p><p>Bienvenue sur GymPro ! 🎉 Nous sommes ravis de vous compter parmi nous.</p><p>La configuration de votre compte est terminée et vous avez désormais accès à toutes les fonctionnalités nécessaires pour gérer efficacement votre salle de sport.</p><p><strong>Votre essai gratuit</strong></p><p>Vous bénéficiez d’un <strong>essai gratuit de {{trialDays}} jours</strong> sur GymPro, avec un accès complet à toutes les fonctionnalités.</p><p><strong>Et maintenant ?</strong></p><ul><li>Explorez votre tableau de bord</li><li>Ajoutez vos membres et votre personnel</li><li>Configurez vos cours et plannings</li><li>Personnalisez le profil et les paramètres de votre salle</li></ul><p><strong>Gérer votre abonnement</strong></p><p>Vous pouvez accéder à la page d’abonnement à tout moment depuis votre tableau de bord pour :</p><ul><li>Consulter votre plan et les détails de l’essai</li><li>Passer à une offre premium</li><li>Gérer la facturation et les moyens de paiement</li><li>Suivre l’avancement de votre essai</li></ul><p>Si vous avez des questions ou besoin d’aide, notre équipe support est à votre disposition.</p><p>Merci d’avoir choisi GymPro !</p><p>Cordialement,<br>L’équipe GymPro</p>"
+      "completed_body": "<p>Bonjour {{name}},</p><p>Bienvenue sur GymPro ! 🎉 Nous sommes ravis de vous compter parmi nous.</p><p>La configuration de votre compte est terminée et vous avez désormais accès à toutes les fonctionnalités nécessaires pour gérer efficacement votre salle de sport.</p><p><strong>Votre essai gratuit</strong></p><p>Vous bénéficiez d’un <strong>essai gratuit de {{trialDays}} jours</strong> sur GymPro, avec un accès complet à toutes les fonctionnalités.</p><p><strong>Et maintenant ?</strong></p><ul><li>Explorez votre tableau de bord</li><li>Ajoutez vos membres et votre personnel</li><li>Configurez vos cours et plannings</li><li>Personnalisez le profil et les paramètres de votre salle</li></ul><p><strong>Gérer votre abonnement</strong></p><p>Vous pouvez accéder à la page d’abonnement à tout moment depuis votre tableau de bord pour :</p><ul><li>Consulter votre plan et les détails de l’essai</li><li>Passer à une offre premium</li><li>Gérer la facturation et les moyens de paiement</li><li>Suivre l’avancement de votre essai</li></ul><p>Si vous avez des questions ou besoin d’aide, notre équipe support est à votre disposition.</p><p>Merci d’avoir choisi GymPro !</p><p>Cordialement,<br>L’équipe GymPro</p>",
+      "member_completed_subject": "Bienvenue chez GymPro !",
+      "member_completed_body": "<p>Bonjour {{name}},</p><p>Bienvenue chez GymPro ! 🎉 La configuration de votre compte est terminée.</p><p>Vous pouvez maintenant vous connecter à votre tableau de bord pour :</p><ul><li>Suivre vos entraînements et vos progrès</li><li>Consulter vos abonnements à la salle de sport</li><li>Consulter les horaires des cours et réserver des séances</li><li>Rester informé des annonces de la salle de sport</li></ul><p>Si vous avez des questions ou avez besoin d'aide, n'hésitez pas à contacter votre salle de sport.</p><p>À bientôt à la salle !</p><p>Cordialement,<br>L'équipe GymPro</p>"
     },
     "subscription": {
       "created_subject": "Bienvenue sur {{planName}} – Abonnement confirmé",
@@ -22,7 +24,71 @@
       "downgrade_scheduled_subject": "Changement de formule programmé – {{planName}}",
       "downgrade_scheduled_body": "<p>Bonjour {{name}},</p><p>Votre demande de changement de formule a été enregistrée. Le nouveau plan <strong>{{planName}}</strong> prendra effet le <strong>{{date}}</strong>.</p><p><strong>À noter :</strong></p><ul><li>Votre plan actuel reste actif jusqu’au {{date}}</li><li>Aucun changement immédiat</li><li>Changement automatique à la date prévue</li><li>Annulable avant le {{date}}</li></ul><p>Cordialement,<br>L’équipe GymPro</p>",
       "pending_change_cancelled_body": "<p>Bonjour {{name}},</p><p>Votre changement de formule en attente a été annulé. Votre abonnement actuel reste inchangé.</p><p>Cordialement,<br>L’équipe GymPro</p>",
-      "pending_change_cancelled_subject": "Changement de formule annulé"
+      "pending_change_cancelled_subject": "Changement de formule annulé",
+      "upgrade_subject": "Votre abonnement GymPro a été mis à niveau 🎉",
+      "upgrade_body": "<p>Bonjour {{name}},</p><p>Excellente nouvelle ! Votre abonnement a été mis à niveau avec succès vers <strong>{{planName}}</strong>.</p><p>Vous avez désormais accès à toutes les fonctionnalités et avantages supplémentaires inclus dans votre nouveau plan, vous aidant à gérer votre salle de sport encore plus efficacement.</p><p><strong>Quoi de neuf ?</strong></p><ul><li>Accès à toutes les fonctionnalités du plan {{planName}}</li><li>Outils améliorés pour gérer les membres et les abonnements</li><li>Performances améliorées et support prioritaire</li></ul><p>La mise à niveau prend effet immédiatement, et tous les frais applicables ont été traités en toute sécurité.</p><p>Si vous avez des questions ou souhaitez de l'aide pour tirer le meilleur parti de votre nouveau plan, notre équipe de support est toujours là pour vous.</p><p>Merci de continuer à grandir avec GymPro !</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "expiring_soon_subject": "Votre abonnement se termine bientôt",
+      "expiring_soon_body": "<p>Bonjour {{name}},</p><p>Ceci est un rappel amical que votre abonnement GymPro se terminera le <strong>{{date}}</strong>.</p><p>Vous continuerez à avoir un accès complet à toutes les fonctionnalités jusqu'à cette date.</p><p><strong>Ce que vous pouvez faire :</strong></p><ul><li>Renouvelez ou mettez à niveau votre abonnement pour éviter toute interruption</li><li>Consultez les détails de votre plan et de votre facturation</li></ul><p>Vous pouvez gérer votre abonnement à tout moment depuis les paramètres de votre compte.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "expiring_tomorrow_subject": "Votre abonnement se termine demain",
+      "expiring_tomorrow_body": "<p>Bonjour {{name}},</p><p>Juste un petit rappel que votre abonnement GymPro se terminera <strong>demain ({{date}})</strong>.</p><p>Pour éviter de perdre l'accès à vos fonctionnalités et données, vous pouvez renouveler votre abonnement à tout moment depuis votre tableau de bord.</p><p>Si vous avez des questions ou avez besoin d'aide, notre équipe de support est là pour vous.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "expired_subject": "Votre abonnement a expiré",
+      "expired_body": "<p>Bonjour {{name}},</p><p>Votre abonnement GymPro a expiré, et l'accès aux fonctionnalités premium est maintenant limité.</p><p><strong>Bonne nouvelle :</strong> Vos données sont toujours en sécurité, et vous pouvez réactiver votre abonnement à tout moment pour retrouver un accès complet.</p><p>Visitez simplement les paramètres de votre compte pour choisir un plan et reprendre là où vous vous étiez arrêté.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "membership_expiring_soon_subject": "Adhésion expirant bientôt - {{gymName}}",
+      "membership_expiring_soon_body": "Bonjour {{name}},\n\nVotre adhésion à {{gymName}} expire dans 3 jours ({{date}}). N'oubliez pas de la renouveler !\n\nCordialement,\nL'équipe {{gymName}}",
+      "membership_expiring_tomorrow_subject": "Adhésion expirant demain - {{gymName}}",
+      "membership_expiring_tomorrow_body": "Bonjour {{name}},\n\nVotre adhésion à {{gymName}} expire demain ({{date}}). Renouvelez-la maintenant pour éviter toute interruption.\n\nCordialement,\nL'équipe {{gymName}}",
+      "membership_expiring_today_subject": "Adhésion expirant aujourd'hui - {{gymName}}",
+      "membership_expiring_today_body": "Bonjour {{name}},\n\nVotre adhésion à {{gymName}} expire aujourd'hui ! Assurez-vous de la renouveler aujourd'hui pour rester actif.\n\nCordialement,\nL'équipe {{gymName}}",
+      "membership_expired_subject": "Adhésion expirée - {{gymName}}",
+      "membership_expired_body": "Bonjour {{name}},\n\nVotre adhésion à {{gymName}} a expiré. Nous serions ravis de vous revoir bientôt !\n\nCordialement,\nL'équipe {{gymName}}",
+      "membership_expired_3d_subject": "Vous nous manquez ! - {{gymName}}",
+      "membership_expired_3d_body": "Bonjour {{name}},\n\nCela fait 3 jours que votre adhésion à {{gymName}} a expiré. Nous espérons vous revoir bientôt à la salle !\n\nCordialement,\nL'équipe {{gymName}}",
+      "membership_expired_7d_subject": "Revenez vous entraîner ! - {{gymName}}",
+      "membership_expired_7d_body": "Bonjour {{name}},\n\nCela fait une semaine que votre adhésion à {{gymName}} a expiré. Ne laissez pas vos progrès s'arrêter là !\n\nCordialement,\nL'équipe {{gymName}}",
+      "membership_expired_30d_subject": "Atteignez vos objectifs ! - {{gymName}}",
+      "membership_expired_30d_body": "Bonjour {{name}},\n\nCela fait un mois que votre adhésion à {{gymName}} a expiré. Renouvelez-la aujourd'hui et reprenez le chemin de vos objectifs !\n\nCordialement,\nL'équipe {{gymName}}",
+      "membership_expired_60d_subject": "Nous serions ravis de vous revoir - {{gymName}}",
+      "membership_expired_60d_body": "Bonjour {{name}},\n\nCela fait 60 jours que vous ne vous êtes pas entraîné à {{gymName}}. Revenez et atteignez vos objectifs !\n\nCordialement,\nL'équipe {{gymName}}",
+      "membership_expired_90d_subject": "Ça fait longtemps - {{gymName}}",
+      "membership_expired_90d_body": "Bonjour {{name}},\n\nVotre adhésion à {{gymName}} a expiré il y a 90 jours. Nous serions ravis de vous revoir !\n\nCordialement,\nL'équipe {{gymName}}",
+      "downgrade_effective_soon_subject": "Changement de plan à venir",
+      "downgrade_effective_soon_body": "<p>Bonjour {{name}},</p><p>Ceci est un rappel que votre plan d'abonnement passera à <strong>{{planName}}</strong> le <strong>{{date}}</strong>.</p><p>Votre plan actuel reste entièrement actif jusqu'à cette date, avec un accès ininterrompu à toutes les fonctionnalités.</p><p>Si vous souhaitez apporter des modifications ou annuler cette mise à jour, vous pouvez le faire depuis les paramètres de votre compte avant le {{date}}.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "renewed_subject": "Votre abonnement a été renouvelé - {{planName}}",
+      "renewed_body": "<p>Bonjour {{name}},</p><p>Excellente nouvelle ! Votre abonnement à <strong>{{planName}}</strong> a été renouvelé avec succès.</p><p>Vous avez désormais un accès ininterrompu à toutes les fonctionnalités incluses dans votre forfait. Aucune action n'est requise de votre part.</p><p><strong>Et ensuite ?</strong></p><ul><li>Continuez à gérer votre salle de sport avec un accès complet à tous les outils</li><li>Consultez votre tableau de bord pour les détails de facturation et de forfait mis à jour</li><li>Invitez ou gérez les membres de l'équipe selon vos besoins</li></ul><p>Si vous avez des questions ou avez besoin d'aide, notre équipe de support est toujours là pour vous aider.</p><p>Merci de continuer à utiliser GymPro !</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "gym_membership_added_subject": "Bienvenue à {{gymName}}",
+      "gym_membership_added_body": "<p>Bonjour {{name}},</p><p>Nous sommes ravis de vous informer que vous avez été ajouté en tant que membre à <strong>{{gymName}}</strong> !</p><p>Vous pouvez maintenant vous connecter à votre tableau de bord pour consulter les détails de votre adhésion, suivre vos progrès et rester informé des annonces de la salle de sport.</p><p>Cordialement,<br>L'équipe {{gymName}}</p>"
+    },
+    "gym_announcement_subject": "Annonce : {{title}}",
+    "gym_announcement_body": "<div style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;\"><div style=\"text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; margin-bottom: 24px;\"><h1 style=\"color: #111827; font-size: 24px; margin: 0; letter-spacing: -0.025em;\">{{gymName}}</h1><p style=\"color: #6b7280; margin: 4px 0 0 0; font-size: 14px;\">Annonce</p></div><div style=\"margin-bottom: 32px;\"><p style=\"color: #374151; font-size: 16px; margin-bottom: 24px;\">Bonjour {{name}},</p><h2 style=\"color: #2563eb; font-size: 20px; margin: 0 0 16px 0; font-weight: 600;\">{{title}}</h2><div style=\"color: #4b5563; font-size: 16px; line-height: 1.6; background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #f3f4f6;\">{{message}}</div></div><div style=\"border-top: 1px solid #f3f4f6; padding-top: 24px; text-align: center;\"><p style=\"color: #9ca3af; font-size: 12px; margin: 0 0 8px 0;\">Vous recevez cette notification car vous êtes membre de {{gymName}}.</p><p style=\"color: #6b7280; font-size: 14px; font-weight: 500; margin: 0;\">L'équipe {{gymName}}</p></div></div>",
+    "gym": {
+      "closure_added_subject": "{{gymName}} : Mise à jour sur la fermeture de la salle",
+      "closure_added_body": "<p>Bonjour {{name}},</p><p>Veuillez noter que <strong>{{gymName}}</strong> sera temporairement fermé pour : <strong>{{reason}}</strong>.</p><p><strong>Période de fermeture :</strong><br>Du : {{start}}<br>Au : {{end}}</p><p>Nous nous excusons pour tout inconvénient.</p><p>Cordialement,<br>L'équipe {{gymName}}</p>",
+      "closure_deleted_subject": "{{gymName}} : Mise à jour sur la réouverture de la salle",
+      "closure_deleted_body": "<p>Bonjour {{name}},</p><p>Excellente nouvelle ! La fermeture précédemment prévue pour <strong>{{gymName}}</strong> a été annulée ou la salle a rouvert plus tôt que prévu.</p><p>La salle de sport suit désormais ses horaires d'ouverture habituels.</p><p>À bientôt à la salle !</p><p>Cordialement,<br>L'équipe {{gymName}}</p>",
+      "schedule_updated_subject": "Mise à jour de l'horaire : {{gymName}}",
+      "schedule_updated_body": "<p>Bonjour {{name}},</p><p>Veuillez noter que l'horaire de <strong>{{gymName}}</strong> a été mis à jour.</p><p><strong>Modifications :</strong><br>{{changes}}</p><p>Consultez l'application pour l'horaire complet mis à jour.</p><p>Cordialement,<br>L'équipe {{gymName}}</p>"
+    },
+    "coach": {
+      "request_subject": "Nouvelle demande de coaching",
+      "request_body": "<p>Bonjour {{name}},</p><p>Vous avez reçu une nouvelle demande de coaching de la part de <strong>{{memberName}}</strong>.</p><p><strong>Message :</strong></p><p><i>{{message}}</i></p><p>Vous pouvez examiner et répondre à cette demande depuis votre tableau de bord d'entraîneur.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "respond_accept_subject": "Demande de coaching acceptée !",
+      "respond_accept_body": "<p>Bonjour {{name}},</p><p>Excellente nouvelle ! <strong>{{coachName}}</strong> a accepté votre demande de coaching.</p><p>Vous pouvez maintenant commencer à travailler ensemble. Consultez votre tableau de bord pour plus de détails.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "respond_decline_subject": "Mise à jour de votre demande de coaching",
+      "respond_decline_body": "<p>Bonjour {{name}},</p><p>Nous vous informons que <strong>{{coachName}}</strong> a refusé votre demande de coaching pour le moment.</p><p>Ne vous inquiétez pas, de nombreux autres excellents entraîneurs sont disponibles sur GymPro. N'hésitez pas à explorer et à trouver une autre correspondance !</p><p>Cordialement,<br>L'équipe GymPro</p>"
+    },
+    "admin": {
+      "user_signup_subject": "Nouvelle inscription d'utilisateur : {{name}}",
+      "user_signup_body": "<p>Bonjour Admin,</p><p>Un nouvel utilisateur vient de s'inscrire sur la plateforme.</p><ul><li><strong>Nom :</strong> {{name}}</li></ul><p>Veuillez consulter leur profil si nécessaire.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "coach_approved_subject": "Demande d'entraîneur approuvée",
+      "coach_approved_body": "<p>Bonjour {{name}},</p><p>Félicitations ! Votre demande pour devenir entraîneur sur GymPro a été approuvée.</p><p>Vous pouvez maintenant accéder au tableau de bord de l'entraîneur et commencer à gérer vos clients et programmes.</p><p>Bienvenue dans l'équipe !</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "coach_rejected_subject": "Mise à jour de votre demande d'entraîneur",
+      "coach_rejected_body": "<p>Bonjour {{name}},</p><p>Nous vous remercions de votre intérêt à devenir entraîneur sur GymPro.</p><p>Après un examen attentif, nous avons le regret de vous informer que nous ne sommes pas en mesure d'approuver votre demande pour le moment.</p><p>Si vous avez des questions, veuillez contacter notre équipe de support.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "user_subscribed_subject": "Nouvel abonnement : {{name}}",
+      "user_subscribed_body": "<p>Bonjour Admin,</p><p>Un utilisateur s'est abonné à un nouveau forfait.</p><ul><li><strong>Utilisateur :</strong> {{name}}</li><li><strong>Forfait :</strong> {{planName}}</li></ul><p>Cordialement,<br>L'équipe GymPro</p>",
+      "gym_created_subject": "Nouvelle salle de sport créée : {{gymName}}",
+      "gym_created_body": "<p>Bonjour Admin,</p><p>Une nouvelle salle de sport a été créée sur la plateforme.</p><ul><li><strong>Nom de la salle :</strong> {{gymName}}</li><li><strong>Propriétaire :</strong> {{name}}</li></ul><p>Veuillez examiner les détails.</p><p>Cordialement,<br>L'équipe GymPro</p>",
+      "coach_request_subject": "Nouvelle demande d'accès entraîneur : {{name}}",
+      "coach_request_body": "<p>Bonjour Admin,</p><p>Une nouvelle demande d'accès entraîneur a été soumise par <strong>{{name}}</strong>.</p><p>Veuillez examiner les détails de leur certification et les documents dans le tableau de bord d'administration.</p><p>Cordialement,<br>L'équipe GymPro</p>"
     }
   },
   "notification": {
@@ -34,7 +100,9 @@
     },
     "onboarding": {
       "completed_title": "Bienvenue sur GymPro",
-      "completed_body": "Votre compte est prêt avec un essai gratuit de {{trialDays}} jours. Explorez votre tableau de bord !"
+      "completed_body": "Votre compte est prêt avec un essai gratuit de {{trialDays}} jours. Explorez votre tableau de bord !",
+      "member_completed_title": "Bienvenue sur GymPro",
+      "member_completed_body": "La configuration de votre compte est terminée. Connectez-vous pour suivre vos entraînements et consulter vos abonnements à la salle de sport !"
     },
     "subscription": {
       "created_title": "Abonnement activé",
@@ -58,13 +126,135 @@
       "downgrade_effective_soon_title": "Changement imminent",
       "downgrade_effective_soon_body": "Rappel : votre plan passera à {{planName}} le {{date}}.",
       "renewed_title": "Abonnement renouvelé",
-      "renewed_body": "Bonne nouvelle ! Votre abonnement {{planName}} a été renouvelé avec succès."
+      "renewed_body": "Bonne nouvelle ! Votre abonnement {{planName}} a été renouvelé avec succès.",
+      "membership_expiring_soon_title": "Abonnement expirant bientôt",
+      "membership_expiring_soon_body": "Votre abonnement à {{gymName}} expire dans 3 jours ({{date}}).",
+      "membership_expiring_tomorrow_title": "Abonnement expirant demain",
+      "membership_expiring_tomorrow_body": "Votre abonnement à {{gymName}} expire demain ({{date}}).",
+      "membership_expiring_today_title": "Abonnement expirant aujourd'hui",
+      "membership_expiring_today_body": "Votre abonnement à {{gymName}} expire aujourd'hui !",
+      "membership_expired_title": "Abonnement expiré",
+      "membership_expired_body": "Votre abonnement à {{gymName}} a expiré.",
+      "membership_expired_3d_title": "Vous nous manquez !",
+      "membership_expired_3d_body": "Votre abonnement à {{gymName}} a expiré il y a 3 jours. Vous nous manquez !",
+      "membership_expired_7d_title": "Une semaine depuis l'expiration",
+      "membership_expired_7d_body": "Cela fait une semaine que votre abonnement à {{gymName}} a expiré. Renouvelez-le maintenant pour poursuivre vos progrès !",
+      "membership_expired_30d_title": "N'abandonnez pas !",
+      "membership_expired_30d_body": "Votre abonnement à {{gymName}} a expiré il y a 30 jours. Découvrez nos derniers programmes !",
+      "membership_expired_60d_title": "Revenez !",
+      "membership_expired_60d_body": "Cela fait 60 jours que vous n'avez pas entraîné à {{gymName}}. Revenez et atteignez vos objectifs !",
+      "membership_expired_90d_title": "Ça fait longtemps !",
+      "membership_expired_90d_body": "Votre abonnement à {{gymName}} a expiré il y a 90 jours. Nous serions ravis de vous revoir !",
+      "manager_member_expiring_today_title": "Abonnement membre expire aujourd'hui",
+      "manager_member_expiring_today_body": "L'abonnement de {{memberName}} à {{gymName}} expire aujourd'hui.",
+      "manager_member_expiring_title": "Abonnement membre expirant bientôt",
+      "manager_member_expiring_body": "L'abonnement de {{memberName}} à {{gymName}} expire dans 3 jours.",
+      "manager_member_expired_title": "Abonnement membre expiré",
+      "manager_member_expired_body": "L'abonnement de {{memberName}} à {{gymName}} a expiré."
+    },
+    "gym_membership_added_title": "Nouvelle adhésion à la salle de sport",
+    "gym_membership_added_body": "Vous avez été ajouté à {{gymName}}. Bienvenue !",
+    "affiliation": {
+      "accepted_title": "Affiliation acceptée",
+      "accepted_body": "Votre demande d'adhésion à {{gymName}} a été acceptée ! {{message}}",
+      "declined_title": "Affiliation refusée",
+      "declined_body": "Votre demande d'adhésion à {{gymName}} n'a pas été acceptée. {{message}}"
+    },
+    "gym_announcement_title": "{{title}}",
+    "gym_announcement_body": "{{message}}",
+    "program_assigned_title": "Nouveau programme attribué",
+    "program_assigned_body": "{{coachName}} vous a attribué un nouveau programme",
+    "gym": {
+      "coach_request_title": "Nouvelle demande d'entraîneur",
+      "coach_request_body": "{{coachName}} a demandé à rejoindre votre salle de sport.",
+      "closure_added_title": "Fermeture de la salle : {{gymName}}",
+      "closure_added_body": "{{gymName}} sera fermé du {{start}} au {{end}} en raison de {{reason}}.",
+      "closure_deleted_title": "Salle rouverte : {{gymName}}",
+      "closure_deleted_body": "La fermeture de {{gymName}} a été annulée. Nous sommes ouverts !",
+      "schedule_updated_title": "Mise à jour de l'horaire : {{gymName}}",
+      "schedule_updated_body": "L'horaire de {{gymName}} a été mis à jour : {{changes}}"
+    },
+    "admin": {
+      "coach_approved_title": "Demande d'entraîneur approuvée",
+      "coach_approved_body": "Votre demande pour devenir entraîneur a été approuvée ! Vous pouvez maintenant accéder au tableau de bord de l'entraîneur.",
+      "coach_rejected_title": "Demande d'entraîneur rejetée",
+      "coach_rejected_body": "Votre demande pour devenir coach a été rejetée.",
+      "user_signup_title": "Nouvelle inscription d'utilisateur",
+      "user_signup_body": "{{name}} vient de rejoindre la plateforme.",
+      "user_subscribed_title": "Nouvel abonnement",
+      "user_subscribed_body": "{{name}} s'est abonné à {{planName}}.",
+      "gym_created_title": "Nouvelle salle de sport créée",
+      "gym_created_body": "{{name}} a créé une nouvelle salle de sport : {{gymName}}.",
+      "coach_request_title": "Nouvelle demande d'accès coach",
+      "coach_request_body": "{{name}} a demandé l'accès coach. Cliquez pour examiner."
+    },
+    "competition_created_title": "Nouvelle compétition",
+    "competition_created_body": "Une nouvelle compétition '{{title}}' a commencé. Rejoignez-la maintenant !",
+    "competition_participant_joined_title": "Nouveau participant",
+    "competition_participant_joined_body": "{{participantName}} a rejoint '{{competitionTitle}}'",
+    "competition_winners_set_title": "Résultats de la compétition",
+    "competition_winners_set_body": "Les gagnants ont été annoncés pour '{{title}}'. Découvrez les résultats !",
+    "competition_winner_congrats_title": "Félicitations ! 🏆",
+    "competition_winner_congrats_body": "Vous avez remporté la #{{place}} place dans '{{title}}' ! Excellent travail !",
+    "class": {
+      "assigned_title": "Nouvelle affectation de cours",
+      "assigned_body": "Vous avez été affecté au cours {{className}} le {{date}} à {{time}}",
+      "updated_title": "Cours mis à jour",
+      "updated_body": "Le cours {{className}} le {{date}} à {{time}} a été mis à jour"
+    },
+    "coach": {
+      "request_title": "Nouvelle demande de coaching",
+      "request_body": "{{memberName}} a demandé vos services de coaching.",
+      "invitation_title": "Invitation à la salle de sport",
+      "invitation_body": "{{gymName}} vous a invité à rejoindre son équipe.",
+      "respond_accept_title": "Demande acceptée",
+      "respond_accept_body": "{{coachName}} a accepté votre demande d'encadrement !",
+      "respond_decline_title": "Demande refusée",
+      "respond_decline_body": "{{coachName}} a refusé votre demande d'encadrement.",
+      "offer_title": "Nouvelle offre d'encadrement",
+      "offer_respond_accept_title": "Offre acceptée",
+      "offer_respond_accept_body": "{{memberName}} a accepté votre offre d'encadrement !",
+      "offer_respond_decline_title": "Offre refusée",
+      "offer_respond_decline_body": "{{memberName}} a refusé votre offre d'encadrement."
     }
   },
   "billing": {
     "limits": {
       "gym_creation_limit_reached": "Vous avez atteint votre limite de création de salles ({{limit}}). Veuillez mettre à jour votre abonnement pour créer plus de salles.",
       "member_limit_reached": "Cette salle a atteint sa limite de membres ({{limit}}). Veuillez mettre à jour l'abonnement pour ajouter plus de membres."
+    }
+  },
+  "app": {
+    "name": "GymPro",
+    "desc": "La plateforme ultime de gestion de salle de sport"
+  },
+  "general": {
+    "subscribe": "S'abonner",
+    "no_data": "Aucune donnée",
+    "no_data_desc": "Il n'y a rien à afficher ici pour le moment",
+    "page_not_found": "Page introuvable",
+    "page_not_found_desc": "Oups ! Il semblerait que vous ayez pris le mauvais chemin !",
+    "loading": "Chargement...",
+    "please_wait": "Veuillez patienter pendant le chargement de la page..."
+  },
+  "common": {
+    "all": "Tout",
+    "error": "Une erreur est survenue, veuillez réessayer plus tard",
+    "loading": "Chargement...",
+    "please_wait": "Veuillez patienter...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "actions": "Actions",
+    "status": "Statut"
+  },
+  "gym": {
+    "schedule": {
+      "working_days": "Jours ouvrables",
+      "standard_hours": "Heures d'ouverture",
+      "advanced_hours": "Horaire avancé (Créneaux personnalisés)",
+      "female_only_hours": "Heures réservées aux femmes"
     }
   }
 }

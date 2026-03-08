@@ -192,9 +192,9 @@ export default function LocationTab({
 
   return (
     <SettingsTab
-      title={t("settings.gym.tabs.location", "Location Settings")}
+      title={t("extra.gymSettings.tabs.location", "Location Settings")}
       description={t(
-        "settings.gym.location.description",
+        "extra.gymSettings.location.description",
         "Manage your gym's physical address and contact information.",
       )}
       icon={MapPin}
@@ -202,7 +202,7 @@ export default function LocationTab({
       {/* Map Toggle Section */}
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-4 uppercase tracking-wider opacity-70">
-          {t("settings.gym.location.interactiveMap", "Interactive Map")}
+          {t("extra.gymSettings.location.interactiveMap", "Interactive Map")}
         </h4>
         <div
           onClick={() => setUseMap(!useMap)}
@@ -216,11 +216,11 @@ export default function LocationTab({
             </div>
             <div>
               <p className="text-sm font-semibold text-text-primary">
-                {t("gym.settings.location.useMap", "Use Interactive Map")}
+                {t("extra.gymSettings.location.useMap", "Use Interactive Map")}
               </p>
               <p className="text-xs text-text-secondary">
                 {t(
-                  "gym.settings.location.mapHint",
+                  "extra.gymSettings.location.mapHint",
                   "Click on the map to set location",
                 )}
               </p>
@@ -253,7 +253,7 @@ export default function LocationTab({
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
                 <div className="bg-surface px-4 py-2 rounded-lg text-text-primary text-sm">
                   {t(
-                    "gym.settings.location.loadingAddress",
+                    "extra.gymSettings.location.loadingAddress",
                     "Loading address...",
                   )}
                 </div>
@@ -269,7 +269,7 @@ export default function LocationTab({
           >
             <Navigation className="w-4 h-4 mr-2" />
             {t(
-              "gym.settings.location.useCurrentLocation",
+              "extra.gymSettings.location.useCurrentLocation",
               "Use My Current Location",
             )}
           </Button>
@@ -278,7 +278,7 @@ export default function LocationTab({
             <div className="p-4 bg-surface-hover rounded-lg border border-border space-y-1">
               <p className="text-xs text-text-secondary mb-2">
                 {t(
-                  "gym.settings.location.autoPopulated",
+                  "extra.gymSettings.location.autoPopulated",
                   "Auto-populated from map:",
                 )}
               </p>
@@ -299,44 +299,47 @@ export default function LocationTab({
       {!useMap && (
         <Card className="p-6 space-y-5">
           <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-            {t("gym.settings.location.addressSection", "Manual Address")}
+            {t("extra.gymSettings.location.addressSection", "Manual Address")}
           </h4>
 
           <div className="space-y-4">
             <InputField
-              label={t("gym.settings.location.address", "Street Address")}
+              label={t("extra.gymSettings.location.address", "Street Address")}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder={t(
-                "gym.settings.location.addressPlaceholder",
+                "extra.gymSettings.location.addressPlaceholder",
                 "123 Fitness Street",
               )}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
-                label={t("gym.settings.location.city", "City")}
+                label={t("extra.gymSettings.location.city", "City")}
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder={t(
-                  "gym.settings.location.cityPlaceholder",
+                  "extra.gymSettings.location.cityPlaceholder",
                   "New York",
                 )}
               />
               <InputField
-                label={t("gym.settings.location.state", "State/Province")}
+                label={t("extra.gymSettings.location.state", "State/Province")}
                 value={state}
                 onChange={(e) => setState(e.target.value)}
-                placeholder={t("gym.settings.location.statePlaceholder", "NY")}
+                placeholder={t(
+                  "extra.gymSettings.location.statePlaceholder",
+                  "NY",
+                )}
               />
             </div>
 
             <InputField
-              label={t("gym.settings.location.country", "Country")}
+              label={t("extra.gymSettings.location.country", "Country")}
               value={country}
               onChange={(e) => setCountry(e.target.value)}
               placeholder={t(
-                "gym.settings.location.countryPlaceholder",
+                "extra.gymSettings.location.countryPlaceholder",
                 "United States",
               )}
             />
@@ -347,26 +350,29 @@ export default function LocationTab({
       {/* Contact Section (Always visible) */}
       <Card className="p-6 space-y-5">
         <h4 className="font-semibold text-text-primary">
-          {t("gym.settings.location.contactSection", "Contact Information")}
+          {t(
+            "extra.gymSettings.location.contactSection",
+            "Contact Information",
+          )}
         </h4>
 
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
-              label={t("gym.settings.location.phone", "Phone Number")}
+              label={t("extra.gymSettings.location.phone", "Phone Number")}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder={t(
-                "gym.settings.location.phonePlaceholder",
+                "extra.gymSettings.location.phonePlaceholder",
                 "+1 (555) 123-4567",
               )}
             />
             <InputField
-              label={t("gym.settings.location.email", "Email")}
+              label={t("extra.gymSettings.location.email", "Email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t(
-                "gym.settings.location.emailPlaceholder",
+                "extra.gymSettings.location.emailPlaceholder",
                 "contact@yourgym.com",
               )}
               type="email"
@@ -374,11 +380,11 @@ export default function LocationTab({
           </div>
 
           <InputField
-            label={t("gym.settings.location.website", "Website")}
+            label={t("extra.gymSettings.location.website", "Website")}
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
             placeholder={t(
-              "gym.settings.location.websitePlaceholder",
+              "extra.gymSettings.location.websitePlaceholder",
               "https://yourgym.com",
             )}
           />

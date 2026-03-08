@@ -10,7 +10,9 @@
     },
     "onboarding": {
       "completed_subject": "مرحبًا بك في GymPro – لنبدأ!",
-      "completed_body": "<p>مرحبًا {{name}},</p><p>أهلًا بك في GymPro! 🎉 يسعدنا انضمامك إلينا.</p><p>تم إعداد حسابك بنجاح، ويمكنك الآن استخدام جميع الميزات لإدارة ناديك بكل سهولة.</p><p><strong>الفترة التجريبية</strong></p><p>لديك <strong>فترة تجريبية مجانية لمدة {{trialDays}} يومًا</strong>.</p><p><strong>الخطوات التالية:</strong></p><ul><li>استكشاف لوحة التحكم</li><li>إضافة الأعضاء والموظفين</li><li>إعداد الجداول والحصص</li><li>تخصيص إعدادات النادي</li></ul><p><strong>إدارة الاشتراك</strong></p><p>يمكنك إدارة اشتراكك في أي وقت من لوحة التحكم.</p><p>شكرًا لاختيارك GymPro.</p><p>مع تحياتنا،<br>فريق GymPro</p>"
+      "completed_body": "<p>مرحبًا {{name}},</p><p>أهلًا بك في GymPro! 🎉 يسعدنا انضمامك إلينا.</p><p>تم إعداد حسابك بنجاح، ويمكنك الآن استخدام جميع الميزات لإدارة ناديك بكل سهولة.</p><p><strong>الفترة التجريبية</strong></p><p>لديك <strong>فترة تجريبية مجانية لمدة {{trialDays}} يومًا</strong>.</p><p><strong>الخطوات التالية:</strong></p><ul><li>استكشاف لوحة التحكم</li><li>إضافة الأعضاء والموظفين</li><li>إعداد الجداول والحصص</li><li>تخصيص إعدادات النادي</li></ul><p><strong>إدارة الاشتراك</strong></p><p>يمكنك إدارة اشتراكك في أي وقت من لوحة التحكم.</p><p>شكرًا لاختيارك GymPro.</p><p>مع تحياتنا،<br>فريق GymPro</p>",
+      "member_completed_subject": "مرحبًا بك في GymPro!",
+      "member_completed_body": "<p>مرحباً {{name}}،</p><p>مرحباً بك في GymPro! 🎉 لقد اكتمل إعداد حسابك.</p><p>يمكنك الآن تسجيل الدخول إلى لوحة التحكم الخاصة بك من أجل:</p><ul><li>تتبع تمارينك وتقدمك</li><li>عرض اشتراكاتك في الصالة الرياضية</li><li>التحقق من جداول الحصص وحجز الجلسات</li><li>البقاء على اطلاع بآخر إعلانات الصالة الرياضية</li></ul><p>إذا كان لديك أي أسئلة أو كنت بحاجة إلى مساعدة، فلا تتردد في الاتصال بالصالة الرياضية الخاصة بك.</p><p>نراك في الصالة الرياضية!</p><p>مع خالص التقدير،<br>فريق GymPro</p>"
     },
     "subscription": {
       "created_subject": "تم تفعيل اشتراك {{planName}} بنجاح",
@@ -22,7 +24,71 @@
       "downgrade_scheduled_subject": "تم جدولة تغيير الخطة – {{planName}}",
       "downgrade_scheduled_body": "<p>مرحبًا {{name}},</p><p>سيتم تغيير خطتك إلى <strong>{{planName}}</strong> بتاريخ <strong>{{date}}</strong>.</p><p>مع تحياتنا،<br>فريق GymPro</p>",
       "pending_change_cancelled_body": "<p>مرحبًا {{name}},</p><p>تم إلغاء تغيير الخطة المعلق بنجاح.</p><p>مع تحياتنا،<br>فريق GymPro</p>",
-      "pending_change_cancelled_subject": "تم إلغاء تغيير الخطة"
+      "pending_change_cancelled_subject": "تم إلغاء تغيير الخطة",
+      "upgrade_subject": "تمت ترقية اشتراكك في GymPro بنجاح 🎉",
+      "upgrade_body": "<p>مرحباً {{name}}،</p><p>أخبار رائعة! تمت ترقية اشتراكك بنجاح إلى <strong>{{planName}}</strong>.</p><p>لديك الآن إمكانية الوصول إلى جميع الميزات والفوائد الإضافية المتضمنة في خطتك الجديدة، مما يساعدك على إدارة صالتك الرياضية بكفاءة أكبر.</p><p><strong>ما الجديد؟</strong></p><ul><li>الوصول إلى جميع ميزات خطة {{planName}}</li><li>أدوات محسّنة لإدارة الأعضاء والاشتراكات</li><li>أداء معزز ودعم ذو أولوية</li></ul><p>تصبح الترقية سارية المفعول فورًا، وقد تم معالجة أي رسوم مطبقة بأمان.</p><p>إذا كان لديك أي أسئلة أو كنت ترغب في الحصول على مساعدة لتحقيق أقصى استفادة من خطتك الجديدة، فإن فريق الدعم لدينا موجود دائمًا لمساعدتك.</p><p>شكرًا لك على استمرارك في النمو مع GymPro!</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "expiring_soon_subject": "اشتراكك سينتهي قريبًا",
+      "expiring_soon_body": "<p>مرحباً {{name}}،</p><p>هذا تذكير ودي بأن اشتراكك في GymPro سينتهي في <strong>{{date}}</strong>.</p><p>ستستمر في الحصول على وصول كامل إلى جميع الميزات حتى ذلك الحين.</p><p><strong>ما يمكنك فعله:</strong></p><ul><li>تجديد أو ترقية اشتراكك لتجنب الانقطاع</li><li>مراجعة خطتك وتفاصيل الفواتير</li></ul><p>يمكنك إدارة اشتراكك في أي وقت من إعدادات حسابك.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "expiring_tomorrow_subject": "اشتراكك ينتهي غدًا",
+      "expiring_tomorrow_body": "<p>مرحباً {{name}}،</p><p>تذكير سريع بأن اشتراكك في GymPro سينتهي <strong>غدًا ({{date}})</strong>.</p><p>لتجنب فقدان الوصول إلى ميزاتك وبياناتك، يمكنك تجديد اشتراكك في أي وقت من لوحة التحكم الخاصة بك.</p><p>إذا كان لديك أي أسئلة أو كنت بحاجة إلى مساعدة، فإن فريق الدعم لدينا موجود لمساعدتك.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "expired_subject": "لقد انتهى اشتراكك",
+      "expired_body": "<p>مرحباً {{name}}،</p><p>لقد انتهى اشتراكك في GymPro، وأصبح الوصول إلى الميزات المميزة محدودًا الآن.</p><p><strong>أخبار جيدة:</strong> بياناتك لا تزال آمنة، ويمكنك إعادة تنشيط اشتراكك في أي وقت لاستعادة الوصول الكامل.</p><p>ما عليك سوى زيارة إعدادات حسابك لاختيار خطة ومتابعة من حيث توقفت.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "membership_expiring_soon_subject": "عضويتك ستنتهي قريبًا - {{gymName}}",
+      "membership_expiring_soon_body": "مرحباً {{name}}،\n\nعضويتك في {{gymName}} ستنتهي خلال 3 أيام ({{date}}). لا تنسَ التجديد!\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "membership_expiring_tomorrow_subject": "عضويتك ستنتهي غدًا - {{gymName}}",
+      "membership_expiring_tomorrow_body": "مرحباً {{name}}،\n\nعضويتك في {{gymName}} ستنتهي غدًا ({{date}}). جدد الآن لتجنب أي انقطاع.\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "membership_expiring_today_subject": "عضويتك ستنتهي اليوم - {{gymName}}",
+      "membership_expiring_today_body": "مرحباً {{name}}،\n\nعضويتك في {{gymName}} ستنتهي اليوم! تأكد من التجديد اليوم لتبقى نشطًا.\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "membership_expired_subject": "انتهت صلاحية عضويتك - {{gymName}}",
+      "membership_expired_body": "مرحباً {{name}}،\n\nلقد انتهت صلاحية عضويتك في {{gymName}}. نود رؤيتك مرة أخرى قريبًا!\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "membership_expired_3d_subject": "نفتقدك! - {{gymName}}",
+      "membership_expired_3d_body": "مرحباً {{name}}،\n\nلقد مرت 3 أيام منذ انتهاء صلاحية عضويتك في {{gymName}}. نأمل أن نراك مرة أخرى في الصالة الرياضية قريبًا!\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "membership_expired_7d_subject": "عد وتدرب! - {{gymName}}",
+      "membership_expired_7d_body": "مرحباً {{name}}،\n\nلقد مر أسبوع منذ انتهاء صلاحية عضويتك في {{gymName}}. لا تدع تقدمك يتوقف هنا!\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "membership_expired_30d_subject": "حقق أهدافك! - {{gymName}}",
+      "membership_expired_30d_body": "مرحباً {{name}}،\n\nلقد مر شهر منذ انتهاء صلاحية عضويتك في {{gymName}}. جدد اليوم وعد إلى المسار الصحيح!\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "membership_expired_60d_subject": "نود عودتك - {{gymName}}",
+      "membership_expired_60d_body": "مرحباً {{name}}،\n\nلقد مرت 60 يومًا منذ آخر مرة تدربت فيها في {{gymName}}. عد وحقق أهدافك!\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "membership_expired_90d_subject": "لم نرك منذ فترة طويلة - {{gymName}}",
+      "membership_expired_90d_body": "مرحباً {{name}}،\n\nلقد انتهت صلاحية عضويتك في {{gymName}} قبل 90 يومًا. نود عودتك!\n\nمع خالص التقدير،\nفريق {{gymName}}",
+      "downgrade_effective_soon_subject": "تغيير الخطة القادم",
+      "downgrade_effective_soon_body": "<p>مرحباً {{name}}،</p><p>هذا تذكير بأن خطة اشتراكك ستتغير إلى <strong>{{planName}}</strong> في <strong>{{date}}</strong>.</p><p>ستظل خطتك الحالية نشطة بالكامل حتى ذلك التاريخ، مع وصول غير منقطع إلى جميع الميزات.</p><p>إذا كنت ترغب في إجراء تغييرات أو إلغاء هذا التحديث، يمكنك القيام بذلك من إعدادات حسابك قبل {{date}}.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "renewed_subject": "تم تجديد اشتراكك - {{planName}}",
+      "renewed_body": "<p>مرحباً {{name}}،</p><p>أخبار رائعة! تم تجديد اشتراكك في <strong>{{planName}}</strong> بنجاح.</p><p>لديك الآن وصول غير منقطع إلى جميع الميزات المتضمنة في خطتك. لا يلزم اتخاذ أي إجراء من جانبك.</p><p><strong>ماذا بعد؟</strong></p><ul><li>استمر في إدارة صالة الألعاب الرياضية الخاصة بك مع الوصول الكامل إلى جميع الأدوات</li><li>تحقق من لوحة التحكم الخاصة بك للحصول على تفاصيل الفواتير والخطة المحدثة</li><li>ادعُ أو أدر أعضاء الفريق حسب الحاجة</li></ul><p>إذا كان لديك أي أسئلة أو كنت بحاجة إلى مساعدة، فإن فريق الدعم لدينا موجود دائمًا للمساعدة.</p><p>شكرًا لك على استمرارك في استخدام GymPro!</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "gym_membership_added_subject": "مرحباً بك في {{gymName}}",
+      "gym_membership_added_body": "<p>مرحباً {{name}}،</p><p>يسعدنا إبلاغك بأنه تم إضافتك كعضو في <strong>{{gymName}}</strong>!</p><p>يمكنك الآن تسجيل الدخول إلى لوحة التحكم الخاصة بك لعرض تفاصيل عضويتك، وتتبع تقدمك، والبقاء على اطلاع دائم بإعلانات الصالة الرياضية.</p><p>مع خالص التقدير،<br>فريق {{gymName}}</p>"
+    },
+    "gym_announcement_subject": "إعلان: {{title}}",
+    "gym_announcement_body": "<div style=\"font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;\"><div style=\"text-align: center; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; margin-bottom: 24px;\"><h1 style=\"color: #111827; font-size: 24px; margin: 0; letter-spacing: -0.025em;\">{{gymName}}</h1><p style=\"color: #6b7280; margin: 4px 0 0 0; font-size: 14px;\">إعلان</p></div><div style=\"margin-bottom: 32px;\"><p style=\"color: #374151; font-size: 16px; margin-bottom: 24px;\">مرحباً {{name}}،</p><h2 style=\"color: #2563eb; font-size: 20px; margin: 0 0 16px 0; font-weight: 600;\">{{title}}</h2><div style=\"color: #4b5563; font-size: 16px; line-height: 1.6; background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #f3f4f6;\">{{message}}</div></div><div style=\"border-top: 1px solid #f3f4f6; padding-top: 24px; text-align: center;\"><p style=\"color: #9ca3af; font-size: 12px; margin: 0 0 8px 0;\">تتلقى هذا الإشعار لأنك عضو في {{gymName}}.</p><p style=\"color: #6b7280; font-size: 14px; font-weight: 500; margin: 0;\">فريق {{gymName}}</p></div></div>",
+    "gym": {
+      "closure_added_subject": "{{gymName}}: تحديث إغلاق الصالة الرياضية",
+      "closure_added_body": "<p>مرحباً {{name}}،</p><p>يرجى العلم أن <strong>{{gymName}}</strong> ستكون مغلقة مؤقتًا بسبب: <strong>{{reason}}</strong>.</p><p><strong>فترة الإغلاق:</strong><br>من: {{start}}<br>حتى: {{end}}</p><p>نعتذر عن أي إزعاج.</p><p>مع خالص التقدير،<br>فريق {{gymName}}</p>",
+      "closure_deleted_subject": "{{gymName}}: تحديث إعادة فتح الصالة الرياضية",
+      "closure_deleted_body": "<p>مرحباً {{name}}،</p><p>أخبار رائعة! تم إلغاء الإغلاق المقرر مسبقًا لـ <strong>{{gymName}}</strong> أو أعيد فتح الصالة الرياضية مبكرًا.</p><p>تتبع الصالة الرياضية الآن ساعات عملها العادية.</p><p>نراكم في الصالة الرياضية!</p><p>مع خالص التقدير،<br>فريق {{gymName}}</p>",
+      "schedule_updated_subject": "تحديث الجدول الزمني: {{gymName}}",
+      "schedule_updated_body": "<p>مرحباً {{name}}،</p><p>يرجى العلم أنه تم تحديث الجدول الزمني لـ <strong>{{gymName}}</strong>.</p><p><strong>التغييرات:</strong><br>{{changes}}</p><p>تحقق من التطبيق للاطلاع على الجدول الزمني الكامل المحدث.</p><p>مع خالص التقدير،<br>فريق {{gymName}}</p>"
+    },
+    "coach": {
+      "request_subject": "طلب تدريب جديد",
+      "request_body": "<p>مرحباً {{name}}،</p><p>لقد تلقيت طلب تدريب جديد من <strong>{{memberName}}</strong>.</p><p><strong>الرسالة:</strong></p><p><i>{{message}}</i></p><p>يمكنك مراجعة هذا الطلب والرد عليه من لوحة تحكم المدرب الخاصة بك.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "respond_accept_subject": "تم قبول طلب التدريب!",
+      "respond_accept_body": "<p>مرحباً {{name}}،</p><p>أخبار رائعة! لقد قبل <strong>{{coachName}}</strong> طلب التدريب الخاص بك.</p><p>يمكنك الآن البدء في العمل معًا. تحقق من لوحة التحكم الخاصة بك لمزيد من التفاصيل.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "respond_decline_subject": "تحديث بشأن طلب التدريب الخاص بك",
+      "respond_decline_body": "<p>مرحباً {{name}}،</p><p>نكتب إليك لإبلاغك بأن <strong>{{coachName}}</strong> قد رفض طلب التدريب الخاص بك في هذا الوقت.</p><p>لا تقلق، هناك العديد من المدربين الرائعين الآخرين المتاحين على GymPro. لا تتردد في استكشاف والعثور على مدرب آخر!</p><p>مع خالص التقدير،<br>فريق GymPro</p>"
+    },
+    "admin": {
+      "user_signup_subject": "تسجيل مستخدم جديد: {{name}}",
+      "user_signup_body": "<p>مرحباً أيها المسؤول،</p><p>لقد قام مستخدم جديد بالتسجيل في المنصة للتو.</p><ul><li><strong>الاسم:</strong> {{name}}</li></ul><p>يرجى مراجعة ملفهم الشخصي إذا لزم الأمر.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "coach_approved_subject": "تمت الموافقة على طلب المدرب",
+      "coach_approved_body": "<p>مرحباً {{name}}،</p><p>تهانينا! تمت الموافقة على طلبك لتصبح مدربًا في GymPro.</p><p>يمكنك الآن الوصول إلى لوحة تحكم المدرب والبدء في إدارة عملائك وبرامجك.</p><p>مرحباً بك في الفريق!</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "coach_rejected_subject": "تحديث بشأن طلب المدرب الخاص بك",
+      "coach_rejected_body": "<p>مرحباً {{name}}،</p><p>شكرًا لاهتمامك بأن تصبح مدربًا في GymPro.</p><p>بعد مراجعة دقيقة، نأسف لإبلاغك بأننا غير قادرين على الموافقة على طلبك في هذا الوقت.</p><p>إذا كان لديك أي أسئلة، يرجى الاتصال بفريق الدعم لدينا.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "user_subscribed_subject": "اشتراك جديد: {{name}}",
+      "user_subscribed_body": "<p>مرحباً أيها المسؤول،</p><p>لقد اشترك مستخدم في خطة جديدة.</p><ul><li><strong>المستخدم:</strong> {{name}}</li><li><strong>الخطة:</strong> {{planName}}</li></ul><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "gym_created_subject": "تم إنشاء صالة رياضية جديدة: {{gymName}}",
+      "gym_created_body": "<p>مرحباً أيها المسؤول،</p><p>تم إنشاء صالة رياضية جديدة على المنصة.</p><ul><li><strong>اسم الصالة الرياضية:</strong> {{gymName}}</li><li><strong>المالك:</strong> {{name}}</li></ul><p>يرجى مراجعة التفاصيل.</p><p>مع خالص التقدير،<br>فريق GymPro</p>",
+      "coach_request_subject": "طلب وصول مدرب جديد: {{name}}",
+      "coach_request_body": "<p>مرحباً أيها المسؤول،</p><p>تم تقديم طلب وصول مدرب جديد من قبل <strong>{{name}}</strong>.</p><p>يرجى مراجعة تفاصيل شهاداتهم ومستنداتهم في لوحة تحكم المسؤول.</p><p>مع خالص التقدير،<br>فريق GymPro</p>"
     }
   },
   "notification": {
@@ -34,7 +100,9 @@
     },
     "onboarding": {
       "completed_title": "مرحباً بك في GymPro",
-      "completed_body": "حسابك جاهز مع فترة تجريبية مجانية لمدة {{trialDays}} يومًا. استكشف لوحة التحكم للبدء!"
+      "completed_body": "حسابك جاهز مع فترة تجريبية مجانية لمدة {{trialDays}} يومًا. استكشف لوحة التحكم للبدء!",
+      "member_completed_title": "مرحبًا بك في جيم برو",
+      "member_completed_body": "اكتمل إعداد حسابك. سجل الدخول لتتبع تمارينك وعرض عضوياتك في الصالة الرياضية!"
     },
     "subscription": {
       "created_title": "تم تفعيل الاشتراك",
@@ -58,7 +126,135 @@
       "downgrade_effective_soon_title": "تغيير الخطة قريباً",
       "downgrade_effective_soon_body": "تذكير: ستتغير خطتك إلى {{planName}} في تاريخ {{date}}.",
       "renewed_title": "تم تجديد الاشتراك",
-      "renewed_body": "أخبار سارة! تم تجديد اشتراكك {{planName}} بنجاح."
+      "renewed_body": "أخبار سارة! تم تجديد اشتراكك {{planName}} بنجاح.",
+      "membership_expiring_soon_title": "العضوية ستنتهي قريبًا",
+      "membership_expiring_soon_body": "عضويتك في {{gymName}} ستنتهي خلال 3 أيام ({{date}}).",
+      "membership_expiring_tomorrow_title": "العضوية ستنتهي غدًا",
+      "membership_expiring_tomorrow_body": "عضويتك في {{gymName}} ستنتهي غدًا ({{date}}).",
+      "membership_expiring_today_title": "العضوية ستنتهي اليوم",
+      "membership_expiring_today_body": "عضويتك في {{gymName}} ستنتهي اليوم!",
+      "membership_expired_title": "انتهت صلاحية العضوية",
+      "membership_expired_body": "انتهت صلاحية عضويتك في {{gymName}}.",
+      "membership_expired_3d_title": "اشتقنا إليك!",
+      "membership_expired_3d_body": "انتهت صلاحية عضويتك في {{gymName}} قبل 3 أيام. اشتقنا إليك!",
+      "membership_expired_7d_title": "مر أسبوع على انتهاء الصلاحية",
+      "membership_expired_7d_body": "مر أسبوع على انتهاء صلاحية عضويتك في {{gymName}}. جدد الآن لمواصلة تقدمك!",
+      "membership_expired_30d_title": "لا تستسلم!",
+      "membership_expired_30d_body": "انتهت صلاحية عضويتك في {{gymName}} قبل 30 يومًا. اطلع على أحدث برامجنا!",
+      "membership_expired_60d_title": "عد إلينا!",
+      "membership_expired_60d_body": "مر 60 يومًا منذ آخر مرة تدربت فيها في {{gymName}}. عد وحقق أهدافك!",
+      "membership_expired_90d_title": "لم نرك منذ فترة طويلة",
+      "membership_expired_90d_body": "انتهت صلاحية عضويتك في {{gymName}} قبل 90 يومًا. نود أن نرحب بك مرة أخرى!",
+      "manager_member_expiring_today_title": "عضوية المشترك تنتهي اليوم",
+      "manager_member_expiring_today_body": "اشتراك {{memberName}} في {{gymName}} ينتهي اليوم.",
+      "manager_member_expiring_title": "عضوية المشترك ستنتهي قريبًا",
+      "manager_member_expiring_body": "اشتراك {{memberName}} في {{gymName}} ينتهي خلال 3 أيام.",
+      "manager_member_expired_title": "انتهت صلاحية عضوية المشترك",
+      "manager_member_expired_body": "انتهت صلاحية اشتراك {{memberName}} في {{gymName}}."
+    },
+    "gym_membership_added_title": "عضوية صالة رياضية جديدة",
+    "gym_membership_added_body": "تمت إضافتك إلى {{gymName}}. مرحباً بك!",
+    "affiliation": {
+      "accepted_title": "تم قبول الانضمام",
+      "accepted_body": "تم قبول طلبك للانضمام إلى {{gymName}}! {{message}}",
+      "declined_title": "تم رفض الانضمام",
+      "declined_body": "لم يتم قبول طلبك للانضمام إلى {{gymName}}. {{message}}"
+    },
+    "gym_announcement_title": "{{title}}",
+    "gym_announcement_body": "{{message}}",
+    "program_assigned_title": "تم تعيين برنامج جديد",
+    "program_assigned_body": "قام {{coachName}} بتعيين برنامج جديد لك",
+    "gym": {
+      "coach_request_title": "طلب مدرب جديد",
+      "coach_request_body": "طلب {{coachName}} الانضمام إلى صالتك الرياضية.",
+      "closure_added_title": "إغلاق الصالة الرياضية: {{gymName}}",
+      "closure_added_body": "سيتم إغلاق {{gymName}} من {{start}} إلى {{end}} بسبب {{reason}}.",
+      "closure_deleted_title": "أعيد فتح الصالة الرياضية: {{gymName}}",
+      "closure_deleted_body": "تم إلغاء إغلاق {{gymName}}. نحن مفتوحون!",
+      "schedule_updated_title": "تحديث الجدول الزمني: {{gymName}}",
+      "schedule_updated_body": "تم تحديث الجدول الزمني لـ {{gymName}}: {{changes}}"
+    },
+    "admin": {
+      "coach_approved_title": "تمت الموافقة على طلب المدرب",
+      "coach_approved_body": "تمت الموافقة على طلبك لتصبح مدربًا! يمكنك الآن الوصول إلى لوحة تحكم المدرب.",
+      "coach_rejected_title": "تم رفض طلب المدرب",
+      "coach_rejected_body": "تم رفض طلبك لتصبح مدربًا.",
+      "user_signup_title": "تسجيل مستخدم جديد",
+      "user_signup_body": "انضم {{name}} للتو إلى المنصة.",
+      "user_subscribed_title": "اشتراك جديد",
+      "user_subscribed_body": "اشترك {{name}} في {{planName}}.",
+      "gym_created_title": "تم إنشاء صالة ألعاب رياضية جديدة",
+      "gym_created_body": "قام {{name}} بإنشاء صالة ألعاب رياضية جديدة: {{gymName}}.",
+      "coach_request_title": "طلب وصول مدرب جديد",
+      "coach_request_body": "طلب {{name}} وصول المدرب. انقر للمراجعة."
+    },
+    "competition_created_title": "مسابقة جديدة",
+    "competition_created_body": "بدأت مسابقة جديدة '{{title}}'. انضم الآن!",
+    "competition_participant_joined_title": "مشارك جديد",
+    "competition_participant_joined_body": "انضم {{participantName}} إلى '{{competitionTitle}}'",
+    "competition_winners_set_title": "نتائج المسابقة",
+    "competition_winners_set_body": "تم الإعلان عن الفائزين في '{{title}}'. اطلع على النتائج!",
+    "competition_winner_congrats_title": "تهانينا! 🏆",
+    "competition_winner_congrats_body": "لقد فزت بالمركز رقم {{place}} في '{{title}}'! عمل رائع!",
+    "class": {
+      "assigned_title": "تعيين حصة تدريبية جديدة",
+      "assigned_body": "تم تعيينك في حصة {{className}} بتاريخ {{date}} في الساعة {{time}}",
+      "updated_title": "تم تحديث الحصة التدريبية",
+      "updated_body": "تم تحديث حصة {{className}} بتاريخ {{date}} في الساعة {{time}}"
+    },
+    "coach": {
+      "request_title": "طلب تدريب جديد",
+      "request_body": "طلب {{memberName}} خدماتك التدريبية.",
+      "invitation_title": "دعوة إلى الصالة الرياضية",
+      "invitation_body": "{{gymName}} دعاك للانضمام إلى فريقهم.",
+      "respond_accept_title": "تم قبول الطلب",
+      "respond_accept_body": "{{coachName}} قبل طلب التدريب الخاص بك!",
+      "respond_decline_title": "تم رفض الطلب",
+      "respond_decline_body": "{{coachName}} رفض طلب التدريب الخاص بك.",
+      "offer_title": "عرض تدريب جديد",
+      "offer_respond_accept_title": "تم قبول العرض",
+      "offer_respond_accept_body": "{{memberName}} قبل عرض التدريب الخاص بك!",
+      "offer_respond_decline_title": "تم رفض العرض",
+      "offer_respond_decline_body": "{{memberName}} رفض عرض التدريب الخاص بك."
+    }
+  },
+  "app": {
+    "name": "GymPro",
+    "desc": "منصة إدارة الصالة الرياضية المتكاملة"
+  },
+  "general": {
+    "subscribe": "اشترك",
+    "no_data": "لا توجد بيانات",
+    "no_data_desc": "لا يوجد شيء لعرضه هنا بعد",
+    "page_not_found": "الصفحة غير موجودة",
+    "page_not_found_desc": "عذرًا! يبدو أنك سلكت الطريق الخاطئ!",
+    "loading": "جارٍ التحميل...",
+    "please_wait": "الرجاء الانتظار بينما نقوم بتحميل الصفحة..."
+  },
+  "common": {
+    "all": "الكل",
+    "error": "حدث خطأ ما، يرجى المحاولة مرة أخرى لاحقًا",
+    "loading": "جارٍ التحميل...",
+    "please_wait": "الرجاء الانتظار...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "actions": "إجراءات",
+    "status": "الحالة"
+  },
+  "billing": {
+    "limits": {
+      "gym_creation_limit_reached": "لقد وصلت إلى الحد الأقصى لإنشاء الصالات الرياضية ({{limit}}). يرجى ترقية خطتك لإنشاء المزيد من الصالات الرياضية.",
+      "member_limit_reached": "لقد وصلت هذه الصالة الرياضية إلى الحد الأقصى لعدد الأعضاء ({{limit}}). يرجى ترقية الخطة لإضافة المزيد من الأعضاء."
+    }
+  },
+  "gym": {
+    "schedule": {
+      "working_days": "أيام العمل",
+      "standard_hours": "ساعات العمل",
+      "advanced_hours": "جدول متقدم (فترات مخصصة)",
+      "female_only_hours": "ساعات مخصصة للإناث فقط"
     }
   }
 }

@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useUserStore } from "../../../../../../store/user";
 
-export type TabType = "general" | "notifications" | "locale";
+export type TabType = "general" | "notifications";
 
 export function useManagerSettings() {
   const { t } = useTranslation();
@@ -33,7 +33,7 @@ export function useManagerSettings() {
     if (user?.appSettings) {
       setViewPreference(user.appSettings.viewPreference || "table");
       setReminderMinutes(
-        user.appSettings.notifications?.defaultReminderMinutes ?? 30
+        user.appSettings.notifications?.defaultReminderMinutes ?? 30,
       );
       setLanguage(user.appSettings.locale?.language || "en");
       setCurrency(user.appSettings.locale?.currency || "USD");
@@ -64,14 +64,14 @@ export function useManagerSettings() {
       if (res.success) {
         updateSettings(updates as any);
         toast.success(
-          t("settings.saveSuccess", "Settings updated successfully")
+          t("settings.saveSuccess", "Settings updated successfully"),
         );
 
         // Apply language change immediately
         setGlobalLanguage(language);
       } else {
         toast.error(
-          res.message || t("settings.saveError", "Failed to update settings")
+          res.message || t("settings.saveError", "Failed to update settings"),
         );
       }
     } catch (error) {

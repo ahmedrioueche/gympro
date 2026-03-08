@@ -68,9 +68,9 @@ export default function FacilitiesTab({
 
   return (
     <SettingsTab
-      title={t("settings.gym.tabs.facilities", "Facilities Settings")}
+      title={t("extra.gymSettings.tabs.facilities", "Facilities Settings")}
       description={t(
-        "settings.gym.facilities.description",
+        "extra.gymSettings.facilities.description",
         "Add and manage rooms, zones, or specific areas in your gym.",
       )}
       icon={Building2}
@@ -82,7 +82,7 @@ export default function FacilitiesTab({
             icon={<Plus className="w-4 h-4" />}
             size="sm"
           >
-            {t("settings.gym.facilities.add", "Add Facility")}
+            {t("extra.gymSettings.facilities.add", "Add Facility")}
           </Button>
         )
       }
@@ -93,16 +93,16 @@ export default function FacilitiesTab({
           <div className="flex items-center justify-between mb-2">
             <h4 className="font-semibold text-text-primary">
               {editingId
-                ? t("settings.gym.facilities.edit", "Edit Facility")
-                : t("settings.gym.facilities.new", "New Facility")}
+                ? t("extra.gymSettings.facilities.edit", "Edit Facility")
+                : t("extra.gymSettings.facilities.new", "New Facility")}
             </h4>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputField
-              label={t("settings.gym.facilities.name", "Facility Name")}
+              label={t("extra.gymSettings.facilities.name", "Facility Name")}
               placeholder={t(
-                "settings.gym.facilities.namePlaceholder",
+                "extra.gymSettings.facilities.namePlaceholder",
                 "e.g. Yoga Studio, Main Floor",
               )}
               value={formData.name}
@@ -114,7 +114,7 @@ export default function FacilitiesTab({
             <InputField
               type="number"
               label={t(
-                "settings.gym.facilities.capacity",
+                "extra.gymSettings.facilities.capacity",
                 "Max Capacity (Optional)",
               )}
               placeholder="e.g. 20"
@@ -131,11 +131,11 @@ export default function FacilitiesTab({
 
           <InputField
             label={t(
-              "settings.gym.facilities.description",
+              "extra.gymSettings.facilities.description",
               "Description (Optional)",
             )}
             placeholder={t(
-              "settings.gym.facilities.descriptionPlaceholder",
+              "extra.gymSettings.facilities.descriptionPlaceholder",
               "Briefly describe the purpose or equipment.",
             )}
             value={formData.description}
@@ -192,7 +192,7 @@ export default function FacilitiesTab({
                       <Users className="w-3.5 h-3.5" />
                       <span>
                         {t(
-                          "settings.gym.facilities.capacityLimit",
+                          "extra.gymSettings.facilities.capacityLimit",
                           "Up to {{count}} people",
                           { count: facility.capacity },
                         )}
@@ -229,13 +229,13 @@ export default function FacilitiesTab({
             </div>
             <h4 className="text-sm font-medium text-text-primary">
               {t(
-                "settings.gym.facilities.noFacilities",
+                "extra.gymSettings.facilities.noFacilities",
                 "No facilities added yet",
               )}
             </h4>
             <p className="text-xs text-text-secondary mt-1 max-w-[250px] mx-auto">
               {t(
-                "settings.gym.facilities.noFacilitiesDesc",
+                "extra.gymSettings.facilities.noFacilitiesDesc",
                 "Add rooms or areas to better manage your class schedules.",
               )}
             </p>
@@ -246,7 +246,10 @@ export default function FacilitiesTab({
               className="mt-4"
               icon={<Plus className="w-4 h-4" />}
             >
-              {t("settings.gym.facilities.addFirst", "Add your first facility")}
+              {t(
+                "extra.gymSettings.facilities.addFirst",
+                "Add your first facility",
+              )}
             </Button>
           </div>
         )}

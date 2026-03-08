@@ -88,9 +88,17 @@ export default function Dropdown({
     }
 
     // Desktop: original positioning logic
-    const left = align === "left" ? rect.left + window.scrollX : "auto";
+    const isRtl = document.documentElement.dir === "rtl";
+    const effectiveAlign = isRtl
+      ? align === "left"
+        ? "right"
+        : "left"
+      : align;
+
+    const left =
+      effectiveAlign === "left" ? rect.left + window.scrollX : "auto";
     const right =
-      align === "right"
+      effectiveAlign === "right"
         ? window.innerWidth - (rect.right + window.scrollX)
         : "auto";
 

@@ -1,15 +1,21 @@
 import type { FilterOption } from "../components/ui/SearchFilterBar";
 
 export const COACH_SPECIALIZATIONS: FilterOption[] = [
-  { value: "all", label: "All Specializations" },
-  { value: "Strength Training", label: "Strength Training" },
-  { value: "Weight Loss", label: "Weight Loss" },
-  { value: "Muscle Building", label: "Muscle Building" },
-  { value: "CrossFit", label: "CrossFit" },
-  { value: "Yoga", label: "Yoga" },
-  { value: "Pilates", label: "Pilates" },
-  { value: "Nutrition", label: "Nutrition" },
-  { value: "Sports Performance", label: "Sports Performance" },
-  { value: "Rehabilitation", label: "Rehabilitation" },
-  { value: "Senior Fitness", label: "Senior Fitness" },
+  { value: "all", label: "extra.specializations.all" },
+  {
+    value: "Strength Training",
+    label: "extra.specializations.strengthTraining",
+  },
+  { value: "Weight Loss", label: "extra.specializations.weightLoss" },
+  { value: "Muscle Building", label: "extra.specializations.muscleBuilding" },
+  { value: "CrossFit", label: "extra.specializations.crossFit" },
+  { value: "Yoga", label: "extra.specializations.yoga" },
+  { value: "Pilates", label: "extra.specializations.pilates" },
+  { value: "Nutrition", label: "extra.specializations.nutrition" },
+  {
+    value: "Sports Performance",
+    label: "extra.specializations.sportsPerformance",
+  },
+  { value: "Rehabilitation", label: "extra.specializations.rehabilitation" },
+  { value: "Senior Fitness", label: "extra.specializations.seniorFitness" },
 ];

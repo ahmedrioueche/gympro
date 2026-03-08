@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, CreditCard } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Loading from "../../../../../components/ui/Loading";
+import NoData from "../../../../../components/ui/NoData";
 import SearchFilterBar from "../../../../../components/ui/SearchFilterBar";
 import PageHeader from "../../../../components/PageHeader";
 import { SubscriptionsTable } from "./components/SubscriptionsTable";
@@ -106,7 +107,7 @@ function SubscriptionsPage() {
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         searchPlaceholder={t(
-          "mySubscriptions.searchPlaceholder",
+          "extra.searchPlaceholder",
           "Search by gym name...",
         )}
         filterValue={filterStatus}
@@ -122,33 +123,23 @@ function SubscriptionsPage() {
       {isLoading ? (
         <Loading className="py-22" />
       ) : allSubscriptions.length === 0 ? (
-        // No subscriptions at all
-        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-          <div className="text-6xl mb-4">🏋️</div>
-          <h3 className="text-xl font-semibold text-text-primary mb-2">
-            {t("mySubscriptions.empty", "No subscriptions yet")}
-          </h3>
-          <p className="text-text-secondary">
-            {t(
-              "mySubscriptions.emptyDesc",
-              "Join a gym to see your subscriptions here.",
-            )}
-          </p>
-        </div>
+        <NoData
+          title={t("mySubscriptions.empty", "No subscriptions yet")}
+          description={t(
+            "mySubscriptions.emptyDesc",
+            "Join a gym to see your subscriptions here.",
+          )}
+          icon={CreditCard}
+        />
       ) : paginatedSubscriptions.length === 0 ? (
-        // Has subscriptions but filter/search returns nothing
-        <div className="bg-surface border border-border rounded-2xl p-12 text-center">
-          <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-xl font-semibold text-text-primary mb-2">
-            {t("mySubscriptions.noResults", "No matching subscriptions")}
-          </h3>
-          <p className="text-text-secondary">
-            {t(
-              "mySubscriptions.noResultsDesc",
-              "Try adjusting your search or filter criteria.",
-            )}
-          </p>
-        </div>
+        <NoData
+          title={t("mySubscriptions.noResults", "No matching subscriptions")}
+          description={t(
+            "mySubscriptions.noResultsDesc",
+            "Try adjusting your search or filter criteria.",
+          )}
+          icon={CreditCard}
+        />
       ) : (
         <SubscriptionsTable subscriptions={paginatedSubscriptions} />
       )}

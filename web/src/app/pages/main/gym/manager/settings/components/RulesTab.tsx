@@ -30,9 +30,9 @@ export default function RulesTab({
 
   return (
     <SettingsTab
-      title={t("settings.gym.tabs.rules", "Rules Settings")}
+      title={t("extra.gymSettings.tabs.rules", "Rules Settings")}
       description={t(
-        "settings.gym.rules.description",
+        "extra.gymSettings.rules.description",
         "Set the rules and policies for your gym members.",
       )}
       icon={BookOpen}
@@ -40,7 +40,7 @@ export default function RulesTab({
       {/* Add Rule Form */}
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.gym.rules.addNew", "Add New Rule")}
+          {t("extra.gymSettings.rules.addNew", "Add New Rule")}
         </h4>
         <form
           onSubmit={handleAddRule}
@@ -51,7 +51,7 @@ export default function RulesTab({
               value={newRule}
               onChange={(e) => setNewRule(e.target.value)}
               placeholder={t(
-                "gym.settings.rules.placeholder",
+                "extra.gymSettings.rules.placeholder",
                 "Enter a new rule...",
               )}
               className="h-12"
@@ -71,7 +71,7 @@ export default function RulesTab({
       {/* Rules List */}
       <div className="pt-8 border-t border-border">
         <h4 className="text-sm font-semibold text-text-primary mb-4 uppercase tracking-wider opacity-70">
-          {t("settings.gym.rules.configuredRules", "Configured Rules")}
+          {t("extra.gymSettings.rules.configuredRules", "Configured Rules")}
         </h4>
         <Card className="overflow-hidden bg-surface-hover/30">
           {rules.length === 0 ? (
@@ -80,11 +80,14 @@ export default function RulesTab({
                 <BookOpen className="w-8 h-8 text-text-secondary opacity-50" />
               </div>
               <p className="text-text-secondary font-medium">
-                {t("gym.settings.rules.noRules", "No rules have been set yet.")}
+                {t(
+                  "extra.gymSettings.rules.noRules",
+                  "No rules have been set yet.",
+                )}
               </p>
               <p className="text-text-secondary/70 text-sm mt-1">
                 {t(
-                  "gym.settings.rules.noRulesHint",
+                  "extra.gymSettings.rules.noRulesHint",
                   "Add your first rule above to get started.",
                 )}
               </p>
@@ -122,7 +125,7 @@ export default function RulesTab({
       {/* Rules Count */}
       {rules.length > 0 && (
         <p className="text-xs text-text-secondary text-right pt-2">
-          {t("gym.settings.rules.count", "{{count}} rule(s) configured", {
+          {t("extra.gymSettings.rules.count", "{{count}} rule(s) configured", {
             count: rules.length,
           })}
         </p>

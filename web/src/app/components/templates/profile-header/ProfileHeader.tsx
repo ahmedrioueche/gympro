@@ -29,7 +29,7 @@ function ProfileHeader({ user, subscription, action }: ProfileHeaderProps) {
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-start items-center gap-6 mb-6">
         {/* Avatar & Primary Info */}
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-left w-full">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-start w-full">
           <ProfileAvatar user={user} />
 
           <div className="flex-1 min-w-0 w-full">
@@ -58,7 +58,7 @@ function ProfileHeader({ user, subscription, action }: ProfileHeaderProps) {
 
         {/* Action Button */}
         {action && (
-          <div className="flex justify-center md:justify-start lg:ml-auto w-full lg:w-auto md:pr-4">
+          <div className="flex justify-center md:justify-start lg:ms-auto w-full lg:w-auto md:pe-4">
             {action}
           </div>
         )}

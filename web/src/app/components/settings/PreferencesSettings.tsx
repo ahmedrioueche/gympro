@@ -44,11 +44,11 @@ export default function PreferencesSettings({
         {/* Language Selection */}
         <div>
           <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-            {t("member.settings.preferences.languageTitle", "Language")}
+            {t("extra.settings.language", "Language")}
           </h4>
           <p className="text-sm text-text-secondary mb-4">
             {t(
-              "member.settings.preferences.languageDesc",
+              "extra.settings.languageDesc",
               "Select your preferred language for the interface",
             )}
           </p>
@@ -59,10 +59,7 @@ export default function PreferencesSettings({
               </div>
               <div>
                 <p className="font-semibold text-text-primary">
-                  {t(
-                    "member.settings.preferences.language",
-                    "Display Language",
-                  )}
+                  {t("extra.settings.displayLanguage", "Display Language")}
                 </p>
               </div>
             </div>
@@ -78,11 +75,11 @@ export default function PreferencesSettings({
         {/* Weight Unit Selection */}
         <div className="pt-8 border-t border-border">
           <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-            {t("settings.member.general.weightUnit", "Preferred Weight Unit")}
+            {t("extra.settings.weightUnit", "Preferred Weight Unit")}
           </h4>
           <p className="text-sm text-text-secondary mb-4">
             {t(
-              "settings.member.general.weightUnitDesc",
+              "extra.settings.weightUnitDesc",
               "Choose kg or lbs for your weight measurements",
             )}
           </p>
@@ -94,14 +91,11 @@ export default function PreferencesSettings({
               </div>
               <div>
                 <p className="text-sm font-semibold text-text-primary">
-                  {t(
-                    "settings.member.general.weightUnitLabel",
-                    "Measurement Unit",
-                  )}
+                  {t("extra.settings.measurementUnit", "Measurement Unit")}
                 </p>
                 <p className="text-xs text-text-secondary">
                   {t(
-                    "settings.member.general.weightUnitTypeDesc",
+                    "extra.settings.measurementUnitDesc",
                     "Used for exercises and progress tracking",
                   )}
                 </p>

@@ -36,7 +36,7 @@ export default function Tab({
       `}
     >
       {label}
-      {count !== undefined && <span className="ml-1">({count})</span>}
+      {count !== undefined && <span className="ml-1 rtl:mr-1">({count})</span>}
     </button>
   );
 }

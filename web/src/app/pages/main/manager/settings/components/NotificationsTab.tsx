@@ -16,20 +16,20 @@ export default function NotificationsTab({
 
   return (
     <SettingsTab
-      title={t("settings.tabs.notifications", "Notification Settings")}
+      title={t("extra.settings.tabs.notifications", "Notification Settings")}
       description={t(
-        "settings.notifications.alertsDesc",
+        "extra.settings.notifications.alertsDesc",
         "Configure how early you want to be notified of events",
       )}
       icon={Bell}
     >
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.notifications.alerts", "Reminder Settings")}
+          {t("extra.settings.notifications.alerts", "Reminder Settings")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.notifications.alertsDesc",
+            "extra.settings.notifications.alertsDesc",
             "Configure how early you want to be notified of events",
           )}
         </p>
@@ -38,7 +38,7 @@ export default function NotificationsTab({
           <InputField
             type="number"
             label={t(
-              "settings.notifications.reminderMinutes",
+              "extra.settings.notifications.reminderMinutes",
               "Default Reminder (minutes)",
             )}
             value={reminderMinutes}
@@ -57,11 +57,11 @@ export default function NotificationsTab({
           </div>
           <div>
             <h4 className="text-base font-semibold text-text-primary">
-              {t("settings.notifications.note", "Real-time delivery")}
+              {t("extra.settings.notifications.note", "Real-time delivery")}
             </h4>
             <p className="text-sm text-text-secondary mt-1 max-w-lg">
               {t(
-                "settings.notifications.noteDesc",
+                "extra.settings.notifications.noteDesc",
                 "Notifications are delivered instantly via WebSockets when you are online.",
               )}
             </p>

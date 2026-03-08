@@ -53,8 +53,8 @@ export default function ClosuresTab({
 
   const handleCloseNow = () => {
     openModal("confirm", {
-      title: t("marketing.closures.closeNowConfirmTitle"),
-      text: t("marketing.closures.closeNowConfirmText"),
+      title: t("extra.gymSettings.closures.closeNowConfirmTitle"),
+      text: t("extra.gymSettings.closures.closeNowConfirmText"),
       confirmVariant: "danger",
       onConfirm: () => {
         const start = new Date();
@@ -72,12 +72,15 @@ export default function ClosuresTab({
         const newClosure = {
           start: start.toISOString(),
           end: end.toISOString(),
-          reason: nowReason || t("marketing.closures.genericReason"),
+          reason: nowReason || t("extra.gymSettings.closures.genericReason"),
         };
 
         if (checkOverlap(start, end)) {
           toast.error(
-            t("marketing.closures.overlapError", "Closures cannot overlap"),
+            t(
+              "extra.gymSettings.closures.overlapError",
+              "Closures cannot overlap",
+            ),
           );
           return;
         }
@@ -93,8 +96,8 @@ export default function ClosuresTab({
 
   const handleAddPlanned = () => {
     openModal("confirm", {
-      title: t("marketing.closures.confirmAddTitle"),
-      text: t("marketing.closures.confirmAddText"),
+      title: t("extra.gymSettings.closures.confirmAddTitle"),
+      text: t("extra.gymSettings.closures.confirmAddText"),
       confirmVariant: "primary",
       onConfirm: () => {
         const start = new Date(plannedClosure.start);
@@ -113,12 +116,16 @@ export default function ClosuresTab({
           start: start.toISOString(),
           end: end.toISOString(),
           reason:
-            plannedClosure.reason || t("marketing.closures.genericReason"),
+            plannedClosure.reason ||
+            t("extra.gymSettings.closures.genericReason"),
         };
 
         if (checkOverlap(start, end)) {
           toast.error(
-            t("marketing.closures.overlapError", "Closures cannot overlap"),
+            t(
+              "extra.gymSettings.closures.overlapError",
+              "Closures cannot overlap",
+            ),
           );
           return;
         }
@@ -139,8 +146,8 @@ export default function ClosuresTab({
 
   const handleRemove = (index: number) => {
     openModal("confirm", {
-      title: t("marketing.closures.confirmDeleteTitle"),
-      text: t("marketing.closures.confirmDeleteText"),
+      title: t("extra.gymSettings.closures.confirmDeleteTitle"),
+      text: t("extra.gymSettings.closures.confirmDeleteText"),
       confirmVariant: "danger",
       onConfirm: async () => {
         const newClosures = closures.filter((_, i) => i !== index);
@@ -160,16 +167,19 @@ export default function ClosuresTab({
   };
 
   const unitOptions = [
-    { label: t("marketing.closures.hours"), value: "hours" as const },
-    { label: t("marketing.closures.days"), value: "days" as const },
-    { label: t("marketing.closures.restOfDay"), value: "restOfDay" as const },
+    { label: t("extra.gymSettings.closures.hours"), value: "hours" as const },
+    { label: t("extra.gymSettings.closures.days"), value: "days" as const },
+    {
+      label: t("extra.gymSettings.closures.restOfDay"),
+      value: "restOfDay" as const,
+    },
   ];
 
   return (
     <SettingsTab
-      title={t("settings.gym.tabs.closures", "Closures Settings")}
+      title={t("extra.gymSettings.tabs.closures", "Closures Settings")}
       description={t(
-        "marketing.closures.description",
+        "extra.gymSettings.closures.description",
         "Manage scheduled closures or shut down the gym immediately.",
       )}
       icon={Calendar}
@@ -183,10 +193,10 @@ export default function ClosuresTab({
             </div>
             <div>
               <h4 className="text-[0.7rem] font-bold text-text-primary uppercase tracking-widest opacity-60">
-                {t("marketing.closures.closeNow")}
+                {t("extra.gymSettings.closures.closeNow")}
               </h4>
               <p className="text-xs text-text-secondary font-medium">
-                {t("marketing.closures.closeNowDesc")}
+                {t("extra.gymSettings.closures.closeNowDesc")}
               </p>
             </div>
           </div>
@@ -195,7 +205,7 @@ export default function ClosuresTab({
             <div className="grid grid-cols-2 gap-3">
               {nowUnit !== "restOfDay" && (
                 <InputField
-                  label={t("marketing.closures.duration")}
+                  label={t("extra.gymSettings.closures.duration")}
                   type="number"
                   min={1}
                   value={nowDuration.toString()}
@@ -206,7 +216,7 @@ export default function ClosuresTab({
               )}
               <div className={nowUnit === "restOfDay" ? "col-span-2" : ""}>
                 <CustomSelect
-                  title={t("marketing.closures.unit")}
+                  title={t("extra.gymSettings.closures.unit")}
                   options={unitOptions}
                   selectedOption={nowUnit}
                   onChange={(val) => setNowUnit(val as DurationUnit)}
@@ -214,8 +224,8 @@ export default function ClosuresTab({
               </div>
             </div>
             <InputField
-              label={t("marketing.closures.reason")}
-              placeholder={t("marketing.closures.reasonPlaceholder")}
+              label={t("extra.gymSettings.closures.reason")}
+              placeholder={t("extra.gymSettings.closures.reasonPlaceholder")}
               value={nowReason}
               onChange={(e) => setNowReason(e.target.value)}
             />
@@ -228,7 +238,7 @@ export default function ClosuresTab({
                 <Trash2 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
               }
             >
-              {t("marketing.closures.closeNowAction")}
+              {t("extra.gymSettings.closures.closeNowAction")}
             </Button>
           </div>
         </div>
@@ -241,10 +251,10 @@ export default function ClosuresTab({
             </div>
             <div>
               <h4 className="text-[0.7rem] font-bold text-text-primary uppercase tracking-widest opacity-60">
-                {t("marketing.closures.planned")}
+                {t("extra.gymSettings.closures.planned")}
               </h4>
               <p className="text-xs text-text-secondary font-medium">
-                {t("marketing.closures.plannedDesc")}
+                {t("extra.gymSettings.closures.plannedDesc")}
               </p>
             </div>
           </div>
@@ -257,13 +267,13 @@ export default function ClosuresTab({
                 onClick={() => setIsAddingPlanned(true)}
               >
                 <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform" />
-                {t("marketing.closures.addAction")}
+                {t("extra.gymSettings.closures.addAction")}
               </Button>
             </div>
           ) : (
             <div className="space-y-4 animate-in slide-in-from-top-2 duration-200">
               <InputField
-                label={t("marketing.closures.startDate")}
+                label={t("extra.gymSettings.closures.startDate")}
                 type="datetime-local"
                 value={plannedClosure.start}
                 onChange={(e) =>
@@ -276,7 +286,7 @@ export default function ClosuresTab({
               <div className="grid grid-cols-2 gap-3">
                 {plannedClosure.unit !== "restOfDay" && (
                   <InputField
-                    label={t("marketing.closures.duration")}
+                    label={t("extra.gymSettings.closures.duration")}
                     type="number"
                     min={1}
                     value={plannedClosure.duration.toString()}
@@ -307,8 +317,8 @@ export default function ClosuresTab({
                 </div>
               </div>
               <InputField
-                label={t("marketing.closures.reason")}
-                placeholder={t("marketing.closures.reasonPlaceholder")}
+                label={t("extra.gymSettings.closures.reason")}
+                placeholder={t("extra.gymSettings.closures.reasonPlaceholder")}
                 value={plannedClosure.reason}
                 onChange={(e) =>
                   setPlannedClosure({
@@ -342,7 +352,7 @@ export default function ClosuresTab({
       {/* LIST: All Closures */}
       <div className="space-y-4 mt-8">
         <h4 className="font-bold text-text-primary flex items-center gap-2">
-          {t("marketing.closures.planned")}
+          {t("extra.gymSettings.closures.planned")}
           <span className="bg-surface px-2 py-0.5 rounded-full text-xs text-text-secondary border border-border">
             {closures.length}
           </span>
@@ -352,7 +362,7 @@ export default function ClosuresTab({
           <div className="p-12 bg-surface-hover rounded-2xl border border-dashed border-border text-center">
             <Calendar className="w-12 h-12 text-text-secondary/20 mx-auto mb-3" />
             <p className="text-text-secondary font-medium">
-              {t("marketing.closures.empty")}
+              {t("extra.gymSettings.closures.empty")}
             </p>
           </div>
         ) : (
@@ -372,16 +382,16 @@ export default function ClosuresTab({
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className="font-bold text-text-primary truncate max-w-[200px]">
                         {closure.reason ||
-                          t("marketing.closures.genericReason")}
+                          t("extra.gymSettings.closures.genericReason")}
                       </span>
                       {active ? (
                         <span className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase rounded-lg bg-danger text-white animate-pulse">
                           <span className="w-1.5 h-1.5 bg-white rounded-full" />
-                          {t("marketing.closures.active")}
+                          {t("extra.gymSettings.closures.active")}
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 text-[10px] font-bold uppercase rounded-lg bg-surface border border-border text-text-secondary">
-                          {t("marketing.closures.scheduled")}
+                          {t("extra.gymSettings.closures.scheduled")}
                         </span>
                       )}
                     </div>

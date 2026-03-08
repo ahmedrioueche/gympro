@@ -93,38 +93,38 @@ export default function SettingsPage() {
   const tabs = [
     {
       id: "general",
-      label: t("settings.gym.tabs.general", "General"),
+      label: t("extra.gymSettings.tabs.general", "General"),
       icon: Clock,
     },
     {
       id: "location",
-      label: t("settings.gym.tabs.location", "Location"),
+      label: t("extra.gymSettings.tabs.location", "Location"),
       icon: MapPin,
     },
     {
       id: "facilities",
-      label: t("settings.gym.tabs.facilities", "Facilities"),
+      label: t("extra.gymSettings.tabs.facilities", "Facilities"),
       icon: Building2,
     },
     {
       id: "payments",
-      label: t("settings.gym.tabs.payments", "Payments"),
+      label: t("extra.gymSettings.tabs.payments", "Payments"),
       icon: CreditCard,
     },
 
     {
       id: "rules",
-      label: t("settings.gym.tabs.rules", "Rules"),
+      label: t("extra.gymSettings.tabs.rules", "Rules"),
       icon: BookOpen,
     },
     {
       id: "closures",
-      label: t("settings.gym.tabs.closures", "Closures"),
+      label: t("extra.gymSettings.tabs.closures", "Closures"),
       icon: CalendarDays,
     },
     {
       id: "notifications",
-      label: t("settings.gym.tabs.notifications", "Notifications"),
+      label: t("extra.gymSettings.tabs.notifications", "Notifications"),
       icon: Bell,
     },
   ];
@@ -134,9 +134,9 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={t("settings.gym.pageTitle", "Gym Settings")}
+        title={t("extra.gymSettings.pageTitle", "Gym Settings")}
         subtitle={t(
-          "settings.gym.pageSubtitle",
+          "extra.gymSettings.pageSubtitle",
           "Configure your gym-specific preferences and policies",
         )}
         icon={Settings}

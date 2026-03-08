@@ -104,6 +104,7 @@ def main():
     parser.add_argument("--lang", type=str, required=True, help="Target language (e.g. 'French', 'Arabic')")
     parser.add_argument("--start", type=int, default=0, help="Line/Item index to start from (skip the first N string values)")
     parser.add_argument("--batch-size", type=int, default=40, help="Number of strings to send to Gemini per batch")
+    parser.add_argument("--key-index", type=int, default=0, help="Index of the API key to start with from the .env file")
     args = parser.parse_args()
 
     # Load environment variables
@@ -161,7 +162,7 @@ def main():
         
     print(f"Translating the remaining {len(keys_needed)} strings incrementally.")
     
-    current_key_idx = 0
+    current_key_idx = args.key_index
     total_keys = len(API_KEYS)
     
     if len(keys_needed) > 0:

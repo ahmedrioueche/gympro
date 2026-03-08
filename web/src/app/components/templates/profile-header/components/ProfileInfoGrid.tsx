@@ -62,7 +62,7 @@ function ProfileInfoGrid({
             <p className="text-sm font-semibold text-text-primary">
               {user.profile.phoneNumber}
               {user.profile.phoneNumberVerified && (
-                <CheckCircle2 className="inline w-3.5 h-3.5 ml-1 text-success" />
+                <CheckCircle2 className="inline w-3.5 h-3.5 ms-1 text-success" />
               )}
             </p>
           </div>

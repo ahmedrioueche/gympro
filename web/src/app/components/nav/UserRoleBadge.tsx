@@ -81,7 +81,7 @@ export function UserRoleBadge() {
       </div>
       <div className="flex flex-col">
         <span className="text-[10px] text-text-primary font-bold uppercase tracking-widest opacity-60">
-          {t("common.currentRole", "Current Role")}
+          {t("extra.currentRole", "Current Role")}
         </span>
         <span className="text-sm font-black text-text-primary tracking-tight">
           {config.label}

@@ -36,9 +36,9 @@ export default function PaymentsTab({
 
   return (
     <SettingsTab
-      title={t("settings.gym.tabs.payments", "Payments Settings")}
+      title={t("extra.gymSettings.tabs.payments", "Payments Settings")}
       description={t(
-        "settings.gym.payments.description",
+        "extra.gymSettings.payments.description",
         "Configure and manage the payment options available for your members.",
       )}
       icon={CreditCard}
@@ -46,11 +46,11 @@ export default function PaymentsTab({
       {/* Standard Methods Container */}
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.gym.payments.standardMethods", "Standard Methods")}
+          {t("extra.gymSettings.payments.standardMethods", "Standard Methods")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.gym.payments.standardMethodsDesc",
+            "extra.gymSettings.payments.standardMethodsDesc",
             "Enable or disable commonly used payment methods.",
           )}
         </p>
@@ -86,11 +86,11 @@ export default function PaymentsTab({
       {/* Custom Methods Container */}
       <div className="pt-8 border-t border-border">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.gym.payments.customMethods", "Custom Methods")}
+          {t("extra.gymSettings.payments.customMethods", "Custom Methods")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.gym.payments.customMethodsDesc",
+            "extra.gymSettings.payments.customMethodsDesc",
             "Add your own custom payment methods unique to your gym.",
           )}
         </p>
@@ -102,7 +102,7 @@ export default function PaymentsTab({
               <InputField
                 label=""
                 placeholder={t(
-                  "settings.gym.payments.customPlaceholder",
+                  "extra.gymSettings.payments.customPlaceholder",
                   "e.g. Bank Transfer",
                 )}
                 value={customMethod}
@@ -147,7 +147,10 @@ export default function PaymentsTab({
           {customMethods.length === 0 && (
             <div className="p-4 bg-surface-hover/50 rounded-xl border border-dashed border-border text-center">
               <p className="text-xs text-text-secondary italic">
-                {t("settings.gym.payments.noCustom", "No custom methods added")}
+                {t(
+                  "extra.gymSettings.payments.noCustom",
+                  "No custom methods added",
+                )}
               </p>
             </div>
           )}

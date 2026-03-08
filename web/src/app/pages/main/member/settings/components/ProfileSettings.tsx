@@ -85,11 +85,11 @@ export default function ProfileSettings({
     >
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("member.settings.profile.avatar", "Profile Picture")}
+          {t("extra.settings.profilePicture", "Profile Picture")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "member.settings.profile.avatarDesc",
+            "extra.settings.profilePictureDesc",
             "This will be visible to your coaches and gym friends",
           )}
         </p>
@@ -103,11 +103,11 @@ export default function ProfileSettings({
 
       <div className="pt-10 border-t border-border mt-10">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("member.settings.profile.basicInfo", "Account Information")}
+          {t("extra.settings.accountInfo", "Account Information")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "member.settings.profile.basicInfoDesc",
+            "extra.settings.accountInfoDesc",
             "Keep your contact info up to date",
           )}
         </p>
@@ -249,43 +249,40 @@ export default function ProfileSettings({
       {/* Location Section */}
       <div className="pt-10 border-t border-border mt-10">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("member.settings.profile.location", "Location")}
+          {t("extra.settings.location", "Location")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "member.settings.profile.locationDesc",
+            "extra.settings.locationDesc",
             "Your location helps us find nearby coaches and gyms",
           )}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputField
-            label={t("member.settings.profile.city", "City")}
+            label={t("extra.settings.city", "City")}
             value={city}
             onChange={(e) => setCity(e.target.value)}
             leftIcon={<MapPin className="w-5 h-5" />}
-            placeholder={t(
-              "member.settings.profile.cityPlaceholder",
-              "Enter your city",
-            )}
+            placeholder={t("extra.settings.cityPlaceholder", "Enter your city")}
           />
           <InputField
-            label={t("member.settings.profile.state", "State / Province")}
+            label={t("extra.settings.state", "State / Province")}
             value={state}
             onChange={(e) => setState(e.target.value)}
             leftIcon={<Globe className="w-5 h-5" />}
             placeholder={t(
-              "member.settings.profile.statePlaceholder",
+              "extra.settings.statePlaceholder",
               "Enter your state",
             )}
           />
           <InputField
-            label={t("member.settings.profile.country", "Country")}
+            label={t("extra.settings.country", "Country")}
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             leftIcon={<Globe className="w-5 h-5" />}
             placeholder={t(
-              "member.settings.profile.countryPlaceholder",
+              "extra.settings.countryPlaceholder",
               "Enter your country",
             )}
           />
@@ -306,7 +303,7 @@ export default function ProfileSettings({
                   </h4>
                   <p className="text-sm text-text-secondary mt-1 max-w-md">
                     {t(
-                      "member.settings.profile.coachAccessDesc",
+                      "extra.settings.coachAccessDesc",
                       "Are you a fitness professional? Request access to the coach dashboard to start managing clients.",
                     )}
                   </p>

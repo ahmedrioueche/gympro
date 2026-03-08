@@ -198,20 +198,20 @@ export default function GeneralTab({
 
   return (
     <SettingsTab
-      title={t("settings.gym.tabs.general", "General Settings")}
+      title={t("extra.gymSettings.tabs.general", "General Settings")}
       description={t(
-        "settings.gym.general.description",
+        "extra.gymSettings.general.description",
         "Configure your gym's basic operating rules and preferences.",
       )}
       icon={Clock}
     >
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.gym.general.currency", "Currency")}
+          {t("extra.gymSettings.general.currency", "Currency")}
         </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
-            "settings.gym.general.currencyDesc",
+            "extra.gymSettings.general.currencyDesc",
             "Select the currency for membership pricing display",
           )}
         </p>
@@ -223,7 +223,7 @@ export default function GeneralTab({
             selectedOption={defaultCurrency}
             onChange={(val) => setDefaultCurrency(val as Currency)}
             placeholder={t(
-              "settings.gym.general.selectCurrency",
+              "extra.gymSettings.general.selectCurrency",
               "Select currency",
             )}
             searchable
@@ -233,11 +233,11 @@ export default function GeneralTab({
 
       <div className="pt-6 border-t border-border">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.gym.general.workingDays", "Working Days")}
+          {t("extra.gymSettings.general.workingDays", "Working Days")}
         </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
-            "settings.gym.general.workingDaysDesc",
+            "extra.gymSettings.general.workingDaysDesc",
             "Select the days your gym is operational",
           )}
         </p>
@@ -275,11 +275,11 @@ export default function GeneralTab({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-              {t("settings.gym.general.workingHours", "Working Hours")}
+              {t("extra.gymSettings.general.workingHours", "Working Hours")}
             </h4>
             <p className="text-sm text-text-secondary">
               {t(
-                "settings.gym.general.workingHoursDesc",
+                "extra.gymSettings.general.workingHoursDesc",
                 "Set your gym's operating hours",
               )}
             </p>
@@ -298,7 +298,7 @@ export default function GeneralTab({
               htmlFor="useAdvancedHours"
               className="text-xs font-bold text-text-primary cursor-pointer"
             >
-              {t("settings.gym.general.advancedHours", "Advanced Mode")}
+              {t("extra.gymSettings.general.advancedHours", "Advanced Mode")}
             </label>
           </div>
         </div>
@@ -307,13 +307,13 @@ export default function GeneralTab({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md">
             <InputField
               type="time"
-              label={t("settings.gym.general.startTime", "Opening Time")}
+              label={t("extra.gymSettings.general.startTime", "Opening Time")}
               value={workingHoursStart}
               onChange={(e) => setWorkingHoursStart(e.target.value)}
             />
             <InputField
               type="time"
-              label={t("settings.gym.general.endTime", "Closing Time")}
+              label={t("extra.gymSettings.general.endTime", "Closing Time")}
               value={workingHoursEnd}
               onChange={(e) => setWorkingHoursEnd(e.target.value)}
             />
@@ -323,7 +323,7 @@ export default function GeneralTab({
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-text-secondary">
                 {t(
-                  "settings.gym.general.advancedHoursNote",
+                  "extra.gymSettings.general.advancedHoursNote",
                   "Configure multiple time slots per day.",
                 )}
               </span>
@@ -334,7 +334,7 @@ export default function GeneralTab({
                   onClick={startAddingCustomSlot}
                   icon={<Plus className="w-4 h-4" />}
                 >
-                  {t("settings.gym.general.addTimeSlot", "Add Slot")}
+                  {t("extra.gymSettings.general.addTimeSlot", "Add Slot")}
                 </Button>
               )}
             </div>
@@ -351,7 +351,8 @@ export default function GeneralTab({
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-text-primary">
-                            {t("settings.gym.general.slot", "Slot")} {index + 1}
+                            {t("extra.gymSettings.general.slot", "Slot")}{" "}
+                            {index + 1}
                           </span>
                           <span className="text-xs text-text-secondary">
                             {slot.range.start} - {slot.range.end}
@@ -396,7 +397,7 @@ export default function GeneralTab({
               <div className="p-4 bg-surface rounded-xl border-2 border-primary/30 space-y-4">
                 <div>
                   <label className="block text-xs font-medium text-text-secondary mb-2">
-                    {t("settings.gym.general.day", "Days")} *
+                    {t("extra.gymSettings.general.day", "Days")} *
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {WEEK_DAYS.map((day) => {
@@ -424,13 +425,16 @@ export default function GeneralTab({
                 <div className="grid grid-cols-2 gap-3">
                   <InputField
                     type="time"
-                    label={t("settings.gym.general.startTime", "Start Time")}
+                    label={t(
+                      "extra.gymSettings.general.startTime",
+                      "Start Time",
+                    )}
                     value={newCustomSlot.range.start}
                     onChange={(e) => updateCustomTime("start", e.target.value)}
                   />
                   <InputField
                     type="time"
-                    label={t("settings.gym.general.endTime", "End Time")}
+                    label={t("extra.gymSettings.general.endTime", "End Time")}
                     value={newCustomSlot.range.end}
                     onChange={(e) => updateCustomTime("end", e.target.value)}
                   />
@@ -472,11 +476,11 @@ export default function GeneralTab({
 
       <div className="pt-6 border-t border-border">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.gym.general.genderPolicy", "Gender Policy")}
+          {t("extra.gymSettings.general.genderPolicy", "Gender Policy")}
         </h4>
         <p className="text-sm text-text-secondary mb-4">
           {t(
-            "settings.gym.general.genderPolicyDesc",
+            "extra.gymSettings.general.genderPolicyDesc",
             "Configure mixed or gender-specific training sessions",
           )}
         </p>
@@ -494,11 +498,11 @@ export default function GeneralTab({
               htmlFor="isMixed"
               className="text-sm font-medium text-text-primary cursor-pointer"
             >
-              {t("settings.gym.general.isMixed", "Mixed Training")}
+              {t("extra.gymSettings.general.isMixed", "Mixed Training")}
             </label>
             <p className="text-xs text-text-secondary mt-0.5">
               {t(
-                "settings.gym.general.isMixedDesc",
+                "extra.gymSettings.general.isMixedDesc",
                 "Allow males and females to train together",
               )}
             </p>
@@ -513,13 +517,13 @@ export default function GeneralTab({
               <div>
                 <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
                   {t(
-                    "settings.gym.general.femaleOnlyHours",
+                    "extra.gymSettings.general.femaleOnlyHours",
                     "Female-Only Hours",
                   )}
                 </h4>
                 <p className="text-xs text-text-secondary mt-0.5">
                   {t(
-                    "settings.gym.general.femaleOnlyHoursDesc",
+                    "extra.gymSettings.general.femaleOnlyHoursDesc",
                     "Specify time ranges reserved for female members",
                   )}
                 </p>
@@ -531,7 +535,7 @@ export default function GeneralTab({
                   onClick={startAddingSlot}
                   icon={<Plus className="w-4 h-4" />}
                 >
-                  {t("settings.gym.general.addTimeSlot", "Add Slot")}
+                  {t("extra.gymSettings.general.addTimeSlot", "Add Slot")}
                 </Button>
               )}
             </div>
@@ -548,7 +552,8 @@ export default function GeneralTab({
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-text-primary">
-                            {t("settings.gym.general.slot", "Slot")} {index + 1}
+                            {t("extra.gymSettings.general.slot", "Slot")}{" "}
+                            {index + 1}
                           </span>
                           <span className="text-xs text-text-secondary">
                             {slot.range.start} - {slot.range.end}
@@ -596,17 +601,20 @@ export default function GeneralTab({
                 <div className="flex items-center justify-between">
                   <h5 className="text-sm font-semibold text-text-primary">
                     {editingIndex !== null
-                      ? `${t("settings.gym.general.editSlot", "Edit Slot")} ${
+                      ? `${t("extra.gymSettings.general.editSlot", "Edit Slot")} ${
                           editingIndex + 1
                         }`
-                      : t("settings.gym.general.newTimeSlot", "New Time Slot")}
+                      : t(
+                          "extra.gymSettings.general.newTimeSlot",
+                          "New Time Slot",
+                        )}
                   </h5>
                 </div>
 
                 {/* Days Selection */}
                 <div>
                   <label className="block text-xs font-medium text-text-secondary mb-2">
-                    {t("settings.gym.general.day", "Days")} *
+                    {t("extra.gymSettings.general.day", "Days")} *
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {WEEK_DAYS.map((day) => {
@@ -632,7 +640,7 @@ export default function GeneralTab({
                   {newSlot.days.length === 0 && (
                     <p className="text-xs text-danger mt-1">
                       {t(
-                        "settings.gym.general.selectAtLeastOneDay",
+                        "extra.gymSettings.general.selectAtLeastOneDay",
                         "Please select at least one day",
                       )}
                     </p>
@@ -643,13 +651,16 @@ export default function GeneralTab({
                 <div className="grid grid-cols-2 gap-3">
                   <InputField
                     type="time"
-                    label={t("settings.gym.general.startTime", "Start Time")}
+                    label={t(
+                      "extra.gymSettings.general.startTime",
+                      "Start Time",
+                    )}
                     value={newSlot.range.start}
                     onChange={(e) => updateTime("start", e.target.value)}
                   />
                   <InputField
                     type="time"
-                    label={t("settings.gym.general.endTime", "End Time")}
+                    label={t("extra.gymSettings.general.endTime", "End Time")}
                     value={newSlot.range.end}
                     onChange={(e) => updateTime("end", e.target.value)}
                   />
@@ -666,8 +677,11 @@ export default function GeneralTab({
                     disabled={newSlot.days.length === 0}
                   >
                     {editingIndex !== null
-                      ? t("settings.gym.general.saveChanges", "Save Changes")
-                      : t("settings.gym.general.confirm", "Confirm")}
+                      ? t(
+                          "extra.gymSettings.general.saveChanges",
+                          "Save Changes",
+                        )
+                      : t("extra.gymSettings.general.confirm", "Confirm")}
                   </Button>
                   <Button
                     variant="outline"
@@ -679,7 +693,7 @@ export default function GeneralTab({
                     }
                     icon={<X className="w-4 h-4" />}
                   >
-                    {t("settings.gym.general.cancel", "Cancel")}
+                    {t("extra.gymSettings.general.cancel", "Cancel")}
                   </Button>
                 </div>
               </div>
@@ -690,7 +704,7 @@ export default function GeneralTab({
               <div className="p-4 bg-surface-hover rounded-xl border border-border text-center">
                 <p className="text-sm text-text-secondary">
                   {t(
-                    "settings.gym.general.noFemaleHours",
+                    "extra.gymSettings.general.noFemaleHours",
                     "No female-only hours configured",
                   )}
                 </p>
@@ -701,7 +715,7 @@ export default function GeneralTab({
         <div className="mt-8 pt-8 border-t border-border">
           <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
             {t(
-              "settings.gym.general.accessControlTitle",
+              "extra.gymSettings.general.accessControlTitle",
               "Access Control Mode",
             )}
           </h4>
@@ -716,7 +730,7 @@ export default function GeneralTab({
             >
               <div className="flex items-center justify-between w-full">
                 <span className="text-sm font-semibold">
-                  {t("settings.gym.general.accessFlexible", "Flexible")}
+                  {t("extra.gymSettings.general.accessFlexible", "Flexible")}
                 </span>
                 <ShieldOff
                   className={`w-5 h-5 ${
@@ -728,7 +742,7 @@ export default function GeneralTab({
               </div>
               <p className="text-xs text-text-secondary text-left">
                 {t(
-                  "settings.gym.general.accessFlexibleDesc",
+                  "extra.gymSettings.general.accessFlexibleDesc",
                   "Members are allowed in even if expired, but both they and the manager receive a warning.",
                 )}
               </p>
@@ -744,7 +758,7 @@ export default function GeneralTab({
             >
               <div className="flex items-center justify-between w-full">
                 <span className="text-sm font-semibold">
-                  {t("settings.gym.general.accessStrict", "Strict")}
+                  {t("extra.gymSettings.general.accessStrict", "Strict")}
                 </span>
                 <ShieldCheck
                   className={`w-5 h-5 ${
@@ -756,7 +770,7 @@ export default function GeneralTab({
               </div>
               <p className="text-xs text-text-secondary text-left">
                 {t(
-                  "settings.gym.general.accessStrictDesc",
+                  "extra.gymSettings.general.accessStrictDesc",
                   "Expired subscriptions strictly block entry. Physical access hardware will deny passage.",
                 )}
               </p>
