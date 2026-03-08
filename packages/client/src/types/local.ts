@@ -9,6 +9,7 @@ export const LANGUAGES = {
     flag: "🇺🇸",
     icon: "us",
     dir: "ltr",
+    isRtl: false,
   },
   fr: {
     label: "Français",
@@ -16,6 +17,7 @@ export const LANGUAGES = {
     flag: "🇫🇷",
     icon: "fr",
     dir: "ltr",
+    isRtl: false,
   },
   ar: {
     label: "العربية",
@@ -23,6 +25,7 @@ export const LANGUAGES = {
     flag: "🇩🇿",
     icon: "dz",
     dir: "rtl",
+    isRtl: true,
   },
 } satisfies Record<
   AppLanguage,
@@ -32,6 +35,7 @@ export const LANGUAGES = {
     flag: string;
     icon: string;
     dir: "ltr" | "rtl";
+    isRtl: boolean;
   }
 >;
 
@@ -39,7 +43,7 @@ export const LANGUAGES = {
 export const DEFAULT_LANGUAGE: AppLanguage = "en";
 export const SUPPORTED_LANGUAGES = Object.keys(LANGUAGES) as AppLanguage[];
 export const RTL_LANGUAGES = SUPPORTED_LANGUAGES.filter(
-  (lng) => LANGUAGES[lng].dir === "rtl"
+  (lng) => LANGUAGES[lng].dir === "rtl",
 );
 
 export const DEFAULT_CURRENCY: SupportedCurrency = "USD";

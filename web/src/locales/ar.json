@@ -4,73 +4,255 @@
     "desc": ""
   },
   "general": {
-    "subscribe": "اشتراك",
+    "subscribe": "اشترك",
     "no_data": "لا توجد بيانات",
     "no_data_desc": "لا يوجد شيء لعرضه هنا بعد",
     "page_not_found": "الصفحة غير موجودة",
-    "page_not_found_desc": "عذراً! يبدو أنك أخذت منعطفاً خاطئاً!",
-    "loading": "جاري التحميل...",
-    "please_wait": "يرجى الانتظار بينما نقوم بتحميل الصفحة..."
+    "page_not_found_desc": "عذرًا! يبدو أنك سلكت الطريق الخطأ!",
+    "loading": "جارٍ التحميل...",
+    "please_wait": "الرجاء الانتظار بينما نقوم بتحميل الصفحة..."
   },
   "common": {
-    "loading": "جاري التحميل...",
     "all": "الكل",
-    "actions": "الإجراءات",
-    "base": "أساسي",
-    "update": "تحديث",
+    "orManually": "أو يدويًا",
+    "error": "حدث خطأ ما، يرجى المحاولة مرة أخرى لاحقًا",
+    "loading": "جارٍ التحميل...",
+    "loadingGymDetails": "جارٍ تحميل تفاصيل الصالة الرياضية...",
+    "selectSection": "اختر قسمًا من الشريط الجانبي للبدء",
+    "currentLanguage": "اللغة الحالية",
+    "currentRoute": "المسار الحالي",
+    "back": "رجوع",
+    "save": "حفظ",
+    "select": "تحديد",
+    "saving": "جارٍ الحفظ...",
+    "gym": "صالة رياضية",
+    "trialing": "تجريبي",
+    "go": "اذهب",
+    "markAsDone": "وضع علامة كمكتمل",
+    "done": "تم",
+    "restore": "استعادة",
+    "restart": "إعادة تشغيل",
+    "close": "إغلاق",
+    "processing": "جارٍ المعالجة...",
+    "cancel": "إلغاء",
+    "unassigned": "غير مخصص",
+    "joining": "انضمام",
+    "confirm": "تأكيد",
+    "retry": "إعادة المحاولة",
+    "next": "التالي",
+    "gyms": "صالات رياضية",
+    "members": "أعضاء",
+    "gender": "الجنس",
+    "male": "ذكر",
+    "female": "أنثى",
+    "viewDetails": "عرض التفاصيل",
+    "capacity": "السعة",
+    "gems": "جواهر",
+    "upload": "رفع",
+    "leaving": "جارٍ المغادرة...",
+    "list": "قائمة",
+    "calendar": "تقويم",
+    "winners": "الفائزون",
+    "winner": "الفائز",
+    "time": "الوقت",
+    "coach": "مدرب",
+    "notAssigned": "غير مخصص",
+    "noData": "لا توجد بيانات",
+    "translating": "جارٍ الترجمة...",
+    "accept": "قبول",
+    "decline": "رفض",
+    "selected": "محدد",
+    "deactivate": "إلغاء التفعيل",
+    "activate": "تفعيل",
+    "remove": "إزالة",
+    "description": "الوصف",
+    "view": "عرض",
+    "type": "النوع",
+    "locationFilters": "مرشحات الموقع",
+    "actions": "إجراءات",
+    "create": "إنشاء",
+    "create_success": "تم الإنشاء بنجاح",
+    "noDescription": "لم يتم تقديم وصف.",
     "pagination": {
-      "showing": "عرض {{start}}-{{end}} من أصل {{total}}"
+      "showing": "عرض {{start}}-{{end}} من {{total}}"
+    },
+    "saveChanges": "حفظ التغييرات",
+    "contactSupport": "الاتصال بالدعم",
+    "unknown": "غير معروف",
+    "member": "عضو",
+    "status": "الحالة",
+    "date_time": "التاريخ والوقت",
+    "reason": "السبب",
+    "add": "إضافة",
+    "search": "بحث...",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "update": "تحديث",
+    "base": "أساسي",
+    "plan": "خطة",
+    "duration": "المدة",
+    "date": "تاريخ الإضافة",
+    "addLink": "إضافة رابط",
+    "cancelled": "ملغاة",
+    "active": "نشط",
+    "expired": "منتهية الصلاحية",
+    "expiringSoon": "تنتهي قريباً",
+    "location": "الموقع",
+    "attendance": "الحضور",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "goBack": "العودة",
+    "years": "سنوات",
+    "year": "سنة",
+    "months": "أشهر",
+    "month": "شهر",
+    "weeks": "أسابيع",
+    "week": "أسبوع",
+    "days": "أيام",
+    "day": "يوم",
+    "amount": "المبلغ",
+    "joined": "انضم",
+    "change": "تغيير",
+    "status_active": "نشط",
+    "status_inactive": "غير نشط",
+    "status_pending": "معلق",
+    "status_expired": "منتهي الصلاحية",
+    "status_cancelled": "ملغاة",
+    "characters": "أحرف",
+    "hide": "إخفاء",
+    "show": "إظهار",
+    "filters": {
+      "label": "الفلاتر",
+      "all": "الكل"
+    },
+    "email": "البريد الإلكتروني",
+    "phoneNumber": "رقم الهاتف",
+    "notSpecified": "غير محدد",
+    "inactive": "غير نشط",
+    "success": "نجاح",
+    "leave": "مغادرة",
+    "errorOccurred": "حدث خطأ",
+    "postedBy": "نشر بواسطة",
+    "uploading": "جاري الرفع...",
+    "uploadFailed": "فشل الرفع",
+    "uploadError": "فشل الرفع",
+    "uploadSuccess": "تم الرفع بنجاح",
+    "fileTooLarge": "يجب أن يكون حجم الملف أقل من 5 ميجابايت",
+    "submit": "إرسال",
+    "free": "مجاني",
+    "starter": "مبتدئ",
+    "pro": "احترافي",
+    "premium": "مميز",
+    "name": "الاسم",
+    "noBrand": "لا توجد علامة تجارية",
+    "notSet": "لم يتم التعيين",
+    "viewMode": {
+      "cards": "بطاقات",
+      "table": "جدول"
+    },
+    "sort": "فرز",
+    "startDate": "تاريخ البدء",
+    "endDate": "تاريخ الانتهاء",
+    "weekDays": {
+      "monday": "اثنين",
+      "tuesday": "ثلاثاء",
+      "wednesday": "أربعاء",
+      "thursday": "خميس",
+      "friday": "جمعة",
+      "sunday": "أحد"
+    },
+    "per_month": "/ شهر"
+  },
+  "billing": {
+    "limits": {
+      "gym_creation_limit_reached": "لقد وصلت إلى حد إنشاء الصالات الرياضية ({{limit}}). يرجى ترقية خطتك لإنشاء المزيد من الصالات الرياضية.",
+      "member_limit_reached": "لقد وصلت هذه الصالة الرياضية إلى حد الأعضاء ({{limit}}). يرجى ترقية الخطة لإضافة المزيد من الأعضاء."
+    }
+  },
+  "confirm": {
+    "default": {
+      "title": "هل أنت متأكد؟",
+      "text": "لا يمكن التراجع عن هذا الإجراء."
+    },
+    "reactivate": {
+      "title": "إعادة تفعيل الاشتراك؟",
+      "text": "سيتم استعادة اشتراكك وتجديده في {{date}}. هل تريد المتابعة؟"
     }
   },
   "actions": {
-    "go_back": "العودة"
+    "go_back": "العودة",
+    "logout": "تسجيل الخروج",
+    "cancel": "إلغاء",
+    "days": "أيام",
+    "back": "العودة",
+    "next": "التالي",
+    "delete": "حذف",
+    "deleting": "جاري الحذف...",
+    "save": "حفظ",
+    "saving": "جاري الحفظ...",
+    "edit": "تعديل",
+    "close": "إغلاق",
+    "booked": "محجوز",
+    "viewTraining": "اذهب إلى التدريب"
   },
   "auth": {
     "welcome_back": "مرحباً بعودتك",
-    "sign_in_subtitle": "سجل دخولك إلى حسابك للمتابعة",
-    "create_account": "أنشئ حسابك",
+    "sign_in_subtitle": "سجل الدخول إلى حسابك للمتابعة",
+    "create_account": "إنشاء حسابك",
     "sign_up_subtitle": "انضم إلينا وابدأ",
     "email": "عنوان البريد الإلكتروني",
     "email_placeholder": "أدخل بريدك الإلكتروني",
     "password": "كلمة المرور",
-    "password_placeholder": "أدخل كلمة المرور",
+    "password_placeholder": "أدخل كلمة المرور الخاصة بك",
+    "phone": "رقم الهاتف",
+    "phone_placeholder": "مثال: 0556874526",
     "remember_me": "تذكرني",
-    "forgot_password": "نسيت كلمة المرور؟",
+    "forgot_password": "هل نسيت كلمة المرور؟",
     "sign_in": "تسجيل الدخول",
     "signing_in": "جاري تسجيل الدخول...",
-    "or_continue_with": "أو استمر مع",
-    "continue_with_google": "استمر مع جوجل",
+    "or_continue_with": "أو تابع باستخدام",
+    "continue_with_google": "المتابعة باستخدام جوجل",
+    "google_auth_error": "فشل مصادقة جوجل. يرجى المحاولة مرة أخرى.",
+    "google_auth_success": "تمت المصادقة بنجاح باستخدام جوجل!",
     "dont_have_account": "ليس لديك حساب؟",
     "sign_up": "إنشاء حساب",
+    "verify_phone": "التحقق من رقم الهاتف",
+    "phone_required": "رقم الهاتف مطلوب",
+    "phone_verified_success": "تم التحقق من رقم الهاتف بنجاح",
+    "enter_otp_sent_to": "أدخل الرمز المرسل إلى",
+    "send_reset_code": "إرسال رمز إعادة التعيين",
+    "verify": "تحقق",
+    "resend_code": "إعادة إرسال الرمز",
+    "resend_in": "إعادة الإرسال خلال",
     "name": "الاسم الكامل",
     "name_placeholder": "أدخل اسمك الكامل",
     "confirm_password": "تأكيد كلمة المرور",
-    "confirm_password_placeholder": "أعد إدخال كلمة المرور",
-    "already_have_account": "لديك حساب بالفعل؟",
-    "hero_title": "إدارة أعمال الجيم بكفاءة",
-    "hero_subtitle": "تمكين أصحاب الجيم والمدراء بأدوات شاملة لإدارة الأعضاء والاشتراكات والمدربين والمدفوعات والإشعارات.",
-    "feature_1": "إدارة كاملة للأعضاء والاشتراكات",
-    "feature_2": "إدارة المدربين والبرامج",
-    "feature_3": "المدفوعات والإشعارات التلقائية",
+    "confirm_password_placeholder": "أعد إدخال كلمة المرور الخاصة بك",
+    "already_have_account": "هل لديك حساب بالفعل؟",
+    "hero_title": "منصة إدارة اللياقة البدنية الشاملة",
+    "hero_subtitle": "نظام بيئي متكامل لأصحاب الصالات الرياضية والمدربين والأعضاء مع أدوات للبرامج والتقدم والمدفوعات والتواصل.",
+    "feature_1": "إدارة موحدة للصالات الرياضية والمدربين والأعضاء",
+    "feature_2": "برامج تدريب وأدوات تدريب وتتبع التقدم",
+    "feature_3": "فواتير متكاملة وتجديدات وإشعارات ذكية",
     "email_sent": {
-      "welcome_title": "مرحباً بك في GymPro! 🎉",
-      "welcome_message": "نحن متحمسون لانضمامك إلينا. تم إنشاء حسابك بنجاح!",
+      "welcome_title": "🎉 مرحبًا بك في جيم برو!",
+      "welcome_message": "نحن متحمسون لانضمامك إلينا. يمكنك البدء في الاستمتاع بفوائد جيم برو قريبًا جدًا!",
       "title": "تحقق من بريدك الإلكتروني",
-      "description": "لقد أرسلنا رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من صندوق الوارد والنقر على الرابط للتحقق من حسابك.",
+      "description": "لقد أرسلنا رابط تحقق إلى عنوان بريدك الإلكتروني. يرجى التحقق من صندوق الوارد الخاص بك والنقر على الرابط لتأكيد حسابك.",
       "success_title": "تم إنشاء الحساب بنجاح!",
       "success_description": "تم إنشاء حسابك وإرسال بريد إلكتروني للتحقق إلى صندوق الوارد الخاص بك.",
       "info_title": "لم تستلم البريد الإلكتروني؟",
-      "info_description": "تحقق من مجلد الرسائل غير المرغوب فيها أو حاول إعادة إرسال بريد التحقق. قد يستغرق البريد الإلكتروني بضع دقائق للوصول.",
+      "info_description": "تحقق من مجلد البريد العشوائي أو حاول إعادة إرسال بريد التحقق الإلكتروني. قد يستغرق وصول البريد الإلكتروني بضع دقائق.",
       "resend_button": "إعادة إرسال بريد التحقق",
-      "resending": "جاري الإرسال...",
-      "back_to_login_button": "العودة لتسجيل الدخول",
-      "need_help": "تحتاج مساعدة؟",
-      "contact_support": "تواصل مع الدعم",
-      "contact_support_info": "ميزة التواصل مع الدعم قريباً!",
-      "resend_success": "تم إعادة إرسال بريد التحقق بنجاح!",
+      "resending": "جاري إعادة الإرسال...",
+      "back_to_login_button": "العودة إلى تسجيل الدخول",
+      "need_help": "هل تحتاج مساعدة؟",
+      "contact_support": "اتصل بالدعم",
+      "contact_support_info": "وظيفة الاتصال بالدعم قادمة قريبًا!",
+      "resend_success": "تمت إعادة إرسال بريد التحقق بنجاح!",
       "resend_error": "فشل في إعادة إرسال بريد التحقق. يرجى المحاولة مرة أخرى.",
       "no_email_error": "لم يتم العثور على عنوان بريد إلكتروني. يرجى التسجيل مرة أخرى.",
-      "resend_cooldown": "يرجى الانتظار {{time}} ثانية قبل طلب بريد إلكتروني آخر.",
+      "resend_cooldown": "الرجاء الانتظار {{time}} ثانية قبل طلب بريد إلكتروني آخر.",
       "email_delivered": "تم تسليم البريد الإلكتروني بنجاح",
       "email_pending": "جاري إرسال البريد الإلكتروني...",
       "email_failed": "فشل في إرسال البريد الإلكتروني"
@@ -78,185 +260,4286 @@
     "verifyEmail": {
       "loading": "جاري التحقق من بريدك الإلكتروني...",
       "successTitle": "تم التحقق من البريد الإلكتروني بنجاح!",
-      "successMessage": "تم التحقق من بريدك الإلكتروني وأنت الآن مسجل الدخول.",
-      "redirecting": "جاري توجيهك إلى لوحة التحكم...",
+      "successMessage": "تم التحقق من بريدك الإلكتروني وتم تسجيل دخولك الآن.",
+      "redirecting": "جاري إعادة توجيهك إلى لوحة التحكم الخاصة بك...",
       "error": "فشل التحقق من البريد الإلكتروني. يرجى المحاولة مرة أخرى.",
-      "missingToken": "رمز التحقق مفقود. يرجى التحقق من رابط البريد الإلكتروني."
+      "missingToken": "رمز التحقق مفقود. يرجى التحقق من رابط بريدك الإلكتروني."
     },
     "reset_password": "إعادة تعيين كلمة المرور",
-    "reset_password_success": "تم إعادة تعيين كلمة المرور بنجاح!",
-    "reset_password_error": "رمز إعادة التعيين غير صحيح أو منتهي الصلاحية.",
-    "redirecting_to_login": "جاري التوجيه إلى صفحة تسجيل الدخول...",
-    "forgot_password_success": "إذا كان البريد الإلكتروني موجود، تم إرسال رابط إعادة التعيين.",
+    "reset_password_success": "تمت إعادة تعيين كلمة المرور بنجاح!",
+    "reset_password_error": "رمز إعادة التعيين غير صالح أو منتهي الصلاحية.",
+    "redirecting_to_login": "جاري إعادة التوجيه إلى صفحة تسجيل الدخول...",
+    "forgot_password_success": "إذا كان البريد الإلكتروني موجودًا، فقد تم إرسال رابط إعادة تعيين.",
     "send_reset_link": "إرسال رابط إعادة التعيين",
+    "forgot_password_email_description": "سنرسل لك رابطًا لإعادة تعيين كلمة المرور الخاصة بك.",
+    "forgot_password_phone_description": "سنرسل لك رمزًا لإعادة تعيين كلمة المرور الخاصة بك.",
     "account_secured": "تم تأمين الحساب",
     "account_secured_desc": "حسابك محمي الآن بكلمة مرور جديدة",
     "request_new_reset": "طلب رابط إعادة تعيين جديد",
-    "enter_new_password": "أدخل كلمة المرور الجديدة أدناه لتأمين حسابك"
+    "enter_new_password": "أدخل كلمة المرور الجديدة أدناه لتأمين حسابك",
+    "setup": {
+      "title": "إعداد حسابك",
+      "subtitle": "أنشئ كلمة مرور لإكمال إعداد حسابك",
+      "invalid_link": "رابط إعداد غير صالح",
+      "password_placeholder": "إنشاء كلمة مرور (8 أحرف كحد أدنى)",
+      "confirm_password_placeholder": "تأكيد كلمة المرور",
+      "passwords_match": "✓ كلمات المرور متطابقة",
+      "passwords_no_match": "✗ كلمات المرور غير متطابقة",
+      "password_validation_error": "يجب أن تتطابق كلمات المرور وأن تتكون من 8 أحرف على الأقل",
+      "success_message": "تم إعداد الحساب بنجاح! جارٍ إعادة التوجيه إلى صفحة تسجيل الدخول...",
+      "complete_button": "إكمال الإعداد",
+      "already_have_account": "هل لديك حساب بالفعل؟"
+    }
   },
   "status": {
     "success": {
-      "operation_completed": "تم إكمال العملية بنجاح",
+      "operation_completed": "تمت العملية بنجاح",
       "default": "العملية ناجحة"
     },
     "error": {
-      "bad_request": "طلب غير صحيح. يرجى التحقق من المدخلات",
-      "unauthorized": "غير مصرح. يرجى التحقق من بيانات الاعتماد",
-      "forbidden": "ممنوع. ليس لديك إذن لهذا الإجراء",
-      "not_found": "المورد غير موجود",
-      "conflict": "اسم المستخدم أو البريد الإلكتروني مستخدم بالفعل",
-      "server_error": "خطأ في الخادم الداخلي. يرجى المحاولة مرة أخرى لاحقاً",
-      "service_unavailable": "الخدمة غير متاحة مؤقتاً",
-      "client_default": "حدث خطأ في العميل",
-      "server_default": "حدث خطأ في الخادم",
-      "unexpected": "حدث خطأ غير متوقع"
+      "internal_server_error": "خطأ داخلي في الخادم. يرجى المحاولة مرة أخرى لاحقًا",
+      "not_implemented": "هذه الميزة لم يتم تنفيذها بعد",
+      "too_many_requests": "عدد كبير جدًا من الطلبات. يرجى المحاولة مرة أخرى لاحقًا",
+      "bad_gateway": "بوابة سيئة. يرجى المحاولة مرة أخرى",
+      "service_unavailable": "الخدمة غير متاحة مؤقتًا",
+      "gateway_timeout": "انتهت مهلة البوابة. يرجى المحاولة مرة أخرى",
+      "method_not_allowed": "الطريقة غير مسموح بها",
+      "invalid_request": "طلب غير صالح",
+      "validation_error": "خطأ في التحقق",
+      "unknown_error": "خطأ غير معروف",
+      "unexpected": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى",
+      "not_found": "خطأ: لم يتم العثور على",
+      "auth": {
+        "invalid_credentials": "بريد إلكتروني أو كلمة مرور غير صالحة",
+        "account_deactivated": "تم إلغاء تنشيط حسابك",
+        "email_not_verified": "يرجى التحقق من بريدك الإلكتروني قبل تسجيل الدخول",
+        "invalid_refresh_token": "رمز التحديث غير صالح. يرجى تسجيل الدخول مرة أخرى",
+        "no_token_provided": "لم يتم تقديم رمز المصادقة",
+        "invalid_token": "رمز مصادقة غير صالح",
+        "user_already_exists": "يوجد حساب بهذا البريد الإلكتروني بالفعل",
+        "email_already_verified": "هذا البريد الإلكتروني تم التحقق منه بالفعل",
+        "user_not_found": "المستخدم غير موجود",
+        "invalid_verification_token": "رابط التحقق غير صالح أو منتهي الصلاحية",
+        "expired_verification_token": "انتهت صلاحية رابط التحقق. يرجى طلب رابط جديد",
+        "invalid_reset_token": "رابط إعادة تعيين كلمة المرور غير صالح أو منتهي الصلاحية",
+        "expired_reset_token": "انتهت صلاحية رابط إعادة تعيين كلمة المرور. يرجى طلب رابط جديد",
+        "google_auth_failed": "فشل مصادقة جوجل. يرجى المحاولة مرة أخرى",
+        "google_user_info_failed": "فشل الحصول على معلومات المستخدم من جوجل",
+        "invalid_otp": "رمز OTP غير صالح",
+        "unauthorized": "غير مصرح به",
+        "sms_send_failed": "فشل إرسال رمز التحقق. يرجى التحقق من رقم هاتفك أو المحاولة مرة أخرى لاحقًا.",
+        "otp_expired": "انتهت صلاحية رمز التحقق. يرجى طلب رمز جديد",
+        "phone_already_in_use": "رقم الهاتف هذا مسجل بالفعل لحساب آخر"
+      },
+      "user": {
+        "not_found": "المستخدم غير موجود",
+        "email_already_in_use": "هذا البريد الإلكتروني مستخدم بالفعل",
+        "username_already_in_use": "اسم المستخدم هذا محجوز بالفعل",
+        "invalid_data": "تم تقديم بيانات مستخدم غير صالحة",
+        "cannot_update_email": "لا يمكن تحديث البريد الإلكتروني",
+        "invalid_role": "دور المستخدم غير صالح",
+        "cannot_change_own_role": "لا يمكنك تغيير دورك الخاص",
+        "insufficient_permissions": "ليس لديك إذن لتنفيذ هذا الإجراء",
+        "already_active": "المستخدم نشط بالفعل",
+        "already_deactivated": "المستخدم غير نشط بالفعل",
+        "cannot_deactivate_self": "لا يمكنك إلغاء تنشيط حسابك الخاص",
+        "invalid_profile_data": "بيانات الملف الشخصي غير صالحة",
+        "update_failed": "فشل تحديث المستخدم"
+      },
+      "gym": {
+        "not_found": "الصالة الرياضية غير موجودة",
+        "create_failed": "فشل إنشاء الصالة الرياضية",
+        "fetch_failed": "فشل جلب الصالات الرياضية",
+        "fetch_my_failed": "فشل جلب صالاتك الرياضية",
+        "fetch_member_failed": "فشل جلب الصالات الرياضية التي أنت عضو فيها",
+        "fetch_all_my_failed": "فشل جلب جميع صالاتك الرياضية",
+        "update_failed": "فشل تحديث الصالة الرياضية",
+        "delete_failed": "فشل حذف الصالة الرياضية"
+      },
+      "subscription": {
+        "not_found": "الاشتراك غير موجود",
+        "create_failed": "فشل إنشاء الاشتراك",
+        "fetch_failed": "فشل جلب الاشتراكات",
+        "update_failed": "فشل تحديث الاشتراك",
+        "cancel_failed": "فشل إلغاء الاشتراك",
+        "cancel_limit_exceeded": "لقد وصلت إلى الحد اليومي للإلغاء. يرجى المحاولة مرة أخرى غدًا."
+      },
+      "member": {
+        "not_found": "العضو غير موجود",
+        "fetch_failed": "فشل جلب الأعضاء",
+        "update_failed": "فشل تحديث العضو",
+        "delete_failed": "فشل حذف العضو",
+        "profile_fetch_failed": "فشل جلب ملف تعريف العضو"
+      },
+      "plan": {
+        "not_found": "الخطة غير موجودة"
+      },
+      "history": {
+        "fetch_error": "فشل جلب السجل"
+      },
+      "payment": {
+        "checkout_creation_failed": "فشل إنشاء عملية الدفع. يرجى المحاولة مرة أخرى.",
+        "checkout_not_found": "لم يتم العثور على جلسة الدفع. يرجى بدء عملية دفع جديدة.",
+        "subscription_checkout_failed": "فشل معالجة عملية دفع الاشتراك. يرجى المحاولة مرة أخرى.",
+        "price_not_configured": "التسعير غير مكوّن لهذه الخطة. يرجى الاتصال بالدعم.",
+        "payment_failed": "تم رفض الدفع. يرجى التحقق من تفاصيل الدفع والمحاولة مرة أخرى.",
+        "payment_processing_error": "حدث خطأ أثناء معالجة دفعتك. يرجى المحاولة مرة أخرى لاحقًا.",
+        "invalid_payment_method": "طريقة الدفع هذه غير مدعومة. يرجى استخدام بطاقة الذهبية أو CIB.",
+        "webhook_signature_invalid": "فشل التحقق من الدفع. يرجى الاتصال بالدعم إذا تم خصم المبلغ منك.",
+        "webhook_processing_error": "خطأ في معالجة الدفع. يرجى الاتصال بالدعم إذا تم خصم المبلغ منك.",
+        "fetch_error": "فشل جلب الدفع",
+        "not_found": "الدفع غير موجود",
+        "update_error": "فشل تحديث الدفع",
+        "cancel_error": "فشل إلغاء الدفع"
+      },
+      "attendance": {
+        "fetch_error": "فشل جلب سجلات الحضور"
+      },
+      "staff": {
+        "already_exists": "المستخدم هو بالفعل عضو فريق عمل في هذا الجيم",
+        "add_failed": "فشل إضافة عضو فريق العمل",
+        "update_failed": "فشل تحديث عضو فريق العمل",
+        "delete_failed": "فشل إزالة عضو فريق العمل",
+        "fetch_failed": "فشل جلب أعضاء فريق العمل",
+        "member_already_exists": "هذا المستخدم هو بالفعل عضو في هذا الجيم. يرجى إزالة عضويته أولاً أو استخدام بريد إلكتروني/هاتف مختلف."
+      },
+      "coach": {
+        "fetch_error": "فشل تحميل المدربين",
+        "request_failed": "فشل إرسال الطلب إلى المدرب",
+        "request_fetch_error": "فشل تحميل طلبات التدريب الخاصة بك",
+        "not_found": "المدرب غير موجود",
+        "request_already_exists": "لديك بالفعل طلب وصول مدرب قيد المراجعة.",
+        "request_limit_reached": "يمكنك إرسال طلب وصول مدرب واحد فقط كل 24 ساعة."
+      },
+      "session": {
+        "not_found": "الجلسة غير موجودة",
+        "create_failed": "فشل إنشاء الجلسة",
+        "update_failed": "فشل تحديث الجلسة",
+        "delete_failed": "فشل حذف الجلسة",
+        "fetch_failed": "فشل جلب الجلسات",
+        "time_conflict": "تعارض في الوقت"
+      },
+      "affiliation": {
+        "not_found": "الانتساب غير موجود",
+        "create_failed": "فشل إنشاء الانتساب",
+        "update_failed": "فشل تحديث الانتماء",
+        "delete_failed": "فشل حذف الانتماء",
+        "fetch_failed": "فشل جلب الانتماءات",
+        "already_exists": "الانتماء موجود بالفعل",
+        "request_limit_reached": "يمكنك طلب الانضمام إلى هذا الجيم مرة واحدة فقط كل 24 ساعة.",
+        "invalid_action": "إجراء غير صالح"
+      },
+      "class": {
+        "not_found": "لم يتم العثور على الحصة",
+        "full": "الحصة محجوزة بالكامل",
+        "already_booked": "لقد حجزت هذه الحصة بالفعل",
+        "create_failed": "فشل إنشاء الحصة",
+        "update_failed": "فشل تحديث الحصة",
+        "delete_failed": "فشل حذف الحصة",
+        "booking_error": "فشل معالجة حجز الحصة",
+        "cancelClassTitle": "إلغاء الحصة",
+        "confirmCancelClassText": "هل أنت متأكد أنك تريد إلغاء هذه الحصة؟ سيتم إخطار جميع الأعضاء المسجلين.",
+        "cancelClassBtn": "إلغاء الحصة",
+        "coach_not_available": "المدرب غير متاح خلال هذا الوقت",
+        "already_passed": "لقد بدأت هذه الحصة أو انتهت بالفعل",
+        "plan_access_denied": "خطتك الحالية لا تتضمن الوصول إلى هذا النوع من الحصص"
+      }
     }
   },
   "errors": {
     "name_required": "الاسم مطلوب",
     "email_required": "البريد الإلكتروني مطلوب",
-    "email_invalid": "يرجى إدخال بريد إلكتروني صحيح",
+    "email_invalid": "الرجاء إدخال بريد إلكتروني صالح",
     "password_required": "كلمة المرور مطلوبة",
-    "password_length": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+    "password_length": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
     "password_mismatch": "كلمات المرور غير متطابقة",
-    "signup_failed": "فشل التسجيل. يرجى المحاولة مرة أخرى.",
-    "network_error": "خطأ في الشبكة. يرجى التحقق من الاتصال."
+    "welcome": "مرحباً بك في جيم برو"
   },
-  "footer": {
-    "copyright": "© 2024 GymPro. جميع الحقوق محفوظة."
+  "sidebar": {
+    "home": "الرئيسية",
+    "gyms": "الصالات الرياضية",
+    "dashboard": "لوحة التحكم",
+    "members": "الأعضاء",
+    "subscriptions": "الاشتراكات",
+    "coaching": "التدريب",
+    "subscription": "الاشتراك",
+    "payments": "المدفوعات",
+    "analytics": "التحليلات",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "pricing": "التسعير",
+    "services_pricing": "الخدمات والتسعير",
+    "pricing_plans": "خطط التسعير",
+    "access": "الوصول",
+    "staff": "الموظفون",
+    "clients": "العملاء",
+    "schedule": "الجدول الزمني",
+    "training": "التدريب",
+    "programs": "البرامج",
+    "announcements": "الإعلانات",
+    "marketing": "التسويق",
+    "exercises": "التمارين",
+    "coaches": "المدربون",
+    "progress": "التقدم",
+    "attendance": "الحضور",
+    "manageAccount": "إدارة الحساب",
+    "manageGym": "إدارة الصالة الرياضية",
+    "manageGyms": "إدارة الصالات الرياضية",
+    "manageMembers": "إدارة الأعضاء",
+    "manageSubscriptions": "خطط الاشتراك",
+    "manageCoaching": "التدريب والبرامج",
+    "managePayments": "المدفوعات والفواتير",
+    "viewAnalytics": "التحليلات والتقارير",
+    "viewNotifications": "الإشعارات والتنبيهات",
+    "customizeSettings": "إعدادات التطبيق",
+    "revenue": "الإيرادات",
+    "users": "المستخدمون",
+    "alerts": "التنبيهات",
+    "reports": "التقارير",
+    "competitions": "المسابقات",
+    "classes": "الفصول",
+    "inventory": "المخزون",
+    "store": "المتجر",
+    "support": "الدعم",
+    "pin": "تثبيت ",
+    "unpin": "إلغاء التثبيت "
+  },
+  "dashboard": {
+    "member": "عضو",
+    "manager": "مدير",
+    "coach": "مدرب",
+    "coachAccessDescription": "طلب الوصول إلى لوحة تحكم المدرب",
+    "coachAccessTitle": "طلب الوصول إلى لوحة تحكم المدرب",
+    "certificationFiles": "ملفات الشهادات",
+    "fileDescriptionPlaceholder": "أدخل وصف الملف",
+    "uploadFile": "تحميل ملف",
+    "socialMediaLinks": "روابط وسائل التواصل الاجتماعي",
+    "socialMediaLinksPlaceholder": "أدخل روابط وسائل التواصل الاجتماعي",
+    "requestTimeout": "تم إرسال الطلب بنجاح",
+    "certificationDetails": "تفاصيل الشهادة",
+    "certificationPlaceholder": "مثال: مدرب شخصي معتمد من ACE، NASM-CPT",
+    "requestCoachAccess": "طلب الوصول كمدرب",
+    "errors": {
+      "certificationRequired": "تفاصيل الشهادة مطلوبة",
+      "documentsRequired": "الرجاء تحميل ملف شهادة واحد على الأقل"
+    }
+  },
+  "subscriptions": {
+    "title": "الاشتراكات",
+    "subtitle": "إدارة اشتراكك في التطبيق والفوترة",
+    "no_subscription": "لا يوجد اشتراك نشط",
+    "current_subscription": "الاشتراك الحالي",
+    "status": "الحالة",
+    "renews_on": "يتجدد في",
+    "gyms_count": "المواقع",
+    "billing_email": "البريد الإلكتروني للفوترة",
+    "footer_info": "هل تحتاج مساعدة؟ \n اتصل بنا",
+    "no_plans_available": "لا توجد خطط متاحة"
+  },
+  "gymSubscriptions": {
+    "pageTitle": "الاشتراكات",
+    "pageSubtitle": "إدارة اشتراكات صالتك الرياضية",
+    "emptyFiltered": "حاول تعديل عوامل التصفية الخاصة بك",
+    "emptyDesc": "أضف أعضاء لمشاهدة اشتراكاتهم",
+    "search": "البحث عن الأعضاء...",
+    "noSubscription": "لا يوجد اشتراك",
+    "empty": "لم يتم العثور على اشتراكات",
+    "table": {
+      "member": "العضو",
+      "type": "النوع",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "remaining": "المتبقي",
+      "status": "الحالة"
+    }
+  },
+  "access": {
+    "title": "التحكم بالوصول",
+    "subtitle": "مراقبة دخول الصالة الرياضية والتحقق من وصول الأعضاء",
+    "view_access_logs": "عرض سجلات الوصول",
+    "scanner": {
+      "title": "ماسح رمز الاستجابة السريعة",
+      "instruction": "ضع رمز QR الخاص بالعضو داخل الإطار",
+      "camera_permission": "إذن الكاميرا مطلوب لمسح رموز QR",
+      "no_camera": "لم يتم الكشف عن كاميرا",
+      "scanning": "جاري المسح...",
+      "stop": "إيقاف الماسح الضوئي",
+      "start": "بدء الماسح الضوئي",
+      "initializing": "تهيئة الكاميرا...",
+      "error_camera": "تعذر الوصول إلى الكاميرا. يرجى التأكد من أنها لا تُستخدم بواسطة تطبيق آخر.",
+      "error_title": "خطأ في الكاميرا",
+      "retry": "إعادة محاولة الاتصال",
+      "mirrored": "معكوسة",
+      "normal": "عرض عادي"
+    },
+    "status": {
+      "granted": "تم منح الوصول",
+      "denied": "تم رفض الوصول",
+      "verifying": "جارٍ التحقق...",
+      "welcome": "مرحباً بك، {{name}}!",
+      "expiry": "تنتهي صلاحية العضوية في {{date}}",
+      "expiry_label": "صالح حتى",
+      "reason": "السبب: {{reason}}",
+      "invalid": "رمز QR غير صالح"
+    },
+    "logs": {
+      "title": "سجل الحضور",
+      "subtitle": "مراقبة ومراجعة حضور الصالة الرياضية",
+      "search_placeholder": "البحث باسم العضو...",
+      "filter_all": "جميع السجلات",
+      "filter_granted": "الممنوحة فقط",
+      "filter_denied": "المرفوضة فقط",
+      "name": "العضو",
+      "time": "الوقت",
+      "status": "الحالة",
+      "empty": "لا توجد سجلات وصول حديثة",
+      "empty_desc": "ستظهر سجلات الوصول هنا بعد تسجيل دخول الأعضاء"
+    }
   },
   "onboarding": {
     "welcome": {
-      "title": "مرحباً بك في جيم برو",
-      "subtitle": "حل إدارة الصالة الرياضية الشامل",
-      "description": "قم بتبسيط عمليات صالة الرياضة الخاصة بك باستخدام أدوات الإدارة القوية المصممة لأصحاب الصالات الرياضية والمدربين والأعضاء."
+      "title": "مرحباً بك في GymPro",
+      "subtitle": "دعنا نجهزك في بضع خطوات فقط.",
+      "start": "لنبدأ"
     },
-    "features": {
-      "title": "ميزات قوية",
-      "subtitle": "كل ما تحتاجه لإدارة صالة الرياضة",
-      "memberManagement": {
-        "title": "إدارة الأعضاء",
-        "description": "إدارة ملفات الأعضاء والاشتراكات وتتبع تقدمهم بسهولة"
-      },
-      "coaching": {
-        "title": "نظام التدريب",
-        "description": "تعيين مدربين للأعضاء وإنشاء برامج تدريبية شخصية"
-      },
-      "payments": {
-        "title": "معالجة المدفوعات",
-        "description": "التعامل مع الاشتراكات والمدفوعات مع طرق الدفع الجزائرية المدمجة"
-      },
-      "analytics": {
-        "title": "التحليلات والتقارير",
-        "description": "احصل على رؤى حول أداء صالة الرياضة مع تحليلات مفصلة"
-      }
+    "questions": {
+      "isOwner": "هل أنت صاحب صالة رياضية؟",
+      "gymName": "ما هو اسم صالتك الرياضية؟",
+      "isCoach": "هل أنت مدرب محترف؟",
+      "experience": "كم سنة من الخبرة لديك؟",
+      "username": "كيف يجب أن نناديك؟",
+      "age": "كم عمرك؟",
+      "gender": "ما هو جنسك؟",
+      "bio": "أخبرنا قليلاً عن نفسك",
+      "certifications": "ما هي شهاداتك؟",
+      "socialLinks": "أضف روابط وسائل التواصل الاجتماعي الخاصة بك",
+      "gymAddress": "ما هو عنوان النادي الرياضي؟"
     },
-    "roles": {
-      "title": "اختر دورك",
-      "subtitle": "حدد كيفية استخدام جيم برو",
-      "owner": {
-        "title": "مالك الصالة الرياضية",
-        "description": "وصول كامل لجميع الميزات وإدارة الأعضاء"
-      },
-      "coach": {
-        "title": "مدرب",
-        "description": "إدارة أعضائك وإنشاء برامج تدريبية"
-      },
-      "member": {
-        "title": "عضو",
-        "description": "تتبع اشتراكك وتقدمك في التدريب"
-      }
+    "placeholders": {
+      "gymName": "أدخل اسم النادي الرياضي",
+      "experience": "أدخل سنوات الخبرة",
+      "username": "أدخل اسمك",
+      "age": "أدخل عمرك",
+      "bio": "اجعلها قصيرة ومختصرة...",
+      "certifications": "مثال: NASM, ISSA (اضغط إدخال للإضافة)",
+      "socialLinks": "https://instagram.com/... (اضغط إدخال)",
+      "gymAddress": "123 شارع اللياقة"
     },
-    "getStarted": {
-      "title": "مستعد للبدء؟",
-      "subtitle": "انضم إلى آلاف أصحاب الصالات الرياضية الذين يثقون في جيم برو",
-      "description": "ابدأ في إدارة صالة الرياضة بكفاءة أكبر اليوم"
+    "settings": {
+      "name": "pages.admin.settings",
+      "link": "/admin/settings"
     },
-    "skip": "تخطي",
-    "next": "التالي",
-    "getStartedAction": "ابدأ الآن",
-    "previous": "السابق",
-    "select_role": "اختر دورك",
-    "role_member": "عضو",
-    "role_manager": "مدير/مالك",
-    "role_coach": "مدرب",
-    "role_member_desc": "الوصول إلى اشتراكك وبرامجك وإشعاراتك.",
-    "role_manager_desc": "إدارة صالة الرياضة والأعضاء والمدربين والمدفوعات.",
-    "role_coach_desc": "إدارة أعضائك المدربين وبرامجهم.",
-    "member_details": "تفاصيل العضو",
-    "manager_details": "تفاصيل المدير/المالك",
-    "coach_details": "تفاصيل المدرب",
-    "confirmation": "التأكيد",
-    "selected_role": "الدور المحدد",
-    "finish": "إنهاء",
-    "step_role": "الدور",
-    "step_details": "التفاصيل",
-    "step_confirmation": "التأكيد",
+    "options": {
+      "male": "ذكر",
+      "female": "أنثى"
+    },
+    "actions": {
+      "yes": "نعم",
+      "no": "لا",
+      "next": "التالي",
+      "previous": "رجوع",
+      "finish": "إنهاء",
+      "skip": "تخطي حالياً",
+      "detectLocation": "اكتشاف موقعي"
+    },
+    "location": {
+      "title": "أين يقع موقعك؟",
+      "subtitle": "نستخدم هذا لربطك بالنوادي الرياضية والأعضاء القريبين.",
+      "addressPlaceholder": "عنوان الشارع",
+      "cityPlaceholder": "المدينة",
+      "countryPlaceholder": "الدولة",
+      "detecting": "جاري الاكتشاف...",
+      "detected": "تم اكتشاف الموقع بنجاح!",
+      "error": "تعذر اكتشاف الموقع. يرجى الإدخال يدوياً.",
+      "permissionDenied": "تم رفض إذن الموقع."
+    },
     "regionCurrency": {
-      "title": "ح&#1583;&#1583; منطقتك",
-      "subtitle": "يساعدنا هذا في توفير أسعار دقيقة",
+      "title": "اختر منطقتك",
       "defaultCurrency": "العملة الافتراضية",
       "region": "المنطقة",
-      "currencyLockInfo": "يمكنك تغيير منطقتك أدناه. سيتم قفل العملة بعد التأكيد.",
-      "selectRegion": "اختر منطقتك",
-      "confirm": "تأكيد"
+      "confirm": "تأكيد",
+      "detecting": "جاري اكتشاف منطقتك...",
+      "detected": "تم اكتشاف المنطقة تلقائياً",
+      "detectLocation": "اكتشاف موقعي",
+      "info": "تأكد من اختيار منطقتك الصحيحة لتجنب أي مشاكل مع خدماتنا."
+    }
+  },
+  "role": {
+    "owner": "مالك",
+    "manager": "مدير",
+    "member": "عضو",
+    "coach": "مدرب",
+    "staff": "موظف"
+  },
+  "gyms": {
+    "title": "إدارة الصالات الرياضية",
+    "subtitle": "إدارة مواقع الصالات الرياضية والإعدادات الخاصة بك",
+    "create_title": "نمّ عملك",
+    "create_desc": "أضف موقع صالة رياضية جديد لتوسيع نطاق وصولك وإدارة المزيد من الأعضاء.",
+    "create_button": "إنشاء صالة رياضية جديدة",
+    "your_gyms": "صالاتك الرياضية",
+    "no_gyms": "لم يتم العثور على صالات رياضية",
+    "no_gyms_desc": "ليس لديك أي صالات رياضية بعد.",
+    "search_placeholder": "البحث بالاسم أو الموقع...",
+    "discover_title": "اكتشف الصالات الرياضية",
+    "discover_subtitle": "ابحث عن صالات رياضية جديدة في منطقتك وانضم إليها",
+    "filter_city": "المدينة",
+    "filter_gender": "الجنس",
+    "filter_services": "الخدمات",
+    "gender_all": "جميع الأجناس",
+    "gender_mixed": "مختلط",
+    "gender_female_only": "للإناث فقط",
+    "service_gym": "دخول الصالة الرياضية",
+    "service_cardio": "كارديو",
+    "service_crossfit": "كروس فيت",
+    "service_swimming": "سباحة",
+    "status_open": "مفتوح",
+    "status_closed": "مغلق",
+    "status_pending": "معلق",
+    "status_joined": "منضم",
+    "request_success": "تم إرسال طلب الانضمام بنجاح!",
+    "request_error": "فشل إرسال طلب الانضمام. يرجى المحاولة مرة أخرى.",
+    "already_pending": "لديك بالفعل طلب معلق لهذه الصالة الرياضية.",
+    "already_joined": "أنت بالفعل عضو في هذه الصالة الرياضية.",
+    "join_confirm_title": "هل تريد الانضمام إلى {{name}}؟",
+    "join_confirm_text": "هل ترغب في إرسال طلب انضمام إلى هذه الصالة الرياضية؟ بمجرد الموافقة، ستتمكن من الوصول إلى خدماتهم وبرامجهم.",
+    "no_address": "لم يتم توفير عنوان",
+    "members_count": "الأعضاء",
+    "no_city": "لا توجد مدينة",
+    "cities_all": "جميع المدن",
+    "manage": "إدارة الصالة الرياضية"
+  },
+  "gymCard": {
+    "activeStatus": "● نشط",
+    "inactiveStatus": "○ غير نشط",
+    "location": "الموقع",
+    "noAddress": "لم يتم توفير عنوان",
+    "contact": "الاتصال",
+    "noPhone": "لا يوجد هاتف",
+    "members": "الأعضاء",
+    "activeMembers": "أعضاء نشطون",
+    "website": "الموقع الإلكتروني",
+    "manageGym": "إدارة الصالة الرياضية",
+    "joinGym": "الانضمام إلى الصالة الرياضية",
+    "viewSettings": "عرض الإعدادات",
+    "back": "← العودة إلى النظرة العامة",
+    "settingsTitle": "تفاصيل وإعدادات الصالة الرياضية",
+    "basicInfo": "المعلومات الأساسية",
+    "gymId": "معرف الصالة الرياضية",
+    "ownerName": "اسم المالك",
+    "ownerId": "معرف المالك",
+    "timezone": "المنطقة الزمنية",
+    "currency": "العملة",
+    "settings": "الإعدادات",
+    "paymentMethods": "طرق الدفع",
+    "customSubscriptions": "الاشتراكات المخصصة",
+    "notifications": "الإشعارات",
+    "renewalReminder": "أيام تذكير التجديد",
+    "workingHours": "ساعات العمل",
+    "mixedTraining": "تدريب مختلط",
+    "femaleOnlyHours": "ساعات مخصصة للإناث فقط",
+    "servicesOffered": "الخدمات المقدمة",
+    "memberStats": "إحصائيات الأعضاء",
+    "totalMembers": "الإجمالي",
+    "checkedIn": "تم تسجيل الدخول",
+    "activeSubscriptions": "نشط",
+    "expiredSubscriptions": "منتهي الصلاحية",
+    "pendingApproval": "قيد الانتظار",
+    "appSubscription": "اشتراك التطبيق",
+    "subscriptionType": "النوع",
+    "subscriptionStatus": "الحالة",
+    "viewMoreDetails": "عرض التفاصيل"
+  },
+  "create_gym": {
+    "title": "إنشاء صالتك الرياضية",
+    "subtitle": "قم بإعداد صالتك الرياضية في بضع خطوات فقط وابدأ في إدارة كل شيء في مكان واحد",
+    "step": "الخطوة",
+    "success": "تم إنشاء صالتك الرياضية بنجاح!",
+    "error": "تعذر إنشاء الصالة الرياضية الآن، يرجى المحاولة مرة أخرى لاحقًا",
+    "steps": {
+      "step": "خطوة",
+      "basic": {
+        "title": "المعلومات الأساسية",
+        "description": "أخبرنا عن صالتك الرياضية"
+      },
+      "location": {
+        "title": "الموقع",
+        "description": "أين تقع صالتك الرياضية؟"
+      },
+      "contact": {
+        "title": "التواصل",
+        "description": "كيف يمكن للناس التواصل معك؟"
+      }
+    },
+    "form": {
+      "name_label": "اسم الصالة الرياضية*",
+      "name_placeholder": "أدخل اسم صالتك الرياضية",
+      "slogan_label": "شعار",
+      "slogan_placeholder": "عبارة جذابة تصف صالتك الرياضية",
+      "address_label": "عنوان الشارع",
+      "address_placeholder": "123 الشارع الرئيسي",
+      "city_label": "المدينة",
+      "city_placeholder": "أدخل المدينة",
+      "state_label": "الولاية/المقاطعة",
+      "state_placeholder": "أدخل الولاية أو المقاطعة",
+      "country_label": "البلد",
+      "country_placeholder": "أدخل البلد",
+      "phone_label": "رقم الهاتف",
+      "phone_placeholder": "+1 (555) 123-4567",
+      "email_label": "البريد الإلكتروني",
+      "email_placeholder": "contact@yourgym.com",
+      "website_label": "الموقع الإلكتروني",
+      "website_placeholder": "أدخل رابط موقعك الإلكتروني",
+      "submit": "إنشاء",
+      "submiting": "جاري الإنشاء...",
+      "using_map": "باستخدام الخريطة",
+      "manual_entry": "إدخال يدوي",
+      "click_map_hint": "انقر على الخريطة لتحديد الموقع",
+      "manual_entry_hint": "أدخل تفاصيل العنوان يدويًا",
+      "loading_address": "جاري تحميل العنوان...",
+      "use_current_location": "استخدام موقعي الحالي",
+      "auto_populated": "تم ملؤها تلقائيًا من الخريطة:",
+      "creating": "جاري الإنشاء...",
+      "duplicate_name_error": "لقد أنشأت بالفعل صالة رياضية بهذا الاسم. يرجى اختيار اسم مختلف."
+    },
+    "tips": {
+      "title": "نصيحة احترافية",
+      "description": "يمكنك دائمًا تحديث هذه التفاصيل لاحقًا من إعدادات صالتك الرياضية. لا تقلق بشأن جعل كل شيء مثاليًا الآن!"
+    }
+  },
+  "profile": {
+    "defaultName": "مستخدم",
+    "defaultEmail": "user@example.com",
+    "menu": {
+      "profile": {
+        "label": "الملف الشخصي",
+        "description": "عرض وتعديل ملفك الشخصي"
+      },
+      "settings": {
+        "label": "الإعدادات",
+        "description": "إدارة تفضيلاتك"
+      },
+      "memberships": {
+        "label": "العضويات",
+        "description": "عرض عضوياتك في النادي الرياضي"
+      },
+      "becomeCoach": {
+        "label": "كن مدربًا",
+        "description": "طلب صلاحية مدرب"
+      },
+      "logout": "تسجيل الخروج"
+    },
+    "edit": {
+      "title": "تعديل الملف الشخصي",
+      "subtitle": "تحديث معلوماتك الشخصية",
+      "personal_info": "المعلومات الشخصية",
+      "contact_info": "معلومات الاتصال",
+      "address_info": "معلومات العنوان",
+      "full_name": "الاسم الكامل",
+      "full_name_placeholder": "أدخل اسمك الكامل",
+      "username": "اسم المستخدم",
+      "username_placeholder": "أدخل اسم المستخدم الخاص بك",
+      "age": "العمر",
+      "age_placeholder": "أدخل عمرك",
+      "gender": "الجنس",
+      "select_gender": "اختر الجنس",
+      "male": "ذكر",
+      "female": "أنثى",
+      "other": "أخرى",
+      "email": "البريد الإلكتروني",
+      "email_placeholder": "أدخل بريدك الإلكتروني",
+      "phone": "رقم الهاتف",
+      "phone_placeholder": "أدخل رقم هاتفك",
+      "address": "العنوان",
+      "address_placeholder": "أدخل عنوانك",
+      "city": "المدينة",
+      "city_placeholder": "أدخل المدينة",
+      "state": "الولاية",
+      "state_placeholder": "أدخل الولاية",
+      "country": "البلد",
+      "country_placeholder": "أدخل البلد",
+      "save_changes": "حفظ التغييرات"
+    }
+  },
+  "services": {
+    "add": "إضافة خدمة",
+    "editTitle": "تعديل الخدمة",
+    "createTitle": "إضافة خدمة",
+    "modalDesc": "حدد خدمة تقدمها في صالة الألعاب الرياضية الخاصة بك",
+    "form": {
+      "name": "اسم الخدمة",
+      "placeholder": "مثال: يوغا، تمارين عالية الشدة، ساونا"
+    },
+    "deleteSuccess": "تم حذف الخدمة بنجاح",
+    "deleteError": "فشل حذف الخدمة",
+    "duplicateError": "الخدمة موجودة بالفعل",
+    "updateSuccess": "تم تحديث الخدمة بنجاح",
+    "createSuccess": "تم إنشاء الخدمة بنجاح",
+    "saveError": "فشل حفظ الخدمة",
+    "confirmDelete": {
+      "title": "حذف الخدمة؟",
+      "message": "هل أنت متأكد أنك تريد حذف هذه الخدمة؟ قد يؤثر ذلك على الفصول أو الخطط الحالية."
+    },
+    "noData": {
+      "title": "لم تتم إضافة خدمات",
+      "desc": "أضف خدمات مثل 'دخول الصالة الرياضية'، 'اليوغا'، أو 'الساونا' للبدء."
     }
   },
   "notifications": {
     "title": "الإشعارات",
     "pageTitle": "الإشعارات",
-    "pageSubtitle": "ابق على اطلاع بالأحداث الهامة",
+    "pageSubtitle": "ابقَ على اطلاع بأهم الأحداث",
     "new": "جديد",
     "viewAll": "عرض جميع الإشعارات",
-    "empty": "لا توجد إشعارات",
-    "emptyDesc": "أنت متابع لكل شيء!",
-    "markAllRead": "تحديد الكل كمقروء",
-    "markAsRead": "تحديد كمقروء",
-    "search": "بحث في الإشعارات...",
-    "unreadOnly": "غير المقروءة",
-    "unread": "غير مقروءة",
-    "read": "مقروءة",
+    "empty": "لم يتم العثور على إشعارات",
+    "emptyDesc": "أنت على اطلاع دائم!",
+    "markAllRead": "وضع علامة 'مقروء' على الكل",
+    "markAsRead": "وضع علامة 'مقروء'",
+    "search": "البحث في الإشعارات...",
+    "unreadOnly": "غير مقروءة",
+    "unread": "غير مقروء",
+    "read": "مقروء",
     "table": {
       "type": "النوع",
       "message": "المحتوى",
       "date": "التاريخ",
       "status": "الحالة"
+    },
+    "invitationTitle": "دعوة النادي الرياضي",
+    "invitationMessage": "{{gymName}} دعاك للانضمام كمدرب. إذا قبلت، ستتمكن من الوصول إلى دليل الأعضاء ونظام الجدولة ومرافق النادي الرياضي. إذا رفضت، سيتم تجاهل الدعوة ويمكنك طلب الانضمام مرة أخرى لاحقًا.",
+    "invitationAccepted": "تم قبول الدعوة بنجاح",
+    "invitationDeclined": "تم رفض الدعوة بنجاح"
+  },
+  "settings": {
+    "banners": {
+      "title": "إعلانات النظام",
+      "description": "إدارة اللافتات والتنبيهات العامة المعروضة لجميع المستخدمين.",
+      "empty": "لم يتم العثور على لافتات نشطة.",
+      "emptyDesc": "أنشئ أول لافتة لك لعرض الإعلانات عبر التطبيق.",
+      "noticeText": "نص الإشعار هنا",
+      "content": "المحتوى والترجمات",
+      "autoTranslate": "ترجمة تلقائية",
+      "en": "الإنجليزية (أساسي)",
+      "ar": "العربية (ar)",
+      "fr": "الفرنسية (fr)",
+      "appearance": "المظهر",
+      "variant": "النوع",
+      "customColor": "تجاوز اللون المخصص",
+      "behavior": "السلوك والإجراءات",
+      "allowDismissal": "السماح بالرفض",
+      "allowDismissalDesc": "يمكن للمستخدمين إغلاق هذه اللافتة",
+      "reappearAfter": "إعادة الظهور بعد (ساعات)",
+      "reappearDesc": "0 يعني تم الرفض بشكل دائم",
+      "actionType": "نوع الإجراء",
+      "activeDesc": "اجعل هذه اللافتة مرئية للمستخدمين فورًا",
+      "deleteTitle": "حذف اللافتة",
+      "deleteDesc": "هل أنت متأكد أنك تريد حذف هذه اللافتة؟ لا يمكن التراجع عن هذا الإجراء.",
+      "previewDesc": "هكذا ستظهر اللافتة في الجزء العلوي من التطبيق."
+    }
+  },
+  "memberProfile": {
+    "title": "ملف العضو",
+    "subtitle": "عرض اشتراك العضو وسجل الدفع",
+    "unknownMember": "عضو غير معروف",
+    "joinedAt": "انضم في",
+    "notFound": "العضو غير موجود",
+    "notFoundDesc": "العضو الذي تبحث عنه غير موجود أو تم حذفه.",
+    "idLabel": "معرف العضو",
+    "genderNotSpecified": "غير محدد",
+    "noEmail": "لم يتم تقديم بريد إلكتروني",
+    "noPhone": "لم يتم تقديم رقم هاتف",
+    "contactHidden": "معلومات الاتصال مخفية للخصوصية",
+    "transactionLedger": "سجل المعاملات",
+    "subscription": {
+      "title": "حالة الاشتراك",
+      "historyTitle": "سجل الاشتراكات",
+      "historySubtitle": "الخطط السابقة والحالية",
+      "type": "النوع",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "paymentMethod": "طريقة الدفع",
+      "handledBy": "تم التعامل بواسطه",
+      "notes": "ملاحظات",
+      "noHistory": "لم يتم العثور على سجل اشتراكات",
+      "noSubscription": "لا يوجد اشتراك نشط",
+      "noActivePlan": "لا توجد خطة نشطة",
+      "active": "نشط",
+      "expired": "منتهي الصلاحية",
+      "expiringSoon": "ينتهي قريباً",
+      "daysRemaining": "{{days}} يوم متبقٍ",
+      "expiredDays": "انتهت صلاحيته قبل {{days}} يوم",
+      "expiredMonths": "انتهت صلاحيته قبل {{months}} شهر و {{days}} يوم",
+      "planType": "نوع الخطة",
+      "currentPlan": "الخطة الحالية",
+      "until": "حتى",
+      "period": "فترة الاشتراك",
+      "price": "السعر",
+      "unknownType": "خطة غير معروفة",
+      "renew": "تجديد الاشتراك",
+      "extend": "تمديد الاشتراك",
+      "timeRemaining": "الوقت المتبقي",
+      "regular": "عضوية عادية",
+      "premium": "عضوية مميزة",
+      "remaining": "متبقٍ",
+      "addSubscription": "إضافة اشتراك",
+      "expirestoday": "ينتهي اليوم",
+      "expiresTomorrow": "ينتهي غداً",
+      "expiredYesterday": "انتهت صلاحيته أمس",
+      "expiresInDays": "ينتهي خلال {{days}} يوم"
+    },
+    "payments": {
+      "title": "سجل الدفعات",
+      "empty": "لا يوجد سجل دفعات",
+      "emptyDesc": "ستظهر الدفعات هنا عند تسجيلها",
+      "method": "طريقة الدفع",
+      "reference": "المرجع",
+      "completed": "مكتمل",
+      "pending": "معلق",
+      "failed": "فشل",
+      "refunded": "مسترد"
+    },
+    "noBio": "لا توجد سيرة ذاتية متاحة.",
+    "about": "حول",
+    "location": "الموقع",
+    "memberSince": "عضو منذ",
+    "status": "الحالة"
+  },
+  "coachProfile": {
+    "title": "ملف المدرب الشخصي",
+    "notFound": "المدرب غير موجود",
+    "notFoundDesc": "لم نتمكن من العثور على هذا المدرب. ربما تم حذفه أو الرابط غير صحيح.",
+    "unknownCoach": "مدرب غير معروف",
+    "verified": "تم التحقق",
+    "about": "نبذة عن",
+    "specializations": "التخصصات",
+    "certifications": "الشهادات",
+    "yearsExperience": "{{years}} سنوات خبرة",
+    "totalClients": "{{count}} عميل",
+    "noLocation": "الموقع غير محدد",
+    "requestCoaching": "طلب تدريب"
+  },
+  "analytics": {
+    "title": "رؤى الأعمال",
+    "subtitle": "تتبع الأداء عبر جميع مواقع صالات الألعاب الرياضية الخاصة بك",
+    "stats": {
+      "revenue": "إجمالي الإيرادات",
+      "members": "إجمالي الأعضاء",
+      "active": "الأعضاء النشطون",
+      "gyms": "إجمالي الصالات الرياضية",
+      "vsLastMonth": "مقارنة بالشهر الماضي"
+    },
+    "charts": {
+      "revenueTrend": "نمو الإيرادات",
+      "revenueTrendDesc": "الإيرادات الشهرية عبر جميع المواقع",
+      "distribution": "حالة العضوية",
+      "distributionDesc": "نظرة عامة على صحة العضوية الحالية"
+    },
+    "empty": {
+      "title": "الرؤى قيد التجهيز",
+      "desc": "بمجرد أن يكون لديك صالات رياضية نشطة ونشاط أعضاء، سنبدأ في عرض أداء عملك هنا.",
+      "action": "إدارة صالاتي الرياضية"
+    },
+    "gymHome": {
+      "title": "نظرة عامة على الصالة الرياضية",
+      "slogan": "شعار",
+      "address": "العنوان",
+      "hours": {
+        "title": "ساعات العمل",
+        "mixed": "جلسة مختلطة",
+        "menOnly": "للرجال فقط",
+        "womenOnly": "للنساء فقط",
+        "closed": "مغلق"
+      },
+      "stats": {
+        "occupancy": "الإشغال الحالي",
+        "totalMembers": "إجمالي الأعضاء",
+        "activeMembers": "الأعضاء النشطون",
+        "expiredMembers": "الأعضاء المنتهية عضويتهم"
+      },
+      "genderSplit": {
+        "title": "توزيع الجنسين",
+        "male": "ذكر",
+        "female": "أنثى",
+        "other": "أخرى"
+      },
+      "actions": {
+        "title": "إجراءات سريعة",
+        "checkin": "تسجيل دخول سريع",
+        "enroll": "عضو جديد",
+        "viewMembers": "عرض الأعضاء",
+        "report": "الإبلاغ عن مشكلة"
+      }
+    },
+    "gym": {
+      "title": "تحليلات الصالة الرياضية",
+      "subtitle": "تتبع الأداء ونشاط الأعضاء لهذا الموقع",
+      "stats": {
+        "totalMembers": "إجمالي الأعضاء",
+        "activeMembers": "الأعضاء النشطون",
+        "expiredMembers": "الأعضاء المنتهية عضويتهم",
+        "checkedIn": "تم تسجيل الدخول اليوم",
+        "occupancy": "معدل الإشغال"
+      },
+      "charts": {
+        "attendance": "اتجاه الحضور",
+        "attendanceDesc": "تسجيلات الدخول اليومية بمرور الوقت",
+        "genderDist": "توزيع الجنسين",
+        "genderDistDesc": "توزيع التركيبة السكانية للأعضاء"
+      }
+    }
+  },
+  "demo": {
+    "memberJoined": {
+      "label": "انضم عضو جديد",
+      "description": "انضم جون دو إلى صالتك الرياضية"
+    },
+    "paymentReceived": {
+      "label": "تم استلام الدفعة",
+      "description": "دفعة اشتراك بقيمة 50 دولارًا"
+    },
+    "membershipExpiring": {
+      "label": "العضوية على وشك الانتهاء",
+      "description": "تنتهي عضوية جين خلال 3 أيام"
+    }
+  },
+  "home": {
+    "manager": {
+      "title": "لوحة التحكم",
+      "subtitle": "مرحباً بعودتك! إليك نظرة عامة على عملك",
+      "header": {
+        "settings": "إعدادات العمل"
+      },
+      "profile": {
+        "title": "ملف المدير",
+        "businessName": "اسم العمل",
+        "accountStatus": "حالة الحساب",
+        "lastLogin": "آخر تسجيل دخول",
+        "viewProfile": "عرض الملف الشخصي",
+        "editProfile": "تعديل الملف الشخصي",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "location": "الموقع",
+        "noLocation": "لم يتم توفير موقع",
+        "memberSince": "عضو منذ",
+        "activeMemberships": "العضويات النشطة",
+        "gyms": "صالات رياضية",
+        "statusActive": "نشط",
+        "statusPending": "معلق",
+        "roles": {
+          "owner": "مالك",
+          "manager": "مدير",
+          "staff": "موظف",
+          "member": "عضو",
+          "coach": "مدرب",
+          "undefined": "غير محدد",
+          "unknown": "غير معروف"
+        },
+        "status": {
+          "active": "نشط",
+          "trial": "تجريبي",
+          "premium": "مميز",
+          "basic": "أساسي",
+          "free": "مجاني",
+          "freeTrial": "تجربة مجانية",
+          "cancelled": "ملغى",
+          "unknown": "غير معروف"
+        }
+      },
+      "businessOverview": {
+        "title": "نظرة عامة على الأعمال",
+        "subtitle": "عملك في لمحة",
+        "totalGyms": "إجمالي الصالات الرياضية",
+        "activeMembers": "الأعضاء النشطون",
+        "totalStaff": "إجمالي الموظفين",
+        "totalRevenue": "إجمالي الإيرادات",
+        "monthlyRevenue": "الإيرادات الشهرية",
+        "outstandingPayments": "المدفوعات المستحقة",
+        "issues": "المشكلات",
+        "noDataTitle": "لا توجد بيانات عمل بعد",
+        "noDataDescription": "ابدأ بإنشاء صالتك الرياضية الأولى لبدء تتبع مقاييس عملك",
+        "createFirstGym": "أنشئ صالتك الرياضية الأولى"
+      },
+      "quickActions": {
+        "title": "إجراءات سريعة",
+        "createGym": "إنشاء صالة رياضية جديدة",
+        "addStaff": "إضافة موظف",
+        "openAnalytics": "فتح التحليلات",
+        "manageSubscription": "إدارة الاشتراك",
+        "businessSettings": "إعدادات العمل",
+        "settings": "الإعدادات"
+      },
+      "alerts": {
+        "title": "التنبيهات والإشعارات",
+        "viewAll": "عرض جميع الإشعارات",
+        "noAlerts": "لا توجد تنبيهات في الوقت الحالي",
+        "noAlertsTitle": "كل شيء على ما يرام!",
+        "noAlertsDescription": "ليس لديك أي تنبيهات أو إشعارات في الوقت الحالي",
+        "types": {
+          "paymentIssue": "مشكلة في الدفع",
+          "contractExpiring": "انتهاء صلاحية العقد",
+          "printerError": "خطأ في الطابعة",
+          "maintenance": "صيانة مطلوبة",
+          "checkInDrop": "انخفاض في تسجيل الدخول"
+        }
+      },
+      "gymOverview": {
+        "title": "صالاتك الرياضية",
+        "lastVisited": "آخر وصول",
+        "activeMembers": "الأعضاء النشطون",
+        "todayCheckIns": "تسجيلات الدخول اليوم",
+        "revenueTrend": "اتجاه الإيرادات",
+        "viewDetails": "عرض التفاصيل",
+        "noGym": "لا توجد صالات رياضية بعد",
+        "createFirst": "أنشئ صالتك الرياضية الأولى للبدء",
+        "noGymTitle": "لا توجد صالات رياضية بعد",
+        "noGymDescription": "أنشئ صالتك الرياضية الأولى لبدء إدارة الأعضاء وتتبع الأداء",
+        "createGym": "إنشاء صالة رياضية جديدة"
+      }
+    },
+    "gym": {
+      "title": "لوحة تحكم فرع الصالة الرياضية",
+      "subtitle": "مرحباً بعودتك! إليك نظرة عامة على أداء فرعك",
+      "profile": {
+        "title": "ملف الصالة الرياضية",
+        "branchName": "اسم الفرع",
+        "accountStatus": "الحالة",
+        "editGym": "تعديل إعدادات الصالة الرياضية"
+      },
+      "stats": {
+        "title": "أداء الفرع",
+        "subtitle": "مقاييس في الوقت الفعلي لهذا الموقع",
+        "totalMembers": "إجمالي الأعضاء",
+        "activeMembers": "الأعضاء النشطون",
+        "occupancy": "معدل الإشغال",
+        "coachesCount": "عدد المدربين",
+        "checkedIn": "تسجيلات الدخول اليوم"
+      },
+      "actions": {
+        "title": "إجراءات سريعة",
+        "enroll": "عضو جديد",
+        "viewMembers": "عرض الأعضاء",
+        "report": "الإبلاغ عن مشكلة",
+        "viewPricing": "عرض الأسعار"
+      },
+      "genderSplit": {
+        "title": "توزيع الجنسين",
+        "male": "ذكر",
+        "female": "أنثى"
+      },
+      "hours": {
+        "title": "ساعات العمل",
+        "mixed": "ساعات مختلطة",
+        "womenOnly": "للنساء فقط",
+        "menOnly": "للرجال فقط",
+        "customSlots": "مواعيد مخصصة"
+      }
+    },
+    "gymMember": {
+      "title": "الصفحة الرئيسية للصالة الرياضية",
+      "subtitle": "معلومات وتحديثات صالتك الرياضية",
+      "noGym": "لم يتم اختيار صالة رياضية",
+      "selectGym": "الرجاء اختيار صالة رياضية لعرض التفاصيل",
+      "status": {
+        "open": "مفتوح الآن",
+        "closed": "مغلق",
+        "womenOnly": "للنساء فقط",
+        "menOnly": "للرجال فقط",
+        "womenOnlyNow": "للنساء فقط الآن",
+        "menOnlyNow": "للرجال فقط الآن",
+        "womenSession": "جلسة نسائية",
+        "menSession": "جلسة رجالية",
+        "mixedSession": "جلسة مختلطة",
+        "opensAt": "يفتح في {{time}}",
+        "closesAt": "يغلق في {{time}}"
+      },
+      "location": {
+        "title": "الموقع",
+        "getDirections": "الحصول على الاتجاهات"
+      },
+      "announcements": {
+        "title": "الإعلانات",
+        "empty": "لا توجد إعلانات في الوقت الحالي",
+        "urgent": "عاجل"
+      },
+      "subscriptions": {
+        "history": "سجل الاشتراكات",
+        "allRecords": "سجلات الاشتراك",
+        "activePlan": "الخطة النشطة",
+        "noRecords": {
+          "title": "لم يتم العثور على سجلات",
+          "desc": "لم نتمكن من العثور على أي سجلات عضوية لك في هذه الصالة الرياضية."
+        },
+        "subtitle": "إدارة عضوياتك وسجل اشتراكاتك لهذه الصالة الرياضية",
+        "title": "اشتراكاتي",
+        "paymentMethod": "طريقة الدفع",
+        "endDate": "تاريخ الانتهاء",
+        "startDate": "تاريخ البدء",
+        "currentPlan": "الخطة الحالية"
+      }
+    },
+    "classes": {
+      "editTitle": "تعديل الحصة",
+      "createTitle": "إنشاء حصة",
+      "modalDesc": "حدد تفاصيل تمرين مجموعتك",
+      "noCoaches": "لا يوجد مدربون متاحون",
+      "noCoachesDesc": "ادعُ المدربين إلى صالتك الرياضية لتعيينهم للحصص.",
+      "form": {
+        "name": "اسم الحصة",
+        "namePlaceholder": "مثال: يوجا صباحية، تمارين مكثفة",
+        "service": "نوع الخدمة",
+        "selectService": "اختر خدمة",
+        "date": "التاريخ والوقت المجدولان",
+        "capacity": "الحد الأقصى للسعة",
+        "duration": "المدة (بالدقائق)",
+        "coach": "اختر المدرب",
+        "facility": "المرفق",
+        "selectFacility": "اختر مرفقًا",
+        "serviceRequired": "الخدمة مطلوبة",
+        "recurrence": {
+          "label": "التكرار",
+          "none": "مرة واحدة",
+          "daily": "يوميًا",
+          "weekly": "أسبوعيًا",
+          "biweekly": "كل أسبوعين",
+          "monthly": "شهريًا",
+          "custom": "أيام مخصصة",
+          "endDate": "تاريخ الانتهاء",
+          "noEndDate": "مستمر (لا يوجد تاريخ انتهاء)",
+          "days": "اختر الأيام"
+        },
+        "delete": {
+          "title": "حذف الحصة",
+          "confirmOne": "حذف هذه الجلسة فقط",
+          "confirmSeries": "حذف السلسلة بأكملها",
+          "message": "هذه حصة متكررة. هل تريد حذف هذه الجلسة فقط أم السلسلة القادمة بأكملها؟",
+          "success": "تم حذف الحصة بنجاح"
+        },
+        "update": {
+          "title": "تحديث الحصة",
+          "confirmSeries": "تحديث السلسلة بأكملها",
+          "confirmOne": "تحديث هذه الجلسة فقط",
+          "message": "هذه حصة متكررة. هل تريد تطبيق التغييرات على السلسلة القادمة بأكملها؟",
+          "success": "تم تحديث الحصة بنجاح"
+        }
+      }
+    },
+    "schedule": {
+      "sessionDetails": "تفاصيل الجلسة",
+      "deleteSession": "حذف الجلسة",
+      "deleteSessionConfirm": "هل أنت متأكد أنك تريد حذف هذه الجلسة؟",
+      "deleteSeriesConfirm": "هذه جلسة متكررة. هل تريد حذف هذه الجلسة فقط أم السلسلة القادمة بأكملها؟",
+      "deleteThisOnly": "حذف هذه الجلسة فقط",
+      "deleteEntireSeries": "حذف السلسلة بأكملها",
+      "sessionDeleted": "تم حذف الجلسة بنجاح",
+      "seriesDeleted": "تم حذف السلسلة بنجاح",
+      "cancelSession": "إلغاء الجلسة",
+      "cancelSeriesConfirm": "هذه جلسة متكررة. هل تريد إلغاء هذه الجلسة فقط أم السلسلة القادمة بأكملها؟",
+      "cancelThisOnly": "إلغاء هذه الجلسة فقط",
+      "cancelEntireSeries": "إلغاء السلسلة بأكملها",
+      "willAttend": "سأحضر",
+      "form": {
+        "client": "العميل",
+        "selectClient": "اختر عميلاً",
+        "startTime": "وقت البدء",
+        "time": "الوقت",
+        "duration": "المدة (دقيقة)",
+        "facility": "المنشأة",
+        "selectFacility": "اختر منشأة",
+        "location": "الموقع",
+        "locationPlaceholder": "مثال: سنترال بارك، عبر الإنترنت",
+        "type": "نوع الجلسة",
+        "notes": "ملاحظات",
+        "notesPlaceholder": "أضف أي تعليمات خاصة..."
+      },
+      "types": {
+        "one_on_one": "تدريب فردي",
+        "consultation": "استشارة",
+        "check_in": "تسجيل دخول",
+        "assessment": "تقييم"
+      },
+      "errors": {
+        "startTimeRequired": "وقت البدء مطلوب"
+      }
+    },
+    "member": {
+      "welcome": "مرحباً بعودتك، {{name}}!",
+      "subtitle": "إليك ما يحدث مع عضويتك اليوم.",
+      "profile": {
+        "title": "ملفي الشخصي",
+        "memberSince": "عضو منذ",
+        "editProfile": "تعديل الملف الشخصي",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف"
+      },
+      "stats": {
+        "activeSubscriptions": "الاشتراكات النشطة",
+        "checkIns": "إجمالي تسجيلات الدخول",
+        "nextClass": "الحصة التالية",
+        "daysStreak": "سلسلة الأيام"
+      },
+      "quickActions": {
+        "title": "إجراءات سريعة",
+        "findGyms": "البحث عن صالات رياضية",
+        "findGymsDesc": "تصفح مواقع الصالات الرياضية المتاحة",
+        "mySubscriptions": "اشتراكاتي",
+        "mySubscriptionsDesc": "إدارة خططك النشطة",
+        "attendance": "سجل الحضور",
+        "attendanceDesc": "عرض سجلات تسجيل الدخول الخاصة بك",
+        "training": "خطة التدريب",
+        "trainingDesc": "الوصول إلى جدول تمارينك"
+      }
+    },
+    "coach": {
+      "welcome": "أهلاً بك مجدداً، أيها المدرب!",
+      "subtitle": "إليك ما يحدث مع عملائك اليوم",
+      "stats": {
+        "activeClients": "العملاء النشطون",
+        "programsCreated": "البرامج التي تم إنشاؤها",
+        "sessionsThisMonth": "الجلسات هذا الشهر",
+        "clientRetention": "احتفاظ العملاء"
+      },
+      "assignProgram": {
+        "title": "تعيين برنامج",
+        "selectProgram": "اختر برنامجاً لتعيينه",
+        "confirm": "تعيين",
+        "success": "تم تعيين البرنامج بنجاح",
+        "error": "فشل تعيين البرنامج",
+        "noPrograms": "لا توجد برامج متاحة",
+        "confirmChangeTitle": "تغيير البرنامج النشط؟",
+        "confirmChangeDesc": "لدى هذا العميل بالفعل برنامج نشط. تعيين برنامج جديد سيؤرشف سجل البرنامج الحالي. يتطلب هذا الإجراء تأكيداً."
+      },
+      "todaySessions": {
+        "title": "جلسات اليوم",
+        "empty": "لا توجد جلسات مجدولة لهذا اليوم",
+        "emptyDesc": "استمتع بوقت فراغك!",
+        "viewSchedule": "عرض الجدول الكامل"
+      },
+      "quickActions": {
+        "title": "إجراءات سريعة",
+        "createProgram": "برنامج جديد",
+        "addClient": "إضافة عميل",
+        "scheduleSession": "جدولة",
+        "viewAnalytics": "التحليلات"
+      },
+      "recentActivity": {
+        "title": "النشاط الأخير",
+        "viewAll": "عرض الكل",
+        "empty": "الخلاصة هادئة",
+        "emptyDesc": "ستظهر الأحداث هنا"
+      },
+      "activity": {
+        "workoutCompleted": "{{client}} أكمل تمريناً",
+        "newMessage": "رسالة جديدة من {{client}}",
+        "milestone": "{{client}} وصل إلى إنجاز",
+        "programAssigned": "تم تعيين {{program}} للعميل"
+      },
+      "sessionTypes": {
+        "training": "جلسة تدريب",
+        "checkIn": "فحص التقدم",
+        "consultation": "استشارة"
+      },
+      "pendingCheckIns": {
+        "title": "فحوصات معلقة",
+        "awaiting": "{{count}} عميل بانتظار المراجعة",
+        "description": "راجع تحديثات التقدم من عملائك",
+        "review": "راجع الآن",
+        "empty": "كل شيء واضح",
+        "emptyDesc": "لا توجد طلبات عملاء معلقة"
+      }
+    }
+  },
+  "members": {
+    "title": "إدارة الأعضاء",
+    "subtitle": "إدارة أعضاء صالة الألعاب الرياضية واشتراكاتهم",
+    "addMember": "إضافة عضو جديد",
+    "searchPlaceholder": "البحث عن الأعضاء",
+    "viewMode": {
+      "cards": "عرض البطاقات",
+      "table": "عرض الجدول"
+    },
+    "filters": {
+      "all": "الكل",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "expired": "منتهي الصلاحية",
+      "pending": "معلق",
+      "banned": "محظور"
+    },
+    "sort": {
+      "label": "ترتيب حسب",
+      "name": "الاسم",
+      "joinDate": "تاريخ الانضمام",
+      "status": "الحالة",
+      "membership": "العضوية"
+    },
+    "table": {
+      "avatar": "صورة شخصية",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "membership": "العضوية",
+      "status": "الحالة",
+      "joinDate": "تاريخ الانضمام",
+      "actions": "الإجراءات"
+    },
+    "card": {
+      "memberSince": "عضو منذ",
+      "viewProfile": "عرض الملف الشخصي",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "expired": "منتهي الصلاحية",
+      "pending": "معلق"
+    },
+    "membership": {
+      "basic": "أساسي",
+      "premium": "مميز",
+      "vip": "VIP",
+      "trial": "تجريبي"
+    },
+    "empty": {
+      "title": "لا يوجد أعضاء بعد",
+      "description": "ابدأ ببناء مجتمعك عن طريق إضافة أول عضو",
+      "action": "إضافة أول عضو"
+    },
+    "stats": {
+      "total": "إجمالي الأعضاء",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "thisMonth": "جديد هذا الشهر",
+      "expired": "منتهي الصلاحية"
+    },
+    "pagination": {
+      "showing": "عرض {{start}} إلى {{end}} من {{total}} أعضاء",
+      "showingSingle": "عرض عضو واحد",
+      "noMembers": "لم يتم العثور على أعضاء",
+      "previous": "السابق",
+      "next": "التالي",
+      "itemsPerPage": "العناصر في الصفحة:"
+    },
+    "edit": {
+      "title": "تعديل العضو",
+      "success": "تم تحديث العضو بنجاح",
+      "generalError": "فشل تحديث العضو",
+      "errors": {
+        "membershipNotFound": "الاشتراك غير موجود"
+      }
+    },
+    "delete": {
+      "title": "حذف العضو",
+      "message": "هل أنت متأكد أنك تريد إزالة {{name}} من الصالة الرياضية؟ لا يمكن التراجع عن هذا الإجراء.",
+      "success": "تمت إزالة العضو بنجاح",
+      "generalError": "فشل إزالة العضو",
+      "errors": {
+        "membershipNotFound": "الاشتراك غير موجود"
+      }
+    },
+    "search": {
+      "noResults": {
+        "title": "لا توجد نتائج",
+        "description": "لم نتمكن من العثور على أي أعضاء يطابقون بحثك. حاول تعديل بحثك أو عوامل التصفية.",
+        "action": "حاول مرة أخرى"
+      }
+    },
+    "profile": {
+      "title": "الملف الشخصي",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "joinDate": "تاريخ الانضمام",
+      "subscription": "الاشتراك",
+      "subscriptionType": "نوع الاشتراك",
+      "membershipStatus": "الحالة",
+      "noSubscription": "لا يوجد اشتراك نشط"
+    }
+  },
+  "memberAccess": {
+    "title": "الدخول إلى الصالة الرياضية",
+    "subtitle": "أظهر رمز الاستجابة السريعة هذا عند مدخل الصالة الرياضية",
+    "validFor": "صالح لمدة {{seconds}} ثانية",
+    "refreshing": "جارٍ التحديث...",
+    "noMemberships": "لا توجد اشتراكات صالة رياضية نشطة",
+    "selectGym": "اختر الصالة الرياضية",
+    "error": "فشل إنشاء رمز الدخول",
+    "qrCode": "رمز الاستجابة السريعة للدخول الخاص بك",
+    "instructions": "قدم هذا الرمز لموظفي الصالة الرياضية للدخول",
+    "autoRefresh": "يتم تحديث الرمز تلقائيًا"
+  },
+  "gym": {
+    "no_gym_selected": "اختر صالة ألعاب رياضية",
+    "no_gyms_available": "لا توجد صالات ألعاب رياضية متاحة",
+    "accessGym": "الوصول إلى {{name}}",
+    "backToDashboard": "العودة إلى لوحة التحكم",
+    "openGymSelector": "فتح محدد الصالة الرياضية",
+    "yourGyms": "صالاتك الرياضية",
+    "inactive": "غير نشط",
+    "noGyms": "لا توجد صالات رياضية بعد",
+    "createFirst": "أنشئ صالتك الرياضية الأولى للبدء",
+    "createNew": "إنشاء صالة ألعاب رياضية جديدة",
+    "available": "متاح"
+  },
+  "createMember": {
+    "title": "إضافة عضو جديد",
+    "subtitle": "أنشئ عضوية صالة ألعاب رياضية جديدة في بضع خطوات فقط",
+    "steps": {
+      "step": "خطوة",
+      "general": {
+        "title": "معلومات عامة",
+        "description": "تفاصيل العضو الأساسية وطريقة الاتصال"
+      },
+      "subscription": {
+        "title": "تفاصيل الاشتراك",
+        "description": "اختر خطة العضوية وطريقة الدفع"
+      },
+      "contact": {
+        "title": "التفضيلات والمراجعة",
+        "description": "تفضيلات الاتصال والمراجعة النهائية"
+      }
+    },
+    "form": {
+      "contactMethod": {
+        "label": "طريقة الاتصال الأساسية",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف"
+      },
+      "email": {
+        "label": "عنوان البريد الإلكتروني",
+        "placeholder": "member@example.com"
+      },
+      "phone": {
+        "label": "رقم الهاتف",
+        "placeholder": "+1 (555) 123-4567"
+      },
+      "fullName": {
+        "label": "الاسم الكامل",
+        "placeholder": "جون دو"
+      },
+      "gender": {
+        "label": "الجنس",
+        "placeholder": "اختر الجنس",
+        "male": "ذكر",
+        "female": "أنثى",
+        "other": "أخرى",
+        "preferNotToSay": "أفضل عدم الكشف"
+      },
+      "age": {
+        "label": "العمر",
+        "placeholder": "25"
+      },
+      "subscription": {
+        "label": "نوع الاشتراك",
+        "placeholder": "اختر خطة",
+        "regular": "عضوية عادية",
+        "coached": "تدريب شخصي",
+        "yoga": "دروس اليوغا",
+        "crossfit": "تدريب كروس فيت",
+        "pilates": "بيلاتس",
+        "boxing": "ملاكمة",
+        "sauna": "ساونا",
+        "massage": "تدليك",
+        "custom": "مخصص"
+      },
+      "startDate": {
+        "label": "تاريخ البدء",
+        "placeholder": "اختر تاريخ البدء"
+      },
+      "payment": {
+        "label": "طريقة الدفع",
+        "placeholder": "اختر طريقة الدفع",
+        "cash": "نقداً",
+        "card": "بطاقة ائتمان/خصم",
+        "bankTransfer": "تحويل بنكي"
+      },
+      "welcomeMessage": {
+        "label": "إرسال رسالة ترحيب",
+        "description": "إرسال تفاصيل الوصول إلى الحساب عبر البريد الإلكتروني أو الرسائل القصيرة"
+      },
+      "notes": {
+        "label": "ملاحظات إضافية",
+        "placeholder": "أضف أي ملاحظات أو متطلبات خاصة..."
+      }
+    },
+    "review": {
+      "title": "ملخص العضو",
+      "name": "الاسم",
+      "contact": "جهة الاتصال",
+      "subscription": "الخطة"
+    },
+    "validation": {
+      "contactRequired": "معلومات الاتصال مطلوبة",
+      "emailInvalid": "الرجاء إدخال عنوان بريد إلكتروني صالح",
+      "phoneInvalid": "الرجاء إدخال رقم هاتف صالح (10 أرقام كحد أدنى)",
+      "nameRequired": "الاسم الكامل مطلوب",
+      "ageInvalid": "الرجاء إدخال عمر صالح",
+      "subscriptionRequired": "نوع الاشتراك مطلوب",
+      "paymentRequired": "طريقة الدفع مطلوبة",
+      "checkForm": "الرجاء التحقق من النموذج بحثاً عن الأخطاء",
+      "sameEmail": "لا يمكنك إنشاء عضو بنفس البريد الإلكتروني لحسابك",
+      "samePhone": "لا يمكنك إنشاء عضو بنفس رقم الهاتف لحسابك",
+      "emailInUse": "لا يمكن استخدام هذا البريد الإلكتروني لإنشاء عضو",
+      "phoneInUse": "لا يمكن استخدام رقم الهاتف هذا لإنشاء عضو",
+      "invalidStartDate": "تاريخ البدء لا يمكن أن يكون في الماضي"
+    },
+    "actions": {
+      "back": "رجوع",
+      "next": "الخطوة التالية",
+      "submit": "إنشاء عضو",
+      "submitting": "جاري الإنشاء...",
+      "cancel": "إلغاء",
+      "saving": "جاري الحفظ..."
+    },
+    "success": {
+      "title": "تم إنشاء العضو بنجاح!",
+      "message": "تمت إضافة العضو الجديد إلى صالتك الرياضية. سيتلقى تفاصيل الوصول قريبًا.",
+      "addAnother": "إضافة عضو آخر",
+      "viewMembers": "عرض جميع الأعضاء"
+    },
+    "error": {
+      "message": "فشل إنشاء العضو. الرجاء المحاولة مرة أخرى."
+    },
+    "tips": {
+      "title": "إشعار الوصول",
+      "description": "عند إنشاء عضو، سيتلقى تلقائيًا رسالة تحتوي على تفاصيل الوصول إلى حسابه عبر طريقة الاتصال المختارة (البريد الإلكتروني أو الرسائل القصيرة)."
+    }
+  },
+  "gymMember": {
+    "subscriptions": {
+      "title": "اشتراكاتي",
+      "subtitle": "إدارة عضوياتك وسجل اشتراكاتك لهذه الصالة الرياضية",
+      "activePlan": "الخطة النشطة",
+      "allRecords": "سجلات الاشتراك",
+      "history": "سجل الاشتراك",
+      "noRecords": {
+        "title": "لا توجد سجلات",
+        "desc": "لم نتمكن من العثور على أي سجلات عضوية لك في هذه الصالة الرياضية."
+      },
+      "noActive": {
+        "title": "لا يوجد اشتراك نشط",
+        "desc": "ليس لديك اشتراك نشط لهذه الصالة الرياضية. يرجى الاتصال بمكتب الاستقبال لشراء واحد."
+      },
+      "currentPlan": "الخطة الحالية",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "paymentMethod": "طريقة الدفع"
+    },
+    "access": {
+      "title": "الوصول إلى الصالة الرياضية",
+      "subtitle": "أنشئ رمز الوصول الفريد الخاص بك لدخول الصالة الرياضية",
+      "viewLogs": "عرض سجل الدخول",
+      "qr": {
+        "title": "رمز QR للوصول",
+        "instruction": "امسح هذا الرمز عند مدخل الصالة الرياضية للدخول",
+        "refresh": "تحديث الرمز",
+        "expiresIn": "ينتهي في {{seconds}} ثانية",
+        "expired": "انتهت صلاحية الرمز، جاري التحديث...",
+        "generating": "جاري إنشاء رمز الوصول الخاص بك...",
+        "tapToClose": "انقر في أي مكان للإغلاق",
+        "tapToExpand": "انقر للتوسيع"
+      },
+      "tips": {
+        "title": "معلومات الوصول",
+        "description": "رمز الوصول الخاص بك فريد ومحدد بوقت لأسباب أمنية. يرجى التأكد من أنك عند مدخل الصالة الرياضية قبل إنشاء الرمز."
+      }
+    },
+    "attendance": {
+      "title": "سجل الحضور",
+      "subtitle": "راجع سجلات حضورك لهذه الصالة الرياضية",
+      "empty": "لا توجد سجلات حضور بعد",
+      "emptyDesc": "سيظهر سجل حضورك لهذه الصالة الرياضية هنا.",
+      "search": "ابحث عن الحضور...",
+      "viewLogs": "عرض سجل الحضور",
+      "filter": {
+        "all": "جميع الإدخالات",
+        "granted": "ناجح",
+        "denied": "مرفوض"
+      }
+    }
+  },
+  "plans": {
+    "max_gyms": "الحد الأقصى للمواقع",
+    "per_month": "شهريًا",
+    "subscribe": "اشترك",
+    "current": "الخطة الحالية",
+    "recommended": "مُوصى به",
+    "everything_in": "كل شيء في {{name}}",
+    "one_time": "مرة واحدة",
+    "year": "سنة",
+    "month": "شهر",
+    "save": "حفظ",
+    "per_year": "سنويًا",
+    "up_to": "حتى",
+    "gym": "صالة ألعاب رياضية",
+    "gyms": "صالات ألعاب رياضية",
+    "unlimited_gyms": "صالات ألعاب رياضية غير محدودة",
+    "subscription": "اشتراك",
+    "one_time_purchase": "شراء لمرة واحدة",
+    "monthly": "شهري",
+    "yearly": "سنوي",
+    "upgrade": "ترقية",
+    "switch_plan": "تبديل الخطة",
+    "downgrade": "تخفيض",
+    "up_to_members_each": "حتى {{number}} أعضاء لكل",
+    "save_percentage": "وفر 20%",
+    "upgrade_now": "الترقية الآن",
+    "current_plan": "الخطة الحالية",
+    "processing": "جاري المعالجة...",
+    "members": "أعضاء",
+    "pending_downgrade": "تخفيض إلى {{plan}} في {{date}}",
+    "pending_switch": "التبديل إلى {{cycle}} في {{date}}",
+    "confirm_downgrade_title": "تأكيد التخفيض",
+    "confirm_downgrade_text": "سيتم تخفيض خطتك إلى {{plan}} في نهاية فترة الفوترة الحالية الخاصة بك في {{date}}. ستفقد الوصول إلى ميزات المستوى الأعلى في ذلك الوقت.",
+    "confirm_switch_title": "تأكيد تبديل الخطة",
+    "confirm_switch_text": "ستتحول دورة الفوترة الخاصة بك إلى {{cycle}} في نهاية فترة الفوترة الحالية الخاصة بك في {{date}}.",
+    "change_pending": "تغيير معلق",
+    "confirm_upgrade_title": "تأكيد الترقية",
+    "confirm_upgrade_text": "ستتم ترقيتك إلى {{plan}} فورًا. سيتم محاسبتك على الفرق (إن وجد).",
+    "confirm_upgrade_free_text": "ستتم ترقيتك إلى {{plan}} فورًا.",
+    "confirm_switch_immediate_text": "ستتحول دورة الفوترة الخاصة بك إلى {{cycle}} فورًا.",
+    "cancel_request": "إلغاء الطلب",
+    "cancel_request_success": "تم إلغاء التغيير المعلق",
+    "confirm_cancel_request_title": "إلغاء التغيير المعلق؟",
+    "confirm_cancel_request_text": "هل أنت متأكد أنك تريد إلغاء هذا التغيير المعلق؟ ستبقى على خطتك الحالية.",
+    "unavailable": "غير متاح",
+    "not_available": "هذه الخطة غير متاحة",
+    "unlimited_members": "أعضاء غير محدودين",
+    "unlimited_gems": "جواهر غير محدودة",
+    "infinite_gyms": "صالات رياضية لا نهائية",
+    "infinite_members": "أعضاء لا نهائيين",
+    "infinite_gems": "جواهر لا نهائية",
+    "lifetime_to_subscription_error": "لديك وصول مدى الحياة. لا يمكن التبديل إلى خطط الاشتراك بدون استرداد.",
+    "lifetime_downgrade_error": "لا يمكن الرجوع إلى خطة أدنى من خطة مدى الحياة الحالية."
+  },
+  "pricing": {
+    "title": "تسعير العضوية",
+    "subtitle": "إدارة خطط اشتراك صالة الألعاب الرياضية الخاصة بك وتسعيرها",
+    "addPlan": "إضافة خطة جديدة",
+    "editPlan": "تعديل الخطة",
+    "noPlans": {
+      "title": "لم يتم إنشاء خطط",
+      "subtitle": "أنشئ خطة عضويتك الأولى للبدء"
+    },
+    "form": {
+      "baseType": "نوع الخطة",
+      "customName": "اسم مخصص (اختياري)",
+      "description": "الوصف",
+      "price": "السعر",
+      "duration": "المدة (رقم)",
+      "durationUnit": "وحدة المدة",
+      "addTier": "إضافة فئة",
+      "pricingTiers": "فئات التسعير",
+      "zeroIsInfinity": "تعيين 0 يعني غير محدود (لا نهائي)",
+      "freePlanDuration": "مجاني ({{days}} أيام)",
+      "linkedServices": "الخدمات المتضمنة",
+      "infinite": "لا نهائي",
+      "units": {
+        "day": "أيام",
+        "week": "أسابيع",
+        "month": "أشهر",
+        "year": "سنوات"
+      },
+      "visibility": "الرؤية",
+      "available": "متاح للشراء",
+      "currencyTip": "يمكنك تغيير العملة من الإعدادات > عام",
+      "hidden": "مخفي",
+      "allowedDaysPerWeek": "الأيام المسموح بها في الأسبوع",
+      "allowedDaysTooltip": "حدد الحد الأقصى لعدد الأيام التي يمكن للعضو فيها دخول الصالة الرياضية أسبوعيًا. لا يمكن أن يتجاوز 7 أيام. اترك الحقل فارغًا للوصول غير المحدود.",
+      "max7Days": "لا يمكن أن يتجاوز 7 أيام",
+      "unlimited": "غير محدود",
+      "allowedIntervals": "الفترات المسموح بها",
+      "allowedIntervalsTip": "حدد الحد الأقصى لعدد الفترات التي يمكن للعضو فيها دخول الصالة الرياضية أسبوعيًا. لا يمكن أن يتجاوز 7 فترات. اترك الحقل فارغًا للوصول غير المحدود.",
+      "baseInterval": "الفترة الأساسية"
+    },
+    "success": {
+      "created": "تم إنشاء الخطة بنجاح",
+      "updated": "تم تحديث الخطة بنجاح",
+      "deleted": "تم حذف الخطة بنجاح"
+    },
+    "error": {
+      "create_failed": "فشل إنشاء الخطة",
+      "update_failed": "فشل تحديث الخطة",
+      "delete_failed": "فشل حذف الخطة"
+    },
+    "confirmDelete": {
+      "title": "حذف الخطة؟",
+      "message": "هل أنت متأكد أنك تريد حذف هذه الخطة؟ لا يمكن التراجع عن هذا الإجراء."
+    }
+  },
+  "marketing": {
+    "title": "التسويق والإعلام",
+    "subtitle": "إدارة المعرض العام والمواد الترويجية لصالة الألعاب الرياضية الخاصة بك",
+    "tabs": {
+      "gallery": "معرض الوسائط",
+      "materials": "المواد التسويقية"
+    },
+    "gallery": {
+      "title": "معرض الوسائط",
+      "subtitle": "صور ومقاطع فيديو لعرض صالة الألعاب الرياضية الخاصة بك",
+      "empty": "لم يتم العثور على وسائط",
+      "emptyDesc": "قم بتحميل صور ومقاطع فيديو لمنشآتك ودروسك وفعالياتك الاجتماعية.",
+      "uploadAction": "تحميل وسائط",
+      "setBanner": "تعيين كغلاف",
+      "currentBanner": "الغلاف الحالي",
+      "confirmBanner": "هل أنت متأكد أنك تريد تعيين هذه الصورة كغلاف خلفية للصالة الرياضية؟",
+      "types": {
+        "image": "صورة",
+        "video": "فيديو",
+        "document": "مستند"
+      },
+      "categories": {
+        "marketing": "تسويق",
+        "facility": "منشأة",
+        "class": "فئة",
+        "social": "اجتماعي"
+      }
+    },
+    "materials": {
+      "title": "المواد التسويقية",
+      "subtitle": "وثائق ومنشورات ترويجية",
+      "empty": "لم يتم العثور على مواد",
+      "emptyDesc": "قم بتحميل ملفات PDF والمستندات للترويج ومعلومات العضوية.",
+      "uploadAction": "تحميل مادة"
+    },
+    "form": {
+      "addMedia": "إضافة وسائط",
+      "addMaterial": "إضافة مادة تسويقية",
+      "editMedia": "تعديل الوسائط",
+      "title": "العنوان",
+      "titlePlaceholder": "أدخل عنوانًا قصيرًا",
+      "description": "الوصف",
+      "descriptionPlaceholder": "عن ماذا تتحدث هذه الوسائط؟",
+      "type": "نوع الوسائط",
+      "category": "الفئة",
+      "file": "الملف",
+      "selectFile": "تحديد ملف",
+      "uploading": "جاري تحميل الوسائط...",
+      "uploadSuccess": "تم التحميل بنجاح",
+      "successAdd": "تمت إضافة الوسائط بنجاح",
+      "successUpdate": "تم تحديث الوسائط بنجاح",
+      "successDelete": "تم حذف الوسائط بنجاح",
+      "successBanner": "تم تحديث صورة الغلاف بنجاح",
+      "confirmDelete": "هل أنت متأكد أنك تريد حذف عنصر الوسائط هذا؟",
+      "deleteError": "فشل حذف الوسائط",
+      "bannerError": "فشل تحديث صورة الغلاف"
+    },
+    "closures": {
+      "title": "إغلاقات الصالة الرياضية",
+      "description": "إدارة إغلاقات الصالة الرياضية الفورية والمستقبلية.",
+      "closeNow": "إغلاق الآن",
+      "closeNowDesc": "إغلاق الصالة الرياضية فورًا لمدة محددة.",
+      "planned": "إغلاقات مجدولة",
+      "plannedDesc": "جدولة الإغلاقات المستقبلية للعطلات أو الصيانة.",
+      "duration": "المدة",
+      "unit": "الوحدة",
+      "hours": "ساعات",
+      "days": "أيام",
+      "restOfDay": "بقية اليوم",
+      "reason": "السبب",
+      "reasonPlaceholder": "مثال: صيانة سنوية",
+      "startDate": "تاريخ ووقت البدء",
+      "addAction": "جدولة إغلاق مجدول",
+      "confirmAddTitle": "إخطار الأعضاء والمدربين؟",
+      "confirmAddText": "ستؤدي إضافة هذا الإغلاق إلى إخطار جميع الأعضاء النشطين والمدربين المنتسبين فورًا عبر التطبيق والبريد الإلكتروني والرسائل النصية القصيرة. هل أنت متأكد؟",
+      "confirmDeleteTitle": "إلغاء الإغلاق؟",
+      "confirmDeleteText": "سيؤدي إلغاء هذا الإغلاق إلى إخطار الجميع بأن الصالة الرياضية ستُعاد فتحها. سيتلقى الأعضاء والمدربون إشعارات عبر البريد الإلكتروني والرسائل النصية القصيرة وداخل التطبيق. هل تريد المتابعة؟",
+      "closeNowConfirmTitle": "إغلاق الصالة الرياضية فوراً؟",
+      "closeNowConfirmText": "سيؤدي هذا إلى إغلاق الصالة الرياضية فوراً وإرسال إشعار لجميع الأعضاء والمدربين والموظفين. لا يمكن التراجع عن هذا الإجراء بسهولة.",
+      "overlapError": "لا يمكن أن تتداخل فترات الإغلاق. يرجى التحقق من التواريخ.",
+      "closeNowAction": "إغلاق الصالة الرياضية الآن",
+      "confirm": "تأكيد الإغلاق",
+      "empty": "لا توجد إغلاقات مجدولة.",
+      "genericReason": "إغلاق مؤقت",
+      "scheduled": "مجدول",
+      "active": "نشط الآن"
+    }
+  },
+  "plans_ui": {
+    "save_percentage": "وفر 17%",
+    "upgrade_now": "الترقية الآن",
+    "current_plan": "الخطة الحالية",
+    "processing": "جارٍ المعالجة...",
+    "members": "أعضاء",
+    "up_to_members_each": "حتى {{number}} أعضاء لكل",
+    "downgrade": "تخفيض الخطة",
+    "switch_plan": "تبديل الخطة",
+    "pending_downgrade": "تخفيض الخطة إلى {{plan}} في {{date}}",
+    "pending_switch": "التبديل إلى {{cycle}} في {{date}}",
+    "confirm_downgrade_title": "تأكيد تخفيض الخطة",
+    "confirm_downgrade_text": "سيتم تخفيض خطتك إلى {{plan}} في نهاية فترة الفوترة الحالية الخاصة بك في {{date}}. ستفقد الوصول إلى ميزات الفئة الأعلى في ذلك الوقت.",
+    "confirm_switch_title": "تأكيد تبديل الخطة",
+    "confirm_switch_text": "ستتحول دورة الفوترة الخاصة بك إلى {{cycle}} في نهاية فترة الفوترة الحالية الخاصة بك في {{date}}.",
+    "change_pending": "تغيير معلق",
+    "confirm_upgrade_title": "تأكيد الترقية",
+    "confirm_upgrade_text": "سيتم ترقيتك إلى {{plan}} فوراً. سيتم محاسبتك على الفرق (إن وجد).",
+    "confirm_upgrade_free_text": "سيتم ترقيتك إلى {{plan}} فوراً.",
+    "confirm_switch_immediate_text": "ستتحول دورة الفوترة الخاصة بك إلى {{cycle}} فوراً.",
+    "cancel_request": "إلغاء الطلب",
+    "cancel_request_success": "تم إلغاء التغيير المعلق",
+    "confirm_cancel_request_title": "إلغاء التغيير المعلق؟",
+    "confirm_cancel_request_text": "هل أنت متأكد أنك تريد إلغاء هذا التغيير المعلق؟ ستبقى على خطتك الحالية.",
+    "unavailable": "غير متاح",
+    "not_available": "هذه الخطة غير متاحة",
+    "lifetime_to_subscription_error": "لديك وصول مدى الحياة. لا يمكن التبديل إلى خطط الاشتراك بدون استرداد.",
+    "lifetime_downgrade_error": "لا يمكن تخفيض الخطة من خطة مدى الحياة الحالية."
+  },
+  "subscription": {
+    "title": "الاشتراكات",
+    "subtitle": "إدارة اشتراكك في التطبيق والفوترة",
+    "unlimited": "غير محدود",
+    "footer_info": "هل تحتاج مساعدة؟ \n اتصل بنا",
+    "current_subscription": "الاشتراك الحالي",
+    "no_subscription": "لا يوجد اشتراك نشط",
+    "status": "الحالة",
+    "renews_on": "يتجدد في",
+    "gyms_count": "المواقع",
+    "billing_email": "البريد الإلكتروني للفواتير",
+    "billing": "الفواتير",
+    "trial_ends": "تنتهي الفترة التجريبية",
+    "gym_limit": "حد الصالات الرياضية",
+    "member_limit": "حد الأعضاء",
+    "members": "أعضاء",
+    "gyms": "صالات رياضية",
+    "started_on": "بدأ في",
+    "ends_on": "ينتهي في",
+    "trial_period": "الفترة التجريبية",
+    "active_since": "نشط منذ",
+    "expires_on": "ينتهي في",
+    "cancelled_on": "ألغي في",
+    "plan_type": "نوع الخطة",
+    "subscription_type": "الاشتراك",
+    "one_time_type": "شراء لمرة واحدة",
+    "access_status": "حالة الوصول",
+    "lifetime_access": "وصول مدى الحياة",
+    "trial_remaining": "الأيام المتبقية من الفترة التجريبية",
+    "days_remaining": "أيام متبقية",
+    "subscription_period": "فترة الاشتراك",
+    "trial_plan": "تجربة مجانية",
+    "trial_started": "بدأت الفترة التجريبية",
+    "valid_until": "صالح حتى",
+    "billing_cycle": "دورة الفوترة",
+    "access_type": "نوع الوصول",
+    "gyms_allowed": "الصالات الرياضية المسموح بها",
+    "members_allowed": "الأعضاء المسموح بهم",
+    "active_gyms": "الصالات الرياضية النشطة",
+    "days_left": "أيام متبقية",
+    "hours_left": "ساعات",
+    "minutes_left": "دقائق",
+    "left": "متبقي",
+    "trial_ends_in": "تنتهي الفترة التجريبية خلال",
+    "access_ends_on": "ينتهي الوصول في",
+    "renews_in": "يتجدد في غضون",
+    "expired": "منتهية الصلاحية",
+    "expired_on": "انتهت صلاحيته في",
+    "next_payment": "الدفع التالي",
+    "period_ends_on": "تنتهي الفترة في",
+    "cancel_subscription": "إلغاء الاشتراك",
+    "cancel_support_subject": "أحتاج إلى مساعدة بخصوص اشتراكي في GymPro",
+    "cancel_support_body": "مرحباً فريق دعم GymPro،\n\nأفكر في إلغاء اشتراكي، ولكن أردت التواصل أولاً لمعرفة ما إذا كان بإمكانكم مساعدتي في...\n\n[الرجاء وصف مشكلتك هنا]\n\nشكراً لكم!",
+    "cancel_modal_title": "إلغاء الاشتراك",
+    "cancel_reason_title": "أخبرنا لماذا تغادر",
+    "cancel_contact_message": "نأسف لرؤيتك تفكر في الإلغاء. قبل أن تغادر، هل ترغب في إخبارنا ما الخطأ؟ نحن هنا للمساعدة!",
+    "cancel_reason_billing": "مشاكل الفواتير أو الدفع",
+    "cancel_reason_features": "ميزات أو وظائف مفقودة",
+    "cancel_reason_support": "بحاجة إلى مساعدة أو دعم",
+    "cancel_reason_other": "مخاوف أخرى",
+    "cancel_contact_encourage": "فريق الدعم لدينا مستعد لمساعدتك وقد يكون لديه حلول لم تفكر بها بعد.",
+    "contact_support": "اتصل بالدعم",
+    "continue_cancellation": "متابعة الإلغاء",
+    "cancel_warning_title": "سيتم إلغاء اشتراكك",
+    "cancel_warning_message": "ستحتفظ بالوصول إلى جميع الميزات حتى {{date}}، ثم سينتهي اشتراكك.",
+    "cancel_reason_label": "الرجاء إخبارنا لماذا تقوم بالإلغاء (مطلوب)",
+    "cancel_reason_placeholder": "ساعدنا على التحسين من خلال مشاركة سبب مغادرتك...",
+    "cancel_reason_too_short": "الرجاء تقديم سبب أكثر تفصيلاً (10 أحرف كحد أدنى)",
+    "cancel_success": "تم إلغاء الاشتراك بنجاح.",
+    "cancel_error": "فشل إلغاء الاشتراك. الرجاء المحاولة مرة أخرى.",
+    "reactivate_success": "تم إعادة تنشيط الاشتراك بنجاح.",
+    "reactivate_error": "فشل إعادة تنشيط الاشتراك. الرجاء المحاولة مرة أخرى.",
+    "reactivate_subscription": "إعادة تنشيط الاشتراك",
+    "update_success": "تم تحديث الاشتراك بنجاح.",
+    "update_error": "فشل تحديث الاشتراك. الرجاء المحاولة مرة أخرى.",
+    "cancelled_subscription": "لقد ألغيت اشتراكك",
+    "reason_invalid": "الرجاء تقديم سبب صالح.",
+    "validating_reason": "جارٍ التحقق...",
+    "thanks_for_feedback": "شكراً لك على ملاحظاتك!",
+    "processing": "جارٍ معالجة الاشتراك...",
+    "upgrade_success": "تمت ترقية الاشتراك بنجاح.",
+    "upgrade_error": "فشل ترقية الاشتراك. الرجاء المحاولة مرة أخرى.",
+    "downgrade_success": "تم تخفيض الاشتراك بنجاح.",
+    "downgrade_error": "فشل تخفيض الاشتراك. الرجاء المحاولة مرة أخرى.",
+    "payment_retry": "فشلت العملية. يرجى إعادة محاولة الدفع.",
+    "downgrade": "تخفيض الاشتراك",
+    "upgrade": "ترقية الاشتراك",
+    "upgrade_preview_failed": "فشل جلب بيانات معاينة الترقية، يرجى المحاولة مرة أخرى لاحقًا",
+    "upgrade_failed": "فشل ترقية الاشتراك. يرجى المحاولة مرة أخرى.",
+    "upgrade_now": "الترقية الآن",
+    "see_plans": "عرض الخطط",
+    "access_ends_in": "ينتهي الوصول في",
+    "blocker": {
+      "action_required": "إجراء مطلوب",
+      "access_suspended": "تم تعليق وصولك",
+      "time_expired": "انتهت المدة",
+      "time_format": "{{hours}}س {{minutes}}د",
+      "urgency_title": "الوقت المتبقي",
+      "urgency_message": "لديك {{hours}} ساعة قبل حظر الوصول",
+      "after_grace_period": "بعد انتهاء فترة السماح:",
+      "lose_access": "ستفقد الوصول إلى جميع الميزات",
+      "data_safe": "بياناتك ستكون آمنة ويمكنك تصديرها في أي وقت",
+      "cannot_create": "لن تتمكن من إنشاء أو تعديل المحتوى",
+      "can_continue": "لا يزال بإمكانك العمل",
+      "grace_period_info": "لديك وصول كامل خلال فترة السماح. خذ وقتك لتجديد أو تصدير بياناتك.",
+      "blocked_title": "تم حظر الوصول إلى الحساب",
+      "currently_blocked": "ما هو محظور حاليًا:",
+      "blocked_features": "جميع الميزات المميزة",
+      "blocked_editing": "إنشاء وتعديل المحتوى",
+      "blocked_members": "إدارة الأعضاء والصالات الرياضية",
+      "blocked_reports": "عرض التقارير والتحليلات",
+      "data_safe_title": "بياناتك آمنة",
+      "data_safe_message": "جميع بياناتك مخزنة بأمان وستكون متاحة فورًا بمجرد استعادة اشتراكك.",
+      "manual_renewal_title": "التجديد اليدوي مطلوب",
+      "manual_renewal_message": "يتطلب اشتراكك تجديدًا يدويًا عبر Chargily. انقر أدناه لإكمال عملية الدفع.",
+      "remind_later": "ذكرني لاحقًا",
+      "need_help": "هل تحتاج مساعدة؟ ",
+      "action": {
+        "subscribe": "اشترك الآن",
+        "renew": "تجديد الاشتراك",
+        "reactivate": "إعادة تفعيل الاشتراك",
+        "view_plans": "عرض الخطط",
+        "export_data": "تصدير البيانات",
+        "contact_support": "الاتصال بالدعم"
+      },
+      "trial_expired": {
+        "warning_title": "انتهت الفترة التجريبية المجانية",
+        "warning_message": "انتهت فترتك التجريبية المجانية. اشترك الآن لمواصلة استخدام جميع الميزات.",
+        "blocker_title": "تم حظر الوصول",
+        "blocker_message": "انتهت فترتك التجريبية المجانية وانتهت فترة السماح. اشترك الآن لاستعادة الوصول."
+      },
+      "manual_expired": {
+        "warning_title": "انتهت صلاحية الاشتراك",
+        "warning_message": "انتهت فترة اشتراكك. جدد الآن للحفاظ على الوصول.",
+        "blocker_title": "تم حظر الوصول",
+        "blocker_message": "انتهت صلاحية اشتراكك. جدد اشتراكك لاستعادة الوصول."
+      },
+      "cancelled_expired": {
+        "warning_title": "تم إلغاء الاشتراك",
+        "warning_message": "لقد أصبح إلغاؤك ساري المفعول. أعد الاشتراك للمتابعة.",
+        "blocker_title": "تم حظر الوصول",
+        "blocker_message": "تم إلغاء اشتراكك وانتهت صلاحيته الآن. أعد الاشتراك لاستعادة الوصول."
+      }
     }
   },
   "plan": {
+    "free": {
+      "name": "مجاني",
+      "description": "مثالي للتجربة مع أعضاء حقيقيين",
+      "feature": {
+        "full_dashboard": "وصول كامل للوحة التحكم",
+        "member_management": "إدارة كاملة للأعضاء",
+        "basic_reports": "تقارير وتحليلات أساسية",
+        "mobile_app": "الوصول إلى تطبيق الجوال"
+      }
+    },
     "starter": {
-      "name": "أساسي",
+      "name": "المبتدئ",
       "description": "مثالي للصالات الرياضية الصغيرة والمتوسطة",
       "feature": {
-        "everything_free": "كل ما في الخطة المجانية",
+        "everything_free": "كل ما هو متاح في الخطة المجانية",
         "advanced_reports": "تقارير وتحليلات متقدمة",
         "email_notifications": "إشعارات البريد الإلكتروني",
         "attendance_tracking": "تتبع الحضور",
-        "payment_processing": "تكامل معالجة المدفوعات"
+        "payment_processing": "تكامل مع معالجة الدفع"
       }
     },
     "pro": {
-      "name": "برو",
+      "name": "المحترف",
       "description": "للصالات الرياضية الجادة المستعدة للتوسع",
       "feature": {
-        "everything_starter": "كل ما في باقة Starter",
-        "sms_notifications": "إشعارات SMS",
+        "everything_starter": "كل ما هو متاح في خطة المبتدئ",
+        "sms_notifications": "إشعارات الرسائل النصية القصيرة",
         "custom_workflows": "سير عمل مخصص وأتمتة",
         "advanced_analytics": "تحليلات ورؤى متقدمة",
-        "priority_support": "دعم فني ذو أولوية",
+        "priority_support": "دعم ذو أولوية",
         "api_access": "وصول كامل لواجهة برمجة التطبيقات (API)"
       }
     },
     "premium": {
-      "name": "بريميوم",
-      "description": "حل للمؤسسات والشركات ذات الفروع المتعددة",
+      "name": "المميز",
+      "description": "حلول مؤسسية للعلامات التجارية متعددة المواقع",
       "feature": {
-        "everything_pro": "كل ما في باقة Pro",
-        "multi_location": "حتى 10 فروع",
-        "white_label": "هوية تجارية مخصصة (White-label)",
-        "custom_integrations": "تكامل مخصص",
+        "everything_pro": "كل ما هو متاح في خطة المحترف",
+        "multi_location": "حتى 10 مواقع",
+        "white_label": "علامة تجارية بيضاء",
+        "custom_integrations": "تكاملات مخصصة",
         "dedicated_manager": "مدير حساب مخصص",
-        "training_onboarding": "تدريب شخصي وتوجيه"
+        "training_onboarding": "تدريب شخصي وتأهيل"
+      }
+    },
+    "starter_onetime": {
+      "name": "المبتدئ (مدى الحياة)",
+      "description": "شراء لمرة واحدة، ملكك للأبد"
+    },
+    "pro_onetime": {
+      "name": "احترافي (مدى الحياة)",
+      "description": "شراء لمرة واحدة، ملكك للأبد"
+    },
+    "premium_onetime": {
+      "name": "مميز (مدى الحياة)",
+      "description": "شراء لمرة واحدة، ملكك للأبد"
+    }
+  },
+  "checkout": {
+    "creation_failed": "فشل إنشاء عملية الدفع. يرجى المحاولة مرة أخرى.",
+    "status_fetch_failed": "فشل جلب حالة عملية الدفع.",
+    "paying_with_chargily": "المدفوعات مدعومة من Chargily (EDAHABIA & CIB)",
+    "redirecting": "جارٍ إعادة التوجيه إلى صفحة الدفع الآمنة...",
+    "processing": "جارٍ معالجة طلبك..."
+  },
+  "payment": {
+    "success": {
+      "title": "تم الدفع بنجاح!",
+      "subtitle": "تمت معالجة دفعتك بنجاح",
+      "verifying_title": "جارٍ التحقق من الدفع",
+      "verifying_text": "يرجى الانتظار بينما نؤكد دفعتك...",
+      "confirmed_title": "تم تأكيد الدفع",
+      "confirmed_text": "تم تفعيل اشتراكك وهو جاهز للاستخدام.",
+      "whats_next": "ماذا بعد؟",
+      "step_one": "اشتراكك نشط الآن وتم فتح جميع الميزات.",
+      "step_two": "يمكنك عرض تفاصيل اشتراكك وإدارة خطتك في الإعدادات.",
+      "step_three": "ابدأ باستكشاف جميع الميزات المميزة المتاحة لك!",
+      "view_subscription": "عرض الاشتراك",
+      "back_to_dashboard": "العودة إلى لوحة التحكم",
+      "email_note": "تم إرسال بريد إلكتروني للتأكيد إلى عنوان بريدك الإلكتروني المسجل يتضمن إيصالك وتفاصيل اشتراكك."
+    },
+    "failure": {
+      "title": "فشل الدفع",
+      "subtitle": "لم نتمكن من معالجة دفعتك",
+      "error_details": "تفاصيل الخطأ",
+      "checkout_id": "معرف عملية الدفع",
+      "common_reasons": "أسباب شائعة لفشل الدفع",
+      "reason_insufficient_funds": "أموال غير كافية في حسابك",
+      "reason_incorrect_details": "تفاصيل دفع أو معلومات بطاقة غير صحيحة",
+      "reason_expired_card": "بطاقة دفع منتهية الصلاحية أو غير صالحة",
+      "reason_bank_declined": "تم رفض الدفع من قبل البنك أو جهة إصدار البطاقة",
+      "reason_network_issue": "مشكلة في اتصال الشبكة أثناء المعاملة",
+      "what_to_do": "ماذا يجب أن تفعل؟",
+      "suggestion_verify_details": "تحقق مرة أخرى من تفاصيل الدفع ومعلومات البطاقة الخاصة بك",
+      "suggestion_check_balance": "تأكد من وجود أموال كافية في حسابك",
+      "suggestion_try_different": "حاول استخدام طريقة دفع أو بطاقة مختلفة",
+      "suggestion_contact_bank": "اتصل ببنكك إذا استمرت المشكلة",
+      "try_again": "حاول مرة أخرى",
+      "back_to_dashboard": "العودة إلى لوحة التحكم",
+      "need_help": "هل تحتاج مساعدة بخصوص دفعتك؟"
+    }
+  },
+  "payments": {
+    "title": "سجل الدفعات",
+    "subtitle": "عرض وإدارة دفعات اشتراكك",
+    "stats": {
+      "total": "إجمالي الدفعات",
+      "revenue": "إجمالي الإيرادات",
+      "thisMonth": "هذا الشهر",
+      "successRate": "معدل النجاح"
+    },
+    "table": {
+      "transactionId": "معرف المعاملة",
+      "date": "التاريخ",
+      "plan": "الخطة",
+      "amount": "المبلغ",
+      "status": "الحالة",
+      "provider": "المزود",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "pending": "معلقة",
+      "completed": "مكتملة",
+      "failed": "فاشلة",
+      "refunded": "مستردة"
+    },
+    "provider": {
+      "paddle": "بادل",
+      "chargily": "شارجلي"
+    },
+    "filters": {
+      "search": "البحث بمعرف المعاملة...",
+      "status": "تصفية حسب الحالة",
+      "provider": "تصفية حسب المزود",
+      "dateRange": "النطاق الزمني",
+      "all": "الكل"
+    },
+    "details": {
+      "title": "تفاصيل الدفعة",
+      "transactionInfo": "معلومات المعاملة",
+      "subscriptionInfo": "معلومات الاشتراك",
+      "paymentMethod": "طريقة الدفع",
+      "paidAt": "تاريخ الدفع",
+      "refundedAt": "تاريخ الاسترداد"
+    },
+    "empty": {
+      "noPayments": "لا توجد دفعات بعد",
+      "noPaymentsDesc": "سيظهر سجل دفعاتك هنا بمجرد قيامك بأول دفعة اشتراك",
+      "noResults": "لا توجد دفعات مطابقة لمعايير التصفية الخاصة بك",
+      "noResultsDesc": "حاول تعديل معايير البحث أو التصفية الخاصة بك"
+    },
+    "pagination": {
+      "showing": "عرض {{start}}-{{end}} من {{total}}"
+    }
+  },
+  "member": {
+    "gyms": {
+      "title": "الصالات الرياضية",
+      "subtitle": "إدارة صالاتك الرياضية"
+    },
+    "settings": {
+      "pageTitle": "إعداداتي",
+      "pageSubtitle": "إدارة ملفك الشخصي وتفضيلاتك",
+      "tabs": {
+        "profile": "الملف الشخصي",
+        "preferences": "تفضيلات التطبيق",
+        "security": "الأمان",
+        "training": "التدريب"
+      },
+      "profile": {
+        "title": "المعلومات الشخصية",
+        "subtitle": "تحديث تفاصيلك الشخصية",
+        "fullName": "الاسم الكامل",
+        "fullNamePlaceholder": "أدخل اسمك الكامل",
+        "emailPlaceholder": "أدخل عنوان البريد الإلكتروني",
+        "email": "عنوان البريد الإلكتروني",
+        "phone": "رقم الهاتف",
+        "save": "حفظ التغييرات",
+        "phonePlaceholder": "أدخل رقم الهاتف",
+        "becomeCoach": "كن مدربًا"
+      },
+      "preferences": {
+        "title": "تفضيلات التطبيق",
+        "subtitle": "تخصيص تجربتك في التطبيق",
+        "timer": {
+          "title": "مؤقت الراحة الذكي",
+          "subtitle": "تخصيص مؤقت الراحة للتمرين",
+          "defaultRest": "الراحة الافتراضية (ثواني)",
+          "alarmDuration": "الحد الأقصى لمدة التنبيه (ثواني)",
+          "sound": "صوت الإكمال"
+        },
+        "language": "اللغة",
+        "languageDesc": "اختر لغتك المفضلة",
+        "theme": "السمة",
+        "notifications": "تمكين الإشعارات"
+      },
+      "training": {
+        "title": "إعدادات التدريب",
+        "subtitle": "إدارة تفضيلات التدريب الخاصة بك"
+      },
+      "security": {
+        "title": "الأمان",
+        "subtitle": "إدارة كلمة المرور وإعدادات الأمان الخاصة بك",
+        "currentPassword": "كلمة المرور الحالية",
+        "newPassword": "كلمة المرور الجديدة",
+        "confirmPassword": "تأكيد كلمة المرور الجديدة",
+        "changePassword": "تغيير كلمة المرور",
+        "currentPasswordPlaceholder": "أدخل كلمة المرور الحالية",
+        "newPasswordPlaceholder": "أدخل كلمة المرور الجديدة",
+        "confirmPasswordPlaceholder": "تأكيد كلمة المرور الجديدة"
+      },
+      "success": "تم تحديث الإعدادات بنجاح",
+      "error": "فشل تحديث الإعدادات"
+    },
+    "training": {
+      "use_program": "استخدام",
+      "view_details": "عرض",
+      "days_per_week": "{{count}} أيام/أسبوع",
+      "source_coach": "المدرب",
+      "source_app": "التطبيق",
+      "source_me": "أنا",
+      "status_active": "نشط",
+      "status_completed": "مكتمل",
+      "status_abandoned": "مهجور",
+      "log_session_title": "تسجيل التمرين",
+      "log_session_save": "حفظ التمرين",
+      "log_session_cancel": "إلغاء",
+      "log_session_day": "اليوم",
+      "log_session_date": "التاريخ",
+      "exercises": "التمارين",
+      "add_exercise": "إضافة تمرين",
+      "sets": "مجموعات",
+      "reps": "تكرارات",
+      "weight_kg": "كجم",
+      "last_session": "آخر: {{sets}}x{{reps}} @ {{weight}}كجم",
+      "programs_tab_all": "جميع البرامج",
+      "programs_tab_coach": "مخصص من المدرب",
+      "programs_tab_template": "قوالب التطبيق",
+      "programs_tab_member": "برامجي",
+      "programs_filter_search": "البحث عن برامج...",
+      "no_programs_found": "لم يتم العثور على برامج"
+    }
+  },
+  "training": {
+    "muscles": {
+      "chest": "الصدر",
+      "back": "الظهر",
+      "biceps": "البايسبس",
+      "triceps": "الترايسبس",
+      "shoulders": "الأكتاف",
+      "legs": "الأرجل",
+      "glutes": "الأرداف",
+      "calves": "السمانة",
+      "core": "الجذع",
+      "upper_chest": "الصدر العلوي",
+      "mid_chest": "الصدر الأوسط",
+      "lower_chest": "الصدر السفلي",
+      "inner_chest": "الصدر الداخلي",
+      "lats": "اللاتس",
+      "upper_back": "الظهر العلوي",
+      "mid_back": "الظهر الأوسط",
+      "lower_back": "أسفل الظهر",
+      "traps_upper": "الجزء العلوي من الترابيس",
+      "traps_middle": "الجزء الأوسط من الترابيس",
+      "traps_lower": "الجزء السفلي من الترابيس",
+      "front_delts": "الدالية الأمامية",
+      "lateral_delts": "الدالية الجانبية",
+      "rear_delts": "الدالية الخلفية",
+      "rotator_cuff": "الكفة المدورة",
+      "arms": "الذراعين",
+      "forearms": "الساعدين",
+      "biceps_long_head": "الرأس الطويل للعضلة ذات الرأسين",
+      "biceps_short_head": "الرأس القصير للعضلة ذات الرأسين",
+      "brachialis": "العضلة العضدية",
+      "triceps_long_head": "الرأس الطويل للعضلة ثلاثية الرؤوس",
+      "triceps_lateral_head": "الرأس الجانبي للعضلة ثلاثية الرؤوس",
+      "triceps_medial_head": "الرأس الإنسي للعضلة ثلاثية الرؤوس",
+      "forearms_flexors": "عضلات الساعد القابضة",
+      "forearms_extensors": "عضلات الساعد الباسطة",
+      "quads": "العضلة الرباعية",
+      "hamstrings": "أوتار الركبة",
+      "adductors": "العضلات المقربة",
+      "abductors": "العضلات المبعدة",
+      "quads_rectus_femoris": "العضلة المستقيمة الفخذية",
+      "quads_vastus_lateralis": "العضلة المتسعة الوحشية",
+      "quads_vastus_medialis": "العضلة المتسعة الإنسية",
+      "quads_vastus_intermedius": "العضلة المتسعة الوسطى",
+      "hamstrings_biceps_femoris": "العضلة ذات الرأسين الفخذية",
+      "hamstrings_semitendinosus": "العضلة نصف الوترية",
+      "hamstrings_semimembranosus": "العضلة نصف الغشائية",
+      "glute_max": "العضلة الألوية الكبرى",
+      "glute_med": "العضلة الألوية الوسطى",
+      "glute_min": "العضلة الألوية الصغرى",
+      "gastrocnemius_medial": "العضلة الساقية الإنسية",
+      "gastrocnemius_lateral": "العضلة الساقية الوحشية",
+      "soleus": "العضلة النعلية",
+      "abs": "عضلات البطن",
+      "upper_abs": "عضلات البطن العلوية",
+      "lower_abs": "عضلات البطن السفلية",
+      "obliques_internal": "العضلات المائلة الداخلية",
+      "obliques_external": "العضلات المائلة الخارجية",
+      "transverse_abdominis": "العضلة البطنية المستعرضة",
+      "erector_spinae": "العضلة الناصبة للفقار"
+    },
+    "page": {
+      "title": "تدريباتي",
+      "subtitle": "تتبع تقدمك وتاريخ تمارينك",
+      "tabs": {
+        "current": "البرنامج الحالي",
+        "history": "السجل"
+      },
+      "recentSessions": "الجلسات الأخيرة",
+      "workoutHistory": "سجل التمارين",
+      "noWorkouts": "لم يتم تسجيل أي تمارين بعد",
+      "noWorkoutsDesc": "ابدأ بتسجيل تمارينك لتتبع تقدمك",
+      "custom": "مخصص",
+      "exercises": "تمارين",
+      "volume": "إجمالي",
+      "yourProgress": "تقدمك",
+      "quickLog": {
+        "title": "تسجيل تمرين سريع",
+        "subtitle": "سجل جلسة تدريب مخصصة",
+        "selectProgram": "اختر البرنامج",
+        "selectDay": "اختر اليوم",
+        "start": "بدء التسجيل"
+      },
+      "start": {
+        "activeCheck": "لديك برنامج نشط. يرجى إكماله أو أرشفته أولاً.",
+        "activeTitle": "تغيير البرنامج النشط؟",
+        "activeDesc": "لديك بالفعل برنامج نشط. بدء هذا البرنامج سيؤرشف تقدمك الحالي. هل تريد المتابعة؟"
+      },
+      "archive": {
+        "title": "أرشفة البرنامج؟",
+        "desc": "هل أنت متأكد أنك تريد إيقاف هذا البرنامج؟ سيتم نقله إلى سجلك ويمكنك بدء برنامج جديد.",
+        "confirm": "أرشفة البرنامج"
+      },
+      "sessionList": {
+        "editSession": "تعديل الجلسة",
+        "set": "مجموعة",
+        "reps": "تكرارات",
+        "kg": "كجم",
+        "noSets": "لم يتم تسجيل أي مجموعات"
+      },
+      "activeProgram": {
+        "title": "البرنامج النشط",
+        "started": "تم بدء البرنامج بنجاح!",
+        "subtitle": "خطتك التدريبية الحالية",
+        "progress": "التقدم",
+        "daysCompleted": "{{completed}} / {{total}} أيام",
+        "streak": "سلسلة",
+        "days": "أيام",
+        "logWorkout": "تسجيل تمرين",
+        "viewDetails": "عرض التفاصيل"
+      },
+      "programs": {
+        "title": "برامج التدريب",
+        "subtitle": "تصفح وإدارة روتين تدريبك",
+        "button": "تسجيل تمرين مخصص",
+        "create": {
+          "form": {
+            "createSuperset": "إنشاء مجموعة عضلية مركبة (سوبر سيت)"
+          }
+        }
+      }
+    },
+    "activeProgram": {
+      "title": "البرنامج النشط",
+      "noActive": "لا يوجد برنامج نشط",
+      "noActiveDesc": "اختر برنامجًا تدريبيًا لبدء تتبع تقدمك.",
+      "browse": "تصفح البرامج",
+      "workoutsComplete": "تمارين مكتملة",
+      "progress": "التقدم",
+      "logWorkout": "تسجيل تمرين",
+      "schedule": "الجدول الزمني",
+      "daysPerWeek": "{{count}} أيام/أسبوع",
+      "daysPerWeek_one": "{{count}} يوم/أسبوع"
+    },
+    "history": {
+      "title": "سجل البرامج",
+      "empty": "لا توجد برامج سابقة",
+      "emptyDesc": "ستظهر برامجك المكتملة أو المتوقفة مؤقتًا هنا.",
+      "sessions": "{{count}} جلسات",
+      "sessions_one": "جلسة واحدة",
+      "status": {
+        "active": "نشط",
+        "paused": "متوقف مؤقتًا",
+        "completed": "مكتمل",
+        "abandoned": "مهجور"
+      }
+    },
+    "programs": {
+      "title": "برامج التدريب",
+      "subtitle": "تصفح وإدارة روتين تدريبك",
+      "createProgram": "إنشاء برنامج",
+      "searchPlaceholder": "البحث عن برامج...",
+      "notFound": {
+        "title": "لم يتم العثور على برامج",
+        "desc": "حاول تعديل عوامل التصفية أو استعلام البحث، أو أنشئ برنامجًا جديدًا للبدء."
+      },
+      "tabs": {
+        "all": "جميع البرامج",
+        "coach": "مخصص من المدرب",
+        "template": "قوالب التطبيق",
+        "member": "برامجي"
+      },
+      "card": {
+        "daysPerWeek": "{{count}} أيام/أسبوع",
+        "start": "بدء البرنامج",
+        "selected": "محدد",
+        "view": "عرض التفاصيل",
+        "active": "نشط",
+        "paused": "متوقف مؤقتًا",
+        "pausedDesc": "البرنامج متوقف مؤقتًا. استأنف للمتابعة.",
+        "pause": "إيقاف مؤقت",
+        "resume": "استئناف",
+        "days": "أيام/أسبوع",
+        "sessions": "جلسات",
+        "exercises": "تمارين",
+        "source": {
+          "coach": "مدرب",
+          "template": "تطبيق",
+          "member": "أنا"
+        },
+        "noDescription": "لم يتم تقديم وصف."
+      },
+      "edit": {
+        "success": "تم تحديث البرنامج بنجاح",
+        "error": "فشل تحديث البرنامج"
+      },
+      "create": {
+        "title": "إنشاء برنامج",
+        "subtitle": "صمم برنامجك التدريبي المخصص",
+        "schedule": "جدول البرنامج",
+        "scheduleSubtitle": "حدد التمارين لكل يوم تدريبي",
+        "basicInfo": "معلومات أساسية",
+        "programDetails": "تفاصيل البرنامج",
+        "createButton": "إنشاء برنامج",
+        "back": "رجوع",
+        "next": "التالي: الجدول الزمني",
+        "submit": "إنشاء برنامج",
+        "form": {
+          "serviceRequired": "الخدمة مطلوبة",
+          "name": "اسم الحصة",
+          "namePlaceholder": "مثال: حرق دهون الصيف",
+          "description": "الوصف",
+          "descriptionPlaceholder": "الأهداف، الجمهور المستهدف...",
+          "experience": "الخبرة",
+          "purpose": "الغرض",
+          "daysPerWeek": "أيام/أسبوع",
+          "daysPerWeekLabel": "أيام في الأسبوع",
+          "day": "يوم",
+          "dayName": "اسم اليوم",
+          "exerciseName": "اسم التمرين",
+          "exercise": "تمرين",
+          "sets": "مجموعات",
+          "reps": "تكرارات",
+          "restTime": "وقت الراحة (ث)",
+          "addExercise": "إضافة تمرين",
+          "videoUrl": "رابط الفيديو",
+          "addVideo": "إضافة رابط فيديو",
+          "targetMuscles": "العضلات المستهدفة",
+          "noExercises": "لم تتم إضافة تمارين بعد. انقر على 'إضافة تمرين' للبدء.",
+          "selectMuscle": "اختر العضلة",
+          "selectMuscleForAi": "اختر عضلة مستهدفة للحصول على اقتراحات",
+          "addNextExercise": "أضف التمرين التالي",
+          "addNext": "أضف التالي",
+          "aiSuggestions": "اقتراحات الذكاء الاصطناعي",
+          "visibility": "الرؤية",
+          "public": "عام",
+          "private": "خاص",
+          "publicDesc": "مرئي للجميع",
+          "privateDesc": "مرئي لك فقط",
+          "createSuperset": "إنشاء مجموعة عضلية مركبة (سوبر سيت)"
+        },
+        "validation": {
+          "nameRequired": "اسم البرنامج مطلوب"
+        }
+      },
+      "details": {
+        "start": "ابدأ البرنامج",
+        "continue": "متابعة البرنامج",
+        "use": "استخدام القالب",
+        "exercisesCount": "{{count}} تمرين",
+        "muscleGroups": "العضلات المستهدفة",
+        "equipment": "المعدات",
+        "reviews": {
+          "title": "المراجعات",
+          "noReviews": "لا توجد مراجعات بعد. كن أول من يراجع!",
+          "writeReview": "اكتب مراجعة",
+          "rating": "التقييم",
+          "comment": "تعليق",
+          "placeholder": "شارك تجربتك مع هذا البرنامج...",
+          "submit": "إرسال المراجعة",
+          "cancel": "إلغاء",
+          "success": "تم إرسال المراجعة"
+        }
+      }
+    },
+    "exercises": {
+      "title": "مكتبة التمارين",
+      "subtitle": "تصفح وأنشئ تمارين لتدريباتك",
+      "create": "إنشاء تمرين",
+      "edit": "تعديل التمرين",
+      "delete": "حذف التمرين",
+      "myExercises": "تماريني فقط",
+      "search": "ابحث عن التمارين...",
+      "filters": {
+        "targetMuscle": "العضلة المستهدفة",
+        "equipment": "المعدات",
+        "difficulty": "الصعوبة",
+        "type": "النوع",
+        "clear": "مسح الفلاتر"
+      },
+      "selector": {
+        "title": "اختر تمرينًا",
+        "createCustom": "مخصص",
+        "searchPlaceholder": "ابحث بالاسم أو العضلة..."
+      },
+      "form": {
+        "name": "اسم التمرين",
+        "namePlaceholder": "مثال: ضغط البنش بالدمبل",
+        "description": "الوصف",
+        "descriptionPlaceholder": "صف التمرين بإيجاز...",
+        "instructions": "التعليمات",
+        "instructionsPlaceholder": "خطوات مفصلة حول كيفية أداء هذا التمرين...",
+        "targetMuscles": "العضلات المستهدفة",
+        "equipment": "المعدات",
+        "equipmentPlaceholder": "أضف معدات...",
+        "difficulty": "الصعوبة",
+        "type": "نوع التمرين",
+        "recommendedSets": "المجموعات الموصى بها",
+        "recommendedReps": "التكرارات الموصى بها",
+        "duration": "المدة (بالدقائق)",
+        "videoUrl": "رابط الفيديو",
+        "imageUrl": "رابط الصورة",
+        "makePublic": "اجعله عامًا",
+        "publicHelper": "اسمح للمستخدمين الآخرين برؤية هذا التمرين واستخدامه"
+      },
+      "types": {
+        "all": "جميع الأنواع",
+        "cardio": "كارديو",
+        "strength": "قوة",
+        "stretching": "إطالة",
+        "powerlifting": "رفع الأثقال",
+        "plyometrics": "تمارين البلايومتريكس",
+        "olympic_weightlifting": "رفع الأثقال الأولمبي",
+        "strongman": "الرجل القوي"
+      },
+      "difficulty": {
+        "all": "جميع المستويات",
+        "beginner": "مبتدئ",
+        "intermediate": "متوسط",
+        "expert": "خبير"
+      },
+      "empty": {
+        "title": "لم يتم العثور على تمارين",
+        "description": "لم يتم العثور على تمارين للمرشحات المحددة."
+      },
+      "deleteConfirm": "حذف التمرين"
+    },
+    "card": {
+      "createdBy": "تم الإنشاء بواسطة",
+      "viewDetails": "عرض التفاصيل",
+      "watchVideo": "مشاهدة الفيديو"
+    },
+    "empty": {
+      "title": "لا توجد تمارين بعد",
+      "description": "أنشئ تمرينك الأول للبدء",
+      "action": "إنشاء تمرين"
+    },
+    "exercise": {
+      "noVideo": "لا يوجد فيديو متاح",
+      "description": "الوصف",
+      "noDescription": "لم يتم تقديم وصف.",
+      "noResults": "لم يتم العثور على نتائج",
+      "targetMuscles": "العضلات المستهدفة",
+      "equipment": "المعدات"
+    },
+    "logSession": {
+      "title": "تسجيل تمرين",
+      "sessionDetails": "تفاصيل الجلسة",
+      "workoutName": "اسم التمرين",
+      "selectDay": "اختر اليوم",
+      "day": "اليوم",
+      "date": "تاريخ التمرين",
+      "duration": "المدة",
+      "exercises": "التمارين",
+      "exerciseName": "اسم التمرين",
+      "addExercise": "إضافة تمرين",
+      "noExercises": "لم تتم إضافة تمارين بعد",
+      "addFirst": "أضف تمرينك الأول",
+      "last": "آخر: {{sets}}x{{reps}} @ {{weight}} كجم",
+      "sets": "المجموعات",
+      "reps": "التكرارات",
+      "kg": "الوزن (كجم)",
+      "cancel": "إلغاء",
+      "save": "حفظ التمرين",
+      "noSessions": "لم يتم تسجيل جلسات بعد.",
+      "unknownExercise": "تمرين غير معروف",
+      "done": "تم",
+      "addSet": "إضافة مجموعة",
+      "set": "مجموعة",
+      "uncheckToDelete": "إلغاء التحديد للحذف",
+      "RemoveSet": "إزالة مجموعة",
+      "deleteTitle": "حذف الجلسة",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذه الجلسة؟ لا يمكن التراجع عن هذا الإجراء.",
+      "deleteVerificationText": "حذف الجلسة",
+      "validation": {
+        "weightPositive": "يجب أن يكون الوزن أكبر من 0",
+        "repsPositive": "يجب أن تكون التكرارات أكبر من 0",
+        "weightIncrements": "يجب أن يكون الوزن بزيادات 0.5",
+        "autoUncheck": "تم إلغاء التحديد: أصبحت القيمة غير صالحة"
+      }
+    },
+    "noResults": "لم يتم العثور على تمارين",
+    "tryDifferent": "جرب فلاتر مختلفة أو أنشئ تمرينًا جديدًا",
+    "deleteConfirm": "حذف التمرين",
+    "deleteWarning": "هل أنت متأكد أنك تريد حذف هذا التمرين؟ لا يمكن التراجع عن هذا الإجراء."
+  },
+  "progress": {
+    "title": "تقدمي",
+    "subtitle": "تتبع رحلتك وإنجازاتك في اللياقة البدنية",
+    "stats": {
+      "totalWorkouts": "إجمالي التمارين",
+      "workoutsDesc": "إجمالي جلسات التدريب",
+      "totalVolume": "إجمالي الحجم",
+      "volumeDesc": "إجمالي الوزن المرفوع",
+      "currentStreak": "السلسلة الحالية",
+      "streakDesc": "أيام التدريب المتتالية",
+      "bestStreak": "أفضل سلسلة",
+      "bestStreakDesc": "سجلك القياسي على الإطلاق",
+      "trend": "+{{percent}}%"
+    },
+    "streakBadge": "سلسلة {{count}} يوم",
+    "motivation": {
+      "title": "استمر في التقدم، أنت تقوم بعمل رائع!",
+      "subtitle": "التمرين السيئ الوحيد هو الذي لم يحدث. لقد أكملت {{count}} تمرينًا حتى الآن. إنجازك التالي قاب قوسين أو أدنى!"
+    },
+    "calendar": {
+      "title": "خريطة حرارية للنشاط",
+      "subtitle": "الاستمرارية هي مفتاح النجاح",
+      "less": "أقل",
+      "more": "أكثر",
+      "today": "اليوم"
+    },
+    "recent": {
+      "title": "التمارين الأخيرة",
+      "subtitle": "أحدث جلساتك التدريبية",
+      "viewAll": "عرض جميع التدريبات",
+      "noWorkouts": "لم يتم تسجيل أي تمارين بعد. ابدأ التدريب لترى تقدمك!"
+    }
+  },
+  "attendance": {
+    "title": "سجل الحضور",
+    "subtitle": "عرض سجلات دخولك إلى النادي الرياضي",
+    "search": "البحث باسم النادي الرياضي...",
+    "empty": "لا توجد سجلات حضور",
+    "emptyDesc": "سيظهر سجل دخولك هنا بمجرد زيارتك للنادي الرياضي.",
+    "table": {
+      "status": "الحالة",
+      "gym": "النادي الرياضي",
+      "date": "التاريخ والوقت",
+      "badge": "الشارة"
+    },
+    "status": {
+      "checked_in": "تم الدخول",
+      "checked_out": "تم الخروج",
+      "denied": "مرفوض",
+      "missed": "فائت"
+    },
+    "filter": {
+      "all": "الكل",
+      "checked_in": "تم تسجيل الدخول",
+      "denied": "مرفوض"
+    }
+  },
+  "mySubscriptions": {
+    "title": "اشتراكاتي",
+    "subtitle": "إدارة عضوياتك واشتراكاتك في الصالة الرياضية",
+    "search": "البحث باسم الصالة الرياضية...",
+    "empty": "لا توجد اشتراكات بعد",
+    "emptyDesc": "انضم إلى صالة رياضية لترى اشتراكاتك هنا.",
+    "noResults": "لا توجد اشتراكات مطابقة",
+    "noResultsDesc": "حاول تعديل معايير البحث أو التصفية.",
+    "joined": "تاريخ الانضمام",
+    "expires": "تاريخ الانتهاء",
+    "table": {
+      "gym": "الصالة الرياضية",
+      "joined": "تاريخ الانضمام",
+      "expires": "تاريخ الانتهاء",
+      "status": "الحالة",
+      "details": "التفاصيل"
+    },
+    "status": {
+      "active": "نشط",
+      "pending": "معلق",
+      "banned": "محظور",
+      "canceled": "ملغى",
+      "expired": "منتهي الصلاحية"
+    },
+    "subscriptionStatus": {
+      "active": "نشط",
+      "expired": "منتهي الصلاحية",
+      "cancelled": "ملغى"
+    },
+    "filter": {
+      "all": "الكل",
+      "active": "نشط",
+      "expired": "منتهي الصلاحية"
+    },
+    "details": {
+      "title": "تفاصيل الاشتراك",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "subscriptionStatus": "حالة الاشتراك",
+      "paymentMethod": "طريقة الدفع",
+      "paymentsComingSoon": "سجل الدفعات سيكون متاحًا بمجرد تطبيق الوصول إلى الصالة الرياضية."
+    }
+  },
+  "renewSubscription": {
+    "title": "تجديد الاشتراك",
+    "submit": "تجديد الاشتراك",
+    "calculatedEndDate": "تاريخ الانتهاء المحسوب",
+    "duration": {
+      "label": "المدة",
+      "1 session": "جلسة واحدة (يوم واحد)",
+      "1 week": "أسبوع واحد",
+      "2 weeks": "أسبوعان",
+      "3 weeks": "3 أسابيع",
+      "4 weeks": "4 أسابيع",
+      "1 month": "شهر واحد",
+      "2 months": "شهران",
+      "3 months": "3 أشهر",
+      "6 months": "6 أشهر",
+      "12 months": "12 شهرًا",
+      "24 months": "24 شهرًا",
+      "1 year": "سنة واحدة"
+    },
+    "extendTitle": "تمديد الاشتراك",
+    "extendSubmit": "تمديد الاشتراك",
+    "extendingFrom": "تمديد من تاريخ الانتهاء الحالي",
+    "startsOn": "يبدأ في"
+  },
+  "staff": {
+    "title": "إدارة الموظفين",
+    "subtitle": "إدارة المديرين والموظفين والمدربين في صالة الألعاب الرياضية الخاصة بك",
+    "addTitle": "إضافة عضو فريق عمل",
+    "editTitle": "تعديل عضو فريق عمل",
+    "addButton": "إضافة موظف",
+    "saveButton": "حفظ التغييرات",
+    "pending": "بانتظار الإعداد",
+    "removeConfirmTitle": "إزالة عضو فريق عمل",
+    "removeConfirmText": "هل أنت متأكد أنك تريد إزالة عضو فريق العمل هذا؟ سيفقدون الوصول إلى ميزات المدير/الموظف.",
+    "updateSuccess": "تم تحديث عضو فريق العمل بنجاح",
+    "removeSuccess": "تمت إزالة عضو فريق العمل بنجاح",
+    "noData": {
+      "title": "لا يوجد أعضاء فريق عمل",
+      "description": "أضف مديرين أو موظفين أو مدربين للمساعدة في إدارة صالة الألعاب الرياضية الخاصة بك"
+    },
+    "roles": {
+      "manager": "مدير",
+      "receptionist": "موظف استقبال",
+      "coach": "مدرب",
+      "cleaner": "عامل نظافة",
+      "maintenance": "صيانة"
+    },
+    "form": {
+      "name": "الاسم الكامل",
+      "namePlaceholder": "أدخل الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "أدخل عنوان البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "phonePlaceholder": "أدخل رقم الهاتف",
+      "role": "الدور",
+      "contactHint": "مطلوب طريقة اتصال واحدة على الأقل (البريد الإلكتروني أو الهاتف). إذا لم يكن المستخدم موجودًا، فسيتلقى دعوة.",
+      "offlineRoleHint": "معلومات الاتصال اختيارية لهذا الدور. أدخلها فقط إذا كنت ترغب في الاحتفاظ بسجل."
+    },
+    "validation": {
+      "nameRequired": "الاسم مطلوب",
+      "contactRequired": "البريد الإلكتروني أو رقم الهاتف مطلوب",
+      "emailInvalid": "الرجاء إدخال عنوان بريد إلكتروني صالح",
+      "roleRequired": "الرجاء تحديد دور",
+      "selfAdditionBlocked": "لا يمكنك إضافة نفسك كموظف",
+      "checkForm": "الرجاء التحقق من النموذج بحثًا عن الأخطاء"
+    },
+    "permissions": {
+      "title": "الصلاحيات",
+      "description": "حدد ما يمكن لهذا الموظف الوصول إليه وإدارته.",
+      "applyDefaults": "تطبيق الإعدادات الافتراضية",
+      "selected": "محدد",
+      "permissionsSelected": "صلاحيات محددة",
+      "groups": {
+        "members": "الأعضاء",
+        "attendance": "الحضور",
+        "pricing": "التسعير",
+        "staff": "الموظفون",
+        "settings": "الإعدادات",
+        "analytics": "التحليلات",
+        "schedules": "الجداول الزمنية"
+      },
+      "items": {
+        "members_view": "عرض الأعضاء",
+        "members_create": "إضافة أعضاء",
+        "members_edit": "تعديل الأعضاء",
+        "members_delete": "حذف الأعضاء",
+        "attendance_view": "عرض الحضور",
+        "attendance_checkin": "تسجيل الدخول",
+        "attendance_manage": "إدارة السجلات",
+        "pricing_view": "عرض التسعير",
+        "pricing_manage": "إدارة التسعير",
+        "staff_view": "عرض الموظفين",
+        "staff_manage": "إدارة الموظفين",
+        "settings_view": "عرض الإعدادات",
+        "settings_manage": "إدارة الإعدادات",
+        "analytics_view": "عرض التحليلات",
+        "analytics_export": "تصدير البيانات",
+        "schedules_view": "عرض الجداول الزمنية",
+        "schedules_manage": "إدارة الجداول الزمنية"
+      }
+    }
+  },
+  "coaches": {
+    "title": "ابحث عن مدرب",
+    "subtitle": "اكتشف مدربين محترفين في منطقتك لمساعدتك في تحقيق أهداف لياقتك البدنية",
+    "noData": {
+      "title": "لم يتم العثور على مدربين",
+      "description": "لا يوجد مدربون متاحون في منطقتك حاليًا"
+    },
+    "experience": "الخبرة",
+    "requestCoaching": "طلب تدريب",
+    "alreadyCoached": "مدربي",
+    "requestModal": {
+      "title": "طلب تدريب من {{coachName}}",
+      "send": "إرسال الطلب",
+      "message": "رسالة (اختياري)",
+      "messagePlaceholder": "أخبر المدرب عن أهدافك اللياقية وما تبحث عنه...",
+      "messageHint": "سيتلقى المدرب طلبك ويتواصل معك إذا قبله",
+      "info": "سيتلقى المدرب إشعارًا ويمكنه اختيار قبول طلبك أو رفضه. سيتم إعلامك برد المدرب."
+    },
+    "filters": {
+      "search": "البحث عن المدربين بالاسم",
+      "city": "المدينة",
+      "cityPlaceholder": "تصفية حسب المدينة",
+      "state": "الولاية/المقاطعة",
+      "statePlaceholder": "تصفية حسب الولاية",
+      "country": "البلد",
+      "countryPlaceholder": "تصفية حسب البلد",
+      "specialization": "التخصص",
+      "specializationAll": "جميع التخصصات",
+      "clearFilters": "مسح الفلاتر",
+      "showingResults": "عرض {{count}} مدرب(ين)",
+      "detectLocation": "تحديد موقعي",
+      "detecting": "جاري التحديد...",
+      "locationDetected": "تم تحديد الموقع بنجاح",
+      "locationError": "تعذر تحديد الموقع. يرجى الإدخال يدويًا."
+    },
+    "verified": "موثق",
+    "yearsShort": "سنة",
+    "specializations": "التخصصات",
+    "client": "عميل",
+    "clients": "عملاء",
+    "viewProfile": "عرض الملف الشخصي",
+    "rating": "التقييم"
+  },
+  "pages": {
+    "gym": {
+      "classes": "حصص الجيم"
+    },
+    "member": {
+      "coaches": "المدربون"
+    }
+  },
+  "roles": {
+    "admin": "مسؤول النظام",
+    "app_editor": "محرر التطبيق",
+    "owner": "المالك",
+    "manager": "المدير",
+    "receptionist": "موظف الاستقبال",
+    "coach": "مدرب",
+    "member": "عضو",
+    "cleaner": "منظف",
+    "maintenance": "صيانة",
+    "staff": "موظف"
+  },
+  "schedule": {
+    "title": "الجدول الزمني",
+    "subtitle": "إدارة جدول تدريبك",
+    "today": "اليوم",
+    "createSession": "إنشاء جلسة",
+    "createSessionSubtitle": "جدولة جلسة جديدة مع عميل",
+    "createClass": "إنشاء حصة",
+    "createClassSubtitle": "جدولة حصة جماعية جديدة",
+    "fetchError": "فشل في جلب الجلسات",
+    "noSessions": "لا توجد جلسات مجدولة",
+    "noSessionsDesc": "ليس لديك أي جلسات مجدولة لهذا الأسبوع",
+    "sessionDetails": "تفاصيل الجلسة",
+    "deleteSession": "حذف الجلسة",
+    "deleteSessionConfirm": "هل أنت متأكد أنك تريد حذف هذه الجلسة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "sessionDeleted": "تم حذف الجلسة بنجاح",
+    "sessions": "الجلسات",
+    "memberSubtitle": "عرض حصصك وجلساتك وتمارينك القادمة",
+    "empty": "جدولك الزمني فارغ",
+    "emptyDesc": "ليس لديك أي حصص أو جلسات مجدولة لهذا الأسبوع.",
+    "recurring": "متكرر",
+    "form": {
+      "client": "العميل",
+      "selectClient": "اختر عميلاً",
+      "startTime": "وقت البدء",
+      "endTime": "وقت الانتهاء",
+      "time": "الوقت",
+      "type": "نوع الجلسة",
+      "location": "الموقع",
+      "locationPlaceholder": "مثال: أرضية الصالة الرياضية، زووم، إلخ.",
+      "notes": "ملاحظات",
+      "notesPlaceholder": "أضف أي ملاحظات لهذه الجلسة...",
+      "duration": "المدة (بالدقائق)",
+      "facility": "المنشأة",
+      "selectFacility": "اختر منشأة"
+    },
+    "types": {
+      "one_on_one": "تدريب فردي",
+      "consultation": "استشارة",
+      "check_in": "تسجيل دخول",
+      "assessment": "تقييم"
+    },
+    "status": {
+      "scheduled": "مجدول",
+      "completed": "مكتمل",
+      "cancelled": "ملغى",
+      "no_show": "لم يحضر",
+      "pending": "معلق"
+    }
+  },
+  "coachAnalytics": {
+    "title": "التحليلات",
+    "subtitle": "تتبع أداء تدريبك ومقاييس العملاء",
+    "noData": "لا توجد بيانات تحليلية",
+    "noDataDesc": "ابدأ بتدريب العملاء لرؤية تحليلاتك",
+    "noRecentActivity": "لا يوجد نشاط حديث",
+    "recentActivity": "النشاط الأخير",
+    "recentActivityDesc": "آخر التحديثات من عملك التدريبي",
+    "stats": {
+      "activeClients": "العملاء النشطون",
+      "totalSessions": "إجمالي الجلسات",
+      "completionRate": "معدل الإنجاز",
+      "totalHours": "إجمالي الساعات",
+      "vsLastMonth": "مقارنة بالشهر الماضي",
+      "sessionsDone": "الجلسات المكتملة",
+      "hoursTaught": "الساعات التي تم تدريسها",
+      "weeklyAvg": "المتوسط الأسبوعي",
+      "avgSessions": "الجلسات في الأسبوع"
+    },
+    "charts": {
+      "sessionTrend": "نشاط الجلسات",
+      "sessionTrendDesc": "الجلسات التدريبية التي تم إجراؤها بمرور الوقت",
+      "sessionTypes": "أنواع الجلسات",
+      "sessionTypesDesc": "التوزيع حسب نوع الجلسة",
+      "noTrend": "اتجاه النمو معلق",
+      "noTrendDesc": "أكمل الجلسات لتتبع نمو أدائك"
+    }
+  },
+  "coaching": {
+    "title": "التدريب",
+    "subtitle": "إدارة المدربين المنتسبين إلى صالتك الرياضية",
+    "inviteCoach": "دعوة مدرب",
+    "searchCoaches": "البحث عن مدربين...",
+    "noCoachesFound": "لم يتم العثور على مدربين",
+    "activeCoaches": "المدربون النشطون",
+    "pendingRequests": "الطلبات المعلقة",
+    "noActiveCoaches": "لا يوجد مدربون نشطون",
+    "noActiveCoachesDesc": "ادعُ المدربين للعمل في صالتك الرياضية",
+    "noPendingRequests": "لا توجد طلبات معلقة",
+    "noPendingRequestsDesc": "لم يطلب أي مدرب الانضمام إلى صالتك الرياضية",
+    "active": "نشط",
+    "awaitingApproval": "بانتظار الموافقة",
+    "removeCoach": "إزالة المدرب",
+    "removeCoachTitle": "إزالة المدرب",
+    "removeCoachConfirm": "هل أنت متأكد أنك تريد إزالة {{name}} من صالتك الرياضية؟ لا يمكن التراجع عن هذا الإجراء.",
+    "commission": "نسبة العمولة",
+    "exclusive": "مدرب حصري",
+    "inviteSent": "تم إرسال الدعوة بنجاح",
+    "inviteError": "فشل إرسال الدعوة",
+    "alreadyInvited": "تمت دعوة المدرب بالفعل أو هو تابع",
+    "alreadyAffiliated": "تابع بالفعل",
+    "invitePending": "دعوة معلقة",
+    "sentInvites": "الدعوات المرسلة",
+    "noSentInvites": "لا توجد دعوات مرسلة",
+    "noSentInvitesDesc": "لم تتم دعوة أي مدربين للانضمام إلى صالتك الرياضية",
+    "offer": {
+      "title": "عرض التدريب",
+      "details": "أرسل لك عرض تدريب",
+      "coachMessage": "رسالة المدرب",
+      "message": "رسالة",
+      "yourResponse": "ردك",
+      "responsePlaceholder": "اكتب ردك على المدرب (اختياري)...",
+      "accepted": "تم قبول عرض التدريب!",
+      "declined": "تم رفض عرض التدريب."
+    }
+  },
+  "coach": {
+    "payments": {
+      "title": "أرباحي",
+      "description": "تتبع عمولتك ومدفوعاتك من هذه الصالة الرياضية.",
+      "commissionRate": "نسبة العمولة",
+      "pendingBalance": "الرصيد المعلق",
+      "totalEarned": "إجمالي الأرباح",
+      "history": "سجل الدفعات",
+      "totalPayouts": "إجمالي المدفوعات",
+      "noData": "لم يتم العثور على معاملات",
+      "noDataDesc": "سيظهر سجل أرباحك هنا.",
+      "pending": "الرصيد المعلق"
+    },
+    "settings": {
+      "tabs": {
+        "profile": "الملف الشخصي",
+        "coaching": "التدريب",
+        "preferences": "التفضيلات",
+        "security": "الأمان",
+        "affiliation": "الانتساب"
+      },
+      "gym": {
+        "subtitle": "إدارة انتسابك للصالة الرياضية",
+        "noAffiliation": "لا يوجد انتساب نشط",
+        "noAffiliationDesc": "لا يبدو أنك منتسب لهذه الصالة الرياضية بعد الآن.",
+        "leaveTitle": "مغادرة الصالة الرياضية",
+        "leaveConfirmation": "هل أنت متأكد أنك تريد إنهاء انتسابك لهذه الصالة الرياضية؟ ستفقد الوصول إلى مرافق الصالة الرياضية وإدارة العملاء.",
+        "generalInfo": "تفاصيل الانتساب",
+        "commission": "نسبة العمولة",
+        "permissions": "الصلاحيات النشطة",
+        "permissionsDesc": "هذه الصلاحيات يمنحها مدير الصالة الرياضية.",
+        "dangerZoneDesc": "إجراءات لا رجعة فيها بخصوص انتسابك.",
+        "leaveGym": "مغادرة الصالة الرياضية",
+        "leaveGymDesc": "إنهاء انتسابك لهذه الصالة الرياضية فورًا.",
+        "leaveSuccess": "لقد غادرت الصالة الرياضية بنجاح."
+      },
+      "pageTitle": "الإعدادات",
+      "pageSubtitle": "إدارة ملفك الشخصي كمدرب وتفضيلاتك"
+    },
+    "gyms": {
+      "title": "صالاتي الرياضية",
+      "subtitle": "الصالات الرياضية التي تقدم فيها خدمات التدريب",
+      "tabs": {
+        "myGyms": "صالاتي الرياضية",
+        "invitations": "الدعوات",
+        "explore": "استكشاف"
+      },
+      "noInvitations": "لا توجد دعوات",
+      "noInvitationsDesc": "ليس لديك أي دعوات معلقة للانضمام إلى صالة رياضية",
+      "noGymsFound": "لم يتم العثور على صالات رياضية",
+      "noGymsFoundDesc": "حاول تعديل بحثك أو تحقق لاحقًا",
+      "searchPlaceholder": "البحث عن صالات رياضية بالاسم أو المدينة...",
+      "requestToJoin": "طلب الانضمام",
+      "requestSent": "تم إرسال الطلب بنجاح",
+      "inviteAccepted": "تم قبول الدعوة",
+      "inviteDeclined": "تم رفض الدعوة",
+      "pendingResponse": "بانتظار ردك"
+    },
+    "clients": {
+      "title": "العملاء",
+      "subtitle": "إدارة علاقاتك التدريبية وطلبات العملاء",
+      "tabs": {
+        "pending": "الطلبات المعلقة",
+        "active": "العملاء النشطون",
+        "prospective": "البحث عن عملاء",
+        "gymMembers": "أعضاء الصالة الرياضية",
+        "receivedRequests": "الطلبات المستلمة",
+        "sentRequests": "الطلبات المرسلة"
+      },
+      "pendingRequests": {
+        "title": "الطلبات المعلقة",
+        "subtitle": "الأعضاء الذين يرغبون بك كمدرب لهم",
+        "noData": "لا توجد طلبات معلقة",
+        "noDataDesc": "لقد أنجزت كل شيء!",
+        "accept": "قبول",
+        "decline": "رفض",
+        "respondedAt": "تم الرد",
+        "messageLabel": "رسالة من العضو",
+        "messageLabelSent": "تم إرسال الرسالة",
+        "respondLabel": "ردك (اختياري)"
+      },
+      "assignProgram": {
+        "title": "تعيين برنامج",
+        "noPrograms": "لم تقم بإنشاء أي برامج بعد.",
+        "confirm": "تعيين البرنامج المحدد",
+        "confirmChangeTitle": "تغيير البرنامج",
+        "confirmChangeDesc": "هل أنت متأكد أنك تريد تغيير البرنامج؟",
+        "confirmChangeConfirm": "تأكيد",
+        "confirmChangeCancel": "إلغاء"
+      },
+      "activeClients": {
+        "title": "العملاء النشطون",
+        "subtitle": "الأعضاء الذين تدربهم حاليًا",
+        "noData": "لا يوجد عملاء نشطون بعد",
+        "noDataDesc": "اقبل الطلبات لبدء التدريب",
+        "viewProfile": "عرض الملف الشخصي",
+        "assignProgram": "تعيين برنامج",
+        "sendMessage": "إرسال رسالة",
+        "joinedOn": "عميل منذ",
+        "lastWorkout": "آخر تمرين",
+        "currentProgram": "البرنامج الحالي"
+      },
+      "prospectiveMembers": {
+        "title": "البحث عن عملاء جدد",
+        "subtitle": "أعضاء يبحثون عن تدريب",
+        "noData": "لم يتم العثور على أعضاء محتملين",
+        "noDataDesc": "حاول تعديل عوامل التصفية الخاصة بك",
+        "sendRequest": "إرسال طلب",
+        "alreadySent": "تم إرسال الطلب",
+        "hasCoach": "لديه مدرب",
+        "search": "البحث عن أعضاء...",
+        "filters": {
+          "city": "المدينة",
+          "state": "الولاية",
+          "clearAll": "مسح عوامل التصفية"
+        }
+      },
+      "modals": {
+        "respond": {
+          "acceptTitle": "قبول طلب التدريب",
+          "declineTitle": "رفض طلب التدريب",
+          "message": "رسالة (اختياري)",
+          "messagePlaceholder": "أرسل رسالة إلى {{memberName}}...",
+          "acceptButton": "قبول الطلب",
+          "declineButton": "رفض الطلب",
+          "acceptSuccess": "تم قبول الطلب! {{memberName}} هو الآن عميلك.",
+          "declineSuccess": "تم رفض الطلب.",
+          "error": "فشل الرد على الطلب"
+        },
+        "sendRequest": {
+          "title": "إرسال طلب تدريب إلى {{memberName}}",
+          "message": "الرسالة (اختياري)",
+          "messagePlaceholder": "عرّف بنفسك واشرح كيف يمكنك المساعدة...",
+          "send": "إرسال الطلب",
+          "success": "تم إرسال الطلب إلى {{memberName}}",
+          "error": "فشل إرسال الطلب"
+        }
+      }
+    },
+    "programs": {
+      "title": "البرامج",
+      "subtitle": "أنشئ وادِر برامج تدريب لعملائك",
+      "tabs": {
+        "myPrograms": "برامجي",
+        "otherPrograms": "برامج أخرى"
+      },
+      "createProgram": "إنشاء برنامج",
+      "searchPlaceholder": "البحث عن البرامج...",
+      "viewDetails": "عرض التفاصيل",
+      "editProgram": "تعديل البرنامج",
+      "deleteProgram": "حذف البرنامج",
+      "assignToClient": "تعيين للعميل",
+      "noPrograms": {
+        "title": "لم يتم العثور على برامج",
+        "description": "لا توجد برامج متاحة",
+        "action": "إنشاء برنامج"
+      },
+      "card": {
+        "daysPerWeek": "{{days}} أيام/أسبوع",
+        "experience": "الخبرة",
+        "purpose": "الغرض"
+      }
+    },
+    "permissions": {
+      "canScheduleSessions": "جدولة الجلسات",
+      "canAccessFacilities": "الوصول إلى المرافق"
+    },
+    "clientProfile": {
+      "stats": {
+        "workouts": "التدريبات",
+        "activeStreak": "سلسلة النشاط",
+        "avgHeartRate": "متوسط ​​معدل ضربات القلب"
+      }
+    }
+  },
+  "coachPricing": {
+    "title": "التسعير",
+    "subtitle": "حدد خدماتك وأسعار التدريب الخاصة بك",
+    "addPricing": "إضافة فئة تسعير",
+    "editPricing": "تعديل التسعير",
+    "noPricing": "لا توجد فئات تسعير",
+    "noPricingDesc": "حدد خدماتك وأسعارك لجذب العملاء",
+    "deletePricing": "حذف التسعير",
+    "deletePricingConfirm": "هل أنت متأكد أنك تريد حذف فئة التسعير هذه؟ لا يمكن التراجع عن هذا الإجراء.",
+    "pricingCreated": "تم إنشاء فئة التسعير بنجاح",
+    "pricingUpdated": "تم تحديث فئة التسعير بنجاح",
+    "pricingDeleted": "تم حذف فئة التسعير بنجاح",
+    "perDuration": "لكل {{duration}} {{unit}}",
+    "form": {
+      "name": "اسم الخدمة",
+      "namePlaceholder": "مثال: باقة تدريب شخصي",
+      "serviceType": "نوع الخدمة",
+      "description": "الوصف",
+      "descriptionPlaceholder": "صف ما تتضمنه هذه الخدمة...",
+      "duration": "المدة",
+      "durationUnit": "وحدة المدة",
+      "price": "السعر",
+      "currency": "العملة",
+      "isActive": "نشط",
+      "isActiveHint": "التسعيرة غير النشطة لن تكون مرئية للعملاء"
+    },
+    "serviceTypes": {
+      "training": "تدريب شخصي",
+      "nutrition": "تدريب تغذية",
+      "training_nutrition": "تدريب + تغذية",
+      "online_coaching": "تدريب عبر الإنترنت",
+      "group_training": "تدريب جماعي",
+      "consultation": "استشارة"
+    },
+    "durationUnits": {
+      "day": "يوم",
+      "week": "أسبوع",
+      "month": "شهر",
+      "year": "سنة"
+    }
+  },
+  "announcements": {
+    "title": "الإعلانات",
+    "subtitle": "إدارة اتصالات الصالة الرياضية",
+    "create": "إعلان جديد",
+    "noData": "لا توجد إعلانات بعد",
+    "noDataDesc": "أنشئ إعلانك الأول للوصول إلى أعضائك.",
+    "deleteTitle": "حذف إعلان",
+    "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا الإعلان؟",
+    "deleteSuccess": "تم حذف الإعلان بنجاح",
+    "deleteError": "فشل حذف الإعلان",
+    "createSuccess": "تم إنشاء الإعلان بنجاح",
+    "createError": "فشل إنشاء الإعلان",
+    "updateSuccess": "تم تحديث الإعلان بنجاح",
+    "updateError": "فشل تحديث الإعلان",
+    "createTitle": "إنشاء إعلان",
+    "createDesc": "أرسل رسالة إلى مجتمع الصالة الرياضية الخاص بك",
+    "noDataCheckBack": "تحقق لاحقًا للحصول على تحديثات من صالتك الرياضية.",
+    "consumer": {
+      "title": "الإعلانات",
+      "subtitle": "ابقَ على اطلاع بآخر أخبار الصالة الرياضية"
+    },
+    "form": {
+      "title": "العنوان",
+      "titlePlaceholder": "مثال: ساعات العمل في العطلات",
+      "priority": "الأولوية",
+      "audience": "الجمهور",
+      "content": "المحتوى",
+      "contentPlaceholder": "اكتب إعلانك هنا..."
+    },
+    "priority": {
+      "normal": "عادي",
+      "high": "مرتفع",
+      "critical": "حرج"
+    },
+    "audience": {
+      "all": "الجميع",
+      "members": "الأعضاء فقط",
+      "staff": "الموظفون فقط"
+    }
+  },
+  "timer": {
+    "resting": "استراحة",
+    "getReady": "استعد!",
+    "go": "انطلق!"
+  },
+  "inventory": {
+    "title": "مخزون الصالة الرياضية",
+    "subtitle": "إدارة معدات الصالة الرياضية والمخزون وجداول الصيانة.",
+    "addEquipment": "إضافة معدات",
+    "fetchError": "فشل جلب عناصر المخزون",
+    "createSuccess": "تمت إضافة المعدات بنجاح",
+    "updateSuccess": "تم تحديث المعدات بنجاح",
+    "searchPlaceholder": "ابحث عن المعدات...",
+    "addFirstItem": "أضف أول عنصر لك",
+    "delete": {
+      "title": "حذف المعدات",
+      "confirmMessage": "هل أنت متأكد أنك تريد حذف {{name}}؟ لا يمكن التراجع عن هذا الإجراء.",
+      "success": "تم حذف المعدات بنجاح"
+    },
+    "noResults": {
+      "title": "لم يتم العثور على تطابقات",
+      "message": "حاول تعديل بحثك أو عوامل التصفية للعثور على ما تبحث عنه."
+    },
+    "empty": {
+      "title": "مخزونك فارغ",
+      "message": "ابدأ بإضافة عناصر المعدات لتتبع أصول الصالة الرياضية وصيانتها.",
+      "action": "أضف أول عنصر لك"
+    },
+    "card": {
+      "nextService": "الخدمة التالية"
+    },
+    "table": {
+      "name": "المعدات",
+      "category": "الفئة",
+      "quantity": "الكمية",
+      "condition": "الحالة",
+      "nextService": "الخدمة التالية"
+    },
+    "categories": {
+      "cardio": "كارديو",
+      "strength": "قوة",
+      "free_weights": "أوزان حرة",
+      "functional": "وظيفي",
+      "recovery": "استشفاء",
+      "other": "أخرى"
+    },
+    "conditions": {
+      "good": "جيد",
+      "needs_maintenance": "يحتاج صيانة",
+      "broken": "معطل",
+      "out_of_service": "خارج الخدمة"
+    },
+    "sort": {
+      "name": "الاسم",
+      "quantity": "الكمية",
+      "condition": "الحالة",
+      "createdAt": "الأحدث"
+    },
+    "modal": {
+      "editTitle": "تعديل المعدات",
+      "createTitle": "إضافة معدات جديدة"
+    },
+    "form": {
+      "images": "صور المعدات",
+      "name": "اسم المعدات",
+      "category": "الفئة",
+      "quantity": "الكمية",
+      "condition": "الحالة",
+      "brand": "الماركة",
+      "description": "الوصف",
+      "specsHeader": "المواصفات الفنية والمعرفات",
+      "modelNumber": "رقم الموديل",
+      "serialNumber": "الرقم التسلسلي",
+      "managementHeader": "الشراء والضمان",
+      "purchasePrice": "سعر الشراء",
+      "purchaseDate": "تاريخ الشراء",
+      "vendor": "المورد",
+      "warrantyExpiry": "انتهاء الضمان",
+      "maintenanceHeader": "جدول الصيانة",
+      "lastServiceDate": "تاريخ آخر صيانة",
+      "nextServiceDueDate": "تاريخ الصيانة القادمة",
+      "additionalNotes": "ملاحظات داخلية",
+      "addEquipment": "إضافة معدات"
+    }
+  },
+  "competitions": {
+    "title": "مسابقات النادي الرياضي",
+    "subtitle": "أنشئ وادِر تحديات لأعضائك.",
+    "memberSubtitle": "انضم إلى المسابقات واكسب التقدير",
+    "addCompetition": "إنشاء مسابقة",
+    "searchPlaceholder": "ابحث عن المسابقات...",
+    "eventTime": "تاريخ ووقت الحدث",
+    "setWinners": "تحديد الفائزين",
+    "viewParticipants": "عرض المشاركين",
+    "join": "انضم",
+    "leave": "مغادرة",
+    "joined": "انضم",
+    "full": "ممتلئ",
+    "joinSuccess": "تم الانضمام إلى المسابقة بنجاح",
+    "leaveSuccess": "تم مغادرة المسابقة بنجاح",
+    "leaveConfirmMessage": "هل أنت متأكد أنك تريد مغادرة \"{{title}}\"؟",
+    "participants": "المشاركون",
+    "duration": "المدة",
+    "rules": "القواعد",
+    "prize": "الجائزة",
+    "empty": {
+      "title": "لا توجد مسابقات بعد",
+      "message": "ابدأ في إشراك أعضائك بتحديات ومسابقات ممتعة.",
+      "action": "أنشئ مسابقتك الأولى",
+      "memberTitle": "لا توجد مسابقات متاحة",
+      "memberMessage": "لا توجد مسابقات نشطة في هذا الجيم."
+    },
+    "noResults": {
+      "title": "لم يتم العثور على نتائج",
+      "message": "حاول تعديل بحثك أو عوامل التصفية."
+    },
+    "delete": {
+      "title": "حذف المسابقة",
+      "confirmMessage": "هل أنت متأكد أنك تريد حذف {{title}}؟ سيؤدي هذا إلى إزالة جميع بيانات المشاركين.",
+      "success": "تم حذف المسابقة بنجاح"
+    },
+    "create": {
+      "success": "تم إنشاء المسابقة بنجاح",
+      "error": "فشل إنشاء المسابقة"
+    },
+    "update": {
+      "success": "تم تحديث المسابقة بنجاح",
+      "error": "فشل تحديث المسابقة"
+    },
+    "fetchError": "فشل جلب المسابقات",
+    "status": {
+      "draft": "مسودة",
+      "active": "نشط",
+      "completed": "مكتمل",
+      "cancelled": "ملغاة"
+    },
+    "types": {
+      "weightlifting": "رفع الأثقال",
+      "cardio": "كارديو",
+      "attendance": "الحضور",
+      "steps": "الخطوات",
+      "weight_loss": "خسارة الوزن",
+      "custom": "مخصص"
+    },
+    "card": {
+      "starts": "يبدأ: {{date}}",
+      "ends": "ينتهي: {{date}}",
+      "participants": "{{count}} مشارك"
+    },
+    "form": {
+      "title": "عنوان المسابقة",
+      "titlePlaceholder": "مثال: تحدي جسم الصيف",
+      "type": "نوع المسابقة",
+      "description": "الوصف",
+      "descriptionPlaceholder": "صف أهداف وقواعد المسابقة...",
+      "schedulingMode": "وضع الجدولة",
+      "interval": "النطاق الزمني",
+      "fixed": "تاريخ/وقت ثابت",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "eventTime": "تاريخ ووقت الحدث",
+      "prize": "الجائزة",
+      "prizePlaceholder": "مثال: عضوية مجانية لمدة شهر",
+      "maxParticipants": "الحد الأقصى للمشاركين",
+      "rules": "القواعد",
+      "rulesPlaceholder": "اذكر القواعد والمتطلبات...",
+      "banner": "صورة البانر"
+    },
+    "winners": {
+      "label": "الفائزون",
+      "setWinners": "تحديد الفائزين",
+      "noParticipants": "لا يوجد مشاركون للاختيار منهم",
+      "selectParticipant": "اختر مشاركًا",
+      "selectAtLeastOne": "الرجاء اختيار فائز واحد على الأقل",
+      "preview": "معاينة",
+      "success": "تم تحديد الفائزين بنجاح"
+    }
+  },
+  "store": {
+    "title": "متجر النادي الرياضي",
+    "subtitle": "إدارة المنتجات المعروضة للبيع في ناديك الرياضي.",
+    "memberSubtitle": "استكشف منتجاتنا ومعداتنا",
+    "addProduct": "إضافة منتج",
+    "editProduct": "تعديل المنتج",
+    "deleteProduct": "حذف المنتج",
+    "searchPlaceholder": "البحث عن المنتجات...",
+    "fetchError": "فشل في جلب المنتجات",
+    "empty": {
+      "title": "لا توجد منتجات بعد",
+      "message": "ابدأ بإضافة المنتجات إلى متجر ناديك الرياضي.",
+      "action": "أضف منتجك الأول"
+    },
+    "noResults": {
+      "title": "لم يتم العثور على تطابقات",
+      "message": "حاول تعديل بحثك أو عوامل التصفية."
+    },
+    "delete": {
+      "title": "حذف المنتج",
+      "confirmMessage": "هل أنت متأكد أنك تريد حذف {{name}}؟ لا يمكن التراجع عن هذا الإجراء.",
+      "success": "تم حذف المنتج بنجاح"
+    },
+    "form": {
+      "name": "اسم المنتج",
+      "namePlaceholder": "مثال: بروتين مصل اللبن 2 كجم",
+      "category": "الفئة",
+      "description": "الوصف",
+      "descriptionPlaceholder": "تفاصيل المنتج، الفوائد...",
+      "price": "السعر",
+      "currency": "العملة",
+      "quantity": "الكمية",
+      "sku": "رمز المنتج",
+      "skuPlaceholder": "وحدة حفظ المخزون",
+      "status": "الحالة",
+      "notes": "ملاحظات داخلية",
+      "notesPlaceholder": "ملاحظات داخلية للمنتج",
+      "images": "صور المنتج"
+    },
+    "categories": {
+      "supplements": "مكملات غذائية",
+      "gear": "معدات",
+      "clothing": "ملابس",
+      "drinks": "مشروبات",
+      "food": "طعام",
+      "accessories": "إكسسوارات",
+      "other": "أخرى"
+    },
+    "status": {
+      "active": "نشط",
+      "out_of_stock": "نفد المخزون",
+      "hidden": "مخفي"
+    },
+    "create": {
+      "success": "تم إنشاء المنتج بنجاح",
+      "error": "فشل إنشاء المنتج"
+    },
+    "update": {
+      "success": "تم تحديث المنتج بنجاح",
+      "error": "فشل تحديث المنتج"
+    },
+    "table": {
+      "product": "المنتج",
+      "price": "السعر",
+      "quantity": "الكمية",
+      "status": "الحالة"
+    },
+    "details": {
+      "title": "تفاصيل المنتج",
+      "contactGym": "مهتم بهذا المنتج؟",
+      "visitFrontDesk": "تفضل بزيارة مكتب الاستقبال للشراء",
+      "noDescription": "لا يوجد وصف متاح"
+    }
+  },
+  "admin": {
+    "home": {
+      "title": "لوحة تحكم المسؤول",
+      "subtitle": "نظرة عامة على حالة النظام والأنشطة",
+      "overview": {
+        "title": "نظرة عامة على النظام",
+        "subtitle": "مقاييس الأداء الرئيسية"
+      },
+      "stats": {
+        "totalUsers": "إجمالي المستخدمين",
+        "activeGyms": "الصالات الرياضية النشطة",
+        "revenue": "إجمالي الإيرادات",
+        "pendingApprovals": "الموافقات المعلقة",
+        "systemHealth": "صحة النظام"
+      },
+      "quickActions": {
+        "title": "إجراءات سريعة",
+        "createEditor": "إضافة محرر",
+        "reviewGyms": "مراجعة الصالات الرياضية",
+        "systemSettings": "إعدادات النظام",
+        "viewReports": "عرض التقارير",
+        "viewAlerts": "عرض التنبيهات"
+      },
+      "recentActivity": {
+        "title": "النشاط الأخير",
+        "empty": "لم يتم العثور على نشاط حديث",
+        "emptyTitle": "لا يوجد نشاط بعد",
+        "emptyDesc": "سيظهر المستخدمون والصالات الرياضية الجديدة هنا"
+      }
+    },
+    "analytics": {
+      "title": "تحليلات المنصة",
+      "subtitle": "مراقبة نمو المنصة وإيراداتها واعتمادها",
+      "stats": {
+        "totalRevenue": "إجمالي الإيرادات",
+        "monthlyRevenue": "الإيرادات الشهرية",
+        "totalMembers": "إجمالي الأعضاء",
+        "activeMembers": "الأعضاء النشطون",
+        "totalGyms": "إجمالي الصالات الرياضية"
+      },
+      "trends": {
+        "revenue": "مقارنة بالشهر الماضي",
+        "members": "مقارنة بالشهر الماضي"
+      },
+      "charts": {
+        "revenue": "نمو الإيرادات",
+        "revenueDesc": "إيرادات المنصة بمرور الوقت",
+        "members": "اعتماد المستخدمين",
+        "membersDesc": "إجمالي المستخدمين النشطين في جميع الصالات الرياضية",
+        "topGyms": "أفضل الصالات الرياضية أداءً",
+        "topGymsDesc": "أعلى المساهمين في الإيرادات",
+        "distribution": "صحة العضويات",
+        "distributionDesc": "حالة جميع العضويات على المنصة",
+        "revenuePending": "الإيرادات المعلقة",
+        "revenuePendingDesc": "في انتظار بدء معاملات المنصة",
+        "usersPending": "نمو المستخدمين معلق",
+        "usersPendingDesc": "سيظهر نشاط الأعضاء هنا بمجرد بدء الإعداد",
+        "gymRankingsPending": "تصنيفات الصالات الرياضية معلقة",
+        "gymRankingsPendingDesc": "سيتم إدراج أفضل الصالات الرياضية أداءً هنا"
+      }
+    },
+    "coaching": {
+      "title": "طلبات المدربين",
+      "subtitle": "إدارة طلبات التحقق من المدربين",
+      "pendingVerification": "التحقق المعلق",
+      "activeCoaches": "المدربون النشطون",
+      "requests": "الطلبات",
+      "reviewModal": {
+        "title": "مراجعة طلب المدرب",
+        "subtitle": "التحقق من مؤهلات المدرب وشهاداته",
+        "approve": "موافقة",
+        "reject": "رفض",
+        "close": "إغلاق",
+        "certificationDetails": "تفاصيل الشهادة",
+        "noCertificationDetails": "لم يتم تقديم تفاصيل.",
+        "documents": "المستندات الداعمة",
+        "noDocuments": "لم يتم تحميل مستندات.",
+        "clickToView": "انقر لعرض المستند",
+        "document": "مستند",
+        "socialMedia": "وسائل التواصل الاجتماعي / حافظة الأعمال",
+        "noSocialMedia": "لم يتم تقديم روابط.",
+        "joined": "انضم",
+        "unknownLocation": "موقع غير معروف"
+      },
+      "list": {
+        "candidate": "مرشح المدرب",
+        "location": "الموقع",
+        "submitted": "تم التقديم",
+        "status": "الحالة",
+        "actions": "الإجراءات",
+        "review": "مراجعة",
+        "noRequests": "لم يتم العثور على طلبات",
+        "noRequestsDesc": "حاول تعديل بحثك أو عوامل التصفية.",
+        "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني...",
+        "filters": {
+          "all": "جميع الحالات",
+          "pending": "معلق",
+          "approved": "موافق عليه",
+          "rejected": "مرفوض"
+        }
+      },
+      "alerts": {
+        "approveSuccess": "تمت الموافقة على طلب المدرب بنجاح",
+        "approveError": "فشل في الموافقة على طلب المدرب",
+        "rejectSuccess": "تم رفض طلب المدرب بنجاح",
+        "rejectError": "فشل في رفض طلب المدرب"
+      }
+    },
+    "pricing": {
+      "title": "إدارة التسعير",
+      "description": "إدارة خطط الاشتراك والتسعير وتجميع الميزات",
+      "plans": "خطط التسعير",
+      "packages": "الباقات القابلة للتسويق",
+      "createPlan": "إنشاء خطة",
+      "editPlan": "تعديل الخطة",
+      "createPackage": "إنشاء باقة",
+      "editPackage": "تعديل الباقة",
+      "noPlans": "لم يتم العثور على خطط",
+      "noPackages": "لم يتم العثور على باقات ميزات",
+      "noPackagesFound": "لم يتم العثور على باقات قابلة للتسويق",
+      "createPackagesFirst": "أنشئ باقات في علامة التبويب 'الباقات' أولاً.",
+      "noFeaturesSelected": "لم يتم تحديد ميزات",
+      "includedFeatures": "الميزات المتضمنة",
+      "features": "الميزات",
+      "alreadyAssignedTo": "مستخدم في '{{packageName}}'",
+      "featureAlreadyTaken": "هذه الميزة مخصصة بالفعل لباقة '{{packageName}}'",
+      "translationSuccess": "تم إنشاء الترجمات",
+      "translationError": "فشل الترجمة",
+      "enterNameFirst": "الرجاء إدخال اسم أولاً",
+      "nameRequired": "الاسم مطلوب",
+      "packageCreated": "تم إنشاء الباقة بنجاح",
+      "packageUpdated": "تم تحديث الباقة بنجاح",
+      "packageDeleted": "تم حذف الباقة بنجاح",
+      "deletePackageTitle": "حذف باقة الميزات؟",
+      "deletePackageText": "هل أنت متأكد أنك تريد حذف باقة الميزات هذه؟ سيؤدي هذا إلى إلغاء تخصيص ميزاتها وستصبح متاحة للباقات الأخرى.",
+      "level": "المستوى",
+      "planId": "معرف الخطة",
+      "price": "السعر",
+      "pricing": "التسعير",
+      "monthly": "شهري",
+      "yearly": "سنوي",
+      "limits": "الحدود",
+      "makeHidden": "إخفاء",
+      "makePublic": "جعل عامًا",
+      "visibilityControl": "الرؤية على البطاقة",
+      "updateSuccess": "تم تحديث الخطة بنجاح",
+      "createSuccess": "تم إنشاء الخطة بنجاح",
+      "deleteSuccess": "تم حذف الخطة بنجاح",
+      "confirmDelete": "هل أنت متأكد أنك تريد حذف هذه الخطة؟",
+      "activeDescription": "الخطط غير النشطة مخفية عن المستخدمين ولا يمكن الاشتراك فيها.",
+      "inherited": "موروث",
+      "inheritedFeatureHint": "متضمن في الخطط السابقة (سيتم إزالة التكرار على البطاقة)"
+    },
+    "subscriptions": {
+      "title": "اشتراكات الصالة الرياضية",
+      "subtitle": "إدارة وتتبع جميع اشتراكات الصالة الرياضية والفواتير",
+      "table": {
+        "gymOwner": "صاحب الصالة الرياضية",
+        "plan": "الخطة",
+        "billing": "الفوترة",
+        "status": "الحالة",
+        "period": "الفترة الحالية",
+        "provider": "المزود"
+      },
+      "stats": {
+        "active": "الاشتراكات النشطة",
+        "revenue": "الإيرادات الشهرية",
+        "expiring": "تنتهي قريباً"
+      }
+    },
+    "revenue": {
+      "title": "الإيرادات والماليات",
+      "subtitle": "تتبع دخل المنصة وأداء الاشتراكات",
+      "stats": {
+        "total": "إجمالي الإيرادات",
+        "thisMonth": "الإيرادات (30 يوماً)",
+        "count": "إجمالي المدفوعات"
+      },
+      "empty": "لم يتم تسجيل أي مدفوعات بعد",
+      "table": {
+        "gymOwner": "صاحب الصالة الرياضية",
+        "plan": "الخطة",
+        "billing": "الفوترة",
+        "status": "الحالة",
+        "period": "الفترة الحالية",
+        "provider": "المزود",
+        "amount": "المبلغ",
+        "date": "التاريخ"
+      }
+    },
+    "staff": {
+      "title": "طاقم عمل المنصة",
+      "subtitle": "إدارة مسؤولي ومحرري المنصة",
+      "create_btn": "إضافة محرر",
+      "search_placeholder": "البحث عن المحررين بالاسم أو البريد الإلكتروني أو اسم المستخدم...",
+      "empty": "لم يتم العثور على محررين",
+      "remove_title": "إزالة محرر",
+      "remove_message": "هل أنت متأكد أنك تريد إزالة {{name}}؟ سيفقدون جميع صلاحيات الوصول إلى المنصة فوراً.",
+      "remove_success": "تمت إزالة المحرر بنجاح",
+      "permissions_update_success": "تم تحديث الأذونات بنجاح",
+      "no_permissions": "لا توجد أذونات مقيدة",
+      "manage_permissions": "إدارة الأذونات",
+      "table": {
+        "user": "المحرر",
+        "username": "اسم المستخدم",
+        "permissions": "الأذونات",
+        "joined": "تاريخ الانضمام"
+      },
+      "modals": {
+        "create_title": "إضافة محرر جديد",
+        "permissions_title": "إدارة أذونات المحرر",
+        "permissions_subtitle": "التحكم فيما يمكن لـ {{name}} الوصول إليه في المنصة",
+        "fields": {
+          "username": "اسم المستخدم",
+          "full_name": "الاسم الكامل",
+          "email": "عنوان البريد الإلكتروني",
+          "password": "كلمة المرور"
+        }
+      },
+      "available_permissions": {
+        "manage_users": "إدارة المستخدمين",
+        "manage_gyms": "إدارة الصالات الرياضية",
+        "manage_revenue": "المالية والإيرادات",
+        "manage_editors": "الموظفون والمحررون",
+        "manage_plans": "خطط التسعير",
+        "manage_coach_requests": "موافقات المدربين",
+        "manage_reports": "إدارة التقارير",
+        "manage_alerts": "تنبيهات النظام",
+        "manage_notifications": "مركز الإشعارات",
+        "view_dashboard": "عرض لوحة تحكم المسؤول",
+        "manage_coaches": "إدارة المدربين"
+      }
+    },
+    "users": {
+      "title": "إدارة المستخدمين",
+      "subtitle": "الإشراف على استخدام المنصة وإدارة الحسابات",
+      "table": {
+        "user": "المستخدم",
+        "role": "الدور",
+        "joined": "تاريخ الانضمام",
+        "status": "الحالة"
+      },
+      "stats": {
+        "total": "إجمالي المستخدمين",
+        "new": "جديد (30 يومًا)",
+        "coaches": "المدربون النشطون",
+        "banned": "محظور"
+      },
+      "empty": "لم يتم العثور على مستخدمين",
+      "search_placeholder": "ابحث عن المستخدمين بالاسم أو البريد الإلكتروني أو اسم المستخدم...",
+      "modals": {
+        "activate_title": "تفعيل المستخدم",
+        "activate_message": "هل أنت متأكد أنك تريد تفعيل هذا المستخدم؟ سيستعيد الوصول إلى المنصة.",
+        "deactivate_title": "إلغاء تفعيل المستخدم",
+        "deactivate_message": "هل أنت متأكد أنك تريد إلغاء تفعيل هذا المستخدم؟ سيتم حظر وصوله إلى المنصة فورًا."
+      }
+    },
+    "gyms": {
+      "title": "إدارة الصالات الرياضية",
+      "subtitle": "مراقبة وإدارة جميع الصالات الرياضية على المنصة",
+      "table": {
+        "gym": "الصالة الرياضية",
+        "owner": "المالك",
+        "location": "الموقع",
+        "status": "الحالة",
+        "joined": "تاريخ الانضمام"
+      },
+      "stats": {
+        "total": "إجمالي الصالات الرياضية",
+        "active": "الصالات الرياضية النشطة",
+        "inactive": "الصالات الرياضية غير النشطة",
+        "new": "جديد (30 يومًا)"
+      },
+      "empty": "لم يتم العثور على صالات رياضية",
+      "search_placeholder": "ابحث عن الصالات الرياضية بالاسم، المالك، أو المدينة...",
+      "modals": {
+        "activate_title": "تفعيل الصالة الرياضية",
+        "activate_message": "هل أنت متأكد أنك تريد تفعيل هذه الصالة الرياضية؟",
+        "deactivate_title": "تعطيل الصالة الرياضية",
+        "deactivate_message": "هل أنت متأكد أنك تريد تعطيل هذه الصالة الرياضية؟ لن يتمكن الأعضاء من التفاعل معها."
+      }
+    },
+    "reports": {
+      "title": "إدارة التقارير",
+      "subtitle": "مراقبة وحل تقارير ومشاكل المستخدمين",
+      "table": {
+        "subject": "الموضوع",
+        "type": "النوع",
+        "priority": "الأولوية",
+        "status": "الحالة",
+        "reporter": "المبلغ",
+        "date": "التاريخ"
+      },
+      "status": {
+        "open": "مفتوح",
+        "in_progress": "قيد التقدم",
+        "resolved": "تم الحل",
+        "closed": "مغلق"
+      },
+      "priority": {
+        "low": "منخفضة",
+        "medium": "متوسطة",
+        "high": "عالية"
+      },
+      "type": {
+        "issue": "مشكلة",
+        "feedback": "ملاحظات",
+        "feature_request": "طلب ميزة"
+      },
+      "modals": {
+        "details_title": "تفاصيل التقرير",
+        "update_status": "تحديث الحالة",
+        "reporter_info": "معلومات المبلغ"
+      },
+      "empty": "لم يتم العثور على تقارير",
+      "search_placeholder": "ابحث عن التقارير حسب الموضوع..."
+    },
+    "alerts": {
+      "title": "تنبيهات النظام",
+      "subtitle": "مراقبة وإدارة تنبيهات وأخطاء النظام",
+      "table": {
+        "title": "تنبيه",
+        "type": "النوع",
+        "priority": "الأولوية",
+        "status": "الحالة",
+        "source": "المصدر",
+        "date": "التاريخ"
+      },
+      "status": {
+        "unread": "غير مقروء",
+        "read": "مقروء",
+        "resolved": "تم الحل"
+      },
+      "type": {
+        "info": "معلومات",
+        "warning": "تحذير",
+        "error": "خطأ",
+        "success": "نجاح"
+      },
+      "priority": {
+        "low": "منخفض",
+        "medium": "متوسط",
+        "high": "مرتفع",
+        "critical": "حرج"
+      },
+      "source": {
+        "internal": "داخلي",
+        "sentry": "سنتري",
+        "pino": "بينو"
+      },
+      "modals": {
+        "details_title": "تفاصيل التنبيه",
+        "update_status": "تحديث الحالة",
+        "technical_details": "التفاصيل الفنية",
+        "stack_trace": "تتبع المكدس",
+        "metadata": "البيانات الوصفية"
+      },
+      "empty": "لم يتم العثور على تنبيهات",
+      "search_placeholder": "البحث عن التنبيهات حسب العنوان أو الرسالة..."
+    }
+  },
+  "support": {
+    "pageTitle": "الدعم",
+    "pageSubtitle": "الإبلاغ عن المشكلات وتتبع تذاكرك",
+    "createReport": "الإبلاغ عن مشكلة",
+    "empty": "لا توجد تقارير بعد",
+    "emptyDesc": "عند الإبلاغ عن مشكلة، ستظهر هنا",
+    "email": {
+      "subject": "أحتاج إلى مساعدة بخصوص حسابي في GymPro",
+      "body": "مرحباً فريق دعم GymPro،\n\nأحتاج إلى مساعدة بخصوص حسابي في GymPro"
+    },
+    "table": {
+      "subject": "الموضوع",
+      "type": "النوع",
+      "priority": "الأولوية",
+      "status": "الحالة",
+      "created": "تاريخ الإنشاء"
+    },
+    "conversation": "المحادثة",
+    "view_all_messages": "عرض جميع الرسائل ({{count}})",
+    "reply": "رد",
+    "replies": "الردود",
+    "no_messages": "لا توجد رسائل بعد",
+    "type_message": "اكتب رسالة...",
+    "you": "أنت",
+    "admin": "المسؤول",
+    "user": "المستخدم",
+    "waiting_for_response": "في انتظار رد قبل أن تتمكن من الرد مرة أخرى",
+    "upload_failed": "فشل تحميل الملفات",
+    "types": {
+      "issue": "مشكلة",
+      "feedback": "ملاحظات",
+      "feature_request": "طلب ميزة"
+    },
+    "priorities": {
+      "low": "منخفضة",
+      "medium": "متوسطة",
+      "high": "عالية"
+    },
+    "statuses": {
+      "open": "مفتوحة",
+      "in_progress": "قيد التقدم",
+      "resolved": "تم الحل",
+      "closed": "مغلقة"
+    },
+    "modal": {
+      "title": "الإبلاغ عن مشكلة",
+      "subtitle": "صف مشكلتك وسنتواصل معك",
+      "subject": "الموضوع",
+      "subjectPlaceholder": "ملخص موجز للمشكلة",
+      "description": "الوصف",
+      "descriptionPlaceholder": "صف المشكلة بالتفصيل...",
+      "type": "النوع",
+      "priority": "الأولوية",
+      "submit": "إرسال التقرير",
+      "submitting": "جاري الإرسال...",
+      "attachments": "المرفقات",
+      "uploadPlaceholder": "قم بتحميل صور أو مقاطع فيديو لتوضيح المشكلة"
+    }
+  },
+  "classes": {
+    "pageDesc": "إدارة تمارينك الجماعية وجداولها",
+    "delete": {
+      "title": "حذف حصة",
+      "message": "هذه حصة متكررة. هل ترغب في إلغاء هذه الجلسة المحددة فقط أم السلسلة بأكملها؟",
+      "confirmOne": "إلغاء هذه الجلسة فقط",
+      "confirmSeries": "إلغاء السلسلة بأكملها"
+    },
+    "update": {
+      "title": "تحديث حصة",
+      "message": "هذه حصة متكررة. هل تريد تطبيق التغييرات على هذه الجلسة فقط أم على السلسلة القادمة بأكملها؟",
+      "confirmOne": "تحديث هذه الجلسة فقط",
+      "confirmSeries": "تحديث السلسلة بأكملها"
+    },
+    "restore": {
+      "title": "استعادة حصة",
+      "message": "استعادة الحصة الملغاة؟",
+      "confirmOne ": "استعادة هذه الجلسة فقط",
+      "confirmSeries": "استعادة السلسلة بأكملها"
+    },
+    "deleteTitle": "حذف حصة",
+    "confirmDeleteDesc": "هل أنت متأكد أنك تريد حذف هذه الحصة؟ لا يمكن التراجع عن هذا الإجراء.",
+    "modalDesc": "حدد تفاصيل تمرينك الجماعي",
+    "createSubtitle": "جدولة حصة جماعية جديدة",
+    "groupClass": "حصة جماعية",
+    "noCoaches": "لا يوجد مدربون متاحون",
+    "noCoachesDesc": "ادعُ المدربين إلى صالتك الرياضية لتعيينهم للحصص.",
+    "memberPageDesc": "تصفح واحجز الحصص الجماعية القادمة",
+    "createBtn": "إنشاء حصة",
+    "editBtn": "تعديل حصة",
+    "bookBtn": "احجز الآن",
+    "cancelBtn": "إلغاء الحجز",
+    "booked": "محجوزة",
+    "full": "الحصة ممتلئة",
+    "spots": "أماكن",
+    "noClasses": "لا توجد حصص مجدولة",
+    "noClassesDesc": "ابدأ بإنشاء أول حصة تدريب جماعي لك.",
+    "editTitle": "تعديل الحصة",
+    "createTitle": "إنشاء حصة",
+    "form": {
+      "name": "اسم الحصة",
+      "namePlaceholder": "مثال: يوغا صباحية",
+      "coach": "اختر المدرب",
+      "selectCoach": "اختر مدربًا",
+      "capacity": "الحد الأقصى للسعة",
+      "date": "التاريخ والوقت",
+      "submitCreate": "إنشاء حصة",
+      "submitUpdate": "تحديث الحصة",
+      "duration": "المدة (بالدقائق)",
+      "service": "نوع الخدمة",
+      "selectService": "اختر خدمة",
+      "serviceRequired": "الخدمة مطلوبة",
+      "facility": "المرفق",
+      "recurrence": {
+        "label": "التكرار",
+        "daily": "يوميًا",
+        "weekly": "أسبوعيًا",
+        "biweekly": "كل أسبوعين",
+        "monthly": "شهريًا",
+        "none": "بلا",
+        "custom": "مخصص",
+        "endDate": "تاريخ الانتهاء",
+        "days": "أيام"
+      }
+    },
+    "assigned": "لقد تم تعيينك لحصة {{className}} في {{date}} الساعة {{time}}"
+  },
+  "features": {
+    "members": "الأعضاء",
+    "services_pricing": "الخدمات والأسعار",
+    "subscriptions": "الاشتراكات",
+    "access_control": "التحكم بالوصول",
+    "access_control_qr": "التحكم بالوصول عبر QR",
+    "email_notifications": "إشعارات البريد الإلكتروني",
+    "sms_notifications": "إشعارات الرسائل القصيرة",
+    "attendance": "الحضور",
+    "coaching": "التدريب",
+    "classes": "الحصص",
+    "staff": "الموظفون",
+    "marketing": "التسويق",
+    "inventory": "المخزون",
+    "store": "المتجر",
+    "competitions": "المسابقات",
+    "announcements": "الإعلانات",
+    "analytics": "التحليلات"
+  },
+  "feature_packages": {
+    "basic_management": "إدارة الصالة الرياضية الأساسية",
+    "coaching_classes": "التدريب والحصص",
+    "marketing_inventory_store": "التسويق، المخزون والمتجر",
+    "analytics": "تحليلات متقدمة",
+    "communications": "الاتصالات والمشاركات"
+  },
+  "footer": {
+    "copyright": "حقوق النشر © {{year}} GymPro. جميع الحقوق محفوظة."
+  },
+  "landing": {
+    "nav": {
+      "brand": "GymPro",
+      "home": "الرئيسية",
+      "manager": "المدير",
+      "member": "العضو",
+      "coach": "المدرب",
+      "signIn": "تسجيل الدخول",
+      "signUp": "سجل مجاناً"
+    },
+    "hero": {
+      "line1": "أطلق العنان",
+      "line2": "لقوة",
+      "line3": "صالتك الرياضية",
+      "description": "اختبر رقمنة اللياقة البدنية من خلال نظامنا البيئي المتطور للإدارة ثلاثية الأبعاد. تحرر من قيود SaaS التقليدية.",
+      "getStarted": "ابدأ الآن",
+      "watchDemo": "شاهد العرض التوضيحي ثلاثي الأبعاد"
+    },
+    "manager": {
+      "sideLabel": "الإدارة",
+      "title": "تحكم كامل بالصالة الرياضية",
+      "subtitle": "كل ما تحتاجه لإدارة صالتك الرياضية وتنميتها وتحسينها — كل ذلك في لوحة تحكم واحدة.",
+      "revenueAnalytics": "تحليلات الإيرادات",
+      "revenueAnalyticsTag": "نظرة عامة مالية في الوقت الفعلي",
+      "thisMonth": "هذا الشهر",
+      "subscriptions": "الاشتراكات",
+      "mrr": "الإيرادات الشهرية المتكررة",
+      "churn": "معدل التوقف",
+      "memberManagement": "إدارة الأعضاء",
+      "memberManagementDesc": "تتبع التسجيلات، إدارة الملفات الشخصية، مراقبة الحضور، وتحليل مقاييس الاحتفاظ بجميع أعضائك.",
+      "active": "نشط",
+      "thisWeek": "هذا الأسبوع",
+      "subscriptionPlans": "الاشتراكات والأسعار",
+      "subscriptionPlansDesc": "أنشئ خططًا مرنة، أدر دورات الفواتير، وتتبع حالة الدفع مع الفواتير الآلية.",
+      "staffManagement": "الموظفون والمدربون",
+      "staffManagementDesc": "عيّن الأدوار، أدر الجداول الزمنية، وتتبع أداء المدربين.",
+      "gymFacilities": "الصالة الرياضية والمرافق",
+      "gymFacilitiesDesc": "قم بتكوين المعدات، إدارة المرافق، وتحديد ساعات العمل.",
+      "alertsSettings": "التنبيهات والإعدادات",
+      "alertsSettingsDesc": "إشعارات مخصصة، تقارير، وتكوين كامل للصالة الرياضية."
+    },
+    "member": {
+      "sideLabel": "التدريب",
+      "title": "رحلتك اللياقية",
+      "subtitle": "تتبع التمارين، اتبع البرامج، وحقق أهدافك — كل ما يحتاجه العضو للنجاح.",
+      "trainingPrograms": "برامج التدريب",
+      "trainingProgramsTag": "خطط تمارين شخصية",
+      "currentProgram": "بناء القوة الاحترافي",
+      "week": "أسبوع",
+      "complete": "مكتمل",
+      "thisWeekActivity": "نشاط هذا الأسبوع",
+      "streak": "يوم متواصل",
+      "prs": "أرقام شخصية قياسية هذا الشهر",
+      "exerciseLibrary": "مكتبة التمارين",
+      "exerciseLibraryDesc": "تصفح أكثر من 200 تمرين مع عروض فيديو عالية الدقة، خرائط العضلات، وإرشادات خطوة بخطوة.",
+      "exercises": "تمارين",
+      "videos": "مقاطع فيديو",
+      "progressTracking": "تتبع التقدم",
+      "progressTrackingDesc": "سجل رفعاتك، تتبع قياسات الجسم، وتصور مكاسب قوتك بمرور الوقت مع رسوم بيانية مفصلة.",
+      "classSchedule": "جدول الحصص",
+      "classScheduleDesc": "تصفح واحجز حصصًا جماعية، اعرض الجداول الزمنية، واحصل على تذكيرات.",
+      "attendance": "الحضور",
+      "attendanceDesc": "سجل الدخول، تتبع زيارات الصالة الرياضية، واعرض سجل تدريبك.",
+      "subscriptions": "الاشتراكات",
+      "subscriptionsDesc": "أدر خطتك، اعرض الفواتير، وقم بالترقية في أي وقت."
+    },
+    "coach": {
+      "sideLabel": "التدريب",
+      "title": "مركز قيادة المدرب",
+      "subtitle": "إدارة العملاء، بناء البرامج، وتنمية عملك التدريبي — كل ذلك من مكان واحد.",
+      "clientManagement": "إدارة العملاء",
+      "clientManagementTag": "قائمة عملائك الكاملة",
+      "activeClients": "نشط",
+      "clientName": "العميل",
+      "lastSession": "آخر جلسة",
+      "active": "نشط",
+      "pending": "معلق",
+      "sessionsThisWeek": "جلسات هذا الأسبوع",
+      "completionRate": "معدل الإنجاز",
+      "programBuilder": "باني البرامج",
+      "programBuilderDesc": "صمم برامج تدريب مخصصة مع تمارين، مجموعات، تكرارات، وفترات راحة لكل عميل.",
+      "dragDrop": "سحب وإفلات",
+      "templates": "قوالب",
+      "schedule": "الجدول الزمني والفصول",
+      "scheduleDesc": "إدارة توافرك، حجز الجلسات، وتشغيل الفصول الجماعية مع تذكيرات تلقائية.",
+      "exerciseLibrary": "مكتبة التمارين",
+      "exerciseLibraryDesc": "إنشاء وتعيين التمارين مع عروض الفيديو التوضيحية.",
+      "analytics": "تحليلات الأداء",
+      "analyticsDesc": "تتبع تقدم العميل ومقاييس التدريب.",
+      "paymentsMessages": "المدفوعات والرسائل",
+      "paymentsMessagesDesc": "تحديد الأسعار، تتبع الأرباح، والتواصل مع العملاء."
+    },
+    "footer": {
+      "brand": "GymPro",
+      "description": "المنصة الشاملة لأصحاب الصالات الرياضية، المدربين، والأعضاء. أدر منشأتك، نمّ عملك، وحقق أهدافك اللياقية.",
+      "featuresTitle": "الميزات",
+      "features": {
+        "managers": "للمديرين",
+        "members": "للأعضاء",
+        "coaches": "للمدربين",
+        "pricing": "التسعير"
+      },
+      "legalTitle": "قانوني",
+      "legal": {
+        "terms": "شروط الخدمة",
+        "privacy": "سياسة الخصوصية",
+        "cookies": "سياسة ملفات تعريف الارتباط"
+      },
+      "supportTitle": "الدعم",
+      "support": {
+        "help": "مركز المساعدة",
+        "contact": "اتصل بنا",
+        "status": "حالة النظام"
+      },
+      "copyright": "© 2025 جيم برو. جميع الحقوق محفوظة."
+    },
+    "managerPage": {
+      "hero": {
+        "badge": "مجموعة المدير 2.0",
+        "titlePart1": "مركز القيادة لـ",
+        "titlePart2": "الصالات الرياضية الحديثة.",
+        "description": "عزز أعمالك في مجال اللياقة البدنية بتحليلات عالية الدقة، وعمليات مؤتمتة، وأدوات إدارة سلسة مصممة للنمو القوي.",
+        "ctaPrimary": "ابدأ الآن",
+        "ctaSecondary": "شاهد جولة المنتج"
+      },
+      "lifecycle": {
+        "title": "دورة حياة العضو",
+        "onboardingTitle": "إعداد آلي",
+        "onboardingDesc": "إقرارات رقمية، وتقييمات صحية، وجدولة توجيهية يتم تفعيلها فور التسجيل. قلل إدخال البيانات اليدوي بنسبة 85%.",
+        "onboardingTag1": "توقيعات رقمية",
+        "onboardingTag2": "بريد إلكتروني آلي",
+        "churnTitle": "التنبؤ بالانسحاب",
+        "churnDesc": "رؤى مدعومة بالذكاء الاصطناعي تحدد الأعضاء المعرضين لخطر المغادرة بناءً على أنماط الحضور.",
+        "segmentTitle": "تقسيم الأعضاء",
+        "segmentDesc": "تجميع الأعضاء حسب السلوك أو الأهداف أو نوع الخطة للتسويق المستهدف.",
+        "rewardsTitle": "مكافآت الاحتفاظ",
+        "rewardsDesc": "نقاط ولاء آلية واحتفالات بالإنجازات للحفاظ على تفاعل الأعضاء.",
+        "pushTitle": "حملات الإشعارات الفورية",
+        "pushDesc": "إشعارات مباشرة إلى الهاتف المحمول لتحديثات الفصول والعروض الخاصة."
+      },
+      "financials": {
+        "title": "الماليات والنمو",
+        "subscriptionsTitle": "اشتراكات آلية",
+        "subscriptionsDesc": "تعامل مع الفواتير المتكررة، وإعادة محاولة الدفع الفاشلة، والعضويات المحتسبة بالتناسب دون عناء.",
+        "dashboardsTitle": "لوحات معلومات الإيرادات",
+        "dashboardsDesc": "رؤية فورية للإيرادات الشهرية المتكررة (MRR)، والقيمة الدائمة للعميل (LTV)، وتكلفة اكتساب العميل (CAC). جاهزة للتصدير لاجتماعات مجلس الإدارة.",
+        "taxTitle": "الامتثال الضريبي",
+        "taxDesc": "ضريبة المبيعات الآلية وتقارير نهاية العام.",
+        "posTitle": "تكامل نقاط البيع",
+        "posDesc": "بيع البضائع والمكملات الغذائية مباشرة عبر التطبيق.",
+        "multiTierTitle": "خطط متعددة المستويات",
+        "multiTierDesc": "أنشئ وادِر مستويات عضوية غير محدودة بسهولة.",
+        "expenseTitle": "تتبع المصروفات",
+        "expenseDesc": "راقب التكاليف العامة ومدفوعات الموردين."
+      },
+      "operations": {
+        "title": "العمليات والموظفون",
+        "permissionsTitle": "الصلاحيات",
+        "permissionsDesc": "تحكم بدقة فيما يمكن لموظفيك رؤيته والقيام به باستخدام أدوار مفصلة.",
+        "schedulingTitle": "جدولة ذكية",
+        "schedulingDesc": "إدارة جداول الفصول، وجلسات التدريب الشخصي، والحجوزات مع كشف التعارضات.",
+        "accessTitle": "التحكم في الوصول",
+        "accessDesc": "تكامل مع الأقفال الذكية وبوابات RFID الدوارة للوصول على مدار الساعة طوال أيام الأسبوع.",
+        "assetsTitle": "تتبع الأصول والصيانة",
+        "assetsDesc": "سجل جداول صيانة المعدات، أبلغ عن الآلات المعطلة، وتتبع استهلاك الأصول."
+      },
+      "testimonials": {
+        "title": "موثوق به من قبل أكثر من 2,000 مالك صالة ألعاب رياضية",
+        "subtitle": "اكتشف كيف يغير GymPro أعمال اللياقة البدنية في جميع أنحاء العالم.",
+        "quote1": "لوحات معلومات الإيرادات وحدها غطت تكلفة البرنامج في الشهر الأول. أخيرًا لدي صورة واضحة لنموي.",
+        "owner1": "ماركوس تشن",
+        "gym1": "أيرون جيت لألعاب القوى",
+        "quote2": "أتمتة انضمام الأعضاء وفرت على موظفي الاستقبال لدي 20 ساعة أسبوعيًا. إنه يغير قواعد اللعبة تمامًا للعمليات.",
+        "owner2": "سارة جينكينز",
+        "gym2": "إيليت بيرفورمانس ستوديو",
+        "quote3": "أداة التنبؤ بالانسحاب سمحت لنا بإنقاذ 15 عضوية بشكل استباقي الشهر الماضي وحده. العائد على الاستثمار لا يصدق.",
+        "owner3": "ديفيد رودريغيز",
+        "gym3": "كور فيتنس كوليكتيف"
+      },
+      "cta": {
+        "title": "هل أنت مستعد لتوسيع منشأتك؟",
+        "subtitle": "انضم إلى الصالات الرياضية الرائدة التي تستخدم GymPro Manager لزيادة الكفاءة والأرباح.",
+        "primary": "احجز عرضك التجريبي الخاص",
+        "secondary": "عرض خطط الأسعار"
+      }
+    },
+    "memberPage": {
+      "hero": {
+        "badge": "حصري للأعضاء",
+        "titlePart1": "لياقتك",
+        "titlePart2": "الكون",
+        "titlePart3": "في تطبيق واحد.",
+        "description": "أتقن تدريبك، تواصل مع مدربين نخبة، وتتبع كل رقم قياسي شخصي (PR) مع مجموعتنا المتميزة للأعضاء المصممة لتحقيق أقصى أداء.",
+        "ctaPrimary": "ابدأ مجانًا",
+        "ctaSecondary": "شاهد العرض التوضيحي"
+      },
+      "features": {
+        "title": "ميزات قوية للرياضيين المعاصرين",
+        "subtitle": "كل ما تحتاجه لتحويل رحلة لياقتك، من التتبع المفصل إلى دعم المجتمع.",
+        "trainingTitle": "التدريب والبرامج",
+        "training": {
+          "personalized": "تدريب شخصي",
+          "library": "مكتبة التمارين",
+          "logger": "مسجل التمارين",
+          "ai": "ملاحظات مدرب الذكاء الاصطناعي"
+        },
+        "trackingTitle": "تتبع التقدم",
+        "trackingDesc": "تصور مكاسب قوتك باستخدام الرسوم البيانية التفاعلية وخرائط حرارة الأرقام القياسية الشخصية (PR).",
+        "socialTitle": "التواصل والتدريب",
+        "social": {
+          "leaderboards": "لوحات صدارة المجتمع",
+          "messaging": "مراسلة المدرب المباشرة",
+          "challenges": "تحديات الفريق",
+          "form": "مزامنة الفيديو لتصحيح الأداء"
+        },
+        "accountTitle": "الحساب والحجز",
+        "accountDesc": "احجز الفصول الدراسية، احجز المعدات، واعثر على مواقع شركاء GymPro في جميع أنحاء العالم بنقرة واحدة.",
+        "accountTags": {
+          "discovery": "اكتشاف الصالات الرياضية",
+          "booking": "الحجز الذكي",
+          "payments": "المدفوعات التلقائية"
+        }
+      },
+      "preview": {
+        "title": "معاينة التمرين الديناميكية",
+        "description": "اختبر الواجهة التي تبقيك مركزًا. مسجلنا البسيط يقلل من المشتتات بينما يوفر جميع نقاط البيانات التي تحتاجها للتحميل التدريجي.",
+        "restTimers": {
+          "title": "مؤقتات الراحة الذكية",
+          "desc": "فترات راحة تكيفية بناءً على شدة التمرين."
+        },
+        "history": {
+          "title": "بيانات المجموعة السابقة",
+          "desc": "شاهد على الفور ما رفعته الأسبوع الماضي لتتجاوز أفضل ما لديك."
+        },
+        "workout": {
+          "title": "يوم الدفع أ",
+          "focus": "تركيز على تضخيم العضلات",
+          "duration": "45-60 دقيقة",
+          "cta": "ابدأ هذه الجلسة"
+        }
+      }
+    },
+    "coachPage": {
+      "hero": {
+        "badge": "لوحة تحكم المدرب 2.0",
+        "titlePart1": "مكّن عملائك.",
+        "titlePart2": "أتمتة عملك.",
+        "description": "المنصة من الجيل التالي لمحترفي اللياقة البدنية. أنشئ برامج تدريب عالمية المستوى، وتتبع التقدم في الوقت الفعلي، ووسع علامتك التجارية للتدريب بسهولة.",
+        "ctaPrimary": "ابدأ التجربة المجانية",
+        "ctaSecondary": "شاهد العرض التوضيحي"
+      },
+      "dashboard": {
+        "title": "مصمم للتدريب عالي الأداء",
+        "subtitle": "كل ما تحتاجه لإدارة مئات العملاء دون فقدان اللمسة الشخصية.",
+        "builderTitle": "منشئ البرامج الاحترافي",
+        "builderDesc": "أنشئ برامج دورية معقدة في دقائق. استخدم مكتبتنا التي تضم أكثر من 2000 فيديو تمارين عالية الدقة أو حمّل مقاطعك الخاصة. جدولة التمارين بالسحب والإفلات التي تتزامن فورًا.",
+        "crmTitle": "إدارة علاقات العملاء للمدربين",
+        "crmDesc": "أتمتة تسجيلات الدخول، وتتبع التغذية، والحفاظ على بيانات العملاء منظمة في مركز واحد آمن.",
+        "heatmapsTitle": "خرائط حرارية للتقدم",
+        "heatmapsIndex": "مؤشر تفاعل العميل",
+        "earningsTitle": "تتبع الأرباح",
+        "earningsStat": "الإيرادات المتكررة الشهرية"
+      },
+      "features": {
+        "titlePart1": "11 ميزة قوية",
+        "titlePart2": "مصممة للنمو",
+        "subtitle": "توقف عن التوفيق بين تطبيقات مختلفة. يدمج GymPro Coach سير عملك بالكامل في نظام بيئي واحد موحد يعمل باللون السماوي.",
+        "cta": "قارن جميع الميزات",
+        "items": {
+          "multiGym": {
+            "title": "دعم الصالات الرياضية المتعددة",
+            "desc": "إدارة العملاء عبر مواقع فعلية متعددة واستوديوهات افتراضية من تسجيل دخول واحد."
+          },
+          "library": {
+            "title": "مكتبة مخصصة",
+            "desc": "أنشئ ووسم مقاطع الفيديو الخاصة بالتمارين وإشارات الحركة الخاصة بك."
+          },
+          "payments": {
+            "title": "تتبع المدفوعات",
+            "desc": "مدفوعات Stripe مدمجة مع فواتير آلية وإدارة الاشتراكات."
+          },
+          "nutrition": {
+            "title": "حاسبة الماكرو",
+            "desc": "محرك تغذية متقدم مع تقسيمات الماكرو ومولدات خطط الوجبات."
+          },
+          "messaging": {
+            "title": "المراسلة داخل التطبيق",
+            "desc": "دردشة مشفرة مع ملاحظات صوتية للحفاظ على محادثات التدريب احترافية."
+          },
+          "biometric": {
+            "title": "مزامنة القياسات الحيوية",
+            "desc": "تكامل مباشر مع أجهزة Apple Health و Whoop و Oura و Garmin."
+          },
+          "renewals": {
+            "title": "التجديدات التلقائية",
+            "desc": "منطق تجديد ذكي لتقليل التوقف عن الاشتراك والحفاظ على إيرادات شهرية ثابتة."
+          },
+          "whiteLabel": {
+            "title": "العلامة البيضاء",
+            "desc": "شعارك، ألوانك، علامتك التجارية. تجربة تطبيق مخصصة بالكامل للعملاء."
+          }
+        }
+      },
+      "cta": {
+        "titlePart1": "هل أنت مستعد لتوسيع نطاق",
+        "titlePart2": "إمبراطورية التدريب الخاصة بك؟",
+        "subtitle": "انضم إلى أكثر من 5,000 مدرب نخبة قاموا بتحويل أعمالهم مع GymPro Coach.",
+        "primary": "ابدأ مجانًا",
+        "secondary": "تحدث إلى المبيعات",
+        "footer": "لا تتطلب بطاقة ائتمان • تجربة مجانية لمدة 14 يومًا • إلغاء في أي وقت"
+      }
+    },
+    "legal": {
+      "terms": {
+        "title": "الشروط والأحكام",
+        "subtitle": "آخر تحديث: مارس 2026",
+        "intro": "مرحبًا بك في GymPro. باستخدامك لمنصتنا، فإنك توافق على الامتثال للشروط والأحكام التالية والالتزام بها.",
+        "sections": {
+          "use": {
+            "title": "1. استخدام المنصة",
+            "content": "توفر منصتنا أدوات لإدارة الصالات الرياضية والتدريب وتتبع اللياقة البدنية. أنت توافق على استخدام المنصة لأغراض مشروعة فقط."
+          },
+          "accounts": {
+            "title": "2. حسابات المستخدمين",
+            "content": "أنت مسؤول عن الحفاظ على سرية بيانات اعتماد حسابك وعن جميع الأنشطة التي تحدث تحت حسابك."
+          },
+          "billing": {
+            "title": "3. الرسوم والمدفوعات",
+            "content": "يوافق أصحاب الصالات الرياضية على دفع الرسوم المرتبطة بخطة الاشتراك التي اختاروها. تتم معالجة جميع المدفوعات بشكل آمن عبر شركائنا في الدفع."
+          },
+          "privacy": {
+            "title": "4. الخصوصية",
+            "content": "يخضع استخدامك للمنصة أيضًا لسياسة الخصوصية الخاصة بنا. يرجى مراجعتها لفهم كيفية تعاملنا مع بياناتك."
+          },
+          "liability": {
+            "title": "5. تحديد المسؤولية",
+            "content": "لن تكون GymPro مسؤولة عن أي أضرار غير مباشرة أو عرضية أو تبعية ناتجة عن استخدامك للمنصة."
+          }
+        }
+      },
+      "privacy": {
+        "title": "سياسة الخصوصية",
+        "subtitle": "آخر تحديث: مارس 2026",
+        "intro": "في GymPro، نحن ملتزمون بحماية خصوصيتك وضمان التعامل مع معلوماتك الشخصية بأمان.",
+        "sections": {
+          "collect": {
+            "title": "1. المعلومات التي نجمعها",
+            "content": "نقوم بجمع المعلومات التي تقدمها لنا مباشرة، مثل اسمك وبريدك الإلكتروني وتفاصيل الفواتير، بالإضافة إلى بيانات الاستخدام عند وصولك إلى منصتنا."
+          },
+          "usage": {
+            "title": "2. كيف نستخدم المعلومات",
+            "content": "نستخدم معلوماتك لتقديم خدماتنا وصيانتها وتحسينها، ومعالجة المدفوعات، والتواصل معك بشأن حسابك."
+          },
+          "sharing": {
+            "title": "3. مشاركة المعلومات",
+            "content": "نحن لا نبيع معلوماتك الشخصية. قد نشارك البيانات مع مزودي الخدمة الذين يساعدوننا في تشغيل المنصة (مثل معالجي الدفع)."
+          },
+          "security": {
+            "title": "4. أمن البيانات",
+            "content": "نحن نطبق إجراءات أمنية متوافقة مع معايير الصناعة لحماية بياناتك من الوصول غير المصرح به أو التغيير أو الكشف."
+          },
+          "rights": {
+            "title": "5. حقوقك",
+            "content": "لديك الحق في الوصول إلى معلوماتك الشخصية أو تحديثها أو حذفها في أي وقت من خلال إعدادات حسابك."
+          }
+        }
+      },
+      "cookies": {
+        "title": "سياسة ملفات تعريف الارتباط",
+        "subtitle": "آخر تحديث: مارس 2026",
+        "intro": "توضح سياسة ملفات تعريف الارتباط هذه كيف يستخدم GymPro ملفات تعريف الارتباط والتقنيات المشابهة للتعرف عليك عند زيارتك لموقعنا الإلكتروني.",
+        "sections": {
+          "what": {
+            "title": "1. ما هي ملفات تعريف الارتباط (الكوكيز)؟",
+            "content": "ملفات تعريف الارتباط هي ملفات بيانات صغيرة يتم وضعها على جهاز الكمبيوتر أو الجهاز المحمول الخاص بك عند زيارة موقع ويب. يستخدمها مالكو المواقع على نطاق واسع لجعل مواقعهم تعمل، أو تعمل بكفاءة أكبر، بالإضافة إلى توفير معلومات التقارير."
+          },
+          "why": {
+            "title": "2. لماذا نستخدم ملفات تعريف الارتباط؟",
+            "content": "نحن نستخدم ملفات تعريف الارتباط للطرف الأول والطرف الثالث لعدة أسباب. بعض ملفات تعريف الارتباط مطلوبة لأسباب فنية لكي يعمل موقعنا الإلكتروني، ونشير إليها باسم ملفات تعريف الارتباط 'الأساسية' أو 'الضرورية للغاية'."
+          },
+          "types": {
+            "title": "3. أنواع ملفات تعريف الارتباط التي نستخدمها",
+            "content": "نحن نستخدم ملفات تعريف الارتباط الخاصة بالأداء والوظائف لتحسين أداء ووظائف موقعنا الإلكتروني ولكنها ليست ضرورية لاستخدامها. ومع ذلك، بدون ملفات تعريف الارتباط هذه، قد تصبح بعض الوظائف (مثل مقاطع الفيديو) غير متاحة."
+          },
+          "control": {
+            "title": "4. كيف يمكنني التحكم في ملفات تعريف الارتباط؟",
+            "content": "لديك الحق في تحديد ما إذا كنت ستقبل ملفات تعريف الارتباط أو ترفضها. يمكنك تعيين أو تعديل عناصر التحكم في متصفح الويب الخاص بك لقبول ملفات تعريف الارتباط أو رفضها. إذا اخترت رفض ملفات تعريف الارتباط، فلا يزال بإمكانك استخدام موقعنا الإلكتروني على الرغم من أن وصولك إلى بعض الوظائف والمناطق في موقعنا قد يكون مقيدًا."
+          }
+        }
       }
     }
   }

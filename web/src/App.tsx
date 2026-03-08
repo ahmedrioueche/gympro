@@ -1,3 +1,4 @@
+import { LANGUAGES } from "@ahmedrioueche/gympro-client";
 import { Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { TopBanner } from "./components/TopBanner";
@@ -6,13 +7,12 @@ import { useTheme } from "./context/ThemeContext";
 import Modals from "./modals";
 import { useLanguageStore } from "./store/language";
 import { useUserStore } from "./store/user";
-
 import { resetAllScrollers } from "./utils/scroll";
 
 const App = () => {
   const { isDark } = useTheme();
   const { user } = useUserStore();
-  const { setLanguage } = useLanguageStore();
+  const { setLanguage, language } = useLanguageStore();
   const { pathname } = useLocation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +23,12 @@ const App = () => {
       setLanguage(userLanguage);
     }
   }, [user?.appSettings?.locale?.language, setLanguage]);
+
+  // Handle RTL layout dynamically from language configuration
+  useEffect(() => {
+    const isRtl = LANGUAGES[language]?.isRtl || false;
+    document.documentElement.dir = isRtl ? "rtl" : "ltr";
+  }, [language]);
 
   // Scroll to top on route change
   useEffect(() => {
