@@ -10,6 +10,8 @@ interface SecuritySettingsProps {
   onNewPasswordChange: (value: string) => void;
   confirmPassword: string;
   onConfirmPasswordChange: (value: string) => void;
+  title?: string;
+  description?: string;
 }
 
 export default function SecuritySettings({
@@ -19,13 +21,21 @@ export default function SecuritySettings({
   onNewPasswordChange,
   confirmPassword,
   onConfirmPasswordChange,
+  title,
+  description,
 }: SecuritySettingsProps) {
   const { t } = useTranslation();
 
   return (
     <SettingsTab
-      title={t("member.settings.security.title")}
-      description={t("member.settings.security.subtitle")}
+      title={title || t("member.settings.security.title", "Security Settings")}
+      description={
+        description ||
+        t(
+          "member.settings.security.subtitle",
+          "Manage your password and security preferences",
+        )
+      }
       icon={Lock}
     >
       <form className="space-y-6 max-w-2xl">

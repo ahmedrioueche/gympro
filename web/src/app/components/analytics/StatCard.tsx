@@ -10,6 +10,7 @@ interface StatCardProps {
   isLoading?: boolean;
   loading?: boolean;
   color?: string; // Expecting "from-X to-Y" gradient classes
+  shadowColor?: string; // Expecting tailwind shadow color class
 }
 
 export default function StatCard({
@@ -22,6 +23,7 @@ export default function StatCard({
   isLoading,
   loading,
   color = "from-primary/20 to-primary/10",
+  shadowColor = "shadow-primary/10",
 }: StatCardProps) {
   const isActuallyLoading = isLoading || loading;
 
@@ -47,7 +49,7 @@ export default function StatCard({
       <div className="flex flex-col gap-3 md:gap-4">
         <div className="flex items-center justify-between">
           <div
-            className={`p-2 md:p-3 rounded-xl md:rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg shadow-primary/10 transition-transform group-hover:scale-110 duration-500`}
+            className={`p-2 md:p-3 rounded-xl md:rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg ${shadowColor} transition-transform group-hover:scale-110 duration-500`}
           >
             <Icon size={20} className="md:hidden" />
             <Icon size={24} className="hidden md:block" />

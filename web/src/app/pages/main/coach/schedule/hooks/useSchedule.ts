@@ -1,12 +1,6 @@
-import {
-  addDays,
-  endOfWeek,
-  format,
-  isSameDay,
-  parseISO,
-  startOfWeek,
-} from "date-fns";
+import { addDays, endOfWeek, isSameDay, parseISO, startOfWeek } from "date-fns";
 import { useState } from "react";
+import { useDateFormat } from "../../../../../../hooks/useDateFormat";
 
 export interface UseScheduleReturn {
   currentDate: Date;
@@ -26,6 +20,7 @@ export interface UseScheduleReturn {
 
 export const useSchedule = (): UseScheduleReturn => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const { format } = useDateFormat();
 
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 }); // Monday
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });

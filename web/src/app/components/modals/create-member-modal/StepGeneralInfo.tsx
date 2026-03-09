@@ -111,11 +111,10 @@ function StepGeneralInfo({
         <label className="flex items-center justify-between cursor-pointer">
           <div className="flex-1">
             <h3 className="font-semibold text-text-primary mb-1">
-              Enable Contactless Member
+              {t("extra.createMember.enableContactlessTitle")}
             </h3>
             <p className="text-sm text-text-secondary">
-              Create a member without email or phone number. They won't receive
-              notifications or login credentials.
+              {t("extra.createMember.enableContactlessDesc")}
             </p>
           </div>
           <div className="relative">

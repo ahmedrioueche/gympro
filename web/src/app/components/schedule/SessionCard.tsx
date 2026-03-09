@@ -1,7 +1,8 @@
 import type { Session, SessionStatus } from "@ahmedrioueche/gympro-client";
-import { format, parseISO } from "date-fns";
+import { parseISO } from "date-fns";
 import { Calendar, Clock, MapPin, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useDateFormat } from "../../../hooks/useDateFormat";
 
 interface SessionCardProps {
   session: Session;
@@ -58,6 +59,7 @@ export const SessionCard = ({
   compact = false,
 }: SessionCardProps) => {
   const { t } = useTranslation();
+  const { format } = useDateFormat();
   const startTime =
     typeof session?.startTime === "string"
       ? parseISO(session.startTime)
@@ -103,7 +105,10 @@ export const SessionCard = ({
         )}
 
         <span className="text-[10px] uppercase tracking-wider font-semibold opacity-70">
-          {typeLabels[session?.type] || session?.type?.replace("_", " ")}
+          {t(
+            `schedule.types.${session?.type}`,
+            typeLabels[session?.type] || session?.type?.replace("_", " "),
+          )}
         </span>
       </div>
     );
@@ -129,7 +134,7 @@ export const SessionCard = ({
               <User className="w-5 h-5 text-white/40" />
             </div>
           )}
-          <div className="text-left">
+          <div className="text-start">
             <h3 className="text-base font-bold text-white group-hover:text-primary transition-colors truncate max-w-[160px]">
               {session?.member?.fullName ||
                 session?.member?.username ||
@@ -137,9 +142,12 @@ export const SessionCard = ({
             </h3>
             <div className="flex items-center gap-1.5 text-white/40 text-xs">
               <span className="capitalize">
-                {typeLabels[session?.type] ||
-                  session?.type?.replace("_", " ") ||
-                  "Session"}
+                {t(
+                  `schedule.types.${session?.type}`,
+                  typeLabels[session?.type] ||
+                    session?.type?.replace("_", " ") ||
+                    "Session",
+                )}
               </span>
             </div>
           </div>

@@ -152,11 +152,8 @@ export default function HomePage() {
     <div className="space-y-6 md:space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
       <PageHeader
-        title={t("home.coach.title", "Coach Dashboard")}
-        subtitle={t(
-          "home.coach.subtitle",
-          "Track your clients and manage your sessions",
-        )}
+        title={t("home.coach.welcome")}
+        subtitle={t("home.coach.subtitle")}
         icon={TrendingUp}
       />
 

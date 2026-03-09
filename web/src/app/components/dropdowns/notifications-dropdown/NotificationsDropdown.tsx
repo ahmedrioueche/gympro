@@ -27,13 +27,15 @@ export default function NotificationsDropdown() {
     <Dropdown
       trigger={<NotificationTrigger hasUnread={hasUnread} />}
       align="right"
-      className="w-80 max-w-[calc(100vw-2rem)] right-0"
+      className="w-80 max-w-[calc(100vw-2rem)] end-0"
       onOpen={handleDropdownOpen}
     >
       {(closeDropdown) => (
         <>
           <DropdownHeader className="flex items-center justify-between">
-            <span className="font-semibold">{t("notifications.title")}</span>
+            <span className="font-semibold text-base text-text-primary">
+              {t("notifications.title")}
+            </span>
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}

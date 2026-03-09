@@ -1,5 +1,6 @@
 import type { GymClass, Session } from "@ahmedrioueche/gympro-client";
-import { format, isToday } from "date-fns";
+import { isToday } from "date-fns";
+import { useDateFormat } from "../../../hooks/useDateFormat";
 import { ClassScheduleCard } from "./ClassScheduleCard";
 import { SessionCard } from "./SessionCard";
 
@@ -18,12 +19,13 @@ export const DayColumn = ({
   onSessionClick,
   onClassClick,
 }: DayColumnProps) => {
+  const { format } = useDateFormat();
   const isCurrentDay = isToday(day);
   const hasItems = gymClasses.length > 0 || sessions.length > 0;
 
   return (
     <div
-      className={`md:min-w-[140px] md:flex-1 border-b md:border-b-0 md:border-r border-border last:border-0 ${
+      className={`md:min-w-[140px] md:flex-1 border-b md:border-b-0 md:border-e border-border last:border-0 ${
         isCurrentDay ? "bg-primary/5" : ""
       }`}
     >
@@ -44,7 +46,7 @@ export const DayColumn = ({
           {format(day, "d")}
         </p>
         {!hasItems && (
-          <span className="text-[10px] text-text-secondary/50 ml-auto md:hidden">
+          <span className="text-[10px] text-text-secondary/50 ms-auto md:hidden">
             —
           </span>
         )}

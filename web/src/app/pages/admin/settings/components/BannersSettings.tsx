@@ -22,9 +22,9 @@ export default function BannersSettings() {
 
   const handleDeleteClick = (bannerId: string) => {
     openModal("confirm", {
-      title: t("settings.banners.deleteTitle", "Delete Banner"),
+      title: t("extra.adminSettings.banners.deleteTitle", "Delete Banner"),
       text: t(
-        "settings.banners.deleteDesc",
+        "extra.adminSettings.banners.deleteDesc",
         "Are you sure you want to delete this banner? This action cannot be undone.",
       ),
       confirmText: t("common.delete", "Delete"),
@@ -161,11 +161,8 @@ export default function BannersSettings() {
 
   return (
     <SettingsTab
-      title={t("settings.banners.title", "System Announcements")}
-      description={t(
-        "settings.banners.description",
-        "Manage global banners and alerts displayed to all users.",
-      )}
+      title={t("extra.adminSettings.tabs.banners", "Announcements")}
+      description={t("extra.adminSettings.pageSubtitle")}
       icon={Megaphone}
       headerAction={
         <Button onClick={handleCreate} className="flex items-center gap-2">
@@ -182,7 +179,12 @@ export default function BannersSettings() {
         emptyState={
           <div className="flex flex-col items-center gap-2 text-text-secondary">
             <Megaphone className="opacity-50" size={32} />
-            <p>{t("settings.banners.empty", "No active banners found.")}</p>
+            <p>
+              {t(
+                "extra.adminSettings.banners.empty",
+                "No active banners found.",
+              )}
+            </p>
           </div>
         }
       />

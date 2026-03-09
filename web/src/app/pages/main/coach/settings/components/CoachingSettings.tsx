@@ -48,7 +48,7 @@ export default function CoachingSettings({
 
   return (
     <SettingsTab
-      title={t("coach.settings.tabs.coaching")}
+      title={t("extra.coachSettings.tabs.coaching", "Coaching")}
       description={t(
         "coach.settings.coaching.description",
         "Share your professional background and expertise.",
@@ -58,18 +58,18 @@ export default function CoachingSettings({
       {/* Bio */}
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.coach.coaching.bio", "Professional Bio")}
+          {t("extra.coachSettings.coaching.bio", "Professional Bio")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.coach.coaching.bioDesc",
+            "extra.coachSettings.coaching.bioDesc",
             "Tell your potential clients about yourself",
           )}
         </p>
         <TextArea
           value={bio}
           onChange={(e) => setBio(e.target.value)}
-          placeholder={t("settings.coach.coaching.bioPlaceholder")}
+          placeholder={t("extra.coachSettings.coaching.bioPlaceholder")}
           rows={5}
           maxLength={500}
         />
@@ -83,11 +83,11 @@ export default function CoachingSettings({
       {/* Years of Experience */}
       <div className="pt-10 border-t border-border mt-10">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.coach.coaching.experience", "Coaching Experience")}
+          {t("extra.coachSettings.coaching.experience", "Coaching Experience")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.coach.coaching.experienceDesc",
+            "extra.coachSettings.coaching.experienceDesc",
             "How many years have you been coaching professionally?",
           )}
         </p>
@@ -96,7 +96,9 @@ export default function CoachingSettings({
             type="number"
             value={yearsOfExperience}
             onChange={(e) => setYearsOfExperience(e.target.value)}
-            placeholder={t("settings.coach.coaching.experiencePlaceholder")}
+            placeholder={t(
+              "extra.coachSettings.coaching.experiencePlaceholder",
+            )}
             min="0"
             max="50"
           />
@@ -106,11 +108,14 @@ export default function CoachingSettings({
       {/* Specializations */}
       <div className="pt-10 border-t border-border mt-10">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.coach.coaching.specializations", "Areas of Expertise")}
+          {t(
+            "extra.coachSettings.coaching.specializations",
+            "Areas of Expertise",
+          )}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.coach.coaching.specializationsDesc",
+            "extra.coachSettings.coaching.specializationsDesc",
             "Select the areas you specialize in to help clients find you",
           )}
         </p>
@@ -123,7 +128,12 @@ export default function CoachingSettings({
                 key={spec}
                 className="flex items-center gap-2 px-4 py-2 bg-white text-primary rounded-xl shadow-sm border border-primary/20"
               >
-                <span className="text-sm font-bold">{spec}</span>
+                <span className="text-sm font-bold">
+                  {t(
+                    `extra.coachSettings.specializationTypes.${spec.replace(/\s+/g, "")}`,
+                    spec,
+                  )}
+                </span>
                 <button
                   onClick={() => handleRemoveSpecialization(spec)}
                   className="hover:bg-primary/10 rounded-lg p-0.5 transition-colors"
@@ -153,7 +163,10 @@ export default function CoachingSettings({
                     : "bg-surface border-border/60 text-text-secondary hover:border-primary/40 hover:text-text-primary"
                 }`}
               >
-                {spec}
+                {t(
+                  `extra.coachSettings.specializationTypes.${spec.replace(/\s+/g, "")}`,
+                  spec,
+                )}
               </button>
             );
           })}

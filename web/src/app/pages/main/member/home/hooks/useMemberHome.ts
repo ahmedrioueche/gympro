@@ -11,9 +11,7 @@ export const useMemberHome = () => {
   const { data: dashboardStats } = useQuery({
     queryKey: ["member", "dashboard", "stats", user?._id],
     queryFn: async () => {
-      console.log("api call");
       const res = await membersApi.getDashboardStats();
-      console.log({ res });
       return res.data;
     },
     enabled: !!user,
@@ -21,7 +19,7 @@ export const useMemberHome = () => {
 
   const nextClassLabel = dashboardStats?.nextClass
     ? format(new Date(dashboardStats.nextClass.startTime), "EEE, MMM d")
-    : "No upcoming";
+    : "-";
 
   return {
     user,

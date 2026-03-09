@@ -26,6 +26,8 @@
     "saving": "Enregistrement...",
     "gym": "Salle de sport",
     "trialing": "En essai",
+    "available": "Disponible",
+    "added": "Ajouté",
     "go": "Aller",
     "markAsDone": "Marquer comme terminé",
     "done": "Terminé",
@@ -3058,6 +3060,15 @@
       "cancelled": "Annulé",
       "no_show": "Absent",
       "pending": "En attente"
+    },
+    "errors": {
+      "startTimeRequired": "L'heure de début est requise",
+      "endTimeRequired": "L'heure de fin est requise",
+      "startTimeAfterEndTime": "L'heure de début doit être avant l'heure de fin",
+      "clientRequired": "Le client est requis",
+      "facilityRequired": "L'installation est requise",
+      "invalidTimeRange": "Plage horaire invalide",
+      "overlappingSession": "Cette séance chevauche une séance existante"
     }
   },
   "coachAnalytics": {
@@ -3409,6 +3420,10 @@
       "title": "Votre inventaire est vide",
       "message": "Commencez à ajouter des équipements pour suivre les actifs de votre salle et leur maintenance.",
       "action": "Ajoutez votre premier article"
+    },
+    "selector": {
+      "label": "Équipement requis",
+      "searchPlaceholder": "Rechercher un équipement à ajouter..."
     },
     "card": {
       "nextService": "Prochain service"
@@ -4775,6 +4790,93 @@
         "noFacilities": "Aucune installation ajoutée",
         "noFacilitiesDesc": "Ajoutez des salles ou zones pour mieux gérer vos cours.",
         "addFirst": "Ajoutez votre première installation"
+      }
+    },
+    "createMember": {
+      "enableContactlessTitle": "Activer le membre sans contact",
+      "enableContactlessDesc": "Créer un membre sans email ni numéro de téléphone. Il ne recevra pas de notifications ni d'identifiants de connexion."
+    },
+    "viewingRange": "Semaine affichée",
+    "coachSettings": {
+      "pageTitle": "Profil du coach",
+      "pageSubtitle": "Gérez votre présence professionnelle et vos disponibilités de coaching",
+      "tabs": {
+        "profile": "Profil",
+        "coaching": "Coaching",
+        "preferences": "Préférences",
+        "security": "Sécurité"
+      },
+      "profile": {
+        "avatar": "Photo de profil",
+        "avatarDesc": "Ceci sera affiché sur votre profil public de coach",
+        "basicInfo": "Informations personnelles",
+        "basicInfoDesc": "Mettez à jour vos coordonnées et votre nom complet",
+        "fullName": "Nom complet",
+        "fullNamePlaceholder": "Jean Dupont",
+        "email": "Adresse e-mail",
+        "emailPlaceholder": "jean@exemple.com",
+        "phone": "Numéro de téléphone",
+        "phonePlaceholder": "+33 6 12 34 56 78"
+      },
+      "location": {
+        "title": "Informations locales",
+        "detect": "Détecter l'emplacement",
+        "description": "Cela aide les clients à vous trouver dans leur région",
+        "city": "Ville",
+        "cityPlaceholder": "Paris",
+        "state": "État/Province",
+        "statePlaceholder": "Île-de-France",
+        "country": "Pays",
+        "countryPlaceholder": "France"
+      },
+      "coaching": {
+        "bio": "Biographie professionnelle",
+        "bioDesc": "Parlez de vous à vos clients potentiels",
+        "bioPlaceholder": "Je suis un entraîneur personnel certifié...",
+        "experience": "Expérience en coaching",
+        "experienceDesc": "Depuis combien d'années coachez-vous professionnellement ?",
+        "experiencePlaceholder": "par ex. 5",
+        "specializations": "Domaines d'expertise",
+        "specializationsDesc": "Sélectionnez les domaines dans lesquels vous vous spécialisez pour aider les clients à vous trouver"
+      },
+      "specializationTypes": {
+        "StrengthTraining": "Entraînement en force",
+        "WeightLoss": "Perte de poids",
+        "MuscleBuilding": "Musculation",
+        "CrossFit": "CrossFit",
+        "Yoga": "Yoga",
+        "Pilates": "Pilates",
+        "Nutrition": "Nutrition",
+        "SportsPerformance": "Performance sportive",
+        "Rehabilitation": "Rééducation",
+        "SeniorFitness": "Fitness pour seniors"
+      }
+    },
+    "adminSettings": {
+      "pageTitle": "Paramètres administrateur",
+      "pageSubtitle": "Gérez votre compte personnel et vos préférences",
+      "tabs": {
+        "profile": "Profil",
+        "preferences": "Préférences",
+        "security": "Sécurité",
+        "banners": "Annonces"
+      },
+      "profile": {
+        "avatar": "Photo de profil",
+        "avatarDesc": "Ceci sera affiché sur l'ensemble du tableau de bord administrateur",
+        "basicInfo": "Informations du compte",
+        "basicInfoDesc": "Mettez à jour vos coordonnées et votre nom complet",
+        "fullName": "Nom complet",
+        "fullNamePlaceholder": "Jean Dupont",
+        "email": "Adresse e-mail",
+        "emailPlaceholder": "jean@exemple.com",
+        "phone": "Numéro de téléphone",
+        "phonePlaceholder": "+33 6 12 34 56 78"
+      },
+      "banners": {
+        "deleteTitle": "Supprimer la bannière",
+        "deleteDesc": "Êtes-vous sûr de vouloir supprimer cette bannière ? Cette action est irréversible.",
+        "empty": "Aucune bannière active trouvée."
       }
     }
   }

@@ -3059,6 +3059,15 @@
       "cancelled": "Cancelled",
       "no_show": "No Show",
       "pending": "Pending"
+    },
+    "errors": {
+      "startTimeRequired": "Start time is required",
+      "endTimeRequired": "End time is required",
+      "startTimeAfterEndTime": "Start time must be before end time",
+      "clientRequired": "Client is required",
+      "facilityRequired": "Facility is required",
+      "invalidTimeRange": "Invalid time range",
+      "overlappingSession": "This session overlaps with an existing session"
     }
   },
   "coachAnalytics": {
@@ -3466,6 +3475,10 @@
       "nextServiceDueDate": "Next Service Due",
       "additionalNotes": "Internal Notes",
       "addEquipment": "Add Equipment"
+    },
+    "selector": {
+      "label": "Required Equipment",
+      "searchPlaceholder": "Search equipment to add..."
     }
   },
   "competitions": {
@@ -4546,6 +4559,89 @@
   "extra": {
     "searchPlaceholder": "Search by gym name...",
     "currentRole": "Current Role",
+    "viewingRange": "Viewing Week",
+    "coachSettings": {
+      "pageTitle": "Coach Profile",
+      "pageSubtitle": "Manage your professional presence and coaching availability",
+      "tabs": {
+        "profile": "Profile",
+        "coaching": "Coaching",
+        "preferences": "Preferences",
+        "security": "Security"
+      },
+      "profile": {
+        "avatar": "Profile Picture",
+        "avatarDesc": "This will be displayed on your public coach profile",
+        "basicInfo": "Personal Information",
+        "basicInfoDesc": "Update your contact details and full name",
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Doe",
+        "email": "Email Address",
+        "emailPlaceholder": "john@example.com",
+        "phone": "Phone Number",
+        "phonePlaceholder": "+1 234 567 890"
+      },
+      "location": {
+        "title": "Local Information",
+        "detect": "Detect Location",
+        "description": "This helps clients find you in their area",
+        "city": "City",
+        "cityPlaceholder": "New York",
+        "state": "State/Province",
+        "statePlaceholder": "NY",
+        "country": "Country",
+        "countryPlaceholder": "United States"
+      },
+      "coaching": {
+        "bio": "Professional Bio",
+        "bioDesc": "Tell your potential clients about yourself",
+        "bioPlaceholder": "I am a certified personal trainer...",
+        "experience": "Coaching Experience",
+        "experienceDesc": "How many years have you been coaching professionally?",
+        "experiencePlaceholder": "e.g., 5",
+        "specializations": "Areas of Expertise",
+        "specializationsDesc": "Select the areas you specialize in to help clients find you"
+      },
+      "specializationTypes": {
+        "StrengthTraining": "Strength Training",
+        "WeightLoss": "Weight Loss",
+        "MuscleBuilding": "Muscle Building",
+        "CrossFit": "CrossFit",
+        "Yoga": "Yoga",
+        "Pilates": "Pilates",
+        "Nutrition": "Nutrition",
+        "SportsPerformance": "Sports Performance",
+        "Rehabilitation": "Rehabilitation",
+        "SeniorFitness": "Senior Fitness"
+      }
+    },
+    "adminSettings": {
+      "pageTitle": "Admin Settings",
+      "pageSubtitle": "Manage your personal account and preferences",
+      "tabs": {
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "security": "Security",
+        "banners": "Announcements"
+      },
+      "profile": {
+        "avatar": "Profile Picture",
+        "avatarDesc": "This will be displayed across the admin dashboard",
+        "basicInfo": "Account Information",
+        "basicInfoDesc": "Update your contact details and full name",
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Doe",
+        "email": "Email Address",
+        "emailPlaceholder": "john@example.com",
+        "phone": "Phone Number",
+        "phonePlaceholder": "+1 234 567 890"
+      },
+      "banners": {
+        "deleteTitle": "Delete Banner",
+        "deleteDesc": "Are you sure you want to delete this banner? This action cannot be undone.",
+        "empty": "No active banners found."
+      }
+    },
     "settings": {
       "tabs": {
         "general": "General",
@@ -4776,6 +4872,10 @@
         "noFacilitiesDesc": "Add rooms or areas to better manage your class schedules.",
         "addFirst": "Add your first facility"
       }
+    },
+    "createMember": {
+      "enableContactlessTitle": "Enable Contactless Member",
+      "enableContactlessDesc": "Create a member without email or phone number. They won't receive notifications or login credentials."
     }
   }
 }

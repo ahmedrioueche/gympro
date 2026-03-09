@@ -57,18 +57,18 @@ export default function ProfileSettings({
 
   return (
     <SettingsTab
-      title={t("coach.settings.tabs.profile")}
-      description={t("coach.settings.pageSubtitle")}
+      title={t("extra.coachSettings.tabs.profile", "Profile")}
+      description={t("extra.coachSettings.pageSubtitle")}
       icon={UserIcon}
     >
       {/* Avatar Section */}
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.coach.profile.avatar", "Profile Picture")}
+          {t("extra.coachSettings.profile.avatar", "Profile Picture")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.coach.profile.avatarDesc",
+            "extra.coachSettings.profile.avatarDesc",
             "This will be displayed on your public coach profile",
           )}
         </p>
@@ -83,39 +83,39 @@ export default function ProfileSettings({
       {/* Basic Info */}
       <div className="pt-10 border-t border-border mt-10">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("settings.coach.profile.basicInfo", "Personal Information")}
+          {t("extra.coachSettings.profile.basicInfo", "Personal Information")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.coach.profile.basicInfoDesc",
+            "extra.coachSettings.profile.basicInfoDesc",
             "Update your contact details and full name",
           )}
         </p>
 
         <div className="space-y-4">
           <InputField
-            label={t("settings.coach.profile.fullName")}
+            label={t("extra.coachSettings.profile.fullName")}
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             leftIcon={<UserIcon className="w-5 h-5" />}
-            placeholder={t("settings.coach.profile.fullNamePlaceholder")}
+            placeholder={t("extra.coachSettings.profile.fullNamePlaceholder")}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Email */}
             <InputField
-              label={t("settings.coach.profile.email")}
+              label={t("extra.coachSettings.profile.email")}
               type="email"
               value={addEmailMode ? email : user.profile.email || email}
               onChange={(e) => setEmail(e.target.value)}
               leftIcon={<Mail className="w-5 h-5" />}
-              placeholder={t("settings.coach.profile.emailPlaceholder")}
+              placeholder={t("extra.coachSettings.profile.emailPlaceholder")}
               disabled={!!user.profile.email && !addEmailMode}
             />
 
             {/* Phone */}
             <InputField
-              label={t("settings.coach.profile.phone")}
+              label={t("extra.coachSettings.profile.phone")}
               type="tel"
               value={
                 addPhoneMode
@@ -124,7 +124,7 @@ export default function ProfileSettings({
               }
               onChange={(e) => setPhoneNumber(e.target.value)}
               leftIcon={<Phone className="w-5 h-5" />}
-              placeholder={t("settings.coach.profile.phonePlaceholder")}
+              placeholder={t("extra.coachSettings.profile.phonePlaceholder")}
               disabled={!!user.profile.phoneNumber && !addPhoneMode}
             />
           </div>
@@ -135,7 +135,7 @@ export default function ProfileSettings({
       <div className="pt-10 border-t border-border mt-10">
         <div className="flex items-center justify-between mb-1">
           <h4 className="text-sm font-semibold text-text-primary uppercase tracking-wider opacity-70">
-            {t("settings.coach.location.title", "Local Information")}
+            {t("extra.coachSettings.location.title", "Local Information")}
           </h4>
           <Button
             variant="ghost"
@@ -144,33 +144,33 @@ export default function ProfileSettings({
             onClick={handleGetLocation}
             loading={gettingLocation}
           >
-            {t("settings.coach.location.detect")}
+            {t("extra.coachSettings.location.detect")}
           </Button>
         </div>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "settings.coach.location.description",
+            "extra.coachSettings.location.description",
             "This helps clients find you in their area",
           )}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputField
-            label={t("settings.coach.location.city")}
+            label={t("extra.coachSettings.location.city")}
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            placeholder={t("settings.coach.location.cityPlaceholder")}
+            placeholder={t("extra.coachSettings.location.cityPlaceholder")}
           />
           <InputField
-            label={t("settings.coach.location.state")}
+            label={t("extra.coachSettings.location.state")}
             value={state}
             onChange={(e) => setState(e.target.value)}
-            placeholder={t("settings.coach.location.statePlaceholder")}
+            placeholder={t("extra.coachSettings.location.statePlaceholder")}
           />
           <InputField
-            label={t("settings.coach.location.country")}
+            label={t("extra.coachSettings.location.country")}
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            placeholder={t("settings.coach.location.countryPlaceholder")}
+            placeholder={t("extra.coachSettings.location.countryPlaceholder")}
           />
         </div>
       </div>

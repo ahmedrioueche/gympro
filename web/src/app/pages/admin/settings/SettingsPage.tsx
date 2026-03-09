@@ -49,22 +49,22 @@ export default function SettingsPage() {
   const tabs = [
     {
       id: "profile",
-      label: t("member.settings.tabs.profile", "Profile"),
+      label: t("extra.adminSettings.tabs.profile", "Profile"),
       icon: User,
     },
     {
       id: "preferences",
-      label: t("member.settings.tabs.preferences", "Preferences"),
+      label: t("extra.adminSettings.tabs.preferences", "Preferences"),
       icon: Settings,
     },
     {
       id: "security",
-      label: t("member.settings.tabs.security", "Security"),
+      label: t("extra.adminSettings.tabs.security", "Security"),
       icon: Lock,
     },
     {
       id: "banners",
-      label: t("member.settings.tabs.banners", "Announcements"),
+      label: t("extra.adminSettings.tabs.banners", "Announcements"),
       icon: Megaphone,
     },
   ];
@@ -75,9 +75,9 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
       <PageHeader
-        title={t("member.settings.pageTitle", "Admin Settings")}
+        title={t("extra.adminSettings.pageTitle", "Admin Settings")}
         subtitle={t(
-          "member.settings.pageSubtitle",
+          "extra.adminSettings.pageSubtitle",
           "Manage your personal account and preferences",
         )}
         icon={Settings}
@@ -118,6 +118,8 @@ export default function SettingsPage() {
             onUpdate={setLanguage}
             weightUnit={weightUnit}
             setWeightUnit={setWeightUnit}
+            title={t("extra.adminSettings.tabs.preferences", "Preferences")}
+            description={t("extra.adminSettings.pageSubtitle")}
           />
         )}
         {activeTab === "security" && (
@@ -128,6 +130,8 @@ export default function SettingsPage() {
             onNewPasswordChange={setNewPassword}
             confirmPassword={confirmPassword}
             onConfirmPasswordChange={setConfirmPassword}
+            title={t("extra.adminSettings.tabs.security", "Security")}
+            description={t("extra.adminSettings.pageSubtitle")}
           />
         )}
         {activeTab === "banners" && <BannersSettings />}

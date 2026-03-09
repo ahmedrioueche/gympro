@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useGymSubscriptionOptions } from "../../../../hooks/useGymSubscriptionOptions";
 import { useGymStore } from "../../../../store/gym";
+import { useLanguageStore } from "../../../../store/language";
 import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
-import Tip from "../../ui/Tip";
 import StepGeneralInfo from "./StepGeneralInfo";
 import StepSubscriptionInfo from "./StepSubscriptionInfo";
 import { useCreateMemberForm } from "./useCreateMemberForm";
@@ -18,6 +18,7 @@ export default function CreateMemberModal() {
   const { user } = useUserStore();
   const { currentModal, closeModal, createMemberProps } = useModalStore();
   const { onSuccess } = createMemberProps || {};
+  const { isRtl } = useLanguageStore();
 
   const {
     step,
@@ -77,7 +78,8 @@ export default function CreateMemberModal() {
         label: step === 2 ? t("common.submit") : t("common.next"),
         onClick: step === 2 ? () => handleSubmit() : handleNext,
         loading: isSubmitting,
-        icon: step === 2 ? Check : ArrowRight,
+        icon: step === 2 ? Check : isRtl ? ArrowLeft : ArrowRight,
+        iconPosition: step === 2 ? "left" : "right",
       }}
       secondaryButton={{
         label: t("common.cancel"),
@@ -90,7 +92,7 @@ export default function CreateMemberModal() {
               label: t("common.back"),
               onClick: handleBack,
               variant: "default",
-              icon: ArrowLeft,
+              icon: isRtl ? ArrowRight : ArrowLeft,
             }
           : undefined
       }
@@ -120,13 +122,6 @@ export default function CreateMemberModal() {
             />
           )}
         </form>
-
-        <div className="mt-6">
-          <Tip
-            title={t("createMember.tips.title")}
-            description={t("createMember.tips.description")}
-          />
-        </div>
       </div>
     </BaseModal>
   );

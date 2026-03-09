@@ -31,6 +31,8 @@
     "markAsDone": "وضع علامة كمكتمل",
     "done": "تم",
     "restore": "استعادة",
+    "available": "متاح",
+    "added": "تمت الإضافة",
     "restart": "إعادة تشغيل",
     "close": "إغلاق",
     "processing": "جارٍ المعالجة...",
@@ -2968,7 +2970,7 @@
       "info": "سيتلقى المدرب إشعارًا ويمكنه اختيار قبول طلبك أو رفضه. سيتم إعلامك برد المدرب."
     },
     "filters": {
-      "search": "البحث عن المدربين بالاسم",
+      "search": "البحث عن المدربين بالاسم...",
       "city": "المدينة",
       "cityPlaceholder": "تصفية حسب المدينة",
       "state": "الولاية/المقاطعة",
@@ -3059,6 +3061,15 @@
       "cancelled": "ملغى",
       "no_show": "لم يحضر",
       "pending": "معلق"
+    },
+    "errors": {
+      "startTimeRequired": "وقت البداية مطلوب",
+      "endTimeRequired": "وقت النهاية مطلوب",
+      "startTimeAfterEndTime": "يجب أن يكون وقت البداية قبل وقت النهاية",
+      "clientRequired": "العميل مطلوب",
+      "facilityRequired": "المرفق مطلوب",
+      "invalidTimeRange": "نطاق زمني غير صالح",
+      "overlappingSession": "هذه الجلسة تتداخل مع جلسة موجودة"
     }
   },
   "coachAnalytics": {
@@ -3413,6 +3424,10 @@
     },
     "card": {
       "nextService": "الخدمة التالية"
+    },
+    "selector": {
+      "label": "المعدات المطلوبة",
+      "searchPlaceholder": "ابحث عن معدات لإضافتها..."
     },
     "table": {
       "name": "المعدات",
@@ -4775,6 +4790,93 @@
         "noFacilities": "لم يتم إضافة أي مرافق بعد",
         "noFacilitiesDesc": "أضف الغرف أو المناطق لإدارة جداول حصصك بشكل أفضل.",
         "addFirst": "أضف مرفقك الأول"
+      }
+    },
+    "createMember": {
+      "enableContactlessTitle": "تفعيل عضو بدون معلومات اتصال",
+      "enableContactlessDesc": "إنشاء عضو بدون بريد إلكتروني أو رقم هاتف. لن يتلقى إشعارات أو بيانات تسجيل الدخول."
+    },
+    "viewingRange": "الأسبوع المعروض",
+    "coachSettings": {
+      "pageTitle": "ملف المدرب",
+      "pageSubtitle": "إدارة حضورك المهني وتوفر مواعيد التدريب",
+      "tabs": {
+        "profile": "الملف الشخصي",
+        "coaching": "التدريب",
+        "preferences": "التفضيلات",
+        "security": "الأمان"
+      },
+      "profile": {
+        "avatar": "الصورة الشخصية",
+        "avatarDesc": "سيتم عرض هذا على ملفك الشخصي العام كمدرب",
+        "basicInfo": "المعلومات الشخصية",
+        "basicInfoDesc": "تحديث تفاصيل الاتصال الخاصة بك والاسم الكامل",
+        "fullName": "الاسم الكامل",
+        "fullNamePlaceholder": "محمد أحمد",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "ahmed@example.com",
+        "phone": "رقم الهاتف",
+        "phonePlaceholder": "+213 770 00 00 00"
+      },
+      "location": {
+        "title": "المعلومات المحلية",
+        "detect": "تحديد الموقع",
+        "description": "هذا يساعد العملاء في العثور عليك في منطقتهم",
+        "city": "المدينة",
+        "cityPlaceholder": "الجزائر",
+        "state": "الولاية/المقاطعة",
+        "statePlaceholder": "ولاية الجزائر",
+        "country": "البلد",
+        "countryPlaceholder": "الجزائر"
+      },
+      "coaching": {
+        "bio": "السيرة المهنية",
+        "bioDesc": "أخبر عملائك المحتملين عن نفسك",
+        "bioPlaceholder": "أنا مدرب شخصي معتمد...",
+        "experience": "خبرة التدريب",
+        "experienceDesc": "كم عدد السنوات التي قمت فيها بالتدريب مهنياً؟",
+        "experiencePlaceholder": "مثال، 5",
+        "specializations": "مجالات التخصص",
+        "specializationsDesc": "حدد المجالات التي تتخصص فيها لمساعدة العملاء في العثور عليك"
+      },
+      "specializationTypes": {
+        "StrengthTraining": "تدريب القوة",
+        "WeightLoss": "فقدان الوزن",
+        "MuscleBuilding": "بناء العضلات",
+        "CrossFit": "كروس فيت",
+        "Yoga": "يوغا",
+        "Pilates": "بيلاتيس",
+        "Nutrition": "تغذية",
+        "SportsPerformance": "الأداء الرياضي",
+        "Rehabilitation": "إعادة التأهيل",
+        "SeniorFitness": "لياقة كبار السن"
+      }
+    },
+    "adminSettings": {
+      "pageTitle": "إعدادات المدير",
+      "pageSubtitle": "إدارة حسابك الشخصي وتفضيلاتك",
+      "tabs": {
+        "profile": "الملف الشخصي",
+        "preferences": "التفضيلات",
+        "security": "الأمان",
+        "banners": "الإعلانات"
+      },
+      "profile": {
+        "avatar": "الصورة الشخصية",
+        "avatarDesc": "سيتم عرض هذا في جميع أنحاء لوحة تحكم المسؤول",
+        "basicInfo": "معلومات الحساب",
+        "basicInfoDesc": "تحديث تفاصيل الاتصال الخاصة بك والاسم الكامل",
+        "fullName": "الاسم الكامل",
+        "fullNamePlaceholder": "محمد أحمد",
+        "email": "البريد الإلكتروني",
+        "emailPlaceholder": "ahmed@example.com",
+        "phone": "رقم الهاتف",
+        "phonePlaceholder": "+213 770 00 00 00"
+      },
+      "banners": {
+        "deleteTitle": "حذف الإعلان",
+        "deleteDesc": "هل أنت متأكد أنك تريد حذف هذا الإعلان؟ لا يمكن التراجع عن هذا الإجراء.",
+        "empty": "لم يتم العثور على إعلانات نشطة."
       }
     }
   }

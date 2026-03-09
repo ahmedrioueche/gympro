@@ -21,6 +21,8 @@ interface PreferencesSettingsProps {
   onUpdate: (lang: AppLanguage) => void;
   weightUnit: "kg" | "lbs";
   setWeightUnit: (unit: "kg" | "lbs") => void;
+  title?: string;
+  description?: string;
 }
 
 export default function PreferencesSettings({
@@ -28,16 +30,23 @@ export default function PreferencesSettings({
   onUpdate,
   weightUnit,
   setWeightUnit,
+  title,
+  description,
 }: PreferencesSettingsProps) {
   const { t } = useTranslation();
 
   return (
     <SettingsTab
-      title={t("member.settings.preferences.title", "General Preferences")}
-      description={t(
-        "member.settings.preferences.subtitle",
-        "Configure your app experience and units",
-      )}
+      title={
+        title || t("member.settings.preferences.title", "General Preferences")
+      }
+      description={
+        description ||
+        t(
+          "member.settings.preferences.subtitle",
+          "Configure your app experience and units",
+        )
+      }
       icon={Globe}
     >
       <div className="space-y-8 max-w-2xl">

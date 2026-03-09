@@ -7,6 +7,7 @@ interface FooterButton {
   label?: string;
   onClick?: (e?: React.MouseEvent) => void;
   icon?: ElementType;
+  iconPosition?: "left" | "right";
   loading?: boolean;
   disabled?: boolean;
   type?: "button" | "submit";
@@ -236,10 +237,15 @@ const BaseModal: React.FC<BaseModalProps> = ({
                       <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                     ) : (
                       <>
-                        {secondaryConfig.icon && (
-                          <secondaryConfig.icon className="w-4 h-4 md:w-5 md:h-5 " />
-                        )}
+                        {secondaryConfig.icon &&
+                          secondaryConfig.iconPosition !== "right" && (
+                            <secondaryConfig.icon className="w-4 h-4 md:w-5 md:h-5" />
+                          )}
                         {secondaryConfig.label}
+                        {secondaryConfig.icon &&
+                          secondaryConfig.iconPosition === "right" && (
+                            <secondaryConfig.icon className="w-4 h-4 md:w-5 md:h-5" />
+                          )}
                       </>
                     )}
                   </button>
@@ -262,10 +268,15 @@ const BaseModal: React.FC<BaseModalProps> = ({
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        {TertiaryIcon && (
-                          <TertiaryIcon className="w-4 h-4 md:w-5 md:h-5" />
-                        )}
+                        {TertiaryIcon &&
+                          tertiaryConfig.iconPosition !== "right" && (
+                            <TertiaryIcon className="w-4 h-4 md:w-5 md:h-5" />
+                          )}
                         {tertiaryConfig.label}
+                        {TertiaryIcon &&
+                          tertiaryConfig.iconPosition === "right" && (
+                            <TertiaryIcon className="w-4 h-4 md:w-5 md:h-5" />
+                          )}
                       </>
                     )}
                   </button>
@@ -291,10 +302,15 @@ const BaseModal: React.FC<BaseModalProps> = ({
                       </>
                     ) : (
                       <>
-                        {PrimaryIcon && (
-                          <PrimaryIcon className="w-4 h-4 md:w-5 md:h-5" />
-                        )}
+                        {PrimaryIcon &&
+                          primaryConfig.iconPosition !== "right" && (
+                            <PrimaryIcon className="w-4 h-4 md:w-5 md:h-5" />
+                          )}
                         {primaryConfig.label}
+                        {PrimaryIcon &&
+                          primaryConfig.iconPosition === "right" && (
+                            <PrimaryIcon className="w-4 h-4 md:w-5 md:h-5" />
+                          )}
                       </>
                     )}
                   </button>

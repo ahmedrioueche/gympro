@@ -41,20 +41,17 @@ export default function ProfileSettings({
 
   return (
     <SettingsTab
-      title={t("member.settings.profile.title", "Profile Settings")}
-      description={t(
-        "member.settings.profile.subtitle",
-        "Manage your personal information and account details",
-      )}
+      title={t("extra.adminSettings.tabs.profile", "Profile")}
+      description={t("extra.adminSettings.pageSubtitle")}
       icon={UserIcon}
     >
       <div className="pt-2">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("member.settings.profile.avatar", "Profile Picture")}
+          {t("extra.adminSettings.profile.avatar", "Profile Picture")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "member.settings.profile.avatarDesc",
+            "extra.adminSettings.profile.avatarDesc",
             "This will be displayed across the admin dashboard",
           )}
         </p>
@@ -68,33 +65,33 @@ export default function ProfileSettings({
 
       <div className="pt-10 border-t border-border mt-10">
         <h4 className="text-sm font-semibold text-text-primary mb-1 uppercase tracking-wider opacity-70">
-          {t("member.settings.profile.basicInfo", "Account Information")}
+          {t("extra.adminSettings.profile.basicInfo", "Account Information")}
         </h4>
         <p className="text-sm text-text-secondary mb-6">
           {t(
-            "member.settings.profile.basicInfoDesc",
+            "extra.adminSettings.profile.basicInfoDesc",
             "Update your contact details and full name",
           )}
         </p>
 
         <div className="space-y-4">
           <InputField
-            label={t("member.settings.profile.fullName")}
+            label={t("extra.adminSettings.profile.fullName")}
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             leftIcon={<UserIcon className="w-5 h-5" />}
-            placeholder={t("member.settings.profile.fullNamePlaceholder")}
+            placeholder={t("extra.adminSettings.profile.fullNamePlaceholder")}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Email */}
             <InputField
-              label={t("settings.coach.profile.email")}
+              label={t("extra.adminSettings.profile.email")}
               type="email"
               value={addEmailMode ? email : user.profile.email || email}
               onChange={(e) => setEmail(e.target.value)}
               leftIcon={<Mail className="w-5 h-5" />}
-              placeholder={t("settings.coach.profile.emailPlaceholder")}
+              placeholder={t("extra.adminSettings.profile.emailPlaceholder")}
               disabled={!!user.profile.email && !addEmailMode}
             />
 
@@ -108,7 +105,7 @@ export default function ProfileSettings({
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
-                        {t("member.settings.profile.phone")}
+                        {t("extra.adminSettings.profile.phone")}
                       </p>
                       <p className="font-semibold text-text-primary">
                         {user.profile.phoneNumber}
@@ -126,12 +123,14 @@ export default function ProfileSettings({
                 </div>
               ) : (
                 <InputField
-                  label={t("member.settings.profile.phone")}
+                  label={t("extra.adminSettings.profile.phone")}
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   leftIcon={<Phone className="w-5 h-5" />}
-                  placeholder={t("member.settings.profile.phonePlaceholder")}
+                  placeholder={t(
+                    "extra.adminSettings.profile.phonePlaceholder",
+                  )}
                   disabled={!!user.profile.phoneNumber}
                 />
               )}

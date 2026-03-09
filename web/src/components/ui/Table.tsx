@@ -115,7 +115,7 @@ export function Table<T>({
                 key={col.key}
                 className={`px-6 py-4 ${
                   col.align === "right"
-                    ? "text-right"
+                    ? "text-end"
                     : col.align === "center"
                       ? "text-center"
                       : ""
@@ -179,10 +179,10 @@ export function Table<T>({
                     col.width || ""
                   } ${
                     col.align === "right"
-                      ? "text-right"
+                      ? "text-end"
                       : col.align === "center"
                         ? "text-center"
-                        : "text-left"
+                        : "text-start"
                   }`}
                 >
                   {col.header}

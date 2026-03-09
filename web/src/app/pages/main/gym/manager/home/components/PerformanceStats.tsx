@@ -32,28 +32,32 @@ export function PerformanceStats({
           value={analytics?.metrics.totalMembers || 0}
           icon={Users}
           loading={isLoading}
-          color="secondary"
+          color="from-blue-500 to-indigo-600"
+          shadowColor="shadow-blue-500/20"
         />
         <StatCard
           title={t("home.gym.stats.activeMembers")}
           value={analytics?.metrics.activeMembers || 0}
           icon={UserCheck}
-          color="success"
           loading={isLoading}
+          color="from-emerald-500 to-teal-600"
+          shadowColor="shadow-emerald-500/20"
         />
         <StatCard
           title={t("home.gym.stats.coachesCount")}
           value={analytics?.metrics.coachesCount || 0}
           icon={UserCheck}
-          color="warning"
           loading={isLoading}
+          color="from-orange-500 to-amber-600"
+          shadowColor="shadow-orange-500/20"
         />
         <StatCard
           title={t("home.gym.stats.checkedIn")}
           value={analytics?.metrics.checkedIn || 0}
           icon={Clock}
-          color="primary"
           loading={isLoading}
+          color="from-purple-500 to-pink-600"
+          shadowColor="shadow-purple-500/20"
         />
       </div>
     </div>

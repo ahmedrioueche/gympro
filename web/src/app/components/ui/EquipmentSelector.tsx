@@ -159,12 +159,13 @@ export function EquipmentSelector({
                           {item.name}
                         </p>
                         <p className="text-[10px] text-white/60 uppercase tracking-wider truncate">
-                          {item.category} • {item.quantity} available
+                          {item.category} • {item.quantity}{" "}
+                          {t("common.available")}
                         </p>
                       </div>
                       {isAlreadySelected ? (
                         <span className="text-[10px] font-bold text-white/20 uppercase">
-                          Added
+                          {t("common.added")}
                         </span>
                       ) : (
                         <Plus className="w-4 h-4 text-primary" />

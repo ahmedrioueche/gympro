@@ -32,14 +32,11 @@ export default function HomePage() {
         }
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column - Stats */}
-        <div className="lg:col-span-1 space-y-6">
+      <div className="space-y-8">
+        <div className="space-y-4">
           <MemberHomeStats stats={stats} />
         </div>
-
-        {/* Right Column - Quick Actions & Content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-4">
           <MemberQuickActions />
         </div>
       </div>

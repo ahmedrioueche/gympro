@@ -165,7 +165,7 @@ export function DropdownItem({
       {icon && (
         <span className={`text-lg ${description ? "mt-0.5" : ""}`}>{icon}</span>
       )}
-      <div className="flex-1 text-left">
+      <div className="flex-1 text-start">
         <div className="font-medium text-sm">{label}</div>
         {description && (
           <div className="text-xs text-text-secondary mt-0.5">
@@ -174,7 +174,7 @@ export function DropdownItem({
         )}
       </div>
       {rightContent && (
-        <div className="flex items-center ml-2">{rightContent}</div>
+        <div className="flex items-center ms-2">{rightContent}</div>
       )}
     </button>
   );

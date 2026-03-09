@@ -73,14 +73,14 @@ export default function GymHeroSection({
       ) : (
         <>
           <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-transparent animate-pulse duration-[10000ms]" />
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[100px] rounded-full -mr-32 -mt-32" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 blur-[100px] rounded-full -ml-32 -mb-32" />
+          <div className="absolute top-0 end-0 w-64 h-64 bg-white/10 blur-[100px] rounded-full -me-32 -mt-32" />
+          <div className="absolute bottom-0 start-0 w-64 h-64 bg-black/10 blur-[100px] rounded-full -ms-32 -mb-32" />
         </>
       )}
 
       <div className="relative h-full p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
         {/* Top: Gym Name & Status */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 text-center sm:text-left">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 text-center sm:text-start">
           <div className="flex-1 min-w-0">
             <div className="flex flex-col gap-2 mb-2">
               <div
@@ -142,7 +142,7 @@ export default function GymHeroSection({
         >
           {/* Hours Info */}
           {gym.settings?.workingHours ? (
-            <div className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 text-center md:text-left h-full flex flex-col justify-center">
+            <div className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 text-center md:text-start h-full flex flex-col justify-center">
               <div className="flex items-center gap-2 mb-2 justify-center md:justify-start">
                 <div
                   className={cn(
@@ -176,7 +176,7 @@ export default function GymHeroSection({
                         {format(new Date(status.activeClosure.end), "MMM d, p")}
                       </div>
                     </div>
-                    <div className="text-center md:text-left pt-2 border-t border-border/30">
+                    <div className="text-center md:text-start pt-2 border-t border-border/30">
                       <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-0.5">
                         {t("home.gym.regularHours", "Regular Hours")}
                       </div>
@@ -262,7 +262,7 @@ export default function GymHeroSection({
               rel="noopener noreferrer"
               className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 hover:bg-surface hover:scale-[1.02] transition-all duration-200 group flex flex-col items-center md:items-start"
             >
-              <div className="flex items-center justify-between w-full gap-3 text-center md:text-left">
+              <div className="flex items-center justify-between w-full gap-3 text-center md:text-start">
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-bold text-text-secondary mb-1">
                     {t("common.location", "Location")}
@@ -278,7 +278,7 @@ export default function GymHeroSection({
 
           {/* Gym Rules */}
           {hasRules && (
-            <div className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 text-center md:text-left">
+            <div className="bg-surface/80 backdrop-blur-sm rounded-2xl p-4 border border-border/50 text-center md:text-start">
               <div className="flex items-center justify-center md:justify-between mb-2 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-primary" />
@@ -302,7 +302,7 @@ export default function GymHeroSection({
                     <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-md bg-primary/20 text-primary text-xs font-bold">
                       {index + 1}
                     </span>
-                    <span className="line-clamp-1 text-left">{rule}</span>
+                    <span className="line-clamp-1 text-start">{rule}</span>
                   </li>
                 ))}
               </ul>

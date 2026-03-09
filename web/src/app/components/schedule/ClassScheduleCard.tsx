@@ -1,7 +1,8 @@
 import type { GymClass } from "@ahmedrioueche/gympro-client";
-import { format, parseISO } from "date-fns";
+import { parseISO } from "date-fns";
 import { Clock, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useDateFormat } from "../../../hooks/useDateFormat";
 
 interface ClassScheduleCardProps {
   gymClass: GymClass;
@@ -13,6 +14,7 @@ export const ClassScheduleCard = ({
   onClick,
 }: ClassScheduleCardProps) => {
   const { t } = useTranslation();
+  const { format } = useDateFormat();
   const time =
     typeof gymClass.scheduledAt === "string"
       ? parseISO(gymClass.scheduledAt)

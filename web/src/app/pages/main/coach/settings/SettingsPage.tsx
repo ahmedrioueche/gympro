@@ -72,22 +72,22 @@ export default function SettingsPage() {
   const tabs = [
     {
       id: "profile",
-      label: t("coach.settings.tabs.profile"),
+      label: t("extra.coachSettings.tabs.profile", "Profile"),
       icon: User,
     },
     {
       id: "coaching",
-      label: t("coach.settings.tabs.coaching"),
+      label: t("extra.coachSettings.tabs.coaching", "Coaching"),
       icon: Award,
     },
     {
       id: "preferences",
-      label: t("coach.settings.tabs.preferences"),
+      label: t("extra.coachSettings.tabs.preferences", "Preferences"),
       icon: SettingsIcon,
     },
     {
       id: "security",
-      label: t("coach.settings.tabs.security"),
+      label: t("extra.coachSettings.tabs.security", "Security"),
       icon: Lock,
     },
   ];
@@ -102,9 +102,9 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8 max-w-[1400px] mx-auto pb-20">
       <PageHeader
-        title={t("coach.settings.pageTitle", "Coach Profile")}
+        title={t("extra.coachSettings.pageTitle", "Coach Profile")}
         subtitle={t(
-          "coach.settings.pageSubtitle",
+          "extra.coachSettings.pageSubtitle",
           "Manage your professional presence and coaching availability",
         )}
         icon={SettingsIcon}
@@ -167,6 +167,8 @@ export default function SettingsPage() {
             onUpdate={setLanguage}
             weightUnit={weightUnit}
             setWeightUnit={setWeightUnit}
+            title={t("extra.coachSettings.tabs.preferences", "Preferences")}
+            description={t("extra.coachSettings.pageSubtitle")}
           />
         )}
         {activeTab === "security" && (
@@ -177,6 +179,8 @@ export default function SettingsPage() {
             onNewPasswordChange={setNewPassword}
             confirmPassword={confirmPassword}
             onConfirmPasswordChange={setConfirmPassword}
+            title={t("extra.coachSettings.tabs.security", "Security")}
+            description={t("extra.coachSettings.pageSubtitle")}
           />
         )}
       </SettingsContainer>
