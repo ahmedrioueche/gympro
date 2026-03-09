@@ -151,7 +151,7 @@ export default function AddMediaModal() {
           ? t("marketing.form.addMaterial")
           : t("marketing.form.addMedia")
       }
-      maxWidth="max-w-lg"
+      maxWidth="max-w-2xl"
       primaryButton={{
         label: t("common.save"),
         type: "submit",

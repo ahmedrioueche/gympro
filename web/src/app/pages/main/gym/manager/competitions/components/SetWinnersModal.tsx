@@ -119,7 +119,7 @@ export default function SetWinnersModal() {
       title={t("competitions.winners.setWinners")}
       subtitle={competition.title}
       icon={Trophy}
-      maxWidth="max-w-lg"
+      maxWidth="max-w-2xl"
       primaryButton={{
         label: isSubmitting ? t("common.saving") : t("common.save"),
         onClick: handleSubmit,

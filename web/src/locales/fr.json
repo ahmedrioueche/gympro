@@ -290,6 +290,9 @@
       "success_message": "Configuration du compte réussie ! Redirection vers la connexion...",
       "complete_button": "Terminer la configuration",
       "already_have_account": "Vous avez déjà un compte ?"
+    },
+    "fields": {
+      "username": "Nom d'utilisateur"
     }
   },
   "status": {
@@ -936,6 +939,16 @@
       "deleteTitle": "Supprimer la bannière",
       "deleteDesc": "Êtes-vous sûr de vouloir supprimer cette bannière ? Cette action est irréversible.",
       "previewDesc": "Voici comment la bannière apparaîtra en haut de l'application."
+    },
+    "admin": {
+      "profile": {
+        "personalInfo": "Informations personnelles",
+        "fullName": "Nom complet",
+        "fullNamePlaceholder": "Entrez le nom complet",
+        "email": "Email",
+        "newPassword": "Nouveau mot de passe",
+        "passwordPlaceholder": "Entrez un nouveau mot de passe"
+      }
     }
   },
   "memberProfile": {
@@ -4573,7 +4586,6 @@
       "rehabilitation": "Rééducation",
       "seniorFitness": "Fitness pour seniors"
     },
-
     "settings": {
       "tabs": {
         "general": "Général",

@@ -30,7 +30,7 @@ export default function CoachPricingModal() {
       }
       subtitle={t("coachPricing.subtitle")}
       icon={DollarSign}
-      maxWidth="max-w-lg"
+      maxWidth="max-w-2xl"
       primaryButton={{
         label: isEditMode ? t("common.save") : t("common.create"),
         onClick: handleSubmit,

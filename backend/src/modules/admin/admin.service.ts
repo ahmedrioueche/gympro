@@ -17,6 +17,7 @@ import { AppPaymentModel } from '../app-billing/payment/appPayment.schema';
 import { GymModel } from '../gym/gym.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { CreateEditorDto } from './dto/create-editor.dto';
+import { UpdateEditorDto } from './dto/update-editor.dto';
 
 @Injectable()
 export class AdminService {
@@ -58,6 +59,53 @@ export class AdminService {
 
     await newUser.save();
     return { success: true, message: 'Editor created successfully' };
+  }
+
+  async updateEditor(
+    id: string,
+    dto: UpdateEditorDto,
+    requestingUserId?: string,
+  ) {
+    const editor = await this.userModel.findOne({
+      _id: id,
+      role: UserRole.AppEditor,
+    });
+
+    if (!editor) {
+      throw new NotFoundException('Editor not found');
+    }
+
+    if (dto.email && dto.email !== editor.profile.email) {
+      const existingUser = await this.userModel.findOne({
+        'profile.email': dto.email,
+        _id: { $ne: id },
+      });
+      if (existingUser) {
+        throw new ConflictException('User with this email already exists');
+      }
+      editor.profile.email = dto.email;
+    }
+
+    if (dto.username) editor.profile.username = dto.username;
+    if (dto.fullName) editor.profile.fullName = dto.fullName;
+
+    if (dto.password) {
+      editor.profile.password = await bcrypt.hash(dto.password, 10);
+    }
+
+    if (dto.appPermissions) {
+      if (requestingUserId && id === requestingUserId) {
+        throw new BadRequestException('You cannot modify your own permissions');
+      }
+      editor.appPermissions = dto.appPermissions;
+    }
+
+    await editor.save();
+    return {
+      success: true,
+      message: 'Editor updated successfully',
+      data: editor,
+    };
   }
 
   async getEditors(requestingUserId?: string) {

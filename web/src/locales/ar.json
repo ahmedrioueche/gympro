@@ -291,6 +291,9 @@
       "success_message": "تم إعداد الحساب بنجاح! جارٍ إعادة التوجيه إلى صفحة تسجيل الدخول...",
       "complete_button": "إكمال الإعداد",
       "already_have_account": "هل لديك حساب بالفعل؟"
+    },
+    "fields": {
+      "username": "اسم المستخدم"
     }
   },
   "status": {
@@ -937,6 +940,16 @@
       "deleteTitle": "حذف اللافتة",
       "deleteDesc": "هل أنت متأكد أنك تريد حذف هذه اللافتة؟ لا يمكن التراجع عن هذا الإجراء.",
       "previewDesc": "هكذا ستظهر اللافتة في الجزء العلوي من التطبيق."
+    },
+    "admin": {
+      "profile": {
+        "personalInfo": "المعلومات الشخصية",
+        "fullName": "الاسم الكامل",
+        "fullNamePlaceholder": "أدخل الاسم الكامل",
+        "email": "البريد الإلكتروني",
+        "newPassword": "كلمة مرور جديدة",
+        "passwordPlaceholder": "أدخل كلمة مرور جديدة"
+      }
     }
   },
   "memberProfile": {

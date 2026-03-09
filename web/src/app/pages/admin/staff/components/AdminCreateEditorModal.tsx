@@ -87,7 +87,7 @@ export const AdminCreateEditorModal = () => {
         form: "create-editor-form",
         icon: UserPlus,
       }}
-      maxWidth="max-w-xl"
+      maxWidth="max-w-2xl"
     >
       <form
         id="create-editor-form"

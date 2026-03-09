@@ -1,6 +1,6 @@
 import { type AppEditorUser } from "@ahmedrioueche/gympro-client";
 import { format } from "date-fns";
-import { Key, Shield, Trash2 } from "lucide-react";
+import { Edit, Key, Shield, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import NoData from "../../../../../components/ui/NoData";
 import Table, { type TableColumn } from "../../../../../components/ui/Table";
@@ -111,7 +111,7 @@ export const StaffTable = ({ staff }: StaffTableProps) => {
             className="p-2 rounded-lg text-primary hover:bg-primary/10 transition-all"
             title={t("admin.staff.manage_permissions", "Manage Permissions")}
           >
-            <Key className="w-5 h-5" />
+            <Edit className="w-5 h-5" />
           </button>
           <button
             onClick={() => handleRemove(editor)}

@@ -15,6 +15,7 @@ import { AdminService } from './admin.service';
 import { AdminStatsService } from './admin.stats.service';
 import { AppPermission } from './decorators/app-permission.decorator';
 import { CreateEditorDto } from './dto/create-editor.dto';
+import { UpdateEditorDto } from './dto/update-editor.dto';
 import { AdminDashboardGuard } from './guards/admin-dashboard.guard';
 import { AppPermissionGuard } from './guards/app-permission.guard';
 
@@ -44,6 +45,17 @@ export class AdminController {
     const userId = req.user?.sub;
     const editors = await this.adminService.getEditors(userId);
     return { success: true, data: editors };
+  }
+
+  @Put('editors/:id')
+  @AppPermission(APP_PERMISSIONS.MANAGE_EDITORS)
+  updateEditor(
+    @Param('id') id: string,
+    @Body() dto: UpdateEditorDto,
+    @Req() req: any,
+  ) {
+    const userId = req.user?.sub;
+    return this.adminService.updateEditor(id, dto, userId);
   }
 
   @Put('editors/:id/permissions')

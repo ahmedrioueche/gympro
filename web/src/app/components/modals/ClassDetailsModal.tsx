@@ -102,7 +102,7 @@ export default function ClassDetailsModal() {
       title={gymClass.name}
       subtitle={capitalize(gymClass.service || "")}
       icon={Info}
-      maxWidth="max-w-xl"
+      maxWidth="max-w-2xl"
       primaryButton={
         isCancelled && onRestoreClass
           ? {
