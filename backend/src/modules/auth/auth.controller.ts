@@ -30,7 +30,11 @@ import { Throttle } from '@nestjs/throttler';
 import * as crypto from 'crypto';
 import type { Response } from 'express';
 import { ClientPlatform } from 'src/common/decorators/platform.decorator';
-import { buildRedirectUrl, Platform } from 'src/common/utils/platform.util';
+import {
+  buildRedirectUrl,
+  getFrontendUrls,
+  Platform,
+} from 'src/common/utils/platform.util';
 import {
   ChangePasswordDto,
   RefreshDto,
@@ -213,15 +217,33 @@ export class AuthController {
 
   @Get('google')
   async googleAuthRedirect(
+    @Req() req: any,
     @ClientPlatform() platform: Platform, // Detect platform when user initiates OAuth
   ): Promise<ApiResponse<GoogleAuthUrlData>> {
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const redirectUri = process.env.GOOGLE_REDIRECT_URI;
     const scope = 'email profile';
 
+    // Capture origin to gracefully redirect back to correct client environment
+    const rawOrigin = req.headers.origin || req.headers.referer;
+    let validOrigin: string | undefined = undefined;
+
+    if (rawOrigin) {
+      try {
+        const originUrl = new URL(rawOrigin).origin;
+        const allowedOrigins = getFrontendUrls(platform);
+        if (allowedOrigins.includes(originUrl)) {
+          validOrigin = originUrl;
+        }
+      } catch (e) {
+        // invalid URL, ignore
+      }
+    }
+
     // Store platform in state so we can retrieve it in callback
     const state = JSON.stringify({
       platform: platform,
+      origin: validOrigin,
       timestamp: Date.now(),
     });
 
@@ -245,11 +267,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      // Extract platform from state (defaults to web if parsing fails)
+      // Extract platform and origin from state (defaults to web if parsing fails)
       let platform = Platform.WEB;
+      let targetOrigin: string | undefined = undefined;
       try {
         const stateObj = JSON.parse(decodeURIComponent(state || '{}'));
         platform = stateObj.platform || Platform.WEB;
+        targetOrigin = stateObj.origin;
       } catch {
         platform = Platform.WEB;
       }
@@ -258,27 +282,39 @@ export class AuthController {
       this.setAuthCookies(res, result.accessToken, result.refreshToken, true);
 
       // Redirect to generic callback page
-      const callbackUrl = buildRedirectUrl(platform, '/auth/callback', {
-        success: 'true',
-        accessToken: result.accessToken,
-        refreshToken: result.refreshToken,
-      });
+      const callbackUrl = buildRedirectUrl(
+        platform,
+        '/auth/callback',
+        {
+          success: 'true',
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+        },
+        targetOrigin,
+      );
 
       res.redirect(callbackUrl);
     } catch (error) {
-      // Try to extract platform for error redirect too
+      // Try to extract platform and origin for error redirect too
       let platform = Platform.WEB;
+      let targetOrigin: string | undefined = undefined;
       try {
         const stateObj = JSON.parse(decodeURIComponent(state || '{}'));
         platform = stateObj.platform || Platform.WEB;
+        targetOrigin = stateObj.origin;
       } catch {
         platform = Platform.WEB;
       }
 
-      const errorUrl = buildRedirectUrl(platform, '/auth/callback', {
-        success: 'false',
-        error: 'google_auth_failed',
-      });
+      const errorUrl = buildRedirectUrl(
+        platform,
+        '/auth/callback',
+        {
+          success: 'false',
+          error: 'google_auth_failed',
+        },
+        targetOrigin,
+      );
 
       res.redirect(errorUrl);
     }

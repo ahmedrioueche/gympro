@@ -97,8 +97,9 @@ export const buildRedirectUrl = (
   platform: Platform,
   path: string,
   params?: Record<string, string>,
+  fallbackOriginUrl?: string,
 ): string => {
-  const baseUrl = getPrimaryFrontendUrl(platform);
+  const baseUrl = fallbackOriginUrl || getPrimaryFrontendUrl(platform);
 
   // For mobile deep links, use custom scheme
   if (platform === Platform.MOBILE && baseUrl.startsWith('gympro://')) {
