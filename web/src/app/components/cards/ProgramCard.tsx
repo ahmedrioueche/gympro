@@ -9,6 +9,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useUserStore } from "../../../store/user";
 
 interface ProgramCardProps {
   program: TrainingProgram;
@@ -30,8 +31,19 @@ export const ProgramCard = ({
   onSelect,
 }: ProgramCardProps) => {
   const { t } = useTranslation();
+  const user = useUserStore((state) => state.user);
 
   const getSourceConfig = () => {
+    // Explicit authorship check overrides all defaults
+    if (program.createdBy === user?._id) {
+      return {
+        icon: User,
+        label: t("training.programs.card.source.member"), // Displays "Me"
+        colors: "bg-purple-500/10 text-purple-500 border-purple-500/20",
+        gradient: "from-purple-500 to-cyan-500",
+      };
+    }
+
     switch (program.creationType) {
       case "coach":
         return {
@@ -48,11 +60,12 @@ export const ProgramCard = ({
           gradient: "from-purple-500 to-pink-500",
         };
       default:
+        // Any other member program NOT created by current user
         return {
           icon: User,
-          label: t("training.programs.card.source.member"),
+          label: t("common.member"),
           colors: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-          gradient: "from-purple-500 to-cyan-500",
+          gradient: "from-gray-500 to-slate-500",
         };
     }
   };

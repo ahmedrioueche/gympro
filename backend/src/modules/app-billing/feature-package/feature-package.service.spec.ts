@@ -79,7 +79,7 @@ describe('AppFeaturePackageService', () => {
         exec: jest.fn().mockResolvedValue(updated),
       });
       const result = await service.update('fp1', { name: 'Updated' } as any);
-      expect(result.name).toBe('Updated');
+      expect(result?.name).toBe('Updated');
     });
   });
 

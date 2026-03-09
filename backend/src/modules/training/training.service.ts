@@ -39,6 +39,7 @@ export class TrainingService {
     filters: {
       source?: string;
       createdBy?: string;
+      excludeCreatedBy?: string;
       search?: string;
     } = {},
   ): Promise<TrainingProgram[]> {
@@ -49,6 +50,9 @@ export class TrainingService {
     }
     if (filters.createdBy) {
       query.createdBy = filters.createdBy;
+    }
+    if (filters.excludeCreatedBy) {
+      query.createdBy = { $ne: filters.excludeCreatedBy };
     }
     if (filters.search) {
       // Use text search with the text index for better performance

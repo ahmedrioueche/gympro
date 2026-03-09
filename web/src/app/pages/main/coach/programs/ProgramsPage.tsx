@@ -21,7 +21,7 @@ export default function ProgramsPage() {
   const { data: activeProgram } = useActiveProgram();
 
   // Determine which source to filter by based on active tab
-  const source = activeTab === 0 ? "coach" : undefined;
+  const source = activeTab === 0 ? "me" : "other";
 
   const { data: programs, isLoading } = usePrograms({
     source,

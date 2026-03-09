@@ -41,10 +41,15 @@ export class TrainingController {
     @Query('source') source?: string,
     @Query('search') search?: string,
   ) {
-    // If source is 'member', implicitly filter by current user's CreatedBy
-    const filters: any = { source, search };
-    if (source === 'member') {
+    const filters: any = { search };
+
+    // Abstract filters for contextual dashboard scoping
+    if (source === 'member' || source === 'me') {
       filters.createdBy = req.user.sub;
+    } else if (source === 'other') {
+      filters.excludeCreatedBy = req.user.sub;
+    } else if (source) {
+      filters.source = source;
     }
 
     const programs = await this.trainingService.findAllPrograms(filters);
