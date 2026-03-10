@@ -109,6 +109,18 @@ export class UserProfile {
   @Prop({ default: false })
   isOnBoarded?: boolean;
 
+  @Prop({ default: false })
+  hasSeenWelcomeTour?: boolean;
+
+  @Prop({ default: false })
+  hasSeenMemberTour?: boolean;
+
+  @Prop({ default: false })
+  hasSeenCoachTour?: boolean;
+
+  @Prop({ default: false })
+  hasSeenManagerTour?: boolean;
+
   // Auth-specific fields
   @Prop()
   password?: string;

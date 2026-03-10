@@ -29,6 +29,7 @@
     "available": "Disponible",
     "added": "Ajouté",
     "go": "Aller",
+    "in": "Dans",
     "markAsDone": "Marquer comme terminé",
     "done": "Terminé",
     "restore": "Restaurer",
@@ -4889,6 +4890,347 @@
         "deleteTitle": "Supprimer la bannière",
         "deleteDesc": "Êtes-vous sûr de vouloir supprimer cette bannière ? Cette action est irréversible.",
         "empty": "Aucune bannière active trouvée."
+      }
+    }
+  },
+  "welcomeTour": {
+    "title": "Tour de Bienvenue",
+    "member": {
+      "welcome": {
+        "title": "Bienvenue, Membre !",
+        "subtitle": "Votre aventure fitness commence ici",
+        "desc": "Nous sommes ravis de vous accueillir ! Faisons un tour rapide de vos fonctionnalités de gestion de fitness."
+      },
+      "step1": {
+        "title": "Programmes d'entraînement",
+        "subtitle": "Structuré pour le succès",
+        "desc": "Découvrez et inscrivez-vous à des programmes conçus par des professionnels. Que vous souhaitiez prendre du muscle ou perdre du poids, nous avons un plan pour vous."
+      },
+      "step2": {
+        "title": "Hub d'entraînement",
+        "subtitle": "Votre séance quotidienne",
+        "desc": "Accoutez à vos routines, notez vos séries, répétitions et poids. Restez concentré avec notre minuteur de repos intégré."
+      },
+      "step3": {
+        "title": "Suivi de progression",
+        "subtitle": "Visualisez votre croissance",
+        "desc": "Surveillez votre transformation avec des graphiques détaillés. Suivez vos mensurations, votre poids et vos performances au fil du temps."
+      },
+      "step4": {
+        "title": "Coaching expert",
+        "subtitle": "Accompagnement personnalisé",
+        "desc": "Connectez-vous avec des coachs certifiés pour des plans personnalisés et des retours directs. Élevez votre niveau avec un soutien professionnel."
+      },
+      "step5": {
+        "title": "Planning de la salle",
+        "subtitle": "Ne manquez rien",
+        "desc": "Réservez vos cours préférés et consultez les horaires de la salle. Restez organisé avec un calendrier personnalisé."
+      },
+      "step6": {
+        "title": "Devenir coach",
+        "subtitle": "Partagez votre passion",
+        "desc": "Expert en fitness ? Postulez pour devenir coach sur GymPro. Gérez vos clients, créez vos programmes et développez votre marque."
+      },
+      "step7": {
+        "title": "Paramètres du profil",
+        "subtitle": "Personnalisez votre compte",
+        "desc": "Gérez vos informations personnelles, vos préférences de notification et la sécurité de votre compte en un seul endroit."
+      }
+    },
+    "manager": {
+      "welcome": {
+        "title": "Bienvenue, Gérant !",
+        "subtitle": "La gestion de votre salle commence ici",
+        "desc": "Gérez les finances, le personnel et les cours de votre salle avec les outils puissants de GymPro."
+      },
+      "step1": {
+        "title": "Aperçu des revenus",
+        "subtitle": "Suivez votre croissance",
+        "desc": "Gardez un œil sur la santé financière de votre salle avec un suivi des revenus et dépenses en temps réel."
+      },
+      "step2": {
+        "title": "Personnel & Membres",
+        "subtitle": "Gérez votre communauté",
+        "desc": "Gérez facilement les profils des membres, les accès du personnel et les invitations depuis un seul endroit."
+      },
+      "step3": {
+        "title": "Coaching d'élite",
+        "subtitle": "Gestion du personnel de coaching",
+        "desc": "Suivez les performances des coachs, les assignations de clients et les certifications spécialisées."
+      },
+      "step4": {
+        "title": "Planning intelligent",
+        "subtitle": "Gestion des cours et installations",
+        "desc": "Optimisez la disponibilité de votre salle avec un planning de cours avancé et la réservation d'installations."
+      },
+      "step5": {
+        "title": "Paramètres de la salle",
+        "subtitle": "Configurez votre espace",
+        "desc": "Adaptez le profil de votre salle, les heures d'ouverture et les installations à vos besoins."
+      }
+    },
+    "coach": {
+      "welcome": {
+        "title": "Bienvenue, Coach !",
+        "subtitle": "Votre tableau de bord commence ici",
+        "desc": "Donnez du pouvoir à vos clients et simplifiez vos plans d'entraînement avec GymPro."
+      },
+      "step1": {
+        "title": "Réseau de salles",
+        "subtitle": "Lieux affiliés",
+        "desc": "Accédez et gérez votre présence dans les différentes salles auxquelles vous êtes affilié."
+      },
+      "step2": {
+        "title": "Gestion des clients",
+        "subtitle": "Votre liste",
+        "desc": "Suivez vos clients assignés, leurs renouvellements à venir et leurs records de présence quotidienne."
+      },
+      "step3": {
+        "title": "Cours collectifs",
+        "subtitle": "Planning d'enseignement",
+        "desc": "Gérez vos séances de groupe, les limites de participants et les réservations d'installations."
+      },
+      "step4": {
+        "title": "Séances privées",
+        "subtitle": "Planning personnel",
+        "desc": "Restez au courant de vos séances individuelles et de vos rendez-vous 1-à-1."
+      },
+      "step5": {
+        "title": "Centre de revenus",
+        "subtitle": "Gains et performance",
+        "desc": "Surveillez vos revenus de coaching, le volume de séances et la croissance de votre activité."
+      },
+      "step6": {
+        "title": "Profil coach",
+        "subtitle": "Paramètres et préférences",
+        "desc": "Personnalisez votre profil public, vos certifications et vos notifications."
+      }
+    },
+    "dummies": {
+      "programs": {
+        "tag": "Avancé",
+        "name": "Power Builder",
+        "level": "Pro",
+        "days": "Jours d'entraînement",
+        "sessions": "Sessions totales",
+        "exercises": "Exercices uniques",
+        "fullBody": "Corps complet",
+        "yogaFlow": "Zen Yoga Flow",
+        "beginner": "Débutant"
+      },
+      "training": {
+        "dashboard": "Entraînement actuel",
+        "live": "Métriques en direct",
+        "exercise": "Exercice actuel",
+        "volume": "Volume total",
+        "rest": "Temps de repos",
+        "legPress": "Presse à jambes"
+      },
+      "progress": {
+        "weight": "Suivi du poids",
+        "muscle": "Masse musculaire",
+        "weekly": "Résumé hebdo",
+        "gain": "+2.4kg ce mois",
+        "last7Days": "7 derniers jours",
+        "metrics": "Métriques corporelles"
+      },
+      "coaching": {
+        "pageTitle": "Trouver un coach",
+        "recommended": "Recommandé pour vous",
+        "explore": "Tout explorer",
+        "name": "Coach Marcus",
+        "title": "Coach Performance Élite",
+        "rating": "4.9",
+        "experience": "8 ans",
+        "specialization": "Powerlifting",
+        "weightLoss": "Perte de poids",
+        "viewProfile": "Voir profil"
+      },
+      "schedule": {
+        "pageTitle": "Votre planning",
+        "agenda": "Agenda du jour",
+        "date": "Lundi 24 oct.",
+        "weightlifting": "Haltérophilie de base",
+        "mark": "Mark S.",
+        "yoga": "Yoga Flow",
+        "sarah": "Sarah J.",
+        "class": "Crossfit Blast",
+        "time": "18:00",
+        "instructor": "Sarah J.",
+        "booked": "Réservé",
+        "bookNow": "Réserver",
+        "fullCalendar": "Calendrier complet",
+        "calendarDesc": "Consultez votre mois complet d'entraînement.",
+        "openPlanner": "Ouvrir planificateur",
+        "amPm": "AM/PM"
+      },
+      "settings": {
+        "pageTitle": "Paramètres du compte",
+        "name": "Alex Thompson",
+        "since": "Membre depuis 2024",
+        "general": "Général",
+        "security": "Sécurité",
+        "notifications": "Notifications",
+        "subscription": "Abonnement",
+        "fullName": "Nom complet",
+        "email": "Adresse e-mail",
+        "emailValue": "alex.t@example.com",
+        "save": "Paramètres"
+      },
+      "becomeCoach": {
+        "pageTitle": "Plateforme coaching",
+        "title": "PRÊT À INSPIRER ?",
+        "subtitle": "Rejoignez notre équipe",
+        "desc": "Partagez votre expertise, gérez vos clients et développez votre marque avec GymPro.",
+        "action": "Postuler",
+        "manageClients": "Gérer clients",
+        "unlimited": "Illimité",
+        "setGoals": "Objectifs",
+        "precise": "Précis",
+        "growth": "Croissance",
+        "fast": "Rapide",
+        "tech": "Tech",
+        "modern": "Moderne"
+      },
+      "managerRevenue": {
+        "pageTitle": "Revenus & Croissance",
+        "title": "Revenu mensuel",
+        "totalEarnings": "Gains totaux",
+        "growth": "+12.4%",
+        "expenses": "Dépenses op.",
+        "profit": "Bénéfice net",
+        "last30Days": "30 derniers jours"
+      },
+      "managerUsers": {
+        "pageTitle": "Gestion utilisateurs",
+        "title": "Membres & Personnel",
+        "members": "Membres actifs",
+        "staff": "Personnel",
+        "pending": "Invitations",
+        "search": "Rechercher...",
+        "invite": "Inviter",
+        "user": "Utilisateur",
+        "role": "Rôle",
+        "status": "Statut"
+      },
+      "managerCoaches": {
+        "pageTitle": "Aperçu coaching",
+        "title": "Coachs d'élite",
+        "performance": "Note moy.",
+        "assignments": "Clients actifs",
+        "experience": "Mieux notés",
+        "avg": "moy",
+        "active": "Actif",
+        "elite": "Élite",
+        "filter": "Filtrer personnel",
+        "clients": "Clients",
+        "exp": "Exp"
+      },
+      "managerClasses": {
+        "pageTitle": "Planning cours",
+        "title": "Cours du jour",
+        "attendance": "Taux de présence",
+        "popular": "Cours du moment",
+        "upcoming": "À venir",
+        "average": "Moyenne",
+        "left": "Cours restants",
+        "capacity": "Capacité",
+        "manage": "Gérer calendrier"
+      },
+      "welcome": {
+        "pageTitle": "Écran d'accueil",
+        "title": "Inspirez. Entraînez. Réussissez.",
+        "desc": "GymPro est votre partenaire fitness ultime. Prêt à transformer votre vie ?",
+        "scroll": "Explorez",
+        "trustedBy": "Rejoint par des milliers de passionnés",
+        "features": {
+          "global": "Accès global",
+          "premium": "Soin premium",
+          "security": "Sécurité max"
+        }
+      },
+      "managerSettings": {
+        "pageTitle": "Paramètres salle",
+        "title": "Configuration salle",
+        "hours": "Horaires",
+        "facilities": "Installations",
+        "profile": "Profil salle",
+        "gymName": "Elite Fitness Center",
+        "save": "Enregistrer"
+      },
+      "coachClients": {
+        "pageTitle": "Mes clients",
+        "title": "Assignations actives",
+        "activeClients": "Clients actifs",
+        "totalSessions": "Sessions totales",
+        "progressAlerts": "Alertes progrès",
+        "search": "Chercher client...",
+        "filter": "Filtrer objectif"
+      },
+      "coachPrograms": {
+        "pageTitle": "Créateur de programme",
+        "title": "Mes plans d'entraînement",
+        "created": "Plans créés",
+        "assigned": "Total assignations",
+        "active": "Usage actif",
+        "newPlan": "Créer plan"
+      },
+      "coachSchedule": {
+        "pageTitle": "Planning cours",
+        "title": "Cours à venir",
+        "todaySessions": "Séances aujourd'hui",
+        "totalClients": "Total clients",
+        "nextClass": "Prochain cours",
+        "attendance": "Présence",
+        "fullCalendar": "Calendrier complet",
+        "type": "Type",
+        "classes": "Cours",
+        "active": "Actif",
+        "min": "min"
+      },
+      "coachGyms": {
+        "pageTitle": "Mon réseau",
+        "title": "Lieux affiliés",
+        "desc": "Gérez vos accès et plannings dans plusieurs salles.",
+        "active": "Partenariats actifs",
+        "pending": "Invitations",
+        "totalStaff": "Collègues",
+        "gym1": {
+          "name": "Downtown Power Gym",
+          "access": "Accès total"
+        },
+        "gym2": {
+          "name": "Urban Fitness Studio",
+          "access": "Cours uniq."
+        }
+      },
+      "coachSettings": {
+        "pageTitle": "Profil coach",
+        "title": "Configuration profil",
+        "bio": "Expertise & Bio",
+        "save": "Enregistrer"
+      },
+      "locations": {
+        "programs": "Membre > Programmes",
+        "training": "Membre > Entraînement",
+        "progress": "Membre > Progrès",
+        "coaching": "Membre > Coaching",
+        "schedule": "Membre > Planning",
+        "becomeCoach": "Profil > Devenir coach",
+        "settings": "Membre > Paramètres",
+        "managerRevenue": "Manager > Analyses",
+        "managerUsers": "Manager > Utilisateurs",
+        "managerCoaches": "Manager > Coaching",
+        "managerClasses": "Manager > Planning",
+        "managerSettings": "Manager > Paramètres",
+        "coachClients": "Coach > Clients",
+        "coachPrograms": "Coach > Programmes",
+        "coachSchedule": "Coach > Planning",
+        "coachGyms": "Coach > Affiliations",
+        "coachClasses": "Coach > Cours collectifs",
+        "coachRevenue": "Coach > Revenus",
+        "coachSettings": "Coach > Profil",
+        "welcome": "GymPro > Bienvenue"
       }
     }
   }

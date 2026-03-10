@@ -321,3 +321,7 @@ export interface CoachingOfferModalProps {
   message?: string;
   onSuccess?: () => void;
 }
+
+export interface WelcomeTourModalProps {
+  role?: string;
+}

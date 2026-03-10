@@ -98,6 +98,7 @@ type ModalType =
   | "feature_package"
   | "banner_form"
   | "subscription_warning"
+  | "welcome_tour"
   | null;
 
 interface ModalState {
@@ -148,6 +149,7 @@ interface ModalState {
   coachingOfferProps?: import("../types/modals").CoachingOfferModalProps;
   featurePackageProps?: import("../types/modals").FeaturePackageModalProps;
   bannerFormProps?: import("../types/modals").BannerFormModalProps;
+  welcomeTourProps?: import("../types/modals").WelcomeTourModalProps;
   subscriptionWarningProps?: {
     config?: import("@ahmedrioueche/gympro-client").BlockerModalConfig;
   };
@@ -443,6 +445,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "banner_form",
           bannerFormProps: props,
+        };
+      }
+      if (modal === "welcome_tour") {
+        return {
+          currentModal: "welcome_tour",
+          welcomeTourProps: props,
         };
       }
       if (modal === "subscription_warning") {

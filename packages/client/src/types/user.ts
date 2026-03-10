@@ -64,6 +64,10 @@ export interface BaseUserProfile extends AuditInfo {
   country?: string;
   isValidated?: boolean;
   isOnBoarded?: boolean;
+  hasSeenWelcomeTour?: boolean;
+  hasSeenMemberTour?: boolean;
+  hasSeenCoachTour?: boolean;
+  hasSeenManagerTour?: boolean;
   isActive?: boolean;
 }
 

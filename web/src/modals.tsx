@@ -233,6 +233,10 @@ const SubscriptionWarningModalWrapper = lazy(
     import("./app/components/modals/subscription-warning-modal/SubscriptionWarningModalWrapper"),
 );
 
+const WelcomeTourModalWrapper = lazy(
+  () => import("./app/components/modals/welcome-tour/WelcomeTourModalWrapper"),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -285,6 +289,7 @@ function modals() {
       <CreateGymModal />
       <BannerFormModal />
       <SubscriptionWarningModalWrapper />
+      <WelcomeTourModalWrapper />
     </Suspense>
   );
 }

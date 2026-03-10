@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { TopBanner } from "./components/TopBanner";
 import { BG_GRADIENT } from "./constants/styles";
 import { useTheme } from "./context/ThemeContext";
+import { useWelcomeTour } from "./hooks/useWelcomeTour";
 import Modals from "./modals";
 import { useLanguageStore } from "./store/language";
 import { useUserStore } from "./store/user";
@@ -15,6 +16,9 @@ const App = () => {
   const { setLanguage, language } = useLanguageStore();
   const { pathname } = useLocation();
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Initialize Welcome Tour observer
+  useWelcomeTour();
 
   // Sync language with user settings
   useEffect(() => {

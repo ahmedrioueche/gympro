@@ -33,7 +33,7 @@ export default function NotificationsDropdown() {
       {(closeDropdown) => (
         <>
           <DropdownHeader className="flex items-center justify-between">
-            <span className="font-semibold text-base text-text-primary">
+            <span className="font-semibold text-sm text-text-primary">
               {t("notifications.title")}
             </span>
             {unreadCount > 0 && (

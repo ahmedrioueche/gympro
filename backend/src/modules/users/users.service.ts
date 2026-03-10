@@ -638,6 +638,30 @@ export class UsersService {
     return this.sanitizeUser(user);
   }
 
+  async completeWelcomeTour(userId: string, role?: string) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException({
+        message: 'User not found',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+      });
+    }
+
+    // Set the specific role tour flag if provided
+    if (role === 'member') user.profile.hasSeenMemberTour = true;
+    else if (role === 'coach') user.profile.hasSeenCoachTour = true;
+    else if (role === 'manager' || role === 'owner')
+      user.profile.hasSeenManagerTour = true;
+
+    // Set the general flag for backward compatibility
+    user.profile.hasSeenWelcomeTour = true;
+    await user.save();
+
+    await user.populate(['memberships', 'currentProgram', 'notifications']);
+    return this.sanitizeUser(user);
+  }
+
   private async autoSubscribeToFreePlan(userId: string) {
     try {
       const user = await this.userModel.findById(userId);

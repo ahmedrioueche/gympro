@@ -203,6 +203,21 @@ export class UsersController {
     );
   }
 
+  @Post('welcome-tour/complete')
+  async completeWelcomeTour(@Body('role') role: string, @Req() req: any) {
+    const currentUserId = req.user?.sub;
+    const result = await this.usersService.completeWelcomeTour(
+      currentUserId,
+      role,
+    );
+    return apiResponse(
+      true,
+      undefined,
+      result,
+      'Welcome tour marked as complete',
+    );
+  }
+
   // --- Secure Contact Updates ---
 
   @Post('profile/verify-email/request')

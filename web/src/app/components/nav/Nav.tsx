@@ -26,9 +26,10 @@ export default function Nav({ children, sidebarLinks = null }) {
     togglePin,
     sidebarRef,
     isMobile,
+    isRtl,
+    user,
     activeRoute,
     gyms,
-    user,
     isCollapsed,
     handleProfileClick,
     handleSettingsClick,
@@ -54,11 +55,12 @@ export default function Nav({ children, sidebarLinks = null }) {
               : ""
           }
             flex-col fixed md:relative z-40 transition-all duration-300 
-          shadow-[2px_0_8px_rgba(0,0,0,0.15)]
+          ${isRtl ? "shadow-[-2px_0_8px_rgba(0,0,0,0.15)]" : "shadow-[2px_0_8px_rgba(0,0,0,0.15)]"}
+          start-0
 
       ${
         isMobile
-          ? `${sidebarOpen ? "translate-x-0" : "-translate-x-64"} w-64`
+          ? `w-64 ${sidebarOpen ? "translate-x-0" : isRtl ? "translate-x-64" : "-translate-x-64"}`
           : sidebarExpanded || isPinned
             ? "w-56"
             : "w-20"
@@ -81,7 +83,7 @@ export default function Nav({ children, sidebarLinks = null }) {
               {isMobile && (
                 <button
                   onClick={() => setSidebarOpen(false)}
-                  className="p-2 mr-4 rounded-lg hover:bg-surface-hover transition-colors"
+                  className="p-2 me-4 rounded-lg hover:bg-surface-hover transition-colors"
                 >
                   <X className="w-5 h-5 text-text-primary" />
                 </button>
@@ -126,12 +128,12 @@ export default function Nav({ children, sidebarLinks = null }) {
       <div className="flex-1 flex flex-col h-screen">
         {/* Top Bar: Menu button + GymSelector left, controls right */}
         <div
-          className={`flex items-center justify-between min-h-[64px] md:min-h-[80px] pr-2 gap-1 md:gap-3`}
+          className={`flex items-center justify-between min-h-[64px] md:min-h-[80px] pe-2 gap-1 md:gap-3`}
         >
-          <div className="flex pl-2 md:pl-0 items-center gap-2 md:gap-3 flex-1 min-w-0">
+          <div className="flex ps-2 md:ps-0 items-center gap-2 md:gap-3 flex-1 min-w-0">
             {/* Show logo when no sidebar */}
             {!sidebarLinks && !isMobile && (
-              <div className="flex items-center mr-6">
+              <div className="flex items-center me-6">
                 <SidebarAnimatedLogo
                   collapsed={false}
                   onClick={navigateToHome}

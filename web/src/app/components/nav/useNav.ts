@@ -5,6 +5,7 @@ import { APP_PAGES } from "../../../constants/navigation";
 import { useAllMyGyms } from "../../../hooks/queries/useGyms";
 import useScreen from "../../../hooks/useScreen";
 import { useGymStore } from "../../../store/gym";
+import { useLanguageStore } from "../../../store/language";
 import { useModalStore } from "../../../store/modal";
 import { useSidebarStore } from "../../../store/sidebar";
 import { useUserStore } from "../../../store/user";
@@ -87,6 +88,7 @@ export const useNav = () => {
     }
   };
 
+  const { isRtl } = useLanguageStore();
   const isCollapsed = !sidebarExpanded && !isMobile && !isPinned;
 
   return {
@@ -99,6 +101,7 @@ export const useNav = () => {
     togglePin,
     sidebarRef,
     isMobile,
+    isRtl,
     user,
     activeRoute,
     gyms,

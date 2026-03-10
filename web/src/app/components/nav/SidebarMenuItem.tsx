@@ -28,7 +28,7 @@ export const SidebarMenuItem = ({
       className="w-full block"
     >
       <button
-        className={`sidebar-menu-item w-full group relative overflow-hidden rounded-r-xl flex items-center gap-3 px-3 py-3.5 transition-all duration-300 ${
+        className={`sidebar-menu-item w-full group relative overflow-hidden rounded-e-xl flex items-center gap-3 px-3 py-3.5 transition-all duration-300 ${
           isActive
             ? "bg-gradient-to-r from-primary/20 to-secondary/20 text-primary shadow-md"
             : "text-text-secondary hover:text-text-primary hover:bg-gradient-to-r hover:from-primary/25 via-accent/20 hover:to-secondary/25"

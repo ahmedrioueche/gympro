@@ -19,6 +19,19 @@ export const usersApi = {
     }
   },
 
+  /** Complete Welcome Tour */
+  completeWelcomeTour: async (role?: string): Promise<ApiResponse<User>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<User>>(
+        "/users/welcome-tour/complete",
+        { role },
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** List users / members (paginated) */
   list: async (
     page: number = 1,
