@@ -34,6 +34,8 @@
     "done": "Terminé",
     "restore": "Restaurer",
     "restart": "Redémarrer",
+    "changeAvatar": "Changer l'avatar",
+    "avatarHint": "Max 5 Mo",
     "close": "Fermer",
     "processing": "Traitement...",
     "cancel": "Annuler",

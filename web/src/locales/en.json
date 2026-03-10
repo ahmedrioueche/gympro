@@ -32,6 +32,8 @@
     "done": "Done",
     "skip": "Skip",
     "in": "In",
+    "changeAvatar": "Change Avatar",
+    "avatarHint": "Max 5MB",
     "restore": "Restore",
     "restart": "Restart",
     "close": "Close",

@@ -77,10 +77,10 @@ export default function AvatarUploader({
           <Camera className="w-4 h-4" />
           {uploading
             ? t("common.uploading", "Uploading...")
-            : t("settings.profile.changeAvatar", "Change Avatar")}
+            : t("common.changeAvatar", "Change Avatar")}
         </button>
         <p className="text-xs text-text-secondary mt-1">
-          {t("settings.profile.avatarHint", "Max 5MB")}
+          {t("common.avatarHint", "Max 5MB")}
         </p>
       </div>
     </div>
