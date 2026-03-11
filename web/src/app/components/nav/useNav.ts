@@ -98,11 +98,11 @@ export const useNav = () => {
 
   const onTouchStart = (e: React.TouchEvent) => {
     if (!isMobile) return;
-    
+
     const startX = e.touches[0].clientX;
     const screenWidth = window.innerWidth;
-    const isFromEdge = isRtl 
-      ? startX > screenWidth - edgeThreshold 
+    const isFromEdge = isRtl
+      ? startX > screenWidth - edgeThreshold
       : startX < edgeThreshold;
 
     // Only start swiping if we are opening from edge OR closing while open
@@ -110,15 +110,17 @@ export const useNav = () => {
       touchStartX.current = startX;
       setIsSwiping(true);
       // Initialize with current state position
-      setSwipeTranslation(sidebarOpen ? 0 : (isRtl ? sidebarWidth : -sidebarWidth));
+      setSwipeTranslation(
+        sidebarOpen ? 0 : isRtl ? sidebarWidth : -sidebarWidth,
+      );
     }
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
     if (!isMobile || touchStartX.current === null) return;
-    
+
     const deltaX = e.touches[0].clientX - touchStartX.current;
-    const base = sidebarOpen ? 0 : (isRtl ? sidebarWidth : -sidebarWidth);
+    const base = sidebarOpen ? 0 : isRtl ? sidebarWidth : -sidebarWidth;
     let newTranslation = base + deltaX;
 
     // Clamp
@@ -127,7 +129,7 @@ export const useNav = () => {
     } else {
       newTranslation = Math.min(0, Math.max(-sidebarWidth, newTranslation));
     }
-    
+
     setSwipeTranslation(newTranslation);
   };
 
@@ -136,7 +138,7 @@ export const useNav = () => {
 
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
     const absDeltaX = Math.abs(deltaX);
-    
+
     if (absDeltaX > swipeThreshold) {
       if (sidebarOpen) {
         // Closing

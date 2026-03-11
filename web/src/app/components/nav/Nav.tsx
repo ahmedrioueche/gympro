@@ -49,7 +49,7 @@ export default function Nav({ children, sidebarLinks = null }) {
   }, [pathname]);
 
   return (
-    <div 
+    <div
       className="flex h-screen w-full overflow-hidden"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
