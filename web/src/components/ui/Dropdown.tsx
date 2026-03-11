@@ -46,6 +46,22 @@ export default function Dropdown({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("scroll", handleScroll, true);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [isOpen]);
+
   const toggle = (e: React.MouseEvent) => {
     e.stopPropagation();
     const newState = !isOpen;

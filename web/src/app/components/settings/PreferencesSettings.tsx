@@ -1,4 +1,7 @@
-import { type AppLanguage } from "@ahmedrioueche/gympro-client";
+import {
+  LANGUAGES as GLOBAL_LANGUAGES,
+  type AppLanguage,
+} from "@ahmedrioueche/gympro-client";
 import { Globe, Scale } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../components/ui/CustomSelect";
@@ -10,11 +13,13 @@ interface LanguageOption {
   flag: string;
 }
 
-const LANGUAGES: LanguageOption[] = [
-  { value: "en", label: "English", flag: "🇬🇧" },
-  { value: "fr", label: "Français", flag: "🇫🇷" },
-  { value: "ar", label: "العربية", flag: "🇩🇿" },
-];
+const LANGUAGES: LanguageOption[] = Object.entries(GLOBAL_LANGUAGES).map(
+  ([key, value]) => ({
+    value: key as AppLanguage,
+    label: value.label,
+    flag: value.flag,
+  }),
+);
 
 interface PreferencesSettingsProps {
   language: AppLanguage;

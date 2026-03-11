@@ -115,6 +115,22 @@ const CustomSelect = <T extends string>({
     };
   }, [isOpen, disabled, searchable]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("scroll", handleScroll, true);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [isOpen]);
+
   const handleListScroll = () => {
     if (listRef.current) {
       scrollPositionRef.current = listRef.current.scrollTop;
@@ -192,11 +208,19 @@ const CustomSelect = <T extends string>({
             >
               <div className="flex items-center gap-2">
                 {option.flag && (
-                  <img
-                    src={option.flag}
-                    alt=""
-                    className="w-5 h-3.5 object-cover flex-shrink-0"
-                  />
+                  <div className="w-5 h-4 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {option.flag.includes("/") || option.flag.includes(".") ? (
+                      <img
+                        src={option.flag}
+                        alt=""
+                        className="w-full h-full object-cover rounded-sm"
+                      />
+                    ) : (
+                      <span className="text-base leading-none">
+                        {option.flag}
+                      </span>
+                    )}
+                  </div>
                 )}
                 <span>{option.label}</span>
                 {option.name && (
@@ -256,11 +280,20 @@ const CustomSelect = <T extends string>({
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 truncate">
             {selectedOptionData?.flag && (
-              <img
-                src={selectedOptionData.flag}
-                alt=""
-                className="w-5 h-3.5 object-cover flex-shrink-0 border border-white/10 rounded-sm"
-              />
+              <div className="w-5 h-4 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {selectedOptionData.flag.includes("/") ||
+                selectedOptionData.flag.includes(".") ? (
+                  <img
+                    src={selectedOptionData.flag}
+                    alt=""
+                    className="w-full h-full object-cover rounded-sm border border-white/10"
+                  />
+                ) : (
+                  <span className="text-base leading-none">
+                    {selectedOptionData.flag}
+                  </span>
+                )}
+              </div>
             )}
             <span className="truncate">
               {selectedOptionData?.label || label || selectedOption || (
