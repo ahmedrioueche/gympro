@@ -4298,6 +4298,100 @@
       },
       "copyright": "© 2025 GymPro. All rights reserved."
     },
+    "roleSections": {
+      "manager": {
+        "title": "Master Your Gym's Growth",
+        "subtitle": "Experience the most powerful management suite ever built for fitness entrepreneurs. Track every dollar, engage every member, and scale your brand with confidence.",
+        "features": {
+          "analytics": {
+            "title": "Advanced Analytics",
+            "desc": "Deep dive into your revenue, churn, and member engagement with real-time dashboards."
+          },
+          "lifecycle": {
+            "title": "Member Lifecycle",
+            "desc": "Automate renewals, track attendance, and build lasting relationships with ease."
+          },
+          "operations": {
+            "title": "Instant Operations",
+            "desc": "Manage staff, schedules, and facilities in seconds with our high-performance interface."
+          },
+          "payments": {
+            "title": "Secure Payments",
+            "desc": "Industry-leading payment security with automated invoicing and tax reporting."
+          }
+        },
+        "cta": {
+          "titlePart1": "Ready to Master your",
+          "titlePart2": "Gym's Growth?",
+          "subtitle": "Join hundreds of successful gym owners who have scaled their fitness business with GymPro's ultimate management suite.",
+          "button": "Start Manager Trial"
+        }
+      },
+      "member": {
+        "title": "Transform Your Training",
+        "subtitle": "Everything you need to crush your goals and track your progress in one place. Your ultimate fitness companion awaits.",
+        "features": {
+          "programs": {
+            "title": "Smart Programs",
+            "desc": "Follow expertly crafted training plans tailored to your specific goals and level."
+          },
+          "tracking": {
+            "title": "Pro Tracking",
+            "desc": "Log every lift and visualize your journey with beautiful progress charts."
+          },
+          "community": {
+            "title": "Vibrant Community",
+            "desc": "Connect with fellow members and coaches to stay motivated and inspired."
+          },
+          "booking": {
+            "title": "Easy Booking",
+            "desc": "Book classes and PT sessions in seconds with our seamless interface."
+          }
+        },
+        "cta": {
+          "titlePart1": "Ready to Transform",
+          "titlePart2": "Your Training?",
+          "subtitle": "Join thousands of members who have crushed their goals and tracked every milestone with GymPro's ultimate companion.",
+          "button": "Join for Free"
+        }
+      },
+      "coach": {
+        "title": "Build Your Coaching Empire",
+        "subtitle": "Stop juggling apps and spreadsheets. Get the professional toolkit designed to help you manage more clients, deliver better results, and grow your brand.",
+        "features": {
+          "builder": {
+            "title": "Program Builder",
+            "desc": "Create complex workout plans in minutes with our drag-and-drop interface."
+          },
+          "clients": {
+            "title": "Client Management",
+            "desc": "Keep track of every client's progress, nutrition, and personal records."
+          },
+          "messaging": {
+            "title": "Direct Messaging",
+            "desc": "Stay connected with your clients and provide real-time feedback and support."
+          },
+          "analytics": {
+            "title": "Growth Insights",
+            "desc": "Monitor your coaching revenue and client retention with detailed analytics."
+          }
+        },
+        "cta": {
+          "titlePart1": "Ready to scale your",
+          "titlePart2": "Coaching Empire?",
+          "subtitle": "Join over 5,000+ elite coaches who have transformed their business with GymPro Coach.",
+          "button": "Get Started for Free"
+        }
+      },
+      "general": {
+        "cta": {
+          "titlePart1": "Ready to Join the",
+          "titlePart2": "Fitness Revolution?",
+          "subtitle": "Whether you're an athlete, a coach, or a gym owner, GymPro has the tools to help you succeed.",
+          "button": "Get Started Now"
+        }
+      }
+    },
     "managerPage": {
       "hero": {
         "badge": "Manager Suite 2.0",

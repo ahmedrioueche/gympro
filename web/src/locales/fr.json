@@ -4297,6 +4297,100 @@
       },
       "copyright": "© 2025 GymPro. Tous droits réservés."
     },
+    "roleSections": {
+      "manager": {
+        "title": "Maîtrisez la Croissance de Votre Salle",
+        "subtitle": "Découvrez la suite de gestion la plus puissante jamais conçue pour les entrepreneurs du fitness. Suivez chaque euro, engagez chaque membre et développez votre marque en toute confiance.",
+        "features": {
+          "analytics": {
+            "title": "Analytique Avancée",
+            "desc": "Plongez dans vos revenus, votre taux de résiliation et l'engagement des membres avec des tableaux de bord en temps réel."
+          },
+          "lifecycle": {
+            "title": "Cycle de Vie des Membres",
+            "desc": "Automatisez les renouvellements, suivez l'assiduité et établissez des relations durables en toute simplicité."
+          },
+          "operations": {
+            "title": "Opérations Instantanées",
+            "desc": "Gérez le personnel, les horaires et les installations en quelques secondes grâce à notre interface haute performance."
+          },
+          "payments": {
+            "title": "Paiements Sécurisés",
+            "desc": "Sécurité des paiements à la pointe de l'industrie avec facturation automatisée et rapports fiscaux."
+          }
+        },
+        "cta": {
+          "titlePart1": "Prêt à Maîtriser la",
+          "titlePart2": "Croissance de Votre Salle ?",
+          "subtitle": "Rejoignez des centaines de propriétaires de salles de sport prospères qui ont développé leur entreprise de fitness grâce à la suite de gestion ultime de GymPro.",
+          "button": "Démarrer l'Essai Gérant"
+        }
+      },
+      "member": {
+        "title": "Transformez Votre Entraînement",
+        "subtitle": "Tout ce dont vous avez besoin pour atteindre vos objectifs et suivre vos progrès en un seul endroit. Votre compagnon fitness ultime vous attend.",
+        "features": {
+          "programs": {
+            "title": "Programmes Intelligents",
+            "desc": "Suivez des plans d'entraînement conçus par des experts, adaptés à vos objectifs et à votre niveau."
+          },
+          "tracking": {
+            "title": "Suivi Pro",
+            "desc": "Enregistrez chaque séance et visualisez votre parcours avec de magnifiques graphiques de progression."
+          },
+          "community": {
+            "title": "Communauté Dynamique",
+            "desc": "Connectez-vous avec d'autres membres et coachs pour rester motivé et inspiré."
+          },
+          "booking": {
+            "title": "Réservation Facile",
+            "desc": "Réservez des cours et des séances de coaching en quelques secondes grâce à notre interface fluide."
+          }
+        },
+        "cta": {
+          "titlePart1": "Prêt à Transformer",
+          "titlePart2": "Votre Entraînement ?",
+          "subtitle": "Rejoignez des milliers de membres qui ont écrasé leurs objectifs et suivi chaque étape avec le compagnon ultime de GymPro.",
+          "button": "Rejoindre Gratuitement"
+        }
+      },
+      "coach": {
+        "title": "Bâtissez Votre Empire de Coaching",
+        "subtitle": "Arrêtez de jongler entre les applications et les feuilles de calcul. Obtenez la boîte à outils professionnelle conçue pour vous aider à gérer plus de clients, à obtenir de meilleurs résultats et à développer votre marque.",
+        "features": {
+          "builder": {
+            "title": "Générateur de Programmes",
+            "desc": "Créez des plans d'entraînement complexes en quelques minutes grâce à notre interface glisser-déposer."
+          },
+          "clients": {
+            "title": "Gestion des Clients",
+            "desc": "Gardez une trace des progrès, de la nutrition et des records personnels de chaque client."
+          },
+          "messaging": {
+            "title": "Messagerie Directe",
+            "desc": "Restez connecté avec vos clients et fournissez des commentaires et un soutien en temps réel."
+          },
+          "analytics": {
+            "title": "Aperçus de Croissance",
+            "desc": "Surveillez vos revenus de coaching et la fidélisation de vos clients grâce à des analyses détaillées."
+          }
+        },
+        "cta": {
+          "titlePart1": "Prêt à faire évoluer votre",
+          "titlePart2": "Empire de Coaching ?",
+          "subtitle": "Rejoignez plus de 5 000 coachs d'élite qui ont transformé leur activité avec GymPro Coach.",
+          "button": "Commencez Gratuitement"
+        }
+      },
+      "general": {
+        "cta": {
+          "titlePart1": "Prêt à Rejoindre la",
+          "titlePart2": "Révolution du Fitness ?",
+          "subtitle": "Que vous soyez un athlète, un coach ou un propriétaire de salle, GymPro a les outils pour vous aider à réussir.",
+          "button": "Commencer Maintenant"
+        }
+      }
+    },
     "managerPage": {
       "hero": {
         "badge": "Suite Gérant 2.0",

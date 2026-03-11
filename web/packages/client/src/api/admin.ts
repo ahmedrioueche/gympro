@@ -5,7 +5,7 @@ import {
   UpdateAppFeaturePackageDto,
   UpdateAppPlanDto,
 } from "../dto/appSubscription";
-import { CreateEditorDto } from "../dto/user";
+import { CreateEditorDto, UpdateEditorDto } from "../dto/user";
 import { ApiResponse } from "../types/api";
 import { AdminPaymentView } from "../types/appPayment";
 import { AdminSubscriptionView, AppPlan } from "../types/appSubscription";
@@ -45,6 +45,21 @@ export const adminApi = {
     try {
       const res =
         await apiClient.get<ApiResponse<AppEditorUser[]>>("/admin/editors");
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  updateEditor: async (
+    id: string,
+    data: UpdateEditorDto,
+  ): Promise<ApiResponse<AppEditorUser>> => {
+    try {
+      const res = await apiClient.put<ApiResponse<AppEditorUser>>(
+        `/admin/editors/${id}`,
+        data,
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);
