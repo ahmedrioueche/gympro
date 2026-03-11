@@ -89,44 +89,64 @@ export const useNav = () => {
   };
 
   // Touch gestures for mobile sidebar
+  const [isSwiping, setIsSwiping] = useState(false);
+  const [swipeTranslation, setSwipeTranslation] = useState(0);
   const touchStartX = useRef<number | null>(null);
-  const touchCurrentX = useRef<number | null>(null);
   const swipeThreshold = 50;
-  const edgeThreshold = 30; // Distance from edge to trigger swipe-to-open
+  const edgeThreshold = 40; // Increased edge threshold
+  const sidebarWidth = 256;
 
   const onTouchStart = (e: React.TouchEvent) => {
     if (!isMobile) return;
-    touchStartX.current = e.touches[0].clientX;
-    touchCurrentX.current = e.touches[0].clientX;
+    
+    const startX = e.touches[0].clientX;
+    const screenWidth = window.innerWidth;
+    const isFromEdge = isRtl 
+      ? startX > screenWidth - edgeThreshold 
+      : startX < edgeThreshold;
+
+    // Only start swiping if we are opening from edge OR closing while open
+    if (sidebarOpen || isFromEdge) {
+      touchStartX.current = startX;
+      setIsSwiping(true);
+      // Initialize with current state position
+      setSwipeTranslation(sidebarOpen ? 0 : (isRtl ? sidebarWidth : -sidebarWidth));
+    }
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
-    if (!isMobile) return;
-    touchCurrentX.current = e.touches[0].clientX;
+    if (!isMobile || touchStartX.current === null) return;
+    
+    const deltaX = e.touches[0].clientX - touchStartX.current;
+    const base = sidebarOpen ? 0 : (isRtl ? sidebarWidth : -sidebarWidth);
+    let newTranslation = base + deltaX;
+
+    // Clamp
+    if (isRtl) {
+      newTranslation = Math.min(sidebarWidth, Math.max(0, newTranslation));
+    } else {
+      newTranslation = Math.min(0, Math.max(-sidebarWidth, newTranslation));
+    }
+    
+    setSwipeTranslation(newTranslation);
   };
 
-  const onTouchEnd = () => {
-    if (!isMobile || touchStartX.current === null || touchCurrentX.current === null)
-      return;
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!isMobile || touchStartX.current === null) return;
 
-    const deltaX = touchCurrentX.current - touchStartX.current;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const absDeltaX = Math.abs(deltaX);
     
-    if (sidebarOpen) {
-      // Swiping to close
-      if (isRtl) {
-        if (deltaX > swipeThreshold) setSidebarOpen(false);
+    if (absDeltaX > swipeThreshold) {
+      if (sidebarOpen) {
+        // Closing
+        if (isRtl) {
+          if (deltaX > swipeThreshold) setSidebarOpen(false);
+        } else {
+          if (deltaX < -swipeThreshold) setSidebarOpen(false);
+        }
       } else {
-        if (deltaX < -swipeThreshold) setSidebarOpen(false);
-      }
-    } else {
-      // Swiping to open (from edge)
-      const startX = touchStartX.current;
-      const screenWidth = window.innerWidth;
-      const isFromEdge = isRtl 
-        ? startX > screenWidth - edgeThreshold 
-        : startX < edgeThreshold;
-
-      if (isFromEdge) {
+        // Opening
         if (isRtl) {
           if (deltaX < -swipeThreshold) setSidebarOpen(true);
         } else {
@@ -135,8 +155,9 @@ export const useNav = () => {
       }
     }
 
+    setIsSwiping(false);
+    setSwipeTranslation(0);
     touchStartX.current = null;
-    touchCurrentX.current = null;
   };
 
   const { isRtl } = useLanguageStore();
@@ -167,5 +188,7 @@ export const useNav = () => {
     onTouchStart,
     onTouchMove,
     onTouchEnd,
+    isSwiping,
+    swipeTranslation,
   };
 };

@@ -121,7 +121,7 @@ export function SearchFilterBar<T extends string = string>({
 
         {/* Filter Dropdowns - Multi-filter support */}
         <div
-          className={`flex items-center gap-1.5 md:gap-3 flex-shrink-0 ${
+          className={`flex items-center gap-1.5 md:gap-3 flex-shrink-0 rtl:ms-2 md:rtl:ms-4 ${
             isMultiFilterMobile ? "flex-wrap md:flex-nowrap" : ""
           }`}
         >

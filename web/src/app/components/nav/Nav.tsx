@@ -39,6 +39,8 @@ export default function Nav({ children, sidebarLinks = null }) {
     onTouchStart,
     onTouchMove,
     onTouchEnd,
+    isSwiping,
+    swipeTranslation,
   } = useNav();
 
   // Reset scroll to top when navigation occurs within the dashboard
@@ -63,17 +65,31 @@ export default function Nav({ children, sidebarLinks = null }) {
               ? "bg-gradient-to-br from-gray-900 via-indigo-950 to-gray-900"
               : ""
           }
-            flex-col fixed md:relative z-40 transition-all duration-300 
+            flex-col fixed md:relative z-40 transition-transform ${
+              isSwiping ? "duration-0" : "duration-300"
+            } 
           ${isRtl ? "shadow-[-2px_0_8px_rgba(0,0,0,0.15)]" : "shadow-[2px_0_8px_rgba(0,0,0,0.15)]"}
           start-0
-
-      ${
-        isMobile
-          ? `w-64 ${sidebarOpen ? "translate-x-0" : isRtl ? "translate-x-64" : "-translate-x-64"}`
-          : sidebarExpanded || isPinned
-            ? "w-56"
-            : "w-20"
-      }`}
+          ${
+            isMobile
+              ? `w-64 ${
+                  isSwiping
+                    ? ""
+                    : sidebarOpen
+                      ? "translate-x-0"
+                      : isRtl
+                        ? "translate-x-64"
+                        : "-translate-x-64"
+                }`
+              : sidebarExpanded || isPinned
+                ? "w-56"
+                : "w-20"
+          }`}
+          style={
+            isMobile && isSwiping
+              ? { transform: `translateX(${swipeTranslation}px)` }
+              : {}
+          }
           onMouseEnter={() =>
             !isMobile && !isPinned && setSidebarExpanded(true)
           }
