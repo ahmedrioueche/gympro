@@ -36,6 +36,9 @@ export default function Nav({ children, sidebarLinks = null }) {
     handleMembershipsClick,
     handleLogout,
     navigateToHome,
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
   } = useNav();
 
   // Reset scroll to top when navigation occurs within the dashboard
@@ -44,7 +47,13 @@ export default function Nav({ children, sidebarLinks = null }) {
   }, [pathname]);
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
+    <div 
+      className="flex h-screen w-full overflow-hidden"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{ touchAction: isMobile ? "pan-y" : "auto" }}
+    >
       {/* SIDEBAR - Only render if sidebarLinks are provided */}
       {sidebarLinks && (
         <div

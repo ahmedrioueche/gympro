@@ -88,6 +88,57 @@ export const useNav = () => {
     }
   };
 
+  // Touch gestures for mobile sidebar
+  const touchStartX = useRef<number | null>(null);
+  const touchCurrentX = useRef<number | null>(null);
+  const swipeThreshold = 50;
+  const edgeThreshold = 30; // Distance from edge to trigger swipe-to-open
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (!isMobile) return;
+    touchStartX.current = e.touches[0].clientX;
+    touchCurrentX.current = e.touches[0].clientX;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!isMobile) return;
+    touchCurrentX.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    if (!isMobile || touchStartX.current === null || touchCurrentX.current === null)
+      return;
+
+    const deltaX = touchCurrentX.current - touchStartX.current;
+    
+    if (sidebarOpen) {
+      // Swiping to close
+      if (isRtl) {
+        if (deltaX > swipeThreshold) setSidebarOpen(false);
+      } else {
+        if (deltaX < -swipeThreshold) setSidebarOpen(false);
+      }
+    } else {
+      // Swiping to open (from edge)
+      const startX = touchStartX.current;
+      const screenWidth = window.innerWidth;
+      const isFromEdge = isRtl 
+        ? startX > screenWidth - edgeThreshold 
+        : startX < edgeThreshold;
+
+      if (isFromEdge) {
+        if (isRtl) {
+          if (deltaX < -swipeThreshold) setSidebarOpen(true);
+        } else {
+          if (deltaX > swipeThreshold) setSidebarOpen(true);
+        }
+      }
+    }
+
+    touchStartX.current = null;
+    touchCurrentX.current = null;
+  };
+
   const { isRtl } = useLanguageStore();
   const isCollapsed = !sidebarExpanded && !isMobile && !isPinned;
 
@@ -112,5 +163,9 @@ export const useNav = () => {
     handleMembershipsClick,
     handleLogout,
     navigateToHome,
+    // Gesture Handlers
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
   };
 };
