@@ -31,7 +31,7 @@ export default function RoleSection({
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="max-w-7xl mx-auto w-full px-6 md:px-10 overflow-hidden"
+      className="max-w-7xl mx-auto w-full px-6 md:px-10 py-12 md:py-20 overflow-x-hidden"
     >
       <div
         className={`flex flex-col ${

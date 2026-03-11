@@ -30,7 +30,7 @@ export default function RoleCTA({
       className="px-6 md:px-10 text-center pb-20"
     >
       <div
-        className="max-w-5xl mx-auto glass-card p-12 lg:p-20 rounded-[2.5rem] relative overflow-hidden hero-animate"
+        className="max-w-5xl mx-auto glass-card p-6 py-12 md:p-12 lg:p-20 rounded-[2.5rem] relative overflow-hidden hero-animate"
         style={{
           border: `1px solid ${primaryColor}30`,
           animation: inView ? "heroFadeUp 0.6s ease-out 0.1s forwards" : "none",
