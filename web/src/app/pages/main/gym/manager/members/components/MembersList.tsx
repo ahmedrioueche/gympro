@@ -52,31 +52,32 @@ export function MembersList({
     );
   }
 
-  if (viewMode === "cards") {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+  return (
+    <div className="space-y-4">
+      {/* Grid view - visible on mobile ALWAYS, and on desktop if viewMode is "cards" */}
+      <div
+        className={`${
+          viewMode === "cards" ? "block" : "md:hidden"
+        } grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6`}
+      >
         {members.map((member) => (
           <MemberCard
             key={member._id}
             member={member}
-            onViewProfile={handleViewProfile}
+            onViewProfile={() => onViewProfile(member._id)}
             onDelete={onDelete}
           />
         ))}
       </div>
-    );
-  }
 
-  return (
-    <MembersTable
-      members={members}
-      onViewProfile={onViewProfile}
-      onDelete={onDelete}
-    />
+      {/* Table view - visible ONLY on desktop and ONLY if viewMode is "table" */}
+      <div className={viewMode === "table" ? "hidden md:block" : "hidden"}>
+        <MembersTable
+          members={members}
+          onViewProfile={onViewProfile}
+          onDelete={onDelete}
+        />
+      </div>
+    </div>
   );
-
-  // Helper because MemberCard expects onViewProfile but we want to pass the ID
-  function handleViewProfile(member: any) {
-    onViewProfile(member._id);
-  }
 }

@@ -76,7 +76,6 @@ export default function Dropdown({
 
     const rect = dropdownRef.current.getBoundingClientRect();
     const top = rect.bottom + window.scrollY + 2;
-    // Desktop & Mobile positioning logic
     const isRtl = document.documentElement.dir === "rtl";
     const effectiveAlign = isRtl
       ? align === "left"
@@ -84,12 +83,34 @@ export default function Dropdown({
         : "left"
       : align;
 
-    const left =
-      effectiveAlign === "left" ? rect.left + window.scrollX : "auto";
-    const right =
-      effectiveAlign === "right"
-        ? window.innerWidth - (rect.right + window.scrollX)
-        : "auto";
+    // Dropdown width is w-72 (288px)
+    const dropdownWidth = 288;
+    const padding = 10;
+
+    let left: number | "auto" = "auto";
+    let right: number | "auto" = "auto";
+
+    if (effectiveAlign === "left") {
+      const potentialLeft = rect.left;
+      if (potentialLeft + dropdownWidth > window.innerWidth - padding) {
+        // Aligns to right if overflows right
+        right = window.innerWidth - rect.right;
+      } else {
+        left = rect.left;
+      }
+    } else {
+      const potentialRight = window.innerWidth - rect.right;
+      if (potentialRight + dropdownWidth > window.innerWidth - padding) {
+        // Aligns to left if overflows left
+        left = rect.left;
+      } else {
+        right = window.innerWidth - rect.right;
+      }
+    }
+
+    // Add scroll offsets for portal absolute positioning
+    if (left !== "auto") left += window.scrollX;
+    if (right !== "auto") right -= window.scrollX;
 
     return createPortal(
       <div

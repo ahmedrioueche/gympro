@@ -1,7 +1,6 @@
 export { MemberCard } from "../../../../../../components/cards/MemberCard";
 export { MembersControls } from "./MembersControls";
 export type { FilterStatus, SortBy } from "./MembersControls";
-export { MembersEmptyState } from "./MembersEmptyState";
 export { MembersList } from "./MembersList";
 export { MembersPagination } from "./MembersPagination";
 export { MembersStats } from "./MembersStats";

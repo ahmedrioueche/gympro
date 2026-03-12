@@ -256,29 +256,58 @@ export class AnalyticsService {
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
     sevenDaysAgo.setHours(0, 0, 0, 0);
 
-    const attendanceStats = await this.sessionModel.aggregate([
-      {
-        $match: {
-          gymId: gymObjectId,
-          startTime: { $gte: sevenDaysAgo },
-          status: { $in: ['completed', 'confirmed'] },
-        },
-      },
-      {
-        $project: {
-          scannedAt: {
-            $dateToString: { format: '%Y-%m-%d', date: '$startTime' },
+    const fourHoursAgo = new Date();
+    fourHoursAgo.setHours(fourHoursAgo.getHours() - 4);
+
+    const [attendanceStats, checkedInCount] = await Promise.all([
+      this.sessionModel.aggregate([
+        {
+          $match: {
+            gymId: gymObjectId,
+            startTime: { $gte: sevenDaysAgo },
+            status: { $in: ["completed", "confirmed"] },
           },
         },
-      },
-      {
-        $group: {
-          _id: '$scannedAt',
-          count: { $sum: 1 },
+        {
+          $project: {
+            scannedAt: {
+              $dateToString: { format: "%Y-%m-%d", date: "$startTime" },
+            },
+          },
         },
-      },
-      { $sort: { _id: 1 } },
+        {
+          $group: {
+            _id: "$scannedAt",
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]),
+      this.sessionModel.countDocuments({
+        gymId: gymObjectId,
+        startTime: { $gte: fourHoursAgo },
+        status: "confirmed", // or some status representing they are there
+      }),
+      // Alternatively, use attendance records if they are for general gym access
+      this.affiliationModel.db
+        .collection("attendance_records")
+        .countDocuments({
+          gymId: gymObjectId,
+          status: "checked_in",
+          checkIn: { $gte: fourHoursAgo },
+          checkOut: { $exists: false },
+        }),
     ]);
+
+    // Use the count from attendance_records for general gym check-in
+    const realCheckedIn = (await this.affiliationModel.db
+      .collection("attendance_records")
+      .countDocuments({
+        gymId: gymObjectId,
+        status: "checked_in",
+        checkIn: { $gte: fourHoursAgo },
+        checkOut: { $exists: false },
+      })) as number;
 
     const attendanceTrend = attendanceStats.map((s) => ({
       date: s._id,
@@ -291,7 +320,7 @@ export class AnalyticsService {
         totalMembers,
         activeMembers: dist.active,
         expiredMembers: dist.expired,
-        checkedIn: gym.memberStats?.checkedIn || 0,
+        checkedIn: realCheckedIn,
         coachesCount,
         totalRevenue: revenueStats[0]?.total || 0,
         monthlyRevenue: monthlyRevenueStats[0]?.total || 0,

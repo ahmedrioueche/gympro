@@ -1,12 +1,6 @@
-import { ArrowUpDown, ChevronDown, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Dropdown from "../../../../../../../components/ui/Dropdown";
-import { SearchInput } from "../../../../../../../components/ui/SearchInput";
-
-import {
-  ListActionRow,
-  ViewModeToggle,
-} from "../../../../../../../components/ui/ListViewControls";
+import { ViewModeToggle } from "../../../../../../../components/ui/ListViewControls";
+import SearchFilterBar from "../../../../../../../components/ui/SearchFilterBar";
 import type { ViewMode } from "../../../../../../../types/common";
 
 export type FilterStatus = "all" | "active" | "pending" | "expired" | "banned";
@@ -35,187 +29,51 @@ export function MembersControls({
 }: MembersControlsProps) {
   const { t } = useTranslation();
 
+  const filterOptions = [
+    { value: "all", label: t("members.filters.all") },
+    { value: "active", label: t("members.filters.active") },
+    { value: "pending", label: t("members.filters.pending") },
+    { value: "expired", label: t("members.filters.expired") },
+    { value: "banned", label: t("members.filters.banned") },
+  ];
+
+  const sortOptions = [
+    { value: "name", label: t("members.sort.name") },
+    { value: "joinDate", label: t("members.sort.joinDate") },
+    { value: "status", label: t("members.sort.status") },
+  ];
+
   return (
-    <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-5 w-full max-w-full relative z-0">
-      {/* Desktop Layout */}
-      <div className="hidden lg:flex items-center gap-3">
-        {/* Search Input */}
-        <SearchInput
-          value={searchQuery}
-          onChange={onSearchChange}
-          placeholder={t("members.searchPlaceholder")}
-          className="w-80"
+    <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-stretch md:items-center">
+      <div className="flex-1 min-w-0">
+        <SearchFilterBar
+          searchQuery={searchQuery}
+          onSearchChange={onSearchChange}
+          searchPlaceholder={t("members.searchPlaceholder")}
+          filters={[
+            {
+              value: filterStatus,
+              onChange: (v) => onFilterChange(v as FilterStatus),
+              options: filterOptions,
+              label: t("members.filters.status"),
+            },
+            {
+              value: sortBy,
+              onChange: (v) => onSortChange(v as SortBy),
+              options: sortOptions,
+              label: t("members.sort.title"),
+            },
+          ]}
         />
+      </div>
 
-        {/* Filters */}
-        <div className="flex items-center gap-3 flex-1">
-          {/* Filter Status */}
-          <div className="flex gap-2">
-            {(["all", "active", "pending", "expired", "banned"] as const).map(
-              (status) => (
-                <button
-                  key={status}
-                  onClick={() => onFilterChange(status)}
-                  className={`px-3.5 py-2 rounded-xl font-medium whitespace-nowrap transition-all duration-300 text-sm ${
-                    filterStatus === status
-                      ? "bg-primary text-white shadow-lg shadow-primary/30"
-                      : "bg-background text-text-secondary hover:bg-primary/10 hover:text-primary border border-border"
-                  }`}
-                >
-                  {t(`members.filters.${status}`)}
-                </button>
-              ),
-            )}
-          </div>
-
-          {/* Sort */}
-          <SortDropdown current={sortBy} onChange={onSortChange} t={t} />
-        </div>
-
-        {/* View Toggle - Always visible, far right */}
+      <div className="hidden md:flex bg-surface border border-border h-22 rounded-xl md:rounded-2xl p-2 md:p-3 items-center justify-center shadow-sm">
         <ViewModeToggle
           viewMode={viewMode}
           onViewModeChange={onViewModeChange}
           showText
-          className="ml-auto"
         />
-      </div>
-
-      {/* Mobile/Tablet Layout */}
-      <div className="lg:hidden space-y-3">
-        {/* Row 1: Search - Full Width */}
-        <SearchInput
-          value={searchQuery}
-          onChange={onSearchChange}
-          placeholder={t("members.searchPlaceholder")}
-          className="w-full"
-        />
-
-        {/* Row 2: View Toggles & Filters */}
-        <ListActionRow viewMode={viewMode} onViewModeChange={onViewModeChange}>
-          {/* Filter Dropdown */}
-          <FilterDropdown
-            current={filterStatus}
-            onChange={onFilterChange}
-            t={t}
-          />
-
-          {/* Sort Dropdown */}
-          <SortDropdown current={sortBy} onChange={onSortChange} t={t} />
-        </ListActionRow>
       </div>
     </div>
-  );
-}
-
-function FilterDropdown({
-  current,
-  onChange,
-  t,
-}: {
-  current: FilterStatus;
-  onChange: (status: FilterStatus) => void;
-  t: any;
-}) {
-  return (
-    <Dropdown
-      trigger={
-        <button
-          className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all hover:border-primary`}
-        >
-          <Filter
-            className={`w-4 h-4 ${
-              current !== "all" ? "text-primary" : "text-text-secondary"
-            }`}
-          />
-          <span className="capitalize font-medium text-text-primary">
-            {t(`members.filters.${current}`)}
-          </span>
-          <ChevronDown className="w-4 h-4 text-text-secondary" />
-        </button>
-      }
-      className="!w-48"
-    >
-      {(close) => (
-        <div className="p-1">
-          {(["all", "active", "pending", "expired", "banned"] as const).map(
-            (status) => (
-              <button
-                key={status}
-                onClick={() => {
-                  onChange(status);
-                  close();
-                }}
-                className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
-                  current === status
-                    ? "bg-primary/10 text-primary font-medium"
-                    : "text-text-secondary hover:bg-muted hover:text-text-primary"
-                }`}
-              >
-                {t(`members.filters.${status}`)}
-                {current === status && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                )}
-              </button>
-            ),
-          )}
-        </div>
-      )}
-    </Dropdown>
-  );
-}
-
-function SortDropdown({
-  current,
-  onChange,
-  t,
-}: {
-  current: SortBy;
-  onChange: (sort: SortBy) => void;
-  t: any;
-}) {
-  return (
-    <Dropdown
-      trigger={
-        <button
-          className={`flex items-center gap-2 px-3 py-2 bg-background border border-border rounded-xl text-sm transition-all hover:border-primary`}
-        >
-          <ArrowUpDown
-            className={`w-4 h-4 ${
-              current !== "name" ? "text-primary" : "text-text-secondary"
-            }`}
-          />
-          <span className="capitalize font-medium text-text-primary">
-            {t(`members.sort.${current}`)}
-          </span>
-          <ChevronDown className="w-4 h-4 text-text-secondary" />
-        </button>
-      }
-      className="!w-48"
-    >
-      {(close) => (
-        <div className="p-1">
-          {(["name", "joinDate", "status"] as const).map((sortOption) => (
-            <button
-              key={sortOption}
-              onClick={() => {
-                onChange(sortOption);
-                close();
-              }}
-              className={`w-full text-left px-3 py-2 text-sm rounded-lg flex items-center justify-between transition-colors ${
-                current === sortOption
-                  ? "bg-primary/10 text-primary font-medium"
-                  : "text-text-secondary hover:bg-muted hover:text-text-primary"
-              }`}
-            >
-              {t(`members.sort.${sortOption}`)}
-              {current === sortOption && (
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              )}
-            </button>
-          ))}
-        </div>
-      )}
-    </Dropdown>
   );
 }

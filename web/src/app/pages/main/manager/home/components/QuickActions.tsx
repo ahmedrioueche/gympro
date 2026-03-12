@@ -24,13 +24,7 @@ function QuickActions() {
       gradient: "from-blue-500 to-blue-600",
       bgHover: "hover:from-blue-600 hover:to-blue-700",
     },
-    {
-      icon: "👥",
-      label: t("home.manager.quickActions.addStaff"),
-      action: () => openModal("staff_modal"),
-      gradient: "from-purple-500 to-purple-600",
-      bgHover: "hover:from-purple-600 hover:to-purple-700",
-    },
+
     {
       icon: "📊",
       label: t("home.manager.quickActions.openAnalytics"),
@@ -60,7 +54,7 @@ function QuickActions() {
         {t("home.manager.quickActions.title")}
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {quickActions.map((action, index) =>
           action.link ? (
             <Link

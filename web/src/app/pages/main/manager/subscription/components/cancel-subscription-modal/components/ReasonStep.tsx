@@ -7,10 +7,6 @@ interface ReasonStepProps {
   onReasonChange: (reason: string) => void;
   validationState: "idle" | "validating" | "valid" | "invalid";
   subscriptionEndDate?: string | Date;
-  onBack: () => void;
-  onSubmit: () => void;
-  isSubmitting: boolean;
-  canSubmit: boolean;
   isError: boolean;
 }
 
@@ -19,10 +15,6 @@ export function ReasonStep({
   onReasonChange,
   validationState,
   subscriptionEndDate,
-  onBack,
-  onSubmit,
-  isSubmitting,
-  canSubmit,
   isError,
 }: ReasonStepProps) {
   const { t } = useTranslation();
@@ -81,25 +73,6 @@ export function ReasonStep({
             {t("subscription.cancel_reason_too_short")}
           </p>
         )}
-      </div>
-
-      {/* Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <button
-          onClick={onBack}
-          className="flex-1 px-4 py-3 bg-surface hover:bg-surface-hover text-text-primary border border-border rounded-xl transition-all font-medium"
-        >
-          {t("common.back")}
-        </button>
-        <button
-          onClick={onSubmit}
-          disabled={!canSubmit}
-          className="flex-1 px-4 py-3 bg-danger text-white rounded-xl hover:bg-danger/90 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting
-            ? t("common.processing")
-            : t("subscription.cancel_subscription")}
-        </button>
       </div>
 
       {isError && (

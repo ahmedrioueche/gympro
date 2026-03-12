@@ -16,44 +16,6 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
       </h3>
 
       <div className="space-y-4 md:space-y-6">
-        {/* Basic Information */}
-        <div className="bg-surface/50 rounded-xl p-3.5 md:p-5 border border-border/50">
-          <h4 className="text-sm md:text-lg font-semibold text-text-primary mb-3 md:mb-4 flex items-center gap-2">
-            <span>ℹ️</span>
-            {t("gymCard.basicInfo", "Basic Information")}
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-            <div>
-              <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                {t("gymCard.ownerName")}
-              </p>
-              <p className="text-sm font-medium text-text-primary break-all">
-                {gym.owner?.profile?.username || t("common.unknown")}
-              </p>
-            </div>
-            {gym.timezone && (
-              <div>
-                <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                  {t("gymCard.timezone", "Timezone")}
-                </p>
-                <p className="text-sm font-medium text-text-primary">
-                  {gym.timezone}
-                </p>
-              </div>
-            )}
-            {gym.settings?.defaultCurrency && (
-              <div>
-                <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                  {t("gymCard.currency", "Currency")}
-                </p>
-                <p className="text-sm font-medium text-text-primary">
-                  {gym.settings.defaultCurrency}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Settings */}
         {gym.settings && (
           <div className="bg-surface/50 rounded-xl p-3.5 md:p-5 border border-border/50">
@@ -71,8 +33,8 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
                     <div className="flex flex-wrap gap-2">
                       {gym.settings.paymentMethods.map((method, idx) => (
                         <span
-                          key={idx}
-                          className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
+                           key={idx}
+                           className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
                         >
                           {method}
                         </span>
@@ -82,61 +44,28 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
                 )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div>
-                  <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                    {t("gymCard.customSubscriptions", "Custom Subscriptions")}
-                  </p>
-                  <p className="text-sm font-medium text-text-primary">
-                    {gym.settings.allowCustomSubscriptions
-                      ? "✅ Enabled"
-                      : "❌ Disabled"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                    {t("gymCard.notifications", "Notifications")}
-                  </p>
-                  <p className="text-sm font-medium text-text-primary">
-                    {gym.settings.notificationsEnabled
-                      ? "✅ Enabled"
-                      : "❌ Disabled"}
-                  </p>
-                </div>
-              </div>
+                {gym.settings.workingHours && (
+                  <div>
+                    <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
+                      {t("gymCard.workingHours", "Working Hours")}
+                    </p>
+                    <p className="text-sm font-medium text-text-primary">
+                      {gym.settings.workingHours.start} -{" "}
+                      {gym.settings.workingHours.end}
+                    </p>
+                  </div>
+                )}
 
-              {gym.settings.subscriptionRenewalReminderDays !== undefined && (
                 <div>
                   <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                    {t("gymCard.renewalReminder", "Renewal Reminder Days")}
+                    {t("gymCard.mixedTraining", "Mixed Training")}
                   </p>
                   <p className="text-sm font-medium text-text-primary">
-                    {gym.settings.subscriptionRenewalReminderDays} days before
-                    expiry
+                    {gym.settings.isMixed
+                      ? "✅ Males and females can train together"
+                      : "❌ Separate training times"}
                   </p>
                 </div>
-              )}
-
-              {gym.settings.workingHours && (
-                <div>
-                  <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                    {t("gymCard.workingHours", "Working Hours")}
-                  </p>
-                  <p className="text-sm font-medium text-text-primary">
-                    {gym.settings.workingHours.start} -{" "}
-                    {gym.settings.workingHours.end}
-                  </p>
-                </div>
-              )}
-
-              <div>
-                <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                  {t("gymCard.mixedTraining", "Mixed Training")}
-                </p>
-                <p className="text-sm font-medium text-text-primary">
-                  {gym.settings.isMixed
-                    ? "✅ Males and females can train together"
-                    : "❌ Separate training times"}
-                </p>
               </div>
 
               {gym.settings.femaleOnlyHours &&
@@ -177,22 +106,6 @@ export function GymSettingsView({ gym, onBack }: GymSettingsViewProps) {
                     </div>
                   </div>
                 )}
-            </div>
-          </div>
-        )}
-
-        {/* App Subscription */}
-        {gym.appSubscription && (
-          <div className="bg-surface/50 rounded-xl p-3.5 md:p-5 border border-border/50">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-              <div>
-                <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
-                  {t("gymCard.subscriptionStatus", "Status")}
-                </p>
-                <p className="text-sm font-medium text-text-primary">
-                  {gym.appSubscription.status}
-                </p>
-              </div>
             </div>
           </div>
         )}

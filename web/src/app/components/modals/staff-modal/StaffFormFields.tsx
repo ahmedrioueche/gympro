@@ -41,12 +41,9 @@ export default function StaffFormFields({
   const roleOptions = [
     { value: "manager", label: t("staff.roles.manager") },
     { value: "receptionist", label: t("staff.roles.receptionist") },
-    { value: "coach", label: t("staff.roles.coach") },
-    { value: "cleaner", label: t("staff.roles.cleaner") },
-    { value: "maintenance", label: t("staff.roles.maintenance") },
   ];
 
-  const isOfflineRole = ["cleaner", "maintenance"].includes(formData.role);
+  const isOfflineRole = false; // "cleaner" and "maintenance" are removed
 
   return (
     <div className="space-y-6">

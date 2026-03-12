@@ -26,7 +26,7 @@ export function PerformanceStats({
         </p>
       </div>
 
-      <div className="p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         <StatCard
           title={t("home.gym.stats.totalMembers")}
           value={analytics?.metrics.totalMembers || 0}
@@ -46,7 +46,7 @@ export function PerformanceStats({
         <StatCard
           title={t("home.gym.stats.coachesCount")}
           value={analytics?.metrics.coachesCount || 0}
-          icon={UserCheck}
+          icon={Users}
           loading={isLoading}
           color="from-orange-500 to-amber-600"
           shadowColor="shadow-orange-500/20"
@@ -58,6 +58,14 @@ export function PerformanceStats({
           loading={isLoading}
           color="from-purple-500 to-pink-600"
           shadowColor="shadow-purple-500/20"
+        />
+        <StatCard
+          title={t("home.gym.stats.monthlyRevenue")}
+          value={`${analytics?.metrics.monthlyRevenue || 0} DZD`}
+          icon={BarChart3}
+          loading={isLoading}
+          color="from-red-500 to-rose-600"
+          shadowColor="shadow-red-500/20"
         />
       </div>
     </div>
