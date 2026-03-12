@@ -325,3 +325,15 @@ export interface CoachingOfferModalProps {
 export interface WelcomeTourModalProps {
   role?: string;
 }
+
+export interface AccessManagementModalProps {
+  gymId: string;
+  membershipId: string;
+  memberName: string;
+  initialAccessData?: {
+    rfidId?: string;
+    pinCode?: string;
+    preferredMethod?: "qr" | "rfid" | "pin";
+  };
+  onSuccess?: () => void;
+}

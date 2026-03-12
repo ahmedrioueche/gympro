@@ -589,6 +589,10 @@ export class GymService {
         updateSettingsDto.femaleOnlyHours !== undefined
           ? updateSettingsDto.femaleOnlyHours
           : currentSettings.femaleOnlyHours,
+      preferredAccessMethod:
+        updateSettingsDto.preferredAccessMethod !== undefined
+          ? updateSettingsDto.preferredAccessMethod
+          : currentSettings.preferredAccessMethod,
     };
 
     // Detect closure changes for notifications

@@ -1,4 +1,4 @@
-import { CreditCard, History, Info } from "lucide-react";
+import { CreditCard, History, Info, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   CustomizableProfileTemplateModal,
@@ -22,6 +22,7 @@ export default function MemberProfileModal() {
     subscriptionHistory,
     payments,
     handleRenewSubscription,
+    handleManageAccess,
     handleClose,
     hasMembership,
   } = useMemberProfileModal();
@@ -55,7 +56,13 @@ export default function MemberProfileModal() {
       : []),
   ];
 
-  const actions: ProfileModalAction[] = [];
+  const actions: ProfileModalAction[] = [
+    {
+      label: t("access.management.title"),
+      icon: ShieldCheck,
+      onClick: handleManageAccess,
+    },
+  ];
 
   return (
     <CustomizableProfileTemplateModal

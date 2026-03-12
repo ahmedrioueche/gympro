@@ -103,6 +103,7 @@ export interface GymSettings {
   temporaryClosures?: TemporaryClosure[];
   workingDays?: number[]; // 0-6 (Sunday to Saturday)
   notifyScheduleChanges?: boolean; // Automatically notify members of schedule changes
+  preferredAccessMethod?: "qr" | "pin" | "rfid" | "face";
 }
 
 export interface TemporaryClosure {

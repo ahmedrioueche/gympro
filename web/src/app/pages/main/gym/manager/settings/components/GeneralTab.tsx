@@ -8,12 +8,16 @@ import {
   Check,
   Clock,
   Edit2,
+  Maximize2,
   Plus,
   ShieldCheck,
   ShieldOff,
   Trash2,
   Users,
   X,
+  CreditCard,
+  Hash,
+  Scan,
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -41,6 +45,8 @@ interface GeneralTabProps {
   setDefaultCurrency: (value: Currency) => void;
   workingDays: number[];
   setWorkingDays: (value: number[]) => void;
+  preferredAccessMethod: "qr" | "pin" | "rfid" | "face";
+  setPreferredAccessMethod: (value: "qr" | "pin" | "rfid" | "face") => void;
 }
 
 export default function GeneralTab({
@@ -62,6 +68,8 @@ export default function GeneralTab({
   setDefaultCurrency,
   workingDays,
   setWorkingDays,
+  preferredAccessMethod,
+  setPreferredAccessMethod,
 }: GeneralTabProps) {
   const { t } = useTranslation();
   const [isAddingSlot, setIsAddingSlot] = useState(false);

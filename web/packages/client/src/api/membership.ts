@@ -97,6 +97,39 @@ export const membershipApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Update access data (RFID/PIN) for a member (for gym managers) */
+  updateAccessData: async (
+    gymId: string,
+    membershipId: string,
+    accessData: any
+  ): Promise<ApiResponse<any>> => {
+    try {
+      const res = await apiClient.patch<ApiResponse<any>>(
+        `/membership/${gymId}/${membershipId}/access-data`,
+        { accessData }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Update current member's own access settings (e.g. preferred method) */
+  updateMyAccessData: async (
+    gymId: string,
+    data: any
+  ): Promise<ApiResponse<any>> => {
+    try {
+      const res = await apiClient.patch<ApiResponse<any>>(
+        `/membership/my/${gymId}/settings`,
+        { settings: data }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };
 
 export default membershipApi;

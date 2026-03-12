@@ -23,10 +23,50 @@ export const useAttendance = (gymId?: string, skipLogs = false) => {
     },
   });
 
+  const checkInByPinMutation = useMutation<
+    ApiResponse<AttendanceRecord>,
+    Error,
+    { pin: string; gymId: string }
+  >({
+    mutationFn: ({ pin, gymId }: { pin: string; gymId: string }) =>
+      attendanceApi.checkInByPin(gymId, pin),
+    onSuccess: (res) => {
+      if (res.success) {
+        queryClient.invalidateQueries({ queryKey: ["attendance-logs", gymId] });
+      }
+    },
+  });
+
+  const checkInByRfidMutation = useMutation<
+    ApiResponse<AttendanceRecord>,
+    Error,
+    { rfidId: string; gymId: string }
+  >({
+    mutationFn: ({ rfidId, gymId }: { rfidId: string; gymId: string }) =>
+      attendanceApi.checkInByRfid(gymId, rfidId),
+    onSuccess: (res) => {
+      if (res.success) {
+        queryClient.invalidateQueries({ queryKey: ["attendance-logs", gymId] });
+      }
+    },
+  });
+
   const checkIn = useCallback(
     (data: { token: string; gymId: string }) =>
       checkInMutation.mutateAsync(data),
     [checkInMutation.mutateAsync]
+  );
+
+  const checkInByPin = useCallback(
+    (data: { pin: string; gymId: string }) =>
+      checkInByPinMutation.mutateAsync(data),
+    [checkInByPinMutation.mutateAsync]
+  );
+
+  const checkInByRfid = useCallback(
+    (data: { rfidId: string; gymId: string }) =>
+      checkInByRfidMutation.mutateAsync(data),
+    [checkInByRfidMutation.mutateAsync]
   );
 
   const logsQuery = useQuery({
@@ -37,7 +77,12 @@ export const useAttendance = (gymId?: string, skipLogs = false) => {
 
   return {
     checkIn,
-    isCheckingIn: checkInMutation.isPending,
+    checkInByPin,
+    checkInByRfid,
+    isCheckingIn:
+      checkInMutation.isPending ||
+      checkInByPinMutation.isPending ||
+      checkInByRfidMutation.isPending,
     logs: logsQuery.data,
     isLoadingLogs: logsQuery.isLoading,
   };

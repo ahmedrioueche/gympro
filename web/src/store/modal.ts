@@ -99,6 +99,7 @@ type ModalType =
   | "banner_form"
   | "subscription_warning"
   | "welcome_tour"
+  | "access_management"
   | null;
 
 interface ModalState {
@@ -153,6 +154,7 @@ interface ModalState {
   subscriptionWarningProps?: {
     config?: import("@ahmedrioueche/gympro-client").BlockerModalConfig;
   };
+  accessManagementProps?: import("../types/modals").AccessManagementModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -457,6 +459,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "subscription_warning",
           subscriptionWarningProps: props,
+        };
+      }
+      if (modal === "access_management") {
+        return {
+          currentModal: "access_management",
+          accessManagementProps: props,
         };
       }
       return { currentModal: null };

@@ -4,9 +4,10 @@ import { useTranslation } from "react-i18next";
 
 interface UseScannerProps {
   onScanSuccess: (decodedText: string) => Promise<void>;
+  enabled?: boolean;
 }
 
-export const useScanner = ({ onScanSuccess }: UseScannerProps) => {
+export const useScanner = ({ onScanSuccess, enabled = true }: UseScannerProps) => {
   const { t } = useTranslation();
   const [isScannerReady, setIsScannerReady] = useState(false);
   const [isMirrored, setIsMirrored] = useState(true);
@@ -110,16 +111,21 @@ export const useScanner = ({ onScanSuccess }: UseScannerProps) => {
 
   useEffect(() => {
     let active = true;
-    const timeout = setTimeout(() => {
-      if (active) startScanner();
-    }, 600);
 
-    return () => {
-      active = false;
-      clearTimeout(timeout);
+    if (enabled) {
+      const timeout = setTimeout(() => {
+        if (active) startScanner();
+      }, 600);
+
+      return () => {
+        active = false;
+        clearTimeout(timeout);
+        stopScanner();
+      };
+    } else {
       stopScanner();
-    };
-  }, [startScanner, stopScanner]);
+    }
+  }, [enabled, startScanner, stopScanner]);
 
   return {
     isScannerReady,

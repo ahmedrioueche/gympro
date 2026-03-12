@@ -13,6 +13,7 @@
     "please_wait": "Please wait while we load the page..."
   },
   "common": {
+    "default": "Default",
     "all": "All",
     "orManually": "Or manually",
     "error": "Something went wrong, please try again later",
@@ -38,6 +39,7 @@
     "restart": "Restart",
     "close": "Close",
     "processing": "Processing...",
+    "fullscreen": "Fullscreen",
     "cancel": "Cancel",
     "unassigned": "Unassigned",
     "joining": "Joining",
@@ -563,7 +565,24 @@
   },
   "access": {
     "title": "Access Control",
-    "subtitle": "Monitor gym entry and verify member access",
+    "subtitle": "Check-in members using QR, PIN or RFID",
+    "method": {
+      "qr": "QR Scanner",
+      "pin": "PIN Pad",
+      "rfid": "RFID Reader"
+    },
+    "pin": {
+      "title": "Enter Access PIN",
+      "subtitle": "Enter your 6-digit membership code",
+      "instruction": "Pin will be verified automatically"
+    },
+    "rfid": {
+      "title": "Ready to Scan",
+      "instruction": "Please tap your RFID card or key fob on the reader to grant access.",
+      "simulation_prompt": "Scan RFID Tag (Enter ID)",
+      "simulate_tap": "Simulate RFID Tap",
+      "hardware_hint": "Hardware: RC522 / PN532 Connected via USB/Serial"
+    },
     "view_access_logs": "View Access Logs",
     "scanner": {
       "title": "QR Scanner",
@@ -602,6 +621,30 @@
       "status": "Status",
       "empty": "No recent access logs",
       "empty_desc": "Access logs will appear here after members check in"
+    },
+    "management": {
+      "title": "Access Management",
+      "subtitle": "Link RFID tags and set PIN codes for {{name}}",
+      "rfid_label": "RFID Tag",
+      "rfid_placeholder": "Scan or enter RFID ID",
+      "rfid_hint": "Tap an RFID card on the reader or enter the card ID manually.",
+      "pin_label": "PIN Code",
+      "pin_hint": "Set a 4-6 digit PIN for manual check-in.",
+      "preferred_method_label": "Default Access Method",
+      "method_qr": "QR Code",
+      "method_pin": "PIN Code",
+      "method_rfid": "RFID Tag",
+      "method_face": "Face ID",
+      "update_success": "Access data updated successfully",
+      "update_failed": "Failed to update access data",
+      "set": "Set",
+      "not_set": "Not Set",
+      "linked": "Linked",
+      "not_linked": "Not Linked",
+      "active": "Active",
+      "pin_active_hint": "Your PIN code is active. You can check in at the gym kiosk using your unique code.",
+      "rfid_active_hint": "Your RFID tag is linked. Simply tap your card on the gym reader to check in.",
+      "qr_info": "Use the QR code above to check in. It refreshes automatically for security."
     }
   },
   "onboarding": {
@@ -4988,6 +5031,32 @@
     "createMember": {
       "enableContactlessTitle": "Enable Contactless Member",
       "enableContactlessDesc": "Create a member without email or phone number. They won't receive notifications or login credentials."
+    },
+    "gymMember": {
+      "access": {
+        "title": "Access Control",
+        "subtitle": "Use your QR, PIN, or RFID to check in",
+        "qr": {
+          "title": "QR Access",
+          "instruction": "Scan this QR code at the gym entrance",
+          "generating": "Generating QR...",
+          "expired": "Expired",
+          "expiresIn": "Expires in {{seconds}}s",
+          "refresh": "Refresh QR",
+          "tapToExpand": "Tap to expand",
+          "tapToClose": "Tap to close"
+        },
+        "pin": {
+          "instruction": "Enter this PIN at the gym kiosk"
+        },
+        "rfid": {
+          "instruction": "Tap your linked RFID tag at the reader"
+        },
+        "method": {
+          "title": "Gym Access Method",
+          "current": "Current default method"
+        }
+      }
     }
   },
   "welcomeTour": {

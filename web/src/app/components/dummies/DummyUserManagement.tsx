@@ -14,8 +14,8 @@ export const DummyUserManagement = () => {
 
   return (
     <DummyPageWrapper
-      pageTitle={t("welcomeTour.dummies.userManagement.pageTitle")}
-      locationKey="userManagement"
+      pageTitle={t("welcomeTour.dummies.managerUsers.pageTitle")}
+      locationKey="managerUsers"
     >
       <div className="w-full max-w-4xl space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">

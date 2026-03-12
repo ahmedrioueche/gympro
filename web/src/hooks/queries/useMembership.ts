@@ -33,3 +33,23 @@ export function useUpdateMembershipSettings() {
     },
   });
 }
+
+/**
+ * Hook to update current user's access data (preferred method)
+ */
+export function useUpdateMyAccessData() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      gymId,
+      data,
+    }: {
+      gymId: string;
+      data: { preferredMethod?: string };
+    }) => membershipApi.updateMyAccessData(gymId, data),
+    onSuccess: (_, { gymId }) => {
+      queryClient.invalidateQueries({ queryKey: membershipKeys.byGym(gymId) });
+    },
+  });
+}

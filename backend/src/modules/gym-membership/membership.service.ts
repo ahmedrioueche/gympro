@@ -826,6 +826,7 @@ export class MembershipService {
     return membership.toObject();
   }
 
+
   /**
    * Reactivate a member's cancelled or expired subscription
    */
@@ -1950,5 +1951,50 @@ export class MembershipService {
       .find({ _id: { $in: Array.from(staffIds) } })
       .select('profile.email profile.phoneNumber profile.fullName appSettings')
       .exec();
+  }
+
+  /**
+   * Update a member's access data (RFID/PIN)
+   */
+  async updateAccessData(membershipId: string, gymId: string, accessData: any) {
+    const memObjectId = this.toObjectId(membershipId);
+    const gymObjectId = this.toObjectId(gymId);
+
+    if (!memObjectId || !gymObjectId) {
+      throw new BadRequestException({
+        message: 'Invalid ID format',
+        errorCode: ErrorCode.INVALID_USER_DATA,
+      });
+    }
+
+    const membership = await this.membershipModel
+      .findOne({
+        _id: memObjectId,
+        gym: gymObjectId,
+      })
+      .exec();
+
+    if (!membership) {
+      throw new BadRequestException({
+        message: 'Membership not found',
+        errorCode: ErrorCode.NOT_FOUND,
+      });
+    }
+
+    // Update accessData fields
+    if (!membership.accessData) {
+      membership.accessData = {};
+    }
+
+    if (accessData.rfidId !== undefined)
+      membership.accessData.rfidId = accessData.rfidId;
+    if (accessData.pinCode !== undefined)
+      membership.accessData.pinCode = accessData.pinCode;
+
+    await membership.save();
+
+    this.logger.log(`Updated access data for membership ${membershipId}`);
+
+    return membership.toObject();
   }
 }

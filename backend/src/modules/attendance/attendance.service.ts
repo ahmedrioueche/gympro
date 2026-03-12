@@ -43,13 +43,54 @@ export class AttendanceService {
     return null;
   }
 
+  async checkInByPin(
+    gymId: string,
+    pin: string,
+  ): Promise<ApiResponse<AttendanceRecordModel>> {
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) throw new BadRequestException('Invalid gym ID');
+
+    const membership = await this.membershipModel.findOne({
+      gym: gymObjectId,
+      'accessData.pinCode': pin,
+      membershipStatus: 'active',
+    });
+
+    if (!membership) {
+      throw new BadRequestException('Invalid PIN or no active membership found');
+    }
+
+    return this.processCheckIn(membership, gymId);
+  }
+
+  async checkInByRfid(
+    gymId: string,
+    rfidId: string,
+  ): Promise<ApiResponse<AttendanceRecordModel>> {
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) throw new BadRequestException('Invalid gym ID');
+
+    const membership = await this.membershipModel.findOne({
+      gym: gymObjectId,
+      'accessData.rfidId': rfidId,
+      membershipStatus: 'active',
+    });
+
+    if (!membership) {
+      throw new BadRequestException(
+        'Invalid RFID card or no active membership found',
+      );
+    }
+
+    return this.processCheckIn(membership, gymId);
+  }
+
   async checkIn(
     token: string,
     gymId: string,
   ): Promise<ApiResponse<AttendanceRecordModel>> {
     console.log(`[AttendanceService] Check-in attempt for gym: ${gymId}`);
     let memberId: string | undefined;
-    const now = new Date();
 
     try {
       // 1. Verify and decode the access token
@@ -76,13 +117,9 @@ export class AttendanceService {
         throw new NotFoundException('Member not found');
       }
 
-      // 3. Check for active membership at this gym
+      // 3. Find membership
       const userObjectId = this.toObjectId(memberId);
       const gymObjectId = this.toObjectId(gymId);
-
-      if (!userObjectId || !gymObjectId) {
-        throw new BadRequestException('Invalid member or gym ID');
-      }
 
       const membership = await this.membershipModel.findOne({
         user: userObjectId,
@@ -96,11 +133,26 @@ export class AttendanceService {
         );
       }
 
-      // 4. Fetch Gym for settings
-      const gym = await this.gymModel.findById(gymObjectId);
+      return this.processCheckIn(membership, gymId);
+    } catch (error) {
+      return this.logAndEmitFailure(gymId, memberId, error.message);
+    }
+  }
+
+  private async processCheckIn(
+    membership: GymMembershipModel,
+    gymId: string,
+  ): Promise<ApiResponse<AttendanceRecordModel>> {
+    const now = new Date();
+    const gymObjectId = this.toObjectId(gymId);
+    const userObjectId = membership.user;
+
+    try {
+      // 1. Fetch Gym for settings
+      const gym = await this.gymModel.findById(gymId);
       const accessControlType = gym?.settings?.accessControlType ?? 'flexible';
 
-      // 5. Check subscription expiry
+      // 2. Check subscription expiry
       const isExpired =
         membership.subscription?.endDate &&
         new Date(membership.subscription.endDate) < now;
@@ -108,7 +160,7 @@ export class AttendanceService {
       let isLimitReached = false;
       let limitMessage = '';
 
-      // Check allowedDaysPerWeek limit if it exists and subscription is not already expired
+      // 3. Check allowedDaysPerWeek limit
       if (
         !isExpired &&
         membership.subscription?.typeDetails?.allowedDaysPerWeek
@@ -116,15 +168,11 @@ export class AttendanceService {
         const allowedDays =
           membership.subscription.typeDetails.allowedDaysPerWeek;
         if (allowedDays > 0 && allowedDays < 7) {
-          // Calculate start of current week (Monday at 00:00:00)
           const startOfWeek = new Date(now);
-          const day = startOfWeek.getDay() || 7; // Get current day number, converting Sun(0) to 7
-          if (day !== 1) {
-            startOfWeek.setHours(-24 * (day - 1)); // Step back to Monday
-          }
+          const day = startOfWeek.getDay() || 7;
+          if (day !== 1) startOfWeek.setHours(-24 * (day - 1));
           startOfWeek.setHours(0, 0, 0, 0);
 
-          // Get all successful check-ins for this user at this gym since start of week
           const weeklyAttendances = await this.attendanceModel.find({
             userId: userObjectId,
             gymId: gymObjectId,
@@ -132,7 +180,6 @@ export class AttendanceService {
             checkIn: { $gte: startOfWeek },
           });
 
-          // Group by unique date (YYYY-MM-DD)
           const uniqueDays = new Set(
             weeklyAttendances.map((a) => {
               const d = new Date(a.checkIn);
@@ -140,11 +187,9 @@ export class AttendanceService {
             }),
           );
 
-          // Check if today is already in the unique days list
           const todayDateString = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
           const isTodayAlreadyCounted = uniqueDays.has(todayDateString);
 
-          // If limit reached and today is not one of the counted days, deny access
           if (uniqueDays.size >= allowedDays && !isTodayAlreadyCounted) {
             isLimitReached = true;
             limitMessage = `Weekly limit reached (${allowedDays} days/week).`;
@@ -159,12 +204,10 @@ export class AttendanceService {
         accessMessage = limitMessage;
       }
 
-      // 6. Handle strict vs loose behavior for expired subscriptions
-      // We don't throw here anymore, we proceed to log the denial and return it
       const isDenied =
         (isExpired && accessControlType === 'strict') || isLimitReached;
 
-      // 7. Create attendance record
+      // 4. Create attendance record
       const attendance = new this.attendanceModel({
         _id: new Types.ObjectId().toString(),
         gymId: gymObjectId,
@@ -184,12 +227,8 @@ export class AttendanceService {
         .findById(attendance._id)
         .populate('userId', 'profile.fullName profile.profileImageUrl');
 
-      // Emit real-time event
+      // 5. Emit real-time event
       const status = attendance.status === 'checked_in' ? 'granted' : 'denied';
-      console.log(
-        `[AttendanceService] Emitting access_attempt. DB Status: ${attendance.status}, Emit Status: ${status}`,
-      );
-
       this.notificationsGateway.sendToGym(gymId, 'access_attempt', {
         status,
         name: (populated as any).userId?.profile?.fullName || 'Member',
@@ -200,60 +239,44 @@ export class AttendanceService {
       });
 
       return apiResponse(
-        attendance.status === 'checked_in', // success
-        attendance.status === 'checked_in' ? undefined : 'ACCESS_DENIED', // errorCode
-        populated as any, // data
-        accessMessage, // message
+        attendance.status === 'checked_in',
+        attendance.status === 'checked_in' ? undefined : 'ACCESS_DENIED',
+        populated as any,
+        accessMessage,
       );
     } catch (error) {
-      const errorMessage = error.message || 'Invalid QR Code';
-      console.error(
-        `[AttendanceService] Check-in failed for gym ${gymId}, member ${memberId}:`,
-        errorMessage,
-      );
-
-      // Always log denied attempts, even for invalid QR codes
-      try {
-        const deniedRecord = new this.attendanceModel({
-          _id: new Types.ObjectId().toString(),
-          gymId: new Types.ObjectId(gymId),
-          userId: memberId ? new Types.ObjectId(memberId) : null,
-          checkIn: now,
-          status: 'denied' as AttendanceStatus,
-          notes: errorMessage,
-          createdAt: now,
-        });
-        await deniedRecord.save();
-        console.log(
-          `[AttendanceService] Logged denied attempt for gym ${gymId}`,
-        );
-      } catch (logError) {
-        console.error('Failed to log denied attempt:', logError);
-      }
-
-      if (
-        error instanceof BadRequestException ||
-        error instanceof NotFoundException
-      ) {
-        // Emit real-time failure event
-        this.notificationsGateway.sendToGym(gymId, 'access_attempt', {
-          status: 'denied',
-          reason: errorMessage,
-          timestamp: now,
-        });
-
-        throw error;
-      }
-
-      // Emit real-time failure event for unknown errors too
-      this.notificationsGateway.sendToGym(gymId, 'access_attempt', {
-        status: 'denied',
-        reason: errorMessage,
-        timestamp: now,
-      });
-
-      throw new BadRequestException(errorMessage);
+      return this.logAndEmitFailure(gymId, userObjectId.toString(), error.message);
     }
+  }
+
+  private async logAndEmitFailure(
+    gymId: string,
+    memberId: string | undefined,
+    errorMessage: string,
+  ): Promise<ApiResponse<AttendanceRecordModel>> {
+    const now = new Date();
+    try {
+      const deniedRecord = new this.attendanceModel({
+        _id: new Types.ObjectId().toString(),
+        gymId: new Types.ObjectId(gymId),
+        userId: memberId ? new Types.ObjectId(memberId) : null,
+        checkIn: now,
+        status: 'denied' as AttendanceStatus,
+        notes: errorMessage,
+        createdAt: now,
+      });
+      await deniedRecord.save();
+    } catch (logError) {
+      console.error('Failed to log denied attempt:', logError);
+    }
+
+    this.notificationsGateway.sendToGym(gymId, 'access_attempt', {
+      status: 'denied',
+      reason: errorMessage,
+      timestamp: now,
+    });
+
+    throw new BadRequestException(errorMessage);
   }
 
   async generateAccessToken(
@@ -261,17 +284,9 @@ export class AttendanceService {
     gymId: string,
   ): Promise<ApiResponse<{ token: string; expiresAt: number }>> {
     try {
-      console.log(
-        `[AttendanceService] Generating access token for member ${memberId}, gym ${gymId}`,
-      );
-
-      // 1. Validate user existence
       const user = await this.userModel.findById(memberId);
-      if (!user) {
-        throw new NotFoundException('Member not found');
-      }
+      if (!user) throw new NotFoundException('Member not found');
 
-      // 2. Check for active membership at this gym
       const userObjectId = this.toObjectId(memberId);
       const gymObjectId = this.toObjectId(gymId);
 
@@ -286,46 +301,18 @@ export class AttendanceService {
       });
 
       if (!membership) {
-        throw new BadRequestException(
-          'No active membership found for this gym',
-        );
+        throw new BadRequestException('No active membership found for this gym');
       }
 
-      // 3. Generate JWT token with 30-second expiration
-      const payload = {
-        memberId,
-        gymId,
-      };
+      const payload = { memberId, gymId };
+      const token = this.jwtService.sign(payload, { expiresIn: '30s' });
+      const expiresAt = Date.now() + 30000;
 
-      const token = this.jwtService.sign(payload, {
-        expiresIn: '30s',
-      });
-
-      const expiresAt = Date.now() + 30000; // 30 seconds from now
-
-      console.log(
-        `[AttendanceService] Access token generated successfully for member ${memberId}`,
-      );
-
-      return apiResponse(
-        true,
-        undefined,
-        { token, expiresAt },
-        'Access token generated',
-      );
+      return apiResponse(true, undefined, { token, expiresAt }, 'Access token generated');
     } catch (error) {
-      console.error(
-        `[AttendanceService] Failed to generate access token for member ${memberId}:`,
-        error.message,
-      );
-
-      if (
-        error instanceof BadRequestException ||
-        error instanceof NotFoundException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Failed to generate access token');
+      throw error instanceof BadRequestException || error instanceof NotFoundException
+        ? error
+        : new BadRequestException('Failed to generate access token');
     }
   }
 
@@ -333,11 +320,7 @@ export class AttendanceService {
     gymId: string,
   ): Promise<ApiResponse<AttendanceRecordModel[]>> {
     try {
-      console.log(`Fetching attendance logs for gym: ${gymId}`);
-
-      // Convert gymId to ObjectId for proper querying
       const gymObjectId = new Types.ObjectId(gymId);
-
       const logs = await this.attendanceModel
         .find({ gymId: gymObjectId })
         .sort({ createdAt: -1 })
@@ -345,16 +328,8 @@ export class AttendanceService {
         .populate('userId', 'profile.fullName profile.profileImageUrl')
         .lean();
 
-      console.log(`Found ${logs.length} attendance records for gym ${gymId}`);
-
-      return apiResponse(
-        true,
-        undefined,
-        logs as any,
-        'Attendance logs fetched',
-      );
+      return apiResponse(true, undefined, logs as any, 'Attendance logs fetched');
     } catch (error) {
-      console.error('Error fetching attendance logs:', error);
       return apiResponse(false, 'Failed to fetch attendance logs', []);
     }
   }
@@ -363,28 +338,15 @@ export class AttendanceService {
     userId: string,
   ): Promise<ApiResponse<AttendanceRecordModel[]>> {
     try {
-      console.log(
-        `[AttendanceService] Fetching attendance for user: ${userId}`,
-      );
-
       const userObjectId = new Types.ObjectId(userId);
-
       const logs = await this.attendanceModel
         .find({ userId: userObjectId })
         .sort({ createdAt: -1 })
         .populate('gymId', 'name location.address location.city')
         .lean();
 
-      console.log(`Found ${logs.length} attendance records for user ${userId}`);
-
-      return apiResponse(
-        true,
-        undefined,
-        logs as any,
-        'Attendance history fetched',
-      );
+      return apiResponse(true, undefined, logs as any, 'Attendance history fetched');
     } catch (error) {
-      console.error('Error fetching user attendance:', error);
       return apiResponse(false, 'ATTENDANCE_FETCH_ERROR', []);
     }
   }
@@ -394,31 +356,16 @@ export class AttendanceService {
     gymId: string,
   ): Promise<ApiResponse<AttendanceRecordModel[]>> {
     try {
-      console.log(
-        `[AttendanceService] Fetching attendance for user: ${userId} in gym: ${gymId}`,
-      );
-
       const userObjectId = new Types.ObjectId(userId);
       const gymObjectId = new Types.ObjectId(gymId);
-
       const logs = await this.attendanceModel
         .find({ userId: userObjectId, gymId: gymObjectId })
         .sort({ createdAt: -1 })
         .populate('gymId', 'name location.address location.city')
         .lean();
 
-      console.log(
-        `Found ${logs.length} attendance records for user ${userId} in gym ${gymId}`,
-      );
-
-      return apiResponse(
-        true,
-        undefined,
-        logs as any,
-        'Attendance history for gym fetched',
-      );
+      return apiResponse(true, undefined, logs as any, 'Attendance history for gym fetched');
     } catch (error) {
-      console.error('Error fetching user attendance in gym:', error);
       return apiResponse(false, 'ATTENDANCE_FETCH_ERROR', []);
     }
   }

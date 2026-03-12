@@ -22,6 +22,38 @@ export const attendanceApi = {
     }
   },
 
+  /** Check-in member using PIN code */
+  checkInByPin: async (
+    gymId: string,
+    pin: string
+  ): Promise<ApiResponse<AttendanceRecord>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<AttendanceRecord>>(
+        "/attendance/check-in/pin",
+        { gymId, pin }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Check-in member using RFID ID */
+  checkInByRfid: async (
+    gymId: string,
+    rfidId: string
+  ): Promise<ApiResponse<AttendanceRecord>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<AttendanceRecord>>(
+        "/attendance/check-in/rfid",
+        { gymId, rfidId }
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
   /** Generate access token for member QR code */
   getAccessToken: async (
     gymId: string

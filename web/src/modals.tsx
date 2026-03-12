@@ -237,6 +237,11 @@ const WelcomeTourModalWrapper = lazy(
   () => import("./app/components/modals/welcome-tour/WelcomeTourModalWrapper"),
 );
 
+const AccessManagementModal = lazy(
+  () =>
+    import("./app/components/modals/access-management/AccessManagementModal"),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -290,6 +295,7 @@ function modals() {
       <BannerFormModal />
       <SubscriptionWarningModalWrapper />
       <WelcomeTourModalWrapper />
+      <AccessManagementModal />
     </Suspense>
   );
 }

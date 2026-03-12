@@ -20,6 +20,11 @@ export interface MembershipSettings {
   };
 }
 
+export interface AccessData {
+  rfidId?: string;
+  pinCode?: string;
+}
+
 export interface GymMembership extends AuditInfo {
   _id: string;
   gym: Gym;
@@ -30,6 +35,7 @@ export interface GymMembership extends AuditInfo {
   customPermissions?: Partial<RolePermissions>;
   permissions?: string[]; // Granular permissions like 'members:view', 'attendance:checkin'
   settings?: MembershipSettings;
+  accessData?: AccessData;
 }
 
 export enum MembershipStatus {
@@ -57,6 +63,7 @@ export interface MemberSubscriptionView extends AuditInfo {
   membershipStatus: MembershipStatus;
   subscription?: SubscriptionInfo;
   settings?: MembershipSettings;
+  accessData?: AccessData;
 }
 
 /** Member profile view for gym manager member profile page */
@@ -67,6 +74,7 @@ export interface MemberProfileView {
     membershipStatus: MembershipStatus;
     roles: UserRole[];
     subscription?: SubscriptionInfo;
+    accessData?: AccessData;
   };
   user: User;
   payments: PaymentTransaction[];

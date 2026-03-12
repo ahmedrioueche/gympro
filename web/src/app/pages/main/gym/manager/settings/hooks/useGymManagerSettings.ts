@@ -74,6 +74,9 @@ export function useGymManagerSettings() {
     },
   });
   const [notifyScheduleChanges, setNotifyScheduleChanges] = useState(true);
+  const [preferredAccessMethod, setPreferredAccessMethod] = useState<
+    "qr" | "pin" | "rfid" | "face"
+  >("qr");
 
   // Location State (gym-level fields, not settings)
   const [address, setAddress] = useState("");
@@ -170,6 +173,9 @@ export function useGymManagerSettings() {
         }
         if (settings.notifyScheduleChanges !== undefined) {
           setNotifyScheduleChanges(settings.notifyScheduleChanges);
+        }
+        if (settings.preferredAccessMethod) {
+          setPreferredAccessMethod(settings.preferredAccessMethod);
         }
       }
     }
@@ -337,6 +343,7 @@ export function useGymManagerSettings() {
         workingDays,
         reminderSettings,
         notifyScheduleChanges,
+        preferredAccessMethod,
       };
 
       const settingsResult = await updateSettings.mutateAsync({
@@ -413,6 +420,8 @@ export function useGymManagerSettings() {
       JSON.stringify(currentGym?.settings?.reminderSettings) ||
     notifyScheduleChanges !==
       (currentGym?.settings?.notifyScheduleChanges ?? true) ||
+    preferredAccessMethod !==
+      (currentGym?.settings?.preferredAccessMethod || "qr") ||
     JSON.stringify(paymentMethods) !==
       JSON.stringify(currentGym?.settings?.paymentMethods || ["cash"]) ||
     JSON.stringify(servicesOffered) !==
@@ -485,6 +494,8 @@ export function useGymManagerSettings() {
     setReminderSettings,
     notifyScheduleChanges,
     setNotifyScheduleChanges,
+    preferredAccessMethod,
+    setPreferredAccessMethod,
     addRule: (rule: string) => {
       if (rule.trim()) {
         setRules((prev) => [...prev, rule.trim()]);

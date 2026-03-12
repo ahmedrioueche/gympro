@@ -12,6 +12,7 @@
     "please_wait": "Veuillez patienter pendant le chargement de la page..."
   },
   "common": {
+    "default": "Par défaut",
     "all": "Tous",
     "orManually": "Ou manuellement",
     "error": "Une erreur s'est produite, veuillez réessayer plus tard",
@@ -38,6 +39,7 @@
     "avatarHint": "Max 5 Mo",
     "close": "Fermer",
     "processing": "Traitement...",
+    "fullscreen": "Plein écran",
     "cancel": "Annuler",
     "unassigned": "Non assigné",
     "joining": "Rejoindre",
@@ -563,6 +565,23 @@
   "access": {
     "title": "Contrôle d'accès",
     "subtitle": "Surveillez l'entrée de la salle de sport et vérifiez l'accès des membres",
+    "method": {
+      "qr": "Scanner QR",
+      "pin": "Pavé PIN",
+      "rfid": "Lecteur RFID"
+    },
+    "pin": {
+      "title": "Entrer le code PIN",
+      "subtitle": "Entrez votre code de membre à 6 chiffres",
+      "instruction": "Le code sera vérifié automatiquement"
+    },
+    "rfid": {
+      "title": "Prêt à scanner",
+      "instruction": "Veuillez badger votre carte RFID ou votre badge sur le lecteur pour accorder l'accès.",
+      "simulation_prompt": "Scanner badge RFID (Entrer ID)",
+      "simulate_tap": "Simuler un badgeage RFID",
+      "hardware_hint": "Matériel : RC522 / PN532 Connecté via USB/Série"
+    },
     "view_access_logs": "Voir les journaux d'accès",
     "scanner": {
       "title": "Scanner QR",
@@ -601,6 +620,30 @@
       "status": "Statut",
       "empty": "Aucun journal d'accès récent",
       "empty_desc": "Les journaux d'accès apparaîtront ici après l'enregistrement des membres"
+    },
+    "management": {
+      "title": "Gestion d'accès",
+      "subtitle": "Lier des badges RFID et définir des codes PIN pour {{name}}",
+      "rfid_label": "Badge RFID",
+      "rfid_placeholder": "Scanner ou saisir l'ID RFID",
+      "rfid_hint": "Badgez une carte RFID sur le lecteur ou saisissez l'ID de la carte manuellement.",
+      "pin_label": "Code PIN",
+      "pin_hint": "Définissez un code PIN de 4 à 6 chiffres pour l'enregistrement manuel.",
+      "preferred_method_label": "Méthode d'accès par défaut",
+      "method_qr": "Code QR",
+      "method_pin": "Code PIN",
+      "method_rfid": "Badge RFID",
+      "method_face": "Reconnaissance faciale",
+      "update_success": "Données d'accès mises à jour avec succès",
+      "update_failed": "Échec de la mise à jour des données d'accès",
+      "set": "Défini",
+      "not_set": "Non défini",
+      "linked": "Lié",
+      "not_linked": "Non lié",
+      "active": "Actif",
+      "pin_active_hint": "Votre code PIN est actif. Vous pouvez vous enregistrer à la borne du club en utilisant votre code unique.",
+      "rfid_active_hint": "Votre badge RFID est lié. Badgez simplement votre carte sur le lecteur du club pour vous enregistrer.",
+      "qr_info": "Utilisez le code QR ci-dessus pour vous enregistrer. Il s'actualise automatiquement pour des raisons de sécurité."
     }
   },
   "onboarding": {

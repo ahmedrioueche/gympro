@@ -92,6 +92,9 @@ export class GymSettingsModel implements GymSettings {
   @Prop({ type: [Object], default: [] }) temporaryClosures?: any[];
   @Prop({ type: [Number], default: [0, 1, 2, 3, 4, 5, 6] })
   workingDays?: number[];
+
+  @Prop({ enum: ['qr', 'pin', 'rfid', 'face'], default: 'qr' })
+  preferredAccessMethod?: 'qr' | 'pin' | 'rfid' | 'face';
 }
 export const GymSettingsSchema = SchemaFactory.createForClass(GymSettingsModel);
 

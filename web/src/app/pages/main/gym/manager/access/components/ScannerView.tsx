@@ -1,4 +1,4 @@
-import { Camera, Loader2, ShieldCheck } from "lucide-react";
+import { Camera, Loader2, Maximize2, ShieldCheck } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../../../../../utils/helper";
@@ -9,6 +9,8 @@ interface ScannerViewProps {
   isMirrored: boolean;
   onToggleMirror: () => void;
   onRetry: () => void;
+  onMaximize?: () => void;
+  className?: string;
 }
 
 export const ScannerView: React.FC<ScannerViewProps> = ({
@@ -17,11 +19,13 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
   isMirrored,
   onToggleMirror,
   onRetry,
+  onMaximize,
+  className,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="relative group transition-all duration-500">
+    <div className={cn("relative group transition-all duration-500", className)}>
       <div className="relative bg-zinc-900 border border-zinc-800 overflow-hidden shadow-2xl rounded-3xl transition-all duration-500">
         <div className="p-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/50 backdrop-blur-xl shrink-0">
           <div className="flex items-center gap-3">
@@ -32,19 +36,30 @@ export const ScannerView: React.FC<ScannerViewProps> = ({
               {t("access.scanner.title")}
             </h3>
           </div>
-          <button
-            onClick={onToggleMirror}
-            className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all",
-              isMirrored
-                ? "bg-blue-500/20 text-blue-400 border border-blue-500/50"
-                : "bg-zinc-800 text-zinc-400 hover:text-white"
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onToggleMirror}
+              className={cn(
+                "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all",
+                isMirrored
+                  ? "bg-blue-500/20 text-blue-400 border border-blue-500/50"
+                  : "bg-zinc-800 text-zinc-400 hover:text-white"
+              )}
+            >
+              {isMirrored
+                ? t("access.scanner.mirrored")
+                : t("access.scanner.normal")}
+            </button>
+            {onMaximize && (
+              <button
+                onClick={onMaximize}
+                className="p-1.5 bg-zinc-800 text-zinc-400 hover:text-white rounded-lg transition-colors border border-transparent hover:border-zinc-700"
+                title={t("common.fullscreen", "Fullscreen")}
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
             )}
-          >
-            {isMirrored
-              ? t("access.scanner.mirrored")
-              : t("access.scanner.normal")}
-          </button>
+          </div>
         </div>
 
         <div className="relative bg-black overflow-hidden flex items-center justify-center">

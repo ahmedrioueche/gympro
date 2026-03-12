@@ -161,6 +161,7 @@ export class MembershipController {
     }
   }
 
+
   @Post('create')
   @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireGymPermission('members:create')
@@ -319,6 +320,37 @@ export class MembershipController {
       );
     } catch (error) {
       return apiResponse<MemberResponse>(
+        false,
+        ErrorCode.UPDATE_MEMBER_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
+  @Patch(':gymId/:membershipId/access-data')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
+  @RequireGymPermission('members:edit')
+  @RequireFeature(GymManagerFeature.MEMBERS)
+  async updateAccessData(
+    @Param('gymId') gymId: string,
+    @Param('membershipId') membershipId: string,
+    @Body() dto: { accessData: any },
+  ): Promise<ApiResponse<any>> {
+    try {
+      const result = await this.membershipService.updateAccessData(
+        membershipId,
+        gymId,
+        dto.accessData,
+      );
+      return apiResponse(
+        true,
+        undefined,
+        result,
+        'Access data updated successfully',
+      );
+    } catch (error) {
+      return apiResponse<any>(
         false,
         ErrorCode.UPDATE_MEMBER_FAILED,
         undefined,

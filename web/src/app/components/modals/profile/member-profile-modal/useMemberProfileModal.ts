@@ -43,6 +43,17 @@ export function useMemberProfileModal() {
     });
   };
 
+  const handleManageAccess = () => {
+    if (!memberId || !membershipId || !user) return;
+
+    openModal("access_management", {
+      gymId,
+      membershipId,
+      memberName: user.profile?.fullName || t("memberProfile.unknownMember"),
+      initialAccessData: memberProfile?.membership?.accessData,
+    });
+  };
+
   const handleClose = () => {
     closeModal();
   };
@@ -56,6 +67,7 @@ export function useMemberProfileModal() {
     subscriptionHistory,
     payments,
     handleRenewSubscription,
+    handleManageAccess,
     handleClose,
     hasMembership: !!membershipId && !!memberProfile?.membership,
   };

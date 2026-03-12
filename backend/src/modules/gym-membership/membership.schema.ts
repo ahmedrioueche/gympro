@@ -38,6 +38,12 @@ export class PrivacySettingsModel {
 }
 
 @Schema({ _id: false })
+export class AccessDataModel {
+  @Prop() rfidId?: string;
+  @Prop() pinCode?: string;
+}
+
+@Schema({ _id: false })
 export class MembershipSettingsModel {
   @Prop({ type: GeneralSettingsModel, default: () => ({}) })
   general: GeneralSettingsModel;
@@ -84,6 +90,9 @@ export class GymMembershipModel extends Document {
 
   @Prop({ type: MembershipSettingsModel, default: () => ({}) })
   settings: MembershipSettingsModel;
+
+  @Prop({ type: AccessDataModel, default: () => ({}) })
+  accessData: AccessDataModel;
 
   @Prop() createdAt: Date;
   @Prop() updatedAt?: Date;

@@ -88,6 +88,8 @@ export default function SettingsPage() {
     handleUpdateFacility,
     handleRemoveFacility,
     isFacilityLoading,
+    preferredAccessMethod,
+    setPreferredAccessMethod,
   } = useGymManagerSettings();
 
   const tabs = [
@@ -174,6 +176,8 @@ export default function SettingsPage() {
             setDefaultCurrency={setDefaultCurrency}
             workingDays={workingDays}
             setWorkingDays={setWorkingDays}
+            preferredAccessMethod={preferredAccessMethod}
+            setPreferredAccessMethod={setPreferredAccessMethod}
           />
         )}
 

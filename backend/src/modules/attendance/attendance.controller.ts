@@ -29,6 +29,16 @@ export class AttendanceController {
     return this.attendanceService.checkIn(body.token, body.gymId);
   }
 
+  @Post('check-in/pin')
+  async checkInByPin(@Body() body: { pin: string; gymId: string }) {
+    return this.attendanceService.checkInByPin(body.gymId, body.pin);
+  }
+
+  @Post('check-in/rfid')
+  async checkInByRfid(@Body() body: { rfidId: string; gymId: string }) {
+    return this.attendanceService.checkInByRfid(body.gymId, body.rfidId);
+  }
+
   @Get('access-token/:gymId')
   @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
   @RequireFeature(GymManagerFeature.ATTENDANCE)

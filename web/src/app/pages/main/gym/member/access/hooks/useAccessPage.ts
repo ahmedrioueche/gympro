@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import { useAccessToken } from "../../../../../../../hooks/queries/useAttendance";
+import {
+  useMyMembershipInGym,
+} from "../../../../../../../hooks/queries/useMembership";
 
 export const useAccessPage = (gymId?: string) => {
   const {
     data: tokenRes,
-    isLoading,
+    isLoading: isTokenLoading,
     refetch,
     isRefetching,
   } = useAccessToken(gymId);
+
+  const { data: membershipRes, isLoading: isMembershipLoading } =
+    useMyMembershipInGym(gymId || "");
+
   const [timeLeft, setTimeLeft] = useState(30);
 
   useEffect(() => {
@@ -30,8 +37,12 @@ export const useAccessPage = (gymId?: string) => {
 
   return {
     token: tokenRes?.data?.token,
-    isLoading: isLoading || isRefetching,
+    membership: membershipRes?.data?.membership,
     timeLeft,
-    refresh: refetch,
+    isLoading: isTokenLoading || isMembershipLoading,
+    isUpdating: isRefetching,
+    refresh: () => {
+      refetch();
+    },
   };
 };
