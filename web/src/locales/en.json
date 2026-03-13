@@ -24,6 +24,7 @@
     "currentRoute": "Current Route",
     "back": "Back",
     "save": "Save",
+    "generate": "Generate",
     "select": "Select",
     "saving": "Saving...",
     "gym": "Gym",
@@ -168,7 +169,11 @@
       "friday": "Fri",
       "sunday": "Sun"
     },
-    "per_month": "/ month"
+    "per_month": "/ month",
+    "internal_location": "Secret Location",
+    "launch_nav": "Navigate",
+    "regular_hours": "Regular Hours",
+    "no_location_available": "No location available"
   },
   "billing": {
     "limits": {
@@ -799,7 +804,17 @@
     "appSubscription": "App Subscription",
     "subscriptionType": "Type",
     "subscriptionStatus": "Status",
-    "viewMoreDetails": "View Details"
+    "viewMoreDetails": "View Details",
+    "exclusiveLocation": "Elite Training Facility",
+    "territory": "Territory",
+    "investment": "Packages & Pricing",
+    "contact_for_plans": "Contact gym for private pricing",
+    "timelines": "Operating Timelines",
+    "mixed_entry": "Mixed Environment",
+    "segregated_entry": "Segregated Sessions",
+    "female_exclusive": "Female Sessions",
+    "facility_matrix": "Facility Matrix",
+    "comms": "Core Communication"
   },
   "create_gym": {
     "title": "Create Your Gym",
@@ -1653,6 +1668,10 @@
         "title": "Subscription Details",
         "description": "Choose membership plan and payment method"
       },
+      "access": {
+        "title": "Access System",
+        "description": "Assign RFID tag or generate unique PIN"
+      },
       "contact": {
         "title": "Preferences & Review",
         "description": "Contact preferences and final review"
@@ -1735,6 +1754,7 @@
       "ageInvalid": "Please enter a valid age",
       "subscriptionRequired": "Subscription type is required",
       "paymentRequired": "Payment method is required",
+      "pinInvalid": "PIN must be between 4 and 8 digits",
       "checkForm": "Please check the form for errors",
       "sameEmail": "You cannot create a member with the same email as your account",
       "samePhone": "You cannot create a member with the same phone number as your account",
@@ -1750,6 +1770,20 @@
       "cancel": "Cancel",
       "saving": "Saving..."
     },
+    "access": {
+      "title": "Access System",
+      "description": "Assign an RFID tag or generate a unique PIN for the member to access the gym.",
+      "rfid": {
+        "label": "RFID Tag",
+        "helper": "Scan the member's card or bracelet now",
+        "placeholder": "Card ID (e.g. 0001234567)"
+      },
+      "pin": {
+        "label": "Personal PIN Code",
+        "helper": "Used for manual entry at the terminal",
+        "generate": "Auto-Generate PIN"
+      }
+    },
     "success": {
       "title": "Member Created Successfully!",
       "message": "The new member has been added to your gym. They will receive access details shortly.",
@@ -1757,11 +1791,24 @@
       "viewMembers": "View All Members"
     },
     "error": {
-      "message": "Failed to create member. Please try again."
+      "message": "Failed to create member",
+      "genPin": "Failed to generate PIN"
     },
     "tips": {
       "title": "Access Notification",
       "description": "When you create a member, they will automatically receive a message with their account access details via their chosen contact method (email or SMS)."
+    },
+    "management": {
+      "title": "Access Management",
+      "rfid_label": "RFID Tag",
+      "rfid_placeholder": "Scan or enter Card ID",
+      "rfid_hint": "Linking a physical card or bracelet for entry",
+      "pin_label": "Personal PIN Code",
+      "pin_hint": "4-8 digits used for manual check-in",
+      "update_success": "Access data updated successfully",
+      "update_failed": "Failed to update access data",
+      "pin_generated": "New PIN generated",
+      "pin_gen_failed": "Failed to generate unique PIN"
     }
   },
   "gymMember": {

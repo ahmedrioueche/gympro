@@ -4,6 +4,7 @@ import {
   GymCoachAffiliation as GymCoachAffiliationType,
   InviteCoachDto,
   RequestGymAffiliationDto,
+  UserRole,
 } from '@ahmedrioueche/gympro-client';
 import {
   Inject,
@@ -20,6 +21,7 @@ import { GymModel } from '../gym/gym.schema';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SessionModel } from '../sessions/schemas/session.schema';
 import { SessionsService } from '../sessions/sessions.service';
+import { MembershipService } from '../gym-membership/membership.service';
 import {
   AffiliationStatus,
   GymCoachAffiliation,
@@ -41,6 +43,7 @@ export class GymCoachService {
     private notificationsService: NotificationsService,
     @Inject(forwardRef(() => SessionsService))
     private sessionsService: SessionsService,
+    private membershipService: MembershipService,
   ) {}
 
   /**
@@ -60,22 +63,40 @@ export class GymCoachService {
 
       return {
         success: true,
-        data: affiliations.map((a: any) => ({
-          ...a,
-          coach: a.coachId
-            ? {
-                _id: a.coachId._id,
-                fullName: a.coachId.profile?.fullName,
-                username: a.coachId.profile?.username,
-                profileImageUrl: a.coachId.profile?.profileImageUrl,
-                specializations: a.coachId.coachingInfo?.specializations,
-                city: a.coachId.profile?.city,
-                state: a.coachId.profile?.state,
-                country: a.coachId.profile?.country,
-                coachVerification: a.coachId.coachVerification,
-              }
-            : null,
-        })) as any,
+        data: (await Promise.all(
+          affiliations.map(async (a: any) => {
+            // Backward compatibility: If membershipId is missing, try to find it
+            let membershipId = a.membershipId;
+            if (!membershipId && a.coachId && a.gymId) {
+              const membership = await this.membershipModel
+                .findOne({
+                  user: a.coachId._id || a.coachId,
+                  gym: a.gymId._id || a.gymId,
+                })
+                .select('_id')
+                .lean();
+              membershipId = membership?._id;
+            }
+
+            return {
+              ...a,
+              membershipId,
+              coach: a.coachId
+                ? {
+                    _id: a.coachId._id,
+                    fullName: a.coachId.profile?.fullName,
+                    username: a.coachId.profile?.username,
+                    profileImageUrl: a.coachId.profile?.profileImageUrl,
+                    specializations: a.coachId.coachingInfo?.specializations,
+                    city: a.coachId.profile?.city,
+                    state: a.coachId.profile?.state,
+                    country: a.coachId.profile?.country,
+                    coachVerification: a.coachId.coachVerification,
+                  }
+                : null,
+            };
+          }),
+        )) as any,
       };
     } catch (error) {
       this.logger.error('Error fetching gym coaches:', error);
@@ -312,7 +333,30 @@ export class GymCoachService {
         ? AffiliationStatus.ACTIVE
         : AffiliationStatus.DECLINED;
       if (message) affiliation.message = message;
-      if (accept) affiliation.startDate = new Date();
+      if (accept) {
+        affiliation.startDate = new Date();
+
+        // Ensure GymMembership exists for the coach
+        let membership = await this.membershipModel.findOne({
+          user: affiliation.coachId,
+          gym: affiliation.gymId,
+        });
+
+        if (!membership) {
+          membership = await this.membershipModel.create({
+            user: affiliation.coachId,
+            gym: affiliation.gymId,
+            roles: [UserRole.Coach],
+            joinedAt: new Date().toISOString(),
+            membershipStatus: 'active',
+          });
+        } else if (!membership.roles.includes(UserRole.Coach)) {
+          membership.roles.push(UserRole.Coach);
+          await membership.save();
+        }
+
+        (affiliation as any).membershipId = membership._id;
+      }
 
       await affiliation.save();
 

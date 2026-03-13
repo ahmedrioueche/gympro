@@ -28,7 +28,6 @@ export function useFeatureAccess() {
     }
 
     // Check from the gym's synced subscription (covers all staff roles)
-    console.log("currentGym", currentGym);
     const subscription = currentGym?.appSubscription;
     const featurePackages = subscription?.plan?.featurePackages || [];
 

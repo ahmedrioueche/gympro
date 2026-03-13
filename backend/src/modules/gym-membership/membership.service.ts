@@ -271,6 +271,10 @@ export class MembershipService {
       joinedAt: new Date().toISOString(),
       membershipStatus: 'active',
       subscription: subscriptionInfo,
+      accessData: {
+        rfidId: dto.rfidId,
+        pinCode: dto.pinCode,
+      },
       createdAt: new Date(),
       createdBy,
     });
@@ -369,6 +373,42 @@ export class MembershipService {
       setupToken: isNewUser ? setupToken : undefined,
       isNewUser,
     };
+  }
+
+  /**
+   * Generate a unique 6-digit PIN for a gym
+   */
+  async generateUniquePin(gymId: string): Promise<string> {
+    const gymObjectId = this.toObjectId(gymId);
+    if (!gymObjectId) {
+      throw new BadRequestException('Invalid gym ID');
+    }
+
+    const maxAttempts = 10;
+    let attempt = 0;
+
+    while (attempt < maxAttempts) {
+      // Generate random 6-digit PIN
+      const pin = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Check if PIN already exists in this gym
+      const existing = await this.membershipModel
+        .findOne({
+          gym: gymObjectId,
+          'accessData.pinCode': pin,
+        })
+        .select('_id')
+        .lean()
+        .exec();
+
+      if (!existing) {
+        return pin;
+      }
+
+      attempt++;
+    }
+
+    throw new BadRequestException('Failed to generate a unique PIN after 10 attempts');
   }
 
   /**
@@ -611,6 +651,7 @@ export class MembershipService {
         membershipStatus: membership.membershipStatus,
         roles: membership.roles,
         subscription: membership.subscription,
+        accessData: membership.accessData ? (membership.accessData as any).toObject?.() || membership.accessData : undefined,
       },
       user: sanitizedUser,
       payments,

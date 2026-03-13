@@ -242,6 +242,12 @@ const AccessManagementModal = lazy(
     import("./app/components/modals/access-management/AccessManagementModal"),
 );
 
+const GymDetailsModal = lazy(() =>
+  import("./app/components/modals/GymDetailsModal").then((module) => ({
+    default: module.GymDetailsModal,
+  })),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -266,6 +272,7 @@ function modals() {
       <CoachProfileModal />
       <CoachPricingModal />
       <RequestCoachAccessModal />
+      <GymDetailsModal />
       <GymInvitationModal />
       <CoachingOfferModal />
       <CreateAnnouncementModal />

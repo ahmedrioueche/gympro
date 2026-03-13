@@ -94,4 +94,18 @@ export const membersApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Get a random unique PIN for a gym */
+  getRandomPin: async (
+    gymId: string,
+  ): Promise<ApiResponse<{ pin: string }>> => {
+    try {
+      const res = await apiClient.get<ApiResponse<{ pin: string }>>(
+        `/membership/${gymId}/random-pin`,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };

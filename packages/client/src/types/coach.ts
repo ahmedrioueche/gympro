@@ -98,6 +98,7 @@ export interface CoachProfile {
   totalClients?: number;
   isVerified?: boolean;
   pricing?: CoachPricingTier[];
+  membershipId?: string;
 }
 
 // Active client profile (for coaches)

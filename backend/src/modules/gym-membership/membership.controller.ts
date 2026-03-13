@@ -224,6 +224,26 @@ export class MembershipController {
     );
   }
 
+  @Get(':gymId/random-pin')
+  @UseGuards(JwtAuthGuard, GymPermissionsGuard, GymFeatureGuard)
+  @RequireGymPermission('members:create')
+  @RequireFeature(GymManagerFeature.MEMBERS)
+  async getRandomPin(
+    @Param('gymId') gymId: string,
+  ): Promise<ApiResponse<{ pin: string }>> {
+    try {
+      const pin = await this.membershipService.generateUniquePin(gymId);
+      return apiResponse(true, undefined, { pin }, 'PIN generated successfully');
+    } catch (error) {
+      return apiResponse<{ pin: string }>(
+        false,
+        ErrorCode.UPDATE_MEMBER_FAILED,
+        undefined,
+        error.message,
+      );
+    }
+  }
+
   @Post('request/:gymId')
   @UseGuards(JwtAuthGuard)
   async requestAccess(@Param('gymId') gymId: string, @Req() req: any) {

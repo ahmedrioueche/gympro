@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { capitalize, cn, getEmbedUrl, parseAiResponse } from "./helper";
 
 describe("cn (classnames)", () => {
@@ -101,7 +101,10 @@ describe("parseAiResponse", () => {
 
   it("should return null for invalid JSON", () => {
     const response = { data: "not json at all" };
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(parseAiResponse(response)).toBeNull();
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
   });
 
   it("should return null for undefined response", () => {

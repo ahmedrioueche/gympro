@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { useAccessToken } from "../../../../../../../hooks/queries/useAttendance";
-import {
-  useMyMembershipInGym,
-} from "../../../../../../../hooks/queries/useMembership";
+import { useAccessToken } from "./queries/useAttendance";
+import { useMyMembershipInGym } from "./queries/useMembership";
 
 export const useAccessPage = (gymId?: string) => {
   const {
@@ -19,7 +17,7 @@ export const useAccessPage = (gymId?: string) => {
 
   useEffect(() => {
     if (tokenRes?.data?.expiresAt) {
-      const interval = setInterval(() => {
+      const update = () => {
         const remaining = Math.max(
           0,
           Math.floor((tokenRes.data.expiresAt - Date.now()) / 1000)
@@ -29,7 +27,10 @@ export const useAccessPage = (gymId?: string) => {
         if (remaining === 0) {
           refetch();
         }
-      }, 1000);
+      };
+
+      update();
+      const interval = setInterval(update, 1000);
 
       return () => clearInterval(interval);
     }

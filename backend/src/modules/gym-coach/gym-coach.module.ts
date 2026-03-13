@@ -8,6 +8,7 @@ import {
 import { GymMembershipSchema } from '../gym-membership/membership.schema';
 import { GymModel, GymSchema } from '../gym/gym.schema';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { MembershipModule } from '../gym-membership/membership.module';
 import {
   SessionModel,
   SessionSchema,
@@ -32,6 +33,7 @@ import {
     ]),
     NotificationsModule,
     forwardRef(() => SessionsModule),
+    MembershipModule,
   ],
   controllers: [GymCoachController],
   providers: [GymCoachService],

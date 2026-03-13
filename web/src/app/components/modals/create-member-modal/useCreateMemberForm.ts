@@ -24,7 +24,11 @@ export interface FormData {
   subscriptionDuration: string;
   paymentMethod: PaymentMethod | "";
 
-  // Step 3: Contact Preferences
+  // Step 3: Access System
+  rfidId: string;
+  pinCode: string;
+
+  // Step 4: Contact Preferences
   contactMethod: ContactMethod;
   sendWelcomeMessage: boolean;
   notes: string;
@@ -40,6 +44,7 @@ export interface FormErrors {
   subscriptionTypeId?: string;
   paymentMethod?: string;
   subscriptionStartDate?: string;
+  pinCode?: string;
 }
 
 const initialFormData: FormData = {
@@ -53,6 +58,8 @@ const initialFormData: FormData = {
   subscriptionStartDate: new Date().toISOString().split("T")[0],
   subscriptionDuration: "1 month",
   paymentMethod: PAYMENT_METHODS[0] || "",
+  rfidId: "",
+  pinCode: "",
   contactMethod: "email",
   sendWelcomeMessage: true,
   notes: "",
@@ -145,13 +152,20 @@ export function useCreateMemberForm(
       }
     }
 
+    if (currentStep === 3) {
+      if (formData.pinCode && (formData.pinCode.length < 4 || formData.pinCode.length > 8)) {
+        newErrors.pinCode = t("createMember.validation.pinInvalid", "PIN must be between 4 and 8 digits");
+        isValid = false;
+      }
+    }
+
     setErrors(newErrors);
     return isValid;
   };
 
   const handleNext = () => {
     if (validateStep(step)) {
-      setStep((prev) => Math.min(prev + 1, 2));
+      setStep((prev) => Math.min(prev + 1, 4));
     } else {
       toast.error(
         t(
@@ -205,10 +219,22 @@ export function useCreateMemberForm(
     }
   };
 
+  const fetchRandomPin = async () => {
+    if (!gymId) return;
+    try {
+      const response = await membersApi.getRandomPin(gymId);
+      if (response.success && response.data) {
+        handleInputChange("pinCode", response.data.pin);
+      }
+    } catch (error) {
+      toast.error(t("createMember.error.genPin", "Failed to generate PIN"));
+    }
+  };
+
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
 
-    if (step !== 2 || !validateStep(step)) {
+    if (step !== 4 || !validateStep(step)) {
       return;
     }
 
@@ -257,8 +283,9 @@ export function useCreateMemberForm(
         subscriptionTypeId: formData.subscriptionTypeId,
         subscriptionDuration: formData.subscriptionDuration,
         subscriptionStartDate: formData.subscriptionStartDate,
-        // subscriptionEndDate is calculated by backend based on subscription type
         paymentMethod: formData.paymentMethod as PaymentMethod,
+        rfidId: formData.rfidId,
+        pinCode: formData.pinCode,
       };
 
       await membersApi.createMember(memberData);
@@ -296,5 +323,6 @@ export function useCreateMemberForm(
     resetForm,
     validateEmail,
     validatePhone,
+    fetchRandomPin,
   };
 }

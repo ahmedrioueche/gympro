@@ -68,6 +68,11 @@ describe('AnalyticsService', () => {
           provide: getModelToken('GymCoachAffiliation'),
           useValue: {
             countDocuments: jest.fn(),
+            db: {
+              collection: jest.fn().mockReturnValue({
+                countDocuments: jest.fn().mockResolvedValue(0),
+              }),
+            },
           },
         },
         {

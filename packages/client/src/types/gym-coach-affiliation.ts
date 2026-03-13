@@ -12,6 +12,7 @@ export interface GymCoachAffiliation {
   coachId: string;
   status: AffiliationStatus;
   initiatedBy: "gym" | "coach";
+  membershipId?: string;
   startDate: string | Date;
   endDate?: string | Date;
   permissions: {

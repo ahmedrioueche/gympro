@@ -153,6 +153,14 @@ export class CreateMemberDto {
   @IsOptional()
   @IsIn([...PAYMENT_METHODS])
   paymentMethod?: string;
+
+  @IsOptional()
+  @IsString()
+  rfidId?: string;
+
+  @IsOptional()
+  @IsString()
+  pinCode?: string;
 }
 
 export class ChangePasswordDto {

@@ -10,18 +10,22 @@ interface GymCardHeaderProps {
 export function GymCardHeader({ gym, displayRole }: GymCardHeaderProps) {
   const { t } = useTranslation();
 
+  const hasMedia = !!(gym.bannerUrl || (gym.media && gym.media.length > 0));
+  const textColorClass = hasMedia ? "text-white" : "text-text-primary";
+  const secondaryTextColorClass = hasMedia
+    ? "text-white/80"
+    : "text-text-secondary";
+
   return (
     <div
       className={`relative overflow-hidden border-b border-border/50 transition-all duration-300 ${
-        gym.bannerUrl || (gym.media && gym.media.length > 0)
-          ? "md:h-56"
-          : "md:h-38"
+        hasMedia ? "md:h-56" : "md:h-38"
       }`}
     >
       {/* Media Carousel or Banner */}
       <GymCardMedia gym={gym} canViewMedia={!displayRole} />
 
-      <div className="relative h-full p-3 md:p-8 flex flex-col justify-end">
+      <div className="relative z-10 h-full p-3 md:p-8 flex flex-col justify-end">
         <div className="flex items-center justify-between md:flex-row md:gap-4">
           {/* Icon or Gym Image + Name */}
           <div className="flex items-center gap-3 md:gap-6 min-w-0">
@@ -38,12 +42,16 @@ export function GymCardHeader({ gym, displayRole }: GymCardHeaderProps) {
             )}
 
             <div className="min-w-0">
-              <h2 className="text-lg md:text-3xl lg:text-4xl font-bold text-text-primary mb-0.5 md:mb-1 group-hover:text-primary transition-colors duration-300 truncate">
+              <h2
+                className={`text-lg md:text-3xl lg:text-4xl font-bold mb-0.5 md:mb-1 group-hover:text-primary transition-colors duration-300 truncate ${textColorClass}`}
+              >
                 {gym.name}
               </h2>
 
               {gym.slogan && (
-                <p className="text-sm md:text-base text-text-secondary italic truncate">
+                <p
+                  className={`text-sm md:text-base italic truncate ${secondaryTextColorClass}`}
+                >
                   "{gym.slogan}"
                 </p>
               )}

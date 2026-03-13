@@ -12,7 +12,7 @@ export function useMemberProfileModal() {
   const { memberId, membershipId } = memberProfileProps || {};
   const gymId = currentGym?._id;
 
-  const { data: memberProfile, isLoading } = useMemberProfile(
+  const { data: memberProfile, isLoading, refetch } = useMemberProfile(
     gymId,
     membershipId,
     memberId,
@@ -51,6 +51,7 @@ export function useMemberProfileModal() {
       membershipId,
       memberName: user.profile?.fullName || t("memberProfile.unknownMember"),
       initialAccessData: memberProfile?.membership?.accessData,
+      onSuccess: () => refetch(),
     });
   };
 

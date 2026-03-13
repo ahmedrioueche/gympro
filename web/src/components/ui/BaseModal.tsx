@@ -19,7 +19,7 @@ interface FooterButton {
 interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   subtitle?: string;
   icon?: ElementType;
   children: ReactNode;
@@ -33,6 +33,7 @@ interface BaseModalProps {
 
   // Header configuration
   customHeader?: ReactNode; // Completely replaces the default header
+  hideHeader?: boolean;
 
   // Footer configuration
   footer?: ReactNode; // Custom footer (overrides button props)
@@ -52,12 +53,13 @@ interface BaseModalProps {
   maxWidth?: string;
   // Display options
   hideCloseButton?: boolean;
+  noPadding?: boolean;
 }
 
 const BaseModal: React.FC<BaseModalProps> = ({
   isOpen,
   onClose,
-  title,
+  title = "",
   subtitle,
   icon: Icon,
   children,
@@ -67,6 +69,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   onEditClick,
   showEditButton = false,
   customHeader,
+  hideHeader = false,
   footer,
   showFooter = true,
   showSecondaryButton = true,
@@ -75,6 +78,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   primaryButton,
   maxWidth = "max-w-3xl",
   hideCloseButton = false,
+  noPadding = false,
 }) => {
   const { t } = useTranslation();
 
@@ -158,63 +162,64 @@ const BaseModal: React.FC<BaseModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        {customHeader ? (
-          customHeader
-        ) : (
-          <div className="bg-gradient-to-r from-primary to-secondary p-3 md:p-4 flex-shrink-0">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 md:gap-4 min-w-0">
-                {Icon && (
-                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-white/20">
-                    <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                  </div>
-                )}
-                <div className="min-w-0">
-                  {isEditMode && onTitleChange ? (
-                    <input
-                      type="text"
-                      value={displayTitle}
-                      onChange={(e) => onTitleChange(e.target.value)}
-                      className="text-lg md:text-xl font-bold text-white bg-white/20 rounded-lg px-2 md:px-3 py-1 border border-white/30 outline-none focus:border-white/50 mb-0.5 w-full"
-                    />
-                  ) : (
-                    <h2 className="text-lg md:text-xl font-bold text-white mb-0.5 truncate">
-                      {displayTitle}
-                    </h2>
+        {!hideHeader &&
+          (customHeader ? (
+            customHeader
+          ) : (
+            <div className="bg-gradient-to-r from-primary to-secondary p-3 md:p-4 flex-shrink-0">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 md:gap-4 min-w-0">
+                  {Icon && (
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-white/20">
+                      <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                    </div>
                   )}
-                  {subtitle && (
-                    <p className="text-white/90 text-xs md:text-sm truncate">
-                      {subtitle}
-                    </p>
+                  <div className="min-w-0">
+                    {isEditMode && onTitleChange ? (
+                      <input
+                        type="text"
+                        value={displayTitle}
+                        onChange={(e) => onTitleChange(e.target.value)}
+                        className="text-lg md:text-xl font-bold text-white bg-white/20 rounded-lg px-2 md:px-3 py-1 border border-white/30 outline-none focus:border-white/50 mb-0.5 w-full"
+                      />
+                    ) : (
+                      <h2 className="text-lg md:text-xl font-bold text-white mb-0.5 truncate">
+                        {displayTitle}
+                      </h2>
+                    )}
+                    {subtitle && (
+                      <p className="text-white/90 text-xs md:text-sm truncate">
+                        {subtitle}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
+                  {showEditButton && !isEditMode && onEditClick && (
+                    <button
+                      onClick={onEditClick}
+                      className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                      title={t("common.edit")}
+                    >
+                      <Edit3 className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                    </button>
+                  )}
+                  {!hideCloseButton && (
+                    <button
+                      onClick={onClose}
+                      className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                    >
+                      <X className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                    </button>
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
-                {showEditButton && !isEditMode && onEditClick && (
-                  <button
-                    onClick={onEditClick}
-                    className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-                    title={t("common.edit")}
-                  >
-                    <Edit3 className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                  </button>
-                )}
-                {!hideCloseButton && (
-                  <button
-                    onClick={onClose}
-                    className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-                  >
-                    <X className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                  </button>
-                )}
-              </div>
             </div>
-          </div>
-        )}
+          ))}
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto hide-scrollbar">
-          <div className="p-4 md:p-6">{children}</div>
+          <div className={noPadding ? "" : "p-4 md:p-6"}>{children}</div>
         </div>
 
         {/* Footer */}

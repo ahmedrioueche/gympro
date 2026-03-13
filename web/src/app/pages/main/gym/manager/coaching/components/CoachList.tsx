@@ -62,6 +62,7 @@ export function CoachList({
             state: (affiliationCoach as any)?.state,
             country: (affiliationCoach as any)?.country,
           },
+          membershipId: (affiliation as any).membershipId,
         };
 
         const handleReview = () => {

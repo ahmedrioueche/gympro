@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppSubscriptionService } from '../app-billing/subscription/subscription.service';
 import { GymService } from '../gym/gym.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { OtpService } from '../auth/otp.service';
 import { UsersService } from './users.service';
 
 describe('UsersService', () => {
@@ -74,6 +75,15 @@ describe('UsersService', () => {
           provide: NotificationsService,
           useValue: {
             notifyUser: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: OtpService,
+          useValue: {
+            sendOTP: jest.fn(),
+            verifyOTP: jest.fn(),
+            sendEmailOTP: jest.fn(),
+            verifyEmailOTP: jest.fn(),
           },
         },
       ],

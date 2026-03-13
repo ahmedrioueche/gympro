@@ -8,6 +8,7 @@ import type {
   EditUserDto,
   EquipmentItem,
   Exercise,
+  Gym,
   GymClass,
   GymService,
   ProgramDayProgress,
@@ -336,4 +337,8 @@ export interface AccessManagementModalProps {
     preferredMethod?: "qr" | "rfid" | "pin";
   };
   onSuccess?: () => void;
+}
+
+export interface GymDetailsModalProps {
+  gym: Gym;
 }

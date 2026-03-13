@@ -1,4 +1,4 @@
-import { Award, UserMinus, UserPlus } from "lucide-react";
+import { Award, ShieldCheck, UserMinus, UserPlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   CustomizableProfileTemplateModal,
@@ -6,9 +6,11 @@ import {
 } from "../CustomizableProfileTemplateModal";
 import { CoachInfoContent } from "./CoachInfoContent";
 import { useCoachProfileModal } from "./useCoachProfileModal";
+import { useModalStore } from "../../../../../store/modal";
 
 export default function CoachProfileModal() {
   const { t } = useTranslation();
+  const { openModal } = useModalStore();
 
   const {
     isOpen,
@@ -28,6 +30,11 @@ export default function CoachProfileModal() {
   } = useCoachProfileModal();
 
   if (!isOpen) return null;
+
+  // Find membershipId from affiliation if available
+  // We need to find the affiliation first
+  const { coachProfileProps } = useModalStore();
+  const membershipId = (coach as any)?.membershipId || (coachProfileProps as any)?.coach?.membershipId;
 
   const tabs = [
     {
@@ -68,6 +75,26 @@ export default function CoachProfileModal() {
       onClick: handleInviteToGym,
       icon: UserPlus,
       variant: "primary",
+    });
+  }
+
+  // Manager: Access Management
+  if (isManagerDashboard && isAlreadyAffiliated && membershipId) {
+    actions.push({
+      label: t("access.management.title"),
+      onClick: () => {
+        const gymId = (coachProfileProps as any)?.gymId || (coach as any)?.gymId;
+        if (gymId) {
+          openModal("access_management", {
+            gymId,
+            membershipId,
+            memberName: coach?.fullName || coach?.username || "Coach",
+            initialAccessData: undefined, // Will be fetched by the modal
+          });
+        }
+      },
+      icon: ShieldCheck,
+      variant: "default",
     });
   }
 

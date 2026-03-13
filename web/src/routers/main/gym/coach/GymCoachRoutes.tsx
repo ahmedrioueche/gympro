@@ -10,6 +10,7 @@ import PaymentsPage from "../../../../app/pages/main/gym/coach/payments/Payments
 import SchedulePage from "../../../../app/pages/main/gym/coach/schedule/SchedulePage";
 import SettingsPage from "../../../../app/pages/main/gym/coach/settings/SettingsPage";
 import StorePage from "../../../../app/pages/main/gym/coach/store/StorePage";
+import AccessPage from "../../../../app/pages/main/gym/coach/access/AccessPage";
 import { GymCoachRootRoute } from "./GymCoachRootRoute";
 
 export const homeRoute = createRoute({
@@ -76,4 +77,10 @@ export const settingsRoute = createRoute({
   getParentRoute: () => GymCoachRootRoute,
   path: "/settings",
   component: () => <SettingsPage />,
+});
+
+export const accessRoute = createRoute({
+  getParentRoute: () => GymCoachRootRoute,
+  path: "/access",
+  component: () => <AccessPage />,
 });

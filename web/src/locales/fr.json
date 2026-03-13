@@ -23,6 +23,7 @@
     "currentRoute": "Route actuelle",
     "back": "Retour",
     "save": "Enregistrer",
+    "generate": "Générer",
     "select": "Sélectionner",
     "saving": "Enregistrement...",
     "gym": "Salle de sport",
@@ -167,7 +168,11 @@
       "friday": "Ven",
       "sunday": "Dim"
     },
-    "per_month": "/ mois"
+    "per_month": "/ mois",
+    "internal_location": "Lieu secret",
+    "launch_nav": "Naviguer",
+    "regular_hours": "Heures d'ouverture régulières",
+    "no_location_available": "Aucun emplacement disponible"
   },
   "billing": {
     "limits": {
@@ -798,7 +803,17 @@
     "appSubscription": "Abonnement à l'application",
     "subscriptionType": "Type",
     "subscriptionStatus": "Statut",
-    "viewMoreDetails": "Voir les détails"
+    "viewMoreDetails": "Voir les détails",
+    "exclusiveLocation": "Installation d'entraînement d'élite",
+    "territory": "Territoire",
+    "investment": "Forfaits et tarifs",
+    "contact_for_plans": "Contactez la salle pour des tarifs privés",
+    "timelines": "Horaires d'exploitation",
+    "mixed_entry": "Environnement mixte",
+    "segregated_entry": "Séances séparées",
+    "female_exclusive": "Séances pour femmes",
+    "facility_matrix": "Matrice des installations",
+    "comms": "Communication principale"
   },
   "create_gym": {
     "title": "Créer votre salle de sport",
@@ -1652,6 +1667,10 @@
         "title": "Détails de l'abonnement",
         "description": "Choisissez le plan d'adhésion et le mode de paiement"
       },
+      "access": {
+        "title": "Système d'accès",
+        "description": "Attribuer un badge RFID ou un PIN unique"
+      },
       "contact": {
         "title": "Préférences et révision",
         "description": "Préférences de contact et révision finale"
@@ -1734,6 +1753,7 @@
       "ageInvalid": "Veuillez saisir un âge valide",
       "subscriptionRequired": "Le type d'abonnement est requis",
       "paymentRequired": "La méthode de paiement est requise",
+      "pinInvalid": "Le code PIN doit comporter entre 4 et 8 chiffres",
       "checkForm": "Veuillez vérifier le formulaire pour les erreurs",
       "sameEmail": "Vous ne pouvez pas créer un membre avec la même adresse e-mail que votre compte",
       "samePhone": "Vous ne pouvez pas créer un membre avec le même numéro de téléphone que votre compte",
@@ -1755,12 +1775,39 @@
       "addAnother": "Ajouter un autre membre",
       "viewMembers": "Voir tous les membres"
     },
+    "access": {
+      "title": "Système d'Accès",
+      "description": "Attribuez un badge RFID ou générez un code PIN unique pour que le membre puisse accéder à la salle.",
+      "rfid": {
+        "label": "Badge RFID",
+        "helper": "Scannez la carte ou le bracelet du membre maintenant",
+        "placeholder": "ID de la carte (ex: 0001234567)"
+      },
+      "pin": {
+        "label": "Code PIN Personnel",
+        "helper": "Utilisé pour l'entrée manuelle au terminal",
+        "generate": "Générer un PIN"
+      }
+    },
     "error": {
-      "message": "Échec de la création du membre. Veuillez réessayer."
+      "message": "Échec de la création du membre. Veuillez réessayer.",
+      "genPin": "Échec de la génération du code PIN"
     },
     "tips": {
       "title": "Notification d'accès",
       "description": "Lorsque vous créez un membre, il recevra automatiquement un message avec les détails d'accès à son compte via la méthode de contact choisie (e-mail ou SMS)."
+    },
+    "management": {
+      "title": "Gestion des accès",
+      "rfid_label": "Badge RFID",
+      "rfid_placeholder": "Scanner ou saisir l'ID de la carte",
+      "rfid_hint": "Lier une carte physique ou un bracelet pour l'entrée",
+      "pin_label": "Code PIN personnel",
+      "pin_hint": "4-8 chiffres utilisés pour l'enregistrement manuel",
+      "update_success": "Données d'accès mises à jour avec succès",
+      "update_failed": "Échec de la mise à jour des données d'accès",
+      "pin_generated": "Nouveau code PIN généré",
+      "pin_gen_failed": "Échec de la génération d'un code PIN unique"
     }
   },
   "gymMember": {

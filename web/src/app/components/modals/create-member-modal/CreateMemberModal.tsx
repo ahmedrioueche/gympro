@@ -8,6 +8,8 @@ import { useGymStore } from "../../../../store/gym";
 import { useLanguageStore } from "../../../../store/language";
 import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
+import StepAccessInfo from "./StepAccessInfo";
+import StepContactPreferences from "./StepContactPreferences";
 import StepGeneralInfo from "./StepGeneralInfo";
 import StepSubscriptionInfo from "./StepSubscriptionInfo";
 import { useCreateMemberForm } from "./useCreateMemberForm";
@@ -31,6 +33,7 @@ export default function CreateMemberModal() {
     handleInputChange,
     handleSubmit,
     resetForm,
+    fetchRandomPin,
   } = useCreateMemberForm(
     currentGym?._id,
     user?.profile?.email,
@@ -67,19 +70,40 @@ export default function CreateMemberModal() {
     }
   }, [showSuccess, isOpen, onSuccess]);
 
+  const getStepSubtitle = () => {
+    const totalSteps = 4;
+    let stepTitle = "";
+    switch (step) {
+      case 1:
+        stepTitle = t("createMember.steps.general.title");
+        break;
+      case 2:
+        stepTitle = t("createMember.steps.subscription.title");
+        break;
+      case 3:
+        stepTitle = t("createMember.steps.access.title");
+        break;
+      case 4:
+        stepTitle = t("createMember.steps.contact.title");
+        break;
+    }
+    return `${t("createMember.steps.step")} ${step}/${totalSteps}: ${stepTitle}`;
+  };
+
   return (
     <BaseModal
       isOpen={isOpen}
       onClose={closeModal}
       title={t("createMember.title", "Add New Member")}
+      subtitle={getStepSubtitle()}
       icon={UserPlus}
       maxWidth="max-w-4xl"
       primaryButton={{
-        label: step === 2 ? t("common.submit") : t("common.next"),
-        onClick: step === 2 ? () => handleSubmit() : handleNext,
+        label: step === 4 ? t("common.submit") : t("common.next"),
+        onClick: step === 4 ? () => handleSubmit() : handleNext,
         loading: isSubmitting,
-        icon: step === 2 ? Check : isRtl ? ArrowLeft : ArrowRight,
-        iconPosition: step === 2 ? "left" : "right",
+        icon: step === 4 ? Check : isRtl ? ArrowLeft : ArrowRight,
+        iconPosition: step === 4 ? "left" : "right",
       }}
       secondaryButton={{
         label: t("common.cancel"),
@@ -98,6 +122,18 @@ export default function CreateMemberModal() {
       }
     >
       <div className="space-y-6">
+        {/* Step Progress Indicator */}
+        <div className="flex items-center justify-center gap-2 mb-4">
+          {[1, 2, 3, 4].map((s) => (
+            <div
+              key={s}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                step === s ? "w-8 bg-primary" : "w-2 bg-border"
+              }`}
+            />
+          ))}
+        </div>
+
         <form
           id="create-member-modal-form"
           onSubmit={handleSubmit}
@@ -119,6 +155,21 @@ export default function CreateMemberModal() {
               paymentMethodOptions={paymentMethodOptions}
               selectedPlan={selectedPlan}
               errors={errors}
+            />
+          )}
+          {step === 3 && (
+            <StepAccessInfo
+              formData={formData}
+              errors={errors}
+              handleInputChange={handleInputChange}
+              onGeneratePin={fetchRandomPin}
+            />
+          )}
+          {step === 4 && (
+            <StepContactPreferences
+              formData={formData}
+              handleInputChange={handleInputChange}
+              subscriptionOptions={subscriptionTypeOptions}
             />
           )}
         </form>

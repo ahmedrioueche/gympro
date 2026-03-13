@@ -4,11 +4,11 @@ import {
   Calendar,
   CreditCard,
   Home,
-  Key,
   Logs,
   Megaphone,
   Package,
   Settings,
+  ShieldCheck,
   Store,
   Trophy,
 } from "lucide-react";
@@ -24,6 +24,12 @@ const sidebarLinks = [
     matchPaths: [APP_PAGES.gym.member.home.link],
   },
   {
+    label: "access",
+    icon: <ShieldCheck className="w-5 h-5" />,
+    path: APP_PAGES.gym.member.access.link,
+    matchPaths: [APP_PAGES.gym.member.access.link],
+  },
+  {
     label: "subscriptions",
     icon: <CreditCard className="w-5 h-5" />,
     path: APP_PAGES.gym.member.subscriptions.link,
@@ -35,12 +41,7 @@ const sidebarLinks = [
     path: APP_PAGES.gym.member.classes.link,
     matchPaths: [APP_PAGES.gym.member.classes.link],
   },
-  {
-    label: "access",
-    icon: <Key className="w-5 h-5" />,
-    path: APP_PAGES.gym.member.access.link,
-    matchPaths: [APP_PAGES.gym.member.access.link],
-  },
+
   {
     label: "attendance",
     icon: <Logs className="w-5 h-5" />,

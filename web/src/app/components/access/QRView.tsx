@@ -2,16 +2,17 @@ import React from "react";
 import { RefreshCw, X } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useTranslation } from "react-i18next";
-import { cn } from "../../../../../../../../utils/helper";
+import { cn } from "../../../utils/helper";
+import Loading from "../../../components/ui/Loading";
 
-interface MemberQRViewProps {
+export interface QRViewProps {
   token: string | null;
   isLoading: boolean;
   isFullscreen: boolean;
   setIsFullscreen: (v: boolean) => void;
 }
 
-export const MemberQRView: React.FC<MemberQRViewProps> = ({
+export const QRView: React.FC<QRViewProps> = ({
   token,
   isLoading,
   isFullscreen,
@@ -27,7 +28,6 @@ export const MemberQRView: React.FC<MemberQRViewProps> = ({
       >
         <button
           className="absolute top-4 right-4 md:top-8 md:right-8 p-3 md:p-4 text-zinc-600 hover:text-zinc-900 bg-zinc-100 hover:bg-zinc-200 rounded-full active:scale-90 transition-all"
-          aria-label={t("common.close")}
         >
           <X className="w-5 h-5 md:w-6 md:h-6" />
         </button>
@@ -62,7 +62,7 @@ export const MemberQRView: React.FC<MemberQRViewProps> = ({
     >
       {isLoading ? (
         <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 flex items-center justify-center bg-zinc-50 rounded-[1.5rem] md:rounded-[2rem]">
-          <RefreshCw className="w-10 h-10 md:w-12 h-12 text-zinc-300 animate-spin" />
+          <Loading />
         </div>
       ) : token ? (
         <div className="relative">

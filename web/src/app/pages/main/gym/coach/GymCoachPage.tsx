@@ -7,6 +7,7 @@ import {
   Megaphone,
   Package,
   Settings,
+  ShieldCheck,
   Store,
   Trophy,
   Users,
@@ -22,6 +23,12 @@ const sidebarLinks = [
     icon: <Home className="w-5 h-5" />,
     path: APP_PAGES.gym.coach.home.link,
     matchPaths: [APP_PAGES.gym.coach.home.link],
+  },
+  {
+    label: "access",
+    icon: <ShieldCheck className="w-5 h-5" />,
+    path: APP_PAGES.gym.coach.access.link,
+    matchPaths: [APP_PAGES.gym.coach.access.link],
   },
   {
     label: "clients",

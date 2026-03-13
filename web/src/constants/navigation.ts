@@ -233,6 +233,10 @@ export const APP_PAGES = {
         name: "pages.gym.announcements",
         link: "/gym/coach/announcements",
       },
+      access: {
+        name: "pages.gym.access",
+        link: "/gym/coach/access",
+      },
       notifications: {
         name: "pages.gym.notifications",
         link: "/gym/coach/notifications",

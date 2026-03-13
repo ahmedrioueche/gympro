@@ -9,6 +9,7 @@ export default function Loading({
 }) {
   return (
     <div
+      role="status"
       className={`${
         fullScreen ? "min-h-screen" : "w-full"
       } flex justify-center ${className} `}

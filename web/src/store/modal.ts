@@ -1,12 +1,16 @@
+import type { BlockerModalConfig } from "@ahmedrioueche/gympro-client";
 import { create } from "zustand";
 import type {
+  AccessManagementModalProps,
   AdminCreateEditorModalProps,
   AdminManagePermissionsModalProps,
   AlertDetailsModalProps,
   AssignProgramModalProps,
+  BannerFormModalProps,
   CancelSubscriptionModalProps,
   ClassDetailsModalProps,
   ClientProfileModalProps,
+  CoachingOfferModalProps,
   CoachPricingModalProps,
   CoachProfileModalProps,
   CompetitionDetailsModalProps,
@@ -20,7 +24,9 @@ import type {
   EditAppPlanModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
+  FeaturePackageModalProps,
   GymClassModalProps,
+  GymDetailsModalProps,
   GymInvitationModalProps,
   GymMediaModalProps,
   InventoryItemModalProps,
@@ -43,6 +49,7 @@ import type {
   StaffModalProps,
   UpgradePreviewModalProps,
   UserProfileModalProps,
+  WelcomeTourModalProps,
 } from "../types/modals";
 
 type ModalType =
@@ -100,6 +107,7 @@ type ModalType =
   | "subscription_warning"
   | "welcome_tour"
   | "access_management"
+  | "gym_details"
   | null;
 
 interface ModalState {
@@ -147,14 +155,15 @@ interface ModalState {
   pricingProps?: PricingModalProps;
   createMemberProps?: CreateMemberModalProps;
   classDetailsProps?: ClassDetailsModalProps;
-  coachingOfferProps?: import("../types/modals").CoachingOfferModalProps;
-  featurePackageProps?: import("../types/modals").FeaturePackageModalProps;
-  bannerFormProps?: import("../types/modals").BannerFormModalProps;
-  welcomeTourProps?: import("../types/modals").WelcomeTourModalProps;
+  coachingOfferProps?: CoachingOfferModalProps;
+  featurePackageProps?: FeaturePackageModalProps;
+  bannerFormProps?: BannerFormModalProps;
+  welcomeTourProps?: WelcomeTourModalProps;
   subscriptionWarningProps?: {
-    config?: import("@ahmedrioueche/gympro-client").BlockerModalConfig;
+    config?: BlockerModalConfig;
   };
-  accessManagementProps?: import("../types/modals").AccessManagementModalProps;
+  accessManagementProps?: AccessManagementModalProps;
+  gymDetailsProps?: GymDetailsModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -465,6 +474,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "access_management",
           accessManagementProps: props,
+        };
+      }
+      if (modal === "gym_details") {
+        return {
+          currentModal: "gym_details",
+          gymDetailsProps: props,
         };
       }
       return { currentModal: null };

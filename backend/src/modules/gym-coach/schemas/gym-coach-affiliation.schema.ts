@@ -55,6 +55,9 @@ export class GymCoachAffiliation {
 
   @Prop({ type: String })
   message?: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'GymMembership' })
+  membershipId?: Types.ObjectId;
 }
 
 export const GymCoachAffiliationSchema =

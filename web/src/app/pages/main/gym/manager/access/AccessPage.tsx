@@ -1,14 +1,10 @@
-import { Key } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import React from "react";
 import Tabs from "../../../../../../components/ui/Tabs";
 import PageHeader from "../../../../../components/PageHeader";
-
-// Components
 import { PinMethodView } from "./components/MethodViews/PinMethodView";
 import { QRMethodView } from "./components/MethodViews/QRMethodView";
 import { RFIDMethodView } from "./components/MethodViews/RFIDMethodView";
-
-// Hooks
 import { useAccessPage } from "./hooks/useAccessPage";
 
 const AccessPage: React.FC = () => {
@@ -70,7 +66,7 @@ const AccessPage: React.FC = () => {
       <PageHeader
         title={t("access.title")}
         subtitle={t("access.subtitle")}
-        icon={Key}
+        icon={ShieldCheck}
       />
 
       <div className="flex-1 flex flex-col">
