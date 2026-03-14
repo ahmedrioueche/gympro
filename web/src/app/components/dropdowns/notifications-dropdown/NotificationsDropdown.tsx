@@ -27,7 +27,7 @@ export default function NotificationsDropdown() {
     <Dropdown
       trigger={<NotificationTrigger hasUnread={hasUnread} />}
       align="right"
-      className="w-80 max-w-[calc(100vw-2rem)] end-0"
+      className="w-80 max-w-[calc(100vw-2rem)]"
       onOpen={handleDropdownOpen}
     >
       {(closeDropdown) => (
