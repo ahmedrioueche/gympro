@@ -114,20 +114,20 @@ export function GymInfoOverview({
   const hasLocation = !!(gym.address || gym.city || gym.state || gym.country);
 
   return (
-    <div className="p-5 md:p-8 lg:p-10 space-y-10">
+    <div className="p-4 md:p-8 lg:p-10 space-y-8 md:space-y-10">
       {/* Location Section */}
-      <div className="space-y-5">
+      <div className="space-y-4 md:space-y-5">
         <SectionHeader
-          icon={<MapPin className="w-5 h-5 text-primary" />}
+          icon={<MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />}
           title={t("gymCard.location", "Location")}
         />
         {hasLocation ? (
-          <div className="p-6 md:p-8 rounded-2xl border border-border/60 bg-surface-secondary/30 group hover:border-primary/30 transition-colors">
-            <p className="text-text-primary font-black text-sm md:text-base lg:text-xl leading-tight">
+          <div className="p-5 md:p-8 rounded-2xl border border-border/60 bg-surface-secondary/30 group hover:border-primary/30 transition-colors">
+            <p className="text-text-primary font-black text-xs md:text-base lg:text-xl leading-tight">
               {gym.address}
             </p>
             {(gym.city || gym.state || gym.country) && (
-              <p className="text-xs md:text-sm lg:text-base text-text-secondary font-medium mt-2">
+              <p className="text-[10px] md:text-sm lg:text-base text-text-secondary font-medium mt-1.5 md:mt-2">
                 {gym.city}
                 {gym.state ? `, ${gym.state}` : ""}
                 {gym.country ? ` - ${gym.country}` : ""}
@@ -135,8 +135,8 @@ export function GymInfoOverview({
             )}
           </div>
         ) : (
-          <div className="p-6 md:p-8 rounded-2xl border border-dashed border-border/60 bg-surface-secondary/10 flex flex-col items-center justify-center text-center opacity-50">
-            <p className="text-text-secondary font-black text-sm md:text-base lg:text-lg italic uppercase tracking-wider">
+          <div className="p-5 md:p-8 rounded-2xl border border-dashed border-border/60 bg-surface-secondary/10 flex flex-col items-center justify-center text-center opacity-50">
+            <p className="text-text-secondary font-black text-xs md:text-base lg:text-lg italic uppercase tracking-wider">
               {t("gymCard.noLocationAvailable", "No location available")}
             </p>
           </div>
@@ -145,7 +145,7 @@ export function GymInfoOverview({
 
       {/* Action Section - Restored styling with margin-top separation */}
       {!hideActions && (
-        <div className="mt-4 pt-2 flex items-center justify-between gap-6">
+        <div className="mt-2 md:mt-4 pt-1 flex items-center justify-between gap-4 md:gap-6">
           <div className="flex-1">
             {activeDashboard === "coach" && !isStaff && !isJoined && (
               <button
@@ -161,15 +161,15 @@ export function GymInfoOverview({
                 }}
                 disabled={isPending || isJoining}
                 className={cn(
-                  "px-8 py-3.5 rounded-2xl font-black text-sm md:text-base transition-all active:scale-[0.98] shadow-lg",
+                  "px-6 py-2.5 md:px-8 md:py-3.5 rounded-2xl font-black text-xs md:text-base transition-all active:scale-[0.98] shadow-lg",
                   isPending || isJoining
                     ? "bg-warning/10 text-warning border border-warning/20 cursor-wait"
                     : "bg-primary text-white hover:bg-primary-hover shadow-primary/25 hover:shadow-primary/40",
                 )}
               >
                 {isPending || isJoining
-                  ? t("gyms.status_pending", "Pending Request")
-                  : t("gymCard.joinGym", "Join Gym Now")}
+                  ? t("gyms.status_pending", "Pending")
+                  : t("gymCard.joinGym", "Join")}
               </button>
             )}
           </div>
@@ -179,9 +179,9 @@ export function GymInfoOverview({
               e.stopPropagation();
               onOpenDetails();
             }}
-            className="shrink-0 px-8 py-3.5 rounded-2xl bg-surface border-2 border-primary/30 text-primary font-black text-xs md:text-sm hover:bg-primary hover:text-white hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-[0.95] uppercase tracking-[0.15em]"
+            className="shrink-0 px-6 py-2.5 md:px-8 md:py-3.5 rounded-2xl bg-surface border-2 border-primary/30 text-primary font-black text-[9px] md:text-sm hover:bg-primary hover:text-white hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-[0.95] uppercase tracking-widest"
           >
-            {t("gymCard.viewDetails", "View Full Details")}
+            {t("gymCard.viewDetails", "Details")}
           </button>
         </div>
       )}

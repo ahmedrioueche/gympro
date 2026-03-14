@@ -54,7 +54,7 @@ export function GymDetailsModal() {
     >
       <div className="relative isolate min-h-[70vh] flex flex-col bg-background">
         {/* --- CINEMATIC BACKGROUND CANVAS --- */}
-        <div className="absolute inset-x-0 top-0 h-[450px] z-0 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-[320px] md:h-[450px] z-0 overflow-hidden">
           {gym.bannerUrl ? (
             <img
               src={gym.bannerUrl}
@@ -68,33 +68,33 @@ export function GymDetailsModal() {
         </div>
 
         {/* --- OVERLAY CONTENT LAYER --- */}
-        <div className="relative z-10 p-6 md:p-10 space-y-12">
+        <div className="relative z-10 p-5 md:p-10 space-y-10 md:space-y-12">
           {/* HEADER HERO (Location & Identity) */}
-          <div className="flex flex-col md:flex-row gap-8 items-center md:items-end justify-between pt-10">
-            <div className="flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-end justify-between pt-6 md:pt-10">
+            <div className="flex flex-col md:flex-row gap-5 md:gap-6 items-center md:items-start text-center md:text-left">
               {gym.logoUrl && (
                 <div className="relative group shrink-0">
-                  <div className="absolute -inset-1 bg-gradient-to-tr from-primary to-secondary rounded-[2.5rem] blur opacity-30 group-hover:opacity-70 transition duration-1000"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-tr from-primary to-secondary rounded-2xl md:rounded-[2.5rem] blur opacity-30 group-hover:opacity-70 transition duration-1000"></div>
                   <img
                     src={gym.logoUrl}
-                    className="relative w-32 h-32 md:w-44 md:h-44 rounded-[2.2rem] border-4 border-white/20 shadow-2xl bg-background object-cover"
+                    className="relative w-28 h-28 md:w-44 md:h-44 rounded-2xl md:rounded-[2.2rem] border-4 border-white/20 shadow-2xl bg-background object-cover"
                     alt="logo"
                   />
                 </div>
               )}
-              <div className="space-y-4 text-white">
-                <div className="flex items-center gap-3 opacity-80 justify-center md:justify-start">
-                  <MapPin className="w-4 h-4 text-primary" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em]">
+              <div className="space-y-3 md:space-y-4 text-white">
+                <div className="flex items-center gap-2.5 opacity-80 justify-center md:justify-start">
+                  <MapPin className="w-3.5 h-3.5 text-primary" />
+                  <span className="text-[9px] font-black uppercase tracking-[0.25em]">
                     {t("gymCard.territory", "Territory")}
                   </span>
                 </div>
                 <div className="space-y-1">
-                  <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none drop-shadow-2xl">
+                  <h2 className="text-2xl md:text-5xl font-black tracking-tighter leading-none drop-shadow-2xl">
                     {gym.address ||
                       t("common.no_location_available", "No location available")}
                   </h2>
-                  <p className="text-lg font-bold opacity-70 italic tracking-wide">
+                  <p className="text-base md:text-lg font-bold opacity-70 italic tracking-wide">
                     {gym.city}
                     {gym.state ? `, ${gym.state}` : ""}
                     {gym.country ? ` - ${gym.country}` : ""}
@@ -121,10 +121,10 @@ export function GymDetailsModal() {
             <div className="lg:col-span-12 xl:col-span-8 space-y-14">
               
               {/* 1. PACKAGES & PRICING */}
-              <section className="space-y-8">
-                <div className="flex items-center gap-4">
-                  <CircleDollarSign className="w-8 h-8 text-primary" />
-                  <h3 className="text-2xl font-black uppercase tracking-tight text-text-primary">
+              <section className="space-y-6 md:space-y-8">
+                <div className="flex items-center gap-3.5 md:gap-4">
+                  <CircleDollarSign className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+                  <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight text-text-primary">
                     {t("gymCard.investment", "Packages & Pricing")}
                   </h3>
                 </div>
@@ -156,22 +156,22 @@ export function GymDetailsModal() {
                               "{plan.description}"
                             </p>
                           )}
-                          <div className="space-y-3 pt-4 border-t border-border/50">
+                          <div className="space-y-2.5 pt-4 border-t border-border/50">
                             {plan.pricingTiers
                               ?.sort((a: any, b: any) => a.price - b.price)
                               .map((tier: any, idx: number) => (
                                 <div
                                   key={idx}
-                                  className="flex justify-between items-center bg-surface-secondary/40 p-4 rounded-xl"
+                                  className="flex justify-between items-center bg-surface-secondary/40 p-3.5 md:p-4 rounded-xl"
                                 >
-                                  <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">
+                                  <span className="text-[9px] md:text-[10px] font-black text-text-secondary uppercase tracking-widest">
                                     {formatDuration(
                                       tier.duration,
                                       tier.durationUnit,
                                       t,
                                     )}
                                   </span>
-                                  <span className="text-2xl font-black text-text-primary tabular-nums">
+                                  <span className="text-xl md:text-2xl font-black text-text-primary tabular-nums">
                                     {formatPrice(
                                       tier.price,
                                       gym.settings?.defaultCurrency || "USD",
@@ -196,10 +196,10 @@ export function GymDetailsModal() {
               </section>
 
               {/* 2. TIMELINES (SCHEDULE) - Moving to main column for consistency */}
-              <section className="space-y-8">
-                <div className="flex items-center gap-4">
-                  <Clock className="w-8 h-8 text-primary" />
-                  <h3 className="text-2xl font-black uppercase tracking-tight text-text-primary">
+              <section className="space-y-6 md:space-y-8">
+                <div className="flex items-center gap-3.5 md:gap-4">
+                  <Clock className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+                  <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight text-text-primary">
                     {t("gymCard.timelines", "Operating Timelines")}
                   </h3>
                 </div>
@@ -212,9 +212,9 @@ export function GymDetailsModal() {
                          <div className="w-1.5 h-6 bg-primary rounded-full group-hover:h-8 transition-all" />
                          <h4 className="text-xl font-black text-text-primary uppercase">{t("common.regular_hours", "Regular Hours")}</h4>
                       </div>
-                      <div className="p-6 bg-surface-secondary/40 rounded-2xl border border-border/50 flex flex-col items-center justify-center text-center gap-2">
-                        <span className="text-[10px] font-black text-text-secondary uppercase tracking-[0.2em]">Open Daily</span>
-                        <span className="text-3xl font-black text-text-primary tracking-tighter">
+                      <div className="p-5 md:p-6 bg-surface-secondary/40 rounded-2xl border border-border/50 flex flex-col items-center justify-center text-center gap-1.5 md:gap-2">
+                        <span className="text-[9px] md:text-[10px] font-black text-text-secondary uppercase tracking-[0.2em]">Open Daily</span>
+                        <span className="text-2xl md:text-3xl font-black text-text-primary tracking-tighter">
                           {gym.settings?.workingHours
                             ? `${gym.settings.workingHours.start} - ${gym.settings.workingHours.end}`
                             : "N/A"}
@@ -250,12 +250,12 @@ export function GymDetailsModal() {
                           {gym.settings.femaleOnlyHours.map((slot, idx) => (
                             <div
                               key={idx}
-                              className="flex justify-between items-center p-4 bg-pink-500/5 rounded-xl border border-pink-500/10 group-hover:border-pink-500/20 transition-all"
+                              className="flex justify-between items-center p-3.5 md:p-4 bg-pink-500/5 rounded-xl border border-pink-500/10 group-hover:border-pink-500/20 transition-all"
                             >
-                              <span className="text-[10px] font-black text-pink-600/70 uppercase">
+                              <span className="text-[9px] md:text-[10px] font-black text-pink-600/70 uppercase">
                                 {slot.days.map((d) => d.substring(0, 3)).join(" / ")}
                               </span>
-                              <span className="text-lg font-black text-text-primary tabular-nums">
+                              <span className="text-base md:text-lg font-black text-text-primary tabular-nums">
                                 {slot.range.start} - {slot.range.end}
                               </span>
                             </div>
@@ -275,10 +275,10 @@ export function GymDetailsModal() {
 
               {/* 3. SERVICES MATRIX (FACILITY) */}
               {hasServices && (
-                <section className="space-y-8">
-                  <div className="flex items-center gap-4">
-                    <Activity className="w-8 h-8 text-primary" />
-                    <h3 className="text-2xl font-black uppercase tracking-tight text-text-primary">
+                <section className="space-y-6 md:space-y-8">
+                  <div className="flex items-center gap-3.5 md:gap-4">
+                    <Activity className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+                    <h3 className="text-xl md:text-2xl font-black uppercase tracking-tight text-text-primary">
                       {t("gymCard.facility_matrix", "Facility Matrix")}
                     </h3>
                   </div>
@@ -286,9 +286,9 @@ export function GymDetailsModal() {
                     {gym.settings?.servicesOffered?.map((s, i) => (
                       <div
                         key={i}
-                        className="px-8 py-5 rounded-[2rem] bg-surface border border-border shadow-sm hover:border-primary/30 transition-all group cursor-default"
+                        className="px-6 py-4 md:px-8 md:py-5 rounded-2xl md:rounded-[2rem] bg-surface border border-border shadow-sm hover:border-primary/30 transition-all group cursor-default"
                       >
-                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-text-primary group-hover:text-primary transition-colors">
+                        <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-text-primary group-hover:text-primary transition-colors">
                           {typeof s === "string" ? s : s.name}
                         </span>
                       </div>
@@ -303,12 +303,12 @@ export function GymDetailsModal() {
               
               {/* CONTACT PANEL */}
               {hasContact && (
-                <div className="p-10 rounded-[3rem] bg-text-primary text-background shadow-2xl space-y-8 relative overflow-hidden">
+                <div className="p-7 md:p-10 rounded-3xl md:rounded-[3rem] bg-text-primary text-background shadow-2xl space-y-7 md:space-y-8 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-3xl -translate-x-4 -translate-y-4" />
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">
+                  <h4 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] opacity-40">
                     {t("gymCard.comms", "Core Communication")}
                   </h4>
-                  <div className="space-y-5 relative">
+                  <div className="space-y-4 md:space-y-5 relative">
                     {gym.phone && (
                       <SidebarItem
                         value={gym.phone}
@@ -332,14 +332,14 @@ export function GymDetailsModal() {
                 </div>
               )}
 
-              {/* PROTOCOL RULES */}
+               {/* PROTOCOL RULES */}
               {hasRules && (
-                <div className="p-10 rounded-[3rem] bg-surface/50 backdrop-blur-xl border border-border shadow-xl space-y-8">
-                  <div className="flex items-center gap-4 text-text-secondary/60">
-                    <ShieldCheck className="w-6 h-6" />
-                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em]">Protocol</h4>
+                <div className="p-7 md:p-10 rounded-3xl md:rounded-[3rem] bg-surface/50 backdrop-blur-xl border border-border shadow-xl space-y-7 md:space-y-8">
+                  <div className="flex items-center gap-3.5 md:gap-4 text-text-secondary/60">
+                    <ShieldCheck className="w-5 h-5 md:w-6 md:h-6" />
+                    <h4 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.25em] md:tracking-[0.3em]">Protocol</h4>
                   </div>
-                  <div className="space-y-5">
+                  <div className="space-y-4 md:space-y-5">
                     {gym.settings?.rules?.map((rule, idx) => (
                       <div key={idx} className="flex gap-4 items-start group">
                         <Dot className="w-5 h-5 text-primary shrink-0 transition-transform group-hover:scale-150" />
@@ -378,11 +378,11 @@ function SidebarItem({
   href?: string;
 }) {
   const content = (
-    <div className="flex items-center gap-5 group cursor-pointer overflow-hidden">
-      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:text-white transition-all shadow-inner shrink-0 group-hover:scale-110">
+    <div className="flex items-center gap-4 md:gap-5 group cursor-pointer overflow-hidden">
+      <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 group-hover:text-white transition-all shadow-inner shrink-0 group-hover:scale-110">
         {icon}
       </div>
-      <p className="text-sm font-bold truncate tracking-tight flex-1">
+      <p className="text-xs md:text-sm font-bold truncate tracking-tight flex-1">
         {value}
       </p>
     </div>
