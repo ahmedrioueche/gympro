@@ -9,7 +9,7 @@ import QuickActions from "../../../../../components/coach/dashboard/QuickActions
 import QuickStatsGrid from "../../../../../components/coach/dashboard/QuickStatsGrid";
 import RecentActivity from "../../../../../components/coach/dashboard/RecentActivity";
 import TodaySessions from "../../../../../components/coach/dashboard/TodaySessions";
-import GymHeroSection from "../../../../../components/gym/GymHeroSection";
+import GymHeroSection from "../../../../../components/gym/gym-hero/GymHeroSection";
 import MarketingCarousel from "../../../../../components/gym/MarketingCarousel";
 import OperatingHours from "../../../../../components/gym/OperatingHours";
 import GymCoachAnnouncementsSection from "./components/GymCoachAnnouncementsSection";

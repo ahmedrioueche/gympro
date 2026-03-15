@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, Dumbbell, Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
+import { useLanguageStore } from "../../../../store/language";
 import { useModalStore } from "../../../../store/modal";
 import { useProgramCreate } from "../../../hooks/useProgramCreate";
 import { DayCard } from "../../gym/DayCard";
@@ -25,6 +26,7 @@ export const CreateProgramModal = ({}) => {
     updateDaysPerWeek,
   } = useProgramCreate(closeModal);
   const isOpen = currentModal === "create_program";
+  const { isRtl } = useLanguageStore();
 
   const renderFooter = () => (
     <div className="flex gap-3">
@@ -41,7 +43,11 @@ export const CreateProgramModal = ({}) => {
           </>
         ) : (
           <>
-            <ArrowLeft className="w-5 h-5" />
+            {isRtl ? (
+              <ArrowLeft className="w-5 h-5" />
+            ) : (
+              <ArrowRight className="w-5 h-5" />
+            )}
             {t("common.back")}
           </>
         )}
@@ -60,7 +66,11 @@ export const CreateProgramModal = ({}) => {
         ) : step === 1 ? (
           <>
             {t("training.programs.create.next")}
-            <ArrowRight className="w-5 h-5" />
+            {isRtl ? (
+              <ArrowLeft className="w-5 h-5" />
+            ) : (
+              <ArrowRight className="w-5 h-5" />
+            )}
           </>
         ) : (
           <>

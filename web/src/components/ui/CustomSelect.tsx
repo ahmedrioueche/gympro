@@ -116,8 +116,12 @@ const CustomSelect = <T extends string>({
   }, [isOpen, disabled, searchable]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = (event: Event) => {
       if (isOpen) {
+        // Only close if the scroll happened outside our dropdown
+        if (listRef.current && listRef.current.contains(event.target as Node)) {
+          return;
+        }
         setIsOpen(false);
       }
     };

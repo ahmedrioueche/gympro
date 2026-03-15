@@ -23,7 +23,7 @@ export function CoachStoreControls({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-5 w-full">
+    <div className="mb-6 bg-surface border border-border rounded-xl md:rounded-2xl p-3 md:p-4 w-full">
       {/* Desktop Layout */}
       <div className="hidden md:flex items-center gap-3">
         <SearchInput

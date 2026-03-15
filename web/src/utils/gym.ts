@@ -1,4 +1,4 @@
-import type { GymStatus } from "../app/pages/main/gym/member/home/hooks/useGymMemberHome";
+import type { GymStatus } from "../app/hooks/useGymStatus";
 
 // Gym Status Styling
 export const getGymStatusStyles = (status?: GymStatus) => {
@@ -36,9 +36,9 @@ export const getGymStatusStyles = (status?: GymStatus) => {
 
 export const getGymStatusText = (status: GymStatus, t: any) => {
   if (status.isTemporaryClosure)
-    return status.nextStatusChange || t("home.gym.status.closed", "Closed");
+    return status.nextStatusChange || t("common.closed", "Closed");
   if (!status.isOpen)
-    return status.nextStatusChange || t("home.gym.status.closed", "Closed");
+    return status.nextStatusChange || t("common.closed", "Closed");
   if (status.isWomenOnly)
     return t("home.gym.status.womenOnly", "Women Only Now");
   if (status.currentSession === "menOnly")
@@ -47,12 +47,12 @@ export const getGymStatusText = (status: GymStatus, t: any) => {
 };
 
 export const formatWorkingDays = (days: number[], t: any) => {
-  if (!days || days.length === 0) return t("common.days.noDays", "No days");
-  if (days.length === 7) return t("common.days.allDays", "Every Day");
+  if (!days || days.length === 0) return t("common.gymDays.noDays", "No days");
+  if (days.length === 7) return t("common.gymDays.allDays", "Every Day");
   if (days.length === 6 && !days.includes(0))
-    return t("common.days.monSat", "Mon — Sat");
+    return t("common.gymDays.monSat", "Mon — Sat");
   if (days.length === 5 && !days.includes(0) && !days.includes(6))
-    return t("common.days.monFri", "Mon — Fri");
+    return t("common.gymDays.monFri", "Mon — Fri");
 
   const dayNames = [
     "sunday",

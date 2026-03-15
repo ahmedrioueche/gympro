@@ -6,7 +6,7 @@ import { APP_PAGES } from "../../../../../../constants/navigation";
 import { useGymAnalytics } from "../../../../../../hooks/queries/useAnalytics";
 import { usePermissions } from "../../../../../../hooks/usePermissions";
 import { useGymStore } from "../../../../../../store/gym";
-import GymHeroSection from "../../../../../components/gym/GymHeroSection";
+import GymHeroSection from "../../../../../components/gym/gym-hero/GymHeroSection";
 import MarketingCarousel from "../../../../../components/gym/MarketingCarousel";
 import OperatingHours from "../../../../../components/gym/OperatingHours";
 import { useGymMemberHome } from "../../member/home/hooks/useGymMemberHome";

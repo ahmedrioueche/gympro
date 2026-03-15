@@ -1,0 +1,396 @@
+  console.log
+    UpdateSettings payload: {} UserID: wrongUserId
+
+      at GymService.log [as updateSettings] (modules/gym/gym.service.ts:562:13)
+
+  console.log
+    UpdateSettings payload: { workingDays: [ 'monday' ] } UserID: 69b5b1234bb87a8a8b04dda7
+
+      at GymService.log [as updateSettings] (modules/gym/gym.service.ts:562:13)
+
+  console.log
+    UpdateSettings payload: { temporaryClosures: [ { start: '2023-01-03', end: '2023-01-04' } ] } UserID: 69b5b1234bb87a8a8b04ddab
+
+      at GymService.log [as updateSettings] (modules/gym/gym.service.ts:562:13)
+
+  console.log
+    UpdateSettings payload: {
+      workingDays: [ 'tuesday' ],
+      workingHours: { start: '09:00', end: '21:00' },
+      femaleOnlyHours: { enabled: true, start: '10:00', end: '12:00' }
+    } UserID: 69b5b1234bb87a8a8b04ddaf
+
+      at GymService.log [as updateSettings] (modules/gym/gym.service.ts:562:13)
+
+  console.log
+    UpdateSettings payload: {
+      workingDays: [ 'monday' ],
+      workingHours: { start: '08:00', end: '20:00' }
+    } UserID: 69b5b1234bb87a8a8b04ddb3
+
+      at GymService.log [as updateSettings] (modules/gym/gym.service.ts:562:13)
+
+  console.log
+    UpdateSettings payload: { temporaryClosures: [ { start: '2023-01-03', end: '2023-01-04' } ] } UserID: 69b5b1234bb87a8a8b04ddb7
+
+      at GymService.log [as updateSettings] (modules/gym/gym.service.ts:562:13)
+
+  console.log
+    UpdateSettings payload: { temporaryClosures: [ { start: '2023-01-01', end: '2023-01-02' } ] } UserID: 69b5b1234bb87a8a8b04ddbb
+
+      at GymService.log [as updateSettings] (modules/gym/gym.service.ts:562:13)
+
+  console.log
+    Adding facility to gym 69b5b1234bb87a8a8b04ddbe: { name: 'Pool', _id: '69b5b1234bb87a8a8b04ddbf' }
+
+      at GymService.log [as addFacility] (modules/gym/gym.service.ts:723:13)
+
+  console.log
+    Facility added. New facilities count: 0
+
+      at GymService.log [as addFacility] (modules/gym/gym.service.ts:731:13)
+
+(node:21536) [MONGOOSE] Warning: Duplicate schema index on {"planId":1} found. This is often due to declaring an index using both "index: true" and "schema.index()". Please remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL src/modules/gym/gym.service.spec.ts (13.071 s)
+  GymService
+    √ should be defined (51 ms)
+    create
+      √ should throw ConflictException if gym limit reached (15 ms)
+      √ should throw ConflictException if gym with same name exists for owner (9 ms)
+      √ should create a gym and owner membership (9 ms)
+    findAll
+      √ should return paginated gyms (11 ms)
+    findOne
+      √ should return a gym if found (6 ms)
+      √ should throw NotFoundException if not found (9 ms)
+    update
+      √ should update and return a gym (5 ms)
+      √ should throw NotFoundException if not found (11 ms)
+    remove
+      √ should delete a gym (11 ms)
+      √ should throw NotFoundException in remove if not found (7 ms)
+    findUniqueCities
+      √ should return distinct cities (8 ms)
+    findByOwner
+      √ should return gyms for owner and update stats (7 ms)
+    findByMember
+      √ should return gyms where user is a member (12 ms)
+    getGymMembers
+      √ should return paginated members of a gym (7 ms)
+    findAllForUser
+      √ should combine and unique gyms from owner, member, coach and staff (9 ms)
+    findByCoach
+      √ should return gyms where user is an active coach (7 ms)
+    findByStaff
+      √ should return gyms where user is a staff member (9 ms)
+    findAll filters
+      √ should exclude gyms where user is a member or coach if excludeUserId is provided (14 ms)
+    updateSettings
+      √ should throw ConflictException if not the owner (132 ms)
+      √ should update settings and notify schedule change (10 ms)
+      √ should detect temporary closure changes (8 ms)
+      × should detect schedule changes (10 ms)
+      √ should not notify schedule change if settings are identical (11 ms)
+      √ should notify gym closure change if temporaryClosures are different (10 ms)
+      √ should not notify gym closure change if temporaryClosures are identical (6 ms)
+    facilities
+      √ should add a facility (15 ms)
+      √ should remove a facility (6 ms)
+      √ should update a facility (7 ms)
+      √ should throw NotFoundException if facility to update is not found (7 ms)
+      √ should validate a facility (7 ms)
+    setBanner
+      √ should set banner for a gym (6 ms)
+      √ should throw error in setBanner if gym not found (11 ms)
+    media management
+      √ should add media to a gym (6 ms)
+      √ should remove media from a gym (7 ms)
+    exportManagerData
+      √ should export gym and member data to excel (130 ms)
+    normalizeGym
+      √ should normalize servicesOffered from strings to objects (7 ms)
+      √ should return null if gym is null (4 ms)
+
+  ● GymService › updateSettings › should detect schedule changes
+
+    expect(jest.fn()).toHaveBeenCalled()
+
+    Expected number of calls: >= 1
+    Received number of calls:    0
+
+    [0m [90m 528 |[39m       }[33m;[39m
+     [90m 529 |[39m       [36mawait[39m service[33m.[39mupdateSettings(gId[33m,[39m updateDto[33m,[39m uId)[33m;[39m
+    [31m[1m>[22m[39m[90m 530 |[39m       expect(notificationsService[33m.[39mnotifyScheduleChange)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m     |[39m                                                         [31m[1m^[22m[39m
+     [90m 531 |[39m     })[33m;[39m
+     [90m 532 |[39m
+     [90m 533 |[39m     it([32m'should not notify schedule change if settings are identical'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (modules/gym/gym.service.spec.ts:530:57)
+
+-----------------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------
+File                                     | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                                                                               
+-----------------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------
+All files                                |    7.73 |     5.81 |    4.81 |    7.25 |                                                                                                                 
+ src                                     |       0 |        0 |       0 |       0 |                                                                                                                 
+  app.controller.ts                      |       0 |      100 |       0 |       0 | 1-7                                                                                                             
+  app.module.ts                          |       0 |        0 |       0 |       0 | 1-133                                                                                                           
+  app.service.ts                         |       0 |      100 |       0 |       0 | 1-6                                                                                                             
+  main.ts                                |       0 |        0 |       0 |       0 | 1-122                                                                                                           
+ src/common                              |       0 |      100 |     100 |       0 |                                                                                                                 
+  common.module.ts                       |       0 |      100 |     100 |       0 | 1-14                                                                                                            
+ src/common/config                       |       0 |      100 |     100 |       0 |                                                                                                                 
+  config.module.ts                       |       0 |      100 |     100 |       0 | 1-12                                                                                                            
+ src/common/constants                    |     100 |      100 |     100 |     100 |                                                                                                                 
+  subscription.constants.ts              |     100 |      100 |     100 |     100 |                                                                                                                 
+ src/common/decorators                   |       0 |        0 |       0 |       0 |                                                                                                                 
+  platform.decorator.ts                  |       0 |        0 |       0 |       0 | 1-8                                                                                                             
+ src/common/filters                      |       0 |        0 |       0 |       0 |                                                                                                                 
+  alerts-exception.filter.ts             |       0 |        0 |       0 |       0 | 1-56                                                                                                            
+  http-exception.filter.ts               |       0 |        0 |       0 |       0 | 1-35                                                                                                            
+ src/common/guards                       |       0 |        0 |       0 |       0 |                                                                                                                 
+  gym-feature.guard.ts                   |       0 |        0 |       0 |       0 | 23-133                                                                                                          
+ src/common/i18n                         |      28 |        0 |       0 |   22.72 |                                                                                                                 
+  i18n.service.ts                        |      28 |        0 |       0 |   22.72 | 13-89                                                                                                           
+ src/common/middleware                   |       0 |        0 |       0 |       0 |                                                                                                                 
+  logger.middleware.ts                   |       0 |        0 |       0 |       0 | 2-54                                                                                                            
+  platform.middleware.ts                 |       0 |        0 |       0 |       0 | 2-23                                                                                                            
+ src/common/providers                    |       0 |        0 |       0 |       0 |                                                                                                                 
+  database.module.ts                     |       0 |      100 |     100 |       0 | 1-8                                                                                                             
+  mongo.provider.ts                      |       0 |        0 |       0 |       0 | 1-11                                                                                                            
+ src/common/schemas                      |     100 |       75 |     100 |     100 |                                                                                                                 
+  user.schema.ts                         |     100 |       75 |     100 |     100 | 150-341                                                                                                         
+ src/common/services                     |    6.52 |     12.5 |       0 |    4.65 |                                                                                                                 
+  gemini.service.ts                      |       0 |        0 |       0 |       0 | 2-141                                                                                                           
+  mailer.module.ts                       |       0 |      100 |     100 |       0 | 1-8                                                                                                             
+  mailer.service.ts                      |   18.18 |    16.66 |       0 |    12.9 | 8-69                                                                                                            
+ src/common/utils                        |       0 |        0 |       0 |       0 |                                                                                                                 
+  feature-access.util.ts                 |       0 |        0 |       0 |       0 | 1-42                                                                                                            
+  helper.ts                              |       0 |        0 |       0 |       0 | 3-9                                                                                                             
+  i18n.ts                                |       0 |        0 |       0 |       0 | 3-31                                                                                                            
+  phone.util.ts                          |       0 |        0 |       0 |       0 | 11-102                                                                                                          
+  platform.util.ts                       |       0 |        0 |       0 |       0 | 1-119                                                                                                           
+ src/modules/admin                       |       0 |        0 |       0 |       0 |                                                                                                                 
+  admin.controller.ts                    |       0 |        0 |       0 |       0 | 1-152                                                                                                           
+  admin.module.ts                        |       0 |      100 |     100 |       0 | 1-34                                                                                                            
+  admin.service.ts                       |       0 |        0 |       0 |       0 | 1-375                                                                                                           
+  admin.stats.service.ts                 |       0 |        0 |       0 |       0 | 1-43                                                                                                            
+ src/modules/admin/decorators            |       0 |      100 |       0 |       0 |                                                                                                                 
+  app-permission.decorator.ts            |       0 |      100 |       0 |       0 | 2-5                                                                                                             
+ src/modules/admin/dto                   |       0 |      100 |     100 |       0 |                                                                                                                 
+  create-editor.dto.ts                   |       0 |      100 |     100 |       0 | 1-26                                                                                                            
+  update-editor.dto.ts                   |       0 |      100 |     100 |       0 | 1-30                                                                                                            
+ src/modules/admin/guards                |       0 |        0 |       0 |       0 |                                                                                                                 
+  admin-dashboard.guard.ts               |       0 |        0 |       0 |       0 | 1-24                                                                                                            
+  app-permission.guard.ts                |       0 |        0 |       0 |       0 | 1-65                                                                                                            
+ src/modules/ai                          |       0 |        0 |       0 |       0 |                                                                                                                 
+  ai.controller.ts                       |       0 |        0 |       0 |       0 | 1-14                                                                                                            
+  ai.module.ts                           |       0 |      100 |     100 |       0 | 1-9                                                                                                             
+ src/modules/alerts                      |       0 |        0 |       0 |       0 |                                                                                                                 
+  alerts.controller.ts                   |       0 |        0 |       0 |       0 | 1-52                                                                                                            
+  alerts.module.ts                       |       0 |      100 |     100 |       0 | 1-20                                                                                                            
+  alerts.service.ts                      |       0 |        0 |       0 |       0 | 1-117                                                                                                           
+ src/modules/alerts/dtos                 |       0 |        0 |     100 |       0 |                                                                                                                 
+  create-alert.dto.ts                    |       0 |        0 |     100 |       0 | 1-34                                                                                                            
+ src/modules/alerts/listeners            |       0 |        0 |       0 |       0 |                                                                                                                 
+  alerts.listener.ts                     |       0 |        0 |       0 |       0 | 1-45                                                                                                            
+ src/modules/alerts/schemas              |       0 |        0 |     100 |       0 |                                                                                                                 
+  alert.schema.ts                        |       0 |        0 |     100 |       0 | 1-59                                                                                                            
+ src/modules/analytics                   |       0 |        0 |       0 |       0 |                                                                                                                 
+  analytics.controller.ts                |       0 |        0 |       0 |       0 | 1-36                                                                                                            
+  analytics.module.ts                    |       0 |      100 |     100 |       0 | 1-37                                                                                                            
+  analytics.service.ts                   |       0 |        0 |       0 |       0 | 2-387                                                                                                           
+ src/modules/app-billing                 |   85.81 |       75 |      50 |   85.71 |                                                                                                                 
+  appBilling.module.ts                   |       0 |      100 |       0 |       0 | 1-60                                                                                                            
+  appBilling.schema.ts                   |     100 |       75 |     100 |     100 | 130-380                                                                                                         
+ src/modules/app-billing/feature-package |       0 |        0 |       0 |       0 |                                                                                                                 
+  feature-package.controller.ts          |       0 |        0 |       0 |       0 | 1-52                                                                                                            
+  feature-package.module.ts              |       0 |      100 |     100 |       0 | 1-20                                                                                                            
+  feature-package.schema.ts              |       0 |        0 |     100 |       0 | 1-23                                                                                                            
+  feature-package.service.ts             |       0 |        0 |       0 |       0 | 5-37                                                                                                            
+ src/modules/app-billing/payment         |       0 |        0 |       0 |       0 |                                                                                                                 
+  appPayment.controller.ts               |       0 |        0 |       0 |       0 | 1-98                                                                                                            
+  appPayment.schema.ts                   |       0 |        0 |     100 |       0 | 1-75                                                                                                            
+  appPayment.service.ts                  |       0 |        0 |       0 |       0 | 7-274                                                                                                           
+ src/modules/app-billing/plan            |    9.19 |     4.28 |       0 |    7.22 |                                                                                                                 
+  plan.controller.ts                     |       0 |        0 |       0 |       0 | 1-113                                                                                                           
+  plan.service.ts                        |   14.03 |     4.68 |       0 |    10.9 | 22-181                                                                                                          
+ src/modules/app-billing/subscription    |    2.01 |     4.18 |       0 |     1.8 |                                                                                                                 
+  subscription-blocker.service.ts        |       0 |        0 |       0 |       0 | 7-620                                                                                                           
+  subscription.controller.ts             |       0 |        0 |       0 |       0 | 1-267                                                                                                           
+  subscription.cron.ts                   |       0 |        0 |       0 |       0 | 1-168                                                                                                           
+  subscription.service.ts                |     3.3 |        7 |       0 |    2.91 | 34-1314                                                                                                         
+  subscription.util.ts                   |    7.69 |        0 |       0 |    7.69 | 14-36                                                                                                           
+ src/modules/attendance                  |       0 |        0 |       0 |       0 |                                                                                                                 
+  attendance.controller.ts               |       0 |        0 |       0 |       0 | 1-70                                                                                                            
+  attendance.module.ts                   |       0 |      100 |       0 |       0 | 1-36                                                                                                            
+  attendance.schema.ts                   |       0 |        0 |     100 |       0 | 6-55                                                                                                            
+  attendance.service.ts                  |       0 |        0 |       0 |       0 | 2-369                                                                                                           
+ src/modules/auth                        |       0 |        0 |       0 |       0 |                                                                                                                 
+  auth.controller.ts                     |       0 |        0 |       0 |       0 | 17-482                                                                                                          
+  auth.dto.ts                            |       0 |      100 |     100 |       0 | 1-173                                                                                                           
+  auth.module.ts                         |       0 |      100 |       0 |       0 | 1-68                                                                                                            
+  auth.service.ts                        |       0 |        0 |       0 |       0 | 1-702                                                                                                           
+  jwt-auth.guard.ts                      |       0 |        0 |       0 |       0 | 1-46                                                                                                            
+  otp.service.ts                         |       0 |        0 |       0 |       0 | 1-314                                                                                                           
+ src/modules/auth/decorators             |       0 |        0 |       0 |       0 |                                                                                                                 
+  get-user.decorator.ts                  |       0 |        0 |       0 |       0 | 1-8                                                                                                             
+ src/modules/chargily                    |       0 |        0 |       0 |       0 |                                                                                                                 
+  chargily.controller.ts                 |       0 |        0 |       0 |       0 | 1-301                                                                                                           
+  chargily.module.ts                     |       0 |      100 |     100 |       0 | 1-14                                                                                                            
+  chargily.service.ts                    |       0 |        0 |       0 |       0 | 1-1108                                                                                                          
+ src/modules/coach                       |       0 |        0 |       0 |       0 |                                                                                                                 
+  coach.controller.ts                    |       0 |        0 |       0 |       0 | 1-205                                                                                                           
+  coach.module.ts                        |       0 |      100 |       0 |       0 | 1-30                                                                                                            
+  coach.service.ts                       |       0 |        0 |       0 |       0 | 1-1396                                                                                                          
+ src/modules/coach/schemas               |       0 |        0 |     100 |       0 |                                                                                                                 
+  coach-request.schema.ts                |       0 |        0 |     100 |       0 | 1-42                                                                                                            
+ src/modules/competition                 |       0 |        0 |       0 |       0 |                                                                                                                 
+  competition.controller.ts              |       0 |        0 |       0 |       0 | 1-216                                                                                                           
+  competition.module.ts                  |       0 |      100 |     100 |       0 | 1-23                                                                                                            
+  competition.schema.ts                  |       0 |        0 |     100 |       0 | 1-105                                                                                                           
+  competition.service.ts                 |       0 |        0 |       0 |       0 | 6-399                                                                                                           
+ src/modules/dashboard                   |       0 |        0 |       0 |       0 |                                                                                                                 
+  dashboard.controller.ts                |       0 |        0 |       0 |       0 | 1-69                                                                                                            
+  dashboard.module.ts                    |       0 |      100 |       0 |       0 | 1-19                                                                                                            
+  dashboard.service.ts                   |       0 |        0 |       0 |       0 | 1-198                                                                                                           
+ src/modules/dashboard/dto               |       0 |      100 |     100 |       0 |                                                                                                                 
+  request-coach-access.dto.ts            |       0 |      100 |     100 |       0 | 1-22                                                                                                            
+ src/modules/exercises                   |       0 |        0 |       0 |       0 |                                                                                                                 
+  exercises.controller.ts                |       0 |        0 |       0 |       0 | 1-90                                                                                                            
+  exercises.module.ts                    |       0 |      100 |     100 |       0 | 1-17                                                                                                            
+  exercises.schema.ts                    |       0 |        0 |     100 |       0 | 1-68                                                                                                            
+  exercises.service.ts                   |       0 |        0 |       0 |       0 | 6-123                                                                                                           
+ src/modules/gym                         |   64.37 |    59.62 |   60.25 |   63.53 |                                                                                                                 
+  gym.controller.ts                      |       0 |        0 |       0 |       0 | 1-396                                                                                                           
+  gym.module.ts                          |       0 |      100 |       0 |       0 | 1-32                                                                                                            
+  gym.schema.ts                          |   98.85 |    58.33 |       0 |   98.66 | 75                                                                                                              
+  gym.service.ts                         |   85.25 |    66.18 |   85.45 |   85.65 | 138,189,198-199,207,211-214,219,248,330,342,383,415,436,468-470,558,651,702,713,735,763,792,848,856-857,908-928 
+ src/modules/gym-announcement            |       0 |        0 |       0 |       0 |                                                                                                                 
+  gym-announcement.controller.ts         |       0 |        0 |       0 |       0 | 1-70                                                                                                            
+  gym-announcement.module.ts             |       0 |      100 |     100 |       0 | 1-26                                                                                                            
+  gym-announcement.service.ts            |       0 |        0 |       0 |       0 | 5-164                                                                                                           
+ src/modules/gym-announcement/dto        |       0 |      100 |     100 |       0 |                                                                                                                 
+  create-announcement.dto.ts             |       0 |      100 |     100 |       0 | 2-54                                                                                                            
+ src/modules/gym-announcement/schemas    |       0 |      100 |     100 |       0 |                                                                                                                 
+  gym-announcement.schema.ts             |       0 |      100 |     100 |       0 | 2-53                                                                                                            
+ src/modules/gym-class                   |       0 |        0 |       0 |       0 |                                                                                                                 
+  gymClass.controller.ts                 |       0 |        0 |       0 |       0 | 1-124                                                                                                           
+  gymClass.module.ts                     |       0 |      100 |     100 |       0 | 1-32                                                                                                            
+  gymClass.schema.ts                     |       0 |        0 |     100 |       0 | 6-124                                                                                                           
+  gymClass.service.ts                    |       0 |        0 |       0 |       0 | 1-1084                                                                                                          
+ src/modules/gym-coach                   |       0 |        0 |       0 |       0 |                                                                                                                 
+  gym-coach.controller.ts                |       0 |        0 |       0 |       0 | 1-133                                                                                                           
+  gym-coach.module.ts                    |       0 |      100 |       0 |       0 | 1-42                                                                                                            
+  gym-coach.service.ts                   |       0 |        0 |       0 |       0 | 1-474                                                                                                           
+ src/modules/gym-coach-payment           |       0 |        0 |       0 |       0 |                                                                                                                 
+  gym-coach-payment.controller.ts        |       0 |        0 |       0 |       0 | 1-30                                                                                                            
+  gym-coach-payment.module.ts            |       0 |      100 |     100 |       0 | 1-20                                                                                                            
+  gym-coach-payment.service.ts           |       0 |        0 |       0 |       0 | 1-141                                                                                                           
+ src/modules/gym-coach-payment/dto       |       0 |      100 |     100 |       0 |                                                                                                                 
+  create-payment.dto.ts                  |       0 |      100 |     100 |       0 | 7                                                                                                               
+ src/modules/gym-coach-payment/schemas   |       0 |        0 |       0 |       0 |                                                                                                                 
+  gym-coach-payment.schema.ts            |       0 |        0 |       0 |       0 | 1-90                                                                                                            
+ src/modules/gym-coach/schemas           |     100 |    77.27 |     100 |     100 |                                                                                                                 
+  gym-coach-affiliation.schema.ts        |     100 |    77.27 |     100 |     100 | 17-60                                                                                                           
+ src/modules/gym-membership              |       0 |        0 |       0 |       0 |                                                                                                                 
+  membership.controller.ts               |       0 |        0 |       0 |       0 | 2-636                                                                                                           
+  membership.cron.ts                     |       0 |        0 |       0 |       0 | 1-325                                                                                                           
+  membership.module.ts                   |       0 |      100 |     100 |       0 | 1-47                                                                                                            
+  membership.schema.ts                   |       0 |        0 |       0 |       0 | 7-103                                                                                                           
+  membership.service.ts                  |       0 |        0 |       0 |       0 | 1-2039                                                                                                          
+ src/modules/gym-subscription            |       0 |        0 |       0 |       0 |                                                                                                                 
+  gymSubscription.controller.ts          |       0 |        0 |       0 |       0 | 1-60                                                                                                            
+  gymSubscription.module.ts              |       0 |      100 |     100 |       0 | 1-24                                                                                                            
+  gymSubscription.schema.ts              |       0 |        0 |     100 |       0 | 10-96                                                                                                           
+  gymSubscription.service.ts             |       0 |        0 |       0 |       0 | 6-143                                                                                                           
+ src/modules/inventory                   |       0 |        0 |       0 |       0 |                                                                                                                 
+  inventory.controller.ts                |       0 |        0 |       0 |       0 | 1-108                                                                                                           
+  inventory.module.ts                    |       0 |      100 |     100 |       0 | 1-23                                                                                                            
+  inventory.schema.ts                    |       0 |        0 |     100 |       0 | 1-64                                                                                                            
+  inventory.service.ts                   |       0 |        0 |       0 |       0 | 5-112                                                                                                           
+ src/modules/member-analytics            |       0 |        0 |       0 |       0 |                                                                                                                 
+  member-analytics.controller.ts         |       0 |        0 |       0 |       0 | 5-21                                                                                                            
+  member-analytics.module.ts             |       0 |      100 |     100 |       0 | 1-21                                                                                                            
+  member-analytics.service.ts            |       0 |        0 |       0 |       0 | 1-141                                                                                                           
+ src/modules/notifications               |   16.35 |    14.57 |       0 |   13.48 |                                                                                                                 
+  external-notifications.service.ts      |   15.94 |    22.64 |       0 |   13.63 | 44-218                                                                                                          
+  member-invitation.service.ts           |       0 |        0 |       0 |       0 | 1-340                                                                                                           
+  notifications.controller.ts            |       0 |        0 |       0 |       0 | 1-117                                                                                                           
+  notifications.gateway.ts               |    22.5 |       50 |       0 |   18.42 | 27-75,83-102                                                                                                    
+  notifications.module.ts                |       0 |      100 |       0 |       0 | 1-65                                                                                                            
+  notifications.schema.ts                |     100 |      100 |     100 |     100 |                                                                                                                 
+  notifications.service.ts               |   10.43 |    17.64 |       0 |    9.09 | 43-418                                                                                                          
+ src/modules/paddle                      |    2.91 |     4.14 |       0 |    2.38 |                                                                                                                 
+  paddle.controller.ts                   |       0 |        0 |       0 |       0 | 1-313                                                                                                           
+  paddle.module.ts                       |       0 |      100 |       0 |       0 | 1-18                                                                                                            
+  paddle.service.ts                      |    4.14 |     6.66 |       0 |    3.37 | 45-953                                                                                                          
+ src/modules/progress                    |       0 |        0 |       0 |       0 |                                                                                                                 
+  progress.controller.ts                 |       0 |        0 |       0 |       0 | 1-25                                                                                                            
+  progress.module.ts                     |       0 |      100 |     100 |       0 | 1-22                                                                                                            
+  progress.service.ts                    |       0 |        0 |       0 |       0 | 6-190                                                                                                           
+ src/modules/reports                     |       0 |        0 |       0 |       0 |                                                                                                                 
+  reports.controller.ts                  |       0 |        0 |       0 |       0 | 1-96                                                                                                            
+  reports.module.ts                      |       0 |      100 |     100 |       0 | 1-23                                                                                                            
+  reports.service.ts                     |       0 |        0 |       0 |       0 | 1-255                                                                                                           
+ src/modules/reports/dtos                |       0 |        0 |     100 |       0 |                                                                                                                 
+  add-attachments.dto.ts                 |       0 |      100 |     100 |       0 | 1-7                                                                                                             
+  add-response.dto.ts                    |       0 |      100 |     100 |       0 | 1-11                                                                                                            
+  create-report.dto.ts                   |       0 |        0 |     100 |       0 | 1-33                                                                                                            
+  update-report-status.dto.ts            |       0 |        0 |     100 |       0 | 1-7                                                                                                             
+ src/modules/reports/schemas             |       0 |        0 |       0 |       0 |                                                                                                                 
+  report.schema.ts                       |       0 |        0 |       0 |       0 | 2-69                                                                                                            
+ src/modules/sessions                    |       0 |        0 |       0 |       0 |                                                                                                                 
+  sessions.controller.ts                 |       0 |        0 |       0 |       0 | 1-64                                                                                                            
+  sessions.module.ts                     |       0 |      100 |       0 |       0 | 1-31                                                                                                            
+  sessions.service.ts                    |       0 |        0 |       0 |       0 | 1-507                                                                                                           
+ src/modules/sessions/dto                |       0 |        0 |     100 |       0 |                                                                                                                 
+  create-session.dto.ts                  |       0 |        0 |     100 |       0 | 1-53                                                                                                            
+  update-session.dto.ts                  |       0 |        0 |     100 |       0 | 1-44                                                                                                            
+ src/modules/sessions/schemas            |       0 |        0 |     100 |       0 |                                                                                                                 
+  session.schema.ts                      |       0 |        0 |     100 |       0 | 1-97                                                                                                            
+ src/modules/settings                    |   39.53 |        0 |       0 |   36.11 |                                                                                                                 
+  settings.controller.ts                 |       0 |        0 |       0 |       0 | 1-27                                                                                                            
+  settings.module.ts                     |       0 |      100 |     100 |       0 | 1-19                                                                                                            
+  settings.schema.ts                     |     100 |      100 |     100 |     100 |                                                                                                                 
+  settings.service.ts                    |       0 |        0 |       0 |       0 | 1-88                                                                                                            
+ src/modules/sms                         |    8.95 |     8.82 |       0 |    6.34 |                                                                                                                 
+  sms.dto.ts                             |       0 |      100 |     100 |       0 | 1-14                                                                                                            
+  sms.module.ts                          |       0 |      100 |     100 |       0 | 1-10                                                                                                            
+  sms.service.ts                         |   10.71 |     8.82 |       0 |     7.4 | 8-146                                                                                                           
+ src/modules/store                       |       0 |        0 |       0 |       0 |                                                                                                                 
+  product.schema.ts                      |       0 |        0 |     100 |       0 | 1-72                                                                                                            
+  store.controller.ts                    |       0 |        0 |       0 |       0 | 1-113                                                                                                           
+  store.module.ts                        |       0 |      100 |     100 |       0 | 1-23                                                                                                            
+  store.service.ts                       |       0 |        0 |       0 |       0 | 6-138                                                                                                           
+ src/modules/system-alerts               |       0 |        0 |       0 |       0 |                                                                                                                 
+  system-alerts.controller.ts            |       0 |        0 |       0 |       0 | 1-65                                                                                                            
+  system-alerts.module.ts                |       0 |      100 |       0 |       0 | 1-19                                                                                                            
+  system-alerts.schema.ts                |       0 |        0 |     100 |       0 | 7-56                                                                                                            
+  system-alerts.service.ts               |       0 |        0 |       0 |       0 | 5-83                                                                                                            
+ src/modules/training                    |       0 |        0 |       0 |       0 |                                                                                                                 
+  training.controller.ts                 |       0 |        0 |       0 |       0 | 1-196                                                                                                           
+  training.module.ts                     |       0 |      100 |     100 |       0 | 1-23                                                                                                            
+  training.schema.ts                     |       0 |        0 |     100 |       0 | 16-213                                                                                                          
+  training.service.ts                    |       0 |        0 |       0 |       0 | 7-354                                                                                                           
+ src/modules/upload                      |       0 |        0 |       0 |       0 |                                                                                                                 
+  upload.constants.ts                    |       0 |        0 |       0 |       0 | 7-64                                                                                                            
+  upload.controller.ts                   |       0 |        0 |       0 |       0 | 1-84                                                                                                            
+  upload.module.ts                       |       0 |      100 |     100 |       0 | 1-12                                                                                                            
+  upload.service.ts                      |       0 |        0 |       0 |       0 | 1-49                                                                                                            
+ src/modules/users                       |       0 |        0 |       0 |       0 |                                                                                                                 
+  role.schema.ts                         |       0 |      100 |     100 |       0 | 2-15                                                                                                            
+  users.controller.ts                    |       0 |        0 |       0 |       0 | 1-298                                                                                                           
+  users.module.ts                        |       0 |      100 |       0 |       0 | 1-75                                                                                                            
+  users.service.ts                       |       0 |        0 |       0 |       0 | 1-695                                                                                                           
+ src/modules/users/guards                |       0 |        0 |       0 |       0 |                                                                                                                 
+  gym-permissions.guard.ts               |       0 |        0 |       0 |       0 | 25-212                                                                                                          
+  permissions.guard.ts                   |       0 |        0 |       0 |       0 | 22-160                                                                                                          
+  roles.guard.ts                         |       0 |        0 |       0 |       0 | 20-101                                                                                                          
+-----------------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------------------------------------------------------
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 37 passed, 38 total
+Snapshots:   0 total
+Time:        27.893 s
+Ran all test suites matching src/modules/gym/gym.service.spec.ts.

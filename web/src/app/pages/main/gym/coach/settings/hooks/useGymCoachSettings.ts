@@ -21,9 +21,10 @@ export function useGymCoachSettings() {
     },
   });
 
-  const currentAffiliation = affiliations?.find(
-    (a) => a.gymId === currentGym?._id,
-  );
+  const currentAffiliation = affiliations?.find((a) => {
+    const gymId = typeof a.gymId === "object" ? (a.gymId as any)?._id : a.gymId;
+    return String(gymId) === String(currentGym?._id);
+  });
 
   // Terminate Affiliation (Leave Gym)
   const terminateMutation = useMutation({

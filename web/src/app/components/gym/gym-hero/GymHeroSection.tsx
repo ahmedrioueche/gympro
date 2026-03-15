@@ -8,17 +8,17 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useUserStore } from "../../../store/user";
+import { useUserStore } from "../../../../store/user";
 import {
   formatWorkingDays,
   getGymStatusStyles,
   getGymStatusText,
-} from "../../../utils/gym";
-import { cn } from "../../../utils/helper";
+} from "../../../../utils/gym";
+import { cn } from "../../../../utils/helper";
 import {
   getGoogleMapsUrl,
-  type GymStatus,
-} from "../../pages/main/gym/member/home/hooks/useGymMemberHome";
+} from "../../../pages/main/gym/member/home/hooks/useGymMemberHome";
+import { type GymStatus } from "../../../hooks/useGymStatus";
 
 interface GymHeroSectionProps {
   gym: Gym;
@@ -152,10 +152,10 @@ export default function GymHeroSection({
                 />
                 <div className="text-sm font-bold text-text-secondary uppercase tracking-wider">
                   {status.isTemporaryClosure
-                    ? t("home.gym.temporaryClosure", "Closure Active")
+                    ? t("common.temporaryClosure", "Closure Active")
                     : gym.settings.useAdvancedHours
-                      ? t("home.gym.advancedSchedule", "Advanced Schedule")
-                      : t("home.gym.workingHours", "Operating Hours")}
+                      ? t("common.advancedSchedule", "Advanced Schedule")
+                      : t("common.workingHours", "Operating Hours")}
                 </div>
               </div>
 
@@ -165,7 +165,7 @@ export default function GymHeroSection({
                     <div className="flex flex-col items-center md:items-start p-3 bg-red-500/10 rounded-xl border border-red-500/20">
                       <div className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">
                         {status.activeClosure.reason ||
-                          t("home.gym.temporaryClosure", "Closure Active")}
+                          t("common.temporaryClosure", "Closure Active")}
                       </div>
                       <div className="text-xl font-black text-text-primary">
                         {format(
@@ -178,7 +178,7 @@ export default function GymHeroSection({
                     </div>
                     <div className="text-center md:text-start pt-2 border-t border-border/30">
                       <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-0.5">
-                        {t("home.gym.regularHours", "Regular Hours")}
+                        {t("common.regularHours", "Regular Hours")}
                       </div>
                       <div className="text-lg font-bold text-text-primary/70">
                         {gym.settings.workingHours.start} —{" "}
@@ -246,7 +246,7 @@ export default function GymHeroSection({
               <div className="text-center py-6 md:py-12">
                 <p className="text-text-secondary font-medium">
                   {t(
-                    "home.gym.noOperatingHours",
+                    "common.noOperatingHours",
                     "No operating hours configured",
                   )}
                 </p>

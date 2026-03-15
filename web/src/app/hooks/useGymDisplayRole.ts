@@ -26,12 +26,11 @@ export function useGymDisplayRole(gym: Gym | undefined): string | undefined {
 
   // 2. Check coach affiliations if on coach dashboard
   if (activeDashboard === "coach") {
-    const isAffiliatedCoach = coachAffiliations.some(
-      (a) =>
-        (String(a.gymId) === String(gym._id) ||
-          String(a.gym?._id) === String(gym._id)) &&
-        a.status === "active",
-    );
+    const isAffiliatedCoach = coachAffiliations.some((a) => {
+      const gymId =
+        typeof a.gymId === "object" ? (a.gymId as any)?._id : a.gymId;
+      return String(gymId) === String(gym._id) && a.status === "active";
+    });
     if (isAffiliatedCoach) return "Coach";
   }
 

@@ -531,13 +531,22 @@ export const useSessionForm = ({
     let hasError = false;
 
     exerciseIndices.forEach((exIdx) => {
+      const day = program?.days.find((d) => d.name === selectedDayName);
       if (completed && !hasError) {
         // validating only when marking as completed
         const setToCheck = newExercises[exIdx]?.sets[setIndex];
         if (setToCheck) {
           const error = validateSet(setToCheck.weight, setToCheck.reps);
           if (error) {
-            toast.error(`Exercise ${exIdx + 1}: ${error}`);
+            const exercise = day?.blocks
+              .flatMap((b) => b.exercises)
+              .find(
+                (e) =>
+                  e._id === newExercises[exIdx].exerciseId ||
+                  e.name === newExercises[exIdx].exerciseId
+              );
+            const exName = exercise?.name || newExercises[exIdx].exerciseId;
+            toast.error(`${exName}: ${error}`);
             hasError = true;
           }
         }
@@ -602,7 +611,12 @@ export const useSessionForm = ({
         if (set.completed) {
           const error = validateSet(set.weight, set.reps);
           if (error) {
-            return `${ex.exerciseId} Set ${j + 1}: ${error}`;
+            const day = program?.days.find((d) => d.name === selectedDayName);
+            const exercise = day?.blocks
+              .flatMap((b) => b.exercises)
+              .find((e) => e._id === ex.exerciseId || e.name === ex.exerciseId);
+            const exName = exercise?.name || ex.exerciseId;
+            return `${exName} ${t("common.set")} ${j + 1}: ${error}`;
           }
         }
       }

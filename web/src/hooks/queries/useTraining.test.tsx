@@ -1,7 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the client BEFORE importing hooks
 vi.mock("@ahmedrioueche/gympro-client", () => {
@@ -23,8 +23,8 @@ vi.mock("@ahmedrioueche/gympro-client", () => {
 });
 
 // Import hooks after mocking
-import { usePrograms, useStartProgram } from "./useTraining";
 import { trainingApi } from "@ahmedrioueche/gympro-client";
+import { usePrograms, useStartProgram } from "./useTraining";
 
 const createWrapper = () => {
   const queryClient = new QueryClient({

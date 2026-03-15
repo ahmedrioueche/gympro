@@ -50,16 +50,12 @@ const AccessPage: React.FC = () => {
         return (
           <PinView
             pinCode={accessData?.pinCode}
-            isFullscreen={isFullscreen}
-            setIsFullscreen={setIsFullscreen}
           />
         );
       case "rfid":
         return (
           <RFIDView
             rfidId={accessData?.rfidId}
-            isFullscreen={isFullscreen}
-            setIsFullscreen={setIsFullscreen}
           />
         );
       default:
@@ -108,11 +104,7 @@ const AccessPage: React.FC = () => {
           <div className="p-6 md:p-10 flex flex-col items-center justify-center text-center">
             {renderAccessContent()}
 
-            {(activeTab === "qr"
-              ? token
-              : activeTab === "pin"
-                ? accessData?.pinCode
-                : accessData?.rfidId) && (
+            {activeTab === "qr" && token && (
               <div className="mt-4 flex items-center justify-center gap-2 text-primary opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                 <Maximize2 className="w-4 h-4" />
                 <p className="text-xs font-bold uppercase tracking-widest">

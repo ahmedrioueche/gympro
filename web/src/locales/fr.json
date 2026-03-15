@@ -33,7 +33,30 @@
     "go": "Aller",
     "in": "Dans",
     "markAsDone": "Marquer comme terminé",
+    "open": "Ouvert",
+    "closed": "Fermé",
+    "temporaryClosure": "Fermeture temporaire",
+    "advancedSchedule": "Horaire avancé",
+    "workingHours": "Heures de travail",
+    "regularHours": "Heures normales",
+    "noOperatingHours": "Aucun horaire disponible",
+    "showLess": "Voir moins",
+    "showMore": "+{{count}} de plus",
+    "gymStatus": {
+      "opensAt": "Ouvre à {{time}}",
+      "closesAt": "Ferme à {{time}}",
+      "closedToday": "Fermé aujourd'hui",
+      "closedForToday": "Fermé pour aujourd'hui"
+    },
+    "gymDays": {
+      "allDays": "Tous les jours",
+      "noDays": "Aucun jour",
+      "monSat": "Lun — Sam",
+      "monFri": "Lun — Ven"
+    },
+
     "done": "Terminé",
+    "joinedAt": "Rejoint le",
     "restore": "Restaurer",
     "restart": "Redémarrer",
     "changeAvatar": "Changer l'avatar",
@@ -63,6 +86,8 @@
     "winner": "Gagnant",
     "time": "Heure",
     "coach": "Coach",
+    "set": "Série",
+    "exercises": "Exercices",
     "notAssigned": "Non assigné",
     "noData": "Aucune donnée",
     "translating": "Traduction...",
@@ -83,6 +108,9 @@
     "pagination": {
       "showing": "Affichage de {{start}}-{{end}} sur {{total}}"
     },
+    "get_code": "Obtenir le code",
+    "stop": "Arrêter",
+    "preview": "Aperçu",
     "saveChanges": "Enregistrer les modifications",
     "contactSupport": "Contacter le support",
     "unknown": "Inconnu",
@@ -248,6 +276,8 @@
     "email_sent": {
       "welcome_title": "🎉 Bienvenue sur GymPro ! ",
       "welcome_message": "Nous sommes ravis de vous compter parmi nous. Vous pourrez bientôt profiter des avantages de GymPro !",
+      "link to your email": "lien vers votre e-mail",
+      "subtitle": "Cliquez sur le lien dans l'e-mail que nous venons de vous envoyer pour vérifier votre compte",
       "title": "Vérifiez votre e-mail",
       "description": "Nous avons envoyé un lien de vérification à votre adresse e-mail. Veuillez consulter votre boîte de réception et cliquer sur le lien pour vérifier votre compte.",
       "success_title": "Compte créé avec succès !",
@@ -275,6 +305,11 @@
       "redirecting": "Redirection vers votre tableau de bord...",
       "error": "Échec de la vérification de l'e-mail. Veuillez réessayer.",
       "missingToken": "Le jeton de vérification est manquant. Veuillez vérifier le lien de votre e-mail."
+    },
+    "profile": {
+      "verify": {
+        "otp_label": "Entrez le code"
+      }
     },
     "reset_password": "Réinitialiser le mot de passe",
     "reset_password_success": "Mot de passe réinitialisé avec succès !",
@@ -308,7 +343,18 @@
   "status": {
     "success": {
       "operation_completed": "Opération terminée avec succès",
-      "default": "Opération réussie"
+      "default": "Opération réussie",
+      "exercise_created": "Exercice créé avec succès",
+      "exercise_updated": "Exercice mis à jour avec succès",
+      "exercise_deleted": "Exercice supprimé avec succès",
+      "program_created": "Programme créé avec succès",
+      "program_started": "Programme démarré",
+      "program_archived": "Programme archivé",
+      "program_restarted": "Programme redémarré avec succès",
+      "session_logged": "Séance enregistrée avec succès",
+      "session_deleted": "Séance supprimée avec succès",
+      "coach_request_approved": "Demande de coach approuvée avec succès",
+      "coach_request_rejected": "Demande de coach rejetée avec succès"
     },
     "error": {
       "internal_server_error": "Erreur interne du serveur. Veuillez réessayer plus tard",
@@ -457,6 +503,17 @@
         "coach_not_available": "L'entraîneur n'est pas disponible sur ce créneau horaire",
         "already_passed": "Ce cours a déjà commencé ou est passé",
         "plan_access_denied": "Votre abonnement actuel n'inclut pas l'accès à ce type de cours"
+      },
+      "exercise": {
+        "create_failed": "Échec de la création de l'exercice",
+        "update_failed": "Échec de la mise à jour de l'exercice",
+        "delete_failed": "Échec de la suppression de l'exercice"
+      },
+      "program": {
+        "create_failed": "Échec de la création du programme",
+        "start_failed": "Échec du démarrage du programme",
+        "archive_failed": "Échec de l'archivage du programme",
+        "restart_failed": "Échec du redémarrage du programme"
       }
     }
   },
@@ -1010,7 +1067,42 @@
         "newPassword": "Nouveau mot de passe",
         "passwordPlaceholder": "Entrez un nouveau mot de passe"
       }
-    }
+    },
+
+    "saveSuccess": "Paramètres mis à jour avec succès",
+    "saveError": "Échec de la mise à jour des paramètres",
+    "member": {
+      "success": "Profil mis à jour avec succès",
+      "error": "Échec de la mise à jour du profil"
+    },
+    "profile": {
+      "fileTooLarge": "La taille de l'image doit être inférieure à 5 Mo",
+      "avatarSuccess": "Avatar mis à jour avec succès",
+      "avatarError": "Échec de la mise à jour de l'avatar"
+    },
+    "security": {
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "success": "Mot de passe mis à jour avec succès",
+      "error": "Échec de la mise à jour du mot de passe"
+    },
+    "coach": {
+      "location": {
+        "notSupported": "La géolocalisation n'est pas prise en charge",
+        "success": "Localisation détectée avec succès",
+        "error": "Échec de la détection de la localisation",
+        "denied": "Accès à la localisation refusé"
+      },
+      "profile": {
+        "success": "Profil mis à jour avec succès",
+        "error": "Échec de la mise à jour du profil"
+      },
+      "coaching": {
+        "success": "Paramètres de coaching mis à jour avec succès",
+        "error": "Échec de la mise à jour des paramètres de coaching"
+      }
+    },
+
+    "dangerZone": "Zone dangereuse"
   },
   "memberProfile": {
     "title": "Profil du membre",
@@ -1652,7 +1744,11 @@
     "noGyms": "Aucune salle de sport pour l'instant",
     "createFirst": "Créez votre première salle de sport pour commencer",
     "createNew": "Créer une nouvelle salle de sport",
-    "available": "disponible"
+    "available": "disponible",
+    "rules": {
+      "title": "Règles de la salle de sport",
+      "editInSettings": "Modifier dans les paramètres"
+    }
   },
   "createMember": {
     "title": "Ajouter un nouveau membre",
@@ -2845,8 +2941,8 @@
       "validation": {
         "weightPositive": "Le poids doit être supérieur à 0",
         "repsPositive": "Les répétitions doivent être supérieures à 0",
-        "weightIncrements": "Le poids doit être par incréments de 0,5",
-        "autoUncheck": "Décoché : la valeur est devenue invalide"
+        "weightIncrements": "Le poids doit être par incréments de 0,5 kg",
+        "autoUncheck": "La série a été automatiquement décochée en raison de données invalides"
       }
     },
     "noResults": "Aucun exercice trouvé",
@@ -4755,6 +4851,46 @@
           }
         }
       }
+    }
+  },
+  "member.settings": {
+    "pageTitle": "Paramètres du membre",
+    "pageSubtitle": "Gérez votre compte, vos préférences et vos paramètres d'entraînement",
+    "tabs": {
+      "profile": "Profil",
+      "preferences": "Préférences",
+      "security": "Sécurité",
+      "training": "Entraînement"
+    },
+    "profile": {
+      "title": "Paramètres du profil",
+      "subtitle": "Gérez vos informations personnelles et votre identité publique",
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "John Doe",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "john@example.com",
+      "phone": "Numéro de téléphone",
+      "phonePlaceholder": "+1 234 567 890",
+      "coachAccess": "Accès Coach",
+      "becomeCoach": "Devenir coach"
+    },
+    "preferences": {
+      "title": "Préférences générales",
+      "subtitle": "Configurez votre expérience d'application et vos unités"
+    },
+    "security": {
+      "title": "Paramètres de sécurité",
+      "subtitle": "Gérez votre mot de passe et vos préférences de sécurité",
+      "currentPassword": "Mot de passe actuel",
+      "currentPasswordPlaceholder": "Entrez le mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordPlaceholder": "Entrez le nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez le nouveau mot de passe"
+    },
+    "training": {
+      "title": "Paramètres d'entraînement",
+      "subtitle": "Gérez vos préférences d'entraînement"
     }
   },
   "extra": {

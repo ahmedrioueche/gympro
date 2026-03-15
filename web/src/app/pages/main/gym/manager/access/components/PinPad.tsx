@@ -42,39 +42,43 @@ export const PinPad: React.FC<PinPadProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-8 animate-in fade-in zoom-in duration-500">
+    <div className="flex flex-col items-center gap-6 md:gap-8 animate-in fade-in zoom-in duration-500 w-full max-w-full">
       {/* PIN Display */}
-      <div className={cn("flex gap-3", size === "compact" ? "gap-2" : "gap-3")}>
+      <div className={cn("flex justify-center flex-wrap gap-2 md:gap-3", size === "compact" ? "gap-1.5 md:gap-2" : "gap-2 md:gap-3")}>
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
             className={cn(
-              "rounded-2xl border-2 flex items-center justify-center transition-all duration-300",
-              size === "compact" ? "w-10 h-14 rounded-xl" : "w-12 h-16 md:w-14 md:h-20",
+              "rounded-xl md:rounded-2xl border-2 flex items-center justify-center transition-all duration-300",
+              size === "compact" 
+                ? "w-8 h-12 md:w-10 md:h-14 rounded-lg md:rounded-xl" 
+                : "w-9 h-12 md:w-12 md:h-16 lg:w-14 lg:h-20",
               i < pin.length
                 ? "bg-primary/10 border-primary text-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.2)] scale-105"
                 : "bg-zinc-800/50 border-zinc-700 text-zinc-500"
             )}
           >
             {i < pin.length ? (
-              <div className={cn("bg-primary rounded-full animate-in zoom-in", size === "compact" ? "w-2.5 h-2.5" : "w-3 h-3 md:w-4 md:h-4")} />
+              <div className={cn("bg-primary rounded-full animate-in zoom-in", size === "compact" ? "w-2 h-2 md:w-2.5 md:h-2.5" : "w-2.5 h-2.5 md:w-3 md:h-3 lg:w-4 lg:h-4")} />
             ) : (
-              <div className={cn("bg-zinc-700 rounded-full", size === "compact" ? "w-1 h-1" : "w-1.5 h-1.5")} />
+              <div className={cn("bg-zinc-700 rounded-full", size === "compact" ? "w-0.5 h-0.5 md:w-1 md:h-1" : "w-1 h-1 md:w-1.5 md:h-1.5")} />
             )}
           </div>
         ))}
       </div>
 
       {/* Number Pad Grid */}
-      <div className={cn("grid grid-cols-3", size === "compact" ? "gap-3" : "gap-4 md:gap-6")}>
+      <div className={cn("grid grid-cols-3", size === "compact" ? "gap-2 md:gap-3" : "gap-3 md:gap-4 lg:gap-6")}>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
           <button
             key={num}
             onClick={() => handleNumberClick(num.toString())}
             disabled={isLoading}
             className={cn(
-              "rounded-2xl bg-zinc-800/50 border border-zinc-700/50 font-black text-zinc-100 hover:bg-zinc-700/50 hover:border-zinc-600 active:scale-90 transition-all disabled:opacity-50",
-              size === "compact" ? "w-14 h-14 text-xl rounded-xl" : "w-16 h-16 md:w-20 md:h-20 text-2xl"
+              "rounded-xl md:rounded-2xl bg-zinc-800/50 border border-zinc-700/50 font-black text-zinc-100 hover:bg-zinc-700/50 hover:border-zinc-600 active:scale-90 transition-all disabled:opacity-50 flex items-center justify-center",
+              size === "compact" 
+                ? "w-12 h-12 md:w-14 md:h-14 text-lg md:text-xl rounded-lg md:rounded-xl" 
+                : "w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 text-xl lg:text-2xl"
             )}
           >
             {num}
@@ -84,18 +88,20 @@ export const PinPad: React.FC<PinPadProps> = ({
           onClick={handleClear}
           disabled={isLoading || pin.length === 0}
           className={cn(
-            "rounded-2xl bg-zinc-800/20 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/40 active:scale-95 transition-all flex items-center justify-center disabled:opacity-0",
-            size === "compact" ? "w-14 h-14 rounded-xl" : "w-16 h-16 md:w-20 md:h-20"
+            "rounded-xl md:rounded-2xl bg-zinc-800/20 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/40 active:scale-95 transition-all flex items-center justify-center disabled:opacity-0",
+            size === "compact" ? "w-12 h-12 md:w-14 md:h-14" : "w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20"
           )}
         >
-          <X className={cn(size === "compact" ? "w-5 h-5" : "w-6 h-6")} />
+          <X className={cn(size === "compact" ? "w-4 h-4 md:w-5 md:h-5" : "w-5 h-5 md:w-6 md:h-6")} />
         </button>
         <button
           onClick={() => handleNumberClick("0")}
           disabled={isLoading}
           className={cn(
-            "rounded-2xl bg-zinc-800/50 border border-zinc-700/50 font-black text-zinc-100 hover:bg-zinc-700/50 hover:border-zinc-600 active:scale-90 transition-all disabled:opacity-50",
-            size === "compact" ? "w-14 h-14 text-xl rounded-xl" : "w-16 h-16 md:w-20 md:h-20 text-2xl"
+            "rounded-xl md:rounded-2xl bg-zinc-800/50 border border-zinc-700/50 font-black text-zinc-100 hover:bg-zinc-700/50 hover:border-zinc-600 active:scale-90 transition-all disabled:opacity-50 flex items-center justify-center",
+            size === "compact" 
+              ? "w-12 h-12 md:w-14 md:h-14 text-lg md:text-xl rounded-lg md:rounded-xl" 
+              : "w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 text-xl lg:text-2xl"
           )}
         >
           0
@@ -104,11 +110,11 @@ export const PinPad: React.FC<PinPadProps> = ({
           onClick={handleDelete}
           disabled={isLoading || pin.length === 0}
           className={cn(
-            "rounded-2xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 active:scale-95 transition-all flex items-center justify-center disabled:opacity-0",
-            size === "compact" ? "w-14 h-14 rounded-xl" : "w-16 h-16 md:w-20 md:h-20"
+            "rounded-xl md:rounded-2xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 active:scale-95 transition-all flex items-center justify-center disabled:opacity-0",
+            size === "compact" ? "w-12 h-12 md:w-14 md:h-14" : "w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20"
           )}
         >
-          <Delete className={cn(size === "compact" ? "w-5 h-5" : "w-6 h-6")} />
+          <Delete className={cn(size === "compact" ? "w-4 h-4 md:w-5 md:h-5" : "w-5 h-5 md:w-6 md:h-6")} />
         </button>
       </div>
 

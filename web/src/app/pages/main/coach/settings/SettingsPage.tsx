@@ -75,15 +75,16 @@ export default function SettingsPage() {
       label: t("extra.coachSettings.tabs.profile", "Profile"),
       icon: User,
     },
-    {
-      id: "coaching",
-      label: t("extra.coachSettings.tabs.coaching", "Coaching"),
-      icon: Award,
-    },
+
     {
       id: "preferences",
       label: t("extra.coachSettings.tabs.preferences", "Preferences"),
       icon: SettingsIcon,
+    },
+    {
+      id: "coaching",
+      label: t("extra.coachSettings.tabs.coaching", "Coaching"),
+      icon: Award,
     },
     {
       id: "security",

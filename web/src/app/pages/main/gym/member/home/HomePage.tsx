@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import NotFound from "../../../../../../components/ui/NotFound";
 import { useGymSubscriptionTypes } from "../../../../../../hooks/useGymSubscriptionTypes";
 import { useGymStore } from "../../../../../../store/gym";
-import GymHeroSection from "../../../../../components/gym/GymHeroSection";
+import GymHeroSection from "../../../../../components/gym/gym-hero/GymHeroSection";
 import MarketingCarousel from "../../../../../components/gym/MarketingCarousel";
 import OperatingHours from "../../../../../components/gym/OperatingHours";
 import AnnouncementsCard from "./components/AnnouncementsCard";

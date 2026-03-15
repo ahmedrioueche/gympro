@@ -32,6 +32,29 @@
     "go": "Go",
     "markAsDone": "Mark as Done",
     "done": "Done",
+
+    "open": "Open",
+    "closed": "Closed",
+    "temporaryClosure": "Temporary Closure",
+    "advancedSchedule": "Advanced Schedule",
+    "workingHours": "Working Hours",
+    "regularHours": "Regular Hours",
+    "noOperatingHours": "No Operating Hours",
+    "showLess": "Show Less",
+    "showMore": "+{{count}} more",
+    "gymStatus": {
+      "opensAt": "Opens at {{time}}",
+      "closesAt": "Closes at {{time}}",
+      "closedToday": "Closed Today",
+      "closedForToday": "Closed for today"
+    },
+    "gymDays": {
+      "allDays": "Every Day",
+      "noDays": "No days",
+      "monSat": "Mon — Sat",
+      "monFri": "Mon — Fri"
+    },
+
     "skip": "Skip",
     "in": "In",
     "changeAvatar": "Change Avatar",
@@ -43,6 +66,7 @@
     "fullscreen": "Fullscreen",
     "cancel": "Cancel",
     "unassigned": "Unassigned",
+    "joinedAt": "Joined at",
     "joining": "Joining",
     "confirm": "Confirm",
     "retry": "Retry",
@@ -64,6 +88,8 @@
     "winner": "Winner",
     "time": "Time",
     "coach": "Coach",
+    "set": "Set",
+    "exercises": "Exercises",
     "notAssigned": "Not Assigned",
     "noData": "No Data",
     "translating": "Translating...",
@@ -95,6 +121,11 @@
     "search": "Search...",
     "edit": "Edit",
     "delete": "Delete",
+    "saveSuccess": "Settings updated successfully",
+    "saveError": "Failed to update settings",
+    "get_code": "Get Code",
+    "stop": "Stop",
+    "preview": "Preview",
     "update": "Update",
     "base": "Base",
     "plan": "Plan",
@@ -277,6 +308,11 @@
       "error": "Email verification failed. Please try again.",
       "missingToken": "Verification token is missing. Please check your email link."
     },
+    "profile": {
+      "verify": {
+        "otp_label": "Enter Code"
+      }
+    },
     "reset_password": "Reset Password",
     "reset_password_success": "Password Reset Successfully!",
     "reset_password_error": "Invalid or expired reset token.",
@@ -309,7 +345,18 @@
   "status": {
     "success": {
       "operation_completed": "Operation completed successfully",
-      "default": "Operation successful"
+      "default": "Operation successful",
+      "exercise_created": "Exercise created successfully",
+      "exercise_updated": "Exercise updated successfully",
+      "exercise_deleted": "Exercise deleted successfully",
+      "program_created": "Program created successfully",
+      "program_started": "Program started",
+      "program_archived": "Program archived",
+      "program_restarted": "Program restarted successfully",
+      "session_logged": "Session logged successfully",
+      "session_deleted": "Session deleted successfully",
+      "coach_request_approved": "Coach request approved successfully",
+      "coach_request_rejected": "Coach request rejected successfully"
     },
     "error": {
       "internal_server_error": "Internal server error. Please try again later",
@@ -458,6 +505,17 @@
         "coach_not_available": "Coach is not available during this time slot",
         "already_passed": "This class has already started or passed",
         "plan_access_denied": "Your current plan does not include access to this type of class"
+      },
+      "exercise": {
+        "create_failed": "Failed to create exercise",
+        "update_failed": "Failed to update exercise",
+        "delete_failed": "Failed to delete exercise"
+      },
+      "program": {
+        "create_failed": "Failed to create program",
+        "start_failed": "Failed to start program",
+        "archive_failed": "Failed to archive program",
+        "restart_failed": "Failed to restart program"
       }
     }
   },
@@ -876,6 +934,15 @@
   "profile": {
     "defaultName": "User",
     "defaultEmail": "user@example.com",
+    "error": {
+      "empty_contact": "Please enter a value first",
+      "invalid_code": "Invalid verification code"
+    },
+    "success": {
+      "email_sent": "Verification email sent",
+      "sms_sent": "Verification SMS sent",
+      "contact_verified": "Verified successfully!"
+    },
     "menu": {
       "profile": {
         "label": "Profile",
@@ -1011,7 +1078,40 @@
         "newPassword": "New Password",
         "passwordPlaceholder": "Enter new password"
       }
-    }
+    },
+    "saveSuccess": "Settings updated successfully",
+    "saveError": "Failed to update settings",
+    "member": {
+      "success": "Profile updated successfully",
+      "error": "Failed to update profile"
+    },
+    "profile": {
+      "fileTooLarge": "Image size must be less than 5MB",
+      "avatarSuccess": "Avatar updated successfully",
+      "avatarError": "Failed to update avatar"
+    },
+    "security": {
+      "passwordMismatch": "Passwords do not match",
+      "success": "Password updated successfully",
+      "error": "Failed to update password"
+    },
+    "coach": {
+      "location": {
+        "notSupported": "Geolocation is not supported",
+        "success": "Location detected successfully",
+        "error": "Failed to detect location",
+        "denied": "Location access denied"
+      },
+      "profile": {
+        "success": "Profile updated successfully",
+        "error": "Failed to update profile"
+      },
+      "coaching": {
+        "success": "Coaching settings updated successfully",
+        "error": "Failed to update coaching settings"
+      }
+    },
+    "dangerZone": "Danger Zone"
   },
   "memberProfile": {
     "title": "Member Profile",
@@ -1653,7 +1753,11 @@
     "noGyms": "No gyms yet",
     "createFirst": "Create your first gym to get started",
     "createNew": "Create New Gym",
-    "available": "available"
+    "available": "available",
+    "rules": {
+      "title": "Gym Rules",
+      "editInSettings": "Edit in settings"
+    }
   },
   "createMember": {
     "title": "Add New Member",
@@ -2450,6 +2554,7 @@
       "success": "Settings updated successfully",
       "error": "Failed to update settings"
     },
+
     "training": {
       "use_program": "Use",
       "view_details": "View",
@@ -2846,8 +2951,8 @@
       "validation": {
         "weightPositive": "Weight must be greater than 0",
         "repsPositive": "Reps must be greater than 0",
-        "weightIncrements": "Weight must be in 0.5 increments",
-        "autoUncheck": "Unchecked: value became invalid"
+        "weightIncrements": "Weight must be in 0.5kg increments",
+        "autoUncheck": "Set was automatically unchecked due to invalid data"
       }
     },
     "noResults": "No exercises found",
@@ -4758,6 +4863,7 @@
       }
     }
   },
+
   "extra": {
     "searchPlaceholder": "Search by gym name...",
     "currentRole": "Current Role",

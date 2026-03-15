@@ -26,6 +26,7 @@
     "save": "حفظ",
     "generate": "إنشاء",
     "select": "تحديد",
+    "joinedAt": "تاريخ الانضمام",
     "saving": "جارٍ الحفظ...",
     "gym": "صالة رياضية",
     "trialing": "تجريبي",
@@ -39,6 +40,28 @@
     "added": "تمت الإضافة",
     "restart": "إعادة تشغيل",
     "close": "إغلاق",
+    "open": "مفتوح",
+    "closed": "مغلق",
+    "temporaryClosure": "إغلاق مؤقت",
+    "advancedSchedule": "جدول متقدم",
+    "workingHours": "ساعات العمل",
+    "regularHours": "الساعات العادية",
+    "noOperatingHours": "لا توجد ساعات تشغيل",
+    "showLess": "عرض أقل",
+    "showMore": "+{{count}} المزيد",
+    "gymStatus": {
+      "opensAt": "يفتح في {{time}}",
+      "closesAt": "يغلق في {{time}}",
+      "closedToday": "مغلق اليوم",
+      "closedForToday": "مغلق لهذا اليوم"
+    },
+    "gymDays": {
+      "allDays": "كل يوم",
+      "noDays": "لا توجد أيام",
+      "monSat": "الاثنين — السبت",
+      "monFri": "الاثنين — الجمعة"
+    },
+
     "processing": "جارٍ المعالجة...",
     "fullscreen": "شاشة كاملة",
     "cancel": "إلغاء",
@@ -64,6 +87,8 @@
     "winner": "الفائز",
     "time": "الوقت",
     "coach": "مدرب",
+    "set": "جولة",
+    "exercises": "تمارين",
     "notAssigned": "غير مخصص",
     "noData": "لا توجد بيانات",
     "translating": "جارٍ الترجمة...",
@@ -95,6 +120,10 @@
     "search": "بحث...",
     "edit": "تعديل",
     "delete": "حذف",
+    "get_code": "احصل على الرمز",
+    "stop": "إيقاف",
+    "preview": "معاينة",
+    "characters": "أحرف",
     "update": "تحديث",
     "base": "أساسي",
     "plan": "خطة",
@@ -126,7 +155,6 @@
     "status_pending": "معلق",
     "status_expired": "منتهي الصلاحية",
     "status_cancelled": "ملغاة",
-    "characters": "أحرف",
     "hide": "إخفاء",
     "show": "إظهار",
     "filters": {
@@ -277,6 +305,11 @@
       "error": "فشل التحقق من البريد الإلكتروني. يرجى المحاولة مرة أخرى.",
       "missingToken": "رمز التحقق مفقود. يرجى التحقق من رابط بريدك الإلكتروني."
     },
+    "profile": {
+      "verify": {
+        "otp_label": "أدخل الرمز"
+      }
+    },
     "reset_password": "إعادة تعيين كلمة المرور",
     "reset_password_success": "تمت إعادة تعيين كلمة المرور بنجاح!",
     "reset_password_error": "رمز إعادة التعيين غير صالح أو منتهي الصلاحية.",
@@ -309,7 +342,18 @@
   "status": {
     "success": {
       "operation_completed": "تمت العملية بنجاح",
-      "default": "العملية ناجحة"
+      "default": "العملية ناجحة",
+      "exercise_created": "تم إنشاء التمرين بنجاح",
+      "exercise_updated": "تم تحديث التمرين بنجاح",
+      "exercise_deleted": "تم حذف التمرين بنجاح",
+      "program_created": "تم إنشاء البرنامج بنجاح",
+      "program_started": "تم بدء البرنامج",
+      "program_archived": "تم أرشفة البرنامج",
+      "program_restarted": "تم إعادة تشغيل البرنامج بنجاح",
+      "session_logged": "تم تسجيل الجلسة بنجاح",
+      "session_deleted": "تم حذف الجلسة بنجاح",
+      "coach_request_approved": "تمت الموافقة على طلب المدرب بنجاح",
+      "coach_request_rejected": "تم رفض طلب المدرب بنجاح"
     },
     "error": {
       "internal_server_error": "خطأ داخلي في الخادم. يرجى المحاولة مرة أخرى لاحقًا",
@@ -458,6 +502,17 @@
         "coach_not_available": "المدرب غير متاح خلال هذا الوقت",
         "already_passed": "لقد بدأت هذه الحصة أو انتهت بالفعل",
         "plan_access_denied": "خطتك الحالية لا تتضمن الوصول إلى هذا النوع من الحصص"
+      },
+      "exercise": {
+        "create_failed": "فشل إنشاء التمرين",
+        "update_failed": "فشل تحديث التمرين",
+        "delete_failed": "فشل حذف التمرين"
+      },
+      "program": {
+        "create_failed": "فشل إنشاء البرنامج",
+        "start_failed": "فشل بدء البرنامج",
+        "archive_failed": "فشل أرشفة البرنامج",
+        "restart_failed": "فشل إعادة تشغيل البرنامج"
       }
     }
   },
@@ -1011,7 +1066,42 @@
         "newPassword": "كلمة مرور جديدة",
         "passwordPlaceholder": "أدخل كلمة مرور جديدة"
       }
-    }
+    },
+
+    "saveSuccess": "تم تحديث الإعدادات بنجاح",
+    "saveError": "فشل تحديث الإعدادات",
+    "member": {
+      "success": "تم تحديث الملف الشخصي بنجاح",
+      "error": "فشل تحديث الملف الشخصي"
+    },
+    "profile": {
+      "fileTooLarge": "يجب أن يكون حجم الصورة أقل من 5 ميغابايت",
+      "avatarSuccess": "تم تحديث الصورة الرمزية بنجاح",
+      "avatarError": "فشل تحديث الصورة الرمزية"
+    },
+    "security": {
+      "passwordMismatch": "كلمات المرور غير متطابقة",
+      "success": "تم تحديث كلمة المرور بنجاح",
+      "error": "فشل تحديث كلمة المرور"
+    },
+    "coach": {
+      "location": {
+        "notSupported": "الميزة الجغرافية غير مدعومة",
+        "success": "تم الكشف عن الموقع بنجاح",
+        "error": "فشل اكتشاف الموقع",
+        "denied": "تم رفض الوصول إلى الموقع"
+      },
+      "profile": {
+        "success": "تم تحديث الملف الشخصي بنجاح",
+        "error": "فشل تحديث الملف الشخصي"
+      },
+      "coaching": {
+        "success": "تم تحديث إعدادات التدريب بنجاح",
+        "error": "فشل تحديث إعدادات التدريب"
+      }
+    },
+
+    "dangerZone": "منطقة الخطر"
   },
   "memberProfile": {
     "title": "ملف العضو",
@@ -1653,7 +1743,11 @@
     "noGyms": "لا توجد صالات رياضية بعد",
     "createFirst": "أنشئ صالتك الرياضية الأولى للبدء",
     "createNew": "إنشاء صالة ألعاب رياضية جديدة",
-    "available": "متاح"
+    "available": "متاح",
+    "rules": {
+      "title": "قوانين النادي الرياضي",
+      "editInSettings": "تعديل في الإعدادات"
+    }
   },
   "createMember": {
     "title": "إضافة عضو جديد",
@@ -2845,9 +2939,9 @@
       "deleteVerificationText": "حذف الجلسة",
       "validation": {
         "weightPositive": "يجب أن يكون الوزن أكبر من 0",
-        "repsPositive": "يجب أن تكون التكرارات أكبر من 0",
-        "weightIncrements": "يجب أن يكون الوزن بزيادات 0.5",
-        "autoUncheck": "تم إلغاء التحديد: أصبحت القيمة غير صالحة"
+        "repsPositive": "يجب أن يكون عدد التكرارات أكبر من 0",
+        "weightIncrements": "يجب أن يكون الوزن بمضاعفات 0.5 كجم",
+        "autoUncheck": "تم إلغاء تحديد المجموعة تلقائيًا بسبب بيانات غير صالحة"
       }
     },
     "noResults": "لم يتم العثور على تمارين",
@@ -4756,6 +4850,46 @@
           }
         }
       }
+    }
+  },
+  "member.settings": {
+    "pageTitle": "إعدادات العضو",
+    "pageSubtitle": "إدارة حسابك وتفضيلاتك وإعدادات التدريب",
+    "tabs": {
+      "profile": "الملف الشخصي",
+      "preferences": "التفضيلات",
+      "security": "الأمان",
+      "training": "التدريب"
+    },
+    "profile": {
+      "title": "إعدادات الملف الشخصي",
+      "subtitle": "إدارة معلوماتك الشخصية وهويتك العامة",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "جون دو",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "john@example.com",
+      "phone": "رقم الهاتف",
+      "phonePlaceholder": "+1 234 567 890",
+      "coachAccess": "وصول المدرب",
+      "becomeCoach": "كن مدرباً"
+    },
+    "preferences": {
+      "title": "التفضيلات العامة",
+      "subtitle": "تكوين تجربة التطبيق والوحدات الخاصة بك"
+    },
+    "security": {
+      "title": "إعدادات الأمان",
+      "subtitle": "إدارة كلمة المرور وتفضيلات الأمان الخاصة بك",
+      "currentPassword": "كلمة المرور الحالية",
+      "currentPasswordPlaceholder": "أدخل كلمة المرور الحالية",
+      "newPassword": "كلمة مرور جديدة",
+      "newPasswordPlaceholder": "أدخل كلمة مرور جديدة",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور الجديدة"
+    },
+    "training": {
+      "title": "إعدادات التدريب",
+      "subtitle": "إدارة تفضيلات التدريب الخاصة بك"
     }
   },
   "extra": {

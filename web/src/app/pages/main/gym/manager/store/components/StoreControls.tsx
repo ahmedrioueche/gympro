@@ -39,7 +39,7 @@ export function StoreControls({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-surface border border-border rounded-xl mb-6 md:rounded-2xl p-3 md:p-5 w-full max-w-full relative z-0">
+    <div className="bg-surface border border-border rounded-xl mb-6 md:rounded-2xl p-3 md:p-4 w-full max-w-full relative z-0">
       {/* Desktop Layout */}
       <div className="hidden lg:flex items-center gap-3">
         {/* Search Input */}

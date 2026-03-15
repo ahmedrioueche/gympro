@@ -5,6 +5,8 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import { showStatusToast } from "../../utils/statusMessage";
 
 export const usePrograms = (filters?: { source?: string; search?: string }) => {
   return useQuery({
@@ -52,20 +54,29 @@ export const useTrainingHistory = () => {
 
 export const useCreateProgram = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
   return useMutation({
     mutationFn: (data: CreateProgramDto) => trainingApi.createProgram(data),
     onSuccess: () => {
-      toast.success("Program created successfully");
+      toast.success(t("status.success.program_created"));
       queryClient.invalidateQueries({ queryKey: ["programs"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to create program");
+      showStatusToast(
+        {
+          status: "error",
+          message: error.response?.data?.message || t("status.error.program.create_failed"),
+        },
+        toast
+      );
     },
   });
 };
 
 export const useUpdateProgram = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: ({
       id,
@@ -81,74 +92,102 @@ export const useUpdateProgram = () => {
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to update program");
+      toast.error(error.message || t("status.error.program.update_failed"));
     },
   });
 };
 
 export const useStartProgram = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
   return useMutation({
     mutationFn: ({ id, force }: { id: string; force?: boolean }) =>
       trainingApi.startProgram(id, force),
     onSuccess: () => {
-      toast.success("Program started");
+      toast.success(t("status.success.program_started"));
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to start program");
+      showStatusToast(
+        {
+          status: "error",
+          message: error.response?.data?.message || t("status.error.program.start_failed"),
+        },
+        toast
+      );
     },
   });
 };
 
 export const useAbandonProgram = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
   return useMutation({
     mutationFn: () => trainingApi.abandonProgram(),
     onSuccess: () => {
-      toast.success("Program archived");
+      toast.success(t("status.success.program_archived"));
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to archive program");
+      showStatusToast(
+        {
+          status: "error",
+          message: error.response?.data?.message || t("status.error.program.archive_failed"),
+        },
+        toast
+      );
     },
   });
 };
 
 export const useResumeHistory = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
   return useMutation({
     mutationFn: (id: string) => trainingApi.resumeHistory(id),
     onSuccess: () => {
-      toast.success("Program restarted successfully");
+      toast.success(t("status.success.program_restarted"));
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to restart program");
+      showStatusToast(
+        {
+          status: "error",
+          message: error.response?.data?.message || t("status.error.program.restart_failed"),
+        },
+        toast
+      );
     },
   });
 };
 
 export const useLogSession = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
   return useMutation({
     mutationFn: (data: LogSessionDto) => trainingApi.logSession(data),
     onSuccess: () => {
-      toast.success("Session logged successfully");
+      toast.success(t("status.success.session_logged"));
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to log session");
+      toast.error(error.message || t("status.error.unexpected"));
     },
   });
 };
 
 export const useDeleteSession = () => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
   return useMutation({
     mutationFn: ({
       programId,
@@ -158,12 +197,12 @@ export const useDeleteSession = () => {
       sessionId: string;
     }) => trainingApi.deleteSession(programId, sessionId),
     onSuccess: () => {
-      toast.success("Session deleted successfully");
+      toast.success(t("status.success.session_deleted"));
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to delete session");
+      toast.error(error.message || t("status.error.unexpected"));
     },
   });
 };

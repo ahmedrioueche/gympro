@@ -144,7 +144,6 @@ export class AppPlanModel extends Document implements AppPlan {
 
 export const AppPlanSchema = SchemaFactory.createForClass(AppPlanModel);
 AppPlanSchema.index({ level: 1, type: 1 });
-AppPlanSchema.index({ planId: 1 });
 
 // ---------------------
 // Trial Info Schema
