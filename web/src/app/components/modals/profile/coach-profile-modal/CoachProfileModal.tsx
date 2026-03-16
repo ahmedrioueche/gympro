@@ -10,7 +10,7 @@ import { useModalStore } from "../../../../../store/modal";
 
 export default function CoachProfileModal() {
   const { t } = useTranslation();
-  const { openModal } = useModalStore();
+  const { openModal, coachProfileProps } = useModalStore();
 
   const {
     isOpen,
@@ -33,7 +33,6 @@ export default function CoachProfileModal() {
 
   // Find membershipId from affiliation if available
   // We need to find the affiliation first
-  const { coachProfileProps } = useModalStore();
   const membershipId = (coach as any)?.membershipId || (coachProfileProps as any)?.coach?.membershipId;
 
   const tabs = [

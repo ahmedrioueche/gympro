@@ -81,7 +81,10 @@ export function ProfileModalFooter({
       <button
         type="button"
         onClick={onClose}
-        className={getButtonClasses("default")}
+        className={cn(
+          getButtonClasses("default"),
+          actions.length >= 2 && "max-md:hidden",
+        )}
       >
         <X className="w-4 h-4" />
         {closeLabel || t("common.close")}
