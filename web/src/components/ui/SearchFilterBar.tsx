@@ -73,7 +73,7 @@ export function SearchFilterBar<T extends string = string>({
       clearTimeout(debounceTimerRef.current);
     }
 
-    debounceTimerRef.current = setTimeout(() => {
+    debounceTimerRef.current = window.setTimeout(() => {
       onSearchChange(value);
     }, debounceMs);
   };
