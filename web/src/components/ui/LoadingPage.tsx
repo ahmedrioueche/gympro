@@ -28,13 +28,14 @@ const LoadingPage: React.FC<{ type?: "inner" | "outer"; message?: string }> = ({
 
       <div className="relative z-10 w-full max-w-md flex flex-col items-center text-center">
         {/* Animated Logo as Loader */}
-        <div className="mb-12 scale-125 md:scale-150">
+        <div className="mb-12 scale-110 md:scale-150">
           <AnimatedLogo 
             compact={false}
-            logoSize="w-20 h-20"
-            textSize="text-4xl"
+            logoSize="w-16 h-16 md:w-20 md:h-20"
+            textSize="text-2xl md:text-4xl"
             gradientFrom="from-primary"
             gradientTo="to-purple-500"
+            animateOnce={true}
           />
         </div>
 

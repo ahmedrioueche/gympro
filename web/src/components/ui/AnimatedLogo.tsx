@@ -5,8 +5,8 @@ import "../../styles/animatedLogo.css";
 const AnimatedLogo = ({
   height = "h-16",
   width = "w-full max-w-[400px]",
-  logoSize = "w-16 h-16",
-  textSize = "md:text-3xl text-2xl",
+  logoSize = "w-12 h-12 md:w-16 md:h-16",
+  textSize = "text-xl md:text-3xl",
   leftPosition = "50%",
   mobileLeftPosition,
   paddingTop = "pt-0",
@@ -14,6 +14,7 @@ const AnimatedLogo = ({
   compact = false,
   gradientFrom = "from-primary",
   gradientTo = "to-secondary",
+  animateOnce = false,
 }: {
   height?: string;
   width?: string;
@@ -26,6 +27,7 @@ const AnimatedLogo = ({
   compact?: boolean;
   gradientFrom?: string;
   gradientTo?: string;
+  animateOnce?: boolean;
 }) => {
   const { t } = useTranslation();
 
@@ -45,6 +47,7 @@ const AnimatedLogo = ({
           {
             "--left-position": leftPosition,
             "--mobile-left-position": mobileLeftPosition || leftPosition,
+            animationIterationCount: animateOnce ? 1 : "infinite",
           } as React.CSSProperties
         }
       >
@@ -63,6 +66,7 @@ const AnimatedLogo = ({
             {
               "--left-position": leftPosition,
               "--mobile-left-position": mobileLeftPosition || leftPosition,
+              animationIterationCount: animateOnce ? 1 : "infinite",
             } as React.CSSProperties
           }
         >
