@@ -56,6 +56,7 @@ export const RecentWorkouts = ({ history }: RecentWorkoutsProps) => {
           {recentActivities.map((activity, index) => (
             <div
               key={`${activity.date}-${index}`}
+              onClick={() => navigate({ to: APP_PAGES.member.training.link })}
               className="group relative flex items-center justify-between p-3 md:p-4 rounded-2xl bg-surface-secondary/50 hover:bg-surface-secondary transition-all cursor-pointer border border-transparent hover:border-border/50 shadow-sm hover:shadow-md"
             >
               <div className="flex items-center gap-3 md:gap-4">
@@ -96,7 +97,7 @@ export const RecentWorkouts = ({ history }: RecentWorkoutsProps) => {
 
           <button
             onClick={() => navigate({ to: APP_PAGES.member.training.link })}
-            className="w-full py-2.5 md:py-3 rounded-2xl bg-surface-secondary border border-border/50 text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
+            className="w-full py-2.5 md:py-3 rounded-2xl bg-surface-secondary border border-border/50 text-[10px] md:text-xs text-text-primary uppercase tracking-widest hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"
           >
             {t("progress.recent.viewAll")}
           </button>

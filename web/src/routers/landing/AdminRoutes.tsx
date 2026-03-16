@@ -8,6 +8,7 @@ import ManagerPage from "../../app/pages/landing/manager/ManagerPage";
 import MemberPage from "../../app/pages/landing/member/MemberPage";
 import { landingRootRoute } from "./AdminRootRoute";
 
+
 export const homeRoute = createRoute({
   getParentRoute: () => landingRootRoute,
   path: "/",
