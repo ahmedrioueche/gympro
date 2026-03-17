@@ -19,14 +19,9 @@ export const useMyGymMembership = () => {
       if (!gymId) return null;
       try {
         const response = await (membershipApi.getMyMembershipByGym(
-          gymId
+          gymId,
         ) as any);
-        console.log("useMyGymMembership: API Response", response);
         if (!response.success || !response.data) {
-          console.warn(
-            "useMyGymMembership: Success=false or missing data",
-            response
-          );
           return null;
         }
         return response.data;

@@ -47,7 +47,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     const serverUrl = BASE_URL().replace("/api", "");
 
     if (!socketRef.current) {
-      console.log("Initializing socket connection to:", serverUrl);
       socketRef.current = io(`${serverUrl}/notifications`, {
         auth: {
           token,
@@ -57,17 +56,13 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
       socketRef.current.on("connect", () => {
         setIsConnected(true);
-        console.log("✅ Connected to notifications gateway");
       });
 
       socketRef.current.on("disconnect", () => {
         setIsConnected(false);
-        console.log("❌ Disconnected from notifications gateway");
       });
 
       socketRef.current.on("notification", (notification: any) => {
-        console.log("🔔 New notification received:", notification);
-
         // 1. Show a toast
         toast.success(notification.title || "New notification", {
           icon: "🔔",

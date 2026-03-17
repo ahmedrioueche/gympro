@@ -19,9 +19,7 @@ export function useCoachHome() {
     queryKey: ["coach", "dashboard", "activity"],
     queryFn: async () => {
       try {
-        console.log("Calling getDashboardActivity...");
         const res = await coachApi.getDashboardActivity();
-        console.log("getDashboardActivity result:", res);
         return res.data;
       } catch (err) {
         console.error("Error calling getDashboardActivity:", err);
