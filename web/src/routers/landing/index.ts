@@ -1,4 +1,4 @@
-import { landingRootRoute } from "./AdminRootRoute";
+import { landingRootRoute } from "./LandingRootRoute";
 import {
   coachRoute,
   cookiesRoute,
@@ -7,7 +7,7 @@ import {
   memberRoute,
   privacyRoute,
   termsRoute,
-} from "./AdminRoutes";
+} from "./LandingRoutes";
 
 export const landingRouteTree = landingRootRoute.addChildren([
   homeRoute,

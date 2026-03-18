@@ -6,8 +6,7 @@ import PrivacyPage from "../../app/pages/landing/legal/PrivacyPage";
 import TermsPage from "../../app/pages/landing/legal/TermsPage";
 import ManagerPage from "../../app/pages/landing/manager/ManagerPage";
 import MemberPage from "../../app/pages/landing/member/MemberPage";
-import { landingRootRoute } from "./AdminRootRoute";
-
+import { landingRootRoute } from "./LandingRootRoute";
 
 export const homeRoute = createRoute({
   getParentRoute: () => landingRootRoute,
