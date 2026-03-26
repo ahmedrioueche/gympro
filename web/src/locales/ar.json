@@ -5329,6 +5329,7 @@
     },
     "dummies": {
       "programs": {
+        "pageTitle": "مستكشف البرامج",
         "tag": "متقدم",
         "name": "باني القوة",
         "level": "محترف",
@@ -5347,6 +5348,9 @@
         "rest": "مؤقت الراحة",
         "legPress": "ضغط الأرجل"
       },
+      "trainingSession": {
+        "pageTitle": "جلسة التدريب"
+      },
       "progress": {
         "weight": "تتبع الوزن",
         "muscle": "الكتلة العضلية",
@@ -5354,6 +5358,9 @@
         "gain": "+2.4 كجم هذا الشهر",
         "last7 Days": "آخر 7 أيام",
         "metrics": "مقاييس الجسم"
+      },
+      "progressChart": {
+        "pageTitle": "تحليلات التقدم"
       },
       "coaching": {
         "pageTitle": "ابحث عن مدرب",
@@ -5366,6 +5373,9 @@
         "specialization": "رفع الأثقال",
         "weightLoss": "خسارة الوزن",
         "viewProfile": "عرض الملف"
+      },
+      "coachCard": {
+        "pageTitle": "ملف المدرب"
       },
       "schedule": {
         "pageTitle": "جدولك",
@@ -5551,7 +5561,10 @@
         "coachClasses": "مدرب > حصص جماعية",
         "coachRevenue": "مدرب > الأرباح",
         "coachSettings": "مدرب > الملف الشخصي",
-        "welcome": "جيمبرو > ترحيب"
+        "welcome": "جيمبرو > ترحيب",
+        "trainingSession": "العضو > مركز التدريب",
+        "progressChart": "العضو > التقدم",
+        "coachCard": "العضو > التدريب الخاص"
       }
     }
   }

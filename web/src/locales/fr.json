@@ -5330,6 +5330,7 @@
     },
     "dummies": {
       "programs": {
+        "pageTitle": "Explorateur de programmes",
         "tag": "Avancé",
         "name": "Power Builder",
         "level": "Pro",
@@ -5348,6 +5349,9 @@
         "rest": "Temps de repos",
         "legPress": "Presse à jambes"
       },
+      "trainingSession": {
+        "pageTitle": "Séance d'entraînement"
+      },
       "progress": {
         "weight": "Suivi du poids",
         "muscle": "Masse musculaire",
@@ -5355,6 +5359,9 @@
         "gain": "+2.4kg ce mois",
         "last7Days": "7 derniers jours",
         "metrics": "Métriques corporelles"
+      },
+      "progressChart": {
+        "pageTitle": "Analyses de progression"
       },
       "coaching": {
         "pageTitle": "Trouver un coach",
@@ -5367,6 +5374,9 @@
         "specialization": "Powerlifting",
         "weightLoss": "Perte de poids",
         "viewProfile": "Voir profil"
+      },
+      "coachCard": {
+        "pageTitle": "Profil du coach"
       },
       "schedule": {
         "pageTitle": "Votre planning",
@@ -5552,7 +5562,10 @@
         "coachClasses": "Coach > Cours collectifs",
         "coachRevenue": "Coach > Revenus",
         "coachSettings": "Coach > Profil",
-        "welcome": "GymPro > Bienvenue"
+        "welcome": "GymPro > Bienvenue",
+        "trainingSession": "Membre > Hub d'entraînement",
+        "progressChart": "Membre > Progrès",
+        "coachCard": "Membre > Coaching"
       }
     }
   }
