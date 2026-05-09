@@ -20,7 +20,7 @@ export const OnboardingGuard: React.FC<OnboardingGuardProps> = ({
     return <Navigate to="/auth/login" />;
   }
 
-  const isOnboardingCompleted = user.profile.isOnBoarded;
+  const isOnboardingCompleted = user.profile?.isOnBoarded;
 
   // If onboarding is not completed, show onboarding page
   if (!isOnboardingCompleted) {

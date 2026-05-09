@@ -41,7 +41,7 @@ export function MemberHero() {
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
-              href={APP_PAGES.signUp.link}
+              to={APP_PAGES.signUp.link}
               className="bg-secondary hover:scale-105 transition-transform text-white font-bold py-4 px-8 rounded-xl text-lg shadow-xl shadow-secondary/25 active:scale-95"
             >
               {t("landing.memberPage.hero.ctaPrimary")}
