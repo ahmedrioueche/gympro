@@ -313,6 +313,38 @@ export const authApi = {
       throw handleApiError(error);
     }
   },
+
+  /** Request OTP to confirm self-service account deletion */
+  requestDeleteAccountOtp: async (): Promise<
+    ApiResponse<{ message: string }>
+  > => {
+    try {
+      const res = await apiClient.post<ApiResponse<{ message: string }>>(
+        "/users/me/delete/request-otp",
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  /** Confirm account deletion with OTP */
+  confirmDeleteAccount: async (
+    otp: string,
+  ): Promise<ApiResponse<{ message: string }>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<{ message: string }>>(
+        "/users/me/delete/confirm",
+        { otp },
+      );
+      if (res.data.success) {
+        TokenManager.clearTokens();
+      }
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
 };
 
 /** Axios interceptor: auto-refresh expired access token */

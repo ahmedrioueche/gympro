@@ -467,6 +467,26 @@ export class UsersService {
     return { message: 'User deleted successfully' };
   }
 
+  async requestDeleteAccountOtp(userId: string) {
+    return this.otpService.sendAccountDeletionOTP(userId);
+  }
+
+  async confirmDeleteAccount(userId: string, otp: string) {
+    await this.otpService.verifyAccountDeletionOTP(userId, otp);
+
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException({
+        message: 'User not found',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+      });
+    }
+
+    await this.userModel.findByIdAndDelete(userId);
+
+    return { message: 'Account deleted successfully' };
+  }
+
   async findStaffByPermission(permission: string) {
     return this.userModel
       .find({

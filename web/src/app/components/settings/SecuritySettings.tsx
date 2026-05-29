@@ -2,6 +2,7 @@ import { Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import InputField from "../../../components/ui/InputField";
 import SettingsTab from "./SettingsTab";
+import { DeleteAccountSection } from "../../../components/settings/DeleteAccountSection";
 
 interface SecuritySettingsProps {
   currentPassword: string;
@@ -38,45 +39,51 @@ export default function SecuritySettings({
       }
       icon={Lock}
     >
-      <form className="space-y-6 max-w-2xl">
-        <div className="space-y-4">
-          <InputField
-            label={t("member.settings.security.currentPassword")}
-            placeholder={t(
-              "member.settings.security.currentPasswordPlaceholder",
-            )}
-            type="password"
-            value={currentPassword}
-            onChange={(e) => onCurrentPasswordChange(e.target.value)}
-            required
-            autoComplete="current-password"
-          />
+      <div className="space-y-8">
+        <form className="space-y-6 max-w-2xl">
+          <div className="space-y-4">
+            <InputField
+              label={t("member.settings.security.currentPassword")}
+              placeholder={t(
+                "member.settings.security.currentPasswordPlaceholder",
+              )}
+              type="password"
+              value={currentPassword}
+              onChange={(e) => onCurrentPasswordChange(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
 
-          <InputField
-            label={t("member.settings.security.newPassword")}
-            placeholder={t("member.settings.security.newPasswordPlaceholder")}
-            type="password"
-            value={newPassword}
-            onChange={(e) => onNewPasswordChange(e.target.value)}
-            required
-            minLength={6}
-            autoComplete="new-password"
-          />
+            <InputField
+              label={t("member.settings.security.newPassword")}
+              placeholder={t("member.settings.security.newPasswordPlaceholder")}
+              type="password"
+              value={newPassword}
+              onChange={(e) => onNewPasswordChange(e.target.value)}
+              required
+              minLength={6}
+              autoComplete="new-password"
+            />
 
-          <InputField
-            label={t("member.settings.security.confirmPassword")}
-            placeholder={t(
-              "member.settings.security.confirmPasswordPlaceholder",
-            )}
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => onConfirmPasswordChange(e.target.value)}
-            required
-            minLength={6}
-            autoComplete="new-password"
-          />
+            <InputField
+              label={t("member.settings.security.confirmPassword")}
+              placeholder={t(
+                "member.settings.security.confirmPasswordPlaceholder",
+              )}
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => onConfirmPasswordChange(e.target.value)}
+              required
+              minLength={6}
+              autoComplete="new-password"
+            />
+          </div>
+        </form>
+
+        <div className="pt-8 border-t border-border">
+          <DeleteAccountSection />
         </div>
-      </form>
+      </div>
     </SettingsTab>
   );
 }

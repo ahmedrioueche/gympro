@@ -73,6 +73,7 @@ export const useGym = (id: string, enabled = true) => {
 export const useMyGyms = () => {
   const isLanding = window.location.pathname.startsWith("/landing");
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const user = useUserStore((state) => state.user);
 
   return useQuery({
     queryKey: gymKeys.myGyms(),
@@ -90,6 +91,7 @@ export const useMyGyms = () => {
 export const useMemberGyms = () => {
   const isLanding = window.location.pathname.startsWith("/landing");
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const user = useUserStore((state) => state.user);
 
   return useQuery({
     queryKey: gymKeys.memberGyms(),
@@ -110,6 +112,7 @@ export const useAllMyGyms = () => {
   const activeDashboard = useUserStore((state) => state.activeDashboard);
   const isLanding = window.location.pathname.startsWith("/landing");
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const user = useUserStore((state) => state.user);
 
   return useQuery({
     queryKey: gymKeys.allMyGyms(activeDashboard),

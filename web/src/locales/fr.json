@@ -4913,7 +4913,11 @@
       "tabs": {
         "general": "Général",
         "notifications": "Notifications",
+        "security": "Sécurité",
         "locale": "Localisation"
+      },
+      "security": {
+        "description": "Gérez la sécurité de votre compte et les options de suppression"
       },
       "pageTitle": "Paramètres de l'application",
       "pageSubtitle": "Gérez vos préférences globales, notifications et paramètres régionaux.",
@@ -5568,5 +5572,10 @@
         "coachCard": "Membre > Coaching"
       }
     }
+  },
+  "delete_account": {
+    "otp_rate_limited": "Veuillez patienter 1 minute avant de demander un nouveau code de vérification.",
+    "otp_rate_limited_minutes": "Veuillez patienter {{count}} minute avant de demander un nouveau code de vérification.",
+    "otp_rate_limited_minutes_plural": "Veuillez patienter {{count}} minutes avant de demander un nouveau code de vérification."
   }
 }

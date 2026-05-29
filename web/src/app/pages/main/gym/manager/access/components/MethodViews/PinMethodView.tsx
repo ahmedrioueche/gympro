@@ -25,7 +25,7 @@ export const PinMethodView: React.FC<PinMethodViewProps> = ({
         "bg-zinc-900 border border-zinc-800 rounded-[2.5rem] shadow-2xl transition-all duration-500 flex flex-col items-center",
         isFullscreen
           ? "fixed inset-0 z-[45] bg-zinc-950/98 justify-center p-12"
-          : "w-full max-w-md p-8 md:p-12 relative group",
+          : "w-full max-w-lg p-8 md:p-12 relative group",
       )}
     >
       <button

@@ -1,4 +1,4 @@
-import { apiResponse } from '@ahmedrioueche/gympro-client';
+import { apiResponse, ErrorCode } from '@ahmedrioueche/gympro-client';
 import {
   ArgumentsHost,
   Catch,
@@ -29,6 +29,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errorCode = respObj.errorCode;
     } else {
       message = exception.message;
+    }
+
+    if (status === 429) {
+      errorCode = ErrorCode.TOO_MANY_REQUESTS;
+      message =
+        'Please wait 1 minute before requesting another verification code.';
+    } else if (message?.includes('ThrottlerException')) {
+      message = message.replace(/^ThrottlerException:\s*/i, '').trim();
+      if (!errorCode && status === 429) {
+        errorCode = ErrorCode.TOO_MANY_REQUESTS;
+      }
     }
 
     // Use apiResponse to format the response

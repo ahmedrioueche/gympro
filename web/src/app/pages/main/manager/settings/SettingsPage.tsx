@@ -1,9 +1,10 @@
-import { Bell, Save, Settings } from "lucide-react";
+import { Bell, Lock, Save, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../../../../components/PageHeader";
 import SettingsContainer from "../../../../components/settings/SettingsContainer";
 import GeneralTab from "./components/GeneralTab";
 import NotificationsTab from "./components/NotificationsTab";
+import SecurityTab from "./components/SecurityTab";
 import { useManagerSettings, type TabType } from "./hooks/useManagerSettings";
 
 export default function SettingsPage() {
@@ -37,6 +38,11 @@ export default function SettingsPage() {
       id: "notifications" as TabType,
       label: t("extra.settings.tabs.notifications", "Notifications"),
       icon: Bell,
+    },
+    {
+      id: "security" as TabType,
+      label: t("extra.settings.tabs.security", "Security"),
+      icon: Lock,
     },
   ];
 
@@ -83,6 +89,8 @@ export default function SettingsPage() {
             setReminderMinutes={setReminderMinutes}
           />
         )}
+
+        {activeTab === "security" && <SecurityTab />}
       </SettingsContainer>
     </div>
   );

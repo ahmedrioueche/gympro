@@ -21,6 +21,7 @@ import type {
   CreateExerciseModalProps,
   CreateMemberModalProps,
   CreateSessionModalProps,
+  DeleteAccountModalProps,
   EditAppPlanModalProps,
   EditManagerModalProps,
   ExerciseDetailModalProps,
@@ -108,6 +109,7 @@ type ModalType =
   | "welcome_tour"
   | "access_management"
   | "gym_details"
+  | "delete_account"
   | null;
 
 interface ModalState {
@@ -164,6 +166,7 @@ interface ModalState {
   };
   accessManagementProps?: AccessManagementModalProps;
   gymDetailsProps?: GymDetailsModalProps;
+  deleteAccountProps?: DeleteAccountModalProps;
   openModal: (modal: ModalType, props?: any) => void;
   closeModal: () => void;
 }
@@ -480,6 +483,12 @@ export const useModalStore = create<ModalState>((set) => ({
         return {
           currentModal: "gym_details",
           gymDetailsProps: props,
+        };
+      }
+      if (modal === "delete_account") {
+        return {
+          currentModal: "delete_account",
+          deleteAccountProps: props,
         };
       }
       return { currentModal: null };

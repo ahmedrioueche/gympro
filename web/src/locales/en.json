@@ -4954,7 +4954,11 @@
       "tabs": {
         "general": "General",
         "notifications": "Notifications",
+        "security": "Security",
         "locale": "Locale"
+      },
+      "security": {
+        "description": "Manage your account security and deletion preferences"
       },
       "pageTitle": "Application Settings",
       "pageSubtitle": "Manage your global preferences, notifications and locale settings.",
@@ -5565,5 +5569,32 @@
         "coachCard": "Member > Coaching"
       }
     }
+  },
+  "delete_account": {
+    "section_title": "Delete Account",
+    "section_description": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "button": "Delete Account",
+    "confirmation_mismatch": "Please type 'DELETE MY ACCOUNT' to confirm",
+    "otp_send_failed": "Failed to send OTP to email",
+    "otp_rate_limited": "Please wait 1 minute before requesting another verification code.",
+    "otp_rate_limited_minutes": "Please wait {{count}} minute before requesting another verification code.",
+    "otp_rate_limited_minutes_plural": "Please wait {{count}} minutes before requesting another verification code.",
+    "otp_sent": "OTP code sent to your email",
+    "otp_required": "Please enter the OTP code",
+    "delete_failed": "Failed to delete account. Please try again.",
+    "success": "Your account has been deleted successfully",
+    "confirm_btn": "Continue",
+    "delete_btn": "Delete Account",
+    "title": "Delete Account",
+    "warning_title": "Permanent Action",
+    "warning_message": "Deleting your account is permanent and cannot be undone. All your data, memberships, and progress will be deleted.",
+    "confirmation_prompt": "To confirm account deletion, please type the following text:",
+    "confirmation_label": "Confirm Deletion",
+    "confirmation_placeholder": "Type 'DELETE MY ACCOUNT'",
+    "otp_sent_to": "Verification code sent",
+    "otp_message": "We've sent a verification code to {{email}}",
+    "otp_label": "Verification Code",
+    "otp_placeholder": "Enter 6-digit code",
+    "resend_code": "Resend verification code"
   }
 }

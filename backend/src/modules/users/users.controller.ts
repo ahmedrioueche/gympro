@@ -32,6 +32,37 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post('me/delete/request-otp')
+  @Throttle({ short: { limit: 1, ttl: 60000 } })
+  async requestDeleteAccountOtp(@Req() req: any) {
+    const currentUserId = req.user?.sub;
+    const result = await this.usersService.requestDeleteAccountOtp(
+      currentUserId,
+    );
+    return apiResponse(
+      result.success,
+      undefined,
+      result,
+      result.message || 'Verification code sent',
+    );
+  }
+
+  @Post('me/delete/confirm')
+  @Throttle({ short: { limit: 5, ttl: 60000 } })
+  async confirmDeleteAccount(@Body('otp') otp: string, @Req() req: any) {
+    const currentUserId = req.user?.sub;
+    const result = await this.usersService.confirmDeleteAccount(
+      currentUserId,
+      otp,
+    );
+    return apiResponse(
+      true,
+      undefined,
+      result,
+      result.message || 'Account deleted successfully',
+    );
+  }
+
   @Get()
   @UseGuards(PermissionsGuard)
   @RequirePermission('canManageMembers')

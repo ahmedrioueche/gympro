@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useUserStore } from "../../../../../../store/user";
 
-export type TabType = "general" | "notifications";
+export type TabType = "general" | "notifications" | "security";
 
 export function useManagerSettings() {
   const { t } = useTranslation();

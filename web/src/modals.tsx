@@ -248,6 +248,14 @@ const GymDetailsModal = lazy(() =>
   })),
 );
 
+const DeleteAccountModal = lazy(() =>
+  import("./app/components/modals/delete-account-modal/DeleteAccountModal").then(
+    (module) => ({
+      default: module.DeleteAccountModal,
+    }),
+  ),
+);
+
 function modals() {
   return (
     <Suspense fallback={null}>
@@ -303,6 +311,7 @@ function modals() {
       <SubscriptionWarningModalWrapper />
       <WelcomeTourModalWrapper />
       <AccessManagementModal />
+      <DeleteAccountModal />
     </Suspense>
   );
 }

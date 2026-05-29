@@ -53,6 +53,29 @@ export class OtpService {
   }
 
   /**
+   * Enforce 1 OTP per minute per user (shared otpLastSentAt field)
+   */
+  private enforceUserOtpRateLimit(user: User): void {
+    if (!user.otpLastSentAt) {
+      return;
+    }
+
+    const minutesSinceLastSent =
+      (Date.now() - new Date(user.otpLastSentAt).getTime()) / (1000 * 60);
+
+    if (minutesSinceLastSent < this.RATE_LIMIT_MINUTES) {
+      const remainingTime = Math.ceil(
+        this.RATE_LIMIT_MINUTES - minutesSinceLastSent,
+      );
+      throw new BadRequestException({
+        message: `Please wait ${remainingTime} minute(s) before requesting another code.`,
+        errorCode: ErrorCode.TOO_MANY_REQUESTS,
+        remainingTime,
+      });
+    }
+  }
+
+  /**
    * Send OTP to phone number using Twilio Verify
    */
   async sendOTP(
@@ -315,5 +338,99 @@ export class OtpService {
         message: 'An error occurred during verification',
       });
     }
+  }
+
+  /**
+   * Send OTP to the user's registered email for account deletion
+   */
+  async sendAccountDeletionOTP(
+    userId: string,
+  ): Promise<{ success: boolean; message: string }> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new BadRequestException({
+        message: 'User not found',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+      });
+    }
+
+    const email = user.profile?.email;
+    if (!email) {
+      throw new BadRequestException({
+        message: 'No email associated with this account',
+        errorCode: ErrorCode.VALIDATION_ERROR,
+      });
+    }
+
+    this.enforceUserOtpRateLimit(user);
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiry = new Date();
+    expiry.setMinutes(expiry.getMinutes() + 10);
+
+    user.otpCode = code;
+    user.otpExpiry = expiry;
+    user.otpAttempts = 0;
+    user.otpLastSentAt = new Date();
+    await user.save();
+
+    const html = `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+        <h2 style="color: #0f172a; margin-bottom: 16px;">Confirm account deletion</h2>
+        <p style="color: #475569; font-size: 16px; margin-bottom: 24px;">Use this code to confirm deletion of your GymPro account:</p>
+        <div style="background-color: #fef2f2; padding: 16px; text-align: center; border-radius: 8px;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #dc2626;">${code}</span>
+        </div>
+        <p style="color: #94a3b8; font-size: 14px; margin-top: 24px;">This code expires in 10 minutes. If you did not request this, ignore this email.</p>
+      </div>
+    `;
+
+    await this.mailerService.sendMail(
+      email,
+      `${code} — confirm GymPro account deletion`,
+      html,
+    );
+
+    return {
+      success: true,
+      message: 'Verification code sent to your email',
+    };
+  }
+
+  /**
+   * Verify account-deletion OTP without modifying profile fields
+   */
+  async verifyAccountDeletionOTP(
+    userId: string,
+    code: string,
+  ): Promise<{ success: boolean; message: string }> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new BadRequestException({
+        message: 'User not found',
+        errorCode: ErrorCode.USER_NOT_FOUND,
+      });
+    }
+
+    if (!user.otpCode || user.otpCode !== code) {
+      throw new BadRequestException({
+        message: 'Invalid verification code',
+        errorCode: ErrorCode.INVALID_OTP,
+      });
+    }
+
+    if (user.otpExpiry && new Date() > user.otpExpiry) {
+      throw new BadRequestException({
+        message: 'Verification code has expired',
+        errorCode: ErrorCode.OTP_EXPIRED,
+      });
+    }
+
+    user.otpCode = undefined;
+    user.otpExpiry = undefined;
+    user.otpAttempts = 0;
+    await user.save();
+
+    return { success: true, message: 'Verification successful' };
   }
 }

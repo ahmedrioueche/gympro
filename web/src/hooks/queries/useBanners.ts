@@ -1,21 +1,15 @@
 import {
+  getAuthToken,
   UserRole,
   type ApiResponse,
   type AppBanner,
   type CreateAppBannerDto,
   type UpdateAppBannerDto,
 } from "@ahmedrioueche/gympro-client";
+import { getApiClient } from "@ahmedrioueche/gympro-client/dist/api/config";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-// Use the exposed apiClient or a local axios instance configured identically.
-// To avoid deep imports that might break, we use standard axios or fetch but gympro-client
-// usually exposes getApiClient. Since Typescript might complain about /dist,
-// let's create an axios instance that just hits the /api/system-alerts
-// Usually the app has a global axios interceptor or exposes one.
-// We will use standard fetch with credentials or just axios.
-import { getApiClient } from "@ahmedrioueche/gympro-client/dist/api/config";
-
 import { useUserStore } from "../../store/user";
 
 export const bannersApi = {
@@ -58,7 +52,12 @@ export const useActiveBanners = () => {
     queryKey: ["active_banners"],
     queryFn: bannersApi.getActive,
     refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes
-    enabled: !isLanding && isAuthenticated && isAdminRole,
+    enabled:
+      !isLanding &&
+      isAuthenticated &&
+      isAdminRole &&
+      !!getAuthToken() &&
+      !!user,
   });
 };
 
@@ -77,7 +76,12 @@ export const useAdminBanners = () => {
   const bannersQuery = useQuery({
     queryKey: ["admin_banners"],
     queryFn: bannersApi.getAll,
-    enabled: !isLanding && isAuthenticated && isAdminRole,
+    enabled:
+      !isLanding &&
+      isAuthenticated &&
+      isAdminRole &&
+      !!getAuthToken() &&
+      !!user,
   });
 
   const createMutation = useMutation({

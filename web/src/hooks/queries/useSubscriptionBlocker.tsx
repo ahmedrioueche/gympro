@@ -10,6 +10,7 @@ export const blockerKeys = {
 export const useSubscriptionBlockerQuery = () => {
   const isLanding = window.location.pathname.startsWith("/landing");
   const isAuthenticated = useUserStore((state) => state.isAuthenticated);
+  const user = useUserStore((state) => state.user);
 
   return useQuery({
     queryKey: blockerKeys.config(),

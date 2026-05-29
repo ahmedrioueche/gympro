@@ -5567,5 +5567,10 @@
         "coachCard": "العضو > التدريب الخاص"
       }
     }
+  },
+  "delete_account": {
+    "otp_rate_limited": "يرجى الانتظار دقيقة واحدة قبل طلب رمز تحقق آخر.",
+    "otp_rate_limited_minutes": "يرجى الانتظار {{count}} دقيقة قبل طلب رمز تحقق آخر.",
+    "otp_rate_limited_minutes_plural": "يرجى الانتظار {{count}} دقائق قبل طلب رمز تحقق آخر."
   }
 }

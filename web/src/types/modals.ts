@@ -27,6 +27,10 @@ export interface BannerFormModalProps {
   banner?: AppBanner | null;
 }
 
+export interface DeleteAccountModalProps {
+  // No props needed for this modal
+}
+
 export interface FeaturePackageModalProps {
   pkg?: AppFeaturePackage | null;
 }

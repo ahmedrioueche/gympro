@@ -101,16 +101,6 @@ export const RFIDMethodView: React.FC<RFIDMethodViewProps> = ({
             isFullscreen ? "mt-4" : "mt-8",
           )}
         >
-          <button
-            onClick={onRfidTap}
-            className={cn(
-              "bg-primary hover:bg-primary/90 border border-primary/20 rounded-2xl text-white font-bold flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-primary/10",
-              isFullscreen ? "p-3 text-sm" : "p-4",
-            )}
-          >
-            <Maximize2 className="w-5 h-5" />
-            {t("access.rfid.simulate_tap")}
-          </button>
           {!isFullscreen && (
             <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-black">
               {t("access.rfid.hardware_hint")}

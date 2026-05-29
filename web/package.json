@@ -14,7 +14,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.5.16",
+    "@ahmedrioueche/gympro-client": "0.5.18",
     "@capacitor/android": "^8.2.0",
     "@capacitor/cli": "^8.2.0",
     "@capacitor/core": "^8.2.0",
