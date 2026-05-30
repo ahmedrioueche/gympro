@@ -25,6 +25,7 @@ import { AppSubscriptionService } from '../app-billing/subscription/subscription
 import { NotificationsService } from '../notifications/notifications.service';
 import { SigninDto, SignupDto } from './auth.dto';
 import { OtpService } from './otp.service';
+import { assertPhoneEnabled } from '../../common/utils/feature-flags.util';
 
 @Injectable()
 export class AuthService {
@@ -69,6 +70,10 @@ export class AuthService {
         message: 'Either email or phone number is required',
         errorCode: ErrorCode.INVALID_CREDENTIALS,
       });
+    }
+
+    if (phoneNumber) {
+      assertPhoneEnabled();
     }
 
     // Check if user already exists
@@ -192,6 +197,11 @@ export class AuthService {
   async signin(dto: SigninDto) {
     const { identifier } = dto;
     const isPhone = isPhoneNumber(identifier);
+
+    if (isPhone) {
+      assertPhoneEnabled();
+    }
+
     const query = isPhone
       ? { 'profile.phoneNumber': identifier }
       : { 'profile.email': identifier };
@@ -404,6 +414,11 @@ export class AuthService {
   // --- FORGOT PASSWORD ---
   async forgotPassword(identifier: string, platform: Platform = Platform.WEB) {
     const isPhone = isPhoneNumber(identifier);
+
+    if (isPhone) {
+      assertPhoneEnabled();
+    }
+
     const query = isPhone
       ? { 'profile.phoneNumber': identifier }
       : { 'profile.email': identifier };

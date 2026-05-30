@@ -22,6 +22,7 @@ import { AppSubscriptionService } from '../app-billing/subscription/subscription
 import { OtpService } from '../auth/otp.service';
 import { GymService } from '../gym/gym.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { assertPhoneEnabled } from '../../common/utils/feature-flags.util';
 
 @Injectable()
 export class UsersService {
@@ -226,6 +227,10 @@ export class UsersService {
       });
     }
 
+    if (profileData.phoneNumber && !user.profile.phoneNumber) {
+      assertPhoneEnabled();
+    }
+
     // Check if email is being updated (only allowed if currently empty) and if it's already in use
     if (profileData.email && profileData.email !== user.profile.email) {
       const existingUser = await this.userModel.findOne({
@@ -313,6 +318,8 @@ export class UsersService {
    * Request verification for adding a phone number
    */
   async requestPhoneAddition(userId: string, phoneNumber: string) {
+    assertPhoneEnabled();
+
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException('User not found');
 
@@ -340,6 +347,8 @@ export class UsersService {
    * Verify and add phone number to profile
    */
   async verifyPhoneAddition(userId: string, phoneNumber: string, code: string) {
+    assertPhoneEnabled();
+
     const result = await this.otpService.verifyOTP(phoneNumber, code);
     if (!result.success) return result;
 

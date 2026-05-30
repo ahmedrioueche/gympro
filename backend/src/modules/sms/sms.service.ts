@@ -1,3 +1,4 @@
+import { ENABLE_GENERAL_SMS, ENABLE_PHONE_FEATURES } from '@ahmedrioueche/gympro-client';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Twilio } from 'twilio';
@@ -35,6 +36,13 @@ export class SmsService {
     to: string,
     channel: 'sms' | 'call' = 'sms',
   ): Promise<SmsResponse> {
+    if (!ENABLE_PHONE_FEATURES) {
+      this.logger.log(
+        `Skipping verification for ${to}: ENABLE_PHONE_FEATURES is off`,
+      );
+      return { success: false, error: 'Phone features disabled' };
+    }
+
     if (!this.client) {
       this.logger.error('Twilio client not initialized.');
       return { success: false, error: 'SMS service not configured' };
@@ -110,12 +118,7 @@ export class SmsService {
       to = '+' + to;
     }
 
-    // Global toggle check (Exclude OTP/Verification which uses sendVerification)
-    const enableGeneralSms = this.configService.get<string | boolean>(
-      'ENABLE_GENERAL_SMS',
-      true,
-    );
-    if (enableGeneralSms === false || enableGeneralSms === 'false') {
+    if (!ENABLE_GENERAL_SMS) {
       this.logger.log(
         `Skipping general SMS to ${to}: ENABLE_GENERAL_SMS is off`,
       );

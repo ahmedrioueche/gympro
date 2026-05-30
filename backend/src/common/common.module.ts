@@ -8,7 +8,12 @@ import { MailerService } from './services/mailer.service';
 @Global()
 @Module({
   imports: [ConfigModule],
-  providers: [GeminiService, I18nService, SmsService, MailerService],
+  providers: [
+    GeminiService,
+    I18nService,
+    SmsService,
+    MailerService,
+  ],
   exports: [GeminiService, I18nService, SmsService, MailerService],
 })
 export class CommonModule {}

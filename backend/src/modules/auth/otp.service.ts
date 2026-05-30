@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../common/schemas/user.schema';
 import { MailerService } from '../../common/services/mailer.service';
+import { assertPhoneEnabled } from '../../common/utils/feature-flags.util';
 import { SmsService } from '../sms/sms.service';
 
 @Injectable()
@@ -83,6 +84,8 @@ export class OtpService {
     userId?: string,
   ): Promise<{ success: boolean; message: string; remainingTime?: number }> {
     try {
+      assertPhoneEnabled();
+
       // Local rate limit check
       const rateLimit = await this.checkRateLimit(phoneNumber);
       if (!rateLimit.allowed) {
