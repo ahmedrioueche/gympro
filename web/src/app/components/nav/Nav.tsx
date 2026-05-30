@@ -16,6 +16,8 @@ export default function Nav({ children, sidebarLinks = null }) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const contentRef = useRef<HTMLDivElement>(null);
+  const navScrollRef = useRef<HTMLElement>(null);
+  const activeMenuItemRef = useRef<HTMLDivElement>(null);
 
   const {
     sidebarOpen,
@@ -47,6 +49,18 @@ export default function Nav({ children, sidebarLinks = null }) {
   useEffect(() => {
     resetAllScrollers();
   }, [pathname]);
+
+  // Keep the active sidebar link visible inside the scrollable menu
+  useEffect(() => {
+    const item = activeMenuItemRef.current;
+    const nav = navScrollRef.current;
+    if (!item || !nav || !sidebarLinks?.length) return;
+
+    const frame = requestAnimationFrame(() => {
+      item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, activeRoute, sidebarLinks, sidebarOpen]);
 
   return (
     <div
@@ -117,17 +131,26 @@ export default function Nav({ children, sidebarLinks = null }) {
           </div>
 
           {/* Sidebar Content */}
-          <nav className="flex-1 px-2 py-3 space-y-2 overflow-y-auto hide-scrollbar">
+          <nav
+            ref={navScrollRef}
+            className="flex-1 px-2 py-3 space-y-2 overflow-y-auto hide-scrollbar"
+            aria-label={t("common.navigation", "Navigation")}
+          >
             {sidebarLinks.map((link) => {
               const isActive = link.matchPaths.some((p) => activeRoute === p);
               return (
-                <SidebarMenuItem
+                <div
                   key={link.path}
-                  link={link}
-                  isActive={isActive}
-                  isCollapsed={isCollapsed}
-                  onItemClick={() => setSidebarOpen(false)}
-                />
+                  ref={isActive ? activeMenuItemRef : undefined}
+                  className="scroll-mt-2 scroll-mb-2"
+                >
+                  <SidebarMenuItem
+                    link={link}
+                    isActive={isActive}
+                    isCollapsed={isCollapsed}
+                    onItemClick={() => setSidebarOpen(false)}
+                  />
+                </div>
               );
             })}
           </nav>
