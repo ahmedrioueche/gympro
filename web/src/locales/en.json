@@ -391,7 +391,8 @@
         "unauthorized": "Unauthorized",
         "sms_send_failed": "Failed to send verification code. Please check your phone number or try again later.",
         "otp_expired": "Verification code has expired. Please request a new one",
-        "phone_already_in_use": "This phone number is already registered to another account"
+        "phone_already_in_use": "This phone number is already registered to another account",
+        "phone_features_disabled": "Phone sign-in and verification are currently unavailable. Please use your email instead."
       },
       "user": {
         "not_found": "User not found",

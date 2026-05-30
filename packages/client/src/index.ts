@@ -10,6 +10,7 @@ export * from "./api/chargily";
 export * from "./api/coach";
 export * from "./api/competition";
 export * from "./api/config";
+export * from "./config";
 export * from "./api/dashboard";
 export * from "./api/exercises";
 export * from "./api/gym";

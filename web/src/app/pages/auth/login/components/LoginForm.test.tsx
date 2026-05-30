@@ -38,6 +38,13 @@ vi.mock("../hooks/useLogin", () => ({
   useLogin: () => mockLogin,
 }));
 
+vi.mock("../../../../../hooks/usePhoneFeatures", () => ({
+  usePhoneFeatures: () => ({
+    isPhoneEnabled: true,
+    isGeneralSmsEnabled: true,
+  }),
+}));
+
 describe("LoginForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();

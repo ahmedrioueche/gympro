@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../../components/ui/CustomSelect";
 import InputField from "../../../../components/ui/InputField";
 import PhoneNumberInput from "../../../../components/ui/PhoneNumberInput";
+import { usePhoneFeatures } from "../../../../hooks/usePhoneFeatures";
 import PermissionSelector from "./PermissionSelector";
 
 type StaffRole =
@@ -37,6 +38,7 @@ export default function StaffFormFields({
   onChange,
 }: StaffFormFieldsProps) {
   const { t } = useTranslation();
+  const { isPhoneEnabled } = usePhoneFeatures();
 
   const roleOptions = [
     { value: "manager", label: t("staff.roles.manager") },
@@ -76,6 +78,7 @@ export default function StaffFormFields({
         />
 
         {/* Phone Number */}
+        {isPhoneEnabled && (
         <div>
           <label className="block text-sm font-medium text-text-primary mb-2">
             {t("staff.form.phone")}
@@ -91,6 +94,7 @@ export default function StaffFormFields({
             <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>
           )}
         </div>
+        )}
 
         {/* Role Selection */}
         <CustomSelect

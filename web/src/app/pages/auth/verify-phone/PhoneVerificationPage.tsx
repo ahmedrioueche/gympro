@@ -11,11 +11,13 @@ import { formatPhoneForDisplay } from "../../../../utils/phone.util";
 import { getRoleHomePage } from "../../../../utils/roles";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import AuthLayout from "../components/AuthLayout";
+import { usePhoneFeatures } from "../../../../hooks/usePhoneFeatures";
 
 function PhoneVerificationPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { setUser } = useUserStore();
+  const { isPhoneEnabled } = usePhoneFeatures();
 
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +28,11 @@ function PhoneVerificationPage() {
   const phoneNumber = urlParams.get("phone") || "";
 
   useEffect(() => {
+    if (!isPhoneEnabled) {
+      navigate({ to: "/auth/login" });
+      return;
+    }
+
     if (!phoneNumber) {
       toast.error(t("auth.phone_required"));
       navigate({ to: "/auth/signup" });
@@ -43,7 +50,7 @@ function PhoneVerificationPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [phoneNumber, navigate, t]);
+  }, [phoneNumber, navigate, t, isPhoneEnabled]);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();

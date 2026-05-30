@@ -1,10 +1,19 @@
 /// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
+import path from "path";
 import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@ahmedrioueche/gympro-client": path.resolve(
+        __dirname,
+        "../packages/client/src/index.ts",
+      ),
+    },
+  },
   server: {
     host: true, // Listen on all addresses
     allowedHosts: [

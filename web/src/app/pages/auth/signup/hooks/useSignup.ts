@@ -1,8 +1,9 @@
 import { authApi } from "@ahmedrioueche/gympro-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { APP_PAGES } from "../../../../../constants/navigation";
+import { usePhoneFeatures } from "../../../../../hooks/usePhoneFeatures";
 import { useUserStore } from "../../../../../store/user";
 import { parsePhoneNumber } from "../../../../../utils/phone.util";
 import {
@@ -42,6 +43,7 @@ interface UseSignupReturn {
 export function useSignup(): UseSignupReturn {
   const { t } = useTranslation();
   const { setUser } = useUserStore();
+  const { isPhoneEnabled } = usePhoneFeatures();
 
   const [method, setMethod] = useState<SignupMethod>("email");
   const [countryCode, setCountryCode] = useState("+213");
@@ -53,6 +55,12 @@ export function useSignup(): UseSignupReturn {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isPhoneEnabled && method === "phone") {
+      setMethod("email");
+    }
+  }, [isPhoneEnabled, method]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

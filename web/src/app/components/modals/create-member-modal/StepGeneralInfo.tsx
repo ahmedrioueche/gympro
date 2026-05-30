@@ -6,6 +6,7 @@ import InputField from "../../../../components/ui/InputField";
 import PhoneNumberInput, {
   usePhoneNumber,
 } from "../../../../components/ui/PhoneNumberInput";
+import { usePhoneFeatures } from "../../../../hooks/usePhoneFeatures";
 
 interface FormData {
   email: string;
@@ -44,6 +45,13 @@ function StepGeneralInfo({
 }: StepGeneralInfoProps) {
   const { t } = useTranslation();
   const phone = usePhoneNumber(DEFAULT_COUNTRY_CODE);
+  const { isPhoneEnabled } = usePhoneFeatures();
+
+  useEffect(() => {
+    if (!isPhoneEnabled && formData.contactMethod === "phone") {
+      handleInputChange("contactMethod", "email");
+    }
+  }, [isPhoneEnabled, formData.contactMethod, handleInputChange]);
 
   const genderOptions = [
     { value: "", label: t("createMember.form.gender.placeholder") },
@@ -138,7 +146,9 @@ function StepGeneralInfo({
             <label className="block text-sm font-semibold text-text-primary mb-3">
               {t("createMember.form.contactMethod.label")}
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div
+              className={`grid gap-3 ${isPhoneEnabled ? "grid-cols-2" : "grid-cols-1"}`}
+            >
               <button
                 type="button"
                 onClick={() => handleInputChange("contactMethod", "email")}
@@ -162,6 +172,7 @@ function StepGeneralInfo({
                 </div>
               </button>
 
+              {isPhoneEnabled && (
               <button
                 type="button"
                 onClick={() => handleInputChange("contactMethod", "phone")}
@@ -184,11 +195,12 @@ function StepGeneralInfo({
                   </span>
                 </div>
               </button>
+              )}
             </div>
           </div>
 
           {/* Contact Field */}
-          {formData.contactMethod === "email" ? (
+          {formData.contactMethod === "email" || !isPhoneEnabled ? (
             <InputField
               type="email"
               label={t("createMember.form.email.label")}

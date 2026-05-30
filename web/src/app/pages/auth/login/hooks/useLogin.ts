@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { usePhoneNumber } from "../../../../../components/ui/PhoneNumberInput";
+import { usePhoneFeatures } from "../../../../../hooks/usePhoneFeatures";
 import { useUserStore } from "../../../../../store/user";
 import { parsePhoneNumber } from "../../../../../utils/phone.util";
 import { getRoleHomePage } from "../../../../../utils/roles";
@@ -43,6 +44,7 @@ export function useLogin(): UseLoginReturn {
   const { t } = useTranslation();
   const { setUser } = useUserStore();
   const phone = usePhoneNumber(DEFAULT_COUNTRY_CODE);
+  const { isPhoneEnabled } = usePhoneFeatures();
 
   const [method, setMethod] = useState<LoginMethod>("email");
   const [formData, setFormData] = useState({
@@ -70,7 +72,7 @@ export function useLogin(): UseLoginReturn {
     if (emailParam) {
       setMethod("email");
       setFormData((prev) => ({ ...prev, email: emailParam }));
-    } else if (phoneParam) {
+    } else if (phoneParam && isPhoneEnabled) {
       setMethod("phone");
       const parsed = parsePhoneNumber(DEFAULT_COUNTRY_CODE, phoneParam);
       if (parsed) {
@@ -81,7 +83,13 @@ export function useLogin(): UseLoginReturn {
         }
       }
     }
-  }, [t]);
+  }, [t, isPhoneEnabled]);
+
+  useEffect(() => {
+    if (!isPhoneEnabled && method === "phone") {
+      setMethod("email");
+    }
+  }, [isPhoneEnabled, method]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

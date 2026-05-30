@@ -3,6 +3,7 @@ import { Mail, Phone, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../components/ui/Button";
 import InputField from "../../../../../components/ui/InputField";
+import { usePhoneFeatures } from "../../../../../hooks/usePhoneFeatures";
 import AvatarUploader from "../../../../components/AvatarUploader";
 import SettingsTab from "../../../../components/settings/SettingsTab";
 
@@ -38,6 +39,7 @@ export default function ProfileSettings({
   handleAvatarUpload,
 }: ProfileSettingsProps) {
   const { t } = useTranslation();
+  const { isPhoneEnabled } = usePhoneFeatures();
 
   return (
     <SettingsTab
@@ -83,8 +85,9 @@ export default function ProfileSettings({
             placeholder={t("extra.adminSettings.profile.fullNamePlaceholder")}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Email */}
+          <div
+            className={`grid grid-cols-1 gap-4 ${isPhoneEnabled ? "md:grid-cols-2" : ""}`}
+          >
             <InputField
               label={t("extra.adminSettings.profile.email")}
               type="email"
@@ -95,46 +98,47 @@ export default function ProfileSettings({
               disabled={!!user.profile.email && !addEmailMode}
             />
 
-            {/* Phone Section */}
-            <div>
-              {user.profile.phoneNumber && !addPhoneMode ? (
-                <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
-                      <Phone className="w-5 h-5 text-primary" />
+            {isPhoneEnabled && (
+              <div>
+                {user.profile.phoneNumber && !addPhoneMode ? (
+                  <div className="flex items-center justify-between p-4 bg-surface-hover/50 rounded-2xl border border-border/50">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 bg-white shadow-sm rounded-xl border border-border/50">
+                        <Phone className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
+                          {t("extra.adminSettings.profile.phone")}
+                        </p>
+                        <p className="font-semibold text-text-primary">
+                          {user.profile.phoneNumber}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">
-                        {t("extra.adminSettings.profile.phone")}
-                      </p>
-                      <p className="font-semibold text-text-primary">
-                        {user.profile.phoneNumber}
-                      </p>
-                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-primary/5 text-primary font-bold"
+                      onClick={() => setAddPhoneMode(true)}
+                    >
+                      {t("common.change")}
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hover:bg-primary/5 text-primary font-bold"
-                    onClick={() => setAddPhoneMode(true)}
-                  >
-                    {t("common.change")}
-                  </Button>
-                </div>
-              ) : (
-                <InputField
-                  label={t("extra.adminSettings.profile.phone")}
-                  type="tel"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  leftIcon={<Phone className="w-5 h-5" />}
-                  placeholder={t(
-                    "extra.adminSettings.profile.phonePlaceholder",
-                  )}
-                  disabled={!!user.profile.phoneNumber}
-                />
-              )}
-            </div>
+                ) : (
+                  <InputField
+                    label={t("extra.adminSettings.profile.phone")}
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    leftIcon={<Phone className="w-5 h-5" />}
+                    placeholder={t(
+                      "extra.adminSettings.profile.phonePlaceholder",
+                    )}
+                    disabled={!!user.profile.phoneNumber}
+                  />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

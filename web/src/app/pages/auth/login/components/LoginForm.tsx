@@ -5,6 +5,7 @@ import Button from "../../../../../components/ui/Button";
 import InputField from "../../../../../components/ui/InputField";
 import PhoneNumberInput from "../../../../../components/ui/PhoneNumberInput";
 import { APP_PAGES } from "../../../../../constants/navigation";
+import { usePhoneFeatures } from "../../../../../hooks/usePhoneFeatures";
 import { useLogin } from "../hooks/useLogin";
 
 export default function LoginForm() {
@@ -25,6 +26,7 @@ export default function LoginForm() {
     handleLogin,
     handleGoogleLogin,
   } = useLogin();
+  const { isPhoneEnabled } = usePhoneFeatures();
 
   return (
     <form className="space-y-6" onSubmit={handleLogin} aria-label="login-form">
@@ -32,7 +34,7 @@ export default function LoginForm() {
         {/* Email or Phone Field with Inline Toggle */}
         <div className="flex items-center gap-3">
           <div className="flex-1">
-            {method === "email" ? (
+            {method === "email" || !isPhoneEnabled ? (
               <InputField
                 id="email"
                 name="email"
@@ -56,18 +58,20 @@ export default function LoginForm() {
           </div>
 
           {/* Slick Toggle Button */}
-          <button
-            type="button"
-            onClick={() => setMethod(method === "email" ? "phone" : "email")}
-            className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg border border-border bg-surface hover:bg-border text-text-secondary hover:text-primary transition-all"
-            title={method === "email" ? t("auth.phone") : t("auth.email")}
-          >
-            {method === "email" ? (
-              <Phone className="w-5 h-5" />
-            ) : (
-              <Mail className="w-5 h-5" />
-            )}
-          </button>
+          {isPhoneEnabled && (
+            <button
+              type="button"
+              onClick={() => setMethod(method === "email" ? "phone" : "email")}
+              className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg border border-border bg-surface hover:bg-border text-text-secondary hover:text-primary transition-all"
+              title={method === "email" ? t("auth.phone") : t("auth.email")}
+            >
+              {method === "email" ? (
+                <Phone className="w-5 h-5" />
+              ) : (
+                <Mail className="w-5 h-5" />
+              )}
+            </button>
+          )}
         </div>
 
         {/* Password Field */}

@@ -16,12 +16,14 @@ import {
 } from "../../../../utils/phone.util";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 import AuthLayout from "../components/AuthLayout";
+import { usePhoneFeatures } from "../../../../hooks/usePhoneFeatures";
 
 type ForgotPasswordMethod = "email" | "phone";
 type ForgotPasswordStep = "form" | "code-verification" | "success";
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
+  const { isPhoneEnabled } = usePhoneFeatures();
   const search = useSearch({ from: "/auth/forgot-password" });
   const [method, setMethod] = useState<ForgotPasswordMethod>("email");
   const [countryCode, setCountryCode] = useState("+213");
@@ -346,7 +348,7 @@ export default function ForgotPasswordPage() {
               {/* Email or Phone Field with Inline Toggle */}
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  {method === "email" ? (
+                  {method === "email" || !isPhoneEnabled ? (
                     <InputField
                       id="email"
                       name="email"
@@ -397,20 +399,24 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 {/* Slick Toggle Button */}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setMethod(method === "email" ? "phone" : "email")
-                  }
-                  className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg border border-border bg-surface hover:bg-border text-text-secondary hover:text-primary transition-all"
-                  title={method === "email" ? t("auth.phone") : t("auth.email")}
-                >
-                  {method === "email" ? (
-                    <Phone className="w-5 h-5" />
-                  ) : (
-                    <Mail className="w-5 h-5" />
-                  )}
-                </button>
+                {isPhoneEnabled && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setMethod(method === "email" ? "phone" : "email")
+                    }
+                    className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg border border-border bg-surface hover:bg-border text-text-secondary hover:text-primary transition-all"
+                    title={
+                      method === "email" ? t("auth.phone") : t("auth.email")
+                    }
+                  >
+                    {method === "email" ? (
+                      <Phone className="w-5 h-5" />
+                    ) : (
+                      <Mail className="w-5 h-5" />
+                    )}
+                  </button>
+                )}
               </div>
 
               {error && (

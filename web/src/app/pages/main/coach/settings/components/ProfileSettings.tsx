@@ -5,6 +5,7 @@ import Button from "../../../../../../components/ui/Button";
 import InputField from "../../../../../../components/ui/InputField";
 import AvatarUploader from "../../../../../components/AvatarUploader";
 import SettingsTab from "../../../../../components/settings/SettingsTab";
+import { usePhoneFeatures } from "../../../../../../hooks/usePhoneFeatures";
 
 interface ProfileSettingsProps {
   user: User;
@@ -54,6 +55,7 @@ export default function ProfileSettings({
   handleGetLocation,
 }: ProfileSettingsProps) {
   const { t } = useTranslation();
+  const { isPhoneEnabled } = usePhoneFeatures();
 
   return (
     <SettingsTab
@@ -101,8 +103,9 @@ export default function ProfileSettings({
             placeholder={t("extra.coachSettings.profile.fullNamePlaceholder")}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Email */}
+          <div
+            className={`grid grid-cols-1 gap-4 ${isPhoneEnabled ? "md:grid-cols-2" : ""}`}
+          >
             <InputField
               label={t("extra.coachSettings.profile.email")}
               type="email"
@@ -113,20 +116,21 @@ export default function ProfileSettings({
               disabled={!!user.profile.email && !addEmailMode}
             />
 
-            {/* Phone */}
-            <InputField
-              label={t("extra.coachSettings.profile.phone")}
-              type="tel"
-              value={
-                addPhoneMode
-                  ? phoneNumber
-                  : user.profile.phoneNumber || phoneNumber
-              }
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              leftIcon={<Phone className="w-5 h-5" />}
-              placeholder={t("extra.coachSettings.profile.phonePlaceholder")}
-              disabled={!!user.profile.phoneNumber && !addPhoneMode}
-            />
+            {isPhoneEnabled && (
+              <InputField
+                label={t("extra.coachSettings.profile.phone")}
+                type="tel"
+                value={
+                  addPhoneMode
+                    ? phoneNumber
+                    : user.profile.phoneNumber || phoneNumber
+                }
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                leftIcon={<Phone className="w-5 h-5" />}
+                placeholder={t("extra.coachSettings.profile.phonePlaceholder")}
+                disabled={!!user.profile.phoneNumber && !addPhoneMode}
+              />
+            )}
           </div>
         </div>
       </div>

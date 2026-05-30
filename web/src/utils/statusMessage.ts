@@ -43,6 +43,8 @@ const ErrorCodeToTranslationKey: Record<ErrorCode, string> = {
   [ErrorCode.SMS_SEND_FAILED]: "status.error.auth.sms_send_failed",
   [ErrorCode.OTP_EXPIRED]: "status.error.auth.otp_expired",
   [ErrorCode.PHONE_ALREADY_IN_USE]: "status.error.auth.phone_already_in_use",
+  [ErrorCode.PHONE_FEATURES_DISABLED]:
+    "status.error.auth.phone_features_disabled",
 
   // User errors
   [ErrorCode.USER_NOT_FOUND_USER]: "status.error.user.not_found",

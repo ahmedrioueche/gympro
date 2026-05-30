@@ -13,6 +13,7 @@ import InputField from "../../../../../../components/ui/InputField";
 import { useModalStore } from "../../../../../../store/modal";
 import AvatarUploader from "../../../../../components/AvatarUploader";
 import SettingsTab from "../../../../../components/settings/SettingsTab";
+import { usePhoneFeatures } from "../../../../../../hooks/usePhoneFeatures";
 
 interface ProfileSettingsProps {
   user: User;
@@ -68,6 +69,7 @@ export default function ProfileSettings({
 }: ProfileSettingsProps) {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
+  const { isPhoneEnabled } = usePhoneFeatures();
 
   const isEmailPending =
     verificationState.type === "email" && verificationState.step === "pending";
@@ -123,7 +125,7 @@ export default function ProfileSettings({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Email Section */}
-            <div className="space-y-3">
+            <div className={`space-y-3 ${!isPhoneEnabled ? "md:col-span-2" : ""}`}>
               <div className="relative">
                 <InputField
                   label={t("member.settings.profile.email")}
@@ -183,6 +185,7 @@ export default function ProfileSettings({
             </div>
 
             {/* Phone Section */}
+            {isPhoneEnabled && (
             <div className="space-y-3">
               <div className="relative">
                 <InputField
@@ -242,6 +245,7 @@ export default function ProfileSettings({
                 </div>
               )}
             </div>
+            )}
           </div>
         </div>
       </div>

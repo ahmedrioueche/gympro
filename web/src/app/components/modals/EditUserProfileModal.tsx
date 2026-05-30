@@ -9,9 +9,11 @@ import InputField from "../../../components/ui/InputField";
 import { useModalStore } from "../../../store/modal";
 import { useUserStore } from "../../../store/user";
 import { getMessage, showStatusToast } from "../../../utils/statusMessage";
+import { usePhoneFeatures } from "../../../hooks/usePhoneFeatures";
 
 function EditUserProfileModal() {
   const { t } = useTranslation();
+  const { isPhoneEnabled } = usePhoneFeatures();
   const { currentModal, closeModal } = useModalStore();
   const { user, updateProfile } = useUserStore();
 
@@ -378,6 +380,7 @@ function EditUserProfileModal() {
             </div>
 
             {/* Phone Number Field */}
+            {isPhoneEnabled && (
             <div className="space-y-2">
               <div className="flex items-end gap-2">
                 <div className="flex-1">
@@ -449,6 +452,7 @@ function EditUserProfileModal() {
                   </div>
                 )}
             </div>
+            )}
           </div>
         </div>
 

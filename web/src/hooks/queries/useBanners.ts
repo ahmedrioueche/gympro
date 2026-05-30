@@ -5,8 +5,8 @@ import {
   type AppBanner,
   type CreateAppBannerDto,
   type UpdateAppBannerDto,
+  getApiClient,
 } from "@ahmedrioueche/gympro-client";
-import { getApiClient } from "@ahmedrioueche/gympro-client/dist/api/config";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
