@@ -10,7 +10,11 @@ const fs = require('fs');
 const path = require('path');
 
 const token = process.env.NPM_TOKEN || process.env.GITHUB_TOKEN;
-const isCI = process.env.CI || process.env.VERCEL || process.env.GITHUB_ACTIONS;
+const isCI =
+  process.env.CI ||
+  process.env.VERCEL ||
+  process.env.GITHUB_ACTIONS ||
+  process.env.RENDER;
 
 if (!token) {
   if (isCI) {

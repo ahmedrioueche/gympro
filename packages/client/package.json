@@ -7,7 +7,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && npm publish"
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build",
+    "publish:package": "npm publish"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

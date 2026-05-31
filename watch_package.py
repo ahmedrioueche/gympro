@@ -85,6 +85,13 @@ class PackageWatcher:
             print(f"❌ Error reading {package_json_path}: {e}")
             return None
 
+    def resolve_dependency_spec(self, package_json_path: Path, new_version: str) -> str:
+        """Backend uses the monorepo package via file: link; web uses the registry version."""
+        path_str = str(package_json_path).replace('\\', '/')
+        if 'backend' in path_str:
+            return 'file:../packages/client'
+        return new_version
+
     def update_dependency_version(self, package_json_path: Path, new_version: str) -> bool:
         """Update the dependency version in a package.json file"""
         try:
@@ -92,15 +99,18 @@ class PackageWatcher:
                 data = json.load(f)
 
             updated = False
+            dependency_spec = self.resolve_dependency_spec(
+                package_json_path, new_version
+            )
 
             # Update in dependencies
             if 'dependencies' in data and self.dependency_name in data['dependencies']:
-                data['dependencies'][self.dependency_name] = new_version
+                data['dependencies'][self.dependency_name] = dependency_spec
                 updated = True
 
             # Update in devDependencies
             if 'devDependencies' in data and self.dependency_name in data['devDependencies']:
-                data['devDependencies'][self.dependency_name] = new_version
+                data['devDependencies'][self.dependency_name] = dependency_spec
                 updated = True
 
             if updated:
@@ -115,25 +125,41 @@ class PackageWatcher:
             return False
 
     def run_npm_build(self, package_json_path: Path) -> bool:
-        """Run npm run build in the directory of package.json"""
+        """Compile and publish the watched package."""
+        import os
+
         try:
             work_dir = package_json_path.parent
             print(f"📦 Running npm run build in {work_dir}")
 
-            result = subprocess.run(
+            build_result = subprocess.run(
                 ['npm', 'run', 'build'],
                 cwd=work_dir,
                 capture_output=True,
                 text=True,
-                shell=True if sys.platform == 'win32' else False
+                shell=True if sys.platform == 'win32' else False,
             )
 
-            if result.returncode == 0:
-                print(f"✅ Build successful")
-                return True
-            else:
-                print(f"❌ Build failed:\n{result.stderr}")
+            if build_result.returncode != 0:
+                print(f"❌ Build failed:\n{build_result.stderr}")
                 return False
+
+            print(f"📤 Publishing package from {work_dir}")
+            publish_result = subprocess.run(
+                ['npm', 'run', 'publish:package'],
+                cwd=work_dir,
+                capture_output=True,
+                text=True,
+                shell=True if sys.platform == 'win32' else False,
+                env=os.environ.copy(),
+            )
+
+            if publish_result.returncode == 0:
+                print("✅ Build and publish successful")
+                return True
+
+            print(f"❌ Publish failed:\n{publish_result.stderr}")
+            return False
         except Exception as e:
             print(f"❌ Error running build: {e}")
             return False

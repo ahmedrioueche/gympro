@@ -7,7 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "preinstall": "node scripts/setup-npmrc.js",
-    "build": "nest build && echo 'Build completed. Checking dist folder:' && ls -la dist || dir dist",
+    "build:client": "cd ../packages/client && npm install && npm run build",
+    "build": "npm run build:client && nest build && echo 'Build completed. Checking dist folder:' && ls -la dist || dir dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -26,7 +27,7 @@
     "db:copy-test-to-prod": "ts-node -r tsconfig-paths/register scripts/copy-test-to-prod.ts"
   },
   "dependencies": {
-    "@ahmedrioueche/gympro-client": "0.5.20",
+    "@ahmedrioueche/gympro-client": "file:../packages/client",
     "@chargily/chargily-pay": "^2.1.0",
     "@google/generative-ai": "^0.24.1",
     "@nestjs/common": "^11.0.1",
