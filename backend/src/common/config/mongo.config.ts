@@ -4,12 +4,14 @@ import { Logger } from '@nestjs/common';
 const logger = new Logger('MongoConfig');
 
 export const DEV_MONGO_DB_NAME = 'test';
+/** Local dev database (set MONGODB_DB_NAME=gympro-dev in .env) */
+export const LOCAL_DEV_MONGO_DB_NAME = 'gympro-dev';
 export const PROD_MONGO_DB_NAME = 'gympro-prod';
 
 /**
  * Database name per environment.
  * - prod  → gympro-prod
- * - dev/local (default) → test (existing local database)
+ * - dev/local (default) → test; use MONGODB_DB_NAME=gympro-dev for your local dev DB
  *
  * Override anytime with MONGODB_DB_NAME in .env
  */

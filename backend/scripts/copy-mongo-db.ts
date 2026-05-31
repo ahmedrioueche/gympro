@@ -45,13 +45,32 @@ async function copyCollection(
   return copied;
 }
 
+function resolveTargetDbName(): string {
+  const fromArg = process.argv[2]?.trim();
+  if (fromArg) {
+    return fromArg;
+  }
+  const fromEnv = process.env.COPY_TARGET_DB?.trim();
+  if (fromEnv) {
+    return fromEnv;
+  }
+  return PROD_MONGO_DB_NAME;
+}
+
+function resolveSourceDbName(): string {
+  return process.env.COPY_SOURCE_DB?.trim() || DEV_MONGO_DB_NAME;
+}
+
 async function main() {
+  const sourceDbName = resolveSourceDbName();
+  const targetDbName = resolveTargetDbName();
+
   if (process.env.COPY_DB_CONFIRM !== 'yes') {
     console.error(
-      'Refusing to run without COPY_DB_CONFIRM=yes (copies test → gympro-prod).',
+      `Refusing to run without COPY_DB_CONFIRM=yes (copies ${sourceDbName} → ${targetDbName}).`,
     );
     console.error(
-      'Example: COPY_DB_CONFIRM=yes npm run db:copy-test-to-prod',
+      'Example: COPY_DB_CONFIRM=yes npm run db:copy-test-to-dev',
     );
     process.exit(1);
   }
@@ -59,14 +78,14 @@ async function main() {
   const uri = resolveMongoUri();
   const client = new MongoClient(uri);
 
-  console.log(`Source: ${DEV_MONGO_DB_NAME}`);
-  console.log(`Target: ${PROD_MONGO_DB_NAME}`);
+  console.log(`Source: ${sourceDbName}`);
+  console.log(`Target: ${targetDbName}`);
   console.log(`Cluster: ${uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@')}`);
 
   try {
     await client.connect();
-    const sourceDb = client.db(DEV_MONGO_DB_NAME);
-    const targetDb = client.db(PROD_MONGO_DB_NAME);
+    const sourceDb = client.db(sourceDbName);
+    const targetDb = client.db(targetDbName);
 
     const collections = await sourceDb.listCollections().toArray();
     const names = collections
@@ -85,7 +104,9 @@ async function main() {
       totalDocs += await copyCollection(sourceDb, targetDb, name);
     }
 
-    console.log(`\nDone. ${totalDocs} documents copied to ${PROD_MONGO_DB_NAME}.`);
+    console.log(
+      `\nDone. ${totalDocs} documents copied to ${targetDbName}.`,
+    );
   } finally {
     await client.close();
   }

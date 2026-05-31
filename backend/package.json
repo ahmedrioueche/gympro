@@ -24,7 +24,8 @@
     "seed:admin": "ts-node -r tsconfig-paths/register scripts/create-admin.ts",
     "test:chargily": "ts-node -r tsconfig-paths/register scripts/test-chargily-product.ts",
     "seed:banner": "ts-node -r tsconfig-paths/register scripts/seed_subscription_banner.ts",
-    "db:copy-test-to-prod": "ts-node -r tsconfig-paths/register scripts/copy-test-to-prod.ts"
+    "db:copy-test-to-prod": "ts-node -r tsconfig-paths/register scripts/copy-mongo-db.ts gympro-prod",
+    "db:copy-test-to-dev": "ts-node -r tsconfig-paths/register scripts/copy-mongo-db.ts gympro-dev"
   },
   "dependencies": {
     "@ahmedrioueche/gympro-client": "file:../packages/client",

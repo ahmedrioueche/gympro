@@ -949,6 +949,12 @@
         "label": "Devenir un entraîneur",
         "description": "Demander l'accès entraîneur"
       },
+      "fullscreen": {
+        "enter": "Plein écran",
+        "exit": "Quitter le plein écran",
+        "description": "Masquer l'interface du navigateur",
+        "unsupported": "Le plein écran n'est pas disponible sur ce navigateur"
+      },
       "logout": "Déconnexion"
     },
     "edit": {

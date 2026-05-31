@@ -961,6 +961,12 @@
         "label": "Become a Coach",
         "description": "Request coach access"
       },
+      "fullscreen": {
+        "enter": "Fullscreen",
+        "exit": "Exit fullscreen",
+        "description": "Hide browser UI for more space",
+        "unsupported": "Fullscreen is not available in this browser"
+      },
       "logout": "Logout"
     },
     "edit": {
