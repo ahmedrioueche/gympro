@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { getMongooseOptions } from './common/config/mongo.config';
 import { CommonModule } from './common/common.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { PlatformMiddleware } from './common/middleware/platform.middleware';
@@ -73,11 +74,8 @@ import { UsersModule } from './modules/users/users.module';
     // Connect to MongoDB
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri:
-          configService.get<string>('MONGODB_URI') ||
-          'mongodb://localhost:27017/gympro',
-      }),
+      useFactory: async (configService: ConfigService) =>
+        getMongooseOptions(configService),
       inject: [ConfigService],
     }),
 
