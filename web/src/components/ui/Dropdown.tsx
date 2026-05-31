@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTheme } from "../../context/ThemeContext";
+import useScreen from "../../hooks/useScreen";
 
 interface DropdownProps {
   trigger: React.ReactNode;
@@ -8,6 +9,8 @@ interface DropdownProps {
   align?: "left" | "right";
   className?: string;
   onOpen?: () => void;
+  /** On mobile (≤768px), open as a centered modal with backdrop instead of anchored dropdown */
+  mobileAsModal?: boolean;
 }
 
 export default function Dropdown({
@@ -16,21 +19,33 @@ export default function Dropdown({
   align = "right",
   className = "",
   onOpen,
+  mobileAsModal = false,
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { isDark } = useTheme();
+  const { isMobile } = useScreen();
+  const useModalLayout = mobileAsModal && isMobile;
 
   const closeDropdown = () => setIsOpen(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      if (useModalLayout) {
+        const portal = document.getElementById("dropdown-portal-root");
+        const backdrop = document.getElementById("dropdown-modal-backdrop");
+        const target = event.target as Node;
+        if (portal?.contains(target)) return;
+        if (backdrop?.contains(target)) {
+          closeDropdown();
+        }
+        return;
+      }
+
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        // Also check portals if needed, but for simple dropdowns this is usually enough
-        // unless we want to ignore clicks inside the portal itself
         const portal = document.getElementById("dropdown-portal-root");
         if (portal && portal.contains(event.target as Node)) {
           return;
@@ -44,9 +59,11 @@ export default function Dropdown({
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [isOpen]);
+  }, [isOpen, useModalLayout]);
 
   useEffect(() => {
+    if (useModalLayout) return;
+
     const handleScroll = () => {
       if (isOpen) {
         setIsOpen(false);
@@ -60,7 +77,24 @@ export default function Dropdown({
     return () => {
       window.removeEventListener("scroll", handleScroll, true);
     };
-  }, [isOpen]);
+  }, [isOpen, useModalLayout]);
+
+  useEffect(() => {
+    if (!isOpen || !useModalLayout) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeDropdown();
+    };
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen, useModalLayout]);
 
   const toggle = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -71,8 +105,39 @@ export default function Dropdown({
     }
   };
 
+  const renderMenu = (closeDropdown: () => void) => (
+    <div className="py-2">
+      {typeof children === "function" ? children(closeDropdown) : children}
+    </div>
+  );
+
   const getPortalContent = () => {
-    if (!isOpen || !dropdownRef.current) return null;
+    if (!isOpen) return null;
+
+    if (useModalLayout) {
+      return createPortal(
+        <div
+          id="dropdown-modal-backdrop"
+          className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+          onClick={closeDropdown}
+        >
+          <div
+            id="dropdown-portal-root"
+            role="dialog"
+            aria-modal="true"
+            className={`relative z-[9999] w-full max-w-sm max-h-[min(85vh,520px)] overflow-hidden rounded-2xl border border-border bg-background shadow-2xl animate-in zoom-in-95 duration-200 ${className}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="overflow-y-auto max-h-[min(85vh,520px)] hide-scrollbar">
+              {renderMenu(closeDropdown)}
+            </div>
+          </div>
+        </div>,
+        document.body,
+      );
+    }
+
+    if (!dropdownRef.current) return null;
 
     const rect = dropdownRef.current.getBoundingClientRect();
     const top = rect.bottom + window.scrollY + 2;
@@ -123,9 +188,7 @@ export default function Dropdown({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="py-2">
-          {typeof children === "function" ? children(closeDropdown) : children}
-        </div>
+        {renderMenu(closeDropdown)}
       </div>,
       document.body,
     );
