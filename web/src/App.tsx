@@ -1,9 +1,11 @@
 import { LANGUAGES } from "@ahmedrioueche/gympro-client";
 import { Outlet, useLocation } from "@tanstack/react-router";
+import { ensureValidAccessToken } from "@ahmedrioueche/gympro-client";
 import { useEffect, useRef } from "react";
 import { TopBanner } from "./components/TopBanner";
 import { BG_GRADIENT } from "./constants/styles";
 import { useTheme } from "./context/ThemeContext";
+import { useAuthSessionKeepAlive } from "./hooks/useAuthSessionKeepAlive";
 import { useWelcomeTour } from "./hooks/useWelcomeTour";
 import Modals from "./modals";
 import { useLanguageStore } from "./store/language";
@@ -19,6 +21,7 @@ const App = () => {
 
   // Initialize Welcome Tour observer
   useWelcomeTour();
+  useAuthSessionKeepAlive();
 
   // Sync language with user settings
   useEffect(() => {

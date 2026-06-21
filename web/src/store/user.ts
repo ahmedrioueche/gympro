@@ -1,5 +1,8 @@
 import {
   authApi,
+  ensureValidAccessToken,
+  ErrorCode,
+  TokenManager,
   UserRole,
   type DashboardType,
   type User,
@@ -187,39 +190,46 @@ export const useUserStore = create<UserState>()(
         const cacheValid = lastFetchedAt && now - lastFetchedAt < cacheTTL;
 
         if (user && cacheValid && !force) {
-          return user; // use cached user
+          return user;
         }
 
         setLoading(true);
 
-        let retryCount = 0;
+        try {
+          await ensureValidAccessToken();
 
-        while (retryCount < 2) {
-          try {
-            const currentUser = await getCurrentUser();
-            if (currentUser) {
-              setUser(currentUser);
+          const currentUser = await getCurrentUser();
+          if (currentUser) {
+            setUser(currentUser);
+            setLoading(false);
+            return currentUser;
+          }
+
+          const refreshRes = await authApi.refresh();
+          if (refreshRes?.success) {
+            const retriedUser = await getCurrentUser();
+            if (retriedUser) {
+              setUser(retriedUser);
               setLoading(false);
-              return currentUser;
+              return retriedUser;
             }
+          }
 
-            // Try refresh if no user
-            const refreshRes = await authApi.refresh();
-            if (refreshRes?.success) {
-              retryCount++;
-              continue; // retry getCurrentUser
-            }
-
-            break; // no user and refresh failed
-          } catch (err) {
-            console.error("fetchUserWithCacheAndRefresh error:", err);
-            retryCount++;
+          if (
+            refreshRes?.errorCode === ErrorCode.INVALID_REFRESH_TOKEN ||
+            !TokenManager.getRefreshToken()
+          ) {
+            clearUser();
+          }
+        } catch (err) {
+          console.error("fetchUser error:", err);
+          if (!TokenManager.getRefreshToken()) {
+            clearUser();
           }
         }
 
-        clearUser();
         setLoading(false);
-        return null;
+        return get().user;
       },
 
       getUserRole: () => {

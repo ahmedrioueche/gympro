@@ -6,6 +6,7 @@ export * from "./api/appPayment";
 export * from "./api/appSubscription";
 export * from "./api/attendance";
 export * from "./api/auth";
+export * from "./api/authInterceptor";
 export * from "./api/chargily";
 export * from "./api/coach";
 export * from "./api/competition";

@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import type {
   AccessQrData,
   ForgotPasswordData,
@@ -28,8 +27,10 @@ import type {
   VerifyOtpData,
 } from "../dto/auth";
 import type { ApiResponse } from "../types/api";
+import { ErrorCode } from "../types/error";
 import { IS_DEV } from "./config";
-import { apiClient, handleApiError } from "./helper";
+import { refreshAccessToken } from "./authInterceptor";
+import { apiClient, apiResponse, handleApiError } from "./helper";
 import { TokenManager } from "./token";
 
 export const authApi = {
@@ -73,19 +74,17 @@ export const authApi = {
 
   /** Refresh token */
   refresh: async (): Promise<ApiResponse<RefreshData>> => {
-    try {
-      const refreshToken = TokenManager.getRefreshToken();
-      const res = await apiClient.post<ApiResponse<RefreshData>>(
-        "/auth/refresh",
-        { refreshToken }
-      );
-      if (res.data.success && res.data.data) {
-        TokenManager.setAccessToken(res.data.data.accessToken);
-      }
-      return res.data;
-    } catch (error) {
-      throw handleApiError(error);
+    const accessToken = await refreshAccessToken();
+    if (accessToken) {
+      return apiResponse(true, undefined, { accessToken });
     }
+
+    return apiResponse<RefreshData>(
+      false,
+      ErrorCode.INVALID_REFRESH_TOKEN,
+      undefined,
+      "Invalid refresh token",
+    );
   },
 
   /** Logout */
@@ -346,30 +345,6 @@ export const authApi = {
     }
   },
 };
-
-/** Axios interceptor: auto-refresh expired access token */
-apiClient.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const original = error.config as any;
-
-    if (error.response?.status === 401 && !original._retry) {
-      original._retry = true;
-
-      try {
-        await authApi.refresh();
-        return apiClient(original);
-      } catch {
-        if (!window.location.pathname.includes("/auth/")) {
-          window.location.href = "/auth/signin";
-        }
-        return Promise.reject(error);
-      }
-    }
-
-    return Promise.reject(error);
-  }
-);
 
 /** Dev logging */
 if (IS_DEV) {

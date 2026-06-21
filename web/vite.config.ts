@@ -1,15 +1,20 @@
 /// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
+import path from "node:path";
 import { defineConfig } from "vite";
 import { fileURLToPath } from "node:url";
 
 const appRoot = fileURLToPath(new URL(".", import.meta.url));
 const actocoreRoot = fileURLToPath(new URL("../../actocore", import.meta.url));
+const gymproClientRoot = path.resolve(appRoot, "packages/client/src/index.ts");
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
+    alias: {
+      "@ahmedrioueche/gympro-client": gymproClientRoot,
+    },
     dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import { setupAuthInterceptor } from "./authInterceptor";
 import { TokenManager } from "./token";
 
 export interface ApiConfig {
@@ -53,6 +54,8 @@ export const getApiClient = (): AxiosInstance => {
       }
       return config;
     });
+
+    setupAuthInterceptor(apiClientInstance);
   }
 
   return apiClientInstance;
