@@ -2811,7 +2811,8 @@
           "createSuperset": "إنشاء مجموعة عضلية مركبة (سوبر سيت)"
         },
         "validation": {
-          "nameRequired": "اسم البرنامج مطلوب"
+          "nameRequired": "اسم البرنامج مطلوب",
+          "exerciseNameRequired": "يجب أن يكون لكل تمرين اسم قبل الحفظ"
         },
         "error": "فشل إنشاء البرنامج"
       },

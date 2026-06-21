@@ -5,7 +5,10 @@ import {
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
 import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { useUpdateProgram } from "../../hooks/queries/useTraining";
+import { hasIncompleteExercises } from "./programSaveValidation";
 import { useProgramAutoSaveState } from "./useProgramAutoSaveState";
 
 export const useProgramEdit = (
@@ -13,11 +16,14 @@ export const useProgramEdit = (
   isEditMode: boolean,
   onProgramUpdated?: (program: TrainingProgram) => void,
 ) => {
+  const { t } = useTranslation();
   const [editData, setEditData] = useState<any>(null);
   const updateProgram = useUpdateProgram();
 
   const saveProgram = useCallback(async () => {
-    if (!editData || !program?._id) return;
+    if (!editData || !program?._id || hasIncompleteExercises(editData.days)) {
+      return;
+    }
 
     await updateProgram.mutateAsync({
       id: program._id,
@@ -37,7 +43,11 @@ export const useProgramEdit = (
     flushSave,
     resetAutoSaveState,
   } = useProgramAutoSaveState({
-    enabled: isEditMode && !!program?._id && !!editData,
+    enabled:
+      isEditMode &&
+      !!program?._id &&
+      !!editData &&
+      !hasIncompleteExercises(editData.days),
     save: saveProgram,
     revision: editData,
   });
@@ -191,6 +201,12 @@ export const useProgramEdit = (
   };
 
   const finishEditing = async () => {
+    if (hasIncompleteExercises(editData?.days)) {
+      toast.error(
+        t("training.programs.create.validation.exerciseNameRequired"),
+      );
+      return;
+    }
     await flushSave();
   };
 

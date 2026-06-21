@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { configureApi } from "@ahmedrioueche/gympro-client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";

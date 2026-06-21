@@ -2812,7 +2812,8 @@
           "createSuperset": "Créer un superset"
         },
         "validation": {
-          "nameRequired": "Le nom du programme est requis"
+          "nameRequired": "Le nom du programme est requis",
+          "exerciseNameRequired": "Chaque exercice doit avoir un nom avant l'enregistrement"
         },
         "error": "Échec de la création du programme"
       },

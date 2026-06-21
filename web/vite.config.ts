@@ -45,7 +45,11 @@ export default defineConfig({
   },
   optimizeDeps: {
     // actocore-shared is CJS; pre-bundle so named exports (sessionsApi, etc.) work when linked locally
-    include: ["@ahmedrioueche/actocore-shared", "@ahmedrioueche/actocore-sdk"],
+    include: [
+      "reflect-metadata",
+      "@ahmedrioueche/actocore-shared",
+      "@ahmedrioueche/actocore-sdk",
+    ],
   },
   build: {
     commonjsOptions: {

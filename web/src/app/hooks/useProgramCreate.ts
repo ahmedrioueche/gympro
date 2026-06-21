@@ -12,6 +12,7 @@ import {
   useUpdateProgram,
 } from "../../hooks/queries/useTraining";
 import { useProgramAutoSaveState } from "./useProgramAutoSaveState";
+import { hasIncompleteExercises } from "./programSaveValidation";
 
 const buildInitialFormData = (): CreateProgramDto => ({
   name: "",
@@ -45,7 +46,7 @@ export const useProgramCreate = (onClose: () => void) => {
   );
 
   const saveProgram = useCallback(async () => {
-    if (!programId) return;
+    if (!programId || hasIncompleteExercises(formData.days)) return;
 
     await updateProgram.mutateAsync({
       id: programId,
@@ -61,7 +62,7 @@ export const useProgramCreate = (onClose: () => void) => {
     flushSave,
     resetAutoSaveState,
   } = useProgramAutoSaveState({
-    enabled: !!programId,
+    enabled: !!programId && !hasIncompleteExercises(formData.days),
     save: saveProgram,
     revision: formData,
   });
@@ -127,6 +128,13 @@ export const useProgramCreate = (onClose: () => void) => {
       } catch {
         toast.error(t("training.programs.create.error"));
       }
+      return;
+    }
+
+    if (hasIncompleteExercises(formData.days)) {
+      toast.error(
+        t("training.programs.create.validation.exerciseNameRequired"),
+      );
       return;
     }
 

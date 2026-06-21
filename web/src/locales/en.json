@@ -2823,7 +2823,8 @@
           "createSuperset": "Create Superset"
         },
         "validation": {
-          "nameRequired": "Program name is required"
+          "nameRequired": "Program name is required",
+          "exerciseNameRequired": "Every exercise must have a name before saving"
         },
         "error": "Failed to create program"
       },
