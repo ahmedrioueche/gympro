@@ -456,8 +456,7 @@ export const useSessionForm = ({
     setIsDirty(true);
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
-
-    const oldValue = currentSets[setIndex][field];
+    const previousWeight = currentSets[setIndex].weight;
 
     // Manual weight edits clear auto-fill tracking for that set
     if (field === "weight") {
@@ -494,8 +493,7 @@ export const useSessionForm = ({
 
     if (field === "weight") {
       const weightValue = typeof value === "number" ? value : parseFloat(value) || 0;
-      const oldWeight =
-        typeof oldValue === "number" ? oldValue : parseFloat(oldValue) || 0;
+      const oldWeight = previousWeight;
       const shouldPropagate = options?.propagate === true;
 
       if (weightValue > 0) {

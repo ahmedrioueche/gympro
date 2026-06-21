@@ -11,6 +11,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@ahmedrioueche/actocore-sdk": "^0.1.0",
     "react-hot-toast": "^2.6.0"
   }
 }

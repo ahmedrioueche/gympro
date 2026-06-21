@@ -1,4 +1,4 @@
-import { ensureValidAccessToken } from "@ahmedrioueche/gympro-client";
+import { ensureValidAccessToken } from "../lib/ensureValidAccessToken";
 import { useEffect } from "react";
 import { useUserStore } from "../store/user";
 

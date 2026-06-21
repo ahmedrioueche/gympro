@@ -1,6 +1,5 @@
 import { LANGUAGES } from "@ahmedrioueche/gympro-client";
 import { Outlet, useLocation } from "@tanstack/react-router";
-import { ensureValidAccessToken } from "@ahmedrioueche/gympro-client";
 import { useEffect, useRef } from "react";
 import { TopBanner } from "./components/TopBanner";
 import { BG_GRADIENT } from "./constants/styles";

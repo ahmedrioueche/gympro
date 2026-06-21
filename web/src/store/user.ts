@@ -1,6 +1,5 @@
 import {
   authApi,
-  ensureValidAccessToken,
   ErrorCode,
   TokenManager,
   UserRole,
@@ -9,6 +8,7 @@ import {
 } from "@ahmedrioueche/gympro-client";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { ensureValidAccessToken } from "../lib/ensureValidAccessToken";
 import { getCurrentUser } from "../utils";
 
 interface UserState {
