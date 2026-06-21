@@ -2812,7 +2812,8 @@
         },
         "validation": {
           "nameRequired": "اسم البرنامج مطلوب"
-        }
+        },
+        "error": "فشل إنشاء البرنامج"
       },
       "details": {
         "start": "ابدأ البرنامج",
@@ -2852,7 +2853,8 @@
       "selector": {
         "title": "اختر تمرينًا",
         "createCustom": "مخصص",
-        "searchPlaceholder": "ابحث بالاسم أو العضلة..."
+        "searchPlaceholder": "ابحث بالاسم أو العضلة...",
+        "noMatchesUseCustom": "لا توجد نتائج — سيتم استخدام \"{{name}}\" كتمرين مخصص"
       },
       "form": {
         "name": "اسم التمرين",

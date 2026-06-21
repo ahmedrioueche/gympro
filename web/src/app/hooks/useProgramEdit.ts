@@ -4,19 +4,43 @@ import {
   type CreateProgramDayDto,
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next";
+import { useCallback, useEffect, useState } from "react";
 import { useUpdateProgram } from "../../hooks/queries/useTraining";
+import { useProgramAutoSaveState } from "./useProgramAutoSaveState";
 
 export const useProgramEdit = (
   program: TrainingProgram | null,
   isEditMode: boolean,
   onProgramUpdated?: (program: TrainingProgram) => void,
 ) => {
-  const { t } = useTranslation();
   const [editData, setEditData] = useState<any>(null);
   const updateProgram = useUpdateProgram();
+
+  const saveProgram = useCallback(async () => {
+    if (!editData || !program?._id) return;
+
+    await updateProgram.mutateAsync({
+      id: program._id,
+      data: editData,
+      silent: true,
+    });
+
+    if (onProgramUpdated) {
+      onProgramUpdated({ ...program, ...editData } as TrainingProgram);
+    }
+  }, [editData, onProgramUpdated, program, updateProgram]);
+
+  const {
+    markDirty,
+    isAutoSaving,
+    showSavedIndicator,
+    flushSave,
+    resetAutoSaveState,
+  } = useProgramAutoSaveState({
+    enabled: isEditMode && !!program?._id && !!editData,
+    save: saveProgram,
+    revision: editData,
+  });
 
   // Initialize edit data when program changes or edit mode is entered
   useEffect(() => {
@@ -38,31 +62,21 @@ export const useProgramEdit = (
         })),
         isPublic: program.isPublic,
       });
+      resetAutoSaveState();
     }
-  }, [program, isEditMode]);
+  }, [program, isEditMode, resetAutoSaveState]);
 
-  const handleSave = () => {
-    if (!editData || !program?._id) return;
-
-    updateProgram.mutate(
-      { id: program._id, data: editData },
-      {
-        onSuccess: () => {
-          toast.success(t("training.programs.edit.success"));
-          // Optimistically update parent state with edited data
-          if (onProgramUpdated) {
-            onProgramUpdated({ ...program, ...editData } as TrainingProgram);
-          }
-        },
-        onError: () => {
-          toast.error(t("training.programs.edit.error"));
-        },
-      },
-    );
-  };
+  const patchEditData = useCallback(
+    (patch: Record<string, unknown>) => {
+      markDirty();
+      setEditData((prev: typeof editData) => ({ ...prev, ...patch }));
+    },
+    [markDirty],
+  );
 
   const updateDayName = (index: number, name: string) => {
     if (!editData?.days) return;
+    markDirty();
     const newDays = [...editData.days] as CreateProgramDayDto[];
     newDays[index] = { ...newDays[index], name };
     setEditData({ ...editData, days: newDays });
@@ -70,6 +84,7 @@ export const useProgramEdit = (
 
   const addExercise = (dayIndex: number) => {
     if (!editData?.days) return;
+    markDirty();
     const newDays = [...editData.days] as CreateProgramDayDto[];
 
     const newExercise: CreateExerciseDto = {
@@ -97,6 +112,7 @@ export const useProgramEdit = (
     value: any,
   ) => {
     if (!editData?.days) return;
+    markDirty();
     const newDays = [...editData.days] as CreateProgramDayDto[];
     const newBlock = newDays[dayIndex].blocks[blockIndex];
     if (!newBlock) return;
@@ -114,6 +130,7 @@ export const useProgramEdit = (
     exIndex: number,
   ) => {
     if (!editData?.days) return;
+    markDirty();
     const newDays = [...editData.days] as CreateProgramDayDto[];
     const block = newDays[dayIndex].blocks[blockIndex];
 
@@ -134,6 +151,7 @@ export const useProgramEdit = (
     toIndex: number,
   ) => {
     if (!editData?.days) return;
+    markDirty();
     const newDays = [...editData.days] as CreateProgramDayDto[];
     const blocks = [...newDays[dayIndex].blocks];
 
@@ -146,6 +164,7 @@ export const useProgramEdit = (
 
   const groupBlocks = (dayIndex: number, blockIndices: number[]) => {
     if (!editData?.days || blockIndices.length < 2) return;
+    markDirty();
     const newDays = [...editData.days] as CreateProgramDayDto[];
     const day = newDays[dayIndex];
 
@@ -171,16 +190,22 @@ export const useProgramEdit = (
     setEditData({ ...editData, days: newDays });
   };
 
+  const finishEditing = async () => {
+    await flushSave();
+  };
+
   return {
     editData,
-    setEditData,
+    patchEditData,
     updateProgram,
-    handleSave,
+    finishEditing,
     updateDayName,
     addExercise,
     updateExercise,
     removeExercise,
     reorderBlock,
     groupBlocks,
+    isAutoSaving,
+    showSavedIndicator,
   };
 };

@@ -57,9 +57,14 @@ export const useCreateProgram = () => {
   const { t } = useTranslation();
 
   return useMutation({
-    mutationFn: (data: CreateProgramDto) => trainingApi.createProgram(data),
-    onSuccess: () => {
-      toast.success(t("status.success.program_created"));
+    mutationFn: (input: CreateProgramDto & { silent?: boolean }) => {
+      const { silent: _silent, ...data } = input;
+      return trainingApi.createProgram(data);
+    },
+    onSuccess: (_data, variables) => {
+      if (!variables.silent) {
+        toast.success(t("status.success.program_created"));
+      }
       queryClient.invalidateQueries({ queryKey: ["programs"] });
     },
     onError: (error: any) => {
@@ -81,11 +86,16 @@ export const useUpdateProgram = () => {
     mutationFn: ({
       id,
       data,
+      silent: _silent,
     }: {
       id: string;
       data: Partial<CreateProgramDto>;
+      silent?: boolean;
     }) => trainingApi.updateProgram(id, data),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      if (!variables.silent) {
+        toast.success(t("training.programs.edit.success"));
+      }
       queryClient.invalidateQueries({ queryKey: ["programs"] });
       queryClient.invalidateQueries({ queryKey: ["program"] });
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });

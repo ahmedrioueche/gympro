@@ -2813,7 +2813,8 @@
         },
         "validation": {
           "nameRequired": "Le nom du programme est requis"
-        }
+        },
+        "error": "Échec de la création du programme"
       },
       "details": {
         "start": "Démarrer le programme",
@@ -2853,7 +2854,8 @@
       "selector": {
         "title": "Sélectionner un exercice",
         "createCustom": "Personnalisé",
-        "searchPlaceholder": "Rechercher par nom ou muscle..."
+        "searchPlaceholder": "Rechercher par nom ou muscle...",
+        "noMatchesUseCustom": "Aucun résultat — « {{name}} » sera utilisé comme exercice personnalisé"
       },
       "form": {
         "name": "Nom de l'exercice",

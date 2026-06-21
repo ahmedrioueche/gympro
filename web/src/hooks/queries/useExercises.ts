@@ -8,10 +8,14 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { showStatusToast } from "../../utils/statusMessage";
 
-export const useExercises = (filters?: ExerciseFilters) => {
+export const useExercises = (
+  filters?: ExerciseFilters,
+  queryOptions?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: ["exercises", filters],
     queryFn: () => exercisesApi.getExercises(filters),
+    enabled: queryOptions?.enabled ?? true,
   });
 };
 

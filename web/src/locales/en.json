@@ -2824,7 +2824,8 @@
         },
         "validation": {
           "nameRequired": "Program name is required"
-        }
+        },
+        "error": "Failed to create program"
       },
       "details": {
         "start": "Start Program",
@@ -2864,7 +2865,8 @@
       "selector": {
         "title": "Select Exercise",
         "createCustom": "Custom",
-        "searchPlaceholder": "Search by name or muscle..."
+        "searchPlaceholder": "Search by name or muscle...",
+        "noMatchesUseCustom": "No library matches — \"{{name}}\" will be used as a custom exercise"
       },
       "form": {
         "name": "Exercise Name",

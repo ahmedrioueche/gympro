@@ -1,9 +1,10 @@
 import { type ProgramComment } from "@ahmedrioueche/gympro-client";
-import { Dumbbell, Save, Star, X } from "lucide-react";
+import { Dumbbell, Check, Star, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DayCard, ProgramDescription, ProgramForm } from ".";
 import BaseModal from "../../../../components/ui/BaseModal";
+import { AutoSaveIndicator } from "../../../../components/ui/AutoSaveIndicator";
 import { useModalStore } from "../../../../store/modal";
 import { useUserStore } from "../../../../store/user";
 import { useProgramEdit } from "../../../hooks/useProgramEdit";
@@ -32,19 +33,21 @@ const ProgramDetailsModal = ({}) => {
 
   const {
     editData,
-    setEditData,
+    patchEditData,
     updateProgram,
-    handleSave,
+    finishEditing,
     updateDayName,
     addExercise,
     updateExercise,
     removeExercise,
     reorderBlock,
     groupBlocks,
+    isAutoSaving,
+    showSavedIndicator,
   } = useProgramEdit(program, isEditMode, onProgramUpdated);
 
-  const handleSaveClick = () => {
-    handleSave();
+  const handleDoneClick = async () => {
+    await finishEditing();
     setIsEditMode(false);
   };
 
@@ -58,13 +61,23 @@ const ProgramDetailsModal = ({}) => {
 
   // Custom footer based on edit mode
   const renderFooter = () => (
-    <div className="flex gap-3">
+    <div className="flex flex-col gap-3 w-full">
+      {isEditMode && (
+        <div className="flex justify-center sm:justify-end">
+          <AutoSaveIndicator
+            isAutoSaving={isAutoSaving || updateProgram.isPending}
+            showSavedIndicator={showSavedIndicator}
+          />
+        </div>
+      )}
+
+      <div className="flex gap-3">
       {isEditMode ? (
         <>
           <button
             type="button"
             onClick={handleCancel}
-            disabled={updateProgram.isPending}
+            disabled={updateProgram.isPending || isAutoSaving}
             className="flex-1 px-6 py-3 rounded-xl font-semibold text-text-secondary bg-surface hover:bg-surface-secondary border-2 border-border hover:border-primary/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             <X className="w-5 h-5" />
@@ -72,19 +85,19 @@ const ProgramDetailsModal = ({}) => {
           </button>
           <button
             type="button"
-            onClick={handleSaveClick}
-            disabled={updateProgram.isPending}
+            onClick={() => void handleDoneClick()}
+            disabled={updateProgram.isPending || isAutoSaving}
             className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-300 shadow-sm hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            {updateProgram.isPending ? (
+            {updateProgram.isPending || isAutoSaving ? (
               <>
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 {t("common.saving")}
               </>
             ) : (
               <>
-                <Save className="w-5 h-5" />
-                {t("common.save")}
+                <Check className="w-5 h-5" />
+                {t("training.logSession.done")}
               </>
             )}
           </button>
@@ -114,6 +127,7 @@ const ProgramDetailsModal = ({}) => {
           </button>
         </>
       )}
+      </div>
     </div>
   );
 
@@ -131,7 +145,7 @@ const ProgramDetailsModal = ({}) => {
       icon={Dumbbell}
       isEditMode={isEditMode}
       editTitle={editData?.name}
-      onTitleChange={(name) => setEditData({ ...editData, name })}
+      onTitleChange={(name) => patchEditData({ name })}
       onEditClick={() => setIsEditMode(true)}
       showEditButton={
         program.creationType === "member" && program.createdBy === user?._id
@@ -144,7 +158,7 @@ const ProgramDetailsModal = ({}) => {
           isEditMode={isEditMode}
           editDescription={editData?.description}
           onDescriptionChange={(description) =>
-            setEditData({ ...editData, description })
+            patchEditData({ description })
           }
         />
 
@@ -155,14 +169,14 @@ const ProgramDetailsModal = ({}) => {
             daysPerWeek={editData?.daysPerWeek}
             durationWeeks={editData?.durationWeeks || 12}
             onExperienceChange={(experience) =>
-              setEditData({ ...editData, experience })
+              patchEditData({ experience })
             }
-            onPurposeChange={(purpose) => setEditData({ ...editData, purpose })}
+            onPurposeChange={(purpose) => patchEditData({ purpose })}
             onDaysPerWeekChange={(daysPerWeek) =>
-              setEditData({ ...editData, daysPerWeek })
+              patchEditData({ daysPerWeek })
             }
             onDurationWeeksChange={(durationWeeks) =>
-              setEditData({ ...editData, durationWeeks })
+              patchEditData({ durationWeeks })
             }
           />
         )}

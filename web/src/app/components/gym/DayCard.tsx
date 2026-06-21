@@ -3,13 +3,12 @@ import {
   type CreateProgramDayDto,
 } from "@ahmedrioueche/gympro-client";
 import { Calendar, Layers, Link as LinkIcon, Plus } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import InputField from "../../../components/ui/InputField";
 import { useUserStore } from "../../../store/user";
 import { ExerciseItem } from "../modals/program-details-modal/ExerciseItem";
 import { ExerciseForm } from "./ExerciseForm";
-import { ExerciseSelector } from "./ExerciseSelector";
 
 interface DayCardProps {
   day: CreateProgramDayDto;
@@ -49,28 +48,6 @@ export const DayCard = ({
   const [selectedBlocks, setSelectedBlocks] = useState<Set<number>>(new Set());
   const { user } = useUserStore();
   const defaultRestTime = user?.appSettings?.timer?.defaultRestTime ?? 90;
-
-  // Track previous block count to detect additions
-  const prevBlockCountRef = useRef(day.blocks.length);
-
-  useEffect(() => {
-    // If a block was added (count increased)
-    if (day.blocks.length > prevBlockCountRef.current) {
-      const lastIndex = day.blocks.length - 1;
-      const lastBlock = day.blocks[lastIndex];
-
-      // If it's a single block with one empty exercise (freshly added)
-      if (
-        lastBlock.type === "single" &&
-        lastBlock.exercises.length === 1 &&
-        !lastBlock.exercises[0].name
-      ) {
-        setActiveBlockIndex(lastIndex);
-        setShowExerciseSelector(true);
-      }
-    }
-    prevBlockCountRef.current = day.blocks.length;
-  }, [day.blocks]);
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -125,9 +102,6 @@ export const DayCard = ({
       setIsSelectionMode(true);
     }
   };
-
-  const [showExerciseSelector, setShowExerciseSelector] = useState(false);
-  const [activeBlockIndex, setActiveBlockIndex] = useState<number | null>(null);
 
   // Flatten exercises for view-only mode if needed, or iterate blocks
   // For view mode we just show exercises in order
@@ -308,103 +282,49 @@ export const DayCard = ({
 
                       return (
                         <div key={exIndex}>
-                          {showExerciseSelector &&
-                          activeBlockIndex === blockIndex &&
-                          !ex.name ? (
-                            <div className="animate-in fade-in zoom-in duration-300">
-                              <ExerciseSelector
-                                onSelect={(exercise) => {
-                                  const exerciseData = {
-                                    name: exercise.name,
-                                    description: exercise.description,
-                                    instructions: exercise.instructions,
-                                    recommendedSets:
-                                      exercise.recommendedSets || 3,
-                                    recommendedReps:
-                                      exercise.recommendedReps || 10,
-                                    targetMuscles: exercise.targetMuscles,
-                                    equipment: exercise.equipment,
-                                    videoUrl: exercise.videoUrl,
-                                    imageUrl: exercise.imageUrl,
-                                    difficulty: exercise.difficulty,
-                                    type: exercise.type,
-                                  };
-
-                                  Object.entries(exerciseData).forEach(
-                                    ([key, value]) => {
-                                      onExerciseUpdate(
-                                        blockIndex,
-                                        exIndex,
-                                        key as keyof CreateExerciseDto,
-                                        value,
-                                      );
-                                    },
-                                  );
-                                  setShowExerciseSelector(false);
-                                  setActiveBlockIndex(null);
-                                }}
-                                onCancel={() => {
-                                  setShowExerciseSelector(false);
-                                  setActiveBlockIndex(null);
-                                }}
-                              />
-                            </div>
-                          ) : (
-                            <ExerciseForm
-                              exercise={ex}
-                              exerciseIndex={globalIndex}
-                              isDragging={draggedIndex === blockIndex}
-                              isCollapsed={
-                                collapsedBlocks.has(blockIndex) ||
-                                isSelectionMode
-                              } // Auto-collapse in selection mode for cleaner view
-                              isSelectionMode={isSelectionMode}
-                              isSelected={isSelected}
-                              hideCommonFields={isSuperset} // Hide redundant fields
-                              onSelect={() => toggleSelection(blockIndex)}
-                              isLibraryOpen={
-                                showExerciseSelector &&
-                                activeBlockIndex === blockIndex
+                          <ExerciseForm
+                            exercise={ex}
+                            exerciseIndex={globalIndex}
+                            isDragging={draggedIndex === blockIndex}
+                            isCollapsed={
+                              collapsedBlocks.has(blockIndex) ||
+                              isSelectionMode
+                            }
+                            isSelectionMode={isSelectionMode}
+                            isSelected={isSelected}
+                            hideCommonFields={isSuperset}
+                            onSelect={() => toggleSelection(blockIndex)}
+                            onUpdate={(field, value) =>
+                              !isSelectionMode &&
+                              onExerciseUpdate(
+                                blockIndex,
+                                exIndex,
+                                field,
+                                value,
+                              )
+                            }
+                            onRemove={() =>
+                              onExerciseRemove(blockIndex, exIndex)
+                            }
+                            onAddNext={
+                              blockIndex === day.blocks.length - 1 &&
+                              exIndex === block.exercises.length - 1
+                                ? () => onAddExercise({})
+                                : undefined
+                            }
+                            onDragStart={() => handleDragStart(blockIndex)}
+                            onDragEnd={handleDragEnd}
+                            onDragOver={(targetIndex) => {
+                              if (
+                                draggedIndex !== null &&
+                                draggedIndex !== targetIndex
+                              ) {
+                                onBlockReorder(draggedIndex, targetIndex);
+                                setDraggedIndex(targetIndex);
                               }
-                              onUpdate={(field, value) =>
-                                !isSelectionMode &&
-                                onExerciseUpdate(
-                                  // Prevent updates in selection mode
-                                  blockIndex,
-                                  exIndex,
-                                  field,
-                                  value,
-                                )
-                              }
-                              onRemove={() =>
-                                onExerciseRemove(blockIndex, exIndex)
-                              }
-                              onAddNext={
-                                blockIndex === day.blocks.length - 1 &&
-                                exIndex === block.exercises.length - 1
-                                  ? () => onAddExercise({})
-                                  : undefined
-                              }
-                              onToggleLibrary={() => {
-                                setActiveBlockIndex(blockIndex);
-                                setShowExerciseSelector(true);
-                              }}
-                              onDragStart={() => handleDragStart(blockIndex)}
-                              onDragEnd={handleDragEnd}
-                              onDragOver={(targetIndex) => {
-                                if (
-                                  draggedIndex !== null &&
-                                  draggedIndex !== targetIndex
-                                ) {
-                                  onBlockReorder(draggedIndex, targetIndex);
-                                  setDraggedIndex(targetIndex);
-                                }
-                              }}
-                              onToggleCollapse={() =>
-                                toggleCollapse(blockIndex)
-                              }
-                            />
-                          )}
+                            }}
+                            onToggleCollapse={() => toggleCollapse(blockIndex)}
+                          />
                         </div>
                       );
                     })}
@@ -423,7 +343,7 @@ export const DayCard = ({
             />
           ))
         )}
-        {day.blocks.length === 0 && !showExerciseSelector && (
+        {day.blocks.length === 0 && (
           <p className="text-sm text-text-secondary text-center py-4">
             {t("training.programs.create.form.noExercises")}
           </p>

@@ -1,5 +1,6 @@
 import {
   type CreateExerciseDto,
+  type Exercise,
   MUSCLE_GROUPS,
   type MuscleGroup,
 } from "@ahmedrioueche/gympro-client";
@@ -8,7 +9,6 @@ import {
   GripVertical,
   Layers,
   Plus,
-  Search,
   Trash2,
   Video,
   X,
@@ -18,20 +18,19 @@ import CustomSelect from "../../../components/ui/CustomSelect";
 import InputField from "../../../components/ui/InputField";
 import { useUserStore } from "../../../store/user";
 import { useExerciseForm } from "../../hooks/useExerciseForm";
+import { ExerciseNameAutocomplete } from "./ExerciseNameAutocomplete";
 
 interface ExerciseFormProps {
   exercise: CreateExerciseDto;
   exerciseIndex: number;
   isDragging?: boolean;
   isCollapsed?: boolean;
-  isLibraryOpen?: boolean;
   isSelectionMode?: boolean;
   isSelected?: boolean;
   hideCommonFields?: boolean;
   onUpdate: (field: keyof CreateExerciseDto, value: any) => void;
   onRemove: () => void;
   onAddNext?: () => void;
-  onToggleLibrary?: () => void;
   onDragStart?: () => void;
   onDragEnd?: () => void;
   onDragOver?: (targetIndex: number) => void;
@@ -44,14 +43,12 @@ export const ExerciseForm = ({
   exerciseIndex,
   isDragging = false,
   isCollapsed = false,
-  isLibraryOpen = false,
   isSelectionMode = false,
   isSelected = false,
   hideCommonFields = false,
   onUpdate,
   onRemove,
   onAddNext,
-  onToggleLibrary,
   onDragStart,
   onDragEnd,
   onDragOver,
@@ -70,6 +67,26 @@ export const ExerciseForm = ({
     suggestions,
     muscleOptions,
   } = useExerciseForm({ exercise, onUpdate });
+
+  const applyLibraryExercise = (libraryExercise: Exercise) => {
+    const exerciseData: Partial<CreateExerciseDto> = {
+      name: libraryExercise.name,
+      description: libraryExercise.description,
+      instructions: libraryExercise.instructions,
+      recommendedSets: libraryExercise.recommendedSets || 3,
+      recommendedReps: libraryExercise.recommendedReps || 10,
+      targetMuscles: libraryExercise.targetMuscles,
+      equipment: libraryExercise.equipment,
+      videoUrl: libraryExercise.videoUrl,
+      imageUrl: libraryExercise.imageUrl,
+      difficulty: libraryExercise.difficulty,
+      type: libraryExercise.type,
+    };
+
+    Object.entries(exerciseData).forEach(([key, value]) => {
+      onUpdate(key as keyof CreateExerciseDto, value);
+    });
+  };
 
   return (
     <div
@@ -169,34 +186,15 @@ export const ExerciseForm = ({
           </div>
           {/* Row 1: Name and Muscle */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 flex gap-2">
-              {" "}
-              {/* Added flex-1 flex gap-2 */}
-              <div className="flex-1">
-                {" "}
-                {/* Wrapped InputField in flex-1 div */}
-                <InputField
-                  placeholder={t("training.programs.create.form.exerciseName")}
-                  value={exercise.name}
-                  onChange={(e) => onUpdate("name", e.target.value)}
-                  className="w-full"
-                  label={t("training.programs.create.form.exerciseName")}
-                />
-              </div>
-              {onToggleLibrary && (
-                <button
-                  type="button"
-                  onClick={onToggleLibrary}
-                  className={`h-[50px] w-[50px] mt-auto flex items-center justify-center rounded-xl transition-all flex-shrink-0 border ${
-                    isLibraryOpen
-                      ? "bg-primary text-white border-primary shadow-sm shadow-primary/20"
-                      : "bg-surface-secondary text-text-secondary border-border hover:border-primary/50 hover:text-primary"
-                  }`}
-                  title={t("training.programs.create.form.addFromLibrary")}
-                >
-                  <Search size={20} />
-                </button>
-              )}
+            <div className="flex-1">
+              <ExerciseNameAutocomplete
+                value={exercise.name}
+                onChange={(name) => onUpdate("name", name)}
+                onSelect={applyLibraryExercise}
+                label={t("training.programs.create.form.exerciseName")}
+                placeholder={t("training.exercises.selector.searchPlaceholder")}
+                autoFocus={!exercise.name}
+              />
             </div>
             <div className="w-full sm:w-[200px]">
               <CustomSelect
