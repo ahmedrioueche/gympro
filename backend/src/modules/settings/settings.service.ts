@@ -71,6 +71,7 @@ export class SettingsService {
         sound: 'beep',
         alarmDuration: 3,
       },
+      showActocoreWidget: true,
     };
   }
 

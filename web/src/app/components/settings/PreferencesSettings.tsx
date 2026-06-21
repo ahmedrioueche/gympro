@@ -5,6 +5,7 @@ import {
 import { Globe, Scale } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../components/ui/CustomSelect";
+import ActocoreWidgetToggle from "./ActocoreWidgetToggle";
 import SettingsTab from "./SettingsTab";
 
 interface LanguageOption {
@@ -26,6 +27,8 @@ interface PreferencesSettingsProps {
   onUpdate: (lang: AppLanguage) => void;
   weightUnit: "kg" | "lbs";
   setWeightUnit: (unit: "kg" | "lbs") => void;
+  showActocoreWidget: boolean;
+  setShowActocoreWidget: (show: boolean) => void;
   title?: string;
   description?: string;
 }
@@ -35,6 +38,8 @@ export default function PreferencesSettings({
   onUpdate,
   weightUnit,
   setWeightUnit,
+  showActocoreWidget,
+  setShowActocoreWidget,
   title,
   description,
 }: PreferencesSettingsProps) {
@@ -139,6 +144,11 @@ export default function PreferencesSettings({
             </div>
           </div>
         </div>
+
+        <ActocoreWidgetToggle
+          enabled={showActocoreWidget}
+          onChange={setShowActocoreWidget}
+        />
       </div>
     </SettingsTab>
   );

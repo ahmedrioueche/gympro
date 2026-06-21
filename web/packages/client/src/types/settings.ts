@@ -44,4 +44,6 @@ export interface AppSettings {
   notifications?: NotificationSettings;
   locale?: LocaleSettings;
   timer?: TimerSettings;
+  /** When false, hides the ActoCore assistant chat widget. Defaults to true. */
+  showActocoreWidget?: boolean;
 }

@@ -8,6 +8,10 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useUserStore } from "../../../../../../store/user";
+import {
+  getShowActocoreWidget,
+  withActocoreWidgetSetting,
+} from "../../../../../../utils/actocoreSettings";
 
 export type TabType = "general" | "notifications" | "security";
 
@@ -27,6 +31,7 @@ export function useManagerSettings() {
   const [timezone, setTimezone] = useState("UTC");
   const [region, setRegion] = useState("");
   const [regionName, setRegionName] = useState("");
+  const [showActocoreWidget, setShowActocoreWidget] = useState(true);
 
   // Load initial settings
   useEffect(() => {
@@ -40,25 +45,30 @@ export function useManagerSettings() {
       setTimezone(user.appSettings.locale?.timezone || "UTC");
       setRegion(user.appSettings.locale?.region || "");
       setRegionName(user.appSettings.locale?.regionName || "");
+      setShowActocoreWidget(getShowActocoreWidget(user.appSettings));
     }
   }, [user]);
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const updates = {
-        viewPreference,
-        notifications: {
-          defaultReminderMinutes: reminderMinutes,
+      const updates = withActocoreWidgetSetting(
+        {
+          ...user?.appSettings,
+          viewPreference,
+          notifications: {
+            defaultReminderMinutes: reminderMinutes,
+          },
+          locale: {
+            language,
+            currency,
+            timezone,
+            region,
+            regionName,
+          },
         },
-        locale: {
-          language,
-          currency,
-          timezone,
-          region,
-          regionName,
-        },
-      };
+        showActocoreWidget,
+      );
 
       const res = await settingsApi.updateSettings(updates);
       if (res.success) {
@@ -84,6 +94,7 @@ export function useManagerSettings() {
 
   const hasChanges =
     viewPreference !== (user?.appSettings?.viewPreference || "table") ||
+    showActocoreWidget !== getShowActocoreWidget(user?.appSettings) ||
     reminderMinutes !==
       (user?.appSettings?.notifications?.defaultReminderMinutes ?? 30) ||
     language !== (user?.appSettings?.locale?.language || "en") ||
@@ -108,5 +119,7 @@ export function useManagerSettings() {
     setTimezone,
     region,
     regionName,
+    showActocoreWidget,
+    setShowActocoreWidget,
   };
 }

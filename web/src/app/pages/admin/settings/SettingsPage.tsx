@@ -37,6 +37,8 @@ export default function SettingsPage() {
     setLanguage,
     weightUnit,
     setWeightUnit,
+    showActocoreWidget,
+    setShowActocoreWidget,
     // Security
     currentPassword,
     setCurrentPassword,
@@ -118,6 +120,8 @@ export default function SettingsPage() {
             onUpdate={setLanguage}
             weightUnit={weightUnit}
             setWeightUnit={setWeightUnit}
+            showActocoreWidget={showActocoreWidget}
+            setShowActocoreWidget={setShowActocoreWidget}
             title={t("extra.adminSettings.tabs.preferences", "Preferences")}
             description={t("extra.adminSettings.pageSubtitle")}
           />

@@ -11,6 +11,10 @@ import { useChangePassword } from "../../../../../hooks/queries/useAuth";
 import { useUpdateProfile } from "../../../../../hooks/queries/useUsers";
 import { useLanguageStore } from "../../../../../store/language";
 import { useUserStore } from "../../../../../store/user";
+import {
+  getShowActocoreWidget,
+  withActocoreWidgetSetting,
+} from "../../../../../utils/actocoreSettings";
 
 export type AdminSettingsTabType =
   | "profile"
@@ -44,6 +48,9 @@ export function useAdminSettings() {
   const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">(
     user?.appSettings?.locale?.weightUnit || "kg",
   );
+  const [showActocoreWidget, setShowActocoreWidget] = useState(
+    getShowActocoreWidget(user?.appSettings),
+  );
 
   // Security (Password) state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -60,7 +67,8 @@ export function useAdminSettings() {
 
   const hasPreferenceChanges =
     language !== (user?.appSettings?.locale?.language || "en") ||
-    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg");
+    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg") ||
+    showActocoreWidget !== getShowActocoreWidget(user?.appSettings);
 
   const hasSecurityChanges =
     currentPassword.length > 0 ||
@@ -135,13 +143,17 @@ export function useAdminSettings() {
 
   const savePreferences = async () => {
     try {
-      const updates = {
-        locale: {
-          ...user?.appSettings?.locale,
-          language,
-          weightUnit,
+      const updates = withActocoreWidgetSetting(
+        {
+          ...user?.appSettings,
+          locale: {
+            ...user?.appSettings?.locale,
+            language,
+            weightUnit,
+          },
         },
-      };
+        showActocoreWidget,
+      );
 
       const res = await settingsApi.updateSettings(updates);
       if (res.success) {
@@ -225,6 +237,8 @@ export function useAdminSettings() {
     setLanguage,
     weightUnit,
     setWeightUnit,
+    showActocoreWidget,
+    setShowActocoreWidget,
     // Security
     currentPassword,
     setCurrentPassword,

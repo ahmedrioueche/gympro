@@ -5040,7 +5040,13 @@
       "warningCountdown": "Warning Countdown",
       "warningCountdownDesc": "Play a warning sound before the timer ends",
       "warningAt": "Warning At (seconds)",
-      "warningSound": "Warning Sound"
+      "warningSound": "Warning Sound",
+      "actocore": {
+        "title": "AI Assistant",
+        "desc": "Control visibility of the ActoCore chat assistant",
+        "showWidget": "Show ActoCore widget",
+        "showWidgetDesc": "Display the floating chat assistant while using the app"
+      }
     },
     "specializations": {
       "all": "All Specializations",

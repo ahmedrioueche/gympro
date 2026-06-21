@@ -16,6 +16,7 @@ import Button from "../../../../../../components/ui/Button";
 import CustomSelect from "../../../../../../components/ui/CustomSelect";
 import { handleContactSupport } from "../../../../../../utils/contact";
 import SettingsTab from "../../../../../components/settings/SettingsTab";
+import ActocoreWidgetToggle from "../../../../../components/settings/ActocoreWidgetToggle";
 
 interface GeneralTabProps {
   viewPreference: ViewPreference;
@@ -27,6 +28,8 @@ interface GeneralTabProps {
   region: string | null;
   regionName: string | null;
   currency: string;
+  showActocoreWidget: boolean;
+  setShowActocoreWidget: (show: boolean) => void;
 }
 
 export default function GeneralTab({
@@ -39,6 +42,8 @@ export default function GeneralTab({
   region,
   regionName,
   currency,
+  showActocoreWidget,
+  setShowActocoreWidget,
 }: GeneralTabProps) {
   const { t } = useTranslation();
 
@@ -182,6 +187,11 @@ export default function GeneralTab({
           })}
         </div>
       </div>
+
+      <ActocoreWidgetToggle
+        enabled={showActocoreWidget}
+        onChange={setShowActocoreWidget}
+      />
     </SettingsTab>
   );
 }

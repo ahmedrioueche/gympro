@@ -4993,7 +4993,13 @@
       "warningCountdown": "العد التنازلي للتحذير",
       "warningCountdownDesc": "تشغيل صوت تحذير قبل انتهاء المؤقت",
       "warningAt": "التحذير عند (ثوانٍ)",
-      "warningSound": "صوت التحذير"
+      "warningSound": "صوت التحذير",
+      "actocore": {
+        "title": "المساعد الذكي",
+        "desc": "التحكم في ظهور مساعد الدردشة ActoCore",
+        "showWidget": "إظهار أداة ActoCore",
+        "showWidgetDesc": "عرض مساعد الدردشة العائم أثناء استخدام التطبيق"
+      }
     },
     "gymSettings": {
       "tabs": {

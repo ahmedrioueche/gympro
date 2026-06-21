@@ -17,6 +17,10 @@ import {
   getMessage,
   showStatusToast,
 } from "../../../../../../utils/statusMessage";
+import {
+  getShowActocoreWidget,
+  withActocoreWidgetSetting,
+} from "../../../../../../utils/actocoreSettings";
 
 export type MemberSettingsTabType =
   | "profile"
@@ -51,6 +55,9 @@ export function useMemberSettings() {
   );
   const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">(
     user?.appSettings?.locale?.weightUnit || "kg",
+  );
+  const [showActocoreWidget, setShowActocoreWidget] = useState(
+    getShowActocoreWidget(user?.appSettings),
   );
 
   // Training (Timer) state
@@ -168,7 +175,8 @@ export function useMemberSettings() {
 
   const hasPreferenceChanges =
     language !== (user?.appSettings?.locale?.language || "en") ||
-    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg");
+    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg") ||
+    showActocoreWidget !== getShowActocoreWidget(user?.appSettings);
 
   const hasTrainingChanges =
     JSON.stringify(timerSettings) !==
@@ -257,13 +265,17 @@ export function useMemberSettings() {
 
   const savePreferences = async () => {
     try {
-      const updates = {
-        locale: {
-          ...user?.appSettings?.locale,
-          language,
-          weightUnit,
+      const updates = withActocoreWidgetSetting(
+        {
+          ...user?.appSettings,
+          locale: {
+            ...user?.appSettings?.locale,
+            language,
+            weightUnit,
+          },
         },
-      };
+        showActocoreWidget,
+      );
 
       const res = await settingsApi.updateSettings(updates);
       if (res.success) {
@@ -375,6 +387,8 @@ export function useMemberSettings() {
     setLanguage,
     weightUnit,
     setWeightUnit,
+    showActocoreWidget,
+    setShowActocoreWidget,
     // Training
     timerSettings,
     setTimerSettings,

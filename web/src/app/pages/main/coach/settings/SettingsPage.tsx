@@ -67,6 +67,8 @@ export default function SettingsPage() {
     setLanguage,
     weightUnit,
     setWeightUnit,
+    showActocoreWidget,
+    setShowActocoreWidget,
   } = useCoachSettings();
 
   const tabs = [
@@ -168,6 +170,8 @@ export default function SettingsPage() {
             onUpdate={setLanguage}
             weightUnit={weightUnit}
             setWeightUnit={setWeightUnit}
+            showActocoreWidget={showActocoreWidget}
+            setShowActocoreWidget={setShowActocoreWidget}
             title={t("extra.coachSettings.tabs.preferences", "Preferences")}
             description={t("extra.coachSettings.pageSubtitle")}
           />

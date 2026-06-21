@@ -10,6 +10,10 @@ import { useTranslation } from "react-i18next";
 import { useUpdateProfile } from "../../../../../../hooks/queries/useUsers";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useUserStore } from "../../../../../../store/user";
+import {
+  getShowActocoreWidget,
+  withActocoreWidgetSetting,
+} from "../../../../../../utils/actocoreSettings";
 
 export type CoachSettingsTabType =
   | "profile"
@@ -29,6 +33,9 @@ export function useCoachSettings() {
   );
   const [weightUnit, setWeightUnit] = useState<"kg" | "lbs">(
     user?.appSettings?.locale?.weightUnit || "kg",
+  );
+  const [showActocoreWidget, setShowActocoreWidget] = useState(
+    getShowActocoreWidget(user?.appSettings),
   );
 
   const [activeTab, setActiveTab] = useState<CoachSettingsTabType>("profile");
@@ -76,7 +83,8 @@ export function useCoachSettings() {
 
   const hasPreferenceChanges =
     language !== (user?.appSettings?.locale?.language || "en") ||
-    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg");
+    weightUnit !== (user?.appSettings?.locale?.weightUnit || "kg") ||
+    showActocoreWidget !== getShowActocoreWidget(user?.appSettings);
 
   const hasCoachingChanges =
     bio !== (coachingInfo?.bio || "") ||
@@ -277,13 +285,17 @@ export function useCoachSettings() {
 
   const handleSavePreferences = async () => {
     try {
-      const updates = {
-        locale: {
-          ...user?.appSettings?.locale,
-          language,
-          weightUnit,
+      const updates = withActocoreWidgetSetting(
+        {
+          ...user?.appSettings,
+          locale: {
+            ...user?.appSettings?.locale,
+            language,
+            weightUnit,
+          },
         },
-      };
+        showActocoreWidget,
+      );
 
       const res = await settingsApi.updateSettings(updates);
       if (res.success) {
@@ -363,5 +375,7 @@ export function useCoachSettings() {
     setLanguage,
     weightUnit,
     setWeightUnit,
+    showActocoreWidget,
+    setShowActocoreWidget,
   };
 }

@@ -41,6 +41,8 @@ export default function SettingsPage() {
     setLanguage,
     weightUnit,
     setWeightUnit,
+    showActocoreWidget,
+    setShowActocoreWidget,
     // Training
     timerSettings,
     setTimerSettings,
@@ -138,6 +140,8 @@ export default function SettingsPage() {
             onUpdate={setLanguage}
             weightUnit={weightUnit}
             setWeightUnit={setWeightUnit}
+            showActocoreWidget={showActocoreWidget}
+            setShowActocoreWidget={setShowActocoreWidget}
           />
         )}
         {activeTab === "security" && (

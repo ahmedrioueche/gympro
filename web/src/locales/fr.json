@@ -4998,7 +4998,13 @@
       "warningCountdown": "Compte à rebours d'avertissement",
       "warningCountdownDesc": "Jouer un son d'avertissement avant la fin du minuteur",
       "warningAt": "Avertissement à (secondes)",
-      "warningSound": "Son d'avertissement"
+      "warningSound": "Son d'avertissement",
+      "actocore": {
+        "title": "Assistant IA",
+        "desc": "Contrôler la visibilité de l'assistant de chat ActoCore",
+        "showWidget": "Afficher le widget ActoCore",
+        "showWidgetDesc": "Afficher l'assistant de chat flottant pendant l'utilisation de l'application"
+      }
     },
     "gymSettings": {
       "tabs": {

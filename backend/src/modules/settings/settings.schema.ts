@@ -74,6 +74,9 @@ export class AppSettingsModel extends Document implements AppSettings {
 
   @Prop({ type: TimerSettingsModel, default: {} })
   timer?: TimerSettings;
+
+  @Prop({ default: true })
+  showActocoreWidget?: boolean;
 }
 
 export const AppSettingsSchema = SchemaFactory.createForClass(AppSettingsModel);

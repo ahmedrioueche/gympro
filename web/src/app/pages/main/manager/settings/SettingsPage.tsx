@@ -26,6 +26,8 @@ export default function SettingsPage() {
     region,
     regionName,
     currency,
+    showActocoreWidget,
+    setShowActocoreWidget,
   } = useManagerSettings();
 
   const tabs = [
@@ -80,6 +82,8 @@ export default function SettingsPage() {
             region={region}
             regionName={regionName}
             currency={currency}
+            showActocoreWidget={showActocoreWidget}
+            setShowActocoreWidget={setShowActocoreWidget}
           />
         )}
 

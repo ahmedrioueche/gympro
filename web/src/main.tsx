@@ -4,7 +4,7 @@ import { RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";
-import ActoCore from "./app/components/actocore/ActoCore.tsx";
+import ActoCoreGate from "./app/components/actocore/ActoCoreGate.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import { PaddleProvider } from "./context/PaddleContext.tsx";
 import { SocketProvider } from "./context/SocketContext.tsx";
@@ -36,7 +36,7 @@ createRoot(document.getElementById("root")!).render(
             <SocketProvider>
               <Toaster position={"top-right"} />
               <RouterProvider router={router} />
-              <ActoCore />
+              <ActoCoreGate />
             </SocketProvider>
           </PaddleProvider>
         </ThemeProvider>
