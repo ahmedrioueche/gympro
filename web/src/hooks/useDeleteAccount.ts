@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../store/modal";
+import { useModalLayer } from "./useModalLayer";
 import { useUserStore } from "../store/user";
 import type { TranslationType } from "../types/common";
 import { getMessage } from "../utils/statusMessage";
@@ -88,7 +89,7 @@ function resolveThrownError(
 
 export const useDeleteAccount = () => {
   const { t } = useTranslation();
-  const { currentModal, closeModal } = useModalStore();
+  const { closeModal } = useModalStore();
   const { user, clearUser } = useUserStore();
   const [state, setState] = useState<DeleteAccountModalState>({
     step: "confirmation",
@@ -98,7 +99,7 @@ export const useDeleteAccount = () => {
     error: null,
   });
 
-  const isOpen = currentModal === "delete_account";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("delete_account");
 
   useEffect(() => {
     if (!isOpen) {
@@ -256,5 +257,6 @@ export const useDeleteAccount = () => {
     handleOtpSubmit,
     primaryButtonLabel,
     handlePrimaryClick,
+    zIndex,
   };
 };

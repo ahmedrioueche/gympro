@@ -2,6 +2,7 @@ import type { User } from "@ahmedrioueche/gympro-client";
 import { CreditCard, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../../store/modal";
+import { useModalLayer } from "../../../../../hooks/useModalLayer";
 import {
   CustomizableProfileTemplateModal,
   type ProfileModalAction,
@@ -10,9 +11,9 @@ import { MemberSubscriptionsTable } from "../member-profile-modal/MemberSubscrip
 
 export default function UserProfileModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, userProfileProps } = useModalStore();
+  const { closeModal, userProfileProps } = useModalStore();
 
-  const isOpen = currentModal === "user_profile";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("user_profile");
   const user = userProfileProps?.user as User | undefined;
 
   if (!isOpen || !user) return null;
@@ -112,6 +113,7 @@ export default function UserProfileModal() {
   return (
     <CustomizableProfileTemplateModal
       isOpen={isOpen}
+      zIndex={zIndex}
       onClose={closeModal}
       user={user}
       isLoading={false}

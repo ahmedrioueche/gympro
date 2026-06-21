@@ -14,10 +14,12 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import InputField from "../../../../components/ui/InputField";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 
 const AccessManagementModal: React.FC = () => {
   const { t } = useTranslation();
-  const { currentModal, closeModal, accessManagementProps } = useModalStore();
+  const { closeModal, accessManagementProps } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("access_management");
 
   const [rfidId, setRfidId] = useState(
     accessManagementProps?.initialAccessData?.rfidId || "",
@@ -48,7 +50,7 @@ const AccessManagementModal: React.FC = () => {
     }
   }, [accessManagementProps?.membershipId]);
 
-  if (currentModal !== "access_management" || !accessManagementProps)
+  if (!isOpen || !accessManagementProps)
     return null;
 
   const { gymId, membershipId, memberName, onSuccess } = accessManagementProps;
@@ -104,6 +106,7 @@ const AccessManagementModal: React.FC = () => {
   return (
     <BaseModal
       isOpen={true}
+      zIndex={zIndex}
       onClose={closeModal}
       title={t("access.management.title")}
       subtitle={memberName}

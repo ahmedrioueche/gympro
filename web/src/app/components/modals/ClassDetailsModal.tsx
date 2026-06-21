@@ -17,14 +17,14 @@ import {
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 import { useUserStore } from "../../../store/user";
 import { capitalize, cn } from "../../../utils/helper";
 import { MinimalCoachCard } from "../ui/MinimalCoachCard";
 
 export default function ClassDetailsModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, classDetailsProps, openModal } =
-    useModalStore();
+  const { closeModal, classDetailsProps, openModal } = useModalStore();
   const { activeDashboard } = useUserStore();
   const isMemberView = activeDashboard === "member";
   const {
@@ -45,7 +45,7 @@ export default function ClassDetailsModal() {
     isPassed?: boolean;
   }) || {};
 
-  const isOpen = currentModal === "class_details";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("class_details");
 
   if (!gymClass) return null;
 
@@ -97,7 +97,7 @@ export default function ClassDetailsModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={gymClass.name}
       subtitle={capitalize(gymClass.service || "")}

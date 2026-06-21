@@ -9,15 +9,16 @@ import { useCoachClients } from "../../../../hooks/queries/useCoaches";
 import { useGym } from "../../../../hooks/queries/useGyms";
 import { useCreateSession } from "../../../../hooks/queries/useSessions";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 
 export const useCreateSessionModal = () => {
   const { t } = useTranslation();
-  const { currentModal, createSessionProps, closeModal } = useModalStore();
+  const { createSessionProps, closeModal } = useModalStore();
 
   const createSession = useCreateSession();
 
-  const isOpen = currentModal === "create_session";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("create_session");
   const { data: clientsData } = useCoachClients(isOpen);
   const clients = clientsData?.data || [];
 
@@ -114,5 +115,6 @@ export const useCreateSessionModal = () => {
     facilities,
     gymId,
     isPending: createSession.isPending,
+    zIndex,
   };
 };

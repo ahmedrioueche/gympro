@@ -11,6 +11,7 @@ import { useGymSubscriptionOptions } from "../../../../hooks/useGymSubscriptionO
 import { useGymStore } from "../../../../store/gym";
 import { useLanguageStore } from "../../../../store/language";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { DateDisplay } from "./DateDisplay";
 import { useRenewForm } from "./useRenewForm";
 import { useRenewSubscription } from "./useRenewSubscription";
@@ -19,7 +20,8 @@ export function RenewSubscriptionModal() {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
   const { language } = useLanguageStore();
-  const { currentModal, renewSubscriptionProps, closeModal } = useModalStore();
+  const { renewSubscriptionProps, closeModal } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("renew_subscription");
 
   const { formData, handleChange, isExtending, calculatedEndDate } =
     useRenewForm();
@@ -55,7 +57,7 @@ export function RenewSubscriptionModal() {
   const totalPrice = calculateTotalPrice();
 
   // Guard clause
-  if (currentModal !== "renew_subscription" || !renewSubscriptionProps) {
+  if (!isOpen || !renewSubscriptionProps) {
     return null;
   }
 
@@ -75,6 +77,7 @@ export function RenewSubscriptionModal() {
   return (
     <BaseModal
       isOpen={true}
+      zIndex={zIndex}
       onClose={closeModal}
       title={
         isExtending

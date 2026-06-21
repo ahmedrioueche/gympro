@@ -19,14 +19,15 @@ import BaseModal from "../../../components/ui/BaseModal";
 import { useGymSubscriptionTypes } from "../../../hooks/queries/useGymSubscriptionTypes";
 import { useLanguageStore } from "../../../store/language";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 import { cn, formatDuration } from "../../../utils/helper";
 
 export function GymDetailsModal() {
   const { t } = useTranslation();
   const { language } = useLanguageStore();
-  const { currentModal, closeModal, gymDetailsProps } = useModalStore();
+  const { closeModal, gymDetailsProps } = useModalStore();
 
-  const isOpen = currentModal === "gym_details";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("gym_details");
   const gym = gymDetailsProps?.gym;
 
   const { data: plans = [], isLoading: isLoadingPlans } =
@@ -42,7 +43,7 @@ export function GymDetailsModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={gym.name}
       subtitle={

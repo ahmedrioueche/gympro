@@ -33,6 +33,7 @@ interface CustomizableProfileTemplateModalProps {
   closeLabel?: string;
   /** Whether to show contact info. If not provided, defaults to manager/coach/self check */
   showContactInfo?: boolean;
+  zIndex?: number;
 }
 
 export function CustomizableProfileTemplateModal({
@@ -46,6 +47,7 @@ export function CustomizableProfileTemplateModal({
   isLoading,
   closeLabel,
   showContactInfo,
+  zIndex,
 }: CustomizableProfileTemplateModalProps) {
   const { t } = useTranslation();
   const { user: currentUser, activeDashboard } = useUserStore();
@@ -75,6 +77,7 @@ export function CustomizableProfileTemplateModal({
   return (
     <BaseModal
       isOpen={isOpen}
+      zIndex={zIndex}
       onClose={onClose}
       title={
         title || user?.profile?.fullName || t("memberProfile.unknownMember")

@@ -8,6 +8,7 @@ import { useFeaturePackageForm } from "./useFeaturePackageForm";
 
 export default function FeaturePackageModal() {
   const {
+    
     isOpen,
     isEdit,
     pkg,
@@ -23,13 +24,15 @@ export default function FeaturePackageModal() {
     takenFeaturesMap,
     closeModal,
     t,
+  
+    zIndex,
   } = useFeaturePackageForm();
 
   if (!isOpen) return null;
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       icon={Plus}
       title={

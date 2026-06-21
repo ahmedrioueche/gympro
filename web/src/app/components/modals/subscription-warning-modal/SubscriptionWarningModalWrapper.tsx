@@ -1,12 +1,12 @@
 import { useSubscriptionBlockerQuery } from "../../../../hooks/queries/useSubscriptionBlocker";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import SubscriptionWarningModal from "./SubscriptionWarningModal";
 
 export default function SubscriptionWarningModalWrapper() {
-  const { currentModal, closeModal, subscriptionWarningProps } =
-    useModalStore();
+  const { closeModal, subscriptionWarningProps } = useModalStore();
 
-  const isOpen = currentModal === "subscription_warning";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("subscription_warning");
 
   // If config was explicitly passed via openModal payload, use it
   // Otherwise resolve it directly from the local environment queries
@@ -16,5 +16,5 @@ export default function SubscriptionWarningModalWrapper() {
 
   if (!isOpen || !config) return null;
 
-  return <SubscriptionWarningModal config={config} onDismiss={closeModal} />;
+  return <SubscriptionWarningModal config={config} onDismiss={closeModal} zIndex={zIndex} />;
 }

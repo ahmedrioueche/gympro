@@ -3,11 +3,13 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import { useManageSubscriptionType } from "../../../../../../../hooks/useGymSubscriptionTypes";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 import { PricingForm } from "./PricingForm";
 
 export const PricingModal = () => {
   const { t } = useTranslation();
-  const { currentModal, pricingProps, closeModal } = useModalStore();
+  const { pricingProps, closeModal } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("pricing");
   const {
     createSubscriptionType,
     updateSubscriptionType,
@@ -15,7 +17,7 @@ export const PricingModal = () => {
     isUpdating,
   } = useManageSubscriptionType();
 
-  if (currentModal !== "pricing" || !pricingProps) return null;
+  if (!isOpen || !pricingProps) return null;
 
   const { mode, plan, onSuccess } = pricingProps;
   const isEdit = mode === "edit" && !!plan;
@@ -37,7 +39,7 @@ export const PricingModal = () => {
 
   return (
     <BaseModal
-      isOpen={currentModal === "pricing"}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={isEdit ? t("pricing.editPlan") : t("pricing.addPlan")}
       subtitle={

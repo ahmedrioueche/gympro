@@ -2,6 +2,7 @@ import { AlertTriangle, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 import { handleContactSupport } from "../../../../../../../utils/contact";
 import { ContactStep } from "./components/ContactStep";
 import { ReasonStep } from "./components/ReasonStep";
@@ -9,7 +10,7 @@ import { useCancelSubscription } from "./hooks/useCancelSubscription";
 
 function CancelSubscriptionModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, cancelSubscriptionProps } = useModalStore();
+  const { closeModal, cancelSubscriptionProps } = useModalStore();
 
   const {
     step,
@@ -25,7 +26,7 @@ function CancelSubscriptionModal() {
     isError,
   } = useCancelSubscription(closeModal);
 
-  const isOpen = currentModal === "cancel_subscription";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("cancel_subscription");
 
   const primaryButton =
     step === "contact"
@@ -65,7 +66,7 @@ function CancelSubscriptionModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={handleClose}
       title={
         step === "contact"

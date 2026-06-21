@@ -5,6 +5,7 @@ import { useCreateSessionModal } from "./useCreateSessionModal";
 
 export const CreateSessionModal = () => {
   const {
+    
     t,
     isOpen,
     sessionData,
@@ -15,13 +16,15 @@ export const CreateSessionModal = () => {
     facilities,
     gymId,
     isPending,
+  
+    zIndex,
   } = useCreateSessionModal();
 
   if (!isOpen) return null;
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={handleClose}
       title={t("schedule.createSession")}
       subtitle={t("schedule.createSessionSubtitle")}

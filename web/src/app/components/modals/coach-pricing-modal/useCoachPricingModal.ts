@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import {
   useCoachPricing,
   useCreatePricing,
@@ -17,8 +18,8 @@ import {
 
 export function useCoachPricingModal() {
   const { t } = useTranslation();
-  const { currentModal, coachPricingProps, closeModal } = useModalStore();
-  const isOpen = currentModal === "coach_pricing";
+  const { coachPricingProps, closeModal } = useModalStore();
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("coach_pricing");
   const pricingId = coachPricingProps?.pricingId;
   const isEditMode = !!pricingId;
 
@@ -128,5 +129,6 @@ export function useCoachPricingModal() {
       durationUnits: durationUnitOptions,
       currencies: currencyOptions,
     },
+    zIndex,
   };
 }

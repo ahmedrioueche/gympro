@@ -7,6 +7,7 @@ import { useRequestCoachAccess } from "./useRequestCoachAccess";
 
 export default function RequestCoachAccessModal() {
   const {
+    
     isOpen,
     certificationDetails,
     setCertificationDetails,
@@ -24,11 +25,13 @@ export default function RequestCoachAccessModal() {
     handleDescriptionChange,
     handleSubmit,
     t,
+  
+    zIndex,
   } = useRequestCoachAccess();
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       icon={Key}
       title={t("dashboard.requestCoachAccess", "Request Coach Access")}

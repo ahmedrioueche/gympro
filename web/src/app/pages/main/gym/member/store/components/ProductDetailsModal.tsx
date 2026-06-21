@@ -8,14 +8,15 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 
 export default function ProductDetailsModal() {
   const { t } = useTranslation();
-  const { currentModal, productDetailsProps, closeModal } = useModalStore();
+  const { productDetailsProps, closeModal } = useModalStore();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
 
-  const isOpen = currentModal === "product-details";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("product-details");
   const product = productDetailsProps?.product;
 
   if (!isOpen || !product) return null;
@@ -33,7 +34,7 @@ export default function ProductDetailsModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       icon={ShoppingBag}
       title={product.name}

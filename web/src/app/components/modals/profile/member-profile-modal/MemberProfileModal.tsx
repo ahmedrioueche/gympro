@@ -14,6 +14,7 @@ export default function MemberProfileModal() {
   const { t } = useTranslation();
 
   const {
+    
     isOpen,
     isLoading,
     user,
@@ -25,6 +26,8 @@ export default function MemberProfileModal() {
     handleManageAccess,
     handleClose,
     hasMembership,
+  
+    zIndex,
   } = useMemberProfileModal();
 
   if (!isOpen) return null;
@@ -67,6 +70,7 @@ export default function MemberProfileModal() {
   return (
     <CustomizableProfileTemplateModal
       isOpen={isOpen}
+      zIndex={zIndex}
       onClose={handleClose}
       user={user}
       isLoading={isLoading}

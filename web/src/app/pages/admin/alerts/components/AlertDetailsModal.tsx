@@ -6,13 +6,15 @@ import BaseModal from "../../../../../components/ui/BaseModal";
 import CustomSelect from "../../../../../components/ui/CustomSelect";
 import { useAlerts } from "../../../../../hooks/queries/useAlerts";
 import { useModalStore } from "../../../../../store/modal";
+import { useModalLayer } from "../../../../../hooks/useModalLayer";
 
 export default function AlertDetailsModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, alertProps } = useModalStore();
+  const { closeModal, alertProps } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("alert_details");
   const { updateStatus, isUpdating } = useAlerts();
 
-  if (currentModal !== "alert_details" || !alertProps?.alert) {
+  if (!isOpen || !alertProps?.alert) {
     return null;
   }
 
@@ -37,6 +39,7 @@ export default function AlertDetailsModal() {
   return (
     <BaseModal
       isOpen={true}
+      zIndex={zIndex}
       onClose={closeModal}
       title={t("admin.alerts.modals.details_title")}
       icon={AlertCircle}

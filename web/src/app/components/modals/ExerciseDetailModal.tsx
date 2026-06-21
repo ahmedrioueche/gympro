@@ -11,11 +11,13 @@ import {
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 import { getEmbedUrl } from "../../../utils/helper";
 
 export default function ExerciseDetailModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, exerciseModalProps } = useModalStore();
+  const { closeModal, exerciseModalProps } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("exercise_detail");
 
   const embedUrl = getEmbedUrl(exerciseModalProps?.exercise.videoUrl);
 
@@ -25,7 +27,7 @@ export default function ExerciseDetailModal() {
 
   return (
     <BaseModal
-      isOpen={currentModal === "exercise_detail"}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={exercise.name}
       icon={Dumbbell}

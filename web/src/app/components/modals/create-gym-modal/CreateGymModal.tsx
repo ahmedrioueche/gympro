@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useCreateGym, useMyGyms } from "../../../../hooks/queries/useGyms";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { useUserStore } from "../../../../store/user";
 import StepBasicInfo from "./StepBasicInfo";
 import StepContact from "./StepContact";
@@ -12,8 +13,8 @@ import StepLocation from "./StepLocation";
 
 export const CreateGymModal = () => {
   const { t } = useTranslation();
-  const { currentModal, closeModal } = useModalStore();
-  const isOpen = currentModal === "create_gym";
+  const { closeModal } = useModalStore();
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("create_gym");
 
   const createGymMutation = useCreateGym();
   const { user } = useUserStore();
@@ -124,7 +125,7 @@ export const CreateGymModal = () => {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={handleClose}
       title={t("create_gym.title")}
       subtitle={steps[step - 1].description}

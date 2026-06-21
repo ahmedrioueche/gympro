@@ -7,6 +7,7 @@ import { useAssignProgram } from "./useAssignProgram";
 export default function AssignProgramModal() {
   const { t } = useTranslation();
   const {
+    
     programs,
     isProgramsLoading,
     selectedProgramId,
@@ -16,11 +17,13 @@ export default function AssignProgramModal() {
     closeModal,
     isOpen,
     currentProgramId,
+  
+    zIndex,
   } = useAssignProgram();
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("coach.clients.assignProgram.title")}
       icon={Dumbbell}

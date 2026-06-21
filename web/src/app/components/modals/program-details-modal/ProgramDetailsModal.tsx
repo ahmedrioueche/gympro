@@ -6,18 +6,19 @@ import { DayCard, ProgramDescription, ProgramForm } from ".";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { AutoSaveIndicator } from "../../../../components/ui/AutoSaveIndicator";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { useUserStore } from "../../../../store/user";
 import { useProgramEdit } from "../../../hooks/useProgramEdit";
 import AddReviewForm from "./AddReviewForm";
 import ReviewList from "./ReviewList";
 
 const ProgramDetailsModal = ({}) => {
-  const { currentModal, programDetailsProps, closeModal } = useModalStore();
+  const { programDetailsProps, closeModal } = useModalStore();
   const { user } = useUserStore();
   const { t } = useTranslation();
   const { openModal } = useModalStore();
   const [isEditMode, setIsEditMode] = useState(false);
-  const isOpen = currentModal === "program_details";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("program_details");
   const program = programDetailsProps?.program;
   const onProgramUpdated = programDetailsProps?.onProgramUpdated;
   const onUse = programDetailsProps?.onUse;
@@ -133,7 +134,7 @@ const ProgramDetailsModal = ({}) => {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={program.name}
       subtitle={`${program.experience} • ${t(

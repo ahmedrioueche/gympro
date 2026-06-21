@@ -6,14 +6,15 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 
 export default function CoachingOfferModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, coachingOfferProps } = useModalStore();
+  const { closeModal, coachingOfferProps } = useModalStore();
   const queryClient = useQueryClient();
   const [response, setResponse] = useState("");
 
-  const isOpen = currentModal === "coaching_offer";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("coaching_offer");
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (action: "accept" | "decline") => {
@@ -47,7 +48,7 @@ export default function CoachingOfferModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("coaching.offer.title")}
       icon={User}

@@ -14,11 +14,13 @@ import InputField from "../../../../../components/ui/InputField";
 import { useAdminBanners } from "../../../../../hooks/queries/useBanners";
 import { useAI } from "../../../../../hooks/useAI";
 import { useModalStore } from "../../../../../store/modal";
+import { useModalLayer } from "../../../../../hooks/useModalLayer";
 import { parseAiResponse } from "../../../../../utils/helper";
 
 export default function BannerFormModal() {
   const { t, i18n } = useTranslation();
-  const { currentModal, bannerFormProps, closeModal } = useModalStore();
+  const { bannerFormProps, closeModal } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("banner_form");
   const { createBanner, updateBanner, isCreating, isUpdating } =
     useAdminBanners();
   const { mutate: getAiResponse, isPending: isTranslating } = useAI();
@@ -41,7 +43,7 @@ export default function BannerFormModal() {
   const [previewMode, setPreviewMode] = useState(false);
 
   useEffect(() => {
-    if (currentModal === "banner_form" && bannerFormProps?.banner) {
+    if (isOpen && bannerFormProps?.banner) {
       const { banner } = bannerFormProps;
       setFormData({
         translations: banner.translations || defaultTranslations,
@@ -53,7 +55,7 @@ export default function BannerFormModal() {
         isActive: banner.isActive ?? true,
         templateKey: banner.templateKey,
       });
-    } else if (currentModal === "banner_form") {
+    } else if (isOpen) {
       setFormData({
         translations: defaultTranslations,
         variant: "info",
@@ -64,7 +66,7 @@ export default function BannerFormModal() {
         isActive: true,
       });
     }
-  }, [currentModal, bannerFormProps]);
+  }, [isOpen, bannerFormProps]);
 
   const handleTranslate = () => {
     const enText = formData.translations?.en;
@@ -102,11 +104,12 @@ export default function BannerFormModal() {
     }
   };
 
-  if (currentModal !== "banner_form") return null;
+  if (!isOpen) return null;
 
   return (
     <BaseModal
       isOpen={true}
+      zIndex={zIndex}
       onClose={closeModal}
       title={
         bannerFormProps?.banner

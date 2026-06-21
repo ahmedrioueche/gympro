@@ -2,12 +2,14 @@ import { AlertTriangle, CheckCircle, Info, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../store/modal";
+import { useModalLayer } from "../hooks/useModalLayer";
 import { cn } from "../utils/helper";
 import InputField from "./ui/InputField";
 
 export default function ConfirmModal() {
   const { t } = useTranslation();
-  const { currentModal, confirmModalProps, closeModal } = useModalStore();
+  const { confirmModalProps, closeModal } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("confirm");
   const [inputValue, setInputValue] = useState("");
 
   const title = confirmModalProps?.title || t("confirm.default.title");
@@ -15,10 +17,10 @@ export default function ConfirmModal() {
   const verificationText = confirmModalProps?.verificationText;
 
   useEffect(() => {
-    if (currentModal === "confirm") {
+    if (isOpen) {
       setInputValue("");
     }
-  }, [currentModal]);
+  }, [isOpen]);
 
   const confirmVariant = confirmModalProps?.confirmVariant || "primary";
 
@@ -32,7 +34,7 @@ export default function ConfirmModal() {
     closeModal();
   };
 
-  if (currentModal !== "confirm") {
+  if (!isOpen) {
     return null;
   }
 
@@ -65,7 +67,7 @@ export default function ConfirmModal() {
   return (
     <div
       onClick={handleCancel}
-      className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/70 backdrop-blur-md  flex items-center justify-center p-4 animate-in fade-in duration-200" style={{ zIndex }}
     >
       <div
         onClick={(e) => e.stopPropagation()}

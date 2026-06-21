@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../hooks/useModalLayer";
 
 const initialPlanState: CreateAppPlanDto = {
   planId: "",
@@ -39,10 +40,10 @@ const initialPlanState: CreateAppPlanDto = {
 export function useEditPlanForm() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { currentModal, closeModal, editAppPlanProps } = useModalStore();
+  const { closeModal, editAppPlanProps } = useModalStore();
   const [formData, setFormData] = useState<CreateAppPlanDto>(initialPlanState);
 
-  const isOpen = currentModal === "edit_app_plan";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("edit_app_plan");
   const plan = editAppPlanProps?.plan;
   const isEdit = !!plan;
 
@@ -168,7 +169,8 @@ export function useEditPlanForm() {
       return {
         ...prev,
         publicFeaturePackages: newPublic,
-      };
+    zIndex,
+  };
     });
   };
 

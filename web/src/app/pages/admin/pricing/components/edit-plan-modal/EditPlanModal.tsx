@@ -8,6 +8,7 @@ import { useEditPlanForm } from "./useEditPlanForm";
 
 export default function EditPlanModal() {
   const {
+    
     isOpen,
     isEdit,
     closeModal,
@@ -22,13 +23,15 @@ export default function EditPlanModal() {
     togglePackage,
     togglePackageVisibility,
     t,
+  
+    zIndex,
   } = useEditPlanForm();
 
   if (!isOpen) return null;
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       icon={Edit}
       title={

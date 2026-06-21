@@ -7,18 +7,18 @@ import {
   useUpdateSession,
 } from "../../../../hooks/queries/useSessions";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { useUserStore } from "../../../../store/user";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 
 export const useSessionDetails = () => {
   const { t } = useTranslation();
-  const { currentModal, sessionDetailsProps, closeModal, openModal } =
-    useModalStore();
+  const { sessionDetailsProps, closeModal, openModal } = useModalStore();
   const { activeDashboard } = useUserStore();
   const updateSession = useUpdateSession();
   const deleteSession = useDeleteSession();
 
-  const isOpen = currentModal === "session_details";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("session_details");
   const session = sessionDetailsProps?.session;
   const isMemberView = activeDashboard === "member";
 
@@ -124,5 +124,6 @@ export const useSessionDetails = () => {
     closeModal,
     isUpdating: updateSession.isPending,
     isMemberView,
+    zIndex,
   };
 };

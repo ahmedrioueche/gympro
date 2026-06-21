@@ -4,12 +4,13 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { getMessage, showStatusToast } from "../../../../utils/statusMessage";
 
 export function useAssignProgram() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, openModal, assignProgramProps } =
-    useModalStore();
+  const { closeModal, openModal, assignProgramProps } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("assign_program");
   const queryClient = useQueryClient();
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(
     null,
@@ -17,7 +18,7 @@ export function useAssignProgram() {
 
   // Initialize selectedProgramId when modal opens
   if (
-    currentModal === "assign_program" &&
+    isOpen &&
     assignProgramProps?.currentProgramId &&
     selectedProgramId === null
   ) {
@@ -30,7 +31,7 @@ export function useAssignProgram() {
       const response = await trainingApi.getPrograms();
       return response.data;
     },
-    enabled: currentModal === "assign_program",
+    enabled: isOpen,
   });
 
   const assignProgramMutation = useMutation({
@@ -96,10 +97,11 @@ export function useAssignProgram() {
     handleAssign,
     isAssigning: assignProgramMutation.isPending,
     closeModal,
-    isOpen: currentModal === "assign_program",
+    isOpen: isOpen,
     // showConfirm,
     // setShowConfirm,
     executeAssignment,
     currentProgramId: assignProgramProps?.currentProgramId,
+    zIndex,
   };
 }

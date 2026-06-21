@@ -9,14 +9,14 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../hooks/useModalLayer";
 
 export function useFeaturePackageForm() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { currentModal, featurePackageProps, closeModal, openModal } =
-    useModalStore();
+  const { featurePackageProps, closeModal, openModal } = useModalStore();
 
-  const isOpen = currentModal === "feature_package";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("feature_package");
   const pkg = featurePackageProps?.pkg;
   const isEdit = !!pkg;
 
@@ -219,5 +219,6 @@ export function useFeaturePackageForm() {
     takenFeaturesMap,
     closeModal,
     t,
+    zIndex,
   };
 }

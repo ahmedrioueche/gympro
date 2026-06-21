@@ -13,15 +13,15 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useCompetitionParticipants } from "../../../../hooks/queries/useCompetitions";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { useUserStore } from "../../../../store/user";
 
 export default function CompetitionDetailsModal() {
   const { t } = useTranslation();
   const { user: currentUser } = useUserStore();
-  const { currentModal, competitionDetailsProps, closeModal, openModal } =
-    useModalStore();
+  const { competitionDetailsProps, closeModal, openModal } = useModalStore();
 
-  const isOpen = currentModal === "competition-details";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("competition-details");
   const competition = competitionDetailsProps?.competition;
 
   const {
@@ -55,7 +55,7 @@ export default function CompetitionDetailsModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={competition.title}
       subtitle={t(`competitions.status.${competition.status}`)}

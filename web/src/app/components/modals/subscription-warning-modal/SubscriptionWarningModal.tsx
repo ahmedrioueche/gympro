@@ -9,9 +9,10 @@ import { useSubscriptionWarning } from "./useSubscriptionWarning";
 interface Props {
   config: BlockerModalConfig;
   onDismiss: () => void;
+  zIndex?: number;
 }
 
-export default function SubscriptionWarningModal({ config, onDismiss }: Props) {
+export default function SubscriptionWarningModal({ config, onDismiss, zIndex }: Props) {
   const { t } = useTranslation();
   const {
     timeRemaining,
@@ -26,6 +27,7 @@ export default function SubscriptionWarningModal({ config, onDismiss }: Props) {
   return (
     <BaseModal
       isOpen={true}
+      zIndex={zIndex}
       onClose={onDismiss}
       title={t(config.titleKey)}
       subtitle={t("subscription.blocker.action_required", "Action Required")}

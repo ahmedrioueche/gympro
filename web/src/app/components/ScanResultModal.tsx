@@ -3,22 +3,24 @@ import { Ban, ShieldCheck, X } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../store/modal";
+import { useModalLayer } from "../../hooks/useModalLayer";
 import { cn } from "../../utils/helper";
 
 export const ScanResultModal: React.FC = () => {
   const { t } = useTranslation();
-  const { currentModal, scanResultProps, closeModal } = useModalStore();
+  const { scanResultProps, closeModal } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("scan_result");
   const result = scanResultProps?.result;
 
   if (
-    currentModal !== "scan_result" ||
+    !isOpen ||
     !result ||
     result.status === "verifying"
   )
     return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md animate-in fade-in duration-300">
+    <div className="fixed inset-0 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md animate-in fade-in duration-300" style={{ zIndex }}>
       <div
         className={cn(
           "w-full max-w-md bg-zinc-900 border-2 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in zoom-in-95 slide-in-from-bottom-10 duration-500",

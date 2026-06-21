@@ -19,11 +19,12 @@ import {
   useUpdateInventoryItem,
 } from "../../../../../../../hooks/queries/useInventory";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 
 export default function InventoryItemModal() {
   const { t } = useTranslation();
-  const { currentModal, inventoryItemProps, closeModal } = useModalStore();
-  const isOpen = currentModal === "inventory_item";
+  const { inventoryItemProps, closeModal } = useModalStore();
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("inventory_item");
   const { gymId, item, onSuccess } = inventoryItemProps || {};
   const isEdit = !!item;
 
@@ -179,7 +180,7 @@ export default function InventoryItemModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={
         isEdit

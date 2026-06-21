@@ -23,6 +23,7 @@ export default function ReportDetailsModal() {
   const { openModal } = useModalStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const {
+    
     isOpen,
     report,
     message,
@@ -42,6 +43,8 @@ export default function ReportDetailsModal() {
     getStatusColor,
     getPriorityColor,
     getSenderInfo,
+  
+    zIndex,
   } = useReportDetailsModal();
 
   if (!isOpen || !report) {
@@ -54,6 +57,7 @@ export default function ReportDetailsModal() {
   return (
     <BaseModal
       isOpen={true}
+      zIndex={zIndex}
       icon={FileText}
       onClose={closeModal}
       title={report.subject}

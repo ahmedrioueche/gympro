@@ -1,13 +1,13 @@
 import type { CoachClient } from "@ahmedrioueche/gympro-client";
 import { useModalStore } from "../../../../../store/modal";
+import { useModalLayer } from "../../../../../hooks/useModalLayer";
 import { useActiveClients } from "../../../../pages/main/coach/clients/hooks/useActiveClients";
 
 export function useClientProfileModal() {
-  const { currentModal, clientProfileProps, closeModal, openModal } =
-    useModalStore();
+  const { clientProfileProps, closeModal, openModal } = useModalStore();
   const { clientId } = clientProfileProps || {};
 
-  const isOpen = currentModal === "client_profile";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("client_profile");
 
   // Only fetch when modal is open
   const { data: clients, isLoading } = useActiveClients(isOpen);
@@ -57,5 +57,6 @@ export function useClientProfileModal() {
     mockUser: clientData,
     handleAssignProgram,
     handleClose,
+    zIndex,
   };
 }

@@ -2,14 +2,15 @@ import { Save, UserCircle, UserPlus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../components/ui/BaseModal";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { extractCountryCodeAndNumber } from "../../../../utils/phone.util";
 import StaffFormFields from "./StaffFormFields";
 import { useStaffForm } from "./useStaffForm";
 
 export default function StaffModal() {
-  const { currentModal, staffModalProps, closeModal } = useModalStore();
+  const { staffModalProps, closeModal } = useModalStore();
 
-  const isOpen = currentModal === "staff_modal";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("staff_modal");
 
   if (!isOpen || !staffModalProps) return null;
 
@@ -23,6 +24,7 @@ export default function StaffModal() {
       staff={staff}
       onSuccess={onSuccess}
       onClose={closeModal}
+      zIndex={zIndex}
     />
   );
 }
@@ -40,6 +42,7 @@ interface StaffModalContentProps {
   };
   onSuccess?: () => void;
   onClose: () => void;
+  zIndex: number;
 }
 
 function StaffModalContent({
@@ -48,6 +51,7 @@ function StaffModalContent({
   staff,
   onSuccess,
   onClose,
+  zIndex,
 }: StaffModalContentProps) {
   const { t } = useTranslation();
 
@@ -80,6 +84,7 @@ function StaffModalContent({
   return (
     <BaseModal
       isOpen
+      zIndex={zIndex}
       onClose={onClose}
       icon={UserCircle}
       title={title}

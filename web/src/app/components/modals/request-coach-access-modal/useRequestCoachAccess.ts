@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { useUserStore } from "../../../../store/user";
 import { getMessage } from "../../../../utils/statusMessage";
 
@@ -16,8 +17,8 @@ export interface DocumentItem {
 
 export function useRequestCoachAccess() {
   const { t } = useTranslation();
-  const { currentModal, closeModal } = useModalStore();
-  const isOpen = currentModal === "request_coach_access";
+  const { closeModal } = useModalStore();
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("request_coach_access");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [certificationDetails, setCertificationDetails] = useState("");
@@ -173,5 +174,6 @@ export function useRequestCoachAccess() {
     handleDescriptionChange,
     handleSubmit,
     t,
+    zIndex,
   };
 }

@@ -13,6 +13,7 @@ export default function CoachProfileModal() {
   const { openModal, coachProfileProps } = useModalStore();
 
   const {
+    
     isOpen,
     isLoading,
     coach,
@@ -27,6 +28,8 @@ export default function CoachProfileModal() {
     handleInviteToGym,
     handleClose,
     onRemove,
+  
+    zIndex,
   } = useCoachProfileModal();
 
   if (!isOpen) return null;
@@ -114,6 +117,7 @@ export default function CoachProfileModal() {
   return (
     <CustomizableProfileTemplateModal
       isOpen={isOpen}
+      zIndex={zIndex}
       onClose={handleClose}
       user={mockUser as any}
       isLoading={isLoading}

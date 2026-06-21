@@ -8,6 +8,7 @@ import { useDeleteAccount } from "../../../../hooks/useDeleteAccount";
 export function DeleteAccountModal() {
   const { t } = useTranslation();
   const {
+    
     isOpen,
     state,
     user,
@@ -17,11 +18,13 @@ export function DeleteAccountModal() {
     handleConfirmationSubmit,
     primaryButtonLabel,
     handlePrimaryClick,
+  
+    zIndex,
   } = useDeleteAccount();
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("delete_account.title", "Delete Account")}
       icon={AlertTriangle}

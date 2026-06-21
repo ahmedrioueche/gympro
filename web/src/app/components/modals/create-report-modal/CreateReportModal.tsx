@@ -15,11 +15,12 @@ import CustomSelect from "../../../../components/ui/CustomSelect";
 import InputField from "../../../../components/ui/InputField";
 import TextArea from "../../../../components/ui/TextArea";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { useCreateReportForm } from "./useCreateReportForm";
 
 const CreateReportModal = () => {
   const { t } = useTranslation();
-  const { currentModal } = useModalStore();
+  const {  } = useModalStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -43,7 +44,7 @@ const CreateReportModal = () => {
     ACCEPT_TYPES,
   } = useCreateReportForm();
 
-  const isOpen = currentModal === "create-report";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("create-report");
 
   const typeOptions = [
     { value: ReportType.ISSUE, label: t("support.types.issue") },
@@ -66,7 +67,7 @@ const CreateReportModal = () => {
       subtitle={t("support.modal.subtitle")}
       onClose={handleClose}
       icon={MessageSquarePlus}
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       primaryButton={{
         label: isPending
           ? t("support.modal.submitting")

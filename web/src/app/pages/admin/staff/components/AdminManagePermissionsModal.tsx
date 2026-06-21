@@ -7,12 +7,13 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../components/ui/BaseModal";
 import InputField from "../../../../../components/ui/InputField";
 import { useModalStore } from "../../../../../store/modal";
+import { useModalLayer } from "../../../../../hooks/useModalLayer";
 
 export const AdminManagePermissionsModal = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { currentModal, adminManagePermissionsProps, closeModal } =
-    useModalStore();
+  const { adminManagePermissionsProps, closeModal } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("admin_manage_permissions");
   const editor = adminManagePermissionsProps?.editor;
 
   const [permissions, setPermissions] = useState<any[]>([]);
@@ -66,7 +67,7 @@ export const AdminManagePermissionsModal = () => {
 
   return (
     <BaseModal
-      isOpen={currentModal === "admin_manage_permissions"}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("admin.staff.modals.permissions_title")}
       subtitle={t("admin.staff.modals.permissions_subtitle", {

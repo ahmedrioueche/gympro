@@ -6,14 +6,15 @@ import { useTranslation } from "react-i18next";
 import BaseModal from "../../../components/ui/BaseModal";
 import { useGym } from "../../../hooks/queries/useGyms";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 import GymCard from "../gym/gym-card/GymCard";
 
 export default function GymInvitationModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, gymInvitationProps } = useModalStore();
+  const { closeModal, gymInvitationProps } = useModalStore();
   const queryClient = useQueryClient();
 
-  const isOpen = currentModal === "gym_invitation";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("gym_invitation");
 
   // Fetch gym details if gymId is available
   const { data: gym, isLoading: isLoadingGym } = useGym(
@@ -58,7 +59,7 @@ export default function GymInvitationModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("notifications.invitationTitle")}
       icon={MessageSquare}

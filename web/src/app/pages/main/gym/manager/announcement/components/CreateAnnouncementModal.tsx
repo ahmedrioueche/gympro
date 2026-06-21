@@ -7,11 +7,12 @@ import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
 import TextArea from "../../../../../../../components/ui/TextArea";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 import { useAnnouncements } from "../hooks/useAnnouncements";
 
 export default function CreateAnnouncementModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, createAnnouncementProps } = useModalStore();
+  const { closeModal, createAnnouncementProps } = useModalStore();
   const { createAnnouncement, isCreating } = useAnnouncements();
 
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ export default function CreateAnnouncementModal() {
     isActive: true,
   });
 
-  const isOpen = currentModal === "create_announcement";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("create_announcement");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +47,7 @@ export default function CreateAnnouncementModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("announcements.createTitle", "Create Announcement")}
       subtitle={t(

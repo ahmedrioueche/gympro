@@ -9,14 +9,15 @@ import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import { useCompetitionParticipants } from "../../../../../../../hooks/queries/useCompetitions";
 import { useGymStore } from "../../../../../../../store/gym";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 
 export default function SetWinnersModal() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { currentGym } = useGymStore();
-  const { currentModal, setWinnersProps, closeModal } = useModalStore();
+  const { setWinnersProps, closeModal } = useModalStore();
 
-  const isOpen = currentModal === "set-winners";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("set-winners");
   const competition = setWinnersProps?.competition;
 
   const { data: participants = [], isLoading: isLoadingParticipants } =
@@ -114,7 +115,7 @@ export default function SetWinnersModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("competitions.winners.setWinners")}
       subtitle={competition.title}

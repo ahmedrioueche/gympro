@@ -14,15 +14,22 @@ import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
 import TextArea from "../../../../../../../components/ui/TextArea";
 import { useModalStore } from "../../../../../../../store/modal";
+import { getModalZIndex } from "../../../../../../../hooks/useModalLayer";
 import { useCreateProduct, useUpdateProduct } from "../hooks/useStore";
 
 export default function ProductModal() {
   const { t } = useTranslation();
-  const { currentModal, productProps, closeModal } = useModalStore();
+  const { productProps, closeModal, isModalOpen, getStackIndex } =
+    useModalStore();
 
   const isOpen =
-    currentModal === "create-product" || currentModal === "edit-product";
-  const isEdit = currentModal === "edit-product";
+    isModalOpen("create-product") || isModalOpen("edit-product");
+  const isEdit = isModalOpen("edit-product");
+  const stackIndex = Math.max(
+    getStackIndex("create-product"),
+    getStackIndex("edit-product"),
+  );
+  const zIndex = getModalZIndex(stackIndex);
   const { product, gymId, onSuccess } = productProps || {};
 
   const [uploading, setUploading] = useState(false);
@@ -142,6 +149,7 @@ export default function ProductModal() {
   return (
     <BaseModal
       isOpen={isOpen}
+      zIndex={zIndex}
       onClose={closeModal}
       icon={Plus}
       title={isEdit ? t("store.editProduct") : t("store.addProduct")}

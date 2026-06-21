@@ -5,18 +5,19 @@ import BaseModal from "../../../components/ui/BaseModal";
 import InputField from "../../../components/ui/InputField";
 import TextArea from "../../../components/ui/TextArea";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 import { useGymServices } from "../../pages/main/gym/manager/pricing/hooks/useGymServices";
 
 export default function ServiceModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, serviceProps } = useModalStore();
+  const { closeModal, serviceProps } = useModalStore();
   const { mode, service: editingService } = serviceProps || {};
   const { saveService, isUpdating } = useGymServices();
 
   const [serviceName, setServiceName] = useState("");
   const [description, setDescription] = useState("");
 
-  const isOpen = currentModal === "service";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("service");
   const isEdit = mode === "edit";
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function ServiceModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={
         isEdit

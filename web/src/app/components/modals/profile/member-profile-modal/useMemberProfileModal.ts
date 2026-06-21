@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { useGymStore } from "../../../../../store/gym";
 import { useModalStore } from "../../../../../store/modal";
+import { useModalLayer } from "../../../../../hooks/useModalLayer";
 import { useMemberProfile } from "./useProfileMember";
 
 export function useMemberProfileModal() {
-  const { currentModal, memberProfileProps, closeModal, openModal } =
-    useModalStore();
+  const { memberProfileProps, closeModal, openModal } = useModalStore();
   const { currentGym } = useGymStore();
   const { t } = useTranslation();
 
@@ -18,7 +18,7 @@ export function useMemberProfileModal() {
     memberId,
   );
 
-  const isOpen = currentModal === "member_profile";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("member_profile");
 
   // Extract data from MemberProfileView
   const user = memberProfile?.user;
@@ -71,5 +71,6 @@ export function useMemberProfileModal() {
     handleManageAccess,
     handleClose,
     hasMembership: !!membershipId && !!memberProfile?.membership,
+    zIndex,
   };
 }

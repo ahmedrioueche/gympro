@@ -9,6 +9,7 @@ import {
   useLogSession,
 } from "../../../../../../../hooks/queries/useTraining";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 import { SessionBlock } from "./SessionBlock";
 import { SessionProgressFooter } from "./SessionProgressFooter";
 import { useSessionForm } from "./useSessionForm";
@@ -19,11 +20,13 @@ const LogSessionModalContent = ({
   initialSession,
   mode,
   closeModal,
+  zIndex,
 }: {
   activeHistory: any;
   initialSession: any;
   mode: "new" | "edit";
   closeModal: () => void;
+  zIndex: number;
 }) => {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
@@ -168,6 +171,7 @@ const LogSessionModalContent = ({
     <>
       <BaseModal
         isOpen={!celebration}
+        zIndex={zIndex}
         onClose={closeModal}      title={t("training.logSession.title")}
       subtitle={`${program.name} - ${form.selectedDayName}`}
       icon={Dumbbell}
@@ -290,8 +294,8 @@ const LogSessionModalContent = ({
   );
 };
 export const LogSessionModal = () => {
-  const { currentModal, logSessionProps, closeModal } = useModalStore();
-  const isOpen = currentModal === "log_session";
+  const { logSessionProps, closeModal } = useModalStore();
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("log_session");
 
   if (!isOpen || !logSessionProps?.activeHistory) return null;
 
@@ -303,6 +307,7 @@ export const LogSessionModal = () => {
       initialSession={initialSession}
       mode={mode || "new"}
       closeModal={closeModal}
+      zIndex={zIndex}
     />
   );
 };

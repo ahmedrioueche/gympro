@@ -7,6 +7,7 @@ import { useCoachPricingModal } from "./useCoachPricingModal";
 export default function CoachPricingModal() {
   const { t } = useTranslation();
   const {
+    
     isOpen,
     isEditMode,
     formData,
@@ -15,13 +16,15 @@ export default function CoachPricingModal() {
     closeModal,
     isLoading,
     options,
+  
+    zIndex,
   } = useCoachPricingModal();
 
   if (!isOpen) return null;
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={
         isEditMode

@@ -4,10 +4,12 @@ import { useTranslation } from "react-i18next";
 import useCurrency from "../../../../../../hooks/useCurrency";
 import { useLanguageStore } from "../../../../../../store/language";
 import { useModalStore } from "../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../hooks/useModalLayer";
 
 export default function UpgradePreviewModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, upgradePreviewProps } = useModalStore();
+  const { closeModal, upgradePreviewProps } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("upgrade_preview");
   const { language } = useLanguageStore();
   const currency = useCurrency();
 
@@ -19,12 +21,12 @@ export default function UpgradePreviewModal() {
     upgradePreviewProps?.previewData?.update_summary?.charge?.total ||
     immediateTotal;
 
-  if (currentModal !== "upgrade_preview") return null;
+  if (!isOpen) return null;
 
   return (
     <div
       onClick={closeModal}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm  flex items-center justify-center p-4" style={{ zIndex }}
     >
       <div
         onClick={(e) => e.stopPropagation()}

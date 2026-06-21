@@ -24,12 +24,12 @@ import {
 import { useGymCoaches } from "../../../../../../../hooks/queries/useGymCoach";
 import { useGymStore } from "../../../../../../../store/gym";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 import { capitalize, cn } from "../../../../../../../utils/helper";
 
 export default function GymClassModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, openModal, gymClassProps } =
-    useModalStore();
+  const { closeModal, openModal, gymClassProps } = useModalStore();
   const { gymId, gymClass, onSuccess } = gymClassProps || {};
 
   const { mutateAsync: createClass, isPending: isCreating } =
@@ -61,7 +61,7 @@ export default function GymClassModal() {
     equipment: [] as { itemId: string; quantity: number }[],
   });
 
-  const isOpen = currentModal === "gym_class";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("gym_class");
   const isEdit = !!gymClass;
 
   useEffect(() => {
@@ -198,7 +198,7 @@ export default function GymClassModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={
         isEdit

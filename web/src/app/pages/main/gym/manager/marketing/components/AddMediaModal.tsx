@@ -22,13 +22,14 @@ import TextArea from "../../../../../../../components/ui/TextArea";
 import { useMarketing } from "../../../../../../../hooks/queries/useMarketing";
 import { useFileUpload } from "../../../../../../../hooks/useFileUpload";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 
 export default function AddMediaModal() {
   const { t } = useTranslation();
-  const { currentModal, gymMediaProps, closeModal } = useModalStore();
+  const { gymMediaProps, closeModal } = useModalStore();
   const { gymId, type: fixedType, onSuccess } = gymMediaProps || {};
 
-  const isOpen = currentModal === "add-gym-media";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("add-gym-media");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
@@ -143,7 +144,7 @@ export default function AddMediaModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       icon={Plus}
       title={

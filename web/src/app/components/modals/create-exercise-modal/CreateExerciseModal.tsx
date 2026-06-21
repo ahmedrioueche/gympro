@@ -8,6 +8,7 @@ import { useCreateExerciseForm } from "./useCreateExerciseForm";
 export const CreateExerciseModal = () => {
   const { t } = useTranslation();
   const {
+    
     isOpen,
     exerciseToEdit,
     formData,
@@ -20,11 +21,13 @@ export const CreateExerciseModal = () => {
     removeEquipment,
     updateField,
     setFormData,
+  
+    zIndex,
   } = useCreateExerciseForm();
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={
         exerciseToEdit

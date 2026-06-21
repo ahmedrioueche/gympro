@@ -5,6 +5,7 @@ import {
   useUpdateExercise,
 } from "../../../../hooks/queries/useExercises";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 
 const INITIAL_DATA: CreateExerciseDto = {
   name: "",
@@ -23,9 +24,9 @@ const INITIAL_DATA: CreateExerciseDto = {
 };
 
 export function useCreateExerciseForm() {
-  const { currentModal, createExerciseProps, closeModal } = useModalStore();
+  const { createExerciseProps, closeModal } = useModalStore();
 
-  const isOpen = currentModal === "create_exercise";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("create_exercise");
   const exerciseToEdit = createExerciseProps?.exerciseToEdit;
 
   const [formData, setFormData] = useState<CreateExerciseDto>(INITIAL_DATA);
@@ -109,5 +110,6 @@ export function useCreateExerciseForm() {
     removeEquipment,
     updateField,
     setFormData,
+    zIndex,
   };
 }

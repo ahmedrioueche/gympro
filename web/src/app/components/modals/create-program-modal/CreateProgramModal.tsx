@@ -4,12 +4,13 @@ import BaseModal from "../../../../components/ui/BaseModal";
 import { AutoSaveIndicator } from "../../../../components/ui/AutoSaveIndicator";
 import { useLanguageStore } from "../../../../store/language";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { useProgramCreate } from "../../../hooks/useProgramCreate";
 import { DayCard } from "../../gym/DayCard";
 import { BasicInfoForm } from "./BasicInfoForm";
 
 export const CreateProgramModal = ({}) => {
-  const { currentModal, closeModal } = useModalStore();
+  const { closeModal } = useModalStore();
   const { t } = useTranslation();
   const {
     step,
@@ -29,7 +30,7 @@ export const CreateProgramModal = ({}) => {
     updateField,
     updateDaysPerWeek,
   } = useProgramCreate(closeModal);
-  const isOpen = currentModal === "create_program";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("create_program");
   const { isRtl } = useLanguageStore();
 
   const renderFooter = () => (
@@ -99,7 +100,7 @@ export const CreateProgramModal = ({}) => {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={
         step === 1

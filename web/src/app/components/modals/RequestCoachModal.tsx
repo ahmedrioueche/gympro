@@ -5,14 +5,15 @@ import BaseModal from "../../../components/ui/BaseModal";
 import TextArea from "../../../components/ui/TextArea";
 import { useRequestCoach } from "../../../hooks/mutations/useRequestCoach";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 import { getNameInitials } from "../../../utils/helper";
 
 export default function RequestCoachModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, requestCoachProps } = useModalStore();
+  const { closeModal, requestCoachProps } = useModalStore();
   const [message, setMessage] = useState("");
   const requestCoachMutation = useRequestCoach();
-  const isOpen = currentModal === "request_coach";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("request_coach");
   const coach = requestCoachProps?.coach;
 
   const handleSubmit = async () => {
@@ -38,7 +39,7 @@ export default function RequestCoachModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={handleClose}
       title={t("coaches.requestModal.title", { coachName: displayName })}
       subtitle={t("coaches.requestModal.send")}

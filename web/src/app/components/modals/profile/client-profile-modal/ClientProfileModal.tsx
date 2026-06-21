@@ -11,12 +11,15 @@ export default function ClientProfileModal() {
   const { t } = useTranslation();
 
   const {
+    
     isOpen,
     isLoading,
     client,
     mockUser,
     handleAssignProgram,
     handleClose,
+  
+    zIndex,
   } = useClientProfileModal();
 
   if (!isOpen) return null;
@@ -42,6 +45,7 @@ export default function ClientProfileModal() {
   return (
     <CustomizableProfileTemplateModal
       isOpen={isOpen}
+      zIndex={zIndex}
       onClose={handleClose}
       user={mockUser as any}
       isLoading={isLoading}

@@ -7,6 +7,7 @@ import BaseModal from "../../../components/ui/BaseModal";
 import CustomSelect from "../../../components/ui/CustomSelect";
 import InputField from "../../../components/ui/InputField";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 import { useUserStore } from "../../../store/user";
 import { getMessage, showStatusToast } from "../../../utils/statusMessage";
 import { usePhoneFeatures } from "../../../hooks/usePhoneFeatures";
@@ -14,7 +15,8 @@ import { usePhoneFeatures } from "../../../hooks/usePhoneFeatures";
 function EditUserProfileModal() {
   const { t } = useTranslation();
   const { isPhoneEnabled } = usePhoneFeatures();
-  const { currentModal, closeModal } = useModalStore();
+  const { closeModal } = useModalStore();
+  const { isOpen, zIndex } = useModalLayer("edit_user_profile");
   const { user, updateProfile } = useUserStore();
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -46,7 +48,7 @@ function EditUserProfileModal() {
     targetValue: "",
   });
 
-  if (currentModal !== "edit_user_profile") return null;
+  if (!isOpen) return null;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -193,7 +195,7 @@ function EditUserProfileModal() {
 
   return (
     <BaseModal
-      isOpen={currentModal === "edit_user_profile"}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       isEditMode={isEditMode}
       title={

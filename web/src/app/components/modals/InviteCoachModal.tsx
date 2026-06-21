@@ -15,17 +15,17 @@ import {
   useInviteCoach,
 } from "../../../hooks/queries/useGymCoach";
 import { useModalStore } from "../../../store/modal";
+import { useModalLayer } from "../../../hooks/useModalLayer";
 import { getMessage, showStatusToast } from "../../../utils/statusMessage";
 import { MinimalCoachCard } from "../ui/MinimalCoachCard";
 
 export default function InviteCoachModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, openModal, inviteCoachProps } =
-    useModalStore();
+  const { closeModal, openModal, inviteCoachProps } = useModalStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [invitingCoachId, setInvitingCoachId] = useState<string | null>(null);
 
-  const isOpen = currentModal === "invite_coach";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("invite_coach");
   const { data: coaches = [], isLoading } = useNearbyCoaches({}, isOpen);
   const { data: affiliations = [] } = useGymCoaches(inviteCoachProps?.gymId);
   const inviteCoach = useInviteCoach();
@@ -82,7 +82,7 @@ export default function InviteCoachModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("coaching.inviteCoach")}
       icon={UserCheck}

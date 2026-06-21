@@ -22,6 +22,7 @@ import { useSessionDetails } from "./useSessionDetails";
 export const SessionDetailsModal = () => {
   const { t } = useTranslation();
   const {
+    
     isOpen,
     session,
     notes,
@@ -33,6 +34,8 @@ export const SessionDetailsModal = () => {
     closeModal,
     isUpdating,
     isMemberView,
+  
+    zIndex,
   } = useSessionDetails();
 
   if (!isOpen || !session) return null;
@@ -51,7 +54,7 @@ export const SessionDetailsModal = () => {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("schedule.sessionDetails")}
       subtitle={currentStatus ? t(`schedule.status.${currentStatus}`) : ""}

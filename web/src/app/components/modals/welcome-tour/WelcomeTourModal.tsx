@@ -21,6 +21,7 @@ export interface WelcomeTourModalProps extends StoreProps {
   onComplete: () => void;
   steps: TourStep[];
   isSubmitting?: boolean;
+  zIndex?: number;
 }
 
 const WelcomeTourModal: React.FC<WelcomeTourModalProps> = ({
@@ -29,6 +30,7 @@ const WelcomeTourModal: React.FC<WelcomeTourModalProps> = ({
   onComplete,
   steps,
   isSubmitting = false,
+  zIndex,
 }) => {
   const { t } = useTranslation();
   const { isRtl } = useLanguageStore();
@@ -173,6 +175,7 @@ const WelcomeTourModal: React.FC<WelcomeTourModalProps> = ({
   return (
     <BaseModal
       isOpen={isOpen}
+      zIndex={zIndex}
       onClose={onClose}
       title={t("welcomeTour.title")}
       maxWidth="max-w-5xl"

@@ -54,6 +54,7 @@ interface BaseModalProps {
   // Display options
   hideCloseButton?: boolean;
   noPadding?: boolean;
+  zIndex?: number;
 }
 
 const BaseModal: React.FC<BaseModalProps> = ({
@@ -79,6 +80,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   maxWidth = "max-w-3xl",
   hideCloseButton = false,
   noPadding = false,
+  zIndex = 50,
 }) => {
   const { t } = useTranslation();
 
@@ -151,7 +153,8 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-end md:items-center justify-center p-0 md:p-4"
+      className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-end md:items-center justify-center p-0 md:p-4"
+      style={{ zIndex }}
       onClick={hideCloseButton ? undefined : onClose}
     >
       <div

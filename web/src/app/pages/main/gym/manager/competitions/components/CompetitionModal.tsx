@@ -18,11 +18,12 @@ import {
   useUpdateCompetition,
 } from "../../../../../../../hooks/queries/useCompetitions";
 import { useModalStore } from "../../../../../../../store/modal";
+import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 
 export default function CompetitionModal() {
   const { t } = useTranslation();
-  const { currentModal, competitionProps, closeModal } = useModalStore();
-  const isOpen = currentModal === "competition";
+  const { competitionProps, closeModal } = useModalStore();
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("competition");
   const { gymId, competition, onSuccess } = competitionProps || {};
   const isEdit = !!competition;
 
@@ -159,7 +160,7 @@ export default function CompetitionModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={
         isEdit

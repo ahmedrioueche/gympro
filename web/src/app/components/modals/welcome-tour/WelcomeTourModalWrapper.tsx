@@ -1,15 +1,16 @@
 import { useTranslation } from "react-i18next";
 import { useWelcomeTour } from "../../../../hooks/useWelcomeTour";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import WelcomeTourModal from "./WelcomeTourModal";
 import { getTourSteps } from "./tourData";
 
 export default function WelcomeTourModalWrapper() {
-  const { currentModal, welcomeTourProps, closeModal } = useModalStore();
+  const { welcomeTourProps, closeModal } = useModalStore();
   const { t } = useTranslation();
   const { isSubmitting, handleComplete } = useWelcomeTour();
 
-  const isOpen = currentModal === "welcome_tour";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("welcome_tour");
 
   if (!isOpen) return null;
 
@@ -31,6 +32,7 @@ export default function WelcomeTourModalWrapper() {
   return (
     <WelcomeTourModal
       isOpen={isOpen}
+      zIndex={zIndex}
       onClose={onSkip}
       onComplete={onFinish}
       steps={steps}

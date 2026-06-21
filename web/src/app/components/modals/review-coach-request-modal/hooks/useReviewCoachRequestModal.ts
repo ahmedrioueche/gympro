@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useRespondToAffiliation } from "../../../../../hooks/queries/useGymCoach";
 import { useModalStore } from "../../../../../store/modal";
+import { useModalLayer } from "../../../../../hooks/useModalLayer";
 import { useManageCoachRequest } from "../../../../pages/admin/coaching/hooks/useManageCoachRequest";
 
 export function useReviewCoachRequestModal() {
   const { t } = useTranslation();
-  const { currentModal, closeModal, reviewCoachRequestProps } = useModalStore();
-  const isOpen = currentModal === "admin_review_coach_request";
+  const { closeModal, reviewCoachRequestProps } = useModalStore();
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("admin_review_coach_request");
   const { request, affiliationId, gymId } = reviewCoachRequestProps || {};
 
   // Admin flow hooks
@@ -115,5 +116,6 @@ export function useReviewCoachRequestModal() {
     getDocumentLabel,
     isManagerFlow,
     isPending,
+    zIndex,
   };
 }

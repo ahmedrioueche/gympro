@@ -1,12 +1,12 @@
 import { useGymCoaches } from "../../../../../hooks/queries/useGymCoach";
 import { useGymStore } from "../../../../../store/gym";
 import { useModalStore } from "../../../../../store/modal";
+import { useModalLayer } from "../../../../../hooks/useModalLayer";
 import { useUserStore } from "../../../../../store/user";
 import { useCoachProfile } from "./useCoachProfile";
 
 export function useCoachProfileModal() {
-  const { currentModal, coachProfileProps, closeModal, openModal } =
-    useModalStore();
+  const { coachProfileProps, closeModal, openModal } = useModalStore();
   const { activeDashboard, user } = useUserStore();
   const { currentGym } = useGymStore();
 
@@ -18,7 +18,7 @@ export function useCoachProfileModal() {
   const coach = coachFromProps || fetchedCoach;
   const isLoading = coachFromProps ? false : isFetching;
 
-  const isOpen = currentModal === "coach_profile";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("coach_profile");
   const isMemberDashboard = activeDashboard === "member";
   const isManagerDashboard = activeDashboard === "manager";
   const isAdminDashboard = activeDashboard === "admin";
@@ -96,5 +96,6 @@ export function useCoachProfileModal() {
     handleInviteToGym,
     handleClose,
     onRemove,
+    zIndex,
   };
 }

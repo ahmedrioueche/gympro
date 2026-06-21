@@ -10,6 +10,7 @@ import { useReviewCoachRequestModal } from "./hooks/useReviewCoachRequestModal";
 export default function ReviewCoachRequestModal() {
   const { t } = useTranslation();
   const {
+    
     isOpen,
     request,
     closeModal,
@@ -20,6 +21,8 @@ export default function ReviewCoachRequestModal() {
     getDocumentLabel,
     isManagerFlow,
     isPending,
+  
+    zIndex,
   } = useReviewCoachRequestModal();
 
   if (!isOpen || !request) return null;
@@ -30,7 +33,7 @@ export default function ReviewCoachRequestModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       icon={UserCheck}
       title={

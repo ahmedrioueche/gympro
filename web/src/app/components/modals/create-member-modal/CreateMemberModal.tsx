@@ -7,6 +7,7 @@ import { useGymSubscriptionOptions } from "../../../../hooks/useGymSubscriptionO
 import { useGymStore } from "../../../../store/gym";
 import { useLanguageStore } from "../../../../store/language";
 import { useModalStore } from "../../../../store/modal";
+import { useModalLayer } from "../../../../hooks/useModalLayer";
 import { useUserStore } from "../../../../store/user";
 import StepAccessInfo from "./StepAccessInfo";
 import StepContactPreferences from "./StepContactPreferences";
@@ -18,7 +19,7 @@ export default function CreateMemberModal() {
   const { t } = useTranslation();
   const { currentGym } = useGymStore();
   const { user } = useUserStore();
-  const { currentModal, closeModal, createMemberProps } = useModalStore();
+  const { closeModal, createMemberProps } = useModalStore();
   const { onSuccess } = createMemberProps || {};
   const { isRtl } = useLanguageStore();
 
@@ -47,7 +48,7 @@ export default function CreateMemberModal() {
     selectedPlan,
   } = useGymSubscriptionOptions(formData.subscriptionTypeId);
 
-  const isOpen = currentModal === "create_member";
+  const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("create_member");
 
   useEffect(() => {
     if (isOpen) {
@@ -92,7 +93,7 @@ export default function CreateMemberModal() {
 
   return (
     <BaseModal
-      isOpen={isOpen}
+      isOpen={isOpen} zIndex={zIndex}
       onClose={closeModal}
       title={t("createMember.title", "Add New Member")}
       subtitle={getStepSubtitle()}
