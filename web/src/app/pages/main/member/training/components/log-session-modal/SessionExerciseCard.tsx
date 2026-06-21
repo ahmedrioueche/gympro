@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { useTimerStore } from "../../../../../../../store/timer";
 import { useUserStore } from "../../../../../../../store/user";
+import { SetWeightInput } from "./SetWeightInput";
 
 interface SessionExerciseCardProps {
   exercise: ExerciseProgress;
@@ -20,7 +21,9 @@ interface SessionExerciseCardProps {
     setIndex: number,
     field: keyof ExerciseSet,
     value: any,
+    options?: { propagate?: boolean },
   ) => void;
+  onCommitSetWeight: (exIndex: number, setIndex: number, weight: number) => void;
   onAddSet: (exIndex: number) => void;
   onRemoveSet: (exIndex: number, setIndex: number) => void;
   onAddDropSet: (exIndex: number, setIndex: number) => void;
@@ -44,6 +47,7 @@ export const SessionExerciseCard = ({
   exerciseIndex,
   originalExercise,
   onUpdateSet,
+  onCommitSetWeight,
   onAddSet,
   onRemoveSet,
   onAddDropSet,
@@ -97,7 +101,11 @@ export const SessionExerciseCard = ({
 
         {/* Set Rows */}
         {exercise.sets.map((set, setIndex) => (
-          <div key={setIndex} className="space-y-2">
+          <div
+            key={setIndex}
+            id={`session-set-${exerciseIndex}-${setIndex}`}
+            className="space-y-2"
+          >
             <div
               className={`grid grid-cols-12 gap-2 items-center p-2 rounded-lg transition-colors ${
                 set.completed
@@ -112,17 +120,13 @@ export const SessionExerciseCard = ({
 
               {/* Weight */}
               <div className="col-span-4">
-                <input
-                  type="number"
-                  min="0"
-                  value={set.weight || ""}
-                  onChange={(e) =>
-                    onUpdateSet(
-                      exerciseIndex,
-                      setIndex,
-                      "weight",
-                      parseFloat(e.target.value) || 0,
-                    )
+                <SetWeightInput
+                  value={set.weight || 0}
+                  onChange={(weight) =>
+                    onUpdateSet(exerciseIndex, setIndex, "weight", weight)
+                  }
+                  onCommit={(weight) =>
+                    onCommitSetWeight(exerciseIndex, setIndex, weight)
                   }
                   className="w-full px-3 py-2 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary"
                   placeholder="0"
@@ -160,8 +164,8 @@ export const SessionExerciseCard = ({
                       newCompleted,
                     );
 
-                    // Trigger Rest Timer if marking as completed
-                    if (newCompleted) {
+                    // Trigger Rest Timer if marking as completed (not after the last set)
+                    if (newCompleted && setIndex < exercise.sets.length - 1) {
                       const { startTimer } = useTimerStore.getState();
                       const { user } = useUserStore.getState();
                       const defaultRest =

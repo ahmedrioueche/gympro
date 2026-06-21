@@ -172,9 +172,14 @@ export const useLogSession = () => {
   const { t } = useTranslation();
 
   return useMutation({
-    mutationFn: (data: LogSessionDto) => trainingApi.logSession(data),
-    onSuccess: () => {
-      toast.success(t("status.success.session_logged"));
+    mutationFn: (data: LogSessionDto & { silent?: boolean }) => {
+      const { silent: _silent, ...payload } = data;
+      return trainingApi.logSession(payload);
+    },
+    onSuccess: (_data, variables) => {
+      if (!variables.silent) {
+        toast.success(t("status.success.session_logged"));
+      }
       queryClient.invalidateQueries({ queryKey: ["activeProgram"] });
       queryClient.invalidateQueries({ queryKey: ["trainingHistory"] });
     },

@@ -1,6 +1,6 @@
 import { Dumbbell } from "lucide-react";
-import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next";
+import { useCallback, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";import { useTranslation } from "react-i18next";
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
@@ -12,6 +12,7 @@ import { useModalStore } from "../../../../../../../store/modal";
 import { SessionBlock } from "./SessionBlock";
 import { SessionProgressFooter } from "./SessionProgressFooter";
 import { useSessionForm } from "./useSessionForm";
+import { WorkoutCompleteCelebration } from "./WorkoutCompleteCelebration";
 
 const LogSessionModalContent = ({
   activeHistory,
@@ -28,7 +29,16 @@ const LogSessionModalContent = ({
   const { openModal } = useModalStore();
   const logSession = useLogSession();
   const autoSaveSession = useAutoSaveSession();
+  const [celebration, setCelebration] = useState<{
+    dayName: string;
+    completedSets: number;
+    totalSets: number;
+  } | null>(null);
 
+  const handleCelebrationClose = useCallback(() => {
+    setCelebration(null);
+    closeModal();
+  }, [closeModal]);
   const handleAutoSave = async (data: any) => {
     try {
       const result = await autoSaveSession.mutateAsync(data);
@@ -67,6 +77,42 @@ const LogSessionModalContent = ({
     onAutoSave: handleAutoSave,
   });
 
+  const initialScrollDoneRef = useRef(false);
+
+  useEffect(() => {
+    if (form.exercises.length === 0) return;
+
+    let lastCompleted: { exIndex: number; setIndex: number } | null = null;
+    form.exercises.forEach((exercise, exIndex) => {
+      exercise.sets.forEach((set, setIndex) => {
+        if (set.completed) {
+          lastCompleted = { exIndex, setIndex };
+        }
+      });
+    });
+
+    if (!initialScrollDoneRef.current && lastCompleted) {
+      initialScrollDoneRef.current = true;
+      requestAnimationFrame(() => {
+        const el = document.getElementById(
+          `session-set-${lastCompleted!.exIndex}-${lastCompleted!.setIndex}`,
+        );
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    }
+  }, [form.exercises]);
+
+  useEffect(() => {
+    if (!form.scrollToSet) return;
+
+    const { exIndex, setIndex } = form.scrollToSet;
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`session-set-${exIndex}-${setIndex}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      form.clearScrollToSet();
+    });
+  }, [form.scrollToSet, form.clearScrollToSet]);
+
   const { program } = activeHistory;
 
   const handleSave = () => {
@@ -75,6 +121,15 @@ const LogSessionModalContent = ({
       toast.error(validationError);
       return;
     }
+
+    let completedSets = 0;
+    let totalSets = 0;
+    form.exercises.forEach((ex) => {
+      ex.sets.forEach((set) => {
+        totalSets++;
+        if (set.completed) completedSets++;
+      });
+    });
 
     logSession.mutate(
       {
@@ -88,15 +143,19 @@ const LogSessionModalContent = ({
             ? (initialSession as any)?._id || (initialSession as any)?.id
             : form.serverSessionId,
         submissionId: form.submissionId,
+        silent: true,
       },
       {
         onSuccess: () => {
-          form.markAsSaved(); // Clear localStorage after successful save
-          closeModal();
+          form.markAsSaved();
+          setCelebration({
+            dayName: form.selectedDayName,
+            completedSets,
+            totalSets,
+          });
         },
       },
-    );
-  };
+    );  };
 
   const currentDay = program.days.find((d) => d.name === form.selectedDayName);
 
@@ -106,10 +165,10 @@ const LogSessionModalContent = ({
   }));
 
   return (
-    <BaseModal
-      isOpen={true}
-      onClose={closeModal}
-      title={t("training.logSession.title")}
+    <>
+      <BaseModal
+        isOpen={!celebration}
+        onClose={closeModal}      title={t("training.logSession.title")}
       subtitle={`${program.name} - ${form.selectedDayName}`}
       icon={Dumbbell}
       maxWidth="max-w-4xl"
@@ -119,6 +178,8 @@ const LogSessionModalContent = ({
           exercises={form.exercises}
           onDone={handleSave}
           isSaving={logSession.isPending}
+          isAutoSaving={form.isAutoSaving}
+          showSavedIndicator={form.showSavedIndicator}
         />
       }
     >
@@ -198,6 +259,7 @@ const LogSessionModalContent = ({
                     isSplit={isSplit}
                     onToggleSplit={() => form.toggleBlockSplit(blockIndex)}
                     onUpdateSet={form.updateSet}
+                    onCommitSetWeight={form.commitSetWeight}
                     onAddSet={form.addSet}
                     onRemoveSet={form.removeSet}
                     onAddDropSet={form.addDropSet}
@@ -215,9 +277,18 @@ const LogSessionModalContent = ({
         </div>
       </div>
     </BaseModal>
+
+      {celebration && (
+        <WorkoutCompleteCelebration
+          dayName={celebration.dayName}
+          completedSets={celebration.completedSets}
+          totalSets={celebration.totalSets}
+          onClose={handleCelebrationClose}
+        />
+      )}
+    </>
   );
 };
-
 export const LogSessionModal = () => {
   const { currentModal, logSessionProps, closeModal } = useModalStore();
   const isOpen = currentModal === "log_session";

@@ -15,6 +15,7 @@ You are a Senior Full-Stack Developer specializing in TypeScript, React, NestJS,
 - Use **early returns** whenever possible for better readability
 - Always check the functions and components definition before usage, to use them correctly
 - Write **complete, fully functional code** - NO todos, placeholders, or missing pieces
+- Always update documentation in \_docs
 - If uncertain about correctness, explicitly state so
 
 ## Project Structure

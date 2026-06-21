@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { useTimerStore } from "../../../../../../../store/timer";
 import { useUserStore } from "../../../../../../../store/user";
+import { SetWeightInput } from "./SetWeightInput";
 
 interface SessionSupersetCardProps {
   block: TrainingProgram["days"][0]["blocks"][0];
@@ -18,7 +19,9 @@ interface SessionSupersetCardProps {
     setIndex: number,
     field: keyof ExerciseSet,
     value: any,
+    options?: { propagate?: boolean },
   ) => void;
+  onCommitSetWeight: (exIndex: number, setIndex: number, weight: number) => void;
   onAddSet: (exIndex: number) => void; // Uses first exercise to trigger add for all?
   onRemoveSet: (exIndex: number, setIndex: number) => void; // Removes from all?
   onToggleSplit: () => void;
@@ -35,6 +38,7 @@ export const SessionSupersetCard = ({
   exercises,
   exIndices,
   onUpdateSet,
+  onCommitSetWeight,
   onAddSet,
   onRemoveSet,
   onToggleSplit,
@@ -58,9 +62,8 @@ export const SessionSupersetCard = ({
     // Use atomic update
     onToggleSupersetCompletion(exIndices, setIndex, newStatus);
 
-    // Trigger Timer if marking as DONE
-    // Use the Rest Time of the LAST exercise in the sequence (which should be synced)
-    if (newStatus) {
+    // Trigger Timer if marking as DONE (not after the last set)
+    if (newStatus && setIndex < maxSets - 1) {
       const { startTimer } = useTimerStore.getState();
       const { user } = useUserStore.getState();
 
@@ -116,6 +119,7 @@ export const SessionSupersetCard = ({
           return (
             <div
               key={setIndex}
+              id={`session-set-${exIndices[0]}-${setIndex}`}
               className={`rounded-xl border transition-all overflow-hidden ${
                 isDone
                   ? "bg-green-500/10 border-green-500/30"
@@ -182,17 +186,18 @@ export const SessionSupersetCard = ({
                       {/* Inputs */}
                       <div className="flex-1 flex gap-2">
                         <div className="relative flex-1">
-                          <input
-                            type="number"
-                            min="0"
-                            value={set.weight || ""}
-                            onChange={(e) =>
+                          <SetWeightInput
+                            value={set.weight || 0}
+                            onChange={(weight) =>
                               onUpdateSet(
                                 exIndices[i],
                                 setIndex,
                                 "weight",
-                                parseFloat(e.target.value) || 0,
+                                weight,
                               )
+                            }
+                            onCommit={(weight) =>
+                              onCommitSetWeight(exIndices[i], setIndex, weight)
                             }
                             className="w-full px-2 py-1.5 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary text-sm"
                             placeholder={weightUnit}

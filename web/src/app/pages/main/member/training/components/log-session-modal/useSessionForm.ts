@@ -57,6 +57,11 @@ export const useSessionForm = ({
   );
   const [exercises, setExercises] = useState<ExerciseProgress[]>([]);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [showSavedIndicator, setShowSavedIndicator] = useState(false);
+  const savedIndicatorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const [serverSessionId, setServerSessionId] = useState<string | undefined>(
     (initialSession as any)?._id || (initialSession as any)?.id,
   );
@@ -66,6 +71,11 @@ export const useSessionForm = ({
   const [isDirty, setIsDirty] = useState(false);
   const autoSaveTimerRef = useRef<any>(null);
   const prevDayNameRef = useRef<string>("");
+  const propagatedWeightsRef = useRef<Map<string, number>>(new Map());
+  const [scrollToSet, setScrollToSet] = useState<{
+    exIndex: number;
+    setIndex: number;
+  } | null>(null);
 
   // Logic previously here for manual resets was removed.
   // The hook now relies on component unmounting for state cleanup.
@@ -262,6 +272,13 @@ export const useSessionForm = ({
         : undefined),
   );
 
+  // Hide saved indicator when user makes new changes
+  useEffect(() => {
+    if (isDirty) {
+      setShowSavedIndicator(false);
+    }
+  }, [isDirty]);
+
   // Auto-save Effect
   useEffect(() => {
     if (!isOpen || !onAutoSave || !program?._id || exercises.length === 0)
@@ -286,6 +303,7 @@ export const useSessionForm = ({
         submissionId: submissionId, // Send robust ID
       };
 
+      setIsAutoSaving(true);
       try {
         const newId = await onAutoSave(data);
         if (newId && !serverSessionId) {
@@ -293,8 +311,18 @@ export const useSessionForm = ({
         }
         setLastSavedAt(new Date());
         setIsDirty(false);
+        setShowSavedIndicator(true);
+        if (savedIndicatorTimerRef.current) {
+          clearTimeout(savedIndicatorTimerRef.current);
+        }
+        savedIndicatorTimerRef.current = setTimeout(
+          () => setShowSavedIndicator(false),
+          4000,
+        );
       } catch (err) {
         console.error("Auto-save error", err);
+      } finally {
+        setIsAutoSaving(false);
       }
     }, 2000); // 2 second debounce
 
@@ -362,7 +390,41 @@ export const useSessionForm = ({
     setServerSessionId(undefined);
     setSubmissionId(undefined);
     setIsDirty(false); // Reset dirty state on manual save/completion
+    propagatedWeightsRef.current.clear();
+    setShowSavedIndicator(false);
+    if (savedIndicatorTimerRef.current) {
+      clearTimeout(savedIndicatorTimerRef.current);
+    }
   }, [clearStorage]);
+
+  const propagateWeightToSubsequentSets = (
+    exIndex: number,
+    setIndex: number,
+    currentSets: ExerciseSet[],
+    oldWeight: number,
+    weightValue: number,
+  ) => {
+    for (let i = setIndex + 1; i < currentSets.length; i++) {
+      const nextSetWeight = currentSets[i].weight || 0;
+      const propagatedKey = `${exIndex}-${i}`;
+      const wasAutoFilled =
+        propagatedWeightsRef.current.get(propagatedKey) === nextSetWeight;
+
+      if (
+        !currentSets[i].completed &&
+        (nextSetWeight === 0 ||
+          nextSetWeight === oldWeight ||
+          wasAutoFilled)
+      ) {
+        currentSets[i] = { ...currentSets[i], weight: weightValue };
+        propagatedWeightsRef.current.set(propagatedKey, weightValue);
+      }
+    }
+  };
+
+  const markSetCompleted = (exIndex: number, setIndex: number) => {
+    setScrollToSet({ exIndex, setIndex });
+  };
 
   const validateSet = (weight: number, reps: number) => {
     if (weight <= 0) return t("training.logSession.validation.weightPositive");
@@ -378,6 +440,7 @@ export const useSessionForm = ({
     setIndex: number,
     field: keyof ExerciseSet,
     value: any,
+    options?: { propagate?: boolean },
   ) => {
     // Validation Logic
     if (field === "completed" && value === true) {
@@ -394,8 +457,12 @@ export const useSessionForm = ({
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
 
-    // Propagate weight changes intelligently
     const oldValue = currentSets[setIndex][field];
+
+    // Manual weight edits clear auto-fill tracking for that set
+    if (field === "weight") {
+      propagatedWeightsRef.current.delete(`${exIndex}-${setIndex}`);
+    }
 
     // Update the specific field
     currentSets[setIndex] = { ...currentSets[setIndex], [field]: value };
@@ -425,29 +492,33 @@ export const useSessionForm = ({
       }
     }
 
-    // UX Improvements:
     if (field === "weight") {
-      const weightValue = parseFloat(value) || 0;
+      const weightValue = typeof value === "number" ? value : parseFloat(value) || 0;
+      const oldWeight =
+        typeof oldValue === "number" ? oldValue : parseFloat(oldValue) || 0;
+      const shouldPropagate = options?.propagate === true;
 
       if (weightValue > 0) {
-        // Auto-mark as completed
+        const wasCompleted = currentSets[setIndex].completed;
         currentSets[setIndex].completed = true;
+        if (!wasCompleted && shouldPropagate) {
+          markSetCompleted(exIndex, setIndex);
+        }
 
-        // Propagate weight to subsequent sets
-        for (let i = setIndex + 1; i < currentSets.length; i++) {
-          const nextSetWeight = currentSets[i].weight || 0;
-          // PROPAGATION LOGIC:
-          // We propagate if the next set has weight 0 OR if it matches the OLD value of this set.
-          // This allows typing multi-digit numbers (like "15") correctly.
-          // We also only propagate to UNCOMPLETED sets to avoid overwriting manually finished data.
-          if (
-            (nextSetWeight === 0 || nextSetWeight === oldValue) &&
-            !currentSets[i].completed
-          ) {
-            currentSets[i] = { ...currentSets[i], weight: weightValue };
-          }
+        if (shouldPropagate) {
+          propagateWeightToSubsequentSets(
+            exIndex,
+            setIndex,
+            currentSets,
+            oldWeight,
+            weightValue,
+          );
         }
       }
+    }
+
+    if (field === "completed" && value === true) {
+      markSetCompleted(exIndex, setIndex);
     }
 
     newExercises[exIndex] = { ...newExercises[exIndex], sets: currentSets };
@@ -569,7 +640,19 @@ export const useSessionForm = ({
 
     if (hasError) return;
 
+    if (completed) {
+      markSetCompleted(exerciseIndices[0], setIndex);
+    }
+
     setExercises(newExercises);
+  };
+
+  const commitSetWeight = (
+    exIndex: number,
+    setIndex: number,
+    weight: number,
+  ) => {
+    updateSet(exIndex, setIndex, "weight", weight, { propagate: true });
   };
 
   const removeDropSet = (
@@ -624,6 +707,8 @@ export const useSessionForm = ({
     return null;
   };
 
+  const clearScrollToSet = useCallback(() => setScrollToSet(null), []);
+
   return {
     selectedDayName,
     setSelectedDayName,
@@ -633,12 +718,17 @@ export const useSessionForm = ({
     setDurationMinutes,
     exercises,
     updateSet,
+    commitSetWeight,
+    scrollToSet,
+    clearScrollToSet,
     addSet,
     removeSet,
     addDropSet,
     updateDropSet,
     removeDropSet,
     lastSavedAt,
+    isAutoSaving,
+    showSavedIndicator,
     clearStorage,
     markAsSaved,
     splitBlockIndices, // Expose split state
