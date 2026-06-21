@@ -4,6 +4,7 @@ import {
   type CreateProgramDayDto,
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
+import { sanitizeProgramPayload } from "../../utils/muscles";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -27,7 +28,7 @@ export const useProgramEdit = (
 
     await updateProgram.mutateAsync({
       id: program._id,
-      data: editData,
+      data: sanitizeProgramPayload(editData),
       silent: true,
     });
 

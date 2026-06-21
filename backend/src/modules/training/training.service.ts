@@ -3,6 +3,7 @@ import {
   LogSessionDto,
   ProgramHistory,
   TrainingProgram,
+  sanitizeProgramPayload,
 } from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
@@ -27,7 +28,7 @@ export class TrainingService {
     userId: string,
   ): Promise<TrainingProgram> {
     const program = new this.programModel({
-      ...dto,
+      ...sanitizeProgramPayload(dto),
       creationType: 'member',
       createdBy: userId,
       createdAt: new Date(),
@@ -85,7 +86,11 @@ export class TrainingService {
       throw new BadRequestException('You can only edit your own programs');
     }
 
-    Object.assign(program, dto, { updatedAt: new Date(), updatedBy: userId });
+    Object.assign(
+      program,
+      sanitizeProgramPayload(dto),
+      { updatedAt: new Date(), updatedBy: userId },
+    );
     const updatedProgram = await program.save();
 
     // Update the program in any active/paused history for this user

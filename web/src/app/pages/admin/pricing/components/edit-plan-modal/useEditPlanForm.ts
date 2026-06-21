@@ -169,8 +169,7 @@ export function useEditPlanForm() {
       return {
         ...prev,
         publicFeaturePackages: newPublic,
-    zIndex,
-  };
+      };
     });
   };
 
@@ -203,6 +202,7 @@ export function useEditPlanForm() {
 
   return {
     isOpen,
+    zIndex,
     isEdit,
     closeModal,
     formData,

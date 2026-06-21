@@ -16,7 +16,7 @@ interface ModalState extends ModalLegacyProps {
   stack: ModalStackEntry[];
   currentModal: ActiveModalType;
   openModal: (modal: ModalType, props?: unknown) => string;
-  closeModal: (id?: string) => void;
+  closeModal: (arg?: unknown) => void;
   closeAllModals: () => void;
   isModalOpen: (type: ModalType) => boolean;
   getStackIndex: (type: ModalType) => number;
@@ -90,8 +90,9 @@ export const useModalStore = create<ModalState>((set, get) => ({
     return id;
   },
 
-  closeModal: (id) =>
+  closeModal: (arg) =>
     set((state) => {
+      const id = typeof arg === "string" ? arg : undefined;
       const stack = id
         ? state.stack.filter((entry) => entry.id !== id)
         : state.stack.slice(0, -1);

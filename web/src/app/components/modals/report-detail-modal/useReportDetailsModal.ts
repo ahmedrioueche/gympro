@@ -20,7 +20,7 @@ import { useUserStore } from "../../../../store/user";
 export function useReportDetailsModal() {
   const { t } = useTranslation();
   const { closeModal, reportDetailsProps } = useModalStore();
-  const { isOpen, zIndex } = useModalLayer("report_details");
+  const { isOpen: isLayerOpen, zIndex } = useModalLayer("report_details");
   const { user } = useUserStore();
   const { mutate: updateStatus, isPending: isUpdatingStatus } =
     useUpdateReportStatus();
@@ -38,7 +38,7 @@ export function useReportDetailsModal() {
   const [isUploading, setIsUploading] = useState(false);
 
   const isOpen =
-    isOpen &&
+    isLayerOpen &&
     (!!reportDetailsProps?.report || !!reportDetailsProps?.reportId);
 
   const { data: fetchedReport, isLoading: isFetchingReport } = useReport(
@@ -240,8 +240,7 @@ export function useReportDetailsModal() {
         isSenderReporter,
         label,
         initial,
-    zIndex,
-  };
+      };
     },
     [currentUserId, reporterId, t],
   );
@@ -249,6 +248,7 @@ export function useReportDetailsModal() {
   return {
     // State
     isOpen,
+    zIndex,
     report,
     message,
     setMessage,

@@ -4,6 +4,7 @@ import {
   type CreateProgramDto,
   type DaysPerWeek,
 } from "@ahmedrioueche/gympro-client";
+import { sanitizeProgramPayload } from "../../utils/muscles";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -50,7 +51,7 @@ export const useProgramCreate = (onClose: () => void) => {
 
     await updateProgram.mutateAsync({
       id: programId,
-      data: { ...formData, days: cleanDays(formData.days) },
+      data: sanitizeProgramPayload({ ...formData, days: cleanDays(formData.days) }),
       silent: true,
     });
   }, [cleanDays, formData, programId, updateProgram]);

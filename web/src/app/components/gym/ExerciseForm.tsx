@@ -4,6 +4,7 @@ import {
   MUSCLE_GROUPS,
   type MuscleGroup,
 } from "@ahmedrioueche/gympro-client";
+import { normalizeTargetMuscles } from "../../../utils/muscles";
 import {
   ChevronDown,
   GripVertical,
@@ -75,7 +76,7 @@ export const ExerciseForm = ({
       instructions: libraryExercise.instructions,
       recommendedSets: libraryExercise.recommendedSets || 3,
       recommendedReps: libraryExercise.recommendedReps || 10,
-      targetMuscles: libraryExercise.targetMuscles,
+      targetMuscles: normalizeTargetMuscles(libraryExercise.targetMuscles),
       equipment: libraryExercise.equipment,
       videoUrl: libraryExercise.videoUrl,
       imageUrl: libraryExercise.imageUrl,

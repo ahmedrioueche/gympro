@@ -93,3 +93,4 @@ export * from "./types/training";
 export * from "./types/upload";
 export * from "./types/user";
 export * from "./utils/helper";
+export * from "./utils/muscles";
