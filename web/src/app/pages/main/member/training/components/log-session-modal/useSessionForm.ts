@@ -17,7 +17,8 @@ interface UseSessionFormProps {
   onAutoSave?: (data: any) => Promise<string | undefined>; // Returns new sessionId
 }
 
-// LocalStorage key for session in progress
+const AUTO_SAVE_INTERVAL_MS = 60_000; // 1 minute
+
 const getStorageKey = (programId: string, dayName: string) =>
   `session_progress_v2_${programId}_${dayName}`;
 
@@ -69,7 +70,18 @@ export const useSessionForm = ({
     new Set(),
   );
   const [isDirty, setIsDirty] = useState(false);
-  const autoSaveTimerRef = useRef<any>(null);
+  const isDirtyRef = useRef(false);
+  const autoSaveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const onAutoSaveRef = useRef(onAutoSave);
+  const autoSavePayloadRef = useRef({
+    programId: program?._id,
+    dayName: selectedDayName,
+    sessionDate,
+    durationMinutes,
+    exercises,
+    serverSessionId,
+    submissionId,
+  });
   const prevDayNameRef = useRef<string>("");
   const propagatedWeightsRef = useRef<Map<string, number>>(new Map());
   const [scrollToSet, setScrollToSet] = useState<{
@@ -274,43 +286,63 @@ export const useSessionForm = ({
 
   // Hide saved indicator when user makes new changes
   useEffect(() => {
+    isDirtyRef.current = isDirty;
     if (isDirty) {
       setShowSavedIndicator(false);
     }
   }, [isDirty]);
 
-  // Auto-save Effect
   useEffect(() => {
-    if (!isOpen || !onAutoSave || !program?._id || exercises.length === 0)
-      return;
+    onAutoSaveRef.current = onAutoSave;
+  }, [onAutoSave]);
 
-    // Don't auto-save if we haven't made changes (initial load)
-    if (!isDirty) return;
+  useEffect(() => {
+    autoSavePayloadRef.current = {
+      programId: program?._id,
+      dayName: selectedDayName,
+      sessionDate,
+      durationMinutes,
+      exercises,
+      serverSessionId,
+      submissionId,
+    };
+  }, [
+    program?._id,
+    selectedDayName,
+    sessionDate,
+    durationMinutes,
+    exercises,
+    serverSessionId,
+    submissionId,
+  ]);
 
-    if (autoSaveTimerRef.current) {
-      clearTimeout(autoSaveTimerRef.current);
-    }
+  // Auto-save every minute while there are unsaved changes
+  useEffect(() => {
+    if (!isOpen || !onAutoSave || !program?._id) return;
 
-    autoSaveTimerRef.current = setTimeout(async () => {
-      // Perform save
+    const performAutoSave = async () => {
+      const payload = autoSavePayloadRef.current;
+      if (!isDirtyRef.current || payload.exercises.length === 0) return;
+
       const data = {
-        programId: program._id,
-        dayName: selectedDayName,
-        date: new Date(sessionDate).toISOString(), // Export as UTC for consistency
-        durationMinutes,
-        exercises,
-        sessionId: serverSessionId,
-        submissionId: submissionId, // Send robust ID
+        programId: payload.programId,
+        dayName: payload.dayName,
+        date: new Date(payload.sessionDate).toISOString(),
+        durationMinutes: payload.durationMinutes,
+        exercises: payload.exercises,
+        sessionId: payload.serverSessionId,
+        submissionId: payload.submissionId,
       };
 
       setIsAutoSaving(true);
       try {
-        const newId = await onAutoSave(data);
-        if (newId && !serverSessionId) {
+        const newId = await onAutoSaveRef.current?.(data);
+        if (newId && !payload.serverSessionId) {
           setServerSessionId(newId);
         }
         setLastSavedAt(new Date());
         setIsDirty(false);
+        isDirtyRef.current = false;
         setShowSavedIndicator(true);
         if (savedIndicatorTimerRef.current) {
           clearTimeout(savedIndicatorTimerRef.current);
@@ -324,21 +356,19 @@ export const useSessionForm = ({
       } finally {
         setIsAutoSaving(false);
       }
-    }, 2000); // 2 second debounce
+    };
+
+    autoSaveIntervalRef.current = setInterval(() => {
+      void performAutoSave();
+    }, AUTO_SAVE_INTERVAL_MS);
 
     return () => {
-      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+      if (autoSaveIntervalRef.current) {
+        clearInterval(autoSaveIntervalRef.current);
+        autoSaveIntervalRef.current = null;
+      }
     };
-  }, [
-    exercises,
-    sessionDate,
-    selectedDayName,
-    isOpen,
-    program?._id,
-    onAutoSave,
-    serverSessionId,
-    isDirty,
-  ]);
+  }, [isOpen, onAutoSave, program?._id]);
 
   // Save to localStorage whenever exercises change
   useEffect(() => {
@@ -389,7 +419,8 @@ export const useSessionForm = ({
     // CRITICAL: Clear IDs after successful save so the next time the modal opens, it's fresh
     setServerSessionId(undefined);
     setSubmissionId(undefined);
-    setIsDirty(false); // Reset dirty state on manual save/completion
+    setIsDirty(false);
+    isDirtyRef.current = false;
     propagatedWeightsRef.current.clear();
     setShowSavedIndicator(false);
     if (savedIndicatorTimerRef.current) {
@@ -707,13 +738,28 @@ export const useSessionForm = ({
 
   const clearScrollToSet = useCallback(() => setScrollToSet(null), []);
 
+  const handleSessionDateChange = useCallback((value: string) => {
+    setIsDirty(true);
+    setSessionDate(value);
+  }, []);
+
+  const handleDurationChange = useCallback((value: number) => {
+    setIsDirty(true);
+    setDurationMinutes(value);
+  }, []);
+
+  const handleDayChange = useCallback((value: string) => {
+    setIsDirty(true);
+    setSelectedDayName(value);
+  }, []);
+
   return {
     selectedDayName,
-    setSelectedDayName,
+    setSelectedDayName: handleDayChange,
     sessionDate,
-    setSessionDate,
+    setSessionDate: handleSessionDateChange,
     durationMinutes,
-    setDurationMinutes,
+    setDurationMinutes: handleDurationChange,
     exercises,
     updateSet,
     commitSetWeight,

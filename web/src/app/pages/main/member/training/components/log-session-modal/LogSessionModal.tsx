@@ -151,11 +151,16 @@ const LogSessionModalContent = ({
       {
         onSuccess: () => {
           form.markAsSaved();
-          setCelebration({
-            dayName: form.selectedDayName,
-            completedSets,
-            totalSets,
-          });
+          const isFullyComplete = totalSets > 0 && completedSets === totalSets;
+          if (isFullyComplete) {
+            setCelebration({
+              dayName: form.selectedDayName,
+              completedSets,
+              totalSets,
+            });
+          } else {
+            closeModal();
+          }
         },
       },
     );  };
