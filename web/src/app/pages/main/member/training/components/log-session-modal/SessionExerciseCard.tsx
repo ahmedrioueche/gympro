@@ -6,8 +6,6 @@ import {
 import { Check, CornerDownRight, PlayCircle, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
-import { useTimerStore } from "../../../../../../../store/timer";
-import { useUserStore } from "../../../../../../../store/user";
 import { SetWeightInput } from "./SetWeightInput";
 
 interface SessionExerciseCardProps {
@@ -163,18 +161,6 @@ export const SessionExerciseCard = ({
                       "completed",
                       newCompleted,
                     );
-
-                    // Trigger Rest Timer if marking as completed (not after the last set)
-                    if (newCompleted && setIndex < exercise.sets.length - 1) {
-                      const { startTimer } = useTimerStore.getState();
-                      const { user } = useUserStore.getState();
-                      const defaultRest =
-                        user?.appSettings?.timer?.defaultRestTime || 90;
-                      const restTime =
-                        originalExercise?.restTime || defaultRest;
-
-                      startTimer(restTime, exerciseName);
-                    }
                   }}
                   className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
                     set.completed

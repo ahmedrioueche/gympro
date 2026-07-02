@@ -8,6 +8,12 @@ import { format } from "date-fns";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { useTimerStore } from "../../../../../../../store/timer";
+import { useUserStore } from "../../../../../../../store/user";
+import {
+  shouldStartRestTimerAfterCompletion,
+  type SetCompletion,
+} from "./sessionRestTimer";
 
 interface UseSessionFormProps {
   isOpen: boolean;
@@ -44,6 +50,7 @@ export const useSessionForm = ({
   const progress = activeHistory?.progress;
 
   const { t } = useTranslation();
+  const { user } = useUserStore();
 
   const [selectedDayName, setSelectedDayName] = useState<string>(
     initialSession?.dayName || program?.days?.[0]?.name || "",
@@ -65,6 +72,12 @@ export const useSessionForm = ({
   );
   const [serverSessionId, setServerSessionId] = useState<string | undefined>(
     (initialSession as any)?._id || (initialSession as any)?.id,
+  );
+  const [submissionId, setSubmissionId] = useState<string | undefined>(
+    (initialSession as any)?.submissionId ||
+      (mode === "new"
+        ? Math.random().toString(36).substring(2) + Date.now().toString(36)
+        : undefined),
   );
   const [splitBlockIndices, setSplitBlockIndices] = useState<Set<number>>(
     new Set(),
@@ -275,15 +288,6 @@ export const useSessionForm = ({
     setExercises(initialExercises);
   }, [selectedDayName, isOpen, mode, initialSession, program]); // Rerun logic when modal opens or key props change!
 
-  // Client-side ID for robust de-duplication
-  // This starts as undefined and gets set during initialization
-  const [submissionId, setSubmissionId] = useState<string | undefined>(
-    (initialSession as any)?.submissionId ||
-      (mode === "new"
-        ? Math.random().toString(36).substring(2) + Date.now().toString(36)
-        : undefined),
-  );
-
   // Hide saved indicator when user makes new changes
   useEffect(() => {
     isDirtyRef.current = isDirty;
@@ -457,6 +461,52 @@ export const useSessionForm = ({
     setScrollToSet({ exIndex, setIndex });
   };
 
+  const getExerciseMeta = useCallback(
+    (exIndex: number) => {
+      const day = program?.days.find((d) => d.name === selectedDayName);
+      if (!day) return null;
+
+      let idx = 0;
+      for (const block of day.blocks) {
+        for (let i = 0; i < block.exercises.length; i++) {
+          if (idx === exIndex) {
+            return {
+              exercise: block.exercises[i],
+              block,
+            };
+          }
+          idx++;
+        }
+      }
+      return null;
+    },
+    [program, selectedDayName],
+  );
+
+  const maybeStartRestTimer = useCallback(
+    (completions: SetCompletion[]) => {
+      if (!shouldStartRestTimerAfterCompletion(exercises, completions)) return;
+
+      const defaultRest = user?.appSettings?.timer?.defaultRestTime ?? 90;
+      const primaryExIndex = Math.max(...completions.map((c) => c.exIndex));
+      const meta = getExerciseMeta(primaryExIndex);
+      if (!meta) return;
+
+      const restExercise =
+        meta.block.exercises[meta.block.exercises.length - 1];
+      const restTime = restExercise.restTime || defaultRest;
+      if (restTime <= 0) return;
+
+      const isMultiExerciseBlock = meta.block.exercises.length > 1;
+      const timerLabel = isMultiExerciseBlock
+        ? `Superset: ${meta.block.exercises.map((e) => e.name).join(" + ")}`
+        : meta.exercise.name;
+
+      useTimerStore.getState().startTimer(restTime, timerLabel);
+    },
+    [exercises, getExerciseMeta, user?.appSettings?.timer?.defaultRestTime],
+  );
+
   const validateSet = (weight: number, reps: number) => {
     if (weight <= 0) return t("training.logSession.validation.weightPositive");
     if (reps <= 0) return t("training.logSession.validation.repsPositive");
@@ -488,6 +538,8 @@ export const useSessionForm = ({
     const newExercises = [...exercises];
     const currentSets = [...newExercises[exIndex].sets];
     const previousWeight = currentSets[setIndex].weight;
+    const wasCompleted = exercises[exIndex].sets[setIndex].completed;
+    let newlyCompleted = false;
 
     // Manual weight edits clear auto-fill tracking for that set
     if (field === "weight") {
@@ -528,11 +580,11 @@ export const useSessionForm = ({
       const shouldPropagate = options?.propagate === true;
 
       if (weightValue > 0) {
-        const wasCompleted = currentSets[setIndex].completed;
-        currentSets[setIndex].completed = true;
         if (!wasCompleted && shouldPropagate) {
+          newlyCompleted = true;
           markSetCompleted(exIndex, setIndex);
         }
+        currentSets[setIndex].completed = true;
 
         if (shouldPropagate) {
           propagateWeightToSubsequentSets(
@@ -546,12 +598,17 @@ export const useSessionForm = ({
       }
     }
 
-    if (field === "completed" && value === true) {
+    if (field === "completed" && value === true && !wasCompleted) {
+      newlyCompleted = true;
       markSetCompleted(exIndex, setIndex);
     }
 
     newExercises[exIndex] = { ...newExercises[exIndex], sets: currentSets };
     setExercises(newExercises);
+
+    if (newlyCompleted) {
+      maybeStartRestTimer([{ exIndex, setIndex }]);
+    }
   };
 
   const addSet = (exIndex: number) => {
@@ -669,8 +726,15 @@ export const useSessionForm = ({
 
     if (hasError) return;
 
-    if (completed) {
+    const wasRowComplete = exerciseIndices.every(
+      (exIdx) => exercises[exIdx]?.sets[setIndex]?.completed,
+    );
+
+    if (completed && !wasRowComplete) {
       markSetCompleted(exerciseIndices[0], setIndex);
+      maybeStartRestTimer(
+        exerciseIndices.map((exIndex) => ({ exIndex, setIndex })),
+      );
     }
 
     setExercises(newExercises);

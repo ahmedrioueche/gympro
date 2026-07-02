@@ -6,8 +6,6 @@ import {
 import { Check, Split, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
-import { useTimerStore } from "../../../../../../../store/timer";
-import { useUserStore } from "../../../../../../../store/user";
 import { SetWeightInput } from "./SetWeightInput";
 
 interface SessionSupersetCardProps {
@@ -61,23 +59,6 @@ export const SessionSupersetCard = ({
 
     // Use atomic update
     onToggleSupersetCompletion(exIndices, setIndex, newStatus);
-
-    // Trigger Timer if marking as DONE (not after the last set)
-    if (newStatus && setIndex < maxSets - 1) {
-      const { startTimer } = useTimerStore.getState();
-      const { user } = useUserStore.getState();
-
-      const defaultRest = user?.appSettings?.timer?.defaultRestTime || 90;
-
-      // Fix: Use local index, not global exIndices
-      // originalFormattedExercises corresponds to the block's exercises array
-      const lastExerciseOfBlock =
-        originalFormattedExercises[originalFormattedExercises.length - 1];
-      const restTime = lastExerciseOfBlock?.restTime || defaultRest;
-
-      const names = exercises.map((e) => e.exerciseId).join(" + ");
-      startTimer(restTime, `Superset: ${names}`);
-    }
   };
 
   const handleRowAdd = () => {
