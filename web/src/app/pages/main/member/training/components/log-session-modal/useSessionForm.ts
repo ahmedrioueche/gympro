@@ -14,6 +14,15 @@ import {
   shouldStartRestTimerAfterCompletion,
   type SetCompletion,
 } from "./sessionRestTimer";
+import {
+  buildLayoutForEdit,
+  buildLayoutFromProgram,
+  rebuildLayoutFromExercises,
+  removeExerciseFromLayout,
+  type SessionExerciseMeta,
+  type SessionLayoutEntry,
+} from "./sessionLayout";
+import type { SessionExercisePick } from "./AddSessionExercise";
 
 interface UseSessionFormProps {
   isOpen: boolean;
@@ -37,6 +46,8 @@ interface StoredSession {
   serverSessionId?: string;
   submissionId?: string; // Persist session identity across page reloads
   splitBlockIndices?: number[]; // Track which blocks user chose to split (opt-out of superset)
+  sessionLayout?: SessionLayoutEntry[];
+  sessionExerciseMeta?: Record<string, SessionExerciseMeta>;
 }
 
 export const useSessionForm = ({
@@ -64,6 +75,10 @@ export const useSessionForm = ({
     initialSession?.durationMinutes || 45,
   );
   const [exercises, setExercises] = useState<ExerciseProgress[]>([]);
+  const [sessionLayout, setSessionLayout] = useState<SessionLayoutEntry[]>([]);
+  const [sessionExerciseMeta, setSessionExerciseMeta] = useState<
+    Record<string, SessionExerciseMeta>
+  >({});
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [showSavedIndicator, setShowSavedIndicator] = useState(false);
@@ -138,39 +153,11 @@ export const useSessionForm = ({
         );
         setSubmissionId((initialSession as any).submissionId);
 
-        const flattenedExercises = day.blocks.flatMap((b) => b.exercises);
-        const initialExercises: ExerciseProgress[] = flattenedExercises.map(
-          (ex) => {
-            const existingEx = initialSession.exercises.find(
-              (e) =>
-                e.exerciseId === ex._id ||
-                e.exerciseId === ex.name ||
-                (ex._id && e.exerciseId === "unknown_exercise"),
-            );
-
-            if (existingEx) {
-              return {
-                exerciseId: ex._id || ex.name || "unknown_exercise",
-                sets: existingEx.sets || [],
-                notes: existingEx.notes || "",
-              };
-            }
-
-            // Fallback for new exercises
-            const setRange = Array.from({ length: ex.recommendedSets || 3 });
-            return {
-              exerciseId: ex._id || ex.name || "unknown_exercise",
-              sets: setRange.map(() => ({
-                reps: ex.recommendedReps || 10,
-                weight: 0,
-                completed: false,
-                drops: [],
-              })),
-              notes: "",
-            };
-          },
-        );
-        setExercises(initialExercises);
+        const { exercises: editExercises, layout, meta } =
+          buildLayoutForEdit(day, initialSession.exercises);
+        setExercises(editExercises);
+        setSessionLayout(layout);
+        setSessionExerciseMeta(meta);
         return;
       }
     }
@@ -200,6 +187,11 @@ export const useSessionForm = ({
           }));
 
           setExercises(exercises);
+          setSessionLayout(
+            parsed.sessionLayout ??
+              rebuildLayoutFromExercises(day, exercises),
+          );
+          setSessionExerciseMeta(parsed.sessionExerciseMeta ?? {});
 
           // SMART DATE RECOVERY:
           // Recover date only if draft is recent (< 1 hour).
@@ -286,6 +278,8 @@ export const useSessionForm = ({
     );
 
     setExercises(initialExercises);
+    setSessionLayout(buildLayoutFromProgram(day));
+    setSessionExerciseMeta({});
   }, [selectedDayName, isOpen, mode, initialSession, program]); // Rerun logic when modal opens or key props change!
 
   // Hide saved indicator when user makes new changes
@@ -374,7 +368,7 @@ export const useSessionForm = ({
     };
   }, [isOpen, onAutoSave, program?._id]);
 
-  // Save to localStorage whenever exercises change
+  // Save to localStorage whenever session state changes
   useEffect(() => {
     if (!isOpen || exercises.length === 0 || !selectedDayName || !program?._id)
       return;
@@ -382,13 +376,15 @@ export const useSessionForm = ({
     const storageKey = getStorageKey(program._id, selectedDayName);
     const data: StoredSession = {
       exercises,
-      sessionDate: new Date(sessionDate).toISOString(), // Store as full ISO for cross-timezone recovery
+      sessionDate: new Date(sessionDate).toISOString(),
       durationMinutes,
       timestamp: Date.now(),
       mode,
-      serverSessionId, // Persist ID so crash recovery works with proper UPDATE
-      submissionId, // Persist session identity
+      serverSessionId,
+      submissionId,
       splitBlockIndices: Array.from(splitBlockIndices),
+      sessionLayout,
+      sessionExerciseMeta,
     };
 
     try {
@@ -404,6 +400,10 @@ export const useSessionForm = ({
     program?._id,
     mode,
     serverSessionId,
+    submissionId,
+    splitBlockIndices,
+    sessionLayout,
+    sessionExerciseMeta,
   ]);
 
   // Clear localStorage for this session
@@ -817,6 +817,87 @@ export const useSessionForm = ({
     setSelectedDayName(value);
   }, []);
 
+  const addSessionExercise = useCallback((pick: SessionExercisePick) => {
+    setIsDirty(true);
+    const sets = Array.from({ length: pick.recommendedSets || 3 }).map(() => ({
+      reps: pick.recommendedReps || 10,
+      weight: 0,
+      completed: false,
+      drops: [] as ExerciseSet["drops"],
+    }));
+
+    setExercises((prev) => {
+      const exerciseIndex = prev.length;
+      setSessionLayout((layout) => [
+        ...layout,
+        { kind: "added", exerciseIndex },
+      ]);
+      return [
+        ...prev,
+        { exerciseId: pick.exerciseId, sets, notes: "" },
+      ];
+    });
+
+    setSessionExerciseMeta((meta) => ({
+      ...meta,
+      [pick.exerciseId]: {
+        name: pick.name,
+        videoUrl: pick.videoUrl,
+        recommendedSets: pick.recommendedSets,
+        recommendedReps: pick.recommendedReps,
+        restTime: pick.restTime,
+      },
+    }));
+  }, []);
+
+  const removeSessionExercise = useCallback((exIndex: number) => {
+    setIsDirty(true);
+
+    for (const key of propagatedWeightsRef.current.keys()) {
+      if (key.startsWith(`${exIndex}-`)) {
+        propagatedWeightsRef.current.delete(key);
+      }
+    }
+
+    setExercises((prev) => prev.filter((_, i) => i !== exIndex));
+    setSessionLayout((layout) => removeExerciseFromLayout(layout, exIndex));
+  }, []);
+
+  const getSessionExerciseDisplay = useCallback(
+    (exIndex: number) => {
+      const exercise = exercises[exIndex];
+      if (!exercise) return null;
+
+      const meta = sessionExerciseMeta[exercise.exerciseId];
+      if (meta) {
+        return {
+          name: meta.name,
+          videoUrl: meta.videoUrl,
+          restTime: meta.restTime,
+        };
+      }
+
+      const day = program?.days.find((d) => d.name === selectedDayName);
+      const programExercise = day?.blocks
+        .flatMap((b) => b.exercises)
+        .find(
+          (e) =>
+            e._id === exercise.exerciseId || e.name === exercise.exerciseId,
+        );
+
+      if (programExercise) {
+        return {
+          name: programExercise.name,
+          videoUrl: programExercise.videoUrl,
+          restTime: programExercise.restTime,
+        };
+      }
+
+      return { name: exercise.exerciseId };
+    },
+    [exercises, program?.days, selectedDayName, sessionExerciseMeta],
+  );
+
   return {
     selectedDayName,
     setSelectedDayName: handleDayChange,
@@ -825,6 +906,10 @@ export const useSessionForm = ({
     durationMinutes,
     setDurationMinutes: handleDurationChange,
     exercises,
+    sessionLayout,
+    getSessionExerciseDisplay,
+    addSessionExercise,
+    removeSessionExercise,
     updateSet,
     commitSetWeight,
     scrollToSet,

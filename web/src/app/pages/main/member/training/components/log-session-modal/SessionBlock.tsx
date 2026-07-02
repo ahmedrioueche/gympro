@@ -9,7 +9,7 @@ import { SessionSupersetCard } from "./SessionSupersetCard";
 interface SessionBlockProps {
   block: TrainingProgram["days"][0]["blocks"][0];
   exercises: ExerciseProgress[];
-  startIndex: number; // Global start index for numbering
+  exerciseIndices: number[];
   isSplit: boolean;
   onToggleSplit: () => void;
   onUpdateSet: (
@@ -41,12 +41,13 @@ interface SessionBlockProps {
     setIndex: number,
     completed: boolean,
   ) => void;
+  onRemoveExercise: (exIndex: number) => void;
 }
 
 export const SessionBlock = ({
   block,
   exercises,
-  startIndex,
+  exerciseIndices,
   isSplit,
   onToggleSplit,
   onUpdateSet,
@@ -58,8 +59,16 @@ export const SessionBlock = ({
   onRemoveDropSet,
   onViewVideo,
   onToggleSupersetCompletion,
+  onRemoveExercise,
 }: SessionBlockProps) => {
   const isSuperset = block.type === "superset" || block.type === "circuit";
+
+  const resolveProgramExercise = (exercise: ExerciseProgress) =>
+    block.exercises.find(
+      (progEx) =>
+        progEx._id === exercise.exerciseId ||
+        progEx.name === exercise.exerciseId,
+    );
 
   // Case 1: Standard Single Block OR Superset opted-out to Split View
   if (!isSuperset || isSplit) {
@@ -87,10 +96,10 @@ export const SessionBlock = ({
 
         {exercises.map((ex, i) => (
           <SessionExerciseCard
-            key={i}
+            key={exerciseIndices[i]}
             exercise={ex}
-            exerciseIndex={startIndex + i}
-            originalExercise={block.exercises[i]}
+            exerciseIndex={exerciseIndices[i]}
+            originalExercise={resolveProgramExercise(ex)}
             onUpdateSet={onUpdateSet}
             onCommitSetWeight={onCommitSetWeight}
             onAddSet={onAddSet}
@@ -99,6 +108,7 @@ export const SessionBlock = ({
             onUpdateDropSet={onUpdateDropSet}
             onRemoveDropSet={onRemoveDropSet}
             onViewVideo={onViewVideo}
+            onRemoveExercise={() => onRemoveExercise(exerciseIndices[i])}
           />
         ))}
       </div>
@@ -110,14 +120,17 @@ export const SessionBlock = ({
     <SessionSupersetCard
       block={block}
       exercises={exercises}
-      exIndices={exercises.map((_, i) => startIndex + i)}
+      exIndices={exerciseIndices}
       onUpdateSet={onUpdateSet}
       onCommitSetWeight={onCommitSetWeight}
       onAddSet={onAddSet}
       onRemoveSet={onRemoveSet}
       onToggleSplit={onToggleSplit}
-      originalFormattedExercises={block.exercises}
+      originalFormattedExercises={exercises.map(
+        (ex) => resolveProgramExercise(ex) ?? { name: ex.exerciseId },
+      )}
       onToggleSupersetCompletion={onToggleSupersetCompletion}
+      onRemoveExercise={onRemoveExercise}
     />
   );
 };

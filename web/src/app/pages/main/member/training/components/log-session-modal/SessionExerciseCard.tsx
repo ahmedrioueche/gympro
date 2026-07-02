@@ -11,9 +11,9 @@ import { SetWeightInput } from "./SetWeightInput";
 interface SessionExerciseCardProps {
   exercise: ExerciseProgress;
   exerciseIndex: number;
-  originalExercise:
+  originalExercise?:
     | TrainingProgram["days"][0]["blocks"][0]["exercises"][0]
-    | undefined;
+    | { name?: string; videoUrl?: string };
   onUpdateSet: (
     exIndex: number,
     setIndex: number,
@@ -38,6 +38,7 @@ interface SessionExerciseCardProps {
     dropIndex: number,
   ) => void;
   onViewVideo: (exercise: any) => void;
+  onRemoveExercise?: () => void;
 }
 
 export const SessionExerciseCard = ({
@@ -52,6 +53,7 @@ export const SessionExerciseCard = ({
   onUpdateDropSet,
   onRemoveDropSet,
   onViewVideo,
+  onRemoveExercise,
 }: SessionExerciseCardProps) => {
   const { t } = useTranslation();
   const { unit: weightUnit } = useWeightUnit();
@@ -81,6 +83,16 @@ export const SessionExerciseCard = ({
             </button>
           )}
         </div>
+        {onRemoveExercise && (
+          <button
+            type="button"
+            onClick={onRemoveExercise}
+            className="p-2 rounded-lg border border-border text-text-secondary hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/10 transition-all"
+            title={t("training.logSession.removeExercise")}
+          >
+            <Trash2 size={16} />
+          </button>
+        )}
       </div>
 
       {/* Sets List */}

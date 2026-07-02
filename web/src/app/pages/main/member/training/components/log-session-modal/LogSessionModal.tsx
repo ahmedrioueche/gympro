@@ -11,6 +11,8 @@ import {
 import { useModalStore } from "../../../../../../../store/modal";
 import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 import { SessionBlock } from "./SessionBlock";
+import { SessionExerciseCard } from "./SessionExerciseCard";
+import { AddSessionExercise } from "./AddSessionExercise";
 import { SessionProgressFooter } from "./SessionProgressFooter";
 import { useSessionForm } from "./useSessionForm";
 import { WorkoutCompleteCelebration } from "./WorkoutCompleteCelebration";
@@ -117,6 +119,25 @@ const LogSessionModalContent = ({
   }, [form.scrollToSet, form.clearScrollToSet]);
 
   const { program } = activeHistory;
+
+  const handleRemoveExercise = useCallback(
+    (exIndex: number) => {
+      const display = form.getSessionExerciseDisplay(exIndex);
+      const exerciseName =
+        display?.name || t("training.logSession.unknownExercise");
+
+      openModal("confirm", {
+        title: t("training.logSession.removeExerciseTitle"),
+        text: t("training.logSession.removeExerciseMessage", {
+          name: exerciseName,
+        }),
+        confirmText: t("training.logSession.removeExerciseConfirm"),
+        confirmVariant: "danger",
+        onConfirm: () => form.removeSessionExercise(exIndex),
+      });
+    },
+    [form, openModal, t],
+  );
 
   const handleSave = () => {
     const validationError = form.validateSession();
@@ -241,32 +262,70 @@ const LogSessionModalContent = ({
             {t("training.logSession.exercises")}
           </h3>
           <div className="space-y-3">
-            {form.exercises.length === 0 ? (
+            {form.sessionLayout.length === 0 ? (
               <p className="text-center text-text-secondary py-8">
                 {t("training.logSession.noExercises")}
               </p>
             ) : (
-              currentDay?.blocks.map((block, blockIndex) => {
-                const startIndex = currentDay.blocks
-                  .slice(0, blockIndex)
-                  .reduce((acc, b) => acc + b.exercises.length, 0);
+              form.sessionLayout.map((entry) => {
+                if (entry.kind === "program-block") {
+                  const block = currentDay?.blocks[entry.blockIndex];
+                  if (!block) return null;
 
-                const blockExercises = form.exercises.slice(
-                  startIndex,
-                  startIndex + block.exercises.length,
+                  const blockExercises = entry.exerciseIndices.map(
+                    (i) => form.exercises[i],
+                  );
+                  const isSplit =
+                    form.splitBlockIndices?.has(entry.blockIndex) ?? false;
+
+                  return (
+                    <SessionBlock
+                      key={`block-${entry.blockIndex}`}
+                      block={block}
+                      exercises={blockExercises}
+                      exerciseIndices={entry.exerciseIndices}
+                      isSplit={isSplit}
+                      onToggleSplit={() =>
+                        form.toggleBlockSplit(entry.blockIndex)
+                      }
+                      onUpdateSet={form.updateSet}
+                      onCommitSetWeight={form.commitSetWeight}
+                      onAddSet={form.addSet}
+                      onRemoveSet={form.removeSet}
+                      onAddDropSet={form.addDropSet}
+                      onUpdateDropSet={form.updateDropSet}
+                      onRemoveDropSet={form.removeDropSet}
+                      onViewVideo={(ex) =>
+                        openModal("exercise_detail", { exercise: ex })
+                      }
+                      onToggleSupersetCompletion={
+                        form.toggleSupersetCompletion
+                      }
+                      onRemoveExercise={handleRemoveExercise}
+                    />
+                  );
+                }
+
+                const exercise = form.exercises[entry.exerciseIndex];
+                if (!exercise) return null;
+
+                const display = form.getSessionExerciseDisplay(
+                  entry.exerciseIndex,
                 );
 
-                const isSplit =
-                  form.splitBlockIndices?.has(blockIndex) ?? false;
-
                 return (
-                  <SessionBlock
-                    key={blockIndex}
-                    block={block}
-                    exercises={blockExercises}
-                    startIndex={startIndex}
-                    isSplit={isSplit}
-                    onToggleSplit={() => form.toggleBlockSplit(blockIndex)}
+                  <SessionExerciseCard
+                    key={`added-${entry.exerciseIndex}`}
+                    exercise={exercise}
+                    exerciseIndex={entry.exerciseIndex}
+                    originalExercise={
+                      display
+                        ? {
+                            name: display.name,
+                            videoUrl: display.videoUrl,
+                          }
+                        : undefined
+                    }
                     onUpdateSet={form.updateSet}
                     onCommitSetWeight={form.commitSetWeight}
                     onAddSet={form.addSet}
@@ -277,11 +336,14 @@ const LogSessionModalContent = ({
                     onViewVideo={(ex) =>
                       openModal("exercise_detail", { exercise: ex })
                     }
-                    onToggleSupersetCompletion={form.toggleSupersetCompletion}
+                    onRemoveExercise={() =>
+                      handleRemoveExercise(entry.exerciseIndex)
+                    }
                   />
                 );
               })
             )}
+            <AddSessionExercise onAdd={form.addSessionExercise} />
           </div>
         </div>
       </div>

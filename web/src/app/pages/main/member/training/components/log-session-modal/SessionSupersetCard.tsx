@@ -29,6 +29,7 @@ interface SessionSupersetCardProps {
     setIndex: number,
     completed: boolean,
   ) => void;
+  onRemoveExercise?: (exIndex: number) => void;
 }
 
 export const SessionSupersetCard = ({
@@ -81,7 +82,9 @@ export const SessionSupersetCard = ({
             {block.type === "superset" ? "Superset" : "Circuit"}
           </span>
           <span className="text-text-secondary text-sm hidden sm:inline">
-            {exercises.map((e) => e.exerciseId).join(" + ")}
+            {originalFormattedExercises
+              .map((e) => e.name || e.exerciseId)
+              .join(" + ")}
           </span>
         </div>
         <button
@@ -161,7 +164,7 @@ export const SessionSupersetCard = ({
                     <div key={i} className="flex items-center gap-3">
                       {/* Exercise Name (Small) */}
                       <div className="w-24 sm:w-32 text-xs font-medium text-text-primary truncate">
-                        {ex.exerciseId}
+                        {originalFormattedExercises[i]?.name || ex.exerciseId}
                       </div>
 
                       {/* Inputs */}
