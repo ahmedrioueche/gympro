@@ -2650,6 +2650,8 @@
       },
       "recentSessions": "Séances récentes",
       "sessionDuration": "{{minutes}} min",
+      "sessionDurationHours": "{{hours}}h",
+      "sessionDurationHoursMinutes": "{{hours}}h {{minutes}}m",
       "workoutHistory": "Historique des entraînements",
       "noWorkouts": "Aucune séance enregistrée pour le moment",
       "noWorkoutsDesc": "Commencez à enregistrer vos séances pour suivre vos progrès",

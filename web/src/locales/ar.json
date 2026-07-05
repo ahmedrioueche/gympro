@@ -2649,6 +2649,8 @@
       },
       "recentSessions": "الجلسات الأخيرة",
       "sessionDuration": "{{minutes}} د",
+      "sessionDurationHours": "{{hours}} س",
+      "sessionDurationHoursMinutes": "{{hours}} س {{minutes}} د",
       "workoutHistory": "سجل التمارين",
       "noWorkouts": "لم يتم تسجيل أي تمارين بعد",
       "noWorkoutsDesc": "ابدأ بتسجيل تمارينك لتتبع تقدمك",

@@ -1,9 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 
+/** Formats elapsed time: H:MM:SS when hours > 0, M:SS when minutes > 0, else seconds only. */
 const formatElapsed = (totalSeconds: number): string => {
-  const m = Math.floor(totalSeconds / 60);
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
   const s = totalSeconds % 60;
-  return `${m}:${s.toString().padStart(2, "0")}`;
+  const ss = s.toString().padStart(2, "0");
+
+  if (h > 0) {
+    return `${h}:${m.toString().padStart(2, "0")}:${ss}`;
+  }
+  if (m > 0) {
+    return `${m}:${ss}`;
+  }
+  return String(s);
 };
 
 interface UseSessionTimerProps {

@@ -2663,6 +2663,8 @@
       },
       "recentSessions": "Recent Sessions",
       "sessionDuration": "{{minutes}} min",
+      "sessionDurationHours": "{{hours}}h",
+      "sessionDurationHoursMinutes": "{{hours}}h {{minutes}}m",
       "workoutHistory": "Workout History",
       "noWorkouts": "No workouts logged yet",
       "noWorkoutsDesc": "Start logging your workouts to track your progress",

@@ -7,6 +7,7 @@ import { ChevronDown, Clock, Dumbbell, Edit2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../../components/ui/Button";
+import { formatSessionDurationMinutes } from "../../../../../../../utils/formatSessionDuration";
 import { SessionExerciseList } from "./SessionExerciseList";
 
 interface SessionItemProps {
@@ -47,10 +48,10 @@ export const SessionItem = ({
                 {session.durationMinutes ? (
                   <span>
                     {" · "}
-                    {t("training.page.sessionDuration", {
-                      minutes: session.durationMinutes,
-                      defaultValue: "{{minutes}} min",
-                    })}
+                    {formatSessionDurationMinutes(
+                      session.durationMinutes,
+                      t,
+                    )}
                   </span>
                 ) : null}
               </span>

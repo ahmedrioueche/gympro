@@ -1,6 +1,7 @@
 import { ActoChatWidget, ActocoreProvider } from "@ahmedrioueche/actocore-sdk";
 import "@ahmedrioueche/actocore-sdk/styles.css";
 import { gymApi } from "@ahmedrioueche/gympro-client";
+import { BASE_MODAL_Z_INDEX } from "../../../hooks/useModalLayer";
 
 function ActoCore() {
   return (
@@ -17,11 +18,7 @@ function ActoCore() {
         },
       }}
     >
-      {/* Floating launcher + panel */}
-      <ActoChatWidget />
-      {/* Or inline chat instead of widget: */}
-      {/* <ActoChat /> */}
-      {/* rest of your app */}
+      <ActoChatWidget zIndex={BASE_MODAL_Z_INDEX - 10} />
     </ActocoreProvider>
   );
 }

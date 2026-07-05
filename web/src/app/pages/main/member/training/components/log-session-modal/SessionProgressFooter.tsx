@@ -1,5 +1,5 @@
 import type { ExerciseProgress } from "@ahmedrioueche/gympro-client";
-import { Check, CheckCircle2, Clock, Cloud } from "lucide-react";
+import { Check, CheckCircle2, Cloud } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useTimerStore } from "../../../../../../../store/timer";
@@ -54,88 +54,52 @@ export const SessionProgressFooter = ({
   const showAutoSaveStatus = isAutoSaving || showSavedIndicator;
 
   return (
-    <div className="flex flex-col gap-3 w-full">
-      {/* Timers — above progress on mobile; row on desktop */}
-      <div
-        className={`flex flex-col gap-2 ${isRestTimerActive ? "sm:flex-row sm:gap-3" : ""}`}
-      >
+    <div className="flex flex-col gap-2 w-full">
+      {/* Timers — same height, single row */}
+      <div className="flex items-center gap-2 w-full">
         <div
-          className={`rounded-xl border border-border bg-background-secondary/50 p-3 ${isRestTimerActive ? "flex-1 min-w-0" : "w-full"}`}
+          className="shrink-0"
+          aria-live="polite"
+          aria-label={t(
+            "training.logSession.sessionTimerRunning",
+            "Session timer running",
+          )}
         >
-          <div className="flex items-center gap-2">
-            <Clock size={16} className="text-primary flex-shrink-0" />
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase font-bold tracking-wider text-text-secondary">
-                {t("training.logSession.sessionTimer", "Session")}
-              </p>
-              <div className="flex items-center gap-2">
-                {sessionTimerIsRunning && (
-                  <span
-                    className="w-2 h-2 rounded-full bg-success animate-pulse flex-shrink-0"
-                    aria-hidden
-                  />
-                )}
-                <span
-                  className="text-xl font-mono font-bold tabular-nums text-text-primary"
-                  aria-live="polite"
-                  aria-label={t(
-                    "training.logSession.sessionTimerRunning",
-                    "Session timer running",
-                  )}
-                >
-                  {sessionTimerFormattedElapsed}
-                </span>
-              </div>
-            </div>
+          <div className="relative flex items-center gap-1.5 h-8 px-2 rounded-lg border border-border bg-background-secondary/50 overflow-hidden">
+            {sessionTimerIsRunning && (
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-success animate-pulse shrink-0"
+                aria-hidden
+              />
+            )}
+            <span className="text-[10px] font-bold uppercase text-text-secondary shrink-0">
+              {t("training.logSession.sessionTimer", "Session")}
+            </span>
+            <span className="text-sm font-mono font-bold tabular-nums text-text-primary leading-none shrink-0">
+              {sessionTimerFormattedElapsed}
+            </span>
           </div>
         </div>
 
-        {isRestTimerActive && (
-          <div className="flex-1 min-w-0">
-            <CompactRestTimer variant="inline" />
-          </div>
-        )}
+        {isRestTimerActive && <CompactRestTimer variant="inline" />}
       </div>
 
-      {showAutoSaveStatus && (
-        <div
-          className={`flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-300 sm:hidden ${
-            isAutoSaving
-              ? "bg-primary/10 text-primary"
-              : "bg-success/10 text-success"
-          }`}
-          aria-live="polite"
-        >
-          {isAutoSaving ? (
-            <>
-              <div className="w-3.5 h-3.5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-              {t("training.logSession.autoSaving")}
-            </>
-          ) : (
-            <>
-              <Check size={14} strokeWidth={3} />
-              {t("training.logSession.autoSaved")}
-            </>
-          )}
-        </div>
-      )}
-
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-2 sm:gap-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-2 gap-2">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-xl sm:text-2xl font-bold text-primary">
+          <div className="flex items-center justify-between mb-1 gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-lg sm:text-xl font-bold text-primary leading-none">
                 {progressPercent}%
               </span>
-              <span className="text-text-secondary text-xs sm:text-sm truncate">
+              <span className="text-text-secondary text-[10px] sm:text-xs truncate">
                 {t("training.logSession.sessionProgress")}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1.5 flex-shrink-0">
               {showAutoSaveStatus && (
                 <div
-                  className={`hidden sm:flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition-all duration-300 ${
+                  className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold transition-all duration-300 ${
                     isAutoSaving
                       ? "bg-primary/10 text-primary"
                       : "bg-success/10 text-success"
@@ -144,33 +108,37 @@ export const SessionProgressFooter = ({
                 >
                   {isAutoSaving ? (
                     <>
-                      <Cloud size={13} className="animate-pulse" />
-                      {t("training.logSession.autoSaving")}
+                      <Cloud size={11} className="animate-pulse" />
+                      <span className="hidden sm:inline">
+                        {t("training.logSession.autoSaving")}
+                      </span>
                     </>
                   ) : (
                     <>
-                      <Check size={13} strokeWidth={3} />
-                      {t("training.logSession.autoSaved")}
+                      <Check size={11} strokeWidth={3} />
+                      <span className="hidden sm:inline">
+                        {t("training.logSession.autoSaved")}
+                      </span>
                     </>
                   )}
                 </div>
               )}
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1">
                 {allComplete && (
-                  <CheckCircle2 size={16} className="text-success" />
+                  <CheckCircle2 size={14} className="text-success" />
                 )}
-                <span className="font-bold text-text-primary text-sm sm:text-base">
+                <span className="font-bold text-text-primary text-xs sm:text-sm leading-none">
                   {completedSets}
                 </span>
-                <span className="text-text-secondary text-xs sm:text-sm">
-                  / {totalSets} {t("training.logSession.setsComplete")}
+                <span className="text-text-secondary text-[10px] sm:text-xs leading-none">
+                  / {totalSets}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="h-2 sm:h-2.5 bg-background-secondary rounded-full overflow-hidden">
+          <div className="h-1.5 bg-background-secondary rounded-full overflow-hidden">
             <div
               className={`h-full transition-all duration-300 rounded-full ${
                 allComplete
@@ -185,7 +153,7 @@ export const SessionProgressFooter = ({
         <button
           onClick={onDone}
           disabled={isSaving}
-          className={`flex-shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-white transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base ${
+          className={`flex-shrink-0 px-3 sm:px-5 py-2 rounded-lg font-bold text-white transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm ${
             allComplete
               ? "bg-success hover:bg-success/90"
               : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
@@ -193,12 +161,12 @@ export const SessionProgressFooter = ({
         >
           {isSaving ? (
             <>
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               <span className="hidden sm:inline">{t("common.saving")}</span>
             </>
           ) : (
             <>
-              <Check size={20} />
+              <Check size={16} />
               {t("training.logSession.done")}
             </>
           )}
