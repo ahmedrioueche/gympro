@@ -23,6 +23,8 @@
     "currentLanguage": "Current Language",
     "currentRoute": "Current Route",
     "back": "Back",
+    "expand": "Expand",
+    "collapse": "Collapse",
     "save": "Save",
     "generate": "Generate",
     "select": "Select",

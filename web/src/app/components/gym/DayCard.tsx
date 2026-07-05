@@ -2,7 +2,13 @@ import {
   type CreateExerciseDto,
   type CreateProgramDayDto,
 } from "@ahmedrioueche/gympro-client";
-import { Calendar, Layers, Link as LinkIcon, Plus } from "lucide-react";
+import {
+  Calendar,
+  ChevronDown,
+  Layers,
+  Link as LinkIcon,
+  Plus,
+} from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import InputField from "../../../components/ui/InputField";
@@ -46,6 +52,7 @@ export const DayCard = ({
     new Set(),
   );
   const [selectedBlocks, setSelectedBlocks] = useState<Set<number>>(new Set());
+  const [isDayCollapsed, setIsDayCollapsed] = useState(false);
   const { user } = useUserStore();
   const defaultRestTime = user?.appSettings?.timer?.defaultRestTime ?? 90;
 
@@ -128,9 +135,9 @@ export const DayCard = ({
           )}
         </div>
 
-        {isEditMode && (
-          <div className="flex items-center gap-2">
-            {isSelectionMode ? (
+        <div className="flex items-center gap-2">
+          {isEditMode &&
+            (isSelectionMode ? (
               <>
                 <button
                   onClick={toggleSelectionMode}
@@ -173,12 +180,31 @@ export const DayCard = ({
                   {t("training.programs.create.form.addExercise")}
                 </button>
               </>
-            )}
-          </div>
-        )}
+            ))}
+
+          <button
+            type="button"
+            onClick={() => setIsDayCollapsed((prev) => !prev)}
+            aria-expanded={!isDayCollapsed}
+            aria-label={
+              isDayCollapsed
+                ? t("common.expand", "Expand")
+                : t("common.collapse", "Collapse")
+            }
+            className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-secondary transition-all"
+          >
+            <ChevronDown
+              size={18}
+              className={`transition-transform duration-200 ${
+                isDayCollapsed ? "-rotate-90" : "rotate-0"
+              }`}
+            />
+          </button>
+        </div>
       </div>
 
-      <div className="p-3 space-y-3">
+      {!isDayCollapsed && (
+        <div className="p-3 space-y-3">
         {isEditMode ? (
           <>
             {day.blocks.map((block, blockIndex) => {
@@ -343,12 +369,13 @@ export const DayCard = ({
             />
           ))
         )}
-        {day.blocks.length === 0 && (
-          <p className="text-sm text-text-secondary text-center py-4">
-            {t("training.programs.create.form.noExercises")}
-          </p>
-        )}
-      </div>
+          {day.blocks.length === 0 && (
+            <p className="text-sm text-text-secondary text-center py-4">
+              {t("training.programs.create.form.noExercises")}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
