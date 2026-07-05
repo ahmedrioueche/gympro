@@ -2886,6 +2886,7 @@
         "recommendedSets": "Recommended Sets",
         "recommendedReps": "Recommended Reps",
         "duration": "Duration (minutes)",
+        "restTime": "Rest (s)",
         "videoUrl": "Video URL",
         "imageUrl": "Image URL",
         "makePublic": "Make Public",

@@ -6,6 +6,7 @@ import {
   PlayCircle,
   Repeat,
   Target,
+  Timer,
   X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -34,7 +35,10 @@ export default function ExerciseDetailModal() {
   ]
     .filter(Boolean)
     .join(" × ");
-  const hasStats = hasSetsReps || Boolean(exercise.durationMinutes);
+  const hasStats =
+    hasSetsReps ||
+    Boolean(exercise.durationMinutes) ||
+    Boolean(exercise.restTime);
   const hasBadges = Boolean(exercise.type || exercise.difficulty);
 
   return (
@@ -126,6 +130,17 @@ export default function ExerciseDetailModal() {
                 </span>
               </div>
             )}
+            {exercise.restTime ? (
+              <div className="p-3 bg-surface rounded-xl border border-border text-center">
+                <div className="flex items-center justify-center gap-1.5 text-xs text-text-secondary mb-1">
+                  <Timer size={14} className="text-primary" />
+                  {t("training.exercises.form.restTime", "Rest (s)")}
+                </div>
+                <span className="text-lg font-bold text-text-primary">
+                  {exercise.restTime}s
+                </span>
+              </div>
+            ) : null}
           </div>
         )}
 

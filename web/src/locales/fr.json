@@ -2873,6 +2873,7 @@
         "recommendedSets": "Séries Recommandées",
         "recommendedReps": "Répétitions Recommandées",
         "duration": "Durée (minutes)",
+        "restTime": "Repos (s)",
         "videoUrl": "URL de la vidéo",
         "imageUrl": "URL de l'image",
         "makePublic": "Rendre Public",

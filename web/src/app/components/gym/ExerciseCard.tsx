@@ -8,6 +8,7 @@ import {
   Edit2,
   MoreVertical,
   Repeat,
+  Timer,
   Trash2,
   Video,
 } from "lucide-react";
@@ -239,6 +240,17 @@ export const ExerciseCard = ({
               {exercise.durationMinutes ? `${exercise.durationMinutes}m` : "-"}
             </span>
           </div>
+          {exercise.restTime ? (
+            <div className="bg-background-secondary/50 rounded-lg p-2 text-center border border-border/50">
+              <div className="flex items-center justify-center gap-1.5 text-xs text-text-secondary mb-0.5">
+                <Timer size={12} className="text-primary" />
+                {t("training.exercises.form.restTime", "Rest (s)")}
+              </div>
+              <span className="font-bold text-text-primary">
+                {exercise.restTime}s
+              </span>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

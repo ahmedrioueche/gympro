@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import CustomSelect from "../../../../components/ui/CustomSelect";
 import InputField from "../../../../components/ui/InputField";
 import TextArea from "../../../../components/ui/TextArea";
+import { useUserStore } from "../../../../store/user";
 import { MuscleSelector } from "../../gym/MuscleSelector";
 
 interface ExerciseFormContentProps {
@@ -32,6 +33,8 @@ export function ExerciseFormContent({
   setFormData,
 }: ExerciseFormContentProps) {
   const { t } = useTranslation();
+  const { user } = useUserStore();
+  const defaultRestTime = user?.appSettings?.timer?.defaultRestTime ?? 90;
 
   const typeOptions = EXERCISE_TYPES.map((type) => ({
     value: type,
@@ -123,7 +126,7 @@ export function ExerciseFormContent({
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <InputField
           label={t("training.exercises.form.recommendedSets")}
           type="number"
@@ -146,6 +149,16 @@ export function ExerciseFormContent({
           value={formData.durationMinutes}
           onChange={(e) =>
             updateField("durationMinutes", parseInt(e.target.value) || 0)
+          }
+        />
+        <InputField
+          label={t("training.exercises.form.restTime", "Rest (s)")}
+          type="number"
+          min="0"
+          placeholder={defaultRestTime.toString()}
+          value={formData.restTime}
+          onChange={(e) =>
+            updateField("restTime", parseInt(e.target.value) || 0)
           }
         />
       </div>

@@ -76,6 +76,7 @@ export const ExerciseForm = ({
       instructions: libraryExercise.instructions,
       recommendedSets: libraryExercise.recommendedSets || 3,
       recommendedReps: libraryExercise.recommendedReps || 10,
+      restTime: libraryExercise.restTime,
       targetMuscles: normalizeTargetMuscles(libraryExercise.targetMuscles),
       equipment: libraryExercise.equipment,
       videoUrl: libraryExercise.videoUrl,

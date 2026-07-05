@@ -43,6 +43,9 @@ export class ExerciseModel extends Document {
   durationMinutes?: number;
 
   @Prop()
+  restTime?: number;
+
+  @Prop()
   videoUrl?: string;
 
   @Prop()
