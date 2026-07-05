@@ -15,6 +15,26 @@ import { useModalStore } from "../../../store/modal";
 import { useModalLayer } from "../../../hooks/useModalLayer";
 import { getEmbedUrl } from "../../../utils/helper";
 
+const StatChip = ({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Repeat;
+  label: string;
+  value: string;
+}) => (
+  <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-surface min-w-0">
+    <Icon size={14} className="text-primary shrink-0" />
+    <div className="min-w-0">
+      <p className="text-[10px] uppercase font-semibold text-text-secondary truncate">
+        {label}
+      </p>
+      <p className="text-sm font-bold text-text-primary leading-tight">{value}</p>
+    </div>
+  </div>
+);
+
 export default function ExerciseDetailModal() {
   const { t } = useTranslation();
   const { closeModal, exerciseModalProps } = useModalStore();
@@ -40,6 +60,10 @@ export default function ExerciseDetailModal() {
     Boolean(exercise.durationMinutes) ||
     Boolean(exercise.restTime);
   const hasBadges = Boolean(exercise.type || exercise.difficulty);
+  const hasMuscles = (exercise.targetMuscles?.length ?? 0) > 0;
+  const hasEquipment = (exercise.equipment?.length ?? 0) > 0;
+  const hasMetaRow = hasBadges || hasStats;
+  const hasTagsRow = hasMuscles || hasEquipment;
 
   return (
     <BaseModal
@@ -56,8 +80,7 @@ export default function ExerciseDetailModal() {
         icon: X,
       }}
     >
-      <div className="space-y-6">
-        {/* Media - takes most of the modal */}
+      <div className="space-y-4">
         {embedUrl ? (
           <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-lg border border-border">
             <iframe
@@ -84,107 +107,98 @@ export default function ExerciseDetailModal() {
           </div>
         )}
 
-        {/* Badges */}
-        {hasBadges && (
-          <div className="flex flex-wrap gap-2">
-            {exercise.type && (
-              <span className="px-2.5 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-lg border border-primary/10 uppercase tracking-wide flex items-center gap-1.5">
-                <Activity size={14} />
-                {t(`training.exercises.types.${exercise.type}`, exercise.type)}
-              </span>
-            )}
-            {exercise.difficulty && (
-              <span className="px-2.5 py-1 bg-secondary/10 text-secondary text-xs font-semibold rounded-lg border border-secondary/10 uppercase tracking-wide flex items-center gap-1.5">
-                <BarChart size={14} />
-                {t(
-                  `training.exercises.difficulty.${exercise.difficulty}`,
-                  exercise.difficulty,
+        {hasMetaRow && (
+          <div className="flex flex-col md:flex-row md:flex-wrap md:items-start gap-3">
+            {hasBadges && (
+              <div className="flex flex-wrap gap-2 md:shrink-0">
+                {exercise.type && (
+                  <span className="px-2.5 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-lg border border-primary/10 uppercase tracking-wide inline-flex items-center gap-1.5">
+                    <Activity size={14} />
+                    {t(`training.exercises.types.${exercise.type}`, exercise.type)}
+                  </span>
                 )}
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Stats */}
-        {hasStats && (
-          <div className="grid grid-cols-2 gap-3">
-            {hasSetsReps && (
-              <div className="p-3 bg-surface rounded-xl border border-border text-center">
-                <div className="flex items-center justify-center gap-1.5 text-xs text-text-secondary mb-1">
-                  <Repeat size={14} className="text-primary" />
-                  {t("training.exercises.form.recommendedSets")}
-                </div>
-                <span className="text-lg font-bold text-text-primary">
-                  {setsRepsLabel}
-                </span>
+                {exercise.difficulty && (
+                  <span className="px-2.5 py-1 bg-secondary/10 text-secondary text-xs font-semibold rounded-lg border border-secondary/10 uppercase tracking-wide inline-flex items-center gap-1.5">
+                    <BarChart size={14} />
+                    {t(
+                      `training.exercises.difficulty.${exercise.difficulty}`,
+                      exercise.difficulty,
+                    )}
+                  </span>
+                )}
               </div>
             )}
-            {exercise.durationMinutes && (
-              <div className="p-3 bg-surface rounded-xl border border-border text-center">
-                <div className="flex items-center justify-center gap-1.5 text-xs text-text-secondary mb-1">
-                  <Clock size={14} className="text-primary" />
-                  {t("training.exercises.form.duration")}
-                </div>
-                <span className="text-lg font-bold text-text-primary">
-                  {exercise.durationMinutes}m
-                </span>
+
+            {hasStats && (
+              <div className="flex flex-wrap gap-2 flex-1 min-w-0">
+                {hasSetsReps && (
+                  <StatChip
+                    icon={Repeat}
+                    label={t("training.exercises.form.recommendedSets")}
+                    value={setsRepsLabel}
+                  />
+                )}
+                {exercise.durationMinutes ? (
+                  <StatChip
+                    icon={Clock}
+                    label={t("training.exercises.form.duration")}
+                    value={`${exercise.durationMinutes}m`}
+                  />
+                ) : null}
+                {exercise.restTime ? (
+                  <StatChip
+                    icon={Timer}
+                    label={t("training.exercises.form.restTime", "Rest (s)")}
+                    value={`${exercise.restTime}s`}
+                  />
+                ) : null}
               </div>
             )}
-            {exercise.restTime ? (
-              <div className="p-3 bg-surface rounded-xl border border-border text-center">
-                <div className="flex items-center justify-center gap-1.5 text-xs text-text-secondary mb-1">
-                  <Timer size={14} className="text-primary" />
-                  {t("training.exercises.form.restTime", "Rest (s)")}
+          </div>
+        )}
+
+        {hasTagsRow && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {hasMuscles && (
+              <div className="min-w-0">
+                <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2 mb-2">
+                  <Target size={16} className="text-primary shrink-0" />
+                  {t("training.exercises.form.targetMuscles")}
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {exercise.targetMuscles!.map((muscle) => (
+                    <span
+                      key={muscle}
+                      className="px-3 py-1 bg-surface-secondary text-text-secondary text-sm rounded-lg border border-border capitalize"
+                    >
+                      {t(`training.muscles.${muscle}`, muscle)}
+                    </span>
+                  ))}
                 </div>
-                <span className="text-lg font-bold text-text-primary">
-                  {exercise.restTime}s
-                </span>
               </div>
-            ) : null}
+            )}
+
+            {hasEquipment && (
+              <div className="min-w-0">
+                <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2 mb-2">
+                  <Dumbbell size={16} className="text-secondary shrink-0" />
+                  {t("training.exercises.form.equipment")}
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {exercise.equipment!.map((item) => (
+                    <span
+                      key={item}
+                      className="px-3 py-1 bg-surface-secondary text-text-secondary text-sm rounded-lg border border-border capitalize"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Target Muscles */}
-        {exercise.targetMuscles?.length > 0 && (
-          <div>
-            <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2 mb-2">
-              <Target size={16} className="text-primary" />
-              {t("training.exercises.form.targetMuscles")}
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {exercise.targetMuscles.map((muscle) => (
-                <span
-                  key={muscle}
-                  className="px-3 py-1 bg-surface-secondary text-text-secondary text-sm rounded-lg border border-border capitalize"
-                >
-                  {t(`training.muscles.${muscle}`, muscle)}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Equipment */}
-        {exercise.equipment?.length > 0 && (
-          <div>
-            <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2 mb-2">
-              <Dumbbell size={16} className="text-secondary" />
-              {t("training.exercises.form.equipment")}
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {exercise.equipment.map((item) => (
-                <span
-                  key={item}
-                  className="px-3 py-1 bg-surface-secondary text-text-secondary text-sm rounded-lg border border-border capitalize"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Description */}
         {exercise.description && (
           <div>
             <h4 className="text-sm font-semibold text-text-primary mb-2">
@@ -196,7 +210,6 @@ export default function ExerciseDetailModal() {
           </div>
         )}
 
-        {/* Instructions */}
         {exercise.instructions && (
           <div>
             <h4 className="text-sm font-semibold text-text-primary mb-2">

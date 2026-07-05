@@ -61,6 +61,7 @@ export const SessionExerciseCard = ({
   const exerciseName =
     originalExercise?.name || t("training.logSession.unknownExercise");
   const hasVideo = !!originalExercise?.videoUrl;
+  const hasCompletedSets = exercise.sets.some((set) => set.completed);
 
   return (
     <div className="bg-surface border border-border rounded-xl overflow-hidden shadow-sm">
@@ -87,8 +88,20 @@ export const SessionExerciseCard = ({
           <button
             type="button"
             onClick={onRemoveExercise}
-            className="p-2 rounded-lg border border-border text-text-secondary hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/10 transition-all"
-            title={t("training.logSession.removeExercise")}
+            disabled={hasCompletedSets}
+            className={`p-2 rounded-lg border transition-all ${
+              hasCompletedSets
+                ? "border-border text-text-secondary/30 cursor-not-allowed opacity-50"
+                : "border-border text-text-secondary hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/10"
+            }`}
+            title={
+              hasCompletedSets
+                ? t(
+                    "training.logSession.uncheckToDelete",
+                    "Uncheck to delete",
+                  )
+                : t("training.logSession.removeExercise")
+            }
           >
             <Trash2 size={16} />
           </button>
