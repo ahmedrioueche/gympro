@@ -1,7 +1,9 @@
 import type { ExerciseProgress } from "@ahmedrioueche/gympro-client";
-import { Check, CheckCircle2, Cloud } from "lucide-react";
+import { Check, CheckCircle2, Clock, Cloud } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useTimerStore } from "../../../../../../../store/timer";
+import { CompactRestTimer } from "./CompactRestTimer";
 
 interface SessionProgressFooterProps {
   exercises: ExerciseProgress[];
@@ -9,6 +11,8 @@ interface SessionProgressFooterProps {
   isSaving: boolean;
   isAutoSaving?: boolean;
   showSavedIndicator?: boolean;
+  sessionTimerFormattedElapsed: string;
+  sessionTimerIsRunning: boolean;
 }
 
 export const SessionProgressFooter = ({
@@ -17,8 +21,11 @@ export const SessionProgressFooter = ({
   isSaving,
   isAutoSaving = false,
   showSavedIndicator = false,
+  sessionTimerFormattedElapsed,
+  sessionTimerIsRunning,
 }: SessionProgressFooterProps) => {
   const { t } = useTranslation();
+  const isRestTimerActive = useTimerStore((s) => s.endTime !== null);
 
   const { completedSets, totalSets, progressPercent, allComplete } =
     useMemo(() => {
@@ -48,6 +55,48 @@ export const SessionProgressFooter = ({
 
   return (
     <div className="flex flex-col gap-3 w-full">
+      {/* Timers — above progress on mobile; row on desktop */}
+      <div
+        className={`flex flex-col gap-2 ${isRestTimerActive ? "sm:flex-row sm:gap-3" : ""}`}
+      >
+        <div
+          className={`rounded-xl border border-border bg-background-secondary/50 p-3 ${isRestTimerActive ? "flex-1 min-w-0" : "w-full"}`}
+        >
+          <div className="flex items-center gap-2">
+            <Clock size={16} className="text-primary flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] uppercase font-bold tracking-wider text-text-secondary">
+                {t("training.logSession.sessionTimer", "Session")}
+              </p>
+              <div className="flex items-center gap-2">
+                {sessionTimerIsRunning && (
+                  <span
+                    className="w-2 h-2 rounded-full bg-success animate-pulse flex-shrink-0"
+                    aria-hidden
+                  />
+                )}
+                <span
+                  className="text-xl font-mono font-bold tabular-nums text-text-primary"
+                  aria-live="polite"
+                  aria-label={t(
+                    "training.logSession.sessionTimerRunning",
+                    "Session timer running",
+                  )}
+                >
+                  {sessionTimerFormattedElapsed}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {isRestTimerActive && (
+          <div className="flex-1 min-w-0">
+            <CompactRestTimer variant="inline" />
+          </div>
+        )}
+      </div>
+
       {showAutoSaveStatus && (
         <div
           className={`flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-300 sm:hidden ${

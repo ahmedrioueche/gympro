@@ -41,9 +41,18 @@ export const SessionItem = ({
               <h4 className="font-semibold text-text-primary capitalize">
                 {session.dayName}
               </h4>
-              <span className="text-xs text-text-secondary flex items-center gap-1">
+              <span className="text-xs text-text-secondary flex items-center gap-1 flex-wrap">
                 <Clock size={14} />
                 {format(new Date(session.date), "MMM d, yyyy - HH:mm")}
+                {session.durationMinutes ? (
+                  <span>
+                    {" · "}
+                    {t("training.page.sessionDuration", {
+                      minutes: session.durationMinutes,
+                      defaultValue: "{{minutes}} min",
+                    })}
+                  </span>
+                ) : null}
               </span>
             </div>
           </div>

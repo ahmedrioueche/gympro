@@ -146,6 +146,8 @@ const LogSessionModalContent = ({
       return;
     }
 
+    const durationMinutes = form.finalizeSessionTimer();
+
     let completedSets = 0;
     let totalSets = 0;
     form.exercises.forEach((ex) => {
@@ -160,7 +162,7 @@ const LogSessionModalContent = ({
         programId: program._id!,
         dayName: form.selectedDayName,
         date: form.sessionDate,
-        durationMinutes: form.durationMinutes,
+        durationMinutes,
         exercises: form.exercises,
         sessionId:
           mode === "edit"
@@ -210,6 +212,8 @@ const LogSessionModalContent = ({
           isSaving={logSession.isPending}
           isAutoSaving={form.isAutoSaving}
           showSavedIndicator={form.showSavedIndicator}
+          sessionTimerFormattedElapsed={form.sessionTimerFormattedElapsed}
+          sessionTimerIsRunning={form.sessionTimerIsRunning}
         />
       }
     >
@@ -234,24 +238,6 @@ const LogSessionModalContent = ({
               type="datetime-local"
               value={form.sessionDate}
               onChange={(e) => form.setSessionDate(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-2">
-              {t("training.logSession.duration")}
-            </label>
-            <InputField
-              type="number"
-              placeholder="45"
-              value={form.durationMinutes}
-              onChange={(e) =>
-                form.setDurationMinutes(parseInt(e.target.value) || 0)
-              }
-              rightIcon={
-                <span className="text-xs font-bold text-text-secondary uppercase">
-                  min
-                </span>
-              }
             />
           </div>
         </div>

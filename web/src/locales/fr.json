@@ -2649,6 +2649,7 @@
         "history": "Historique"
       },
       "recentSessions": "Séances récentes",
+      "sessionDuration": "{{minutes}} min",
       "workoutHistory": "Historique des entraînements",
       "noWorkouts": "Aucune séance enregistrée pour le moment",
       "noWorkoutsDesc": "Commencez à enregistrer vos séances pour suivre vos progrès",
@@ -2948,6 +2949,8 @@
       "addSet": "Ajouter une série",
       "set": "Série",
       "sessionProgress": "Progression de la séance",
+      "sessionTimer": "Séance",
+      "sessionTimerRunning": "Chronomètre de séance en cours",
       "setsComplete": "séries",
       "autoSaving": "Enregistrement...",
       "autoSaved": "Enregistré",

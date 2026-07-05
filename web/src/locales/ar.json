@@ -2648,6 +2648,7 @@
         "history": "السجل"
       },
       "recentSessions": "الجلسات الأخيرة",
+      "sessionDuration": "{{minutes}} د",
       "workoutHistory": "سجل التمارين",
       "noWorkouts": "لم يتم تسجيل أي تمارين بعد",
       "noWorkoutsDesc": "ابدأ بتسجيل تمارينك لتتبع تقدمك",
@@ -2947,6 +2948,8 @@
       "addSet": "إضافة مجموعة",
       "set": "مجموعة",
       "sessionProgress": "تقدم الجلسة",
+      "sessionTimer": "الجلسة",
+      "sessionTimerRunning": "مؤقت الجلسة يعمل",
       "setsComplete": "مجموعات",
       "autoSaving": "جاري الحفظ...",
       "autoSaved": "تم الحفظ",

@@ -23,6 +23,7 @@ import {
   type SessionLayoutEntry,
 } from "./sessionLayout";
 import type { SessionExercisePick } from "./AddSessionExercise";
+import { computeDurationMinutes, useSessionTimer } from "./useSessionTimer";
 
 interface UseSessionFormProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ interface StoredSession {
   splitBlockIndices?: number[]; // Track which blocks user chose to split (opt-out of superset)
   sessionLayout?: SessionLayoutEntry[];
   sessionExerciseMeta?: Record<string, SessionExerciseMeta>;
+  sessionTimerStartedAt?: number;
 }
 
 export const useSessionForm = ({
@@ -72,8 +74,11 @@ export const useSessionForm = ({
       : format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
   const [durationMinutes, setDurationMinutes] = useState<number>(
-    initialSession?.durationMinutes || 45,
+    initialSession?.durationMinutes || 1,
   );
+  const [sessionTimerStartedAt, setSessionTimerStartedAt] = useState<
+    number | null
+  >(null);
   const [exercises, setExercises] = useState<ExerciseProgress[]>([]);
   const [sessionLayout, setSessionLayout] = useState<SessionLayoutEntry[]>([]);
   const [sessionExerciseMeta, setSessionExerciseMeta] = useState<
@@ -117,6 +122,22 @@ export const useSessionForm = ({
     setIndex: number;
   } | null>(null);
 
+  const sessionTimer = useSessionTimer({
+    isOpen,
+    startedAt: sessionTimerStartedAt,
+  });
+
+  const startSessionTimer = useCallback((startedAt?: number) => {
+    setSessionTimerStartedAt(startedAt ?? Date.now());
+  }, []);
+
+  const finalizeSessionTimer = useCallback(() => {
+    const minutes = computeDurationMinutes(sessionTimerStartedAt);
+    setSessionTimerStartedAt(null);
+    setDurationMinutes(minutes);
+    return minutes;
+  }, [sessionTimerStartedAt]);
+
   // Logic previously here for manual resets was removed.
   // The hook now relies on component unmounting for state cleanup.
 
@@ -158,6 +179,7 @@ export const useSessionForm = ({
         setExercises(editExercises);
         setSessionLayout(layout);
         setSessionExerciseMeta(meta);
+        startSessionTimer();
         return;
       }
     }
@@ -218,6 +240,7 @@ export const useSessionForm = ({
           if (parsed.splitBlockIndices) {
             setSplitBlockIndices(new Set(parsed.splitBlockIndices));
           }
+          startSessionTimer(parsed.sessionTimerStartedAt ?? Date.now());
           return;
         }
       }
@@ -280,7 +303,19 @@ export const useSessionForm = ({
     setExercises(initialExercises);
     setSessionLayout(buildLayoutFromProgram(day));
     setSessionExerciseMeta({});
-  }, [selectedDayName, isOpen, mode, initialSession, program]); // Rerun logic when modal opens or key props change!
+    startSessionTimer();
+  }, [selectedDayName, isOpen, mode, initialSession, program, startSessionTimer]); // Rerun logic when modal opens or key props change!
+
+  // Keep durationMinutes in sync with live session timer for autosave
+  useEffect(() => {
+    if (!isOpen || sessionTimerStartedAt === null) return;
+    setDurationMinutes(sessionTimer.getDurationMinutes());
+  }, [
+    isOpen,
+    sessionTimerStartedAt,
+    sessionTimer.elapsedSeconds,
+    sessionTimer,
+  ]);
 
   // Hide saved indicator when user makes new changes
   useEffect(() => {
@@ -385,6 +420,7 @@ export const useSessionForm = ({
       splitBlockIndices: Array.from(splitBlockIndices),
       sessionLayout,
       sessionExerciseMeta,
+      sessionTimerStartedAt: sessionTimerStartedAt ?? undefined,
     };
 
     try {
@@ -395,6 +431,7 @@ export const useSessionForm = ({
   }, [
     exercises,
     sessionDate,
+    durationMinutes,
     isOpen,
     selectedDayName,
     program?._id,
@@ -404,6 +441,7 @@ export const useSessionForm = ({
     splitBlockIndices,
     sessionLayout,
     sessionExerciseMeta,
+    sessionTimerStartedAt,
   ]);
 
   // Clear localStorage for this session
@@ -419,6 +457,7 @@ export const useSessionForm = ({
   const markAsSaved = useCallback(() => {
     console.log("[useSessionForm] Marking as saved and CLEARING ID state");
     setLastSavedAt(new Date());
+    setSessionTimerStartedAt(null);
     clearStorage();
     // CRITICAL: Clear IDs after successful save so the next time the modal opens, it's fresh
     setServerSessionId(undefined);
@@ -814,6 +853,7 @@ export const useSessionForm = ({
 
   const handleDayChange = useCallback((value: string) => {
     setIsDirty(true);
+    setSessionTimerStartedAt(null);
     setSelectedDayName(value);
   }, []);
 
@@ -905,6 +945,9 @@ export const useSessionForm = ({
     setSessionDate: handleSessionDateChange,
     durationMinutes,
     setDurationMinutes: handleDurationChange,
+    sessionTimerFormattedElapsed: sessionTimer.formattedElapsed,
+    sessionTimerIsRunning: sessionTimer.isRunning,
+    finalizeSessionTimer,
     exercises,
     sessionLayout,
     getSessionExerciseDisplay,
