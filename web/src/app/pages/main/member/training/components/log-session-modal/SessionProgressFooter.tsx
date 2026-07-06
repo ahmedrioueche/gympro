@@ -56,27 +56,37 @@ export const SessionProgressFooter = ({
 
   return (
     <div className="flex flex-col gap-2 w-full">
-      {/* Timers — same height, single row */}
-      <div className="flex items-center gap-2 w-full">
-        <SessionTimerPill
-          formattedElapsed={sessionTimerFormattedElapsed}
-          isRunning={sessionTimerIsRunning}
-          className="shrink-0"
-        />
-
-        {isRestTimerActive && <CompactRestTimer variant="inline" />}
-      </div>
+      {isRestTimerActive && (
+        <div className="flex items-center gap-2 w-full">
+          <CompactRestTimer variant="inline" />
+        </div>
+      )}
 
       <div className="flex items-center gap-2 sm:gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1 gap-2">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-lg sm:text-xl font-bold text-primary leading-none">
-                {progressPercent}%
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="text-lg sm:text-xl font-bold text-primary leading-none">
+                  {progressPercent}%
+                </span>
+                <span className="hidden sm:inline text-text-secondary text-xs truncate">
+                  {t("training.logSession.sessionProgress")}
+                </span>
+              </div>
+
+              <span
+                className="hidden sm:inline text-text-secondary/40 text-xs leading-none"
+                aria-hidden
+              >
+                ·
               </span>
-              <span className="text-text-secondary text-[10px] sm:text-xs truncate">
-                {t("training.logSession.sessionProgress")}
-              </span>
+
+              <SessionTimerPill
+                variant="inline"
+                formattedElapsed={sessionTimerFormattedElapsed}
+                isRunning={sessionTimerIsRunning}
+              />
             </div>
 
             <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -133,27 +143,27 @@ export const SessionProgressFooter = ({
           </div>
         </div>
 
-        <button
-          onClick={onDone}
-          disabled={isSaving}
-          className={`flex-shrink-0 px-3 sm:px-5 py-2 rounded-lg font-bold text-white transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm ${
-            allComplete
-              ? "bg-success hover:bg-success/90"
-              : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-          }`}
-        >
-          {isSaving ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span className="hidden sm:inline">{t("common.saving")}</span>
-            </>
-          ) : (
-            <>
-              <Check size={16} />
-              {t("training.logSession.done")}
-            </>
-          )}
-        </button>
+      <button
+        onClick={onDone}
+        disabled={isSaving}
+        className={`flex-shrink-0 px-3 sm:px-5 py-2 rounded-lg font-bold text-white transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm ${
+          allComplete
+            ? "bg-success hover:bg-success/90"
+            : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+        }`}
+      >
+        {isSaving ? (
+          <>
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <span className="hidden sm:inline">{t("common.saving")}</span>
+          </>
+        ) : (
+          <>
+            <Check size={16} />
+            {t("training.logSession.done")}
+          </>
+        )}
+      </button>
       </div>
     </div>
   );

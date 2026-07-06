@@ -2952,6 +2952,7 @@
       "set": "Série",
       "sessionProgress": "Progression de la séance",
       "sessionTimer": "Séance",
+      "timeElapsed": "Temps écoulé",
       "sessionTimerRunning": "Chronomètre de séance en cours",
       "setsComplete": "séries",
       "autoSaving": "Enregistrement...",

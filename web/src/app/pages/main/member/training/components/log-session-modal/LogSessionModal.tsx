@@ -14,7 +14,6 @@ import { SessionBlock } from "./SessionBlock";
 import { SessionExerciseCard } from "./SessionExerciseCard";
 import { AddSessionExercise } from "./AddSessionExercise";
 import { SessionProgressFooter } from "./SessionProgressFooter";
-import { SessionTimerPill } from "./SessionTimerPill";
 import { useSessionForm } from "./useSessionForm";
 import { WorkoutCompleteCelebration } from "./WorkoutCompleteCelebration";
 
@@ -219,7 +218,7 @@ const LogSessionModalContent = ({
       }
     >
       <div className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
               {t("training.logSession.selectDay")}
@@ -239,16 +238,6 @@ const LogSessionModalContent = ({
               type="datetime-local"
               value={form.sessionDate}
               onChange={(e) => form.setSessionDate(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-text-secondary mb-2">
-              {t("training.logSession.sessionTimer", "Session")}
-            </label>
-            <SessionTimerPill
-              formattedElapsed={form.sessionTimerFormattedElapsed}
-              isRunning={form.sessionTimerIsRunning}
-              className="w-full sm:max-w-none"
             />
           </div>
         </div>
