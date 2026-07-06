@@ -1,7 +1,9 @@
 import type { CreateExerciseDto } from "../dto/training";
-import { ApiResponse } from "../types/api";
+import { ApiResponse, PaginatedResponse } from "../types/api";
 import { Exercise, ExerciseFilters } from "../types/training";
 import { apiClient, handleApiError } from "./helper";
+
+export type PaginatedExercisesResponse = PaginatedResponse<Exercise>;
 
 export const exercisesApi = {
   createExercise: async (
@@ -19,12 +21,15 @@ export const exercisesApi = {
   },
 
   getExercises: async (
-    filters?: ExerciseFilters
-  ): Promise<ApiResponse<Exercise[]>> => {
+    filters?: ExerciseFilters,
+  ): Promise<ApiResponse<PaginatedExercisesResponse>> => {
     try {
-      const res = await apiClient.get<ApiResponse<Exercise[]>>("/exercises", {
-        params: filters,
-      });
+      const res = await apiClient.get<ApiResponse<PaginatedExercisesResponse>>(
+        "/exercises",
+        {
+          params: filters,
+        },
+      );
       return res.data;
     } catch (error) {
       throw handleApiError(error);

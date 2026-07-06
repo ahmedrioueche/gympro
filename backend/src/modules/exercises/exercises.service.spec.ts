@@ -29,6 +29,7 @@ describe('ExercisesService', () => {
             find: jest.fn(),
             findById: jest.fn(),
             findByIdAndDelete: jest.fn(),
+            countDocuments: jest.fn(),
             constructor: jest.fn(),
           },
         },
@@ -44,36 +45,39 @@ describe('ExercisesService', () => {
   });
 
   describe('findAllExercises', () => {
-    it('should return public exercises when no filters', async () => {
-      const mockQuery = {
-        sort: jest.fn().mockReturnThis(),
-        exec: jest.fn().mockResolvedValue([mockExercise]),
-      };
-      model.find.mockReturnValue(mockQuery);
+    const mockQuery = {
+      sort: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      exec: jest.fn().mockResolvedValue([mockExercise]),
+    };
 
+    beforeEach(() => {
+      model.find.mockReturnValue(mockQuery);
+      model.countDocuments.mockReturnValue({
+        exec: jest.fn().mockResolvedValue(1),
+      });
+    });
+
+    it('should return paginated public exercises when no filters', async () => {
       const result = await service.findAllExercises({});
-      expect(result).toEqual([mockExercise]);
+
+      expect(result.data).toEqual([mockExercise]);
+      expect(result.total).toBe(1);
+      expect(result.page).toBe(1);
+      expect(result.limit).toBe(12);
+      expect(result.totalPages).toBe(1);
       expect(model.find).toHaveBeenCalled();
+      expect(mockQuery.skip).toHaveBeenCalledWith(0);
+      expect(mockQuery.limit).toHaveBeenCalledWith(12);
     });
 
     it('should filter by search term', async () => {
-      const mockQuery = {
-        sort: jest.fn().mockReturnThis(),
-        exec: jest.fn().mockResolvedValue([]),
-      };
-      model.find.mockReturnValue(mockQuery);
-
       await service.findAllExercises({ search: 'bench' } as any);
       expect(model.find).toHaveBeenCalled();
     });
 
     it('should filter by targetMuscle', async () => {
-      const mockQuery = {
-        sort: jest.fn().mockReturnThis(),
-        exec: jest.fn().mockResolvedValue([mockExercise]),
-      };
-      model.find.mockReturnValue(mockQuery);
-
       await service.findAllExercises({ targetMuscle: 'chest' } as any);
       expect(model.find).toHaveBeenCalled();
     });

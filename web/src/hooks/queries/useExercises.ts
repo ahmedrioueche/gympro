@@ -7,14 +7,26 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { showStatusToast } from "../../utils/statusMessage";
+import {
+  type ExerciseListFilters,
+  type ExercisesQueryResult,
+  toExerciseListFilters,
+} from "./exercisesQueryUtils";
+
+export type { ExerciseListFilters } from "./exercisesQueryUtils";
 
 export const useExercises = (
-  filters?: ExerciseFilters,
+  filters?: ExerciseListFilters,
   queryOptions?: { enabled?: boolean },
 ) => {
   return useQuery({
     queryKey: ["exercises", filters],
-    queryFn: () => exercisesApi.getExercises(filters),
+    queryFn: async () => {
+      const response = await exercisesApi.getExercises(
+        toExerciseListFilters(filters),
+      );
+      return response as unknown as ExercisesQueryResult;
+    },
     enabled: queryOptions?.enabled ?? true,
   });
 };

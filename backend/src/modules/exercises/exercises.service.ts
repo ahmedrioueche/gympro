@@ -12,6 +12,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ExerciseModel } from './exercises.schema';
 
+export interface PaginatedExercisesResult {
+  data: Exercise[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 @Injectable()
 export class ExercisesService {
   constructor(
@@ -30,11 +38,10 @@ export class ExercisesService {
     return exercise.save();
   }
 
-  async findAllExercises(filters: ExerciseFilters = {}): Promise<Exercise[]> {
+  private buildExerciseQuery(filters: ExerciseFilters = {}) {
     const query: any = {};
     const andCriteria: any[] = [];
 
-    // Filter by public exercises or user's own exercises
     if (filters.myExercises && filters.createdBy) {
       andCriteria.push({ createdBy: filters.createdBy });
     } else if (!filters.myExercises) {
@@ -45,7 +52,6 @@ export class ExercisesService {
       andCriteria.push({ $or: visibilityOr });
     }
 
-    // Search by name or muscle (partial match)
     if (filters.search) {
       const searchRegex = { $regex: filters.search, $options: 'i' };
       andCriteria.push({
@@ -53,24 +59,20 @@ export class ExercisesService {
       });
     }
 
-    // Filter by target muscle (exact match)
     if (filters.targetMuscle) {
       andCriteria.push({ targetMuscles: filters.targetMuscle });
     }
 
-    // Filter by equipment
     if (filters.equipment) {
       andCriteria.push({
         equipment: { $regex: filters.equipment, $options: 'i' },
       });
     }
 
-    // Filter by difficulty
     if (filters.difficulty) {
       andCriteria.push({ difficulty: filters.difficulty });
     }
 
-    // Filter by type
     if (filters.type) {
       andCriteria.push({ type: filters.type });
     }
@@ -79,7 +81,34 @@ export class ExercisesService {
       query.$and = andCriteria;
     }
 
-    return this.exerciseModel.find(query).sort({ createdAt: -1 }).exec();
+    return query;
+  }
+
+  async findAllExercises(
+    filters: ExerciseFilters = {},
+  ): Promise<PaginatedExercisesResult> {
+    const page = Math.max(1, Number(filters.page) || 1);
+    const limit = Math.min(100, Math.max(1, Number(filters.limit) || 12));
+    const skip = (page - 1) * limit;
+    const query = this.buildExerciseQuery(filters);
+
+    const [data, total] = await Promise.all([
+      this.exerciseModel
+        .find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.exerciseModel.countDocuments(query).exec(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.max(1, Math.ceil(total / limit)),
+    };
   }
 
   async findExerciseById(id: string): Promise<Exercise> {
@@ -100,7 +129,6 @@ export class ExercisesService {
       throw new NotFoundException('Exercise not found');
     }
 
-    // Only creator can edit
     if (exercise.createdBy !== userId) {
       throw new BadRequestException('You can only edit your own exercises');
     }
@@ -115,7 +143,6 @@ export class ExercisesService {
       throw new NotFoundException('Exercise not found');
     }
 
-    // Only creator can delete
     if (exercise.createdBy !== userId) {
       throw new BadRequestException('You can only delete your own exercises');
     }

@@ -229,4 +229,6 @@ export interface ExerciseFilters {
   type?: ExerciseType;
   createdBy?: string;
   myExercises?: boolean;
+  page?: number;
+  limit?: number;
 }

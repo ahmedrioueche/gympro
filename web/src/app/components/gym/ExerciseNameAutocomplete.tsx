@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import InputField from "../../../components/ui/InputField";
-import { useExercises } from "../../../hooks/queries/useExercises";
+import { useExercises, type ExerciseListFilters } from "../../../hooks/queries/useExercises";
+import { getExercisesPageData } from "../../../hooks/queries/exercisesQueryUtils";
 import { useModalStore } from "../../../store/modal";
 
 interface ExerciseNameAutocompleteProps {
@@ -60,11 +61,15 @@ export const ExerciseNameAutocomplete = ({
   }, [value]);
 
   const trimmedSearch = debouncedSearch.trim();
+  const autocompleteFilters: ExerciseListFilters | undefined = trimmedSearch
+    ? { search: trimmedSearch, page: 1, limit: 20 }
+    : undefined;
+
   const { data: exercisesResponse, isLoading } = useExercises(
-    trimmedSearch ? { search: trimmedSearch } : undefined,
+    autocompleteFilters,
     { enabled: isFocused && trimmedSearch.length >= 1 },
   );
-  const exercises = exercisesResponse?.data || [];
+  const { exercises } = getExercisesPageData(exercisesResponse);
 
   const showDropdown = isFocused && trimmedSearch.length >= 1;
 
