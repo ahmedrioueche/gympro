@@ -223,6 +223,10 @@ export interface LogSessionModalProps {
   activeHistory: ProgramHistory;
   initialSession?: ProgramDayProgress;
   mode: "new" | "edit";
+  /** Skip local draft recovery and start with a fresh timer. */
+  forceNew?: boolean;
+  /** Pre-select training day when opening a new session. */
+  initialDayName?: string;
 }
 
 export interface ReviewCoachRequestModalProps {

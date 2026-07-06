@@ -1,5 +1,6 @@
 import { type ProgramDayProgress } from "@ahmedrioueche/gympro-client";
 import { useNavigate } from "@tanstack/react-router";
+import { formatDistanceToNow } from "date-fns";
 import { Dumbbell, History, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -17,6 +18,10 @@ import {
 import { useModalStore } from "../../../../../store/modal";
 import PageHeader from "../../../../components/PageHeader";
 import { ActiveProgramCard } from "./components/active-program-card/ActiveProgramCard";
+import {
+  clearSessionDraft,
+  findResumableSession,
+} from "./components/log-session-modal/sessionDraftUtils";
 import { ProgramHistoryList } from "./components/ProgramHistoryList";
 import { SessionList } from "./components/session-list/SessionList";
 
@@ -70,9 +75,41 @@ export default function TrainingPage() {
 
   const handleLogNewSession = () => {
     if (!activeHistory) return;
-    openModal("log_session", {
-      activeHistory,
-      mode: "new",
+
+    const programId = activeHistory.program._id!;
+    const resumable = findResumableSession(
+      programId,
+      activeHistory.progress.dayLogs,
+    );
+
+    if (!resumable) {
+      openModal("log_session", {
+        activeHistory,
+        mode: "new",
+      });
+      return;
+    }
+
+    const timeAgo = formatDistanceToNow(new Date(resumable.timestamp), {
+      addSuffix: true,
+    });
+
+    openModal("confirm", {
+      title: t("training.logSession.resumePrompt.title"),
+      text: t("training.logSession.resumePrompt.message", {
+        dayName: resumable.dayName,
+        timeAgo,
+      }),
+      confirmText: t("training.logSession.resumePrompt.startNew"),
+      confirmVariant: "primary",
+      onConfirm: () => {
+        clearSessionDraft(programId, resumable.dayName);
+        openModal("log_session", {
+          activeHistory,
+          mode: "new",
+          forceNew: true,
+        });
+      },
     });
   };
 

@@ -2953,6 +2953,11 @@
       "sessionProgress": "Progression de la séance",
       "sessionTimer": "Séance",
       "timeElapsed": "Temps écoulé",
+      "resumePrompt": {
+        "title": "Entraînement déjà en cours",
+        "message": "Vous avez commencé {{dayName}} {{timeAgo}}. Un nouvel entraînement démarrera avec un nouveau chronomètre.",
+        "startNew": "Nouvel entraînement"
+      },
       "sessionTimerRunning": "Chronomètre de séance en cours",
       "setsComplete": "séries",
       "autoSaving": "Enregistrement...",

@@ -23,12 +23,18 @@ const LogSessionModalContent = ({
   mode,
   closeModal,
   zIndex,
+  isOpen,
+  forceNew,
+  initialDayName,
 }: {
   activeHistory: any;
   initialSession: any;
   mode: "new" | "edit";
   closeModal: () => void;
   zIndex: number;
+  isOpen: boolean;
+  forceNew?: boolean;
+  initialDayName?: string;
 }) => {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
@@ -75,10 +81,12 @@ const LogSessionModalContent = ({
   };
 
   const form = useSessionForm({
-    isOpen: true, // Known true if this component is mounted
+    isOpen,
     activeHistory: activeHistory!,
     initialSession,
+    initialDayName,
     mode: mode || "new",
+    forceNew,
     onAutoSave: handleAutoSave,
   });
 
@@ -198,7 +206,7 @@ const LogSessionModalContent = ({
   return (
     <>
       <BaseModal
-        isOpen={!celebration}
+        isOpen={isOpen && !celebration}
         zIndex={zIndex}
         onClose={closeModal}      title={t("training.logSession.title")}
       subtitle={`${program.name} - ${form.selectedDayName}`}
@@ -350,15 +358,19 @@ export const LogSessionModal = () => {
   const { logSessionProps, closeModal } = useModalStore();
   const { isOpen, zIndex, closeModal: closeLayerModal } = useModalLayer("log_session");
 
-  if (!isOpen || !logSessionProps?.activeHistory) return null;
+  if (!logSessionProps?.activeHistory) return null;
 
-  const { activeHistory, initialSession, mode } = logSessionProps;
+  const { activeHistory, initialSession, mode, forceNew, initialDayName } =
+    logSessionProps;
 
   return (
     <LogSessionModalContent
+      isOpen={isOpen}
       activeHistory={activeHistory}
       initialSession={initialSession}
       mode={mode || "new"}
+      forceNew={forceNew}
+      initialDayName={initialDayName}
       closeModal={closeModal}
       zIndex={zIndex}
     />

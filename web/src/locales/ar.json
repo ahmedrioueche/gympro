@@ -2952,6 +2952,11 @@
       "sessionProgress": "تقدم الجلسة",
       "sessionTimer": "الجلسة",
       "timeElapsed": "الوقت المنقضي",
+      "resumePrompt": {
+        "title": "تمرين قيد التقدم",
+        "message": "لقد بدأت {{dayName}} {{timeAgo}}. بدء تمرين جديد سيستخدم مؤقتًا جديدًا.",
+        "startNew": "بدء تمرين جديد"
+      },
       "sessionTimerRunning": "مؤقت الجلسة يعمل",
       "setsComplete": "مجموعات",
       "autoSaving": "جاري الحفظ...",

@@ -23,20 +23,32 @@ import {
   type SessionLayoutEntry,
 } from "./sessionLayout";
 import type { SessionExercisePick } from "./AddSessionExercise";
-import { computeDurationMinutes, useSessionTimer } from "./useSessionTimer";
+import { getSessionStorageKey } from "./sessionDraftUtils";
+import {
+  computeDurationMinutes,
+  createSessionTimer,
+  migrateStoredTimer,
+  pauseSessionTimer,
+  resumeSessionTimer,
+  SESSION_INACTIVITY_MS,
+  touchSessionTimer,
+  type SessionTimerSnapshot,
+  useSessionTimer,
+} from "./useSessionTimer";
 
 interface UseSessionFormProps {
   isOpen: boolean;
   activeHistory: ProgramHistory;
   initialSession?: ProgramDayProgress;
+  initialDayName?: string;
   mode: "new" | "edit";
+  forceNew?: boolean;
   onAutoSave?: (data: any) => Promise<string | undefined>; // Returns new sessionId
 }
 
 const AUTO_SAVE_INTERVAL_MS = 60_000; // 1 minute
 
-const getStorageKey = (programId: string, dayName: string) =>
-  `session_progress_v2_${programId}_${dayName}`;
+const getStorageKey = getSessionStorageKey;
 
 interface StoredSession {
   exercises: ExerciseProgress[];
@@ -49,6 +61,8 @@ interface StoredSession {
   splitBlockIndices?: number[]; // Track which blocks user chose to split (opt-out of superset)
   sessionLayout?: SessionLayoutEntry[];
   sessionExerciseMeta?: Record<string, SessionExerciseMeta>;
+  sessionTimer?: SessionTimerSnapshot;
+  /** @deprecated Migrated to sessionTimer */
   sessionTimerStartedAt?: number;
 }
 
@@ -56,7 +70,9 @@ export const useSessionForm = ({
   isOpen,
   activeHistory,
   initialSession,
+  initialDayName,
   mode,
+  forceNew = false,
   onAutoSave,
 }: UseSessionFormProps) => {
   const program = activeHistory?.program;
@@ -66,7 +82,10 @@ export const useSessionForm = ({
   const { user } = useUserStore();
 
   const [selectedDayName, setSelectedDayName] = useState<string>(
-    initialSession?.dayName || program?.days?.[0]?.name || "",
+    initialSession?.dayName ||
+      initialDayName ||
+      program?.days?.[0]?.name ||
+      "",
   );
   const [sessionDate, setSessionDate] = useState(
     initialSession
@@ -76,9 +95,8 @@ export const useSessionForm = ({
   const [durationMinutes, setDurationMinutes] = useState<number>(
     initialSession?.durationMinutes || 1,
   );
-  const [sessionTimerStartedAt, setSessionTimerStartedAt] = useState<
-    number | null
-  >(null);
+  const [sessionTimerSnapshot, setSessionTimerSnapshot] =
+    useState<SessionTimerSnapshot>(createSessionTimer());
   const [exercises, setExercises] = useState<ExerciseProgress[]>([]);
   const [sessionLayout, setSessionLayout] = useState<SessionLayoutEntry[]>([]);
   const [sessionExerciseMeta, setSessionExerciseMeta] = useState<
@@ -122,21 +140,130 @@ export const useSessionForm = ({
     setIndex: number;
   } | null>(null);
 
-  const sessionTimer = useSessionTimer({
-    isOpen,
-    startedAt: sessionTimerStartedAt,
+  const sessionTimerRef = useRef(sessionTimerSnapshot);
+  useEffect(() => {
+    sessionTimerRef.current = sessionTimerSnapshot;
+  }, [sessionTimerSnapshot]);
+
+  const storageDraftRef = useRef({
+    programId: program?._id as string | undefined,
+    dayName: selectedDayName,
+    exercises,
+    sessionDate,
+    durationMinutes,
+    mode,
+    serverSessionId,
+    submissionId,
+    splitBlockIndices,
+    sessionLayout,
+    sessionExerciseMeta,
+  });
+  useEffect(() => {
+    storageDraftRef.current = {
+      programId: program?._id,
+      dayName: selectedDayName,
+      exercises,
+      sessionDate,
+      durationMinutes,
+      mode,
+      serverSessionId,
+      submissionId,
+      splitBlockIndices,
+      sessionLayout,
+      sessionExerciseMeta,
+    };
   });
 
-  const startSessionTimer = useCallback((startedAt?: number) => {
-    setSessionTimerStartedAt(startedAt ?? Date.now());
+  // Persist paused timer when the modal unmounts without saving (e.g. close button).
+  useEffect(() => {
+    return () => {
+      if (!isDirtyRef.current) return;
+
+      const paused = pauseSessionTimer(sessionTimerRef.current);
+      const draft = storageDraftRef.current;
+      if (!draft.programId || !draft.dayName || draft.exercises.length === 0) {
+        return;
+      }
+
+      try {
+        const storageKey = getStorageKey(draft.programId, draft.dayName);
+        const stored = localStorage.getItem(storageKey);
+        const base: Partial<StoredSession> = stored ? JSON.parse(stored) : {};
+        const data: StoredSession = {
+          ...base,
+          exercises: draft.exercises,
+          sessionDate: new Date(draft.sessionDate).toISOString(),
+          durationMinutes: computeDurationMinutes(paused),
+          timestamp: Date.now(),
+          mode: draft.mode,
+          serverSessionId: draft.serverSessionId,
+          submissionId: draft.submissionId,
+          splitBlockIndices: Array.from(draft.splitBlockIndices),
+          sessionLayout: draft.sessionLayout,
+          sessionExerciseMeta: draft.sessionExerciseMeta,
+          sessionTimer: paused,
+        };
+        localStorage.setItem(storageKey, JSON.stringify(data));
+      } catch {
+        // Ignore localStorage errors
+      }
+    };
   }, []);
 
+  const sessionTimer = useSessionTimer({
+    isOpen,
+    timer: sessionTimerSnapshot,
+  });
+
   const finalizeSessionTimer = useCallback(() => {
-    const minutes = computeDurationMinutes(sessionTimerStartedAt);
-    setSessionTimerStartedAt(null);
+    const paused = pauseSessionTimer(sessionTimerSnapshot);
+    setSessionTimerSnapshot(paused);
+    const minutes = computeDurationMinutes(paused);
     setDurationMinutes(minutes);
     return minutes;
-  }, [sessionTimerStartedAt]);
+  }, [sessionTimerSnapshot]);
+
+  // Track user interaction and pause when the app/tab goes inactive.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const touch = () => {
+      setSessionTimerSnapshot((prev) => touchSessionTimer(prev));
+    };
+
+    const onVisibility = () => {
+      setSessionTimerSnapshot((prev) =>
+        document.hidden ? pauseSessionTimer(prev) : touchSessionTimer(prev),
+      );
+    };
+
+    window.addEventListener("pointerdown", touch, { passive: true });
+    window.addEventListener("keydown", touch);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      window.removeEventListener("pointerdown", touch);
+      window.removeEventListener("keydown", touch);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [isOpen]);
+
+  // Auto-pause after inactivity while the modal stays open.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const id = setInterval(() => {
+      setSessionTimerSnapshot((prev) => {
+        if (prev.segmentStartedAt === null) return prev;
+        if (Date.now() > prev.lastInteractionAt + SESSION_INACTIVITY_MS) {
+          return pauseSessionTimer(prev);
+        }
+        return prev;
+      });
+    }, 15_000);
+
+    return () => clearInterval(id);
+  }, [isOpen]);
 
   // Logic previously here for manual resets was removed.
   // The hook now relies on component unmounting for state cleanup.
@@ -179,7 +306,33 @@ export const useSessionForm = ({
         setExercises(editExercises);
         setSessionLayout(layout);
         setSessionExerciseMeta(meta);
-        startSessionTimer();
+
+        const editSessionId =
+          (initialSession as any)?._id || (initialSession as any)?.id;
+        const editSubmissionId = (initialSession as any).submissionId as
+          | string
+          | undefined;
+        let editTimer = createSessionTimer(
+          (initialSession.durationMinutes || 0) * 60,
+        );
+        try {
+          const stored = localStorage.getItem(
+            getStorageKey(program._id!, selectedDayName),
+          );
+          if (stored) {
+            const parsed: StoredSession = JSON.parse(stored);
+            const sameSession =
+              (editSubmissionId &&
+                parsed.submissionId === editSubmissionId) ||
+              (editSessionId && parsed.serverSessionId === editSessionId);
+            if (sameSession) {
+              editTimer = migrateStoredTimer(parsed);
+            }
+          }
+        } catch {
+          // Ignore localStorage errors
+        }
+        setSessionTimerSnapshot(editTimer);
         return;
       }
     }
@@ -188,64 +341,59 @@ export const useSessionForm = ({
 
     // First, try to load from localStorage (Crash Recovery)
     const storageKey = getStorageKey(program._id!, selectedDayName);
-    try {
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
-        const parsed: StoredSession = JSON.parse(stored);
+    if (!forceNew) {
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) {
+          const parsed: StoredSession = JSON.parse(stored);
 
-        // Validation: Check if stored session is recent enough (24 hours)
-        const hoursSinceStored =
-          (Date.now() - parsed.timestamp) / (1000 * 60 * 60);
-        if (hoursSinceStored < 24 && parsed.exercises.length > 0) {
-          console.log(
-            `[useSessionForm] Recovering ${selectedDayName} session from localStorage`,
-          );
-
-          // Force uncheck sets if mode is new (User Request: "always uncheck all sets on a new log")
-          // This prevents stale drafts from showing completed sets
-          const exercises = parsed.exercises.map((ex) => ({
-            ...ex,
-            sets: ex.sets.map((s) => ({ ...s, completed: false })),
-          }));
-
-          setExercises(exercises);
-          setSessionLayout(
-            parsed.sessionLayout ??
-              rebuildLayoutFromExercises(day, exercises),
-          );
-          setSessionExerciseMeta(parsed.sessionExerciseMeta ?? {});
-
-          // SMART DATE RECOVERY:
-          // Recover date only if draft is recent (< 1 hour).
-          // This preserves local time "Now" for old drafts while keeping Gym Bro weights/reps.
-          if (hoursSinceStored < 1) {
-            setSessionDate(
-              format(new Date(parsed.sessionDate), "yyyy-MM-dd'T'HH:mm"),
-            );
-          } else {
+          // Validation: Check if stored session is recent enough (24 hours)
+          const hoursSinceStored =
+            (Date.now() - parsed.timestamp) / (1000 * 60 * 60);
+          if (hoursSinceStored < 24 && parsed.exercises.length > 0) {
             console.log(
-              "[useSessionForm] Draft is old. Keeping 'Now' time but preserving exercises.",
+              `[useSessionForm] Recovering ${selectedDayName} session from localStorage`,
             );
+
+            setExercises(parsed.exercises);
+            setSessionLayout(
+              parsed.sessionLayout ??
+                rebuildLayoutFromExercises(day, parsed.exercises),
+            );
+            setSessionExerciseMeta(parsed.sessionExerciseMeta ?? {});
+
+            // SMART DATE RECOVERY:
+            // Recover date only if draft is recent (< 1 hour).
+            // This preserves local time "Now" for old drafts while keeping Gym Bro weights/reps.
+            if (hoursSinceStored < 1) {
+              setSessionDate(
+                format(new Date(parsed.sessionDate), "yyyy-MM-dd'T'HH:mm"),
+              );
+            } else {
+              console.log(
+                "[useSessionForm] Draft is old. Keeping 'Now' time but preserving exercises.",
+              );
+            }
+            setLastSavedAt(new Date(parsed.timestamp));
+            // Recover server session ID if available
+            if (parsed.serverSessionId) {
+              setServerSessionId(parsed.serverSessionId);
+            }
+            // Recover submissionId to maintain session identity
+            if (parsed.submissionId) {
+              setSubmissionId(parsed.submissionId);
+            }
+            // Recover split state
+            if (parsed.splitBlockIndices) {
+              setSplitBlockIndices(new Set(parsed.splitBlockIndices));
+            }
+            setSessionTimerSnapshot(migrateStoredTimer(parsed));
+            return;
           }
-          setLastSavedAt(new Date(parsed.timestamp));
-          // Recover server session ID if available
-          if (parsed.serverSessionId) {
-            setServerSessionId(parsed.serverSessionId);
-          }
-          // Recover submissionId to maintain session identity
-          if (parsed.submissionId) {
-            setSubmissionId(parsed.submissionId);
-          }
-          // Recover split state
-          if (parsed.splitBlockIndices) {
-            setSplitBlockIndices(new Set(parsed.splitBlockIndices));
-          }
-          startSessionTimer(parsed.sessionTimerStartedAt ?? Date.now());
-          return;
         }
+      } catch {
+        // Ignore localStorage errors
       }
-    } catch {
-      // Ignore localStorage errors
     }
 
     // If no draft, try to pre-fill from Last Session (Progressive Overload)
@@ -303,19 +451,23 @@ export const useSessionForm = ({
     setExercises(initialExercises);
     setSessionLayout(buildLayoutFromProgram(day));
     setSessionExerciseMeta({});
-    startSessionTimer();
-  }, [selectedDayName, isOpen, mode, initialSession, program, startSessionTimer]); // Rerun logic when modal opens or key props change!
+    setSessionTimerSnapshot(createSessionTimer());
+  }, [selectedDayName, isOpen, mode, initialSession, program, forceNew]); // Rerun logic when modal opens or key props change!
 
-  // Keep durationMinutes in sync with live session timer for autosave
+  // Pause when modal closes; resume when it opens (after init loads elapsed time).
   useEffect(() => {
-    if (!isOpen || sessionTimerStartedAt === null) return;
-    setDurationMinutes(sessionTimer.getDurationMinutes());
-  }, [
-    isOpen,
-    sessionTimerStartedAt,
-    sessionTimer.elapsedSeconds,
-    sessionTimer,
-  ]);
+    if (!isOpen) {
+      setSessionTimerSnapshot((prev) => pauseSessionTimer(prev));
+      return;
+    }
+    setSessionTimerSnapshot((prev) => resumeSessionTimer(prev));
+  }, [isOpen, selectedDayName]);
+
+  // Keep durationMinutes in sync with activity-based timer for autosave
+  useEffect(() => {
+    if (!isOpen) return;
+    setDurationMinutes(computeDurationMinutes(sessionTimerSnapshot));
+  }, [isOpen, sessionTimerSnapshot, sessionTimer.elapsedSeconds]);
 
   // Hide saved indicator when user makes new changes
   useEffect(() => {
@@ -420,7 +572,7 @@ export const useSessionForm = ({
       splitBlockIndices: Array.from(splitBlockIndices),
       sessionLayout,
       sessionExerciseMeta,
-      sessionTimerStartedAt: sessionTimerStartedAt ?? undefined,
+      sessionTimer: sessionTimerSnapshot,
     };
 
     try {
@@ -441,7 +593,7 @@ export const useSessionForm = ({
     splitBlockIndices,
     sessionLayout,
     sessionExerciseMeta,
-    sessionTimerStartedAt,
+    sessionTimerSnapshot,
   ]);
 
   // Clear localStorage for this session
@@ -457,7 +609,7 @@ export const useSessionForm = ({
   const markAsSaved = useCallback(() => {
     console.log("[useSessionForm] Marking as saved and CLEARING ID state");
     setLastSavedAt(new Date());
-    setSessionTimerStartedAt(null);
+    setSessionTimerSnapshot(createSessionTimer());
     clearStorage();
     // CRITICAL: Clear IDs after successful save so the next time the modal opens, it's fresh
     setServerSessionId(undefined);
@@ -853,7 +1005,7 @@ export const useSessionForm = ({
 
   const handleDayChange = useCallback((value: string) => {
     setIsDirty(true);
-    setSessionTimerStartedAt(null);
+    setSessionTimerSnapshot(createSessionTimer());
     setSelectedDayName(value);
   }, []);
 
