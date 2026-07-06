@@ -8,7 +8,7 @@ function ActoCore() {
     <ActocoreProvider
       apiKey={import.meta.env.VITE_ACTOCORE_API_KEY}
       baseURL={import.meta.env.VITE_ACTOCORE_API_URL}
-      loadRemoteConfig // picks up Studio SDK config (colors, fonts, etc.)
+      loadRemoteConfig
       actions={{
         create_gym: async (input: { name: string }) => {
           gymApi.create({ name: input.name, owner: "current_user_id" });
