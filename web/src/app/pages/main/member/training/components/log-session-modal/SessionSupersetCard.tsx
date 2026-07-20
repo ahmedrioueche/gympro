@@ -7,6 +7,7 @@ import { Check, Split, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { SetWeightInput } from "./SetWeightInput";
+import { SetRepsInput } from "./SetRepsInput";
 
 interface SessionSupersetCardProps {
   block: TrainingProgram["days"][0]["blocks"][0];
@@ -17,9 +18,10 @@ interface SessionSupersetCardProps {
     setIndex: number,
     field: keyof ExerciseSet,
     value: any,
-    options?: { propagate?: boolean },
+    options?: { propagate?: boolean; commit?: boolean },
   ) => void;
   onCommitSetWeight: (exIndex: number, setIndex: number, weight: number) => void;
+  onCommitSetReps: (exIndex: number, setIndex: number, reps: number) => void;
   onAddSet: (exIndex: number) => void; // Uses first exercise to trigger add for all?
   onRemoveSet: (exIndex: number, setIndex: number) => void; // Removes from all?
   onToggleSplit: () => void;
@@ -38,6 +40,7 @@ export const SessionSupersetCard = ({
   exIndices,
   onUpdateSet,
   onCommitSetWeight,
+  onCommitSetReps,
   onAddSet,
   onRemoveSet,
   onToggleSplit,
@@ -191,17 +194,13 @@ export const SessionSupersetCard = ({
                           </span>
                         </div>
                         <div className="relative flex-1">
-                          <input
-                            type="number"
-                            min="0"
-                            value={set.reps || ""}
-                            onChange={(e) =>
-                              onUpdateSet(
-                                exIndices[i],
-                                setIndex,
-                                "reps",
-                                parseFloat(e.target.value) || 0,
-                              )
+                          <SetRepsInput
+                            value={set.reps || 0}
+                            onChange={(reps) =>
+                              onUpdateSet(exIndices[i], setIndex, "reps", reps)
+                            }
+                            onCommit={(reps) =>
+                              onCommitSetReps(exIndices[i], setIndex, reps)
                             }
                             className="w-full px-2 py-1.5 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary text-sm"
                             placeholder="reps"

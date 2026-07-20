@@ -122,8 +122,10 @@ const HistoryItem = ({
       {/* Expanded Content: Session List */}
       <div
         className={`bg-background-secondary transition-all duration-300 ease-in-out ${
-          isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
-        } overflow-hidden`}
+          isExpanded
+            ? "max-h-[70vh] opacity-100 overflow-y-auto"
+            : "max-h-0 opacity-0 overflow-hidden"
+        }`}
       >
         <div className="p-4 border-t border-border">
           <SessionList sessions={progress.dayLogs} program={program} />

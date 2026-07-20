@@ -712,16 +712,15 @@ export const useSessionForm = ({
     setIndex: number,
     field: keyof ExerciseSet,
     value: any,
-    options?: { propagate?: boolean },
+    options?: { propagate?: boolean; commit?: boolean },
   ) => {
-    // Validation Logic
+    // Validation Logic — manual check only
     if (field === "completed" && value === true) {
       const currentSet = exercises[exIndex].sets[setIndex];
-      // Use current values in state unless they are being updated right now (which for 'completed' toggle, they are not)
       const error = validateSet(currentSet.weight, currentSet.reps);
       if (error) {
         toast.error(error);
-        return; // Block update
+        return;
       }
     }
 
@@ -732,59 +731,52 @@ export const useSessionForm = ({
     const wasCompleted = exercises[exIndex].sets[setIndex].completed;
     let newlyCompleted = false;
 
-    // Manual weight edits clear auto-fill tracking for that set
     if (field === "weight") {
       propagatedWeightsRef.current.delete(`${exIndex}-${setIndex}`);
     }
 
-    // Update the specific field
     currentSets[setIndex] = { ...currentSets[setIndex], [field]: value };
 
-    // Strict Validation: If modifying a COMPLETED set, check if new value remains valid.
-    if (
-      currentSets[setIndex].completed &&
-      (field === "weight" || field === "reps")
-    ) {
-      // Use current new values to check
-      const newWeight =
-        parseInt(field === "weight" ? value : currentSets[setIndex].weight) ||
-        0;
-      const newReps =
-        parseInt(field === "reps" ? value : currentSets[setIndex].reps) || 0;
-
-      // Note: value coming from input might be string or number, safely handle both
-      // Actually, validation expects numbers.
-      // Let's rely on set state which is updated above.
-      // But state update is async/batched? No, `currentSets` is a local mutation of the array before setExercises.
-
-      const setToCheck = currentSets[setIndex];
-      const error = validateSet(setToCheck.weight, setToCheck.reps);
-      if (error) {
-        currentSets[setIndex].completed = false;
-        toast(t("training.logSession.validation.autoUncheck"), { icon: "⚠️" });
-      }
-    }
-
     if (field === "weight") {
-      const weightValue = typeof value === "number" ? value : parseFloat(value) || 0;
-      const oldWeight = previousWeight;
-      const shouldPropagate = options?.propagate === true;
+      const weightValue =
+        typeof value === "number" ? value : parseFloat(value) || 0;
+      const shouldCommit = options?.propagate === true;
 
-      if (weightValue > 0) {
-        if (!wasCompleted && shouldPropagate) {
-          newlyCompleted = true;
-          markSetCompleted(exIndex, setIndex);
-        }
-        currentSets[setIndex].completed = true;
+      if (shouldCommit) {
+        const reps = currentSets[setIndex].reps;
+        const error = validateSet(weightValue, reps);
 
-        if (shouldPropagate) {
+        if (weightValue > 0 && !error) {
+          if (!wasCompleted) {
+            newlyCompleted = true;
+            markSetCompleted(exIndex, setIndex);
+          }
+          currentSets[setIndex].completed = true;
           propagateWeightToSubsequentSets(
             exIndex,
             setIndex,
             currentSets,
-            oldWeight,
+            previousWeight,
             weightValue,
           );
+        } else if (weightValue <= 0 || error) {
+          currentSets[setIndex].completed = false;
+          if (error && weightValue > 0) {
+            toast.error(error);
+          }
+        }
+      }
+    }
+
+    if (field === "reps" && options?.commit) {
+      if (wasCompleted) {
+        const setToCheck = currentSets[setIndex];
+        const error = validateSet(setToCheck.weight, setToCheck.reps);
+        if (error) {
+          currentSets[setIndex].completed = false;
+          toast(t("training.logSession.validation.autoUncheck"), {
+            icon: "⚠️",
+          });
         }
       }
     }
@@ -937,6 +929,14 @@ export const useSessionForm = ({
     weight: number,
   ) => {
     updateSet(exIndex, setIndex, "weight", weight, { propagate: true });
+  };
+
+  const commitSetReps = (
+    exIndex: number,
+    setIndex: number,
+    reps: number,
+  ) => {
+    updateSet(exIndex, setIndex, "reps", reps, { commit: true });
   };
 
   const removeDropSet = (
@@ -1107,6 +1107,7 @@ export const useSessionForm = ({
     removeSessionExercise,
     updateSet,
     commitSetWeight,
+    commitSetReps,
     scrollToSet,
     clearScrollToSet,
     addSet,

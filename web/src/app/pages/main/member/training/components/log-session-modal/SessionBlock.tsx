@@ -17,9 +17,10 @@ interface SessionBlockProps {
     setIndex: number,
     field: keyof ExerciseSet,
     value: any,
-    options?: { propagate?: boolean },
+    options?: { propagate?: boolean; commit?: boolean },
   ) => void;
   onCommitSetWeight: (exIndex: number, setIndex: number, weight: number) => void;
+  onCommitSetReps: (exIndex: number, setIndex: number, reps: number) => void;
   onAddSet: (exIndex: number) => void;
   onRemoveSet: (exIndex: number, setIndex: number) => void;
   onAddDropSet: (exIndex: number, setIndex: number) => void;
@@ -52,6 +53,7 @@ export const SessionBlock = ({
   onToggleSplit,
   onUpdateSet,
   onCommitSetWeight,
+  onCommitSetReps,
   onAddSet,
   onRemoveSet,
   onAddDropSet,
@@ -102,6 +104,7 @@ export const SessionBlock = ({
             originalExercise={resolveProgramExercise(ex)}
             onUpdateSet={onUpdateSet}
             onCommitSetWeight={onCommitSetWeight}
+            onCommitSetReps={onCommitSetReps}
             onAddSet={onAddSet}
             onRemoveSet={onRemoveSet}
             onAddDropSet={onAddDropSet}
@@ -123,6 +126,7 @@ export const SessionBlock = ({
       exIndices={exerciseIndices}
       onUpdateSet={onUpdateSet}
       onCommitSetWeight={onCommitSetWeight}
+      onCommitSetReps={onCommitSetReps}
       onAddSet={onAddSet}
       onRemoveSet={onRemoveSet}
       onToggleSplit={onToggleSplit}

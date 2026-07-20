@@ -284,6 +284,7 @@ const LogSessionModalContent = ({
                       }
                       onUpdateSet={form.updateSet}
                       onCommitSetWeight={form.commitSetWeight}
+                      onCommitSetReps={form.commitSetReps}
                       onAddSet={form.addSet}
                       onRemoveSet={form.removeSet}
                       onAddDropSet={form.addDropSet}
@@ -322,6 +323,7 @@ const LogSessionModalContent = ({
                     }
                     onUpdateSet={form.updateSet}
                     onCommitSetWeight={form.commitSetWeight}
+                    onCommitSetReps={form.commitSetReps}
                     onAddSet={form.addSet}
                     onRemoveSet={form.removeSet}
                     onAddDropSet={form.addDropSet}

@@ -7,6 +7,7 @@ import { Check, CornerDownRight, PlayCircle, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { SetWeightInput } from "./SetWeightInput";
+import { SetRepsInput } from "./SetRepsInput";
 
 interface SessionExerciseCardProps {
   exercise: ExerciseProgress;
@@ -19,9 +20,10 @@ interface SessionExerciseCardProps {
     setIndex: number,
     field: keyof ExerciseSet,
     value: any,
-    options?: { propagate?: boolean },
+    options?: { propagate?: boolean; commit?: boolean },
   ) => void;
   onCommitSetWeight: (exIndex: number, setIndex: number, weight: number) => void;
+  onCommitSetReps: (exIndex: number, setIndex: number, reps: number) => void;
   onAddSet: (exIndex: number) => void;
   onRemoveSet: (exIndex: number, setIndex: number) => void;
   onAddDropSet: (exIndex: number, setIndex: number) => void;
@@ -47,6 +49,7 @@ export const SessionExerciseCard = ({
   originalExercise,
   onUpdateSet,
   onCommitSetWeight,
+  onCommitSetReps,
   onAddSet,
   onRemoveSet,
   onAddDropSet,
@@ -158,17 +161,13 @@ export const SessionExerciseCard = ({
 
               {/* Reps */}
               <div className="col-span-4">
-                <input
-                  type="number"
-                  min="0"
-                  value={set.reps || ""}
-                  onChange={(e) =>
-                    onUpdateSet(
-                      exerciseIndex,
-                      setIndex,
-                      "reps",
-                      parseInt(e.target.value) || 0,
-                    )
+                <SetRepsInput
+                  value={set.reps || 0}
+                  onChange={(reps) =>
+                    onUpdateSet(exerciseIndex, setIndex, "reps", reps)
+                  }
+                  onCommit={(reps) =>
+                    onCommitSetReps(exerciseIndex, setIndex, reps)
                   }
                   className="w-full px-3 py-2 bg-background-secondary border border-border rounded-lg text-center text-text-primary focus:outline-none focus:border-primary"
                   placeholder="0"

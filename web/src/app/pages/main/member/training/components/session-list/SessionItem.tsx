@@ -112,8 +112,10 @@ export const SessionItem = ({
       {/* Expanded Content */}
       <div
         className={`bg-background-secondary border-t border-border transition-all duration-300 ease-in-out ${
-          isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
-        } overflow-hidden`}
+          isExpanded
+            ? "max-h-[70vh] opacity-100 overflow-y-auto"
+            : "max-h-0 opacity-0 overflow-hidden"
+        }`}
       >
         <div className="p-4 space-y-4">
           <SessionExerciseList
