@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance } from "axios";
 import { BASE_URL } from "./config";
 import { TokenManager } from "./token";
 
-const AUTH_SKIP_PATHS = ["/auth/refresh", "/auth/signin", "/auth/signup"];
+const AUTH_SKIP_PATHS = ["/auth/refresh", "/auth/login", "/auth/signup"];
 
 let refreshPromise: Promise<string | null> | null = null;
 const INTERCEPTOR_MARKER = Symbol("authInterceptorInstalled");
@@ -72,17 +72,24 @@ export const ensureValidAccessToken = async (
 };
 
 export const setupAuthInterceptor = (client: AxiosInstance): void => {
-  if ((client as AxiosInstance & { [INTERCEPTOR_MARKER]?: boolean })[INTERCEPTOR_MARKER]) {
+  if (
+    (client as AxiosInstance & { [INTERCEPTOR_MARKER]?: boolean })[
+      INTERCEPTOR_MARKER
+    ]
+  ) {
     return;
   }
 
-  (client as AxiosInstance & { [INTERCEPTOR_MARKER]?: boolean })[INTERCEPTOR_MARKER] =
-    true;
+  (client as AxiosInstance & { [INTERCEPTOR_MARKER]?: boolean })[
+    INTERCEPTOR_MARKER
+  ] = true;
 
   client.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
-      const original = error.config as (typeof error.config & { _retry?: boolean }) | undefined;
+      const original = error.config as
+        | (typeof error.config & { _retry?: boolean })
+        | undefined;
       const url = original?.url ?? "";
 
       if (isAuthSkipPath(url)) {
@@ -104,7 +111,7 @@ export const setupAuthInterceptor = (client: AxiosInstance): void => {
           typeof window !== "undefined" &&
           !window.location.pathname.includes("/auth/")
         ) {
-          window.location.href = "/auth/signin";
+          window.location.href = "/auth/login";
         }
       }
 
