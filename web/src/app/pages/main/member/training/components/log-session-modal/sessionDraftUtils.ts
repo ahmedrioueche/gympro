@@ -30,7 +30,7 @@ export const isSessionIncomplete = (session: ProgramDayProgress): boolean => {
   let completedSets = 0;
 
   for (const exercise of session.exercises) {
-    for (const set of exercise.sets) {
+    for (const set of exercise.sets ?? []) {
       totalSets++;
       if (set.completed) completedSets++;
     }
@@ -135,11 +135,18 @@ export const findResumableSession = (
   const candidates: ResumableSession[] = [];
   const draftIdentities = new Set<string>();
 
-  const serverIdentities = new Set(
-    dayLogs
-      .map((log) => getSessionIdentity(log))
-      .filter((id): id is string => Boolean(id)),
-  );
+  // Collect every identity a server day log can be matched by (submissionId
+  // AND Mongo _id / id). Drafts persist `serverSessionId` = the Mongo id, while
+  // getSessionIdentity prefers submissionId, so we must index both to avoid
+  // wrongly discarding a valid draft as "belonging to a deleted session".
+  const serverIdentities = new Set<string>();
+  for (const log of dayLogs) {
+    const submissionId = log.submissionId;
+    const mongoId =
+      (log as { _id?: string })._id || (log as { id?: string }).id;
+    if (submissionId) serverIdentities.add(submissionId);
+    if (mongoId) serverIdentities.add(mongoId);
+  }
 
   try {
     const prefix = `session_progress_v2_${programId}_`;

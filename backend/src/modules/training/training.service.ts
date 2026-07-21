@@ -270,16 +270,14 @@ export class TrainingService {
     switch (dto.action) {
       case 'start':
         if (dayLogIndex < 0) {
-          history.progress.dayLogs.push({
-            dayName: dto.dayName,
-            date: dto.date || new Date().toISOString(),
-            durationMinutes: 1,
-            exercises: [],
-            submissionId: dto.submissionId,
-            sessionTimer: snapshotToState(createSessionTimer(0, now)),
-          } as any);
-          dayLogIndex = history.progress.dayLogs.length - 1;
+          // Do NOT create empty day logs — that wiped exercises on reopen and
+          // polluted session history. Return an ephemeral running timer until
+          // the client autosaves a real session with exercises.
           snapshot = createSessionTimer(0, now);
+          return {
+            sessionTimer: snapshotToState(snapshot),
+            durationMinutes: computeDurationMinutes(snapshot, now),
+          };
         } else if (!isSessionTimerRunning(snapshot)) {
           snapshot = resumeSessionTimer(snapshot, now);
         } else {
@@ -288,16 +286,11 @@ export class TrainingService {
         break;
       case 'touch':
         if (dayLogIndex < 0) {
-          history.progress.dayLogs.push({
-            dayName: dto.dayName,
-            date: dto.date || new Date().toISOString(),
-            durationMinutes: 1,
-            exercises: [],
-            submissionId: dto.submissionId,
-            sessionTimer: snapshotToState(createSessionTimer(0, now)),
-          } as any);
-          dayLogIndex = history.progress.dayLogs.length - 1;
           snapshot = createSessionTimer(0, now);
+          return {
+            sessionTimer: snapshotToState(snapshot),
+            durationMinutes: computeDurationMinutes(snapshot, now),
+          };
         } else if (isSessionTimerRunning(snapshot)) {
           snapshot = touchSessionTimer(snapshot, now);
         } else {
@@ -374,20 +367,14 @@ export class TrainingService {
       dayLog.dayName = dto.dayName;
       // Keep original session start — do not overwrite on autosave/edit.
 
-      const timerSnapshot = dayLog.sessionTimer
-        ? pauseSessionTimer(
-            materializeSessionTimer(stateToSnapshot(dayLog.sessionTimer)),
-          )
-        : null;
-      if (timerSnapshot) {
-        dayLog.sessionTimer = snapshotToState(timerSnapshot);
-      }
-
-      const resolvedMinutes = timerSnapshot
-        ? computeDurationMinutes(timerSnapshot)
-        : dto.durationMinutes;
-      if (resolvedMinutes) {
-        dayLog.durationMinutes = resolvedMinutes;
+      // Never pause on autosave/update — only materialize idle cutoff.
+      // Done/stop is handled by syncSessionTimer("stop") before logSession.
+      if (dayLog.sessionTimer) {
+        const materialized = materializeSessionTimer(
+          stateToSnapshot(dayLog.sessionTimer),
+        );
+        dayLog.sessionTimer = snapshotToState(materialized);
+        dayLog.durationMinutes = computeDurationMinutes(materialized);
       } else if (dto.durationMinutes) {
         dayLog.durationMinutes = dto.durationMinutes;
       }

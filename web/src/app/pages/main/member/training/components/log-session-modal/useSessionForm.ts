@@ -165,12 +165,42 @@ export const useSessionForm = ({
   const timerEnabledRef = useRef(timerEnabled);
   const prevIsOpenRef = useRef(isOpen);
   const onSyncTimerRef = useRef(onSyncTimer);
+
+  // Identity refs so timer syncs always use the freshest session identity,
+  // regardless of stale render closures. Updated synchronously in the init
+  // effect before any sync fires, and mirrored from state below.
+  const programIdRef = useRef<string | undefined>(program?._id);
+  const submissionIdRef = useRef<string | undefined>(submissionId);
+  const serverSessionIdRef = useRef<string | undefined>(serverSessionId);
+  const selectedDayNameRef = useRef<string>(selectedDayName);
+  const sessionDateRef = useRef<string>(sessionDate);
+
+  // Guards re-initialization: stores `${mode}:${dayName}` once initialized
+  // while the modal is open, so a background refetch of activeHistory does not
+  // wipe exercises / reset the running timer.
+  const initializedKeyRef = useRef<string | null>(null);
+
   useEffect(() => {
     sessionTimerRef.current = sessionTimerSnapshot;
   }, [sessionTimerSnapshot]);
   useEffect(() => {
     onSyncTimerRef.current = onSyncTimer;
   }, [onSyncTimer]);
+  useEffect(() => {
+    programIdRef.current = program?._id;
+  }, [program?._id]);
+  useEffect(() => {
+    submissionIdRef.current = submissionId;
+  }, [submissionId]);
+  useEffect(() => {
+    serverSessionIdRef.current = serverSessionId;
+  }, [serverSessionId]);
+  useEffect(() => {
+    selectedDayNameRef.current = selectedDayName;
+  }, [selectedDayName]);
+  useEffect(() => {
+    sessionDateRef.current = sessionDate;
+  }, [sessionDate]);
 
   useEffect(() => {
     timerEnabledRef.current = timerEnabled;
@@ -183,23 +213,57 @@ export const useSessionForm = ({
   }, [serverSessionId]);
 
   const applyTimerResponse = useCallback((result: SessionTimerSyncResult) => {
-    setSessionTimerSnapshot(stateToSnapshot(result.sessionTimer));
+    if (!result?.sessionTimer) return;
+
+    // Coerce numeric fields — Mongo / JSON can occasionally surface strings.
+    const raw = result.sessionTimer;
+    const snapshot = stateToSnapshot({
+      elapsedSeconds: Number(raw.elapsedSeconds) || 0,
+      segmentStartedAt:
+        raw.segmentStartedAt == null ? null : Number(raw.segmentStartedAt),
+      lastActivityAt: Number(raw.lastActivityAt) || Date.now(),
+    });
+
+    // Never apply a paused/zero server snapshot over a locally running timer
+    // for a brand-new session (ephemeral start has no sessionId yet).
+    const local = sessionTimerRef.current;
+    if (
+      snapshot.segmentStartedAt === null &&
+      local.segmentStartedAt !== null &&
+      !serverSessionIdRef.current &&
+      !result.sessionId
+    ) {
+      return;
+    }
+
+    setSessionTimerSnapshot(snapshot);
+    sessionTimerRef.current = snapshot;
     setDurationMinutes(result.durationMinutes);
     if (result.sessionId) {
+      // Keep the ref in sync immediately so the next sync reuses the server id
+      // instead of creating a duplicate day log.
+      serverSessionIdRef.current = result.sessionId;
       setServerSessionId(result.sessionId);
     }
     timerRegisteredRef.current = true;
   }, []);
 
+  // Reads identity from refs (not render closures) so it always targets the
+  // current session. This keeps the callback stable, preventing the open /
+  // keepalive effects from re-firing on every render.
   const syncTimer = useCallback(
     async (action: SessionTimerAction) => {
+      const programId = programIdRef.current;
+      const dayName = selectedDayNameRef.current;
+      const submission = submissionIdRef.current;
+
       if (
-        !timerEnabled ||
+        !timerEnabledRef.current ||
         !onSyncTimerRef.current ||
         timerStoppedRef.current ||
-        !program?._id ||
-        !selectedDayName ||
-        !submissionId
+        !programId ||
+        !dayName ||
+        !submission
       ) {
         return undefined;
       }
@@ -211,12 +275,12 @@ export const useSessionForm = ({
       timerSyncInFlightRef.current = true;
       try {
         const result = await onSyncTimerRef.current({
-          programId: program._id,
-          dayName: selectedDayName,
+          programId,
+          dayName,
           action,
-          sessionId: serverSessionId,
-          submissionId,
-          date: localDateTimeInputToISO(sessionDate),
+          sessionId: serverSessionIdRef.current,
+          submissionId: submission,
+          date: localDateTimeInputToISO(sessionDateRef.current),
         });
         if (result) {
           applyTimerResponse(result);
@@ -229,15 +293,7 @@ export const useSessionForm = ({
         timerSyncInFlightRef.current = false;
       }
     },
-    [
-      timerEnabled,
-      program?._id,
-      selectedDayName,
-      submissionId,
-      serverSessionId,
-      sessionDate,
-      applyTimerResponse,
-    ],
+    [applyTimerResponse],
   );
   const syncTimerRef = useRef(syncTimer);
   useEffect(() => {
@@ -273,11 +329,10 @@ export const useSessionForm = ({
     };
   });
 
-  // Persist paused timer when the modal unmounts without saving (e.g. close button).
+  // Persist draft when the modal unmounts (even if not dirty — otherwise a
+  // close-before-edit loses the prefilled exercises and the running timer).
   useEffect(() => {
     return () => {
-      if (!isDirtyRef.current) return;
-
       const draft = storageDraftRef.current;
       if (!draft.programId || !draft.dayName || draft.exercises.length === 0) {
         return;
@@ -314,10 +369,12 @@ export const useSessionForm = ({
   });
 
   const finalizeSessionTimer = useCallback(async (): Promise<number> => {
-    timerStoppedRef.current = true;
-
     if (onSyncTimerRef.current && timerEnabled) {
+      // Send the stop BEFORE marking the timer stopped — syncTimer bails out
+      // when timerStoppedRef is already true, so flipping it first would
+      // silently drop the "stop" request and leave the server timer running.
       const result = await syncTimer("stop");
+      timerStoppedRef.current = true;
       const minutes =
         result?.durationMinutes ??
         computeDurationMinutes(sessionTimerRef.current);
@@ -325,6 +382,7 @@ export const useSessionForm = ({
       return minutes;
     }
 
+    timerStoppedRef.current = true;
     const paused = pauseSessionTimer(sessionTimerRef.current);
     setSessionTimerSnapshot(paused);
     const minutes = computeDurationMinutes(paused);
@@ -332,11 +390,10 @@ export const useSessionForm = ({
     return minutes;
   }, [timerEnabled, syncTimer]);
 
-  // Resume / touch server timer when the logging modal opens.
-  useEffect(() => {
-    if (!isOpen || !timerEnabled || timerStoppedRef.current) return;
-    void syncTimer("touch");
-  }, [isOpen, timerEnabled, syncTimer]);
+  // NOTE: the initial timer sync (start / touch / sync) is driven by the
+  // initialization effect below — once the session identity is established —
+  // so we do NOT fire a separate touch here (that caused a duplicate request
+  // with a mismatched submissionId).
 
   // Keepalive while modal is open (modal activity, not general app usage).
   useEffect(() => {
@@ -349,12 +406,44 @@ export const useSessionForm = ({
     return () => clearInterval(id);
   }, [isOpen, timerEnabled, syncTimer]);
 
-  // Anchor idle grace when the modal closes.
+  // Anchor idle grace when the modal closes, and allow re-initialization on the
+  // next open (recovery of the latest draft / server session).
   useEffect(() => {
-    if (prevIsOpenRef.current && !isOpen && timerEnabledRef.current) {
-      if (!timerStoppedRef.current) {
+    if (prevIsOpenRef.current && !isOpen) {
+      if (timerEnabledRef.current && !timerStoppedRef.current) {
         void syncTimerRef.current("close");
       }
+
+      // Flush draft on close (component often stays mounted with isOpen=false).
+      const draft = storageDraftRef.current;
+      if (draft.programId && draft.dayName && draft.exercises.length > 0) {
+        try {
+          const storageKey = getStorageKey(draft.programId, draft.dayName);
+          const stored = localStorage.getItem(storageKey);
+          const base: Partial<StoredSession> = stored ? JSON.parse(stored) : {};
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              ...base,
+              exercises: draft.exercises,
+              sessionDate: new Date(draft.sessionDate).toISOString(),
+              durationMinutes: computeDurationMinutes(sessionTimerRef.current),
+              timestamp: Date.now(),
+              mode: draft.mode,
+              serverSessionId: draft.serverSessionId,
+              submissionId: draft.submissionId,
+              splitBlockIndices: Array.from(draft.splitBlockIndices),
+              sessionLayout: draft.sessionLayout,
+              sessionExerciseMeta: draft.sessionExerciseMeta,
+              sessionTimer: sessionTimerRef.current,
+            }),
+          );
+        } catch {
+          // Ignore localStorage errors
+        }
+      }
+
+      initializedKeyRef.current = null;
     }
     prevIsOpenRef.current = isOpen;
   }, [isOpen]);
@@ -376,39 +465,83 @@ export const useSessionForm = ({
     const day = program.days.find((d) => d.name === selectedDayName);
     if (!day) return;
 
+    // Guard: only (re)initialize when the modal first opens or the day/mode
+    // changes. Without this, a background refetch of activeHistory (e.g. after
+    // autosave invalidates the query) re-runs this effect and wipes exercises /
+    // resets the running timer to 0.
+    const initKey = `${mode}:${resumeTimer ? "resume" : "fresh"}:${selectedDayName}`;
+    if (initializedKeyRef.current === initKey) return;
+    initializedKeyRef.current = initKey;
+
     // Reset IDs initially to prevent "leakage" from previous day selection
     if (mode === "new" && !resumeTimer) {
+      const freshSubmissionId =
+        Math.random().toString(36).substring(2) + Date.now().toString(36);
+      const freshDate = format(new Date(), "yyyy-MM-dd'T'HH:mm");
+      // Keep refs aligned immediately so the initial sync uses this identity.
+      serverSessionIdRef.current = undefined;
+      submissionIdRef.current = freshSubmissionId;
+      sessionDateRef.current = freshDate;
       setServerSessionId(undefined);
-      setSubmissionId(
-        Math.random().toString(36).substring(2) + Date.now().toString(36),
-      );
+      setSubmissionId(freshSubmissionId);
       // STRICT RESET: Always default to "Now" when switching days in "new" mode.
       // This prevents stale times from staying in the form if the modal was open for hours.
-      setSessionDate(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+      setSessionDate(freshDate);
     }
 
     // RESUME IN-PROGRESS (edit with timer) ------------------------
     if (mode === "new" && initialSession && resumeTimer && !forceNew) {
       if (initialSession.dayName === selectedDayName) {
         timerStoppedRef.current = false;
-        setServerSessionId(
-          (initialSession as any)?._id || (initialSession as any)?.id,
-        );
-        setSubmissionId((initialSession as any).submissionId);
+        const resumeSessionId =
+          (initialSession as any)?._id || (initialSession as any)?.id;
+        const resumeSubmissionId = (initialSession as any).submissionId;
+        const resumeDate = sessionStartToLocalInput(initialSession.date);
+        serverSessionIdRef.current = resumeSessionId;
+        submissionIdRef.current = resumeSubmissionId;
+        sessionDateRef.current = resumeDate;
+        setServerSessionId(resumeSessionId);
+        setSubmissionId(resumeSubmissionId);
         setSessionDateLocked(true);
-        setSessionDate(sessionStartToLocalInput(initialSession.date));
+        setSessionDate(resumeDate);
 
-        const { exercises: editExercises, layout, meta } =
-          buildLayoutForEdit(day, initialSession.exercises);
-        setExercises(editExercises);
-        setSessionLayout(layout);
-        setSessionExerciseMeta(meta);
+        // Empty server shells (legacy timer-created logs) have no exercises —
+        // fall back to program layout so the modal is not blank.
+        if (!initialSession.exercises?.length) {
+          setExercises(
+            day.blocks.flatMap((b) =>
+              b.exercises.map((ex) => ({
+                exerciseId: ex._id || ex.name || "unknown_exercise",
+                sets: Array.from({ length: ex.recommendedSets || 3 }).map(
+                  () => ({
+                    reps: ex.recommendedReps || 10,
+                    weight: 0,
+                    completed: false,
+                    drops: [],
+                  }),
+                ),
+                notes: "",
+              })),
+            ),
+          );
+          setSessionLayout(buildLayoutFromProgram(day));
+          setSessionExerciseMeta({});
+        } else {
+          const { exercises: editExercises, layout, meta } =
+            buildLayoutForEdit(day, initialSession.exercises);
+          setExercises(editExercises);
+          setSessionLayout(layout);
+          setSessionExerciseMeta(meta);
+        }
 
         setSessionTimerSnapshot(
           (initialSession as any).sessionTimer
             ? stateToSnapshot((initialSession as any).sessionTimer)
             : createSessionTimer((initialSession.durationMinutes || 0) * 60),
         );
+        if (!timerStoppedRef.current) {
+          void syncTimerRef.current("touch");
+        }
         return;
       }
     }
@@ -474,13 +607,20 @@ export const useSessionForm = ({
               );
             }
             setLastSavedAt(new Date(parsed.timestamp));
+            if (hoursSinceStored < 1) {
+              sessionDateRef.current = sessionStartToLocalInput(
+                parsed.sessionDate,
+              );
+            }
             // Recover server session ID if available
             if (parsed.serverSessionId) {
+              serverSessionIdRef.current = parsed.serverSessionId;
               setServerSessionId(parsed.serverSessionId);
               setSessionDateLocked(true);
             }
             // Recover submissionId to maintain session identity
             if (parsed.submissionId) {
+              submissionIdRef.current = parsed.submissionId;
               setSubmissionId(parsed.submissionId);
             }
             // Recover split state
@@ -489,7 +629,7 @@ export const useSessionForm = ({
             }
             setSessionTimerSnapshot(migrateStoredTimer(parsed));
             if (!timerStoppedRef.current) {
-              void syncTimerRef.current("sync");
+              void syncTimerRef.current("touch");
             }
             return;
           }
@@ -554,7 +694,10 @@ export const useSessionForm = ({
     setExercises(initialExercises);
     setSessionLayout(buildLayoutFromProgram(day));
     setSessionExerciseMeta({});
-    setSessionTimerSnapshot(createSessionTimer());
+    timerStoppedRef.current = false;
+    const freshTimer = createSessionTimer();
+    setSessionTimerSnapshot(freshTimer);
+    sessionTimerRef.current = freshTimer;
     if (!timerStoppedRef.current) {
       void syncTimerRef.current("start");
     }
@@ -620,7 +763,12 @@ export const useSessionForm = ({
       try {
         const newId = await onAutoSaveRef.current?.(data);
         if (newId && !payload.serverSessionId) {
+          serverSessionIdRef.current = newId;
           setServerSessionId(newId);
+          // Attach the running timer to the newly created day log.
+          if (timerEnabledRef.current && !timerStoppedRef.current) {
+            void syncTimerRef.current("start");
+          }
         }
         setLastSavedAt(new Date());
         setIsDirty(false);
