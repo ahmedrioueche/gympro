@@ -2,7 +2,6 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import TrainingPage from "./TrainingPage";
 
-// Mock dependencies
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => vi.fn(),
 }));
