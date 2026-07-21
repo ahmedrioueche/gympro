@@ -108,12 +108,25 @@ export default function TrainingPage() {
       }),
       confirmText: t("training.logSession.resumePrompt.startNew"),
       confirmVariant: "primary",
+      secondaryAction: {
+        label: t("training.logSession.resumePrompt.resume"),
+        variant: "primary",
+        onClick: () => {
+          openModal("log_session", {
+            activeHistory,
+            mode: "new",
+            initialDayName: resumable.dayName,
+            ...(resumable.session ? { initialSession: resumable.session } : {}),
+          });
+        },
+      },
       onConfirm: () => {
         clearSessionDraft(programId, resumable.dayName);
         openModal("log_session", {
           activeHistory,
           mode: "new",
           forceNew: true,
+          initialDayName: resumable.dayName,
         });
       },
     });

@@ -2970,7 +2970,8 @@
       "resumePrompt": {
         "title": "Workout already in progress",
         "message": "You started {{dayName}} {{timeAgo}}. Starting a new workout will use a fresh timer.",
-        "startNew": "Start new workout"
+        "startNew": "Start new workout",
+        "resume": "Resume workout"
       },
       "setsComplete": "sets",
       "autoSaving": "Saving...",

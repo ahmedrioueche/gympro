@@ -30,8 +30,8 @@ export default function ConfirmModal() {
   };
 
   const handleConfirm = () => {
-    confirmModalProps?.onConfirm?.();
     closeModal();
+    confirmModalProps?.onConfirm?.();
   };
 
   if (!isOpen) {
@@ -133,8 +133,8 @@ export default function ConfirmModal() {
           {confirmModalProps?.secondaryAction && (
             <button
               onClick={async () => {
-                await confirmModalProps.secondaryAction?.onClick();
                 closeModal();
+                await confirmModalProps.secondaryAction?.onClick();
               }}
               className={cn(
                 "px-6 py-2.5 rounded-xl font-medium transition-all hover:scale-[1.02] w-full sm:w-auto",

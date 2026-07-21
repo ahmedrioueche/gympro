@@ -2956,7 +2956,8 @@
       "resumePrompt": {
         "title": "Entraînement déjà en cours",
         "message": "Vous avez commencé {{dayName}} {{timeAgo}}. Un nouvel entraînement démarrera avec un nouveau chronomètre.",
-        "startNew": "Nouvel entraînement"
+        "startNew": "Nouvel entraînement",
+        "resume": "Reprendre l'entraînement"
       },
       "sessionTimerRunning": "Chronomètre de séance en cours",
       "setsComplete": "séries",

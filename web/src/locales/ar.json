@@ -2955,7 +2955,8 @@
       "resumePrompt": {
         "title": "تمرين قيد التقدم",
         "message": "لقد بدأت {{dayName}} {{timeAgo}}. بدء تمرين جديد سيستخدم مؤقتًا جديدًا.",
-        "startNew": "بدء تمرين جديد"
+        "startNew": "بدء تمرين جديد",
+        "resume": "متابعة التمرين"
       },
       "sessionTimerRunning": "مؤقت الجلسة يعمل",
       "setsComplete": "مجموعات",
