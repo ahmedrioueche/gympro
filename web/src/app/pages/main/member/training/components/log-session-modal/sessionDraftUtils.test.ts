@@ -37,6 +37,7 @@ describe("sessionDraftUtils", () => {
     const session = makeSession({
       _id: "log-1",
       submissionId: "sub-1",
+      date: new Date().toISOString(),
       exercises: [
         {
           exerciseId: "ex1",
@@ -53,6 +54,39 @@ describe("sessionDraftUtils", () => {
 
     expect(
       shouldResumeTimerForSession(session, programId, dayLogs),
+    ).toBe(true);
+  });
+
+  it("shouldResumeTimerForSession is false for an older incomplete session", () => {
+    const programId = "prog-1";
+    const older = makeSession({
+      _id: "log-old",
+      submissionId: "sub-old",
+      date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      exercises: [
+        {
+          exerciseId: "ex1",
+          sets: [{ reps: 10, weight: 50, completed: false }],
+        },
+      ],
+    });
+    const latest = makeSession({
+      _id: "log-new",
+      submissionId: "sub-new",
+      date: new Date().toISOString(),
+      exercises: [
+        {
+          exerciseId: "ex1",
+          sets: [{ reps: 10, weight: 50, completed: false }],
+        },
+      ],
+    });
+
+    expect(
+      shouldResumeTimerForSession(older, programId, [older, latest]),
+    ).toBe(false);
+    expect(
+      shouldResumeTimerForSession(latest, programId, [older, latest]),
     ).toBe(true);
   });
 

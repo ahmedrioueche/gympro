@@ -54,12 +54,25 @@ export const isSameSession = (
   return idA != null && idA === idB;
 };
 
+/** Most recent day log by session start date. */
+export const getLatestDayLog = (
+  dayLogs: ProgramDayProgress[] = [],
+): ProgramDayProgress | null => {
+  if (dayLogs.length === 0) return null;
+  return [...dayLogs].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  )[0];
+};
+
 export const shouldResumeTimerForSession = (
   session: ProgramDayProgress,
   programId: string,
   dayLogs: ProgramDayProgress[] = [],
 ): boolean => {
   if (!isSessionIncomplete(session)) return false;
+
+  const latest = getLatestDayLog(dayLogs);
+  if (!latest || !isSameSession(latest, session)) return false;
 
   const resumable = findResumableSession(programId, dayLogs);
   if (!resumable) return false;
@@ -68,19 +81,7 @@ export const shouldResumeTimerForSession = (
     return isSameSession(resumable.session, session);
   }
 
-  if (resumable.source === "draft" && resumable.dayName === session.dayName) {
-    const incompleteForDay = dayLogs
-      .filter(
-        (log) => log.dayName === session.dayName && isSessionIncomplete(log),
-      )
-      .sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      );
-    if (incompleteForDay.length === 0) return false;
-    return isSameSession(incompleteForDay[0], session);
-  }
-
-  return false;
+  return resumable.source === "draft" && resumable.dayName === session.dayName;
 };
 
 export const getResumableTimerStopPayload = (
