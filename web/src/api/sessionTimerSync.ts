@@ -31,8 +31,11 @@ export async function syncSessionTimer(
       "/training/sessions/timer",
       payload,
     );
-    const body = res.data;
-    return (body as ApiResponse<SessionTimerSyncResult>).data ?? body;
+    const body = res.data as ApiResponse<SessionTimerSyncResult>;
+    if (!body.data) {
+      throw new Error(body.message || "Session timer sync failed");
+    }
+    return body.data;
   } catch (error) {
     throw handleApiError(error);
   }

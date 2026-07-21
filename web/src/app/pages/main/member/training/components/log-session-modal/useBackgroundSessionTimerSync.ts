@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { ProgramDayProgress } from "@ahmedrioueche/gympro-client";
-import { syncSessionTimer } from "../../../../../api/sessionTimerSync";
+import { syncSessionTimer } from "../../../../../../../api/sessionTimerSync";
 import { isSessionTimerRunning, stateToSnapshot } from "./useSessionTimer";
 
 const BACKGROUND_TIMER_SYNC_MS = 30_000;

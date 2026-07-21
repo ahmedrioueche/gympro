@@ -1,4 +1,9 @@
-import { CreateProgramDto, LogSessionDto } from "../dto/training";
+import {
+  CreateProgramDto,
+  LogSessionDto,
+  SessionTimerResponse,
+  SyncSessionTimerDto,
+} from "../dto/training";
 import { ApiResponse } from "../types/api";
 import { ProgramHistory, TrainingProgram } from "../types/training";
 import { apiClient, handleApiError } from "./helper";
@@ -139,6 +144,20 @@ export const trainingApi = {
     try {
       const res = await apiClient.post<ApiResponse<ProgramHistory>>(
         "/training/sessions",
+        data,
+      );
+      return res.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  },
+
+  syncSessionTimer: async (
+    data: SyncSessionTimerDto,
+  ): Promise<ApiResponse<SessionTimerResponse>> => {
+    try {
+      const res = await apiClient.post<ApiResponse<SessionTimerResponse>>(
+        "/training/sessions/timer",
         data,
       );
       return res.data;

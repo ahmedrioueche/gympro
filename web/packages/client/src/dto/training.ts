@@ -57,3 +57,24 @@ export interface LogSessionDto {
   sessionId?: string;
   submissionId?: string;
 }
+
+export type SessionTimerAction = "start" | "touch" | "stop" | "sync";
+
+export interface SyncSessionTimerDto {
+  programId: string;
+  dayName: string;
+  action: SessionTimerAction;
+  sessionId?: string;
+  submissionId?: string;
+  date?: string;
+}
+
+export interface SessionTimerResponse {
+  sessionTimer: {
+    elapsedSeconds: number;
+    segmentStartedAt: number | null;
+    lastActivityAt: number;
+  };
+  durationMinutes: number;
+  sessionId?: string;
+}
