@@ -28,6 +28,7 @@ const LogSessionModalContent = ({
   isOpen,
   forceNew,
   initialDayName,
+  resumeTimer,
 }: {
   activeHistory: any;
   initialSession: any;
@@ -37,6 +38,7 @@ const LogSessionModalContent = ({
   isOpen: boolean;
   forceNew?: boolean;
   initialDayName?: string;
+  resumeTimer?: boolean;
 }) => {
   const { t } = useTranslation();
   const { openModal } = useModalStore();
@@ -95,6 +97,7 @@ const LogSessionModalContent = ({
     initialDayName,
     mode: mode || "new",
     forceNew,
+    resumeTimer,
     onAutoSave: handleAutoSave,
     onSyncTimer: mode === "edit" ? undefined : handleSyncTimer,
   });
@@ -372,7 +375,7 @@ export const LogSessionModal = () => {
 
   if (!logSessionProps?.activeHistory) return null;
 
-  const { activeHistory, initialSession, mode, forceNew, initialDayName } =
+  const { activeHistory, initialSession, mode, forceNew, initialDayName, resumeTimer } =
     logSessionProps;
 
   return (
@@ -383,6 +386,7 @@ export const LogSessionModal = () => {
       mode={mode || "new"}
       forceNew={forceNew}
       initialDayName={initialDayName}
+      resumeTimer={resumeTimer}
       closeModal={closeModal}
       zIndex={zIndex}
     />

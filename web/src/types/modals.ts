@@ -227,6 +227,8 @@ export interface LogSessionModalProps {
   forceNew?: boolean;
   /** Pre-select training day when opening a new session. */
   initialDayName?: string;
+  /** Resume server session timer when opening an in-progress session. */
+  resumeTimer?: boolean;
 }
 
 export interface ReviewCoachRequestModalProps {

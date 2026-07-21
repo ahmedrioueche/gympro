@@ -7,6 +7,7 @@ import {
   TrainingProgram,
   computeDurationMinutes,
   createSessionTimer,
+  closeSessionTimer,
   isSessionTimerRunning,
   materializeSessionTimer,
   pauseSessionTimer,
@@ -305,11 +306,23 @@ export class TrainingService {
         break;
       case 'sync':
         break;
+      case 'close':
+        if (dayLogIndex >= 0) {
+          snapshot = closeSessionTimer(readSnapshot(), now);
+        }
+        break;
       case 'stop':
         snapshot = pauseSessionTimer(snapshot, now);
         break;
       default:
         throw new BadRequestException('Invalid timer action');
+    }
+
+    if (dayLogIndex < 0) {
+      return {
+        sessionTimer: snapshotToState(snapshot),
+        durationMinutes: computeDurationMinutes(snapshot, now),
+      };
     }
 
     const dayLog = history.progress.dayLogs[dayLogIndex] as any;

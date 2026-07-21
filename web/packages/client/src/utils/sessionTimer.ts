@@ -1,6 +1,6 @@
 import type { SessionTimerState } from "../types/training";
 
-/** Pause after this long without user interaction (included in elapsed total). */
+/** Pause after this long without opening the log session modal (included in elapsed total). */
 export const SESSION_INACTIVITY_MS = 15 * 60 * 1000;
 
 /** Sanity cap — never persist/display beyond this. */
@@ -9,6 +9,7 @@ export const MAX_SESSION_SECONDS = 4 * 60 * 60;
 export interface SessionTimerSnapshot {
   elapsedSeconds: number;
   segmentStartedAt: number | null;
+  /** Last log-modal activity: open, keepalive, or close (grace anchor). */
   lastActivityAt: number;
 }
 
@@ -100,6 +101,18 @@ export const touchSessionTimer = (
   }
 
   return { ...snapshot, lastActivityAt: now };
+};
+
+/** Modal closed — anchor idle grace from now without pausing. */
+export const closeSessionTimer = (
+  snapshot: SessionTimerSnapshot,
+  now = Date.now(),
+): SessionTimerSnapshot => {
+  const materialized = materializeSessionTimer(snapshot, now);
+  if (materialized.segmentStartedAt === null) {
+    return materialized;
+  }
+  return { ...materialized, lastActivityAt: now };
 };
 
 /** Apply idle cutoff at `now` — server-authoritative materialization. */

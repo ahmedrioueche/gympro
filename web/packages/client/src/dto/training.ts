@@ -58,7 +58,7 @@ export interface LogSessionDto {
   submissionId?: string;
 }
 
-export type SessionTimerAction = "start" | "touch" | "stop" | "sync";
+export type SessionTimerAction = "start" | "touch" | "stop" | "sync" | "close";
 
 export interface SyncSessionTimerDto {
   programId: string;

@@ -45,6 +45,79 @@ const getSessionIdentity = (session: ProgramDayProgress): string | undefined =>
   (session as { _id?: string; id?: string })._id ||
   (session as { id?: string }).id;
 
+export const isSameSession = (
+  a: ProgramDayProgress,
+  b: ProgramDayProgress,
+): boolean => {
+  const idA = getSessionIdentity(a);
+  const idB = getSessionIdentity(b);
+  return idA != null && idA === idB;
+};
+
+export const shouldResumeTimerForSession = (
+  session: ProgramDayProgress,
+  programId: string,
+  dayLogs: ProgramDayProgress[] = [],
+): boolean => {
+  if (!isSessionIncomplete(session)) return false;
+
+  const resumable = findResumableSession(programId, dayLogs);
+  if (!resumable) return false;
+
+  if (resumable.session) {
+    return isSameSession(resumable.session, session);
+  }
+
+  if (resumable.source === "draft" && resumable.dayName === session.dayName) {
+    const incompleteForDay = dayLogs
+      .filter(
+        (log) => log.dayName === session.dayName && isSessionIncomplete(log),
+      )
+      .sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+    if (incompleteForDay.length === 0) return false;
+    return isSameSession(incompleteForDay[0], session);
+  }
+
+  return false;
+};
+
+export const getResumableTimerStopPayload = (
+  programId: string,
+  resumable: ResumableSession,
+): {
+  dayName: string;
+  submissionId?: string;
+  sessionId?: string;
+} => {
+  if (resumable.session) {
+    return {
+      dayName: resumable.dayName,
+      submissionId: resumable.session.submissionId,
+      sessionId: getSessionIdentity(resumable.session),
+    };
+  }
+
+  try {
+    const raw = localStorage.getItem(
+      getSessionStorageKey(programId, resumable.dayName),
+    );
+    if (raw) {
+      const parsed = JSON.parse(raw) as StoredSessionDraft;
+      return {
+        dayName: resumable.dayName,
+        submissionId: parsed.submissionId,
+        sessionId: parsed.serverSessionId,
+      };
+    }
+  } catch {
+    // Ignore localStorage errors
+  }
+
+  return { dayName: resumable.dayName };
+};
+
 export const clearSessionDraft = (programId: string, dayName: string) => {
   try {
     localStorage.removeItem(getSessionStorageKey(programId, dayName));

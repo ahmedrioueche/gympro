@@ -1,6 +1,6 @@
 import { apiClient, handleApiError, type ApiResponse } from "@ahmedrioueche/gympro-client";
 
-export type SessionTimerAction = "start" | "touch" | "stop" | "sync";
+export type SessionTimerAction = "start" | "touch" | "stop" | "sync" | "close";
 
 export interface SyncSessionTimerPayload {
   programId: string;

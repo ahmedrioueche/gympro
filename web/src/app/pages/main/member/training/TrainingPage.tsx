@@ -18,9 +18,12 @@ import {
 import { useModalStore } from "../../../../../store/modal";
 import PageHeader from "../../../../components/PageHeader";
 import { ActiveProgramCard } from "./components/active-program-card/ActiveProgramCard";
+import { syncSessionTimer } from "../../../../../api/sessionTimerSync";
 import {
   clearSessionDraft,
   findResumableSession,
+  getResumableTimerStopPayload,
+  shouldResumeTimerForSession,
 } from "./components/log-session-modal/sessionDraftUtils";
 import { useBackgroundSessionTimerSync } from "./components/log-session-modal/useBackgroundSessionTimerSync";
 import { ProgramHistoryList } from "./components/ProgramHistoryList";
@@ -72,6 +75,25 @@ export default function TrainingPage() {
 
   const handleEditSession = (session: ProgramDayProgress) => {
     if (!activeHistory) return;
+
+    const programId = activeHistory.program._id!;
+    const resumeTimer = shouldResumeTimerForSession(
+      session,
+      programId,
+      activeHistory.progress.dayLogs,
+    );
+
+    if (resumeTimer) {
+      openModal("log_session", {
+        activeHistory,
+        initialSession: session,
+        mode: "new",
+        resumeTimer: true,
+        initialDayName: session.dayName,
+      });
+      return;
+    }
+
     openModal("log_session", {
       activeHistory,
       initialSession: session,
@@ -116,11 +138,24 @@ export default function TrainingPage() {
             activeHistory,
             mode: "new",
             initialDayName: resumable.dayName,
+            resumeTimer: true,
             ...(resumable.session ? { initialSession: resumable.session } : {}),
           });
         },
       },
       onConfirm: () => {
+        const stopPayload = getResumableTimerStopPayload(programId, resumable);
+        if (stopPayload.submissionId) {
+          void syncSessionTimer({
+            programId,
+            dayName: stopPayload.dayName,
+            action: "stop",
+            submissionId: stopPayload.submissionId,
+            sessionId: stopPayload.sessionId,
+          }).catch(() => {
+            // Continue — new session should still open
+          });
+        }
         clearSessionDraft(programId, resumable.dayName);
         openModal("log_session", {
           activeHistory,

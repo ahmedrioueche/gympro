@@ -50,6 +50,7 @@ interface UseSessionFormProps {
   initialDayName?: string;
   mode: "new" | "edit";
   forceNew?: boolean;
+  resumeTimer?: boolean;
   onAutoSave?: (data: any) => Promise<string | undefined>; // Returns new sessionId
   onSyncTimer?: (
     payload: SyncSessionTimerPayload,
@@ -57,8 +58,7 @@ interface UseSessionFormProps {
 }
 
 const AUTO_SAVE_INTERVAL_MS = 60_000; // 1 minute
-const TIMER_SYNC_INTERVAL_MS = 30_000;
-const TIMER_TOUCH_DEBOUNCE_MS = 5_000;
+const TIMER_MODAL_KEEPALIVE_MS = 60_000;
 
 const getStorageKey = getSessionStorageKey;
 
@@ -85,11 +85,13 @@ export const useSessionForm = ({
   initialDayName,
   mode,
   forceNew = false,
+  resumeTimer = false,
   onAutoSave,
   onSyncTimer,
 }: UseSessionFormProps) => {
   const program = activeHistory?.program;
   const progress = activeHistory?.progress;
+  const timerEnabled = Boolean(onSyncTimer) && (mode === "new" || resumeTimer);
 
   const { t } = useTranslation();
   const { user } = useUserStore();
@@ -105,7 +107,9 @@ export const useSessionForm = ({
       ? sessionStartToLocalInput(initialSession.date)
       : format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
-  const [sessionDateLocked, setSessionDateLocked] = useState(mode === "edit");
+  const [sessionDateLocked, setSessionDateLocked] = useState(
+    mode === "edit" || (resumeTimer && !!initialSession),
+  );
   const [durationMinutes, setDurationMinutes] = useState<number>(
     initialSession?.durationMinutes || 1,
   );
@@ -158,7 +162,8 @@ export const useSessionForm = ({
   const timerStoppedRef = useRef(false);
   const timerRegisteredRef = useRef(false);
   const timerSyncInFlightRef = useRef(false);
-  const lastTimerTouchRef = useRef(0);
+  const timerEnabledRef = useRef(timerEnabled);
+  const prevIsOpenRef = useRef(isOpen);
   const onSyncTimerRef = useRef(onSyncTimer);
   useEffect(() => {
     sessionTimerRef.current = sessionTimerSnapshot;
@@ -166,6 +171,10 @@ export const useSessionForm = ({
   useEffect(() => {
     onSyncTimerRef.current = onSyncTimer;
   }, [onSyncTimer]);
+
+  useEffect(() => {
+    timerEnabledRef.current = timerEnabled;
+  }, [timerEnabled]);
 
   useEffect(() => {
     if (serverSessionId) {
@@ -185,7 +194,7 @@ export const useSessionForm = ({
   const syncTimer = useCallback(
     async (action: SessionTimerAction) => {
       if (
-        mode === "edit" ||
+        !timerEnabled ||
         !onSyncTimerRef.current ||
         timerStoppedRef.current ||
         !program?._id ||
@@ -221,7 +230,7 @@ export const useSessionForm = ({
       }
     },
     [
-      mode,
+      timerEnabled,
       program?._id,
       selectedDayName,
       submissionId,
@@ -307,7 +316,7 @@ export const useSessionForm = ({
   const finalizeSessionTimer = useCallback(async (): Promise<number> => {
     timerStoppedRef.current = true;
 
-    if (onSyncTimerRef.current && mode === "new") {
+    if (onSyncTimerRef.current && timerEnabled) {
       const result = await syncTimer("stop");
       const minutes =
         result?.durationMinutes ??
@@ -321,46 +330,34 @@ export const useSessionForm = ({
     const minutes = computeDurationMinutes(paused);
     setDurationMinutes(minutes);
     return minutes;
-  }, [mode, syncTimer]);
+  }, [timerEnabled, syncTimer]);
 
   // Resume / touch server timer when the logging modal opens.
   useEffect(() => {
-    if (!isOpen || mode === "edit" || timerStoppedRef.current) return;
+    if (!isOpen || !timerEnabled || timerStoppedRef.current) return;
     void syncTimer("touch");
-  }, [isOpen, mode, syncTimer]);
+  }, [isOpen, timerEnabled, syncTimer]);
 
-  // Keep server timer authoritative while a workout is in progress (even if modal is closed).
+  // Keepalive while modal is open (modal activity, not general app usage).
   useEffect(() => {
-    if (mode === "edit" || !onSyncTimer || timerStoppedRef.current) return;
-    if (!program?._id || !submissionId) return;
+    if (!isOpen || !timerEnabled || timerStoppedRef.current) return;
 
     const id = setInterval(() => {
-      void syncTimer("sync");
-    }, TIMER_SYNC_INTERVAL_MS);
+      void syncTimer("touch");
+    }, TIMER_MODAL_KEEPALIVE_MS);
 
     return () => clearInterval(id);
-  }, [mode, onSyncTimer, program?._id, submissionId, syncTimer]);
+  }, [isOpen, timerEnabled, syncTimer]);
 
-  // Forward user interaction to the server (debounced).
+  // Anchor idle grace when the modal closes.
   useEffect(() => {
-    if (!isOpen || mode === "edit" || timerStoppedRef.current) return;
-
-    const touch = () => {
-      if (Date.now() - lastTimerTouchRef.current < TIMER_TOUCH_DEBOUNCE_MS) {
-        return;
+    if (prevIsOpenRef.current && !isOpen && timerEnabledRef.current) {
+      if (!timerStoppedRef.current) {
+        void syncTimerRef.current("close");
       }
-      lastTimerTouchRef.current = Date.now();
-      void syncTimer("touch");
-    };
-
-    window.addEventListener("pointerdown", touch, { passive: true });
-    window.addEventListener("keydown", touch);
-
-    return () => {
-      window.removeEventListener("pointerdown", touch);
-      window.removeEventListener("keydown", touch);
-    };
-  }, [isOpen, mode, syncTimer]);
+    }
+    prevIsOpenRef.current = isOpen;
+  }, [isOpen]);
 
   // Logic previously here for manual resets was removed.
   // The hook now relies on component unmounting for state cleanup.
@@ -380,7 +377,7 @@ export const useSessionForm = ({
     if (!day) return;
 
     // Reset IDs initially to prevent "leakage" from previous day selection
-    if (mode === "new") {
+    if (mode === "new" && !resumeTimer) {
       setServerSessionId(undefined);
       setSubmissionId(
         Math.random().toString(36).substring(2) + Date.now().toString(36),
@@ -388,6 +385,32 @@ export const useSessionForm = ({
       // STRICT RESET: Always default to "Now" when switching days in "new" mode.
       // This prevents stale times from staying in the form if the modal was open for hours.
       setSessionDate(format(new Date(), "yyyy-MM-dd'T'HH:mm"));
+    }
+
+    // RESUME IN-PROGRESS (edit with timer) ------------------------
+    if (mode === "new" && initialSession && resumeTimer && !forceNew) {
+      if (initialSession.dayName === selectedDayName) {
+        timerStoppedRef.current = false;
+        setServerSessionId(
+          (initialSession as any)?._id || (initialSession as any)?.id,
+        );
+        setSubmissionId((initialSession as any).submissionId);
+        setSessionDateLocked(true);
+        setSessionDate(sessionStartToLocalInput(initialSession.date));
+
+        const { exercises: editExercises, layout, meta } =
+          buildLayoutForEdit(day, initialSession.exercises);
+        setExercises(editExercises);
+        setSessionLayout(layout);
+        setSessionExerciseMeta(meta);
+
+        setSessionTimerSnapshot(
+          (initialSession as any).sessionTimer
+            ? stateToSnapshot((initialSession as any).sessionTimer)
+            : createSessionTimer((initialSession.durationMinutes || 0) * 60),
+        );
+        return;
+      }
     }
 
     // EDIT MODE LOGIC ------------------------
@@ -535,7 +558,7 @@ export const useSessionForm = ({
     if (!timerStoppedRef.current) {
       void syncTimerRef.current("start");
     }
-  }, [selectedDayName, isOpen, mode, initialSession, program, forceNew]); // Rerun logic when modal opens or key props change!
+  }, [selectedDayName, isOpen, mode, initialSession, program, forceNew, resumeTimer]); // Rerun logic when modal opens or key props change!
 
   // Keep durationMinutes in sync with activity-based timer for autosave
   useEffect(() => {
