@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { useModalStore } from "../../../../../../../store/modal";
 import { useSessionExercises } from "./useSessionExercises";
+import { getCompletedSessionExercises } from "./sessionHistoryUtils";
 
 interface SessionExerciseListProps {
   exercises: ExerciseProgress[];
@@ -23,10 +24,22 @@ export const SessionExerciseList = ({
   const { unit: weightUnit } = useWeightUnit();
   const { openModal } = useModalStore();
   const { getExerciseName, getExercise } = useSessionExercises(program);
+  const completedExercises = getCompletedSessionExercises(exercises);
+
+  if (completedExercises.length === 0 && !notes) {
+    return (
+      <div className="text-xs text-text-secondary italic">
+        {t(
+          "training.page.sessionList.noCompletedExercises",
+          "No completed exercises",
+        )}
+      </div>
+    );
+  }
 
   return (
     <>
-      {exercises.map((ex, idx) => {
+      {completedExercises.map((ex, idx) => {
         const exerciseDef = getExercise(ex.exerciseId);
         const hasVideo = !!exerciseDef?.videoUrl;
 

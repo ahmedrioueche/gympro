@@ -9,6 +9,7 @@ import Button from "../../../../../../../components/ui/Button";
 import { formatSessionDurationMinutes } from "../../../../../../../utils/formatSessionDuration";
 import { formatSessionStartDisplay } from "../../../../../../../utils/sessionDateTime";
 import { SessionExerciseList } from "./SessionExerciseList";
+import { countCompletedSessionExercises } from "./sessionHistoryUtils";
 
 interface SessionItemProps {
   session: ProgramDayProgress;
@@ -25,6 +26,10 @@ export const SessionItem = ({
 }: SessionItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useTranslation();
+
+  const completedExerciseCount = countCompletedSessionExercises(
+    session.exercises,
+  );
 
   return (
     <div className="bg-surface border border-border rounded-xl overflow-hidden transition-all">
@@ -61,7 +66,7 @@ export const SessionItem = ({
             <div className="hidden sm:block">
               <span className="text-sm font-medium text-text-primary block">
                 {t("training.programs.details.exercisesCount", {
-                  count: session.exercises.length,
+                  count: completedExerciseCount,
                 })}
               </span>
             </div>

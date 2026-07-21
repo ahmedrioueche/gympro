@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../hooks/useWeightUnit";
 import { parseSessionStartInstant } from "../../../../../../utils/sessionDateTime";
+import { getCompletedSessionExercises } from "./session-list/sessionHistoryUtils";
 
 interface WorkoutSession {
   id: string;
@@ -39,7 +40,7 @@ export const WorkoutHistoryList = ({
       id: `program-${session.date}-${session.dayName}`,
       date: session.date,
       dayName: session.dayName,
-      exercises: session.exercises,
+      exercises: getCompletedSessionExercises(session.exercises),
       type: "program" as const,
       programName: activeProgram?.name,
       notes: session.notes,
@@ -48,7 +49,7 @@ export const WorkoutHistoryList = ({
       id: `custom-${workout.date}-${workout.dayName}`,
       date: workout.date,
       dayName: workout.dayName,
-      exercises: workout.exercises,
+      exercises: getCompletedSessionExercises(workout.exercises),
       type: "custom" as const,
       notes: workout.notes,
     })),
