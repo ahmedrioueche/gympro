@@ -8,6 +8,10 @@ import { format } from "date-fns";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import {
+  localDateTimeInputToISO,
+  sessionStartToLocalInput,
+} from "../../../../../../../utils/sessionDateTime";
 import { useTimerStore } from "../../../../../../../store/timer";
 import { useUserStore } from "../../../../../../../store/user";
 import {
@@ -98,9 +102,10 @@ export const useSessionForm = ({
   );
   const [sessionDate, setSessionDate] = useState(
     initialSession
-      ? format(new Date(initialSession.date), "yyyy-MM-dd'T'HH:mm")
+      ? sessionStartToLocalInput(initialSession.date)
       : format(new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
+  const [sessionDateLocked, setSessionDateLocked] = useState(mode === "edit");
   const [durationMinutes, setDurationMinutes] = useState<number>(
     initialSession?.durationMinutes || 1,
   );
@@ -162,6 +167,12 @@ export const useSessionForm = ({
     onSyncTimerRef.current = onSyncTimer;
   }, [onSyncTimer]);
 
+  useEffect(() => {
+    if (serverSessionId) {
+      setSessionDateLocked(true);
+    }
+  }, [serverSessionId]);
+
   const applyTimerResponse = useCallback((result: SessionTimerSyncResult) => {
     setSessionTimerSnapshot(stateToSnapshot(result.sessionTimer));
     setDurationMinutes(result.durationMinutes);
@@ -196,7 +207,7 @@ export const useSessionForm = ({
           action,
           sessionId: serverSessionId,
           submissionId,
-          date: new Date(sessionDate).toISOString(),
+          date: localDateTimeInputToISO(sessionDate),
         });
         if (result) {
           applyTimerResponse(result);
@@ -386,6 +397,8 @@ export const useSessionForm = ({
           (initialSession as any)?._id || (initialSession as any)?.id,
         );
         setSubmissionId((initialSession as any).submissionId);
+        setSessionDateLocked(true);
+        setSessionDate(sessionStartToLocalInput(initialSession.date));
 
         const { exercises: editExercises, layout, meta } =
           buildLayoutForEdit(day, initialSession.exercises);
@@ -431,9 +444,7 @@ export const useSessionForm = ({
             // Recover date only if draft is recent (< 1 hour).
             // This preserves local time "Now" for old drafts while keeping Gym Bro weights/reps.
             if (hoursSinceStored < 1) {
-              setSessionDate(
-                format(new Date(parsed.sessionDate), "yyyy-MM-dd'T'HH:mm"),
-              );
+              setSessionDate(sessionStartToLocalInput(parsed.sessionDate));
             } else {
               console.log(
                 "[useSessionForm] Draft is old. Keeping 'Now' time but preserving exercises.",
@@ -443,6 +454,7 @@ export const useSessionForm = ({
             // Recover server session ID if available
             if (parsed.serverSessionId) {
               setServerSessionId(parsed.serverSessionId);
+              setSessionDateLocked(true);
             }
             // Recover submissionId to maintain session identity
             if (parsed.submissionId) {
@@ -574,7 +586,7 @@ export const useSessionForm = ({
       const data = {
         programId: payload.programId,
         dayName: payload.dayName,
-        date: new Date(payload.sessionDate).toISOString(),
+        date: localDateTimeInputToISO(payload.sessionDate),
         durationMinutes: payload.durationMinutes,
         exercises: payload.exercises,
         sessionId: payload.serverSessionId,
@@ -674,6 +686,7 @@ export const useSessionForm = ({
     setSessionTimerSnapshot(createSessionTimer());
     timerStoppedRef.current = false;
     timerRegisteredRef.current = false;
+    setSessionDateLocked(false);
     clearStorage();
     // CRITICAL: Clear IDs after successful save so the next time the modal opens, it's fresh
     setServerSessionId(undefined);
@@ -1057,10 +1070,14 @@ export const useSessionForm = ({
 
   const clearScrollToSet = useCallback(() => setScrollToSet(null), []);
 
-  const handleSessionDateChange = useCallback((value: string) => {
-    setIsDirty(true);
-    setSessionDate(value);
-  }, []);
+  const handleSessionDateChange = useCallback(
+    (value: string) => {
+      if (sessionDateLocked) return;
+      setIsDirty(true);
+      setSessionDate(value);
+    },
+    [sessionDateLocked],
+  );
 
   const handleDurationChange = useCallback((value: number) => {
     setIsDirty(true);
@@ -1071,6 +1088,7 @@ export const useSessionForm = ({
     setIsDirty(true);
     timerStoppedRef.current = false;
     timerRegisteredRef.current = false;
+    setSessionDateLocked(false);
     setSessionTimerSnapshot(createSessionTimer());
     setSelectedDayName(value);
   }, []);
@@ -1160,6 +1178,7 @@ export const useSessionForm = ({
     selectedDayName,
     setSelectedDayName: handleDayChange,
     sessionDate,
+    sessionDateLocked,
     setSessionDate: handleSessionDateChange,
     durationMinutes,
     setDurationMinutes: handleDurationChange,

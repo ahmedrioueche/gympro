@@ -5,6 +5,7 @@ import BaseModal from "../../../../../../../components/ui/BaseModal";
 import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
 import { syncSessionTimer } from "../../../../../../../api/sessionTimerSync";
+import { localDateTimeInputToISO } from "../../../../../../../utils/sessionDateTime";
 import {
   useAutoSaveSession,
   useLogSession,
@@ -177,7 +178,7 @@ const LogSessionModalContent = ({
       {
         programId: program._id!,
         dayName: form.selectedDayName,
-        date: form.sessionDate,
+        date: localDateTimeInputToISO(form.sessionDate),
         durationMinutes,
         exercises: form.exercises,
         sessionId:
@@ -254,6 +255,7 @@ const LogSessionModalContent = ({
               type="datetime-local"
               value={form.sessionDate}
               onChange={(e) => form.setSessionDate(e.target.value)}
+              disabled={form.sessionDateLocked}
             />
           </div>
         </div>

@@ -2,12 +2,12 @@ import {
   type ProgramDayProgress,
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
-import { format } from "date-fns";
 import { ChevronDown, Clock, Dumbbell, Edit2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../../../../../../../components/ui/Button";
 import { formatSessionDurationMinutes } from "../../../../../../../utils/formatSessionDuration";
+import { formatSessionStartDisplay } from "../../../../../../../utils/sessionDateTime";
 import { SessionExerciseList } from "./SessionExerciseList";
 
 interface SessionItemProps {
@@ -44,7 +44,7 @@ export const SessionItem = ({
               </h4>
               <span className="text-xs text-text-secondary flex items-center gap-1 flex-wrap">
                 <Clock size={14} />
-                {format(new Date(session.date), "MMM d, yyyy - HH:mm")}
+                {formatSessionStartDisplay(session.date)}
                 {session.durationMinutes ? (
                   <span>
                     {" · "}

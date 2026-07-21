@@ -358,8 +358,8 @@ export class TrainingService {
       console.log('[LogSession] UPDATING existing log at index', existingIndex);
       const dayLog = history.progress.dayLogs[existingIndex] as any;
       dayLog.exercises = dto.exercises;
-      dayLog.date = dto.date;
       dayLog.dayName = dto.dayName;
+      // Keep original session start — do not overwrite on autosave/edit.
 
       const timerSnapshot = dayLog.sessionTimer
         ? pauseSessionTimer(

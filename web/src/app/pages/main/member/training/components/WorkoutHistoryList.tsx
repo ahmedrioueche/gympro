@@ -6,6 +6,7 @@ import { Calendar, ChevronDown, Dumbbell, Edit2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../hooks/useWeightUnit";
+import { parseSessionStartInstant } from "../../../../../../utils/sessionDateTime";
 
 interface WorkoutSession {
   id: string;
@@ -51,7 +52,11 @@ export const WorkoutHistoryList = ({
       type: "custom" as const,
       notes: workout.notes,
     })),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  ].sort(
+    (a, b) =>
+      parseSessionStartInstant(b.date).getTime() -
+      parseSessionStartInstant(a.date).getTime(),
+  );
 
   if (allWorkouts.length === 0) {
     return (
@@ -100,7 +105,7 @@ const WorkoutCard = ({ workout, activeProgram, onEdit }: WorkoutCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    const date = parseSessionStartInstant(dateString);
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
