@@ -134,6 +134,12 @@ export const findResumableSession = (
   const candidates: ResumableSession[] = [];
   const draftIdentities = new Set<string>();
 
+  const serverIdentities = new Set(
+    dayLogs
+      .map((log) => getSessionIdentity(log))
+      .filter((id): id is string => Boolean(id)),
+  );
+
   try {
     const prefix = `session_progress_v2_${programId}_`;
     for (let i = 0; i < localStorage.length; i++) {
@@ -149,6 +155,15 @@ export const findResumableSession = (
         parsed.timestamp < cutoff ||
         !parsed.exercises?.length
       ) {
+        continue;
+      }
+
+      // Drop drafts tied to a server session that no longer exists (e.g. after delete).
+      if (
+        parsed.serverSessionId &&
+        !serverIdentities.has(parsed.serverSessionId)
+      ) {
+        localStorage.removeItem(key);
         continue;
       }
 

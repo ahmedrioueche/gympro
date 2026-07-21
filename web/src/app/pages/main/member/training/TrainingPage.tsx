@@ -16,9 +16,9 @@ import {
   useTrainingHistory,
 } from "../../../../../hooks/queries/useTraining";
 import { useModalStore } from "../../../../../store/modal";
+import { syncSessionTimer } from "../../../../../api/sessionTimerSync";
 import PageHeader from "../../../../components/PageHeader";
 import { ActiveProgramCard } from "./components/active-program-card/ActiveProgramCard";
-import { syncSessionTimer } from "../../../../../api/sessionTimerSync";
 import {
   clearSessionDraft,
   findResumableSession,
@@ -186,6 +186,7 @@ export default function TrainingPage() {
           programId: activeHistory.program._id!,
           sessionId: idToDelete,
         });
+        clearSessionDraft(activeHistory.program._id!, session.dayName);
       },
     });
   };

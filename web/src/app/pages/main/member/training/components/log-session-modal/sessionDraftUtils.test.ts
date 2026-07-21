@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { ProgramDayProgress } from "@ahmedrioueche/gympro-client";
 import {
+  findResumableSession,
+  getSessionStorageKey,
   isSameSession,
   shouldResumeTimerForSession,
 } from "./sessionDraftUtils";
@@ -69,5 +71,24 @@ describe("sessionDraftUtils", () => {
     expect(
       shouldResumeTimerForSession(session, "prog-1", [session]),
     ).toBe(false);
+  });
+
+  it("findResumableSession ignores local draft after server session was deleted", () => {
+    const programId = "prog-deleted";
+    const dayName = "Push";
+    const key = getSessionStorageKey(programId, dayName);
+
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        exercises: [{ exerciseId: "ex1", sets: [{ completed: false }] }],
+        timestamp: Date.now(),
+        submissionId: "sub-deleted",
+        serverSessionId: "deleted-log-id",
+      }),
+    );
+
+    expect(findResumableSession(programId, [])).toBeNull();
+    expect(localStorage.getItem(key)).toBeNull();
   });
 });
