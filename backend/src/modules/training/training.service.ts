@@ -2,8 +2,19 @@ import {
   CreateProgramDto,
   LogSessionDto,
   ProgramHistory,
+  SessionTimerResponse,
+  SyncSessionTimerDto,
   TrainingProgram,
+  computeDurationMinutes,
+  createSessionTimer,
+  isSessionTimerRunning,
+  materializeSessionTimer,
+  pauseSessionTimer,
+  resumeSessionTimer,
   sanitizeProgramPayload,
+  snapshotToState,
+  stateToSnapshot,
+  touchSessionTimer,
 } from '@ahmedrioueche/gympro-client';
 import {
   BadRequestException,
@@ -206,6 +217,114 @@ export class TrainingService {
       .exec();
   }
 
+  private findDayLogIndex(
+    history: ProgramHistoryModel,
+    sessionId?: string,
+    submissionId?: string,
+  ): number {
+    if (submissionId) {
+      const bySubmission = history.progress.dayLogs.findIndex(
+        (log) => (log as any).submissionId === submissionId,
+      );
+      if (bySubmission >= 0) return bySubmission;
+    }
+    if (sessionId) {
+      return history.progress.dayLogs.findIndex(
+        (log) => (log as any)._id?.toString() === sessionId,
+      );
+    }
+    return -1;
+  }
+
+  async syncSessionTimer(
+    userId: string,
+    dto: SyncSessionTimerDto,
+  ): Promise<SessionTimerResponse> {
+    const history = await this.historyModel.findOne({
+      userId,
+      'program._id': dto.programId,
+      status: 'active',
+    });
+
+    if (!history) {
+      throw new BadRequestException('No active session found for this program');
+    }
+
+    const now = Date.now();
+    let dayLogIndex = this.findDayLogIndex(
+      history,
+      dto.sessionId,
+      dto.submissionId,
+    );
+
+    const readSnapshot = () => {
+      if (dayLogIndex < 0) return createSessionTimer();
+      const dayLog = history.progress.dayLogs[dayLogIndex] as any;
+      if (!dayLog?.sessionTimer) return createSessionTimer();
+      return stateToSnapshot(dayLog.sessionTimer);
+    };
+
+    let snapshot = materializeSessionTimer(readSnapshot(), now);
+
+    switch (dto.action) {
+      case 'start':
+        if (dayLogIndex < 0) {
+          history.progress.dayLogs.push({
+            dayName: dto.dayName,
+            date: dto.date || new Date().toISOString(),
+            durationMinutes: 1,
+            exercises: [],
+            submissionId: dto.submissionId,
+            sessionTimer: snapshotToState(createSessionTimer(0, now)),
+          } as any);
+          dayLogIndex = history.progress.dayLogs.length - 1;
+          snapshot = createSessionTimer(0, now);
+        } else if (!isSessionTimerRunning(snapshot)) {
+          snapshot = resumeSessionTimer(snapshot, now);
+        } else {
+          snapshot = touchSessionTimer(snapshot, now);
+        }
+        break;
+      case 'touch':
+        if (dayLogIndex < 0) {
+          history.progress.dayLogs.push({
+            dayName: dto.dayName,
+            date: dto.date || new Date().toISOString(),
+            durationMinutes: 1,
+            exercises: [],
+            submissionId: dto.submissionId,
+            sessionTimer: snapshotToState(createSessionTimer(0, now)),
+          } as any);
+          dayLogIndex = history.progress.dayLogs.length - 1;
+          snapshot = createSessionTimer(0, now);
+        } else if (isSessionTimerRunning(snapshot)) {
+          snapshot = touchSessionTimer(snapshot, now);
+        } else {
+          snapshot = resumeSessionTimer(snapshot, now);
+        }
+        break;
+      case 'sync':
+        break;
+      case 'stop':
+        snapshot = pauseSessionTimer(snapshot, now);
+        break;
+      default:
+        throw new BadRequestException('Invalid timer action');
+    }
+
+    const dayLog = history.progress.dayLogs[dayLogIndex] as any;
+    dayLog.sessionTimer = snapshotToState(snapshot);
+    dayLog.durationMinutes = computeDurationMinutes(snapshot, now);
+
+    await history.save();
+
+    return {
+      sessionTimer: dayLog.sessionTimer,
+      durationMinutes: dayLog.durationMinutes,
+      sessionId: dayLog._id?.toString(),
+    };
+  }
+
   async logSession(
     userId: string,
     dto: LogSessionDto,
@@ -223,22 +342,7 @@ export class TrainingService {
     // Match sessions using multiple strategies to prevent duplicates
     const sessionId = (dto as any).sessionId;
     const submissionId = (dto as any).submissionId;
-    const targetDate = new Date(dto.date).toISOString().split('T')[0]; // Normalize date
-    let existingIndex = -1;
-
-    // Priority 1: Match by submissionId (Client-Side ID if available)
-    if (submissionId) {
-      existingIndex = history.progress.dayLogs.findIndex(
-        (log) => (log as any).submissionId === submissionId,
-      );
-    }
-
-    // Priority 2: Match by existing _id if provided
-    if (existingIndex === -1 && sessionId) {
-      existingIndex = history.progress.dayLogs.findIndex(
-        (log) => (log as any)._id?.toString() === sessionId,
-      );
-    }
+    let existingIndex = this.findDayLogIndex(history, sessionId, submissionId);
 
     console.log(
       '[LogSession] submissionId:',
@@ -252,21 +356,33 @@ export class TrainingService {
     if (existingIndex >= 0) {
       // Update existing
       console.log('[LogSession] UPDATING existing log at index', existingIndex);
-      history.progress.dayLogs[existingIndex].exercises = dto.exercises;
-      history.progress.dayLogs[existingIndex].date = dto.date;
-      history.progress.dayLogs[existingIndex].dayName = dto.dayName;
-      if (dto.durationMinutes) {
-        history.progress.dayLogs[existingIndex].durationMinutes =
-          dto.durationMinutes;
+      const dayLog = history.progress.dayLogs[existingIndex] as any;
+      dayLog.exercises = dto.exercises;
+      dayLog.date = dto.date;
+      dayLog.dayName = dto.dayName;
+
+      const timerSnapshot = dayLog.sessionTimer
+        ? pauseSessionTimer(
+            materializeSessionTimer(stateToSnapshot(dayLog.sessionTimer)),
+          )
+        : null;
+      if (timerSnapshot) {
+        dayLog.sessionTimer = snapshotToState(timerSnapshot);
       }
-      if (dto.notes) history.progress.dayLogs[existingIndex].notes = dto.notes;
+
+      const resolvedMinutes = timerSnapshot
+        ? computeDurationMinutes(timerSnapshot)
+        : dto.durationMinutes;
+      if (resolvedMinutes) {
+        dayLog.durationMinutes = resolvedMinutes;
+      } else if (dto.durationMinutes) {
+        dayLog.durationMinutes = dto.durationMinutes;
+      }
+
+      if (dto.notes) dayLog.notes = dto.notes;
       // Update submissionId if not set (migration)
-      if (
-        submissionId &&
-        !(history.progress.dayLogs[existingIndex] as any).submissionId
-      ) {
-        (history.progress.dayLogs[existingIndex] as any).submissionId =
-          submissionId;
+      if (submissionId && !dayLog.submissionId) {
+        dayLog.submissionId = submissionId;
       }
     } else {
       // Add new day log

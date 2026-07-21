@@ -191,6 +191,13 @@ export interface ExerciseProgress {
   notes?: string; // optional notes for that exercise
 }
 
+/** Server-authoritative workout timer state (persisted on day log). */
+export interface SessionTimerState {
+  elapsedSeconds: number;
+  segmentStartedAt: number | null;
+  lastActivityAt: number;
+}
+
 // Progress for a training day
 export interface ProgramDayProgress {
   _id?: string;
@@ -198,6 +205,7 @@ export interface ProgramDayProgress {
   dayName: string; // matches ProgramDay.name
   date: string | Date;
   durationMinutes?: number;
+  sessionTimer?: SessionTimerState;
   exercises: ExerciseProgress[];
   notes?: string; // optional overall day notes
 }

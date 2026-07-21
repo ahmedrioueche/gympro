@@ -4,6 +4,7 @@ import toast from "react-hot-toast";import { useTranslation } from "react-i18nex
 import BaseModal from "../../../../../../../components/ui/BaseModal";
 import CustomSelect from "../../../../../../../components/ui/CustomSelect";
 import InputField from "../../../../../../../components/ui/InputField";
+import { syncSessionTimer } from "../../../../../../../api/sessionTimerSync";
 import {
   useAutoSaveSession,
   useLogSession,
@@ -80,6 +81,12 @@ const LogSessionModalContent = ({
     }
   };
 
+  const handleSyncTimer = useCallback(
+    (payload: Parameters<typeof syncSessionTimer>[0]) =>
+      syncSessionTimer(payload),
+    [],
+  );
+
   const form = useSessionForm({
     isOpen,
     activeHistory: activeHistory!,
@@ -88,6 +95,7 @@ const LogSessionModalContent = ({
     mode: mode || "new",
     forceNew,
     onAutoSave: handleAutoSave,
+    onSyncTimer: mode === "edit" ? undefined : handleSyncTimer,
   });
 
   const initialScrollDoneRef = useRef(false);
@@ -147,14 +155,14 @@ const LogSessionModalContent = ({
     [form, openModal, t],
   );
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const validationError = form.validateSession();
     if (validationError) {
       toast.error(validationError);
       return;
     }
 
-    const durationMinutes = form.finalizeSessionTimer();
+    const durationMinutes = await form.finalizeSessionTimer();
 
     let completedSets = 0;
     let totalSets = 0;

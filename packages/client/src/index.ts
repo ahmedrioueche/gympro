@@ -94,3 +94,4 @@ export * from "./types/upload";
 export * from "./types/user";
 export * from "./utils/helper";
 export * from "./utils/muscles";
+export * from "./utils/sessionTimer";

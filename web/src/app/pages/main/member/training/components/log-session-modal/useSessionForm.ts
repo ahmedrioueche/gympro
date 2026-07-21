@@ -29,12 +29,15 @@ import {
   createSessionTimer,
   migrateStoredTimer,
   pauseSessionTimer,
-  resumeSessionTimer,
-  SESSION_INACTIVITY_MS,
-  touchSessionTimer,
+  stateToSnapshot,
   type SessionTimerSnapshot,
   useSessionTimer,
 } from "./useSessionTimer";
+import type {
+  SessionTimerAction,
+  SessionTimerSyncResult,
+  SyncSessionTimerPayload,
+} from "../../../../../../../api/sessionTimerSync";
 
 interface UseSessionFormProps {
   isOpen: boolean;
@@ -44,9 +47,14 @@ interface UseSessionFormProps {
   mode: "new" | "edit";
   forceNew?: boolean;
   onAutoSave?: (data: any) => Promise<string | undefined>; // Returns new sessionId
+  onSyncTimer?: (
+    payload: SyncSessionTimerPayload,
+  ) => Promise<SessionTimerSyncResult | undefined>;
 }
 
 const AUTO_SAVE_INTERVAL_MS = 60_000; // 1 minute
+const TIMER_SYNC_INTERVAL_MS = 30_000;
+const TIMER_TOUCH_DEBOUNCE_MS = 5_000;
 
 const getStorageKey = getSessionStorageKey;
 
@@ -74,6 +82,7 @@ export const useSessionForm = ({
   mode,
   forceNew = false,
   onAutoSave,
+  onSyncTimer,
 }: UseSessionFormProps) => {
   const program = activeHistory?.program;
   const progress = activeHistory?.progress;
@@ -141,9 +150,79 @@ export const useSessionForm = ({
   } | null>(null);
 
   const sessionTimerRef = useRef(sessionTimerSnapshot);
+  const timerStoppedRef = useRef(false);
+  const timerRegisteredRef = useRef(false);
+  const timerSyncInFlightRef = useRef(false);
+  const lastTimerTouchRef = useRef(0);
+  const onSyncTimerRef = useRef(onSyncTimer);
   useEffect(() => {
     sessionTimerRef.current = sessionTimerSnapshot;
   }, [sessionTimerSnapshot]);
+  useEffect(() => {
+    onSyncTimerRef.current = onSyncTimer;
+  }, [onSyncTimer]);
+
+  const applyTimerResponse = useCallback((result: SessionTimerSyncResult) => {
+    setSessionTimerSnapshot(stateToSnapshot(result.sessionTimer));
+    setDurationMinutes(result.durationMinutes);
+    if (result.sessionId) {
+      setServerSessionId(result.sessionId);
+    }
+    timerRegisteredRef.current = true;
+  }, []);
+
+  const syncTimer = useCallback(
+    async (action: SessionTimerAction) => {
+      if (
+        mode === "edit" ||
+        !onSyncTimerRef.current ||
+        timerStoppedRef.current ||
+        !program?._id ||
+        !selectedDayName ||
+        !submissionId
+      ) {
+        return undefined;
+      }
+
+      if (timerSyncInFlightRef.current) {
+        return undefined;
+      }
+
+      timerSyncInFlightRef.current = true;
+      try {
+        const result = await onSyncTimerRef.current({
+          programId: program._id,
+          dayName: selectedDayName,
+          action,
+          sessionId: serverSessionId,
+          submissionId,
+          date: new Date(sessionDate).toISOString(),
+        });
+        if (result) {
+          applyTimerResponse(result);
+        }
+        return result;
+      } catch (error) {
+        console.error("[useSessionForm] Timer sync failed", error);
+        return undefined;
+      } finally {
+        timerSyncInFlightRef.current = false;
+      }
+    },
+    [
+      mode,
+      program?._id,
+      selectedDayName,
+      submissionId,
+      serverSessionId,
+      sessionDate,
+      applyTimerResponse,
+    ],
+  );
+  const syncTimerRef = useRef(syncTimer);
+  useEffect(() => {
+    syncTimerRef.current = syncTimer;
+  }, [syncTimer]);
 
   const storageDraftRef = useRef({
     programId: program?._id as string | undefined,
@@ -179,7 +258,6 @@ export const useSessionForm = ({
     return () => {
       if (!isDirtyRef.current) return;
 
-      const paused = pauseSessionTimer(sessionTimerRef.current);
       const draft = storageDraftRef.current;
       if (!draft.programId || !draft.dayName || draft.exercises.length === 0) {
         return;
@@ -193,7 +271,7 @@ export const useSessionForm = ({
           ...base,
           exercises: draft.exercises,
           sessionDate: new Date(draft.sessionDate).toISOString(),
-          durationMinutes: computeDurationMinutes(paused),
+          durationMinutes: computeDurationMinutes(sessionTimerRef.current),
           timestamp: Date.now(),
           mode: draft.mode,
           serverSessionId: draft.serverSessionId,
@@ -201,7 +279,7 @@ export const useSessionForm = ({
           splitBlockIndices: Array.from(draft.splitBlockIndices),
           sessionLayout: draft.sessionLayout,
           sessionExerciseMeta: draft.sessionExerciseMeta,
-          sessionTimer: paused,
+          sessionTimer: sessionTimerRef.current,
         };
         localStorage.setItem(storageKey, JSON.stringify(data));
       } catch {
@@ -215,55 +293,63 @@ export const useSessionForm = ({
     timer: sessionTimerSnapshot,
   });
 
-  const finalizeSessionTimer = useCallback(() => {
-    const paused = pauseSessionTimer(sessionTimerSnapshot);
+  const finalizeSessionTimer = useCallback(async (): Promise<number> => {
+    timerStoppedRef.current = true;
+
+    if (onSyncTimerRef.current && mode === "new") {
+      const result = await syncTimer("stop");
+      const minutes =
+        result?.durationMinutes ??
+        computeDurationMinutes(sessionTimerRef.current);
+      setDurationMinutes(minutes);
+      return minutes;
+    }
+
+    const paused = pauseSessionTimer(sessionTimerRef.current);
     setSessionTimerSnapshot(paused);
     const minutes = computeDurationMinutes(paused);
     setDurationMinutes(minutes);
     return minutes;
-  }, [sessionTimerSnapshot]);
+  }, [mode, syncTimer]);
 
-  // Track user interaction and pause when the app/tab goes inactive.
+  // Resume / touch server timer when the logging modal opens.
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || mode === "edit" || timerStoppedRef.current) return;
+    void syncTimer("touch");
+  }, [isOpen, mode, syncTimer]);
+
+  // Keep server timer authoritative while a workout is in progress (even if modal is closed).
+  useEffect(() => {
+    if (mode === "edit" || !onSyncTimer || timerStoppedRef.current) return;
+    if (!program?._id || !submissionId) return;
+
+    const id = setInterval(() => {
+      void syncTimer("sync");
+    }, TIMER_SYNC_INTERVAL_MS);
+
+    return () => clearInterval(id);
+  }, [mode, onSyncTimer, program?._id, submissionId, syncTimer]);
+
+  // Forward user interaction to the server (debounced).
+  useEffect(() => {
+    if (!isOpen || mode === "edit" || timerStoppedRef.current) return;
 
     const touch = () => {
-      setSessionTimerSnapshot((prev) => touchSessionTimer(prev));
-    };
-
-    const onVisibility = () => {
-      setSessionTimerSnapshot((prev) =>
-        document.hidden ? pauseSessionTimer(prev) : touchSessionTimer(prev),
-      );
+      if (Date.now() - lastTimerTouchRef.current < TIMER_TOUCH_DEBOUNCE_MS) {
+        return;
+      }
+      lastTimerTouchRef.current = Date.now();
+      void syncTimer("touch");
     };
 
     window.addEventListener("pointerdown", touch, { passive: true });
     window.addEventListener("keydown", touch);
-    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       window.removeEventListener("pointerdown", touch);
       window.removeEventListener("keydown", touch);
-      document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [isOpen]);
-
-  // Auto-pause after inactivity while the modal stays open.
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const id = setInterval(() => {
-      setSessionTimerSnapshot((prev) => {
-        if (prev.segmentStartedAt === null) return prev;
-        if (Date.now() > prev.lastInteractionAt + SESSION_INACTIVITY_MS) {
-          return pauseSessionTimer(prev);
-        }
-        return prev;
-      });
-    }, 15_000);
-
-    return () => clearInterval(id);
-  }, [isOpen]);
+  }, [isOpen, mode, syncTimer]);
 
   // Logic previously here for manual resets was removed.
   // The hook now relies on component unmounting for state cleanup.
@@ -307,32 +393,11 @@ export const useSessionForm = ({
         setSessionLayout(layout);
         setSessionExerciseMeta(meta);
 
-        const editSessionId =
-          (initialSession as any)?._id || (initialSession as any)?.id;
-        const editSubmissionId = (initialSession as any).submissionId as
-          | string
-          | undefined;
-        let editTimer = createSessionTimer(
-          (initialSession.durationMinutes || 0) * 60,
+        setSessionTimerSnapshot(
+          (initialSession as any).sessionTimer
+            ? stateToSnapshot((initialSession as any).sessionTimer)
+            : createSessionTimer((initialSession.durationMinutes || 0) * 60),
         );
-        try {
-          const stored = localStorage.getItem(
-            getStorageKey(program._id!, selectedDayName),
-          );
-          if (stored) {
-            const parsed: StoredSession = JSON.parse(stored);
-            const sameSession =
-              (editSubmissionId &&
-                parsed.submissionId === editSubmissionId) ||
-              (editSessionId && parsed.serverSessionId === editSessionId);
-            if (sameSession) {
-              editTimer = migrateStoredTimer(parsed);
-            }
-          }
-        } catch {
-          // Ignore localStorage errors
-        }
-        setSessionTimerSnapshot(editTimer);
         return;
       }
     }
@@ -388,6 +453,9 @@ export const useSessionForm = ({
               setSplitBlockIndices(new Set(parsed.splitBlockIndices));
             }
             setSessionTimerSnapshot(migrateStoredTimer(parsed));
+            if (!timerStoppedRef.current) {
+              void syncTimerRef.current("sync");
+            }
             return;
           }
         }
@@ -452,16 +520,10 @@ export const useSessionForm = ({
     setSessionLayout(buildLayoutFromProgram(day));
     setSessionExerciseMeta({});
     setSessionTimerSnapshot(createSessionTimer());
-  }, [selectedDayName, isOpen, mode, initialSession, program, forceNew]); // Rerun logic when modal opens or key props change!
-
-  // Pause when modal closes; resume when it opens (after init loads elapsed time).
-  useEffect(() => {
-    if (!isOpen) {
-      setSessionTimerSnapshot((prev) => pauseSessionTimer(prev));
-      return;
+    if (!timerStoppedRef.current) {
+      void syncTimerRef.current("start");
     }
-    setSessionTimerSnapshot((prev) => resumeSessionTimer(prev));
-  }, [isOpen, selectedDayName]);
+  }, [selectedDayName, isOpen, mode, initialSession, program, forceNew]); // Rerun logic when modal opens or key props change!
 
   // Keep durationMinutes in sync with activity-based timer for autosave
   useEffect(() => {
@@ -610,6 +672,8 @@ export const useSessionForm = ({
     console.log("[useSessionForm] Marking as saved and CLEARING ID state");
     setLastSavedAt(new Date());
     setSessionTimerSnapshot(createSessionTimer());
+    timerStoppedRef.current = false;
+    timerRegisteredRef.current = false;
     clearStorage();
     // CRITICAL: Clear IDs after successful save so the next time the modal opens, it's fresh
     setServerSessionId(undefined);
@@ -1005,6 +1069,8 @@ export const useSessionForm = ({
 
   const handleDayChange = useCallback((value: string) => {
     setIsDirty(true);
+    timerStoppedRef.current = false;
+    timerRegisteredRef.current = false;
     setSessionTimerSnapshot(createSessionTimer());
     setSelectedDayName(value);
   }, []);

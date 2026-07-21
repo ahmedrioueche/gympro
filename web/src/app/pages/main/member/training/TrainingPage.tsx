@@ -22,6 +22,7 @@ import {
   clearSessionDraft,
   findResumableSession,
 } from "./components/log-session-modal/sessionDraftUtils";
+import { useBackgroundSessionTimerSync } from "./components/log-session-modal/useBackgroundSessionTimerSync";
 import { ProgramHistoryList } from "./components/ProgramHistoryList";
 import { SessionList } from "./components/session-list/SessionList";
 
@@ -63,6 +64,11 @@ export default function TrainingPage() {
   // Filter history for the history tab (exclude current active/paused program)
   const pastPrograms =
     fullHistory?.filter((h) => h._id !== activeHistory?._id) || [];
+
+  useBackgroundSessionTimerSync(
+    activeHistory?.program._id,
+    activeHistory?.progress.dayLogs,
+  );
 
   const handleEditSession = (session: ProgramDayProgress) => {
     if (!activeHistory) return;

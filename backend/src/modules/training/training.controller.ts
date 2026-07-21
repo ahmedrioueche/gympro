@@ -1,6 +1,7 @@
 import {
   type CreateProgramDto,
   type LogSessionDto,
+  type SyncSessionTimerDto,
   apiResponse,
 } from '@ahmedrioueche/gympro-client';
 import {
@@ -125,6 +126,20 @@ export class TrainingController {
   @Post(['session', 'sessions'])
   logSession(@Req() req, @Body() dto: LogSessionDto) {
     return this.trainingService.logSession(req.user.sub, dto);
+  }
+
+  @Post('sessions/timer')
+  async syncSessionTimer(@Req() req, @Body() dto: SyncSessionTimerDto) {
+    const result = await this.trainingService.syncSessionTimer(
+      req.user.sub,
+      dto,
+    );
+    return apiResponse(
+      true,
+      undefined,
+      result,
+      'Session timer synced successfully',
+    );
   }
 
   @Delete(':programId/sessions/:sessionId')

@@ -157,6 +157,13 @@ export class ExerciseProgressModel implements ExerciseProgress {
   @Prop() notes?: string;
 }
 
+@Schema({ _id: false })
+export class SessionTimerModel {
+  @Prop({ required: true, default: 0 }) elapsedSeconds: number;
+  @Prop({ type: Number, default: null }) segmentStartedAt: number | null;
+  @Prop({ required: true }) lastActivityAt: number;
+}
+
 @Schema()
 export class ProgramDayProgressModel implements ProgramDayProgress {
   _id: string;
@@ -164,6 +171,7 @@ export class ProgramDayProgressModel implements ProgramDayProgress {
   @Prop({ required: true }) dayName: string;
   @Prop({ type: Date, required: true }) date: Date | string;
   @Prop() durationMinutes?: number;
+  @Prop({ type: SessionTimerModel }) sessionTimer?: SessionTimerModel;
   @Prop({ type: [ExerciseProgressModel], required: true })
   exercises: ExerciseProgressModel[];
   @Prop() notes?: string;

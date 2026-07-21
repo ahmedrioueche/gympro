@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import type { SessionTimerState } from "../types/training";
 
 /** Pause after this long without user interaction (included in elapsed total). */
 export const SESSION_INACTIVITY_MS = 15 * 60 * 1000;
@@ -102,6 +102,7 @@ export const touchSessionTimer = (
   return { ...snapshot, lastActivityAt: now };
 };
 
+/** Apply idle cutoff at `now` — server-authoritative materialization. */
 export const materializeSessionTimer = (
   snapshot: SessionTimerSnapshot,
   now = Date.now(),
@@ -121,17 +122,15 @@ export const materializeSessionTimer = (
 };
 
 export const migrateStoredTimer = (
-  parsed: LegacyStoredTimerFields & {
-    sessionTimer?: SessionTimerSnapshot & { lastInteractionAt?: number };
-  },
+  parsed: LegacyStoredTimerFields & { sessionTimer?: SessionTimerSnapshot },
 ): SessionTimerSnapshot => {
   if (parsed.sessionTimer) {
-    const timer = parsed.sessionTimer;
     return {
-      elapsedSeconds: Math.min(timer.elapsedSeconds, MAX_SESSION_SECONDS),
-      segmentStartedAt: timer.segmentStartedAt,
-      lastActivityAt:
-        timer.lastActivityAt ?? timer.lastInteractionAt ?? Date.now(),
+      ...parsed.sessionTimer,
+      elapsedSeconds: Math.min(
+        parsed.sessionTimer.elapsedSeconds,
+        MAX_SESSION_SECONDS,
+      ),
     };
   }
 
@@ -158,11 +157,20 @@ export const computeDurationMinutes = (
   return Math.max(1, Math.round(seconds / 60));
 };
 
-export const stateToSnapshot = (state: {
-  elapsedSeconds: number;
-  segmentStartedAt?: number | null;
-  lastActivityAt?: number;
-}): SessionTimerSnapshot => ({
+export const snapshotToState = (
+  snapshot: SessionTimerSnapshot,
+): SessionTimerState => ({
+  elapsedSeconds: snapshot.elapsedSeconds,
+  segmentStartedAt: snapshot.segmentStartedAt,
+  lastActivityAt: snapshot.lastActivityAt,
+});
+
+export const stateToSnapshot = (
+  state: Pick<SessionTimerState, "elapsedSeconds"> & {
+    segmentStartedAt?: number | null;
+    lastActivityAt?: number;
+  },
+): SessionTimerSnapshot => ({
   elapsedSeconds: Math.min(
     Math.max(0, state.elapsedSeconds),
     MAX_SESSION_SECONDS,
@@ -174,33 +182,3 @@ export const stateToSnapshot = (state: {
 export const isSessionTimerRunning = (
   snapshot: SessionTimerSnapshot,
 ): boolean => snapshot.segmentStartedAt !== null;
-
-interface UseSessionTimerProps {
-  isOpen: boolean;
-  timer: SessionTimerSnapshot;
-}
-
-export const useSessionTimer = ({ isOpen, timer }: UseSessionTimerProps) => {
-  const [, setTick] = useState(0);
-
-  useEffect(() => {
-    if (!isOpen || timer.segmentStartedAt === null) return;
-
-    const interval = setInterval(() => setTick((n) => n + 1), 1000);
-    return () => clearInterval(interval);
-  }, [isOpen, timer.segmentStartedAt]);
-
-  const elapsedSeconds = getElapsedSeconds(timer);
-
-  const getDurationMinutes = useCallback(
-    () => computeDurationMinutes(timer),
-    [timer],
-  );
-
-  return {
-    elapsedSeconds,
-    formattedElapsed: formatElapsed(elapsedSeconds),
-    isRunning: isSessionTimerRunning(timer),
-    getDurationMinutes,
-  };
-};
