@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@ahmedrioueche/actocore-sdk": "^0.1.0",
-    "@ahmedrioueche/gympro-client": "0.5.24",
+    "@ahmedrioueche/gympro-client": "0.5.25",
     "@capacitor/android": "^8.2.0",
     "@capacitor/cli": "^8.2.0",
     "@capacitor/core": "^8.2.0",

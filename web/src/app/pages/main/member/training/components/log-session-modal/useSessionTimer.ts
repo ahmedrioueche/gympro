@@ -187,6 +187,78 @@ export const isSessionTimerRunning = (
   snapshot: SessionTimerSnapshot,
 ): boolean => snapshot.segmentStartedAt !== null;
 
+/** Reject server snapshots that would wipe a running local clock (e.g. fresh 0). */
+export const TIMER_RECONCILE_SLACK_SECONDS = 30;
+
+export interface ReconcileSessionTimerArgs {
+  local: SessionTimerSnapshot;
+  incoming: SessionTimerSnapshot | null | undefined;
+  sessionStartMs?: number | null;
+  now?: number;
+  /** Done/stop — always accept incoming. */
+  forceAccept?: boolean;
+}
+
+/**
+ * Merge local + incoming timer state.
+ * Never applies a snapshot that drops displayed elapsed sharply while local is running.
+ * Optional sessionStartMs is a soft floor when seeding / reopening.
+ */
+export const reconcileSessionTimer = ({
+  local,
+  incoming,
+  sessionStartMs,
+  now = Date.now(),
+  forceAccept = false,
+}: ReconcileSessionTimerArgs): SessionTimerSnapshot => {
+  if (!incoming) {
+    return local;
+  }
+
+  const localElapsed = getElapsedSeconds(local, now);
+  const incomingElapsed = getElapsedSeconds(incoming, now);
+
+  if (!forceAccept) {
+    const localRunning = isSessionTimerRunning(local);
+    if (
+      localRunning &&
+      incomingElapsed + TIMER_RECONCILE_SLACK_SECONDS < localElapsed
+    ) {
+      return local;
+    }
+  }
+
+  let result = incoming;
+
+  if (
+    sessionStartMs != null &&
+    Number.isFinite(sessionStartMs) &&
+    isSessionTimerRunning(result)
+  ) {
+    const wallElapsed = Math.min(
+      MAX_SESSION_SECONDS,
+      Math.max(0, Math.floor((now - sessionStartMs) / 1000)),
+    );
+    const best = Math.max(incomingElapsed, localElapsed);
+    const floor = Math.min(best, wallElapsed);
+    if (floor > incomingElapsed + TIMER_RECONCILE_SLACK_SECONDS) {
+      result = createSessionTimer(floor, now);
+    }
+  }
+
+  return result;
+};
+
+/** Build a running timer seeded from known elapsed (attach after autosave). */
+export const seedRunningSessionTimer = (
+  seedElapsedSeconds: number,
+  now = Date.now(),
+): SessionTimerSnapshot =>
+  createSessionTimer(
+    Math.min(Math.max(0, Math.floor(seedElapsedSeconds)), MAX_SESSION_SECONDS),
+    now,
+  );
+
 interface UseSessionTimerProps {
   isOpen: boolean;
   timer: SessionTimerSnapshot;

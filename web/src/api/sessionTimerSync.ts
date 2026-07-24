@@ -9,6 +9,8 @@ export interface SyncSessionTimerPayload {
   sessionId?: string;
   submissionId?: string;
   date?: string;
+  /** Client elapsed to seed first attach when day log has no sessionTimer. */
+  seedElapsedSeconds?: number;
 }
 
 export interface SessionTimerStatePayload {
@@ -18,7 +20,8 @@ export interface SessionTimerStatePayload {
 }
 
 export interface SessionTimerSyncResult {
-  sessionTimer: SessionTimerStatePayload;
+  /** Null when no day log exists yet (touch no-op — client keeps local). */
+  sessionTimer: SessionTimerStatePayload | null;
   durationMinutes: number;
   sessionId?: string;
 }

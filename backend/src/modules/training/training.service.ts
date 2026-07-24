@@ -10,6 +10,7 @@ import {
   closeSessionTimer,
   isSessionTimerRunning,
   materializeSessionTimer,
+  MAX_SESSION_SECONDS,
   pauseSessionTimer,
   resumeSessionTimer,
   sanitizeProgramPayload,
@@ -252,32 +253,60 @@ export class TrainingService {
     }
 
     const now = Date.now();
-    let dayLogIndex = this.findDayLogIndex(
+    const dayLogIndex = this.findDayLogIndex(
       history,
       dto.sessionId,
       dto.submissionId,
     );
 
-    const readSnapshot = () => {
-      if (dayLogIndex < 0) return createSessionTimer();
-      const dayLog = history.progress.dayLogs[dayLogIndex] as any;
-      if (!dayLog?.sessionTimer) return createSessionTimer();
-      return stateToSnapshot(dayLog.sessionTimer);
+    const seedRunningTimer = (dayLog?: { date?: string }) => {
+      const seed = dto.seedElapsedSeconds;
+      if (typeof seed === 'number' && Number.isFinite(seed) && seed >= 0) {
+        return createSessionTimer(
+          Math.min(Math.floor(seed), MAX_SESSION_SECONDS),
+          now,
+        );
+      }
+      if (dayLog?.date) {
+        const startMs = Date.parse(dayLog.date);
+        if (Number.isFinite(startMs)) {
+          const wall = Math.min(
+            MAX_SESSION_SECONDS,
+            Math.max(0, Math.floor((now - startMs) / 1000)),
+          );
+          return createSessionTimer(wall, now);
+        }
+      }
+      return createSessionTimer(0, now);
     };
 
-    let snapshot = materializeSessionTimer(readSnapshot(), now);
+    // No day log yet — never invent a fresh zero timer that would wipe the
+    // client's running clock on keepalive. Ephemeral `start` may seed locally.
+    if (dayLogIndex < 0) {
+      if (dto.action === 'start') {
+        const snapshot = seedRunningTimer();
+        return {
+          sessionTimer: snapshotToState(snapshot),
+          durationMinutes: computeDurationMinutes(snapshot, now),
+        };
+      }
+      return {
+        sessionTimer: null,
+        durationMinutes: 0,
+      };
+    }
+
+    const dayLog = history.progress.dayLogs[dayLogIndex] as any;
+    const hasPersistedTimer = Boolean(dayLog?.sessionTimer);
+
+    let snapshot = hasPersistedTimer
+      ? materializeSessionTimer(stateToSnapshot(dayLog.sessionTimer), now)
+      : seedRunningTimer(dayLog);
 
     switch (dto.action) {
       case 'start':
-        if (dayLogIndex < 0) {
-          // Do NOT create empty day logs — that wiped exercises on reopen and
-          // polluted session history. Return an ephemeral running timer until
-          // the client autosaves a real session with exercises.
-          snapshot = createSessionTimer(0, now);
-          return {
-            sessionTimer: snapshotToState(snapshot),
-            durationMinutes: computeDurationMinutes(snapshot, now),
-          };
+        if (!hasPersistedTimer) {
+          // Already seeded above — first attach to the day log.
         } else if (!isSessionTimerRunning(snapshot)) {
           snapshot = resumeSessionTimer(snapshot, now);
         } else {
@@ -285,12 +314,8 @@ export class TrainingService {
         }
         break;
       case 'touch':
-        if (dayLogIndex < 0) {
-          snapshot = createSessionTimer(0, now);
-          return {
-            sessionTimer: snapshotToState(snapshot),
-            durationMinutes: computeDurationMinutes(snapshot, now),
-          };
+        if (!hasPersistedTimer) {
+          // Already seeded — persist on first touch after autosave.
         } else if (isSessionTimerRunning(snapshot)) {
           snapshot = touchSessionTimer(snapshot, now);
         } else {
@@ -300,9 +325,12 @@ export class TrainingService {
       case 'sync':
         break;
       case 'close':
-        if (dayLogIndex >= 0) {
-          snapshot = closeSessionTimer(readSnapshot(), now);
-        }
+        snapshot = closeSessionTimer(
+          hasPersistedTimer
+            ? stateToSnapshot(dayLog.sessionTimer)
+            : snapshot,
+          now,
+        );
         break;
       case 'stop':
         snapshot = pauseSessionTimer(snapshot, now);
@@ -311,14 +339,6 @@ export class TrainingService {
         throw new BadRequestException('Invalid timer action');
     }
 
-    if (dayLogIndex < 0) {
-      return {
-        sessionTimer: snapshotToState(snapshot),
-        durationMinutes: computeDurationMinutes(snapshot, now),
-      };
-    }
-
-    const dayLog = history.progress.dayLogs[dayLogIndex] as any;
     dayLog.sessionTimer = snapshotToState(snapshot);
     dayLog.durationMinutes = computeDurationMinutes(snapshot, now);
 

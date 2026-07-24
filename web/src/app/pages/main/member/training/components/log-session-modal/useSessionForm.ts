@@ -31,8 +31,10 @@ import { getSessionStorageKey } from "./sessionDraftUtils";
 import {
   computeDurationMinutes,
   createSessionTimer,
+  getElapsedSeconds,
   migrateStoredTimer,
   pauseSessionTimer,
+  reconcileSessionTimer,
   stateToSnapshot,
   type SessionTimerSnapshot,
   useSessionTimer,
@@ -212,41 +214,58 @@ export const useSessionForm = ({
     }
   }, [serverSessionId]);
 
-  const applyTimerResponse = useCallback((result: SessionTimerSyncResult) => {
-    if (!result?.sessionTimer) return;
+  const applyTimerResponse = useCallback(
+    (
+      result: SessionTimerSyncResult,
+      options?: { forceAccept?: boolean },
+    ) => {
+      if (!result?.sessionTimer) return;
 
-    // Coerce numeric fields — Mongo / JSON can occasionally surface strings.
-    const raw = result.sessionTimer;
-    const snapshot = stateToSnapshot({
-      elapsedSeconds: Number(raw.elapsedSeconds) || 0,
-      segmentStartedAt:
-        raw.segmentStartedAt == null ? null : Number(raw.segmentStartedAt),
-      lastActivityAt: Number(raw.lastActivityAt) || Date.now(),
-    });
+      // Coerce numeric fields — Mongo / JSON can occasionally surface strings.
+      const raw = result.sessionTimer;
+      const incoming = stateToSnapshot({
+        elapsedSeconds: Number(raw.elapsedSeconds) || 0,
+        segmentStartedAt:
+          raw.segmentStartedAt == null ? null : Number(raw.segmentStartedAt),
+        lastActivityAt: Number(raw.lastActivityAt) || Date.now(),
+      });
 
-    // Never apply a paused/zero server snapshot over a locally running timer
-    // for a brand-new session (ephemeral start has no sessionId yet).
-    const local = sessionTimerRef.current;
-    if (
-      snapshot.segmentStartedAt === null &&
-      local.segmentStartedAt !== null &&
-      !serverSessionIdRef.current &&
-      !result.sessionId
-    ) {
-      return;
-    }
+      const sessionStartMs = Date.parse(
+        localDateTimeInputToISO(sessionDateRef.current),
+      );
+      const snapshot = reconcileSessionTimer({
+        local: sessionTimerRef.current,
+        incoming,
+        sessionStartMs: Number.isFinite(sessionStartMs)
+          ? sessionStartMs
+          : null,
+        forceAccept: options?.forceAccept === true,
+      });
 
-    setSessionTimerSnapshot(snapshot);
-    sessionTimerRef.current = snapshot;
-    setDurationMinutes(result.durationMinutes);
-    if (result.sessionId) {
-      // Keep the ref in sync immediately so the next sync reuses the server id
-      // instead of creating a duplicate day log.
-      serverSessionIdRef.current = result.sessionId;
-      setServerSessionId(result.sessionId);
-    }
-    timerRegisteredRef.current = true;
-  }, []);
+      // Reconcile kept local — do not overwrite with a destructive server reset.
+      if (snapshot === sessionTimerRef.current && snapshot !== incoming) {
+        if (result.sessionId) {
+          serverSessionIdRef.current = result.sessionId;
+          setServerSessionId(result.sessionId);
+        }
+        return;
+      }
+
+      setSessionTimerSnapshot(snapshot);
+      sessionTimerRef.current = snapshot;
+      setDurationMinutes(
+        result.durationMinutes || computeDurationMinutes(snapshot),
+      );
+      if (result.sessionId) {
+        // Keep the ref in sync immediately so the next sync reuses the server id
+        // instead of creating a duplicate day log.
+        serverSessionIdRef.current = result.sessionId;
+        setServerSessionId(result.sessionId);
+      }
+      timerRegisteredRef.current = true;
+    },
+    [],
+  );
 
   // Reads identity from refs (not render closures) so it always targets the
   // current session. This keeps the callback stable, preventing the open /
@@ -274,6 +293,9 @@ export const useSessionForm = ({
 
       timerSyncInFlightRef.current = true;
       try {
+        const localElapsed = Math.floor(
+          getElapsedSeconds(sessionTimerRef.current),
+        );
         const result = await onSyncTimerRef.current({
           programId,
           dayName,
@@ -281,9 +303,10 @@ export const useSessionForm = ({
           sessionId: serverSessionIdRef.current,
           submissionId: submission,
           date: localDateTimeInputToISO(sessionDateRef.current),
+          seedElapsedSeconds: localElapsed,
         });
         if (result) {
-          applyTimerResponse(result);
+          applyTimerResponse(result, { forceAccept: action === "stop" });
         }
         return result;
       } catch (error) {
@@ -395,16 +418,18 @@ export const useSessionForm = ({
   // so we do NOT fire a separate touch here (that caused a duplicate request
   // with a mismatched submissionId).
 
-  // Keepalive while modal is open (modal activity, not general app usage).
+  // Keepalive while modal is open — only once a day log exists so ephemeral
+  // touch responses cannot reset the local clock before the first autosave.
   useEffect(() => {
-    if (!isOpen || !timerEnabled || timerStoppedRef.current) return;
+    if (!isOpen || !timerEnabled || timerStoppedRef.current || !serverSessionId)
+      return;
 
     const id = setInterval(() => {
       void syncTimer("touch");
     }, TIMER_MODAL_KEEPALIVE_MS);
 
     return () => clearInterval(id);
-  }, [isOpen, timerEnabled, syncTimer]);
+  }, [isOpen, timerEnabled, syncTimer, serverSessionId]);
 
   // Anchor idle grace when the modal closes, and allow re-initialization on the
   // next open (recovery of the latest draft / server session).

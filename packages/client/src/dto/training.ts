@@ -67,14 +67,17 @@ export interface SyncSessionTimerDto {
   sessionId?: string;
   submissionId?: string;
   date?: string;
+  /** Client elapsed to seed first attach when day log has no sessionTimer. */
+  seedElapsedSeconds?: number;
 }
 
 export interface SessionTimerResponse {
+  /** Null when no day log exists yet (touch/close/stop no-op — client keeps local). */
   sessionTimer: {
     elapsedSeconds: number;
     segmentStartedAt: number | null;
     lastActivityAt: number;
-  };
+  } | null;
   durationMinutes: number;
   sessionId?: string;
 }
