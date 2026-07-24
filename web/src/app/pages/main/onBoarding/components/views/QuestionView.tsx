@@ -25,7 +25,7 @@ export const QuestionView = ({
       </button>
       <button
         onClick={onYes}
-        className="relative overflow-hidden p-5 rounded-2xl bg-gradient-to-r from-primary to-primary-focus text-white font-bold transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 focus:ring-2 focus:ring-primary outline-none group"
+        className="relative overflow-hidden p-5 rounded-2xl bg-primary text-white font-bold transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 focus:ring-2 focus:ring-primary outline-none group"
       >
         <span className="relative z-10">{yesLabel}</span>
         <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />

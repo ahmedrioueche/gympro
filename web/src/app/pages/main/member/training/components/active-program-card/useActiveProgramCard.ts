@@ -7,7 +7,6 @@ import { useModalStore } from "../../../../../../../store/modal";
 interface SourceConfig {
   label: string;
   colors: string;
-  gradient: string;
 }
 
 export interface UseActiveProgramCardReturn {
@@ -116,19 +115,16 @@ export const useActiveProgramCard = (
         return {
           label: t("training.programs.card.source.coach"),
           colors: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-          gradient: "from-blue-500 to-cyan-500",
         };
       case "template":
         return {
           label: t("training.programs.card.source.template"),
           colors: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-          gradient: "from-purple-500 to-pink-500",
         };
       default:
         return {
           label: t("training.programs.card.source.member"),
           colors: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-          gradient: "from-purple-500 to-cyan-500",
         };
     }
   }, [program?.creationType, t]);

@@ -24,11 +24,11 @@ function HomePage() {
   useLayoutEffect(() => {
     setNavbarColors({
       selectionFrom: "from-primary",
-      selectionTo: "to-purple-500",
+      selectionTo: "to-primary",
       buttonFrom: "from-primary",
-      buttonTo: "to-purple-600",
+      buttonTo: "to-primary",
       logoFrom: "from-primary",
-      logoTo: "to-secondary",
+      logoTo: "to-primary",
       glowColor: "rgba(19, 91, 236, 0.4)",
     });
   }, [setNavbarColors]);

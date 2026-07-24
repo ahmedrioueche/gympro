@@ -45,7 +45,7 @@ export function ProfileModalFooter({
       case "primary":
         return cn(
           baseClasses,
-          "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white ring-1 ring-blue-500/30 hover:shadow-xl hover:shadow-purple-500/20",
+          "bg-primary hover:bg-primary/80 text-white ring-1 ring-blue-500/30 hover:shadow-xl hover:shadow-purple-500/20",
           className,
         );
       case "danger":

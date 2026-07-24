@@ -53,7 +53,7 @@ export default function StaffMemberCard({
   const getAvatarGradient = (role: string) => {
     switch (role) {
       case "manager":
-        return "from-primary via-primary/80 to-secondary";
+        return "from-primary to-primary";
       case "coach":
         return "from-success via-success/80 to-primary";
       case "receptionist":
@@ -78,7 +78,7 @@ export default function StaffMemberCard({
   return (
     <div className="group relative bg-surface border border-border rounded-2xl p-5 hover:shadow-xl hover:border-primary/30 transition-all duration-300">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute inset-0 bg-primary/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
       {/* Content */}
       <div className="relative">

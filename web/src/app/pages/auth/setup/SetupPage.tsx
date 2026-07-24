@@ -213,7 +213,7 @@ function SetupPage() {
             type="submit"
             size="lg"
             disabled={!formIsValid || isLoading}
-            className="group relative w-full flex justify-center !py-4 px-4 font-semibold rounded-xl bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 transform disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="group relative w-full flex justify-center !py-4 px-4 font-semibold rounded-xl bg-primary hover:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 transform disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             loading={isLoading}
           >
             {t("auth.setup.complete_button")}

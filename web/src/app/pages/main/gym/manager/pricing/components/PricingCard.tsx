@@ -47,7 +47,7 @@ export const PricingCard = ({ plan, onEdit, onDelete }: PricingCardProps) => {
   return (
     <div className="group relative overflow-hidden flex flex-col rounded-3xl border border-border/50 bg-surface p-4 md:p-6 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 h-full">
       {/* Background Gradient Glow */}
-      <div className="absolute -right-10 -top-10 h-32 w-32 md:h-40 md:w-40 rounded-full bg-gradient-to-br from-primary to-indigo-600 opacity-10 blur-3xl group-hover:opacity-20 transition-opacity" />
+      <div className="absolute -right-10 -top-10 h-32 w-32 md:h-40 md:w-40 rounded-full bg-primary opacity-10 blur-3xl group-hover:opacity-20 transition-opacity" />
 
       {!plan.isAvailable && (
         <div className="absolute top-0 right-0 bg-stone-500/10 text-stone-500 px-3 md:px-4 py-1.5 md:py-2 rounded-bl-2xl text-[10px] md:text-xs font-black uppercase tracking-widest z-10">
@@ -58,7 +58,7 @@ export const PricingCard = ({ plan, onEdit, onDelete }: PricingCardProps) => {
       {/* Header */}
       <div className="mb-4 relative z-10">
         <div className="flex items-center gap-3 mb-3">
-          <div className="p-2.5 rounded-2xl bg-gradient-to-br from-primary to-indigo-600 text-white shadow-lg shadow-primary/10 shrink-0">
+          <div className="p-2.5 rounded-2xl bg-primary text-white shadow-lg shadow-primary/10 shrink-0">
             <LayoutGrid className="w-5 h-5 md:w-6 md:h-6" />
           </div>
           <div>

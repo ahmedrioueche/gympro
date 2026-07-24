@@ -230,7 +230,7 @@ export default function CoachCard({
       <div className="relative p-6 pb-0">
         <div className="flex items-start justify-between mb-4">
           <div className="relative">
-            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/5 to-secondary/20 p-[1px] shadow-2xl transition-transform duration-500 group-hover:scale-105">
+            <div className="w-24 h-24 rounded-3xl bg-primary/20 p-[1px] shadow-2xl transition-transform duration-500 group-hover:scale-105">
               <div className="w-full h-full rounded-3xl bg-surface overflow-hidden flex items-center justify-center">
                 {coach.profileImageUrl ? (
                   <img
@@ -239,7 +239,7 @@ export default function CoachCard({
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary via-primary/80 to-secondary/60 flex items-center justify-center">
+                  <div className="w-full h-full bg-primary flex items-center justify-center">
                     <span className="text-3xl font-black text-white">
                       {getNameInitials(displayName)}
                     </span>

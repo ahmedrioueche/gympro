@@ -36,7 +36,7 @@ export function GymCardHeader({ gym, displayRole }: GymCardHeaderProps) {
                 className="w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl object-cover shadow-lg group-hover:scale-110 transition-transform duration-500 shrink-0"
               />
             ) : (
-              <div className="w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-gradient-to-br from-primary via-secondary to-primary flex items-center justify-center text-xl md:text-5xl shadow-lg group-hover:scale-110 transition-transform duration-500 shrink-0">
+              <div className="w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-primary flex items-center justify-center text-xl md:text-5xl shadow-lg group-hover:scale-110 transition-transform duration-500 shrink-0">
                 🏢
               </div>
             )}

@@ -43,7 +43,7 @@ export default function SidebarAnimatedLogo({
       {/* Icon Container - Always left aligned */}
       <div className="relative flex-shrink-0">
         <div
-          className={`flex items-center justify-center rounded-xl shadow-lg bg-gradient-to-br from-primary via-primary to-secondary w-10 h-10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-xl group-hover:shadow-primary/40`}
+          className={`flex items-center justify-center rounded-xl shadow-lg bg-primary w-10 h-10 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-xl group-hover:shadow-primary/40`}
         >
           <Zap
             className={`text-white w-6 h-6 transition-transform duration-500 ${iconExtra}`}
@@ -57,11 +57,11 @@ export default function SidebarAnimatedLogo({
       {/* Text Container - Absolute positioned to prevent layout shift */}
       <div className="flex-1 relative overflow-hidden">
         <div
-          className={`font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary whitespace-nowrap transition-all duration-500 ${
+          className={`font-bold text-xl text-primary whitespace-nowrap transition-all duration-500 ${
             collapsed
               ? "opacity-0 translate-x-[-20px]"
               : "opacity-100 translate-x-0"
-          } group-hover:from-secondary group-hover:to-primary`}
+          }`}
         >
           {t("app.name")}
         </div>

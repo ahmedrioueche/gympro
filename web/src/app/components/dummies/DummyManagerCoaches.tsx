@@ -97,7 +97,7 @@ export const DummyManagerCoaches = () => {
               className="bg-surface border border-border/50 rounded-2xl p-4 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4 hover:border-primary/30 transition-all cursor-pointer group"
             >
               <div className="flex items-center gap-3 w-full md:w-auto">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary via-blue-500 to-purple-600 flex items-center justify-center text-lg font-black text-white shadow-lg">
+                <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-lg font-black text-white shadow-lg">
                   {coach.name.charAt(0)}
                 </div>
                 <div>

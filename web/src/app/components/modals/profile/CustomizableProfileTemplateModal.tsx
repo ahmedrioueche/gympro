@@ -112,7 +112,7 @@ export function CustomizableProfileTemplateModal({
                       className="w-24 h-24 lg:w-28 lg:h-28 rounded-2xl object-cover ring-2 ring-border shadow-lg"
                     />
                   ) : (
-                    <div className="w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-primary via-primary/80 to-secondary/60 flex items-center justify-center rounded-2xl ring-2 ring-border shadow-lg">
+                    <div className="w-24 h-24 lg:w-28 lg:h-28 bg-primary flex items-center justify-center rounded-2xl ring-2 ring-border shadow-lg">
                       <span className="text-4xl font-black text-white">
                         {getUserInitials(user)}
                       </span>

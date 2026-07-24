@@ -107,7 +107,7 @@ const AddReviewForm = ({
         <button
           type="submit"
           disabled={rating === 0 || mutation.isPending}
-          className="px-4 py-2.5 rounded-lg font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2.5 rounded-lg font-medium text-white bg-primary hover:bg-primary/80 text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {mutation.isPending
             ? t("common.processing")

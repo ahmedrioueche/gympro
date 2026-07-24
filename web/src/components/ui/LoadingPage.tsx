@@ -52,7 +52,7 @@ const LoadingPage: React.FC<{ type?: "inner" | "outer"; message?: string }> = ({
           {/* Premium Loading Bar */}
           <div className="mt-8 w-48 h-1 bg-white/10 rounded-full overflow-hidden mx-auto">
             <div 
-              className="h-full bg-gradient-to-r from-primary to-purple-500 animate-gradient-shift"
+              className="h-full bg-primary animate-gradient-shift"
               style={{
                 width: "100%",
                 backgroundSize: "200% 100%",

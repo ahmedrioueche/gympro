@@ -50,7 +50,7 @@ function HeroSection() {
             </h1>
             {/* THE POWER — delay 0.3s */}
             <h1
-              className="hero-animate text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent leading-none"
+              className="hero-animate text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter text-primary leading-none"
               style={{ animation: "heroFadeUp 0.6s ease-out 0.3s forwards" }}
             >
               {t("landing.hero.line2")}
@@ -77,7 +77,7 @@ function HeroSection() {
           >
             <Link
               href={APP_PAGES.signUp.link}
-              className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-primary to-purple-500 text-white font-bold rounded-xl flex items-center gap-2 group shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-[1.02] active:scale-95"
+              className="px-6 md:px-8 py-3 md:py-4 bg-primary text-white font-bold rounded-xl flex items-center gap-2 group shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 hover:scale-[1.02] active:scale-95"
             >
               <span>{t("landing.hero.getStarted")}</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

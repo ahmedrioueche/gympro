@@ -59,7 +59,7 @@ export function PricingCard({ pricing, onEdit, onDelete }: PricingCardProps) {
         return {
           icon: Zap,
           colors: "bg-primary/10 text-primary border-primary/20",
-          gradient: "from-primary to-secondary",
+          gradient: "from-primary to-primary",
         };
     }
   };

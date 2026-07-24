@@ -33,7 +33,7 @@ export default function UpgradePreviewModal() {
         className="bg-surface rounded-2xl shadow-2xl max-w-lg w-full border border-border overflow-hidden animate-in fade-in zoom-in duration-200"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary to-secondary p-6">
+        <div className="bg-primary p-6">
           <div className="flex items-start justify-between">
             <div>
               <h3 className="text-xl font-bold text-white mb-1">
@@ -86,7 +86,7 @@ export default function UpgradePreviewModal() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/20">
+            <div className="flex items-center justify-between p-4 bg-primary/10 rounded-xl border border-primary/20">
               <div>
                 <p className="text-xs text-text-secondary mb-1">
                   {t("upgrade.new_plan", "New Plan")}
@@ -176,7 +176,7 @@ export default function UpgradePreviewModal() {
           <button
             onClick={upgradePreviewProps.onConfirm}
             disabled={upgradePreviewProps.isLoading}
-            className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-primary hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {upgradePreviewProps.isLoading && (
               <svg

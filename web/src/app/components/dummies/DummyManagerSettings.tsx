@@ -23,7 +23,7 @@ export const DummyManagerSettings = () => {
           <div className="w-full md:w-1/3 space-y-4">
             <div className="bg-surface border border-border/40 rounded-3xl p-6 shadow-lg text-center relative group">
               <div className="relative w-24 h-24 mx-auto mb-4">
-                <div className="w-full h-full rounded-3xl bg-gradient-to-br from-primary via-blue-500 to-purple-600 flex items-center justify-center text-3xl font-black text-white shadow-xl">
+                <div className="w-full h-full rounded-3xl bg-primary flex items-center justify-center text-3xl font-black text-white shadow-xl">
                   Gym
                 </div>
                 <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-surface border border-border/40 rounded-2xl flex items-center justify-center text-primary shadow-lg group-hover:scale-110 transition-all cursor-pointer">

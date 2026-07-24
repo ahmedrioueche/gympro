@@ -9,7 +9,7 @@ export default function GymInfoCard({ gym }: GymInfoCardProps) {
   return (
     <div className="bg-surface border border-border rounded-3xl p-6 shadow-sm flex flex-col md:flex-row gap-6 items-start md:items-center">
       {/* Logo */}
-      <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-3xl font-bold shadow-lg overflow-hidden flex-shrink-0">
+      <div className="w-24 h-24 rounded-2xl bg-primary flex items-center justify-center text-white text-3xl font-bold shadow-lg overflow-hidden flex-shrink-0">
         {gym.logoUrl ? (
           <img
             src={gym.logoUrl}

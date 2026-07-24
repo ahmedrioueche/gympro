@@ -42,26 +42,25 @@ export default function ConfirmModal() {
 
   // Determine header color/icon based on variant
   let HeaderIcon = AlertTriangle;
-  let headerGradient = "from-primary/20 to-secondary/20";
+  let headerClass = "bg-primary/20";
   let iconColor = "text-primary";
-  let buttonGradient = "from-primary to-secondary";
+  let buttonClass = "bg-primary hover:bg-primary/80";
 
   if (confirmVariant === "danger") {
     HeaderIcon = AlertTriangle;
-    headerGradient = "from-red-500/20 to-orange-500/20";
+    headerClass = "bg-gradient-to-r from-red-500/20 to-orange-500/20";
     iconColor = "text-red-500";
-    buttonGradient = "from-red-500 to-orange-600";
+    buttonClass = "bg-gradient-to-r from-red-500 to-orange-600";
   } else if (confirmVariant === "success") {
     HeaderIcon = CheckCircle;
-    headerGradient = "from-green-500/20 to-emerald-500/20";
+    headerClass = "bg-gradient-to-r from-green-500/20 to-emerald-500/20";
     iconColor = "text-green-500";
-    buttonGradient = "from-green-500 to-emerald-600";
+    buttonClass = "bg-gradient-to-r from-green-500 to-emerald-600";
   } else if (confirmVariant === "primary") {
     HeaderIcon = Info;
-    headerGradient = "bg-gradient-to-r from-blue-500/60 to-purple-600/80";
+    headerClass = "bg-primary/60";
     iconColor = "text-primary";
-    buttonGradient =
-      "bg-gradient-to-r from-blue-500/60 to-purple-600/80 hover:from-blue-600/60 hover:to-purple-700/80 ";
+    buttonClass = "bg-primary hover:bg-primary/80";
   }
 
   return (
@@ -78,7 +77,7 @@ export default function ConfirmModal() {
       >
         {/* Header */}
         <div
-          className={`flex items-center justify-between p-6 border-b border-border bg-gradient-to-r ${headerGradient}`}
+          className={`flex items-center justify-between p-6 border-b border-border ${headerClass}`}
         >
           <div className="flex items-center gap-3">
             <div
@@ -156,8 +155,8 @@ export default function ConfirmModal() {
               verificationText ? inputValue !== verificationText : false
             }
             className={cn(
-              "px-6 py-2.5 rounded-xl font-bold text-white shadow-lg shadow-black/20 hover:shadow-xl hover:scale-[1.02] transition-all bg-gradient-to-r disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto",
-              buttonGradient,
+              "px-6 py-2.5 rounded-xl font-bold text-white shadow-lg shadow-black/20 hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full sm:w-auto",
+              buttonClass,
             )}
           >
             {confirmText}

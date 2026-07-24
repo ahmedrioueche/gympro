@@ -36,7 +36,7 @@ export function CoachProfileActions({
       {/* Member: Request Coaching */}
       {isMemberDashboard && !isAlreadyCoached && onRequestCoaching && (
         <button
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
+          className="px-4 py-2 rounded-xl bg-primary text-white font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
           onClick={onRequestCoaching}
         >
           <UserPlus className="w-4 h-4" />
@@ -50,7 +50,7 @@ export function CoachProfileActions({
         hasCurrentGym &&
         onInviteToGym && (
           <button
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
+            className="px-4 py-2 rounded-xl bg-primary text-white font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
             onClick={onInviteToGym}
           >
             <UserPlus className="w-4 h-4" />

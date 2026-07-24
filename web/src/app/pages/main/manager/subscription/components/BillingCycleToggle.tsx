@@ -25,7 +25,7 @@ function BillingCycleToggle({
           disabled={isProcessing}
           className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
             billingCycle === APP_SUBSCRIPTION_BILLING_CYCLES[0]
-              ? "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md text-white"
+              ? "bg-primary hover:bg-primary/80 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md text-white"
               : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary/50"
           }`}
         >
@@ -36,7 +36,7 @@ function BillingCycleToggle({
           disabled={isProcessing}
           className={`px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 relative disabled:opacity-50 disabled:cursor-not-allowed ${
             billingCycle === APP_SUBSCRIPTION_BILLING_CYCLES[1]
-              ? "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md text-white"
+              ? "bg-primary hover:bg-primary/80 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md text-white"
               : "text-text-secondary hover:text-text-primary hover:bg-surface-secondary/50"
           }`}
         >

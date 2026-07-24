@@ -237,7 +237,7 @@ export default function ForgotPasswordPage() {
               <div className="pt-4 space-y-3">
                 <Button
                   onClick={() => window.location.reload()}
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-white"
+                  className="w-full bg-primary hover:bg-primary/80 text-white"
                 >
                   {t("auth.email_sent.resend_button", "Resend Email")}
                 </Button>
@@ -259,7 +259,7 @@ export default function ForgotPasswordPage() {
           // Code Verification State (Phone)
           <div>
             <div className="text-center mb-8">
-              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center shadow-lg mb-4">
+              <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg mb-4">
                 <Smartphone className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">
@@ -301,7 +301,7 @@ export default function ForgotPasswordPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-white"
+                className="w-full bg-primary hover:bg-primary/80 text-white"
                 disabled={verificationCode.length !== 6 || isLoading}
                 loading={isLoading}
               >
@@ -327,7 +327,7 @@ export default function ForgotPasswordPage() {
           // Form State
           <div>
             <div className="text-center mb-8">
-              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center shadow-lg mb-4">
+              <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg mb-4">
                 {method === "email" ? (
                   <Mail className="w-8 h-8 text-white" />
                 ) : (
@@ -427,7 +427,7 @@ export default function ForgotPasswordPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-white"
+                className="w-full bg-primary hover:bg-primary/80 text-white"
                 disabled={!formIsValid || isLoading}
                 loading={isLoading}
               >

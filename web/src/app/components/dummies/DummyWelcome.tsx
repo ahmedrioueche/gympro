@@ -31,7 +31,7 @@ export const DummyWelcome: React.FC<DummyWelcomeProps> = ({
       <div className="w-full h-full flex flex-col items-center justify-center max-w-4xl text-center px-4">
         <div className="relative mb-6">
           <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse" />
-          <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary via-secondary to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-500 ring-4 ring-white/10">
+          <div className="relative w-16 h-16 md:w-20 md:h-20 bg-primary rounded-2xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-500 ring-4 ring-white/10">
             <Sparkles className="w-8 h-8 md:w-10 md:h-10 text-white" />
           </div>
         </div>

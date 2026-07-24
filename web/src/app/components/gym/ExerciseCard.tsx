@@ -80,7 +80,7 @@ export const ExerciseCard = ({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center group-hover:from-primary/10 group-hover:to-secondary/10 transition-colors">
+          <div className="w-full h-full bg-primary/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
             <Dumbbell className="w-12 h-12 text-primary/30 group-hover:text-primary/50 transition-colors" />
           </div>
         )}

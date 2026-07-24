@@ -136,7 +136,7 @@ export const SessionProgressFooter = ({
               className={`h-full transition-all duration-300 rounded-full ${
                 allComplete
                   ? "bg-success"
-                  : "bg-gradient-to-r from-blue-500 to-purple-600"
+                  : "bg-primary"
               }`}
               style={{ width: `${progressPercent}%` }}
             />
@@ -149,7 +149,7 @@ export const SessionProgressFooter = ({
         className={`flex-shrink-0 px-3 sm:px-5 py-2 rounded-lg font-bold text-white transition-all flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed text-sm ${
           allComplete
             ? "bg-success hover:bg-success/90"
-            : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+            : "bg-primary hover:bg-primary/80"
         }`}
       >
         {isSaving ? (

@@ -62,7 +62,7 @@ export const DummyAccountSettings: React.FC<DummyAccountSettingsProps> = ({
         {/* Settings Content Mock */}
         <div className="md:col-span-3 bg-surface border border-border/40 rounded-[2rem] p-6 shadow-2xl space-y-6">
           <div className="flex items-center gap-4 border-b border-border/40 pb-6 mb-6">
-            <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-black shadow-lg">
+            <div className="w-16 h-16 rounded-[1.5rem] bg-primary flex items-center justify-center text-white text-2xl font-black shadow-lg">
               AT
             </div>
             <div>

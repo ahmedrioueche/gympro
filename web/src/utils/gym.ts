@@ -4,8 +4,8 @@ import type { GymStatus } from "../app/hooks/useGymStatus";
 export const getGymStatusStyles = (status?: GymStatus) => {
   if (!status)
     return {
-      gradient: "from-primary/20 via-primary/20 to-secondary/20",
-      textGradient: "from-primary via-primary to-secondary",
+      gradient: "from-primary/20 to-primary/20",
+      textGradient: "from-primary to-primary",
       badge: "bg-primary text-white",
       glow: "shadow-primary/20",
     };

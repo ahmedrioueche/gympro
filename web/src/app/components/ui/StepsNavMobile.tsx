@@ -10,7 +10,7 @@ function StepsNavMobile({ steps, step }) {
           <div
             className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-300 ${
               step === s.number
-                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md shadow-purple-500/20 scale-105"
+                ? "bg-primary text-white shadow-md shadow-purple-500/20 scale-105"
                 : step > s.number
                 ? "bg-success/20 text-success"
                 : "bg-background border border-border text-text-secondary"

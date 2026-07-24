@@ -174,7 +174,7 @@ export const DayCard = ({
                 )}
                 <button
                   onClick={() => onAddExercise({})}
-                  className="p-3 rounded-lg font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-xs flex items-center gap-1.5 transition-all"
+                  className="p-3 rounded-lg font-medium text-white bg-primary hover:bg-primary/80 text-xs flex items-center gap-1.5 transition-all"
                 >
                   <Plus size={14} />
                   {t("training.programs.create.form.addExercise")}

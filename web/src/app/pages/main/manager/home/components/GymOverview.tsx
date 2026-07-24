@@ -90,7 +90,7 @@ function GymOverview({
 
                 <Button
                   onClick={() => onGymAccessed(gym)}
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full bg-primary hover:bg-primary/80 text-white py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   {t("home.manager.gymOverview.viewDetails")} →
                 </Button>
@@ -126,7 +126,7 @@ function GymOverview({
                 openModal("create_gym");
               }
             }}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-lg"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:shadow-lg"
           >
             <PlusIcon className="w-5 h-5" />
             {t("home.manager.gymOverview.createGym")}

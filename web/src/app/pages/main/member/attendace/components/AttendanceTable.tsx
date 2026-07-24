@@ -202,7 +202,7 @@ export function AttendanceTable({ records, isLoading }: AttendanceTableProps) {
       renderMobileCard={renderMobileCard}
       renderMobileLoadingSkeleton={renderMobileLoadingSkeleton}
       wrapperClassName="bg-surface border border-border rounded-2xl overflow-hidden"
-      headerClassName="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border"
+      headerClassName="bg-primary/10 border-b border-border"
     />
   );
 }

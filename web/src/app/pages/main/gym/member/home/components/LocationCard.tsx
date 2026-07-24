@@ -41,7 +41,7 @@ export default function LocationCard({ gym }: LocationCardProps) {
           href={getGoogleMapsUrl(gym)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
         >
           <ExternalLink className="w-4 h-4" />
           {t("home.gymMember.location.getDirections", "Get Directions")}

@@ -54,7 +54,7 @@ export default function GymSelectorDropdown({
           animation: "dropdown-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-primary/5 pointer-events-none"></div>
 
         <div
           className={`relative ${

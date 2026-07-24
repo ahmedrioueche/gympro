@@ -26,7 +26,7 @@ export function WarningFooter({
       <button
         onClick={onPrimaryAction}
         disabled={isLoading}
-        className="w-full px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-6 py-3 rounded-xl font-semibold text-white bg-primary hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <>

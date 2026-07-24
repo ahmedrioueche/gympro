@@ -39,7 +39,7 @@ export default function GymSelectorButton({
           } rounded-2xl bg-gradient-to-br ${
             selectedGym
               ? styles.gradient
-              : "from-primary via-primary to-secondary"
+              : "from-primary to-primary"
           } flex items-center justify-center shadow-xl ${
             selectedGym ? styles.glow : "shadow-primary/20"
           } transition-all duration-500 group-hover:shadow-2xl group-hover:scale-105 group-hover:-rotate-3`}

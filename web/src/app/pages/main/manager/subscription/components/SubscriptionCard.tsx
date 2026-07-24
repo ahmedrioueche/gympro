@@ -189,7 +189,7 @@ function SubscriptionCard({ mySubscription, plans }: SubscriptionCardProps) {
           )}
 
           {/* Plan Header with Time Remaining */}
-          <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 md:p-8 border-b border-border">
+          <div className="bg-primary/5 p-6 md:p-8 border-b border-border">
             <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
               {/* Left: Plan Info */}
               <div className="flex-1">

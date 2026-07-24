@@ -14,10 +14,10 @@ export const DummyProgramCard = () => {
       }`}
     >
       <div
-        className={`h-2 bg-gradient-to-r ${
+        className={`h-2 ${
           secondary
-            ? "from-gray-400 to-gray-500"
-            : "from-blue-500 to-purple-600"
+            ? "bg-gradient-to-r from-gray-400 to-gray-500"
+            : "bg-primary"
         }`}
       />
       <div className="p-6 space-y-4">
@@ -26,7 +26,7 @@ export const DummyProgramCard = () => {
             className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg ${
               secondary
                 ? "bg-gray-200 text-gray-400Shadow"
-                : "bg-gradient-to-br from-blue-500 to-purple-600 shadow-blue-500/20 text-white"
+                : "bg-primary shadow-blue-500/20 text-white"
             }`}
           >
             <Dumbbell className="w-8 h-8" />
@@ -98,7 +98,7 @@ export const DummyProgramCard = () => {
 
         {!secondary && (
           <div className="pt-2">
-            <div className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl text-white text-center font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20">
+            <div className="w-full py-3 bg-primary rounded-2xl text-white text-center font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20">
               {t("training.programs.card.start")}
             </div>
           </div>

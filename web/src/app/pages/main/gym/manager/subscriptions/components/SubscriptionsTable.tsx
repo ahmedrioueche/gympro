@@ -76,7 +76,7 @@ function SubscriptionsTable({ members }: SubscriptionsTableProps) {
       {/* Desktop Table View - Hidden on Mobile */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border">
+          <thead className="bg-primary/10 border-b border-border">
             <tr>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">
                 {t("gymSubscriptions.table.member", "Member")}
@@ -115,7 +115,7 @@ function SubscriptionsTable({ members }: SubscriptionsTableProps) {
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-semibold">
+                      <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-semibold">
                         {member.profile?.fullName?.[0]?.toUpperCase() || "?"}
                       </div>
                       <div>
@@ -192,7 +192,7 @@ function SubscriptionsTable({ members }: SubscriptionsTableProps) {
             >
               {/* Member Info */}
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-semibold text-lg">
+                <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-lg">
                   {member.profile?.fullName?.[0]?.toUpperCase() || "?"}
                 </div>
                 <div className="flex-1 min-w-0">

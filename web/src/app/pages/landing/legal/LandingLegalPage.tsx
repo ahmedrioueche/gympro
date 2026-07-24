@@ -50,7 +50,7 @@ export function LandingLegalPage({
           <p className="text-primary font-bold tracking-wider uppercase text-sm mb-8">
             {subtitle}
           </p>
-          <div className="h-1 w-20 bg-gradient-to-r from-primary to-purple-600 rounded-full mb-12" />
+          <div className="h-1 w-20 bg-primary rounded-full mb-12" />
           <p className="text-slate-300 text-lg md:text-xl leading-relaxed max-w-3xl">
             {intro}
           </p>

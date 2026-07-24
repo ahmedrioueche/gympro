@@ -40,7 +40,6 @@ export const ProgramCard = ({
         icon: User,
         label: t("training.programs.card.source.member"), // Displays "Me"
         colors: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-        gradient: "from-purple-500 to-cyan-500",
       };
     }
 
@@ -50,14 +49,12 @@ export const ProgramCard = ({
           icon: User,
           label: t("training.programs.card.source.coach"),
           colors: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-          gradient: "from-blue-500 to-cyan-500",
         };
       case "template":
         return {
           icon: Zap,
           label: t("training.programs.card.source.template"),
           colors: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-          gradient: "from-purple-500 to-pink-500",
         };
       default:
         // Any other member program NOT created by current user
@@ -65,7 +62,6 @@ export const ProgramCard = ({
           icon: User,
           label: t("common.member"),
           colors: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-          gradient: "from-gray-500 to-slate-500",
         };
     }
   };
@@ -98,10 +94,10 @@ export const ProgramCard = ({
           : "border-border hover:border-primary/40"
       }`}
     >
-      {/* Gradient accent line */}
+      {/* Accent line */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${sourceConfig.gradient} opacity-60 group-hover:opacity-100 transition-opacity`}
+        className="absolute top-0 left-0 right-0 h-1 bg-primary opacity-60 group-hover:opacity-100 transition-opacity"
       />
 
       <div className="p-4 md:p-6">
@@ -110,7 +106,7 @@ export const ProgramCard = ({
           <div className="flex items-start gap-4">
             {/* Icon */}
             <div
-              className={`w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br ${sourceConfig.gradient} flex items-center justify-center shadow-lg flex-shrink-0 transition-transform duration-300`}
+              className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-primary flex items-center justify-center shadow-lg flex-shrink-0 transition-transform duration-300"
             >
               <Dumbbell className="w-6 h-6 md:w-7 md:h-7 text-white" />
             </div>
@@ -209,7 +205,7 @@ export const ProgramCard = ({
               className={`flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-xl text-xs md:text-sm font-bold transition-all shadow-lg flex items-center justify-center gap-2 group/btn ${
                 isActive
                   ? "bg-green-500/10 text-green-500 border border-green-500/30 cursor-not-allowed shadow-none"
-                  : "text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-primary/20 hover:shadow-xl"
+                  : "text-white bg-primary hover:bg-primary/80 shadow-primary/20 hover:shadow-xl"
               }`}
             >
               {isActive ? (

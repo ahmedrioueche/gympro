@@ -18,7 +18,7 @@ function ProfileAvatar({ user }: ProfileAvatarProps) {
   }
 
   return (
-    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-2xl font-bold shadow-md">
+    <div className="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center text-white text-2xl font-bold shadow-md">
       {getUserInitials(user)}
     </div>
   );

@@ -303,7 +303,7 @@ export const ExerciseForm = ({
                 <button
                   type="button"
                   onClick={onAddNext}
-                  className="px-3 py-1.5 rounded-lg font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-xs flex items-center gap-1.5 transition-all"
+                  className="px-3 py-1.5 rounded-lg font-medium text-white bg-primary hover:bg-primary/80 text-xs flex items-center gap-1.5 transition-all"
                   title={t(
                     "training.programs.create.form.addNextExercise",
                     "Add Next Exercise",

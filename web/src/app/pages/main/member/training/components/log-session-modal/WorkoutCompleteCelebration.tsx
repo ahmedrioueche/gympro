@@ -38,7 +38,7 @@ export const WorkoutCompleteCelebration = ({
         className="relative w-full max-w-sm bg-surface border-2 border-success/30 rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-gradient-to-br from-success/20 via-primary/10 to-secondary/20 px-6 pt-8 pb-6 text-center">
+        <div className="bg-success/20 px-6 pt-8 pb-6 text-center">
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <Sparkles
               className="absolute top-4 left-6 w-5 h-5 text-yellow-400 animate-sparkle"

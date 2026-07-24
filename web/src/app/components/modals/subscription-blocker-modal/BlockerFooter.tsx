@@ -24,7 +24,7 @@ export function BlockerFooter({
       <button
         onClick={onPrimaryAction}
         disabled={isLoading}
-        className="w-full px-6 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-primary to-secondary hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+        className="w-full px-6 py-4 rounded-xl font-bold text-lg text-white bg-primary hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
         {isLoading ? (
           <>

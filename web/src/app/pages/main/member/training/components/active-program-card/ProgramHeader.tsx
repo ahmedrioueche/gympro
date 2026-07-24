@@ -8,7 +8,6 @@ interface ProgramHeaderProps {
   sourceConfig: {
     label: string;
     colors: string;
-    gradient: string;
   };
 }
 
@@ -21,9 +20,7 @@ export const ProgramHeader = ({
 
   return (
     <div className="flex items-start gap-4">
-      <div
-        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${sourceConfig.gradient} flex items-center justify-center shadow-lg flex-shrink-0`}
-      >
+      <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center shadow-lg flex-shrink-0">
         <Trophy className="w-8 h-8 text-white" />
       </div>
 

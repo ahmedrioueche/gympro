@@ -10,7 +10,7 @@ export const DummyBecomeCoach = () => {
       pageTitle={t("welcomeTour.dummies.becomeCoach.pageTitle")}
       locationKey="becomeCoach"
     >
-      <div className="w-full max-w-4xl bg-gradient-to-br from-primary via-blue-600 to-purple-700 rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden text-white">
+      <div className="w-full max-w-4xl bg-primary rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden text-white">
         {/* Abstract Background Elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/20 rounded-full -ml-10 -mb-10 blur-2xl" />

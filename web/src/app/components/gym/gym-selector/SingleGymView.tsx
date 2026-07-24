@@ -72,7 +72,7 @@ export default function SingleGymView({
           className={`${isMobile ? "w-10 h-10" : "w-14 h-14"} rounded-2xl ${
             isSelected
               ? `bg-gradient-to-br ${styles.gradient} ${styles.glow}`
-              : "bg-gradient-to-br from-primary via-primary to-secondary shadow-primary/20"
+              : "bg-primary shadow-primary/20"
           } flex items-center justify-center shadow-xl transition-all duration-500 group-hover:shadow-2xl group-hover:scale-105 group-hover:-rotate-3`}
         >
           {isOnGymDashboard ? (

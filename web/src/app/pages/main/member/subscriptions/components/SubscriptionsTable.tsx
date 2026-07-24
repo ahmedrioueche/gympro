@@ -64,7 +64,7 @@ export const SubscriptionsTable = ({
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border">
+          <thead className="bg-primary/10 border-b border-border">
             <tr>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary w-12"></th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-text-primary">

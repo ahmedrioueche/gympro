@@ -69,7 +69,7 @@ export function Table<T>({
   const defaultWrapperClass =
     "bg-surface border border-border rounded-2xl overflow-hidden";
   const defaultHeaderClass =
-    "bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border";
+    "bg-primary/10 border-b border-border";
 
   const renderDesktopContent = () => {
     if (isLoading) {

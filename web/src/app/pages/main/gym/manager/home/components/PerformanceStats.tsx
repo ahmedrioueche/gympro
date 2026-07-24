@@ -16,7 +16,7 @@ export function PerformanceStats({
 
   return (
     <div className="bg-surface border border-border rounded-3xl overflow-hidden shadow-sm">
-      <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 border-b border-border">
+      <div className="bg-primary/5 p-6 border-b border-border">
         <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-primary" />
           {t("home.gym.stats.title")}

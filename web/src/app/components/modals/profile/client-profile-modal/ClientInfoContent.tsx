@@ -45,7 +45,7 @@ export function ClientInfoContent({ client }: ClientInfoContentProps) {
 
       {/* Current Program */}
       {client.currentProgram && (
-        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl p-4">
+        <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <Activity className="w-4 h-4 text-primary" />
             <span className="text-xs text-text-secondary uppercase tracking-wider">

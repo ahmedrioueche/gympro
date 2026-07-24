@@ -47,7 +47,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
 
   return (
     <div
-      className={`${baseClasses} bg-gradient-to-br from-primary/80 via-primary to-secondary/80 flex items-center justify-center font-black text-white`}
+      className={`${baseClasses} bg-primary flex items-center justify-center font-black text-white`}
     >
       {initials || "U"}
     </div>

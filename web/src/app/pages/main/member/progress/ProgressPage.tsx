@@ -39,7 +39,7 @@ const ProgressPage = () => {
       </div>
 
       {/* Motivational Quote or Hint */}
-      <div className="p-5 md:p-8 rounded-3xl bg-gradient-to-r from-primary to-indigo-600 text-white shadow-xl shadow-primary/20 relative overflow-hidden group">
+      <div className="p-5 md:p-8 rounded-3xl bg-primary text-white shadow-xl shadow-primary/20 relative overflow-hidden group">
         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
           <TrendingUp size={120} className="w-20 h-20 md:w-32 md:h-32" />
         </div>

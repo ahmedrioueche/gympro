@@ -13,7 +13,7 @@ const AnimatedLogo = ({
   onClick,
   compact = false,
   gradientFrom = "from-primary",
-  gradientTo = "to-secondary",
+  gradientTo = "to-primary",
   animateOnce = false,
 }: {
   height?: string;

@@ -52,7 +52,7 @@ export function ProspectiveMemberCard({ member }: ProspectiveMemberCardProps) {
 
       {/* Member Header */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xl font-bold shadow-lg ring-2 ring-background">
+        <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold shadow-lg ring-2 ring-background">
           {member.profileImageUrl ? (
             <img
               src={member.profileImageUrl}

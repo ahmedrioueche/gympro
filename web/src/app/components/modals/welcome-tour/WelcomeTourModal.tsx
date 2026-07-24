@@ -59,7 +59,7 @@ const WelcomeTourModal: React.FC<WelcomeTourModalProps> = ({
   const StepIcon = currentStep.icon;
 
   const customHeader = (
-    <div className="bg-gradient-to-r from-primary to-secondary p-3 md:p-4 flex-shrink-0 relative overflow-hidden">
+    <div className="bg-primary p-3 md:p-4 flex-shrink-0 relative overflow-hidden">
       <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-5 rounded-full blur-2xl pointer-events-none" />
       <div className="flex items-start justify-between gap-3 relative z-10">
         <div className="flex items-center gap-2 md:gap-3 min-w-0">
@@ -146,7 +146,7 @@ const WelcomeTourModal: React.FC<WelcomeTourModalProps> = ({
           className={`flex items-center gap-2 px-4 py-2 md:py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all duration-300 ${
             isLastStep
               ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg shadow-green-500/30"
-              : "bg-gradient-to-r from-primary to-secondary hover:from-primary-hover hover:to-secondary text-white shadow-lg shadow-primary/30"
+              : "bg-primary hover:bg-primary/80 text-white shadow-lg shadow-primary/30"
           }`}
           type="button"
         >

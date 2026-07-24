@@ -27,7 +27,7 @@ export function ProfileAvatar({
 
   return (
     <div
-      className={`${sizeClasses} rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-white`}
+      className={`${sizeClasses} rounded-full bg-primary flex items-center justify-center font-bold text-white`}
     >
       {initials}
     </div>

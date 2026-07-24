@@ -30,7 +30,7 @@ const NotFound: React.FC<NotFoundProps> = ({
           {icon || (
             <div className="relative mx-auto w-32 h-32 mb-6">
               {/* Default 404 icon with gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary via-secondary to-accent rounded-full flex items-center justify-center shadow-2xl shadow-primary/20">
+              <div className="absolute inset-0 bg-primary rounded-full flex items-center justify-center shadow-2xl shadow-primary/20">
                 <span className="text-4xl font-bold text-white">404</span>
               </div>
               {/* Decorative floating elements */}
@@ -71,11 +71,10 @@ const NotFound: React.FC<NotFoundProps> = ({
             </button>
             <button
               onClick={() => (window.location.href = "/")}
-              className="w-full sm:w-auto cursor-pointer group relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0"
+              className="w-full sm:w-auto cursor-pointer group relative inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-primary/80 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0"
             >
               <span className="mr-2">🏠</span>
               {t("actions.go_home", "Go Home")}
-              <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
             </button>
           </div>
         </div>

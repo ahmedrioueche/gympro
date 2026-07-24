@@ -31,7 +31,7 @@ function PaymentsStats({ stats }: PaymentsStatsProps) {
       label: t("payments.stats.successRate"),
       value: `${stats.successRate.toFixed(1)}%`,
       icon: "✅",
-      color: "from-primary/10 to-secondary/10 border-primary/20",
+      color: "from-primary/10 to-primary/10 border-primary/20",
     },
   ];
 

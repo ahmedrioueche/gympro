@@ -88,7 +88,7 @@ const ProgramDetailsModal = ({}) => {
             type="button"
             onClick={() => void handleDoneClick()}
             disabled={updateProgram.isPending || isAutoSaving}
-            className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-300 shadow-sm hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
+            className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-primary hover:bg-primary/80 ring-1 ring-blue-500/30 transition-all duration-300 shadow-sm hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {updateProgram.isPending || isAutoSaving ? (
               <>
@@ -119,7 +119,7 @@ const ProgramDetailsModal = ({}) => {
               onUse(program._id!);
               closeModal();
             }}
-            className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-300 shadow-sm hover:shadow-xl flex items-center justify-center gap-2"
+            className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-primary hover:bg-primary/80 ring-1 ring-blue-500/30 transition-all duration-300 shadow-sm hover:shadow-xl flex items-center justify-center gap-2"
           >
             <Dumbbell className="w-5 h-5" />
             {isActive

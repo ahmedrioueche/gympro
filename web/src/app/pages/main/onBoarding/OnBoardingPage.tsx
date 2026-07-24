@@ -199,7 +199,7 @@ export function OnboardingPage() {
           >
             <button
               onClick={() => setStep(1)} // Go straight to Owner Check, skipping Region view
-              className="relative overflow-hidden w-full p-5 rounded-2xl bg-gradient-to-r from-primary to-primary-focus text-white font-bold transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 focus:ring-2 focus:ring-primary outline-none group flex items-center justify-center gap-2"
+              className="relative overflow-hidden w-full p-5 rounded-2xl bg-primary text-white font-bold transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 focus:ring-2 focus:ring-primary outline-none group flex items-center justify-center gap-2"
             >
               <span className="relative z-10 flex items-center gap-2">
                 {t("onboarding.welcome.start")}

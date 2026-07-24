@@ -21,7 +21,7 @@ export function ClientProfileActions({
         {t("common.close")}
       </button>
       <button
-        className="px-4 py-2 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
+        className="px-4 py-2 rounded-xl bg-primary text-white font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
         onClick={onAssignProgram}
       >
         <UserCog className="w-4 h-4" />

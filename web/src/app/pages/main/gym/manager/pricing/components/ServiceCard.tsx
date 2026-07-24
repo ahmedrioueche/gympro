@@ -18,11 +18,11 @@ export const ServiceCard = ({
   return (
     <div className="group relative overflow-hidden flex flex-col rounded-3xl border border-border/50 bg-surface p-4 md:p-6 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 h-full">
       {/* Background Gradient Glow */}
-      <div className="absolute -right-10 -top-10 h-32 w-32 md:h-40 md:w-40 rounded-full bg-gradient-to-br from-primary to-indigo-600 opacity-10 blur-3xl group-hover:opacity-20 transition-opacity" />
+      <div className="absolute -right-10 -top-10 h-32 w-32 md:h-40 md:w-40 rounded-full bg-primary opacity-10 blur-3xl group-hover:opacity-20 transition-opacity" />
 
       {/* Header */}
       <div className="mb-4 relative z-10 flex items-center gap-3">
-        <div className="p-2.5 rounded-2xl bg-gradient-to-br from-primary to-indigo-600 text-white shadow-lg shadow-primary/10 shrink-0">
+        <div className="p-2.5 rounded-2xl bg-primary text-white shadow-lg shadow-primary/10 shrink-0">
           <Dumbbell className="w-5 h-5 md:w-6 md:h-6" />
         </div>
         <h3 className="text-lg md:text-xl font-black text-text-primary tracking-tight line-clamp-2">

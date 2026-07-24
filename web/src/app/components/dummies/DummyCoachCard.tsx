@@ -26,7 +26,7 @@ export const DummyCoachCard = () => {
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-[100%]" />
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="relative">
-                <div className="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-primary via-blue-500 to-purple-600 p-[2px] shadow-xl">
+                <div className="w-24 h-24 rounded-[2rem] bg-primary p-[2px] shadow-xl">
                   <div className="w-full h-full rounded-[1.9rem] bg-surface flex items-center justify-center overflow-hidden text-2xl font-black text-primary/40">
                     M
                   </div>

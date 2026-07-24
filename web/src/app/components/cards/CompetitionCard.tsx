@@ -334,7 +334,7 @@ export function CompetitionCard({
                       onJoin(competition);
                     }}
                     disabled={isJoining || isFull}
-                    className="px-6 md:px-8 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg shadow-blue-500/20 hover:shadow-xl transition-all disabled:opacity-50 uppercase tracking-wider flex items-center justify-center gap-2"
+                    className="px-6 md:px-8 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-bold text-white bg-primary hover:bg-primary/80 shadow-lg shadow-blue-500/20 hover:shadow-xl transition-all disabled:opacity-50 uppercase tracking-wider flex items-center justify-center gap-2"
                   >
                     {isJoining ? (
                       t("common.joining")

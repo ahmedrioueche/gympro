@@ -49,10 +49,8 @@ export const ActiveProgramCard = ({
 
   return (
     <div className="bg-surface border border-border rounded-2xl relative overflow-hidden group shadow-sm hover:shadow-md transition-all">
-      {/* Gradient accent line */}
-      <div
-        className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${sourceConfig.gradient}`}
-      />
+      {/* Accent line */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
 
       <div className="p-5 md:p-6 flex flex-col gap-6">
         {/* Top Section: Info & Stats */}
@@ -74,7 +72,6 @@ export const ActiveProgramCard = ({
           progressPercent={progressPercent}
           completedSets={completedSets}
           totalSets={totalSets}
-          gradient={sourceConfig.gradient}
           isPaused={isPaused}
           onArchive={handleAbandon}
           onLogSession={onLogSession}

@@ -63,7 +63,7 @@ export function GymDetailsModal() {
               className="w-full h-full object-cover brightness-[0.4] contrast-125 transition-transform duration-1000 scale-105"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-primary/40 via-surface/10 to-secondary/40 animate-gradient-xy" />
+            <div className="w-full h-full bg-primary/40 animate-gradient-xy" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         </div>
@@ -75,7 +75,7 @@ export function GymDetailsModal() {
             <div className="flex flex-col md:flex-row gap-5 md:gap-6 items-center md:items-start text-center md:text-left">
               {gym.logoUrl && (
                 <div className="relative group shrink-0">
-                  <div className="absolute -inset-1 bg-gradient-to-tr from-primary to-secondary rounded-2xl md:rounded-[2.5rem] blur opacity-30 group-hover:opacity-70 transition duration-1000"></div>
+                  <div className="absolute -inset-1 bg-primary rounded-2xl md:rounded-[2.5rem] blur opacity-30 group-hover:opacity-70 transition duration-1000"></div>
                   <img
                     src={gym.logoUrl}
                     className="relative w-28 h-28 md:w-44 md:h-44 rounded-2xl md:rounded-[2.2rem] border-4 border-white/20 shadow-2xl bg-background object-cover"

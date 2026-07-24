@@ -77,7 +77,7 @@ export function GymCardMedia({ gym, canViewMedia }: GymCardMediaProps) {
       );
     }
     return (
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20" />
+      <div className="absolute inset-0 bg-primary/20" />
     );
   }
 

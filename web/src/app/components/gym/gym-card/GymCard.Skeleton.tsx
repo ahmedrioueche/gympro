@@ -78,7 +78,7 @@ export default function GymCardSkeleton() {
       </div>
 
       {/* Bottom gradient bar */}
-      <div className="h-2 bg-gradient-to-r from-primary via-secondary to-primary opacity-50"></div>
+      <div className="h-2 bg-primary opacity-50"></div>
     </div>
   );
 }

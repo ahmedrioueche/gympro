@@ -24,7 +24,7 @@ export const getStatusColor = (status: MembershipStatus | string): string => {
  * Get avatar background color gradient
  */
 export const getAvatarColor = (): string => {
-  return "bg-gradient-to-r from-primary to-secondary";
+  return "bg-primary";
 };
 
 /**

@@ -105,7 +105,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
 
     switch (variant) {
       case "primary":
-        return `${baseClasses} bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white ring-1 ring-blue-500/30 hover:shadow-xl ${className || ""}`;
+        return `${baseClasses} bg-primary hover:bg-primary/80 text-white ring-1 ring-blue-500/30 hover:shadow-xl ${className || ""}`;
       case "danger":
         return `${baseClasses} bg-red-500 hover:bg-red-600 text-white shadow-sm hover:shadow-md ${className || ""}`;
       case "ghost":
@@ -169,7 +169,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
           (customHeader ? (
             customHeader
           ) : (
-            <div className="bg-gradient-to-r from-primary to-secondary p-3 md:p-4 flex-shrink-0">
+            <div className="bg-primary  p-3 md:p-4 flex-shrink-0">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 md:gap-4 min-w-0">
                   {Icon && (

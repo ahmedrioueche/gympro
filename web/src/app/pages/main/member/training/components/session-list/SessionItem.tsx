@@ -89,7 +89,7 @@ export const SessionItem = ({
                   e.stopPropagation();
                   onEdit();
                 }}
-                className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="group inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 h-[42px] text-sm font-medium text-white bg-primary hover:bg-primary/80 ring-1 ring-blue-500/30 transition-all duration-200 shadow-sm hover:shadow-md"
               >
                 <span className="mr-2">
                   {t("training.page.sessionList.editSession")}

@@ -5,7 +5,7 @@ function Logo() {
   return (
     <div className="flex items-center gap-2">
       <Dumbbell className="w-8 h-8 text-primary" />
-      <span className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+      <span className="text-2xl font-bold text-primary">
         {APP_DATA.name}
       </span>
     </div>

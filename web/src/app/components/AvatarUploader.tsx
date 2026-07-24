@@ -35,7 +35,7 @@ export default function AvatarUploader({
   return (
     <div className="flex items-center gap-4">
       <div className="relative group">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary p-1">
+        <div className="w-20 h-20 rounded-full bg-primary p-1">
           <div className="w-full h-full rounded-full bg-surface border-2 border-surface overflow-hidden flex items-center justify-center relative">
             {currentAvatar ? (
               <img
@@ -46,7 +46,7 @@ export default function AvatarUploader({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <div className="w-full h-full bg-primary flex items-center justify-center">
                 <span className="text-2xl font-bold text-white">
                   {getNameInitials(userName)}
                 </span>
