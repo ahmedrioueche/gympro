@@ -15,6 +15,8 @@ import { useModalLayer } from "../../../../../../../hooks/useModalLayer";
 import { SessionBlock } from "./SessionBlock";
 import { SessionExerciseCard } from "./SessionExerciseCard";
 import { AddSessionExercise } from "./AddSessionExercise";
+import type { SessionExercisePick } from "./AddSessionExercise";
+import { ReplaceSessionExerciseModal } from "./ReplaceSessionExerciseModal";
 import { SessionProgressFooter } from "./SessionProgressFooter";
 import { useSessionForm } from "./useSessionForm";
 import { WorkoutCompleteCelebration } from "./WorkoutCompleteCelebration";
@@ -49,6 +51,7 @@ const LogSessionModalContent = ({
     completedSets: number;
     totalSets: number;
   } | null>(null);
+  const [replacingExIndex, setReplacingExIndex] = useState<number | null>(null);
 
   const handleCelebrationClose = useCallback(() => {
     setCelebration(null);
@@ -157,6 +160,34 @@ const LogSessionModalContent = ({
       });
     },
     [form, openModal, t],
+  );
+
+  const handleReplaceExercise = useCallback(
+    (exIndex: number) => {
+      const display = form.getSessionExerciseDisplay(exIndex);
+      const exerciseName =
+        display?.name || t("training.logSession.unknownExercise");
+
+      openModal("confirm", {
+        title: t("training.logSession.replaceExerciseTitle"),
+        text: t("training.logSession.replaceExerciseMessage", {
+          name: exerciseName,
+        }),
+        confirmText: t("training.logSession.replaceExerciseConfirm"),
+        confirmVariant: "primary",
+        onConfirm: () => setReplacingExIndex(exIndex),
+      });
+    },
+    [form, openModal, t],
+  );
+
+  const handleConfirmReplace = useCallback(
+    (pick: SessionExercisePick) => {
+      if (replacingExIndex == null) return;
+      form.replaceSessionExercise(replacingExIndex, pick);
+      setReplacingExIndex(null);
+    },
+    [form, replacingExIndex],
   );
 
   const handleSave = async () => {
@@ -309,7 +340,9 @@ const LogSessionModalContent = ({
                       onToggleSupersetCompletion={
                         form.toggleSupersetCompletion
                       }
+                      onReplaceExercise={handleReplaceExercise}
                       onRemoveExercise={handleRemoveExercise}
+                      getExerciseDisplay={form.getSessionExerciseDisplay}
                     />
                   );
                 }
@@ -345,6 +378,9 @@ const LogSessionModalContent = ({
                     onViewVideo={(ex) =>
                       openModal("exercise_detail", { exercise: ex })
                     }
+                    onReplaceExercise={() =>
+                      handleReplaceExercise(entry.exerciseIndex)
+                    }
                     onRemoveExercise={() =>
                       handleRemoveExercise(entry.exerciseIndex)
                     }
@@ -357,6 +393,19 @@ const LogSessionModalContent = ({
         </div>
       </div>
     </BaseModal>
+
+      {replacingExIndex != null && (
+        <ReplaceSessionExerciseModal
+          isOpen
+          zIndex={zIndex + 10}
+          exerciseName={
+            form.getSessionExerciseDisplay(replacingExIndex)?.name ||
+            t("training.logSession.unknownExercise")
+          }
+          onClose={() => setReplacingExIndex(null)}
+          onReplace={handleConfirmReplace}
+        />
+      )}
 
       {celebration && (
         <WorkoutCompleteCelebration

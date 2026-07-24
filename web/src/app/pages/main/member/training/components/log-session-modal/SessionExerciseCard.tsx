@@ -3,7 +3,14 @@ import {
   type ExerciseSet,
   type TrainingProgram,
 } from "@ahmedrioueche/gympro-client";
-import { Check, CornerDownRight, PlayCircle, Plus, Trash2 } from "lucide-react";
+import {
+  Check,
+  CornerDownRight,
+  PlayCircle,
+  Plus,
+  Replace,
+  Trash2,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useWeightUnit from "../../../../../../../hooks/useWeightUnit";
 import { SetWeightInput } from "./SetWeightInput";
@@ -40,6 +47,7 @@ interface SessionExerciseCardProps {
     dropIndex: number,
   ) => void;
   onViewVideo: (exercise: any) => void;
+  onReplaceExercise?: () => void;
   onRemoveExercise?: () => void;
 }
 
@@ -56,6 +64,7 @@ export const SessionExerciseCard = ({
   onUpdateDropSet,
   onRemoveDropSet,
   onViewVideo,
+  onReplaceExercise,
   onRemoveExercise,
 }: SessionExerciseCardProps) => {
   const { t } = useTranslation();
@@ -87,27 +96,44 @@ export const SessionExerciseCard = ({
             </button>
           )}
         </div>
-        {onRemoveExercise && (
-          <button
-            type="button"
-            onClick={onRemoveExercise}
-            disabled={hasCompletedSets}
-            className={`p-2 rounded-lg border transition-all ${
-              hasCompletedSets
-                ? "border-border text-text-secondary/30 cursor-not-allowed opacity-50"
-                : "border-border text-text-secondary hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/10"
-            }`}
-            title={
-              hasCompletedSets
-                ? t(
-                    "training.logSession.uncheckToDelete",
-                    "Uncheck to delete",
-                  )
-                : t("training.logSession.removeExercise")
-            }
-          >
-            <Trash2 size={16} />
-          </button>
+        {(onReplaceExercise || onRemoveExercise) && (
+          <div className="flex items-center gap-1">
+            {onReplaceExercise && (
+              <button
+                type="button"
+                onClick={onReplaceExercise}
+                className="p-2 rounded-lg border border-border text-text-secondary hover:text-primary hover:border-primary/50 hover:bg-primary/10 transition-all"
+                title={t(
+                  "training.logSession.replaceExercise",
+                  "Replace exercise for this session",
+                )}
+              >
+                <Replace size={16} />
+              </button>
+            )}
+            {onRemoveExercise && (
+              <button
+                type="button"
+                onClick={onRemoveExercise}
+                disabled={hasCompletedSets}
+                className={`p-2 rounded-lg border transition-all ${
+                  hasCompletedSets
+                    ? "border-border text-text-secondary/30 cursor-not-allowed opacity-50"
+                    : "border-border text-text-secondary hover:text-red-500 hover:border-red-500/50 hover:bg-red-500/10"
+                }`}
+                title={
+                  hasCompletedSets
+                    ? t(
+                        "training.logSession.uncheckToDelete",
+                        "Uncheck to delete",
+                      )
+                    : t("training.logSession.removeExercise")
+                }
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+          </div>
         )}
       </div>
 
@@ -227,14 +253,22 @@ export const SessionExerciseCard = ({
 
             {/* Drop Sets */}
             {set.drops && set.drops.length > 0 && (
-              <div className="pl-4 space-y-2 border-l-2 border-primary/20 ml-4 py-1">
+              <div
+                className={`pl-4 space-y-2 border-l-2 ml-4 py-1 ${
+                  set.completed ? "border-green-500/40" : "border-primary/20"
+                }`}
+              >
                 {set.drops.map((drop, dropIndex) => (
                   <div
                     key={dropIndex}
-                    className="grid grid-cols-12 gap-2 items-center"
+                    className={`grid grid-cols-12 gap-2 items-center p-2 rounded-lg transition-colors ${
+                      set.completed
+                        ? "bg-green-500/10 border border-green-500/30"
+                        : "bg-background-secondary/50"
+                    }`}
                   >
                     <div className="col-span-1 text-center text-xs text-text-secondary font-medium">
-                      Drop
+                      <span className="hidden sm:inline">Drop</span>
                     </div>
                     <div className="col-span-4">
                       <input

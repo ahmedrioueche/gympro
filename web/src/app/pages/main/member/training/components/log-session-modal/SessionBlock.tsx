@@ -42,7 +42,11 @@ interface SessionBlockProps {
     setIndex: number,
     completed: boolean,
   ) => void;
+  onReplaceExercise: (exIndex: number) => void;
   onRemoveExercise: (exIndex: number) => void;
+  getExerciseDisplay?: (
+    exIndex: number,
+  ) => { name?: string; videoUrl?: string } | null;
 }
 
 export const SessionBlock = ({
@@ -61,7 +65,9 @@ export const SessionBlock = ({
   onRemoveDropSet,
   onViewVideo,
   onToggleSupersetCompletion,
+  onReplaceExercise,
   onRemoveExercise,
+  getExerciseDisplay,
 }: SessionBlockProps) => {
   const isSuperset = block.type === "superset" || block.type === "circuit";
 
@@ -72,14 +78,18 @@ export const SessionBlock = ({
         progEx.name === exercise.exerciseId,
     );
 
+  const resolveDisplay = (ex: ExerciseProgress, exIndex: number) => {
+    const display = getExerciseDisplay?.(exIndex);
+    if (display?.name) return display;
+    return resolveProgramExercise(ex) ?? { name: ex.exerciseId };
+  };
+
   // Case 1: Standard Single Block OR Superset opted-out to Split View
   if (!isSuperset || isSplit) {
     return (
       <div
         className={`space-y-4 ${isSuperset && isSplit ? "pl-4 border-l-2 border-primary/20" : ""}`}
       >
-        {/* If split, maybe show a header? Or just the cards? 
-            Let's show a small "Superset Split" header to allow re-merging */}
         {isSuperset && isSplit && (
           <div className="flex justify-between items-center -mb-2">
             <span className="text-xs font-semibold text-primary uppercase tracking-wider">
@@ -101,7 +111,7 @@ export const SessionBlock = ({
             key={exerciseIndices[i]}
             exercise={ex}
             exerciseIndex={exerciseIndices[i]}
-            originalExercise={resolveProgramExercise(ex)}
+            originalExercise={resolveDisplay(ex, exerciseIndices[i])}
             onUpdateSet={onUpdateSet}
             onCommitSetWeight={onCommitSetWeight}
             onCommitSetReps={onCommitSetReps}
@@ -111,6 +121,7 @@ export const SessionBlock = ({
             onUpdateDropSet={onUpdateDropSet}
             onRemoveDropSet={onRemoveDropSet}
             onViewVideo={onViewVideo}
+            onReplaceExercise={() => onReplaceExercise(exerciseIndices[i])}
             onRemoveExercise={() => onRemoveExercise(exerciseIndices[i])}
           />
         ))}
@@ -130,8 +141,8 @@ export const SessionBlock = ({
       onAddSet={onAddSet}
       onRemoveSet={onRemoveSet}
       onToggleSplit={onToggleSplit}
-      originalFormattedExercises={exercises.map(
-        (ex) => resolveProgramExercise(ex) ?? { name: ex.exerciseId },
+      originalFormattedExercises={exercises.map((ex, i) =>
+        resolveDisplay(ex, exerciseIndices[i]),
       )}
       onToggleSupersetCompletion={onToggleSupersetCompletion}
       onRemoveExercise={onRemoveExercise}

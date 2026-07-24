@@ -1017,15 +1017,22 @@ export const useSessionForm = ({
     }
 
     if (field === "reps" && options?.commit) {
-      if (wasCompleted) {
-        const setToCheck = currentSets[setIndex];
-        const error = validateSet(setToCheck.weight, setToCheck.reps);
-        if (error) {
-          currentSets[setIndex].completed = false;
-          toast(t("training.logSession.validation.autoUncheck"), {
-            icon: "⚠️",
-          });
+      const repsValue =
+        typeof value === "number" ? value : parseInt(value, 10) || 0;
+      const weight = currentSets[setIndex].weight;
+      const error = validateSet(weight, repsValue);
+
+      if (repsValue > 0 && !error) {
+        if (!wasCompleted) {
+          newlyCompleted = true;
+          markSetCompleted(exIndex, setIndex);
         }
+        currentSets[setIndex].completed = true;
+      } else if (wasCompleted) {
+        currentSets[setIndex].completed = false;
+        toast(t("training.logSession.validation.autoUncheck"), {
+          icon: "⚠️",
+        });
       }
     }
 
@@ -1310,6 +1317,36 @@ export const useSessionForm = ({
     setSessionLayout((layout) => removeExerciseFromLayout(layout, exIndex));
   }, []);
 
+  /** Swap an exercise for this session only — keeps sets/notes, updates identity + display meta. */
+  const replaceSessionExercise = useCallback(
+    (exIndex: number, pick: SessionExercisePick) => {
+      setIsDirty(true);
+
+      setExercises((prev) => {
+        const current = prev[exIndex];
+        if (!current) return prev;
+        const next = [...prev];
+        next[exIndex] = {
+          ...current,
+          exerciseId: pick.exerciseId,
+        };
+        return next;
+      });
+
+      setSessionExerciseMeta((meta) => ({
+        ...meta,
+        [pick.exerciseId]: {
+          name: pick.name,
+          videoUrl: pick.videoUrl,
+          recommendedSets: pick.recommendedSets,
+          recommendedReps: pick.recommendedReps,
+          restTime: pick.restTime,
+        },
+      }));
+    },
+    [],
+  );
+
   const getSessionExerciseDisplay = useCallback(
     (exIndex: number) => {
       const exercise = exercises[exIndex];
@@ -1361,6 +1398,7 @@ export const useSessionForm = ({
     getSessionExerciseDisplay,
     addSessionExercise,
     removeSessionExercise,
+    replaceSessionExercise,
     updateSet,
     commitSetWeight,
     commitSetReps,
