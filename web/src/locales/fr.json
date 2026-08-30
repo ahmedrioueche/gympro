@@ -949,6 +949,12 @@
         "label": "Devenir un entraîneur",
         "description": "Demander l'accès entraîneur"
       },
+      "theme": {
+        "light": "Mode clair",
+        "dark": "Mode sombre",
+        "lightDesc": "Passer au thème clair",
+        "darkDesc": "Passer au thème sombre"
+      },
       "fullscreen": {
         "enter": "Plein écran",
         "exit": "Quitter le plein écran",

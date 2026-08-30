@@ -57,8 +57,15 @@ export class MailerService implements OnModuleInit {
         html,
       });
 
+      if (result.error) {
+        this.logger.error(
+          `❌ Resend API Error sending to ${to}: ${result.error.message} (${result.error.name})`,
+        );
+        throw new Error(`Resend Error: ${result.error.message}`);
+      }
+
       this.logger.log(
-        `✅ Email sent successfully: ${result.data?.id || 'unknown'}`,
+        `✅ Email sent successfully to ${to}: ${result.data?.id || 'unknown'}`,
       );
       return result;
     } catch (error) {

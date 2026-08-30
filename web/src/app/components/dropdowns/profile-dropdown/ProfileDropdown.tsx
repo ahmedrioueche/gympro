@@ -1,5 +1,5 @@
 import { UserRole } from "@ahmedrioueche/gympro-client";
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Maximize2, Minimize2, Moon, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import Dropdown, {
@@ -8,6 +8,7 @@ import Dropdown, {
 } from "../../../../components/ui/Dropdown";
 import { useFullscreen } from "../../../../hooks/useFullscreen";
 import useScreen from "../../../../hooks/useScreen";
+import { useTheme } from "../../../../context/ThemeContext";
 import { DashboardSwitcher } from "./DashboardSwitcher";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { ProfileHeader } from "./ProfileHeader";
@@ -30,6 +31,7 @@ export default function ProfileDropdown({
   const { t } = useTranslation();
   const { isMobile } = useScreen();
   const { isFullscreen, isSupported, toggleFullscreen } = useFullscreen();
+  const { isDark, toggleMode } = useTheme();
 
   const {
     user,
@@ -82,6 +84,29 @@ export default function ProfileDropdown({
             onClick={() => {
               closeDropdown();
               onSettingsClick?.();
+            }}
+          />
+
+          <DropdownItem
+            icon={
+              isDark ? (
+                <Sun className="w-5 h-5 text-amber-400" />
+              ) : (
+                <Moon className="w-5 h-5 text-indigo-500" />
+              )
+            }
+            label={
+              isDark
+                ? t("profile.menu.theme.light", "Light Mode")
+                : t("profile.menu.theme.dark", "Dark Mode")
+            }
+            description={
+              isDark
+                ? t("profile.menu.theme.lightDesc", "Switch to light theme")
+                : t("profile.menu.theme.darkDesc", "Switch to dark theme")
+            }
+            onClick={() => {
+              toggleMode();
             }}
           />
 

@@ -963,6 +963,12 @@
         "label": "Become a Coach",
         "description": "Request coach access"
       },
+      "theme": {
+        "light": "Light Mode",
+        "dark": "Dark Mode",
+        "lightDesc": "Switch to light theme",
+        "darkDesc": "Switch to dark theme"
+      },
       "fullscreen": {
         "enter": "Fullscreen",
         "exit": "Exit fullscreen",
