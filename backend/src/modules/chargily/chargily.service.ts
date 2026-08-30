@@ -225,7 +225,21 @@ export class ChargilyService {
   async getCheckout(checkoutId: string) {
     try {
       this.logger.log(`Fetching checkout: ${checkoutId}`);
-      return await this.client.getCheckout(checkoutId);
+      const checkout = await this.client.getCheckout(checkoutId);
+
+      // Ensure paid checkout triggers subscription creation/sync in DB (crucial when webhooks cannot reach localhost)
+      if (checkout?.status === 'paid') {
+        try {
+          await this.handleCheckoutPaid(checkout);
+        } catch (syncError) {
+          this.logger.error(
+            'Failed to sync paid checkout in getCheckout',
+            syncError,
+          );
+        }
+      }
+
+      return checkout;
     } catch (error) {
       this.logger.error('Failed to get checkout', error);
       throw new BadRequestException(
@@ -303,7 +317,7 @@ export class ChargilyService {
       const result = await this.createCheckout({
         amount: amount,
         currency: 'dzd',
-        success_url: `${frontendUrl}/payment/success`,
+        success_url: `${frontendUrl}/manager/subscription`,
         failure_url: `${frontendUrl}/payment/failure`,
         payment_method: 'edahabia',
         locale: userLocale,
@@ -628,7 +642,7 @@ export class ChargilyService {
         const result = await this.createCheckout({
           amount: targetPrice,
           currency: 'dzd',
-          success_url: `${frontendUrl}/payment/success`,
+          success_url: `${frontendUrl}/manager/subscription`,
           failure_url: `${frontendUrl}/payment/failure`,
           payment_method: 'edahabia',
           locale: userLocale,
@@ -726,7 +740,7 @@ export class ChargilyService {
       const result = await this.createCheckout({
         amount: immediateCharge,
         currency: 'dzd',
-        success_url: `${frontendUrl}/payment/success`,
+        success_url: `${frontendUrl}/manager/subscription`,
         failure_url: `${frontendUrl}/payment/failure`,
         payment_method: 'edahabia',
         locale: userLocale,
@@ -824,7 +838,7 @@ export class ChargilyService {
       const result = await this.createCheckout({
         amount: price,
         currency: 'dzd',
-        success_url: `${frontendUrl}/payment/success`,
+        success_url: `${frontendUrl}/manager/subscription`,
         failure_url: `${frontendUrl}/payment/failure`,
         payment_method: 'edahabia',
         locale: userLocale,
@@ -999,6 +1013,17 @@ export class ChargilyService {
 
       if (!metadata?.type) {
         this.logger.log('No metadata type, skipping');
+        return;
+      }
+
+      // Idempotency: Avoid processing the same checkout multiple times
+      const isAlreadyProcessed =
+        await this.appSubscriptionService.hasPaymentWithTransactionId(data.id);
+
+      if (isAlreadyProcessed) {
+        this.logger.log(
+          `⚠️ [WEBHOOK] Checkout ${data.id} has already been processed. Skipping duplicate execution.`,
+        );
         return;
       }
 

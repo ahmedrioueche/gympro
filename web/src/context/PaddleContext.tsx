@@ -49,7 +49,7 @@ export const PaddleProvider: React.FC<{ children: React.ReactNode }> = ({
             console.log("Paddle Event:", data);
             if (data.name === "checkout.completed") {
               const transactionId = data.data.transaction_id || data.data.id;
-              window.location.href = `/payment/success?paddle_txn=${transactionId}`;
+              window.location.href = `/manager/subscription?paddle_txn=${transactionId}`;
             }
           },
         });

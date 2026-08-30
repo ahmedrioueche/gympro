@@ -644,7 +644,21 @@ export class PaddleService {
         },
       );
 
-      return response.data.data;
+      const transaction = response.data.data;
+
+      // Ensure completed transaction triggers subscription creation/sync in DB (crucial when webhooks cannot reach localhost)
+      if (transaction?.status === 'completed') {
+        try {
+          await this.handleTransactionCompleted(transaction);
+        } catch (syncError) {
+          this.logger.error(
+            'Failed to sync completed transaction in getTransactionStatus',
+            syncError,
+          );
+        }
+      }
+
+      return transaction;
     } catch (error) {
       this.logger.error('Failed to fetch transaction', error);
       throw new BadRequestException('Failed to fetch transaction status');

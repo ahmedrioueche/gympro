@@ -44,15 +44,6 @@ export default function PlanCard({
   const { isDark } = useTheme();
   const { language } = useLanguageStore();
 
-  // Fetch active feature packages
-  const { data: packages = [] } = useQuery({
-    queryKey: ["adminFeaturePackages", "active"],
-    queryFn: async () => {
-      const res = await adminApi.getFeaturePackages(true);
-      return res.data;
-    },
-  });
-
   // ✅ Use the availability checker
   const { isPlanAvailable } = useSubscriptionStatus(
     currentSubscription || undefined,

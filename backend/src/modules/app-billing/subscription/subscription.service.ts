@@ -56,6 +56,22 @@ export class AppSubscriptionService {
   ) {}
 
   /**
+   * Check if a payment record with the given transaction ID exists
+   */
+  async hasPaymentWithTransactionId(
+    providerTransactionId: string,
+  ): Promise<boolean> {
+    try {
+      const payment = await this.paymentService.paymentModel
+        .findOne({ providerTransactionId })
+        .exec();
+      return !!payment;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Sync the subscription data to all gyms owned by this user.
    * This ensures staff members (managers, receptionists) can access
    * the owner's plan features via the gym document.
@@ -366,7 +382,7 @@ export class AppSubscriptionService {
     if (plan.level !== 'free') {
       this.notificationsService
         .notifyUser(user, {
-          key: isUpgrade ? 'subscription.upgraded' : 'subscription.created',
+          key: isUpgrade ? 'subscription.upgrade' : 'subscription.created',
           vars: {
             name: user.profile?.fullName || user.profile?.email || 'User',
             planName: plan.name,

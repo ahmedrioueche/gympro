@@ -69,9 +69,7 @@ export const useAdminBanners = () => {
 
   const isAdminRole =
     user?.role === UserRole.Admin ||
-    user?.role === UserRole.AppEditor ||
-    user?.role === UserRole.Manager ||
-    user?.role === UserRole.Owner;
+    user?.role === UserRole.AppEditor;
 
   const bannersQuery = useQuery({
     queryKey: ["admin_banners"],

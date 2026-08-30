@@ -2,10 +2,12 @@ import {
   chargilyCheckoutApi,
   type AppSubscriptionBillingCycle,
 } from "@ahmedrioueche/gympro-client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { getMessage, showStatusToast } from "../../utils/statusMessage";
 import { useToast } from "../useToast";
+import { planKeys } from "./useSubscription";
+import { useUserStore } from "../../store/user";
 
 interface UseCheckoutOptions {
   onSuccess?: (data?: any) => void;
@@ -138,10 +140,16 @@ export const useApplyChargilyUpgrade = (options?: UseCheckoutOptions) => {
 export const useChargilyCheckoutStatus = () => {
   const toast = useToast();
   const { t } = useTranslation();
+  const qc = useQueryClient();
 
   return useMutation({
     mutationFn: (checkoutId: string) =>
       chargilyCheckoutApi.getCheckoutStatus(checkoutId),
+    onSuccess: async () => {
+      qc.invalidateQueries({ queryKey: planKeys.mySubscription() });
+      qc.invalidateQueries({ queryKey: planKeys.subscription() });
+      await useUserStore.getState().fetchUser(true);
+    },
     onError: () => {
       toast.error(t("checkout.status_fetch_failed"));
     },
