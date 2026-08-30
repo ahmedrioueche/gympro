@@ -50,7 +50,7 @@ import { UsersModule } from './modules/users/users.module';
     // Load environment variables
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env.local', '.env'],
     }),
 
     ThrottlerModule.forRoot([

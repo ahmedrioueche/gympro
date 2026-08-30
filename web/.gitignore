@@ -1,7 +1,7 @@
 # Node modules
 node_modules/
 **/node_modules/
-
+.env.local
 # Build outputs
 dist/
 **/dist/
